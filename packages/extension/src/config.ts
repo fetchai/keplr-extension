@@ -6,7 +6,7 @@ import { PRIVILEGED_ORIGINS } from "./config.var";
 export const EmbedChainInfos: ChainInfo[] = [
   {
     rpc: "https://rpc-fetchhub.fetch-ai.com",
-    rest: "https://rpc-fetchhub.fetch-ai.com",
+    rest: "https://rest-fetchhub.fetch-ai.com",
     chainId: "fetchhub-2",
     chainName: "FetchHub",
     stakeCurrency: {
