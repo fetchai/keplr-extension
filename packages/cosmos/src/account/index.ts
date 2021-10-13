@@ -73,14 +73,15 @@ export class BaseAccount implements Account {
     }
 
     const accountNumber = value.account_number;
-    // having a valid address (checked above) and no account number
-    // means this account have accountNumber = "0". So we skip the following
-    // exception.
-    // if (accountNumber == null) {
-    //   throw new Error(
-    //     `Account's account number is unknown: ${JSON.stringify(obj)}`
-    //   );
-    // }
+    // Having a valid address in value.address (checked above) and no account number
+    // means this account have accountNumber = "0".
+    // it still have a "null" value because of cosmos-sdk protobuf omitting the field when json marshalling it.
+    // When having no address and no accountNumber  from the rest response, then the account doesn't exists.
+    if (accountNumber == null && !value.address) {
+      throw new Error(
+        `Account's account number is unknown: ${JSON.stringify(obj)}`
+      );
+    }
 
     const sequence = value.sequence;
 
