@@ -49,6 +49,9 @@
   "keywords": [],
   "author": "chainapsis",
   "license": "Apache-2.0",
+  "dependencies": {
+    "puppeteer": "^13.4.0"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/node": "^16.6.2",
