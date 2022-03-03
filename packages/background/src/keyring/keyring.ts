@@ -589,6 +589,7 @@ export class KeyRing {
         isNanoLedger: true,
       };
     } else {
+      // NB: #loadPrivKey called here.
       const privKey = this.loadPrivKey(coinType);
       const pubKey = privKey.getPubKey();
 
@@ -601,6 +602,8 @@ export class KeyRing {
     }
   }
 
+  // TODO: add PrivateKey interface (abstract) type
+  // TODO: return PrivateKey type
   private loadPrivKey(coinType: number): PrivKeySecp256k1 {
     if (
       this.status !== KeyRingStatus.UNLOCKED ||
@@ -616,6 +619,7 @@ export class KeyRing {
       const path = `m/44'/${coinType}'/${bip44HDPath.account}'/${bip44HDPath.change}/${bip44HDPath.addressIndex}`;
       const cachedKey = this.cached.get(path);
       if (cachedKey) {
+        // TODO: support bls12381 key type.
         return new PrivKeySecp256k1(cachedKey);
       }
 
@@ -628,6 +632,7 @@ export class KeyRing {
       const privKey = Mnemonic.generateWalletFromMnemonic(this.mnemonic, path);
 
       this.cached.set(path, privKey);
+      // TODO: support bls12381 key type.
       return new PrivKeySecp256k1(privKey);
     } else if (this.type === "privateKey") {
       // If key store type is private key, path will be ignored.
@@ -638,6 +643,7 @@ export class KeyRing {
         );
       }
 
+      // TODO: support bls12381 key type.
       return new PrivKeySecp256k1(this.privateKey);
     } else {
       throw new Error("Unexpected type of keyring");
@@ -674,6 +680,7 @@ export class KeyRing {
     } else {
       const coinType = this.computeKeyStoreCoinType(chainId, defaultCoinType);
 
+      // NB: #loadPrivKey called here.
       const privKey = this.loadPrivKey(coinType);
       return privKey.sign(message);
     }

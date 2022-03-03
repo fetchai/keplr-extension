@@ -3,6 +3,7 @@ import CryptoJS from "crypto-js";
 
 import { Buffer } from "buffer/";
 
+// TODO: `implements` PrivateKey interface
 export class PrivKeySecp256k1 {
   static generateRandomKey(): PrivKeySecp256k1 {
     const secp256k1 = new ec("secp256k1");
