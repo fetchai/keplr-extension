@@ -45,6 +45,7 @@ export type MultiKeyStoreInfoWithSelected = MultiKeyStoreInfoWithSelectedElem[];
 
 const KeyStoreKey = "key-store";
 const KeyMultiStoreKey = "key-multi-store";
+const ErrUndefinedLedgerKeeper = new Error("Ledger keeper is not defined");
 
 /*
  Keyring stores keys in persistent backround.
@@ -72,7 +73,8 @@ export class KeyRing {
   constructor(
     private readonly embedChainInfos: ChainInfo[],
     private readonly kvStore: KVStore,
-    private readonly ledgerKeeper: LedgerService,
+    // TODO: use an interface instead of `LedgerService` class for easier testing.
+    private readonly ledgerKeeper: LedgerService | null,
     private readonly rng: RNG,
     private readonly crypto: CommonCrypto
   ) {
@@ -284,6 +286,9 @@ export class KeyRing {
   }> {
     if (this.status !== KeyRingStatus.EMPTY) {
       throw new Error("Key ring is not loaded or not empty");
+    }
+    if (!this.ledgerKeeper) {
+      throw ErrUndefinedLedgerKeeper;
     }
 
     // Get public key first
@@ -664,7 +669,7 @@ export class KeyRing {
   }
 
   public async sign(
-    env: Env,
+    env: Env | null,
     chainId: string,
     defaultCoinType: number,
     message: Uint8Array
@@ -684,10 +689,18 @@ export class KeyRing {
     }
 
     if (this.keyStore.type === "ledger") {
+      if (!this.ledgerKeeper) {
+        throw ErrUndefinedLedgerKeeper;
+      }
+
       const pubKey = this.ledgerPublicKey;
 
       if (!pubKey) {
         throw new Error("Ledger public key is not initialized");
+      }
+
+      if (!env) {
+        throw new Error("Env was not provided");
       }
 
       return await this.ledgerKeeper.sign(
@@ -842,6 +855,10 @@ export class KeyRing {
   }> {
     if (this.status !== KeyRingStatus.UNLOCKED || this.password == "") {
       throw new Error("Key ring is locked or not initialized");
+    }
+
+    if (!this.ledgerKeeper) {
+      throw ErrUndefinedLedgerKeeper;
     }
 
     // Get public key first
