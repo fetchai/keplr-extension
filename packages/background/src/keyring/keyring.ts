@@ -1,9 +1,13 @@
 import { Crypto, KeyStore } from "./crypto";
 import {
+  KeyCurve,
+  KeyCurves,
   Mnemonic,
   PrivKeySecp256k1,
   PubKeySecp256k1,
   RNG,
+  SecretKey,
+  SecretKeyBls12381,
 } from "@keplr-wallet/crypto";
 import { KVStore } from "@keplr-wallet/common";
 import { LedgerService } from "../ledger";
@@ -211,7 +215,8 @@ export class KeyRing {
     mnemonic: string,
     password: string,
     meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath
+    bip44HDPath: BIP44HDPath,
+    curve: KeyCurve
   ): Promise<{
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
@@ -228,7 +233,8 @@ export class KeyRing {
       mnemonic,
       password,
       await this.assignKeyStoreIdMeta(meta),
-      bip44HDPath
+      bip44HDPath,
+      curve
     );
     this.password = password;
     this.multiKeyStore.push(this.keyStore);
@@ -245,7 +251,8 @@ export class KeyRing {
     kdf: "scrypt" | "sha256" | "pbkdf2",
     privateKey: Uint8Array,
     password: string,
-    meta: Record<string, string>
+    meta: Record<string, string>,
+    curve: KeyCurve
   ): Promise<{
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
@@ -261,7 +268,8 @@ export class KeyRing {
       kdf,
       privateKey,
       password,
-      await this.assignKeyStoreIdMeta(meta)
+      await this.assignKeyStoreIdMeta(meta),
+      curve
     );
     this.password = password;
     this.multiKeyStore.push(this.keyStore);
@@ -592,8 +600,9 @@ export class KeyRing {
 
       const pubKey = new PubKeySecp256k1(this.ledgerPublicKey);
 
+      // TODO: support bls12381 (?)
       return {
-        algo: "secp256k1",
+        algo: KeyCurves.secp256k1,
         pubKey: pubKey.toBytes(),
         address: pubKey.getAddress(),
         isNanoLedger: true,
@@ -618,7 +627,7 @@ export class KeyRing {
 
       // Default
       return {
-        algo: "secp256k1",
+        algo: privKey.curve,
         pubKey: pubKey.toBytes(),
         address: pubKey.getAddress(),
         isNanoLedger: false,
@@ -628,7 +637,7 @@ export class KeyRing {
 
   // TODO: add PrivateKey interface (abstract) type
   // TODO: return PrivateKey type
-  private loadPrivKey(coinType: number): PrivKeySecp256k1 {
+  private loadPrivKey(coinType: number): SecretKey {
     if (
       this.status !== KeyRingStatus.UNLOCKED ||
       this.type === "none" ||
@@ -656,8 +665,14 @@ export class KeyRing {
       const privKey = Mnemonic.generateWalletFromMnemonic(this.mnemonic, path);
 
       this.cached.set(path, privKey);
-      // TODO: support bls12381 key type.
-      return new PrivKeySecp256k1(privKey);
+      switch (this.keyStore.curve) {
+        case KeyCurves.secp256k1:
+          return new PrivKeySecp256k1(privKey);
+        case KeyCurves.bls12381:
+          return new SecretKeyBls12381(privKey);
+        default:
+          throw new Error(`Unexpected key curve: "${this.keyStore.curve}"`);
+      }
     } else if (this.type === "privateKey") {
       // If key store type is private key, path will be ignored.
 
@@ -667,8 +682,14 @@ export class KeyRing {
         );
       }
 
-      // TODO: support bls12381 key type.
-      return new PrivKeySecp256k1(this.privateKey);
+      switch (this.keyStore.curve) {
+        case KeyCurves.secp256k1:
+          return new PrivKeySecp256k1(this.privateKey);
+        case KeyCurves.bls12381:
+          return new SecretKeyBls12381(this.privateKey);
+        default:
+          throw new Error(`Unexpected key curve: "${this.keyStore.curve}"`);
+      }
     } else {
       throw new Error("Unexpected type of keyring");
     }
@@ -800,7 +821,8 @@ export class KeyRing {
     kdf: "scrypt" | "sha256" | "pbkdf2",
     mnemonic: string,
     meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath
+    bip44HDPath: BIP44HDPath,
+    curve: KeyCurve = KeyCurves.secp256k1
   ): Promise<{
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
@@ -815,7 +837,8 @@ export class KeyRing {
       mnemonic,
       this.password,
       await this.assignKeyStoreIdMeta(meta),
-      bip44HDPath
+      bip44HDPath,
+      curve
     );
     this.multiKeyStore.push(keyStore);
 
@@ -828,7 +851,8 @@ export class KeyRing {
   public async addPrivateKey(
     kdf: "scrypt" | "sha256" | "pbkdf2",
     privateKey: Uint8Array,
-    meta: Record<string, string>
+    meta: Record<string, string>,
+    curve: KeyCurve = KeyCurves.secp256k1
   ): Promise<{
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
@@ -842,7 +866,8 @@ export class KeyRing {
       kdf,
       privateKey,
       this.password,
-      await this.assignKeyStoreIdMeta(meta)
+      await this.assignKeyStoreIdMeta(meta),
+      curve
     );
     this.multiKeyStore.push(keyStore);
 
@@ -1007,13 +1032,15 @@ export class KeyRing {
     mnemonic: string,
     password: string,
     meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath
+    bip44HDPath: BIP44HDPath,
+    curve: KeyCurve = KeyCurves.secp256k1
   ): Promise<KeyStore> {
     return await Crypto.encrypt(
       rng,
       crypto,
       kdf,
       "mnemonic",
+      curve,
       mnemonic,
       password,
       meta,
@@ -1027,13 +1054,15 @@ export class KeyRing {
     kdf: "scrypt" | "sha256" | "pbkdf2",
     privateKey: Uint8Array,
     password: string,
-    meta: Record<string, string>
+    meta: Record<string, string>,
+    curve: KeyCurve = KeyCurves.secp256k1
   ): Promise<KeyStore> {
     return await Crypto.encrypt(
       rng,
       crypto,
       kdf,
       "privateKey",
+      curve,
       Buffer.from(privateKey).toString("hex"),
       password,
       meta
@@ -1054,6 +1083,7 @@ export class KeyRing {
       crypto,
       kdf,
       "ledger",
+      KeyCurves.secp256k1,
       Buffer.from(publicKey).toString("hex"),
       password,
       meta,

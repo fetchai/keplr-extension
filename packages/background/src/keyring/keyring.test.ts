@@ -1,14 +1,14 @@
 import { Buffer } from "buffer";
 import scrypt from "scrypt-js";
 import { webcrypto } from "crypto";
-import {
-  SecretKey as SecretKeyBls,
-  PublicKey as PublicKeyBls,
-  Signature as SignatureBls,
-  verify as verifyBls,
-} from "@chainsafe/blst";
+import { SecretKey as SecretKeyBls } from "@chainsafe/blst";
 import { MemoryKVStore } from "@keplr-wallet/common";
-import { Mnemonic, PubKeySecp256k1 } from "@keplr-wallet/crypto";
+import {
+  KeyCurves,
+  Mnemonic,
+  PubKeySecp256k1,
+  PublicKeyBls12381,
+} from "@keplr-wallet/crypto";
 import { ScryptParams } from "./types";
 import { KeyRing, KeyRingStatus } from "./keyring";
 import { mnemonicToSeedSync } from "bip39";
@@ -18,30 +18,13 @@ const BLS_SIGNATURE_SIZE_COMPRESSED = 96;
 describe("Keyring", () => {
   describe("with Secp256k1 private key", () => {
     let testKeyring: KeyRing;
-    const testRNG = (array: any) => {
-      // @ts-ignore
-      return Promise.resolve(webcrypto.getRandomValues(array));
-    };
 
     beforeAll(async () => {
-      const testKeyringStore = new MemoryKVStore("test_keyring");
-      testKeyring = new KeyRing([], testKeyringStore, null, testRNG, {
-        scrypt: async (text: string, params: ScryptParams) => {
-          return scrypt.scrypt(
-            Buffer.from(text),
-            Buffer.from(params.salt, "hex"),
-            params.n,
-            params.r,
-            params.p,
-            params.dklen
-          );
-        },
-      });
+      testKeyring = await newTestKeyring("test_keyring_secp256k1");
 
       expect(testKeyring).toBeTruthy();
-      expect(testKeyring.status).toEqual(KeyRingStatus.NOTLOADED);
+      expect(testKeyring.status).toEqual(KeyRingStatus.EMPTY);
       expect(testKeyring.isLocked()).toEqual(true);
-      await testKeyring.restore();
     });
 
     it("should be able to import a mnemonic", async () => {
@@ -58,7 +41,8 @@ describe("Keyring", () => {
         mnemonic,
         testPassword,
         {},
-        bip44HDPath
+        bip44HDPath,
+        KeyCurves.secp256k1
       );
     });
 
@@ -68,41 +52,26 @@ describe("Keyring", () => {
       const signature = await testKeyring.sign(null, chainID, 0, testMessage);
       expect(signature).toBeTruthy();
 
-      const secretKey = testKeyring.getKey(chainID, 0);
-      const pubKey = new PubKeySecp256k1(secretKey.pubKey);
+      const key = testKeyring.getKey(chainID, 0);
+      expect(key.algo).toEqual(KeyCurves.secp256k1);
+
+      const pubKey = new PubKeySecp256k1(key.pubKey);
       expect(pubKey.verify(testMessage, signature)).toEqual(true);
     });
   });
 
   describe("with bls12381 private key", () => {
     let testKeyring: KeyRing;
-    const testRNG = (array: any) => {
-      // @ts-ignore
-      return Promise.resolve(webcrypto.getRandomValues(array));
-    };
 
     beforeAll(async () => {
-      const testKeyringStore = new MemoryKVStore("test_keyring");
-      testKeyring = new KeyRing([], testKeyringStore, null, testRNG, {
-        scrypt: async (text: string, params: ScryptParams) => {
-          return scrypt.scrypt(
-            Buffer.from(text),
-            Buffer.from(params.salt, "hex"),
-            params.n,
-            params.r,
-            params.p,
-            params.dklen
-          );
-        },
-      });
+      testKeyring = await newTestKeyring("test_keyring_bls12381");
 
       expect(testKeyring).toBeTruthy();
-      expect(testKeyring.status).toEqual(KeyRingStatus.NOTLOADED);
+      expect(testKeyring.status).toEqual(KeyRingStatus.EMPTY);
       expect(testKeyring.isLocked()).toEqual(true);
-      await testKeyring.restore();
     });
 
-    it("should be able to import a secret key", async () => {
+    it("#createPrivateKey", async () => {
       const testPassword = "test password";
       const mnemonic = await Mnemonic.generateSeed(testRNG, 128);
       const seed = mnemonicToSeedSync(mnemonic, testPassword);
@@ -113,27 +82,47 @@ describe("Keyring", () => {
         "sha256",
         secretKey.toBytes(),
         testPassword,
-        {}
+        {},
+        KeyCurves.bls12381
       );
+      // TODO: more assertions against testKeyring
     });
 
     it("should generate a valid signature", async () => {
       const chainID = "test-chain";
       const testMessage = Buffer.from("test message 123");
-      const signatureBytes = await testKeyring.sign(
-        null,
-        chainID,
-        0,
-        testMessage
-      );
-      expect(signatureBytes).toBeTruthy();
+      const key = testKeyring.getKey(chainID, 0);
+      expect(key.algo).toEqual("bls12381");
 
-      const signature = SignatureBls.fromBytes(signatureBytes);
-      expect(signature.value).toHaveLength(BLS_SIGNATURE_SIZE_COMPRESSED);
+      const signature = await testKeyring.sign(null, chainID, 0, testMessage);
+      expect(signature).toHaveLength(BLS_SIGNATURE_SIZE_COMPRESSED);
 
-      const secretKey = testKeyring.getKey(chainID, 0);
-      const publicKey = PublicKeyBls.fromBytes(secretKey.pubKey);
-      expect(verifyBls(testMessage, publicKey, signature)).toEqual(true);
+      const publicKey = new PublicKeyBls12381(key.pubKey);
+      expect(publicKey.verify(testMessage, signature)).toEqual(true);
     });
   });
 });
+
+function testRNG<T>(array: T): Promise<T> {
+  // @ts-ignore
+  return Promise.resolve(webcrypto.getRandomValues(array));
+}
+
+async function newTestKeyring(kvStoreName: string) {
+  const keyStore = new MemoryKVStore(kvStoreName);
+  const keyRing = new KeyRing([], keyStore, null, testRNG, {
+    scrypt: async (text: string, params: ScryptParams) => {
+      return scrypt.scrypt(
+        Buffer.from(text),
+        Buffer.from(params.salt, "hex"),
+        params.n,
+        params.r,
+        params.p,
+        params.dklen
+      );
+    },
+  });
+
+  await keyRing.restore();
+  return keyRing;
+}
