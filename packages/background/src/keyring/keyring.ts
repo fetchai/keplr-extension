@@ -88,7 +88,7 @@ export class KeyRing {
   }
 
   public static getTypeOfKeyStore(
-    keyStore: Omit<KeyStore, "crypto">
+    keyStore: Omit<Omit<KeyStore, "curve">, "crypto">
   ): "mnemonic" | "privateKey" | "ledger" {
     const type = keyStore.type;
     if (type == null) {
