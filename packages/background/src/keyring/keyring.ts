@@ -39,7 +39,7 @@ export interface Key {
 
 export type MultiKeyStoreInfoElem = Pick<
   KeyStore,
-  "version" | "type" | "meta" | "bip44HDPath" | "coinTypeForChain"
+  "version" | "type" | "meta" | "bip44HDPath" | "coinTypeForChain" | "curve"
 >;
 export type MultiKeyStoreInfo = MultiKeyStoreInfoElem[];
 export type MultiKeyStoreInfoWithSelectedElem = MultiKeyStoreInfoElem & {
@@ -88,7 +88,7 @@ export class KeyRing {
   }
 
   public static getTypeOfKeyStore(
-    keyStore: Omit<Omit<KeyStore, "curve">, "crypto">
+    keyStore: Omit<KeyStore, "crypto">
   ): "mnemonic" | "privateKey" | "ledger" {
     const type = keyStore.type;
     if (type == null) {
@@ -108,6 +108,10 @@ export class KeyRing {
     } else {
       return KeyRing.getTypeOfKeyStore(this.keyStore);
     }
+  }
+
+  public get curve(): KeyCurve {
+    return this.keyStore?.curve;
   }
 
   public isLocked(): boolean {
@@ -945,6 +949,7 @@ export class KeyRing {
       result.push({
         version: keyStore.version,
         type: keyStore.type,
+        curve: keyStore.curve,
         meta: keyStore.meta,
         coinTypeForChain: keyStore.coinTypeForChain,
         bip44HDPath: keyStore.bip44HDPath,

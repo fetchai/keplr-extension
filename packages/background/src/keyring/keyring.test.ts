@@ -11,7 +11,6 @@ import {
 } from "@keplr-wallet/crypto";
 import { ScryptParams } from "./types";
 import { KeyRing, KeyRingStatus } from "./keyring";
-import { mnemonicToSeedSync } from "bip39";
 
 const BLS_SIGNATURE_SIZE_COMPRESSED = 96;
 
@@ -73,10 +72,6 @@ describe("Keyring", () => {
 
     it("#createPrivateKey", async () => {
       const testPassword = "test password";
-      const mnemonic = await Mnemonic.generateSeed(testRNG, 128);
-      const seed = mnemonicToSeedSync(mnemonic, testPassword);
-      expect(seed).not.toEqual("");
-
       const secretKey = SecretKeyBls.fromKeygen(Buffer.alloc(32, 1));
       await testKeyring.createPrivateKey(
         "sha256",
@@ -88,7 +83,7 @@ describe("Keyring", () => {
       // TODO: more assertions against testKeyring
     });
 
-    it("should generate a valid signature", async () => {
+    it("#sign", async () => {
       const chainID = "test-chain";
       const testMessage = Buffer.from("test message 123");
       const key = testKeyring.getKey(chainID, 0);
@@ -99,6 +94,56 @@ describe("Keyring", () => {
 
       const publicKey = new PublicKeyBls12381(key.pubKey);
       expect(publicKey.verify(testMessage, signature)).toEqual(true);
+    });
+  });
+
+  describe("#changeKeyStoreFromMultiKeyStore", () => {
+    let testKeyring: KeyRing;
+    beforeAll(async () => {
+      testKeyring = await newTestKeyring("test_keyring_bls12381");
+
+      expect(testKeyring).toBeTruthy();
+      expect(testKeyring.status).toEqual(KeyRingStatus.EMPTY);
+      expect(testKeyring.isLocked()).toEqual(true);
+    });
+
+    it("should have the correct curve", async () => {
+      const testPassword = "test password";
+
+      // Add bls12381 key
+      const secretKey = SecretKeyBls.fromKeygen(Buffer.alloc(32, 1));
+      await testKeyring.createPrivateKey(
+        "sha256",
+        secretKey.toBytes(),
+        testPassword,
+        {},
+        KeyCurves.bls12381
+      );
+
+      // Add secp256k1 key
+      const mnemonic = await Mnemonic.generateSeed(testRNG, 128);
+      expect(mnemonic).not.toEqual("");
+      const bip44HDPath = {
+        account: 0,
+        change: 0,
+        addressIndex: 0,
+      };
+      await testKeyring.createMnemonicKey(
+        "sha256",
+        mnemonic,
+        testPassword,
+        {},
+        bip44HDPath,
+        KeyCurves.secp256k1
+      );
+
+      // Select secp256k1 key
+      await testKeyring.changeKeyStoreFromMultiKeyStore(1);
+      expect(testKeyring.curve).toEqual(KeyCurves.secp256k1);
+
+      // Select bls12381 key
+      await testKeyring.changeKeyStoreFromMultiKeyStore(0);
+      expect(testKeyring.curve).toEqual(KeyCurves.bls12381);
     });
   });
 });
