@@ -55,7 +55,6 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "TESTFET",
       coinMinimalDenom: "atestfet",
       coinDecimals: 18,
-      coinGeckoId: "fetch-ai",
     },
     bip44: {
       coinType: 118,
