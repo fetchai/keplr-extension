@@ -18,13 +18,32 @@ export interface UmbralApi {
    */
   getPublicKey(chainId: string): Promise<Uint8Array>;
 
+  /**
+   * Get the associated umbral signing public key that was generated for this account
+   *
+   * @param chainId The target chain id
+   */
   getSigningPublicKey(chainId: string): Promise<Uint8Array>;
 
+  /**
+   * Encrypt a some data for use
+   *
+   * @param chainId The target chain id
+   * @param plainTextBytes The bytes to be configu
+   */
   encrypt(
     chainId: string,
     plainTextBytes: Uint8Array
   ): Promise<UmbralEncryptionResult>;
 
+  /**
+   * Create a set of key fragments
+   *
+   * @param chainId The target chain id
+   * @param receiverPublicKey The receivers public key
+   * @param threshold The threshold number of shares to recover
+   * @param shares The total number of shares to generate
+   */
   generateKeyFragments(
     chainId: string,
     receiverPublicKey: Uint8Array,
@@ -32,8 +51,23 @@ export interface UmbralApi {
     shares: number
   ): Promise<UmbralKeyFragment[]>;
 
+  /**
+   * Decrypt a previously encrypted piece of data
+   *
+   * @param chainId The target chain id
+   * @param cipherTextBytes The cipher text to decrypt
+   */
   decrypt(chainId: string, cipherTextBytes: Uint8Array): Promise<Uint8Array>;
 
+  /**
+   * Decrypt a piece of encrypted data with the capsule and capsule fragments
+   *
+   * @param chainId The target chain id
+   * @param senderPublicKey The senders public key
+   * @param capsule The capsule data
+   * @param capsuleFragments The capsule fragments to combine
+   * @param cipherTextBytes The cipher text bytes
+   */
   decryptReEncrypted(
     chainId: string,
     senderPublicKey: Uint8Array,
@@ -42,6 +76,15 @@ export interface UmbralApi {
     cipherTextBytes: Uint8Array
   ): Promise<Uint8Array>;
 
+  /**
+   * Verify a capsule fragment
+   *
+   * @param capsuleFragment The capsule fragment to verify
+   * @param capsule The capsule that the fragment refers to
+   * @param verifyingPublicKey The verifying public key
+   * @param senderPublicKey The sender public key
+   * @param receiverPublicKey The receiver public key
+   */
   verifyCapsuleFragment(
     capsuleFragment: Uint8Array,
     capsule: Uint8Array,
