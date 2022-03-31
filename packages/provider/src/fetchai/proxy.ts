@@ -44,11 +44,11 @@ export function createProxyResponse(
 }
 
 function isProxyRequest(obj: any): obj is ProxyRequest {
-  return !(!obj || obj.type !== "fetchai:proxy-request-v1" || !obj.id);
+  return !(!obj?.id || obj.type !== "fetchai:proxy-request-v1");
 }
 
 function isProxyPresonse(obj: any): obj is ProxyResponse {
-  return !(!obj || obj.type !== "fetchai:proxy-response-v1" || !obj.id);
+  return !(!obj?.id || obj.type !== "fetchai:proxy-response-v1");
 }
 
 export function toProxyRequest(obj: any): ProxyRequest | undefined {
