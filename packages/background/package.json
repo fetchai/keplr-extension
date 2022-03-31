@@ -37,6 +37,7 @@
     "@ledgerhq/hw-transport": "^6.3.0",
     "@ledgerhq/hw-transport-webhid": "^6.3.0",
     "@ledgerhq/hw-transport-webusb": "^6.3.0",
+    "@nucypher/umbral-pre": "^0.5.2",
     "aes-js": "^3.1.2",
     "axios": "^0.21.0",
     "big-integer": "^1.6.48",

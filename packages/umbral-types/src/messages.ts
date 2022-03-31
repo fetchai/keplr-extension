@@ -144,6 +144,7 @@ export class UmbralDecryptMsg extends Message<Uint8Array> {
 
   constructor(
     public readonly chainId: string,
+    public readonly capsuleBytes: Uint8Array,
     public readonly cipherTextBytes: Uint8Array
   ) {
     super();

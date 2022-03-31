@@ -32,7 +32,11 @@ export interface UmbralApi {
     shares: number
   ): Promise<UmbralKeyFragment[]>;
 
-  decrypt(chainId: string, cipherTextBytes: Uint8Array): Promise<Uint8Array>;
+  decrypt(
+    chainId: string,
+    capsuleBytes: Uint8Array,
+    cipherTextBytes: Uint8Array
+  ): Promise<Uint8Array>;
 
   decryptReEncrypted(
     chainId: string,

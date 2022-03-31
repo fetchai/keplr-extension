@@ -17,6 +17,7 @@
     "persistent": true
   },
   "permissions": ["storage", "notifications"],
+  "content_security_policy": "script-src 'self' 'wasm-eval'; object-src 'self'",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
