@@ -8,7 +8,7 @@ export interface UmbralKeyFragment {
 }
 
 /**
- * The interface that will be exposed the window client
+ * The interface that will be exposed in the window client
  */
 export interface UmbralApi {
   /**
@@ -26,10 +26,10 @@ export interface UmbralApi {
   getSigningPublicKey(chainId: string): Promise<Uint8Array>;
 
   /**
-   * Encrypt a some data for use
+   * Encrypt some data for use
    *
    * @param chainId The target chain id
-   * @param plainTextBytes The bytes to be configu
+   * @param plainTextBytes The bytes to be encrypted
    */
   encrypt(
     chainId: string,
