@@ -24,6 +24,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FET",
         coinMinimalDenom: "afet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
       {
         coinDenom: "MOBX",
@@ -36,6 +37,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FET",
         coinMinimalDenom: "afet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
     ],
     coinType: 118,
@@ -45,6 +47,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       average: 5000000000,
       high: 6250000000,
     },
+    walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
   },
   {
     rpc: "https://rpc-capricorn.fetch.ai",
@@ -55,7 +58,6 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "TESTFET",
       coinMinimalDenom: "atestfet",
       coinDecimals: 18,
-      coinGeckoId: "fetch-ai",
     },
     bip44: {
       coinType: 118,
@@ -87,6 +89,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       average: 5000000000,
       high: 6250000000,
     },
+    walletUrlForStaking: "https://browse-capricorn.fetch.ai/validators",
   },
 ];
 

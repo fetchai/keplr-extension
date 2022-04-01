@@ -1,8 +1,8 @@
 {
-  "name": "@fetchai/umbral",
-  "version": "0.9.10",
+  "name": "@keplr-wallet/analytics",
+  "version": "0.9.14",
   "main": "build/index.js",
-  "author": "fetchai",
+  "author": "chainapsis",
   "license": "Apache-2.0",
   "private": false,
   "publishConfig": {
@@ -12,10 +12,10 @@
     "clean": "rm -rf node_modules; rm -rf build",
     "build": "tsc",
     "dev": "tsc -w",
-    "test": "jest --passWithNoTests",
     "lint-test": "eslint \"src/**/*\" && prettier --check \"src/**/*\"",
     "lint-fix": "eslint --fix \"src/**/*\" && prettier --write \"src/**/*\""
   },
   "dependencies": {
+    "sha.js": "^2.4.11"
   }
 }
