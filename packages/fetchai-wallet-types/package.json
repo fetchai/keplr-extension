@@ -1,0 +1,26 @@
+{
+  "name": "@fetchai/fetchai-wallet-types",
+  "version": "0.9.10",
+  "main": "build/index.js",
+  "author": "fetchai",
+  "license": "Apache-2.0",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules; rm -rf build",
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "jest --passWithNoTests",
+    "lint-test": "eslint \"src/**/*\" && prettier --check \"src/**/*\"",
+    "lint-fix": "eslint --fix \"src/**/*\" && prettier --write \"src/**/*\""
+  },
+  "dependencies": {
+    "@cosmjs/launchpad": "^0.24.0-alpha.25",
+    "@cosmjs/proto-signing": "^0.24.0-alpha.25",
+    "@keplr-wallet/types": "^0.9.10",
+    "@fetchai/umbral-types": "^0.9.10",
+    "long": "^4.0.0"
+  }
+}

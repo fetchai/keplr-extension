@@ -7,7 +7,7 @@ export const EmbedChainInfos: ChainInfo[] = [
   {
     rpc: "https://rpc-fetchhub.fetch-ai.com",
     rest: "https://rest-fetchhub.fetch-ai.com",
-    chainId: "fetchhub-3",
+    chainId: "fetchhub-4",
     chainName: "FetchHub",
     stakeCurrency: {
       coinDenom: "FET",
@@ -24,11 +24,22 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FET",
         coinMinimalDenom: "afet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
       {
         coinDenom: "MOBX",
         coinMinimalDenom: "nanomobx",
         coinDecimals: 9,
+      },
+      {
+        coinDenom: "NOMX",
+        coinMinimalDenom: "nanonomx",
+        coinDecimals: 9,
+      },
+      {
+        coinDenom: "LRN",
+        coinMinimalDenom: "ulrn",
+        coinDecimals: 6,
       },
     ],
     feeCurrencies: [
@@ -36,6 +47,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FET",
         coinMinimalDenom: "afet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
     ],
     coinType: 118,
@@ -45,6 +57,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       average: 5000000000,
       high: 6250000000,
     },
+    walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
   },
   {
     rpc: "https://rpc-cosmoshub.keplr.app",
@@ -556,15 +569,15 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   },
   {
-    rpc: "https://rpc-capricorn.fetch.ai",
-    rest: "https://rest-capricorn.fetch.ai",
-    chainId: "capricorn-1",
-    chainName: "Capricorn",
+
+    rpc: "https://rpc-dorado.fetch.ai",
+    rest: "https://rest-dorado.fetch.ai",
+    chainId: "dorado-1",
+    chainName: "Dorado",
     stakeCurrency: {
       coinDenom: "TESTFET",
       coinMinimalDenom: "atestfet",
       coinDecimals: 18,
-      coinGeckoId: "fetch-ai",
     },
     bip44: {
       coinType: 118,
@@ -596,6 +609,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       average: 5000000000,
       high: 6250000000,
     },
+    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
   },
 ];
 
