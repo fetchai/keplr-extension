@@ -569,7 +569,6 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   },
   {
-
     rpc: "https://rpc-dorado.fetch.ai",
     rest: "https://rest-dorado.fetch.ai",
     chainId: "dorado-1",
