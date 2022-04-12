@@ -82,13 +82,7 @@ const handleEncryptMsg: (
   service: UmbralService
 ) => InternalHandler<UmbralEncryptMsg> = (service) => {
   return async (env, msg) => {
-    await service.permissionService.checkOrGrantBasicAccessPermission(
-      env,
-      msg.chainId,
-      msg.origin
-    );
-
-    return await service.encrypt(env, msg.chainId, msg.plainTextBytes);
+    return await service.encrypt(env, msg.pubKey, msg.plainTextBytes);
   };
 };
 

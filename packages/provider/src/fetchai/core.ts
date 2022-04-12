@@ -32,12 +32,12 @@ class ExtensionCoreUmbral implements UmbralApi {
   }
 
   async encrypt(
-    chainId: string,
+    pubKey: Uint8Array,
     plainTextBytes: Uint8Array
   ): Promise<UmbralEncryptionResult> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
-      new UmbralEncryptMsg(chainId, plainTextBytes)
+      new UmbralEncryptMsg(pubKey, plainTextBytes)
     );
   }
 
