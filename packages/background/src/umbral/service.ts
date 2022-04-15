@@ -36,13 +36,14 @@ export class UmbralService {
   }
 
   async encrypt(
-    env: Env,
-    chainId: string,
+    _env: Env,
+    pubKey: Uint8Array,
     plainTextBytes: Uint8Array
   ): Promise<UmbralEncryptionResult> {
     const umbral = await this.getUmbral();
-    const sk = await this.getPrivateKey(env, chainId);
-    const result = umbral.encrypt(sk.publicKey(), plainTextBytes);
+    const pk = umbral.PublicKey.fromBytes(pubKey);
+
+    const result = umbral.encrypt(pk, plainTextBytes);
 
     return {
       cipherText: result.ciphertext,
@@ -85,9 +86,7 @@ export class UmbralService {
       true
     );
 
-    console.log(frags);
-
-    return [];
+    return frags.map((frag) => ({ data: frag.toBytes() }));
   }
 
   async decryptReEncrypted(

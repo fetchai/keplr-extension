@@ -28,11 +28,11 @@ export interface UmbralApi {
   /**
    * Encrypt some data for use
    *
-   * @param chainId The target chain id
+   * @param pubKey The pubKey we want to use to encrypt
    * @param plainTextBytes The bytes to be encrypted
    */
   encrypt(
-    chainId: string,
+    pubKey: Uint8Array,
     plainTextBytes: Uint8Array
   ): Promise<UmbralEncryptionResult>;
 
