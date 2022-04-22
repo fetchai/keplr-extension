@@ -80,7 +80,7 @@ const extensionConfig = (env, args) => {
     // In development environment, webpack watch the file changes, and recompile
     watch: isEnvDevelopment,
     entry: {
-      popup: ["./src/bootstrap.ts"],
+      popup: ["./src/bootstrap.tsx"],
       background: ["./src/background/bootstrap.ts"],
       contentScripts: ["./src/content-scripts/content-scripts.ts"],
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],

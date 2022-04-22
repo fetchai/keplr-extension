@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import ReactDOM from "react-dom";
+
 
 import { AppIntlProvider } from "./languages";
 
@@ -19,7 +19,7 @@ import { Banner } from "./components/banner";
 
 import {
   NotificationProvider,
-  NotificationStoreProvider,
+  NotificationStoreProvider
 } from "./components/notification";
 import { ConfirmProvider } from "./components/confirm";
 import { LoadingIndicatorProvider } from "./components/loading-indicator";
@@ -37,7 +37,7 @@ import { SettingLanguagePage } from "./pages/setting/language";
 import { SettingFiatPage } from "./pages/setting/fiat";
 import {
   SettingConnectionsPage,
-  SettingSecret20ViewingKeyConnectionsPage,
+  SettingSecret20ViewingKeyConnectionsPage
 } from "./pages/setting/connections";
 import { AddressBookPage } from "./pages/setting/address-book";
 import { CreditPage } from "./pages/setting/credit";
@@ -71,7 +71,7 @@ require("./public/assets/icon/icon-48.png");
 require("./public/assets/icon/icon-128.png");
 
 configure({
-  enforceActions: "always", // Make mobx to strict mode.
+  enforceActions: "always" // Make mobx to strict mode.
 });
 
 Modal.setAppElement("#app");
@@ -86,12 +86,12 @@ Modal.defaultStyles = {
     right: "auto",
     top: "50%",
     bottom: "auto",
-    transform: "translate(-50%, -50%)",
+    transform: "translate(-50%, -50%)"
   },
   overlay: {
     zIndex: 1000,
-    ...Modal.defaultStyles.overlay,
-  },
+    ...Modal.defaultStyles.overlay
+  }
 };
 
 const StateRenderer: FunctionComponent = observer(() => {
@@ -103,7 +103,7 @@ const StateRenderer: FunctionComponent = observer(() => {
     return <LockPage />;
   } else if (keyRingStore.status === KeyRingStatus.EMPTY) {
     browser.tabs.create({
-      url: "/popup.html#/register",
+      url: "/popup.html#/register"
     });
     window.close();
     return (
@@ -128,109 +128,113 @@ const StateRenderer: FunctionComponent = observer(() => {
   }
 });
 
-ReactDOM.render(
-  <StoreProvider>
-    <AppIntlProvider
-      additionalMessages={AdditonalIntlMessages}
-      languageToFiatCurrency={LanguageToFiatCurrency}
-    >
-      <LoadingIndicatorProvider>
-        <NotificationStoreProvider>
-          <NotificationProvider>
-            <ConfirmProvider>
-              <HashRouter>
-                <LogPageViewWrapper>
-                  <Route exact path="/" component={StateRenderer} />
-                  <Route exact path="/unlock" component={LockPage} />
-                  <Route exact path="/access" component={AccessPage} />
-                  <Route
-                    exact
-                    path="/access/viewing-key"
-                    component={Secret20ViewingKeyAccessPage}
-                  />
-                  <Route exact path="/register" component={RegisterPage} />
-                  <Route exact path="/send" component={SendPage} />
-                  <Route
-                    exact
-                    path="/ibc-transfer"
-                    component={IBCTransferPage}
-                  />
-                  <Route exact path="/setting" component={SettingPage} />
-                  <Route
-                    exact
-                    path="/ledger-grant"
-                    component={LedgerGrantPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/language"
-                    component={SettingLanguagePage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/fiat"
-                    component={SettingFiatPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/connections"
-                    component={SettingConnectionsPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/connections/viewing-key/:contractAddress"
-                    component={SettingSecret20ViewingKeyConnectionsPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/address-book"
-                    component={AddressBookPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/export-to-mobile"
-                    component={ExportToMobilePage}
-                  />
-                  <Route exact path="/setting/credit" component={CreditPage} />
-                  <Route
-                    exact
-                    path="/setting/set-keyring"
-                    component={SetKeyRingPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/export/:index"
-                    component={ExportPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/clear/:index"
-                    component={ClearPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/keyring/change/name/:index"
-                    component={ChangeNamePage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/token/add"
-                    component={AddTokenPage}
-                  />
-                  <Route
-                    exact
-                    path="/setting/token/manage"
-                    component={ManageTokenPage}
-                  />
-                  <Route path="/sign" component={SignPage} />
-                  <Route path="/suggest-chain" component={ChainSuggestedPage} />
-                </LogPageViewWrapper>
-              </HashRouter>
-            </ConfirmProvider>
-          </NotificationProvider>
-        </NotificationStoreProvider>
-      </LoadingIndicatorProvider>
-    </AppIntlProvider>
-  </StoreProvider>,
-  document.getElementById("app")
-);
+const Application: FunctionComponent = () => {
+  return (
+    <StoreProvider>
+      <AppIntlProvider
+        additionalMessages={AdditonalIntlMessages}
+        languageToFiatCurrency={LanguageToFiatCurrency}
+      >
+        <LoadingIndicatorProvider>
+          <NotificationStoreProvider>
+            <NotificationProvider>
+              <ConfirmProvider>
+                <HashRouter>
+                  <LogPageViewWrapper>
+                    <Route exact path="/" component={StateRenderer} />
+                    <Route exact path="/unlock" component={LockPage} />
+                    <Route exact path="/access" component={AccessPage} />
+                    <Route
+                      exact
+                      path="/access/viewing-key"
+                      component={Secret20ViewingKeyAccessPage}
+                    />
+                    <Route exact path="/register" component={RegisterPage} />
+                    <Route exact path="/send" component={SendPage} />
+                    <Route
+                      exact
+                      path="/ibc-transfer"
+                      component={IBCTransferPage}
+                    />
+                    <Route exact path="/setting" component={SettingPage} />
+                    <Route
+                      exact
+                      path="/ledger-grant"
+                      component={LedgerGrantPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/language"
+                      component={SettingLanguagePage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/fiat"
+                      component={SettingFiatPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/connections"
+                      component={SettingConnectionsPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/connections/viewing-key/:contractAddress"
+                      component={SettingSecret20ViewingKeyConnectionsPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/address-book"
+                      component={AddressBookPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/export-to-mobile"
+                      component={ExportToMobilePage}
+                    />
+                    <Route exact path="/setting/credit" component={CreditPage} />
+                    <Route
+                      exact
+                      path="/setting/set-keyring"
+                      component={SetKeyRingPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/export/:index"
+                      component={ExportPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/clear/:index"
+                      component={ClearPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/keyring/change/name/:index"
+                      component={ChangeNamePage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/token/add"
+                      component={AddTokenPage}
+                    />
+                    <Route
+                      exact
+                      path="/setting/token/manage"
+                      component={ManageTokenPage}
+                    />
+                    <Route path="/sign" component={SignPage} />
+                    <Route path="/suggest-chain" component={ChainSuggestedPage} />
+                  </LogPageViewWrapper>
+                </HashRouter>
+              </ConfirmProvider>
+            </NotificationProvider>
+          </NotificationStoreProvider>
+        </LoadingIndicatorProvider>
+      </AppIntlProvider>
+    </StoreProvider>
+  );
+};
+
+// eslint-disable-next-line import/no-default-export
+export default Application;
