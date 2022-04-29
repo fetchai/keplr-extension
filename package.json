@@ -31,6 +31,7 @@
     "build": "lerna run build",
     "build:libs": "lerna run build --ignore @keplr-wallet/extension",
     "test": "lerna run test --parallel",
+    "test:e2e": "yarn jest '.*keplr-extension/tests/.*'",
     "build:clean": "yarn clean && yarn install --frozen-lockfile && lerna run build",
     "lint-test": "lerna run lint-test",
     "lint-fix": "lerna run lint-fix",
@@ -51,6 +52,9 @@
   "keywords": [],
   "author": "chainapsis",
   "license": "Apache-2.0",
+  "dependencies": {
+    "puppeteer": "^13.4.0"
+  },
   "devDependencies": {
     "@octokit/core": "^3.5.1",
     "@types/jest": "^26.0.22",
@@ -72,7 +76,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.2.1",
     "semver": "^7.3.5",
-    "ts-jest": "^26.5.5",
+    "ts-jest": "26.5.4",
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
