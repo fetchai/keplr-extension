@@ -1,5 +1,5 @@
 {
-  "name": "Fetch Wallet",
+  "name": "fetch-wallet",
   "description": "Fetch Wallet is a browser extension wallet for the Inter blockchain ecosystem.",
   "private": true,
   "workspaces": {
