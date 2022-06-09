@@ -15,7 +15,7 @@ body:
       options:
         - label: I am running the [latest version of the Browser Extension Wallet](https://github.com/fetchai/fetch-wallet/releases).
           required: true
-        - label: I checked the [documentation](https://docs.fetch.ai/browser-extension-wallet/) and found no answer to my problem.
+        - label: I checked the [documentation](https://docs.fetch.ai/getting-started/how-to-use-browser-wallet/) and found no answer to my problem.
           required: true
         - label: I checked the [existing issues](https://github.com/fetchai/fetch-wallet/issues) to make sure my problem has not already been reported.
           required: true
