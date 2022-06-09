@@ -15,7 +15,7 @@ body:
       options:
         - label: I checked the [documentation](https://docs.fetch.ai/browser-extension-wallet/) and made sure this feature does not already exist.
           required: true
-        - label: I checked the [existing issues](https://github.com/fetchai/keplr-extension/issues) to make sure this feature has not already been requested.
+        - label: I checked the [existing issues](https://github.com/fetchai/fetch-wallet/issues) to make sure this feature has not already been requested.
           required: true
   - type: textarea
     id: problem
