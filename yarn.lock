@@ -2535,9 +2535,9 @@
     glob "^7.1.6"
     read-pkg-up "^7.0.1"
 
-"@chainsafe/blst@git://github.com/bryanchriswhite/blst-ts#master":
+"@chainsafe/blst@git+https://github.com/fetchai/blst-ts#feat/browser-support":
   version "0.2.4"
-  resolved "git://github.com/bryanchriswhite/blst-ts#f1b25bd6b34b67e65c274bdbd4532cd863305f19"
+  resolved "git+https://github.com/fetchai/blst-ts#a894fd59c0e39b9bce3e141d1a81830b3effa059"
   dependencies:
     node-fetch "^2.6.1"
     node-gyp "^8.4.0"

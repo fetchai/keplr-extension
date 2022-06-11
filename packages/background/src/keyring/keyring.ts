@@ -111,7 +111,7 @@ export class KeyRing {
   }
 
   public get curve(): KeyCurve {
-    return this.keyStore?.curve;
+    return this.keyStore!.curve;
   }
 
   public isLocked(): boolean {

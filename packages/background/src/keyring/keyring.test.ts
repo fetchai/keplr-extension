@@ -128,10 +128,9 @@ describe("Keyring", () => {
         change: 0,
         addressIndex: 0,
       };
-      await testKeyring.createMnemonicKey(
+      await testKeyring.addMnemonicKey(
         "sha256",
         mnemonic,
-        testPassword,
         {},
         bip44HDPath,
         KeyCurves.secp256k1
