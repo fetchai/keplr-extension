@@ -612,7 +612,6 @@ export class KeyRing {
         isNanoLedger: true,
       };
     } else {
-      // NB: #loadPrivKey called here.
       const privKey = this.loadPrivKey(coinType);
       const pubKey = privKey.getPubKey();
 
@@ -639,8 +638,6 @@ export class KeyRing {
     }
   }
 
-  // TODO: add PrivateKey interface (abstract) type
-  // TODO: return PrivateKey type
   private loadPrivKey(coinType: number): SecretKey {
     if (
       this.status !== KeyRingStatus.UNLOCKED ||
@@ -656,7 +653,7 @@ export class KeyRing {
       const path = `m/44'/${coinType}'/${bip44HDPath.account}'/${bip44HDPath.change}/${bip44HDPath.addressIndex}`;
       const cachedKey = this.cached.get(path);
       if (cachedKey) {
-        // TODO: support bls12381 key type.
+        // TODO: support bls12381 key type (?)
         return new PrivKeySecp256k1(cachedKey);
       }
 
@@ -743,7 +740,6 @@ export class KeyRing {
     } else {
       const coinType = this.computeKeyStoreCoinType(chainId, defaultCoinType);
 
-      // NB: #loadPrivKey called here.
       const privKey = this.loadPrivKey(coinType);
       return privKey.sign(message);
     }

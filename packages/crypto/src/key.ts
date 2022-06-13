@@ -139,7 +139,6 @@ export class PubKeySecp256k1 {
   }
 }
 
-// TODO: consider using a proxy.
 export class SecretKeyBls12381 implements SecretKey {
   readonly curve: KeyCurve = "bls12381";
   protected secretKey: SecretKeyBlst;
@@ -161,7 +160,6 @@ export class SecretKeyBls12381 implements SecretKey {
   }
 }
 
-// TODO: consider using a proxy.
 export class PublicKeyBls12381 implements PublicKey {
   protected publicKey: PublicKeyBlst;
 
