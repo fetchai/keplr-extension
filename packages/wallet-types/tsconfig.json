@@ -4,8 +4,9 @@
     "baseUrl": ".",
     "outDir": "build",
     "declaration": true,
-    "rootDir": "src",
-    "emitDecoratorMetadata": true
+    "rootDir": "src"
   },
-  "excluded" : ["**/*.wasm"]
+  "include": [
+    "src/**/*"
+  ]
 }
