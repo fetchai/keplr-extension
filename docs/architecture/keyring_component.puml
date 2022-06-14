@@ -1,0 +1,104 @@
+@startuml
+frame "Background Document" {
+    package common {
+        [KVStore]
+    }
+
+    package background {
+        [KeyRingService]
+        [KeyRing]
+        [KeyRingService] -> [KeyRing]
+    }
+
+    package extension as bg_extension {
+        [ExtensionRouter] ------> [KeyRingService]
+    }
+}
+
+frame "Chrome" {
+    package browser {
+        component runtime {
+        }
+
+        component tabs {
+        }
+    }
+}
+
+frame "Popup Document" {
+    package stores {
+        [KeyRingStore]
+        [KeyRing] -> [KVStore]
+    }
+
+    package crypto {
+        [KeyStore]
+        [KeyRingStore] --> [KeyStore]
+    }
+
+    package extension as pop_extension {
+        component RootStore {
+'            portout UIConfigStore
+'            portout ChainStore
+            portout KeyRingStore as pKeyRingStore
+'            portout IBCChannelStore
+            portout InteractionStore
+            portout PermissionStore
+'            portout SignInteractionStore
+'            portout LedgerInitStore
+'            portout ChainSuggestStore
+'            portout QueriesStore
+'            portout AccountStore
+'            portout CoinGeckoPriceStore
+'            portout TokensStore
+'            portout AnalyticStore
+
+            component IBCCurrencyRegistrar {
+            }
+        }
+        RootStore -> [KeyRingStore]
+    }
+
+    package router-extension {
+        component InExtensionMessageRequester {
+            port Messages
+            portout Requests
+
+'            component browser.runtime {
+'                portin  Messages as brMessages
+'            }
+'            Messages -- brMessages
+        component browser.runtime {
+        }
+        Messages --> "Message" browser.runtime
+        }
+        pKeyRingStore -0)-> Messages : Message
+        Requests ..> [ExtensionRouter]
+    }
+}
+
+node legend {
+    frame "execution context" {
+        package "package" {
+            component "component" {
+            }
+            skinparam componentStyle rectangle
+            component legend_text [
+                "Direct use" imports related component.
+
+                "Cross-context use" uses related component via
+                message passing request/response between isolated
+                javascript contexts.
+    '           TODO: explain "role"
+    '
+    '            The relation label should
+    '            reference the (sub-)component or module responsible
+    '            for initiating the respective message passing request.
+            ]
+            [component] -> legend_text : direct use
+            [component] .> "role (to component)" legend_text : cross-context use
+            [component] -0)- legend_text : "role (to text node)" required interface
+        }
+    }
+}
+@enduml
