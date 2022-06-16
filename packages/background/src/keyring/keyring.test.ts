@@ -1,7 +1,7 @@
 import { Buffer } from "buffer";
 import scrypt from "scrypt-js";
 import { webcrypto } from "crypto";
-import { SecretKey as SecretKeyBls } from "@chainsafe/blst";
+import { SecretKey as SecretKeyBls } from "@fetchai/blst-ts";
 import { MemoryKVStore } from "@keplr-wallet/common";
 import {
   KeyCurves,

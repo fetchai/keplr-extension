@@ -5,7 +5,7 @@ import {
   PublicKey as PublicKeyBlst,
   Signature as SignatureBlst,
   verify as verifyBlst,
-} from "@chainsafe/blst";
+} from "@fetchai/blst-ts";
 
 import { Buffer } from "buffer/";
 
