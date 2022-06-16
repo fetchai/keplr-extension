@@ -2646,13 +2646,6 @@
     glob "^7.1.6"
     read-pkg-up "^7.0.1"
 
-"@chainsafe/blst@git+https://github.com/fetchai/blst-ts#feat/browser-support":
-  version "0.2.4"
-  resolved "git+https://github.com/fetchai/blst-ts#a894fd59c0e39b9bce3e141d1a81830b3effa059"
-  dependencies:
-    node-fetch "^2.6.1"
-    node-gyp "^8.4.0"
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -3516,6 +3509,14 @@
   integrity sha512-LB7jWkqrHo+5fJHNrLAFdimuSXQ2MQ4lA7SQW5bf/HbsXuV2VrT/jN/M8f/KoWt0uJMGN4k/j7Opx4AvOOxSew==
   dependencies:
     cross-spawn "^6.0.5"
+
+"@fetchai/blst-ts@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@fetchai/blst-ts/-/blst-ts-0.3.0.tgz#e9cc711761555772b3dd64fe4f2e5dc30f7874b4"
+  integrity sha512-kmXgf1xLp01LK4X8dSAeORDqmaMqvmTThBuKS28fm5YkTucKZLU+t7zS1eJ2GSqe+x8vNvRGAaI1/iKP65NoVg==
+  dependencies:
+    node-fetch "^2.6.1"
+    node-gyp "^8.4.0"
 
 "@formatjs/ecma402-abstract@1.11.1":
   version "1.11.1"
