@@ -148,7 +148,7 @@ describe("Keyring", () => {
 });
 
 function testRNG<T>(array: T): Promise<T> {
-  // @ts-ignore
+  // @ts-ignore: TSC complains but this member exists.
   return Promise.resolve(webcrypto.getRandomValues(array));
 }
 
