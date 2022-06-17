@@ -22,7 +22,7 @@
     "@types/secp256k1": "^4.0.1",
     "@types/w3c-web-hid": "^1.0.2",
     "@types/w3c-web-usb": "^1.0.5",
-    "@fetchai/blst-ts": "^0.3.0"
+    "@fetchai/blst-ts": "^0.3.1"
   },
   "dependencies": {
     "@cosmjs/launchpad": "^0.24.0-alpha.25",

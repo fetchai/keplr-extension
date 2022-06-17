@@ -3510,10 +3510,10 @@
   dependencies:
     cross-spawn "^6.0.5"
 
-"@fetchai/blst-ts@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@fetchai/blst-ts/-/blst-ts-0.3.0.tgz#e9cc711761555772b3dd64fe4f2e5dc30f7874b4"
-  integrity sha512-kmXgf1xLp01LK4X8dSAeORDqmaMqvmTThBuKS28fm5YkTucKZLU+t7zS1eJ2GSqe+x8vNvRGAaI1/iKP65NoVg==
+"@fetchai/blst-ts@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@fetchai/blst-ts/-/blst-ts-0.3.1.tgz#798158408d627309bdba1960e08932600bb78a31"
+  integrity sha512-Wf8prtK1Me4b/krdhiPS6v/FDyDT8BnCdtDC7b3Cp/P/kBXq7q3l8wUWY8ljo8SfwBJvzEnOjTR1qwOtqsEr0w==
   dependencies:
     node-fetch "^2.6.1"
     node-gyp "^8.4.0"

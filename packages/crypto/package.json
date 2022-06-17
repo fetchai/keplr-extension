@@ -28,6 +28,6 @@
     "crypto-js": "^4.0.0",
     "elliptic": "^6.5.3",
     "sha.js": "^2.4.11",
-    "@fetchai/blst-ts": "^0.3.0"
+    "@fetchai/blst-ts": "^0.3.1"
   }
 }
