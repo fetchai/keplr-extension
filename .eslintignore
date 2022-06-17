@@ -7,6 +7,7 @@
 **/*.secret
 **/*.md
 **/*.py
+**/*.puml
 .DS_Store
 
 node_modules
