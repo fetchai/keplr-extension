@@ -14,21 +14,21 @@ import classnames from "classnames";
 import { useHistory } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-import { TokensView } from "./token";
+import { TokensView } from "./tokens";
 import { BIP44SelectModal } from "./bip44-select-modal";
 import { useIntl } from "react-intl";
 import { useConfirm } from "../../components/confirm";
 import { ChainUpdaterService } from "@keplr-wallet/background";
 import { IBCTransferView } from "./ibc-transfer";
-import { DenomHelper } from "@keplr-wallet/common";
-import { Dec } from "@keplr-wallet/unit";
+// import { DenomHelper } from "@keplr-wallet/common";
+// import { Dec } from "@keplr-wallet/unit";
 import bellIcon from "../../public/assets/icon/bell.png";
 
 export const MainPage: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, uiConfigStore } = useStore();
 
   const confirm = useConfirm();
 
@@ -66,22 +66,22 @@ export const MainPage: FunctionComponent = observer(() => {
     }
   }, [chainStore, confirm, chainStore.isInitializing, currentChainId, intl]);
 
-  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  // const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
-  const queryBalances = queriesStore
-    .get(chainStore.current.chainId)
-    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+  // const queryBalances = queriesStore
+  //   .get(chainStore.current.chainId)
+  //   .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
-  const tokens = queryBalances.unstakables.filter((bal) => {
-    // Temporary implementation for trimming the 0 balanced native tokens.
-    // TODO: Remove this part.
-    if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
-      return bal.balance.toDec().gt(new Dec("0"));
-    }
-    return true;
-  });
+  // const tokens = queryBalances.unstakables.filter((bal) => {
+  //   // Temporary implementation for trimming the 0 balanced native tokens.
+  //   // TODO: Remove this part.
+  //   if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
+  //     return bal.balance.toDec().gt(new Dec("0"));
+  //   }
+  //   return true;
+  // });
 
-  const hasTokens = tokens.length > 0;
+  // const hasTokens = tokens.length > 0;
 
   return (
     <HeaderLayout
@@ -120,6 +120,15 @@ export const MainPage: FunctionComponent = observer(() => {
           </div>
         </CardBody>
       </Card>
+
+      <Card className={classnames(style.card, "shadow")}>
+        <CardBody>
+          <div className={style.containerAccountInner}>
+            <TokensView />
+          </div>
+        </CardBody>
+      </Card>
+
       {chainStore.current.walletUrlForStaking ? (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>
@@ -127,11 +136,11 @@ export const MainPage: FunctionComponent = observer(() => {
           </CardBody>
         </Card>
       ) : null}
-      {hasTokens ? (
+      {/* {hasTokens ? (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>{<TokensView />}</CardBody>
         </Card>
-      ) : null}
+      ) : null} */}
       {uiConfigStore.showAdvancedIBCTransfer &&
       chainStore.current.features?.includes("ibc-transfer") ? (
         <Card className={classnames(style.card, "shadow")}>
