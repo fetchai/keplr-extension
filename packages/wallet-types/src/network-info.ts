@@ -1,48 +1,99 @@
-import {Currency, NativeCurrency} from "./currencies";
+import { Currency, NativeCurrency } from "./currencies";
 
+/**
+ * A BIP44 configuration
+ */
 export interface BIP44 {
-    readonly coinType: number;
+  /**
+   * The coin type value to be appended into the HD Path
+   */
+  readonly coinType: number;
 }
 
+/**
+ * A useful type alias to representing string values that only contain large numeric values
+ */
 export type LargeNumber = string;
 
+/**
+ * The network configuration represents all the information needed by the wallet in order to interact with a target
+ * network
+ */
 export interface NetworkConfig {
+  /**
+   * The chain id of the network name
+   */
+  readonly chainId: string;
 
-    /**
-     * Basic chain information
-     */
-    readonly chainId: string;
-    readonly chainName: string;
+  /**
+   * The human-readable name for the network
+   */
+  readonly chainName: string;
 
-    /**
-     * The network URLs that can be used in the network
-     */
-    readonly rpcUrl: string;
-    readonly restUrl?: string;
-    readonly grpcUrl?: string;
+  /**
+   * The network type
+   */
+  readonly networkType: "cosmos";
 
-    /**
-     * Shows whether the blockchain is in production phase or beta phase.
-     * Major features such as staking and sending are supported on staging blockchains, but without guarantee.
-     * If the blockchain is in an early stage, please set it as beta.
-     */
-    readonly type?: "mainnet" | "testnet";
-    readonly status?: "alpha" | "beta" | "production";
+  /**
+   * The base RPC used for interacting with the network
+   */
+  readonly rpcUrl: string;
 
-    /**
-     * This indicates the type of coin that can be used for stake.
-     * You can get actual currency information from Currencies.
-     */
-    readonly bip44s: BIP44[];
-    readonly bech32Config: Bech32Config;
+  /**
+   * Cosmos only, optional: The URL to the GRPC interface for the network
+   */
+  readonly grpcUrl?: string;
 
-    readonly currencies: Currency[];
-    readonly feeCurrencies: NativeCurrency[];
-    readonly stakeCurrency: NativeCurrency;
+  /**
+   * @deprecated Cosmos only, optional: The URL to the REST or LCD interface
+   */
+  readonly restUrl?: string;
 
-    readonly gasPriceStep?: {
-        low: LargeNumber;
-        average: LargeNumber;
-        high: LargeNumber;
-    };
+  /**
+   * The type of the network, i.e. is it a main network or using for testing
+   */
+  readonly type?: "mainnet" | "testnet";
+
+  /**
+   * The status or maturity of the network. i.e. is it production quality or not
+   */
+  readonly status?: "alpha" | "beta" | "production";
+
+  /**
+   * The set of BIP44 configurations used for determining HD wallets.
+   *
+   * A valid configuration must have at least only entry in this list. The first entry in this list is considered the
+   * primary BIP44 configuration. Additional BIP44 configurations are also permitted
+   */
+  readonly bip44s: BIP44[];
+
+  /**
+   * Cosmos only, required: The Bech32 prefixes that are required for the network
+   */
+  readonly bech32Config: Bech32Config;
+
+  /**
+   * The complete set of currencies that are known for the network
+   */
+  readonly currencies: Currency[];
+
+  /**
+   * The subset of the currencies that are allows for paying fees
+   */
+  readonly feeCurrencies: NativeCurrency[];
+
+  /**
+   * The native currency that is allowed for staking
+   */
+  readonly stakeCurrency: NativeCurrency;
+
+  /**
+   * The gas price configuration for the network
+   */
+  readonly gasPriceStep?: {
+    low: LargeNumber;
+    average: LargeNumber;
+    high: LargeNumber;
+  };
 }
