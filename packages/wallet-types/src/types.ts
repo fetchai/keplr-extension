@@ -316,15 +316,7 @@ export type WalletStatus = "locked" | "unlocked";
  * The main goal of the wallet api is to provide a good interface for dApp builders in order to build compelling
  * interfaces.
  *
- * The interface itself will be extended over time and is broken down into a couple of sections:
- *
- * - networks -> an API that allows developers to interact with the set of networks that
- * - accounts -> an API that
- * - addressBook
- * - signing -> an API that
- * - events ->
- *
- * TODO(EJF)
+ * The interface is designed to be extended over time.
  */
 export interface WalletApi {
   /**
