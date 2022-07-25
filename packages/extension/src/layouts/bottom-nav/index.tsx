@@ -9,6 +9,8 @@ import clockTabBlueIcon from "../../public/assets/icon/clock-blue.png";
 import clockTabGreyIcon from "../../public/assets/icon/clock-grey.png";
 import moreTabBlueIcon from "../../public/assets/icon/more-blue.png";
 import moreTabGreyIcon from "../../public/assets/icon/more-grey.png";
+import chatTabBlueIcon from "../../public/assets/icon/chat-blue.png";
+import chatTabGreyIcon from "../../public/assets/icon/chat-grey.png";
 
 export const BottomNav = () => {
   const bottomNav = [
@@ -23,6 +25,12 @@ export const BottomNav = () => {
       icon: clockTabGreyIcon,
       activeTabIcon: clockTabBlueIcon,
       path: "/activity",
+    },
+    {
+      title: "Chat",
+      icon: chatTabGreyIcon,
+      activeTabIcon: chatTabBlueIcon,
+      path: "/chat",
     },
     {
       title: "More",
