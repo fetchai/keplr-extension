@@ -36,6 +36,12 @@ export const BottomNav = () => {
       disabled: true,
     },
     {
+      title: "Chat",
+      icon: chatTabGreyIcon,
+      activeTabIcon: chatTabBlueIcon,
+      path: "/chat",
+    },
+    {
       title: "More",
       icon: moreTabGreyIcon,
       activeTabIcon: moreTabBlueIcon,
