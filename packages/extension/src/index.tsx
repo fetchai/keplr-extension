@@ -58,7 +58,7 @@ import { Keplr } from "@keplr-wallet/provider";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { LogPageViewWrapper } from "./components/analytics";
-import { Chat } from "./pages/chat";
+import { ChatPage } from "./pages/chat";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -147,7 +147,7 @@ const Application: FunctionComponent = () => {
                     <Route exact path="/unlock" component={LockPage} />
                     <Route exact path="/access" component={AccessPage} />
                     <Route exact path="/activity" component={ActivityPage} />
-                    <Route exact path="/chat" component={Chat} />
+                    <Route exact path="/chat" component={ChatPage} />
                     <Route exact path="/more" component={MorePage} />
                     <Route
                       exact
