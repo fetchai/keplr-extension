@@ -3,34 +3,8 @@ import { useHistory } from "react-router";
 import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
 import searchIcon from "../../public/assets/icon/search.png";
-import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import style from "./style.module.scss";
-
-const User = ({
-  name,
-  message,
-  isSeen,
-}: {
-  name: string;
-  message: string;
-  isSeen: boolean;
-}) => {
-  return (
-    <div className={style.messageContainer}>
-      <div className={style.initials}>
-        {name.charAt(0).toUpperCase()}
-        {!isSeen && <div className={style.unread} />}
-      </div>
-      <div className={style.messageInner}>
-        <div className={style.name}>{name}</div>
-        <div className={style.messageText}>{message}</div>
-      </div>
-      <div>
-        <img src={rightArrowIcon} style={{ width: "100%" }} alt="message" />
-      </div>
-    </div>
-  );
-};
+import { Users } from "./users";
 
 const usersData = [
   {
@@ -53,8 +27,7 @@ const usersData = [
   },
 ];
 
-export const Chat: FunctionComponent = () => {
-  const history = useHistory();
+const ChatView = () => {
   const [users, setUsers] = useState(usersData);
   const [inputVal, setInputVal] = useState("");
 
@@ -69,6 +42,26 @@ export const Chat: FunctionComponent = () => {
       setUsers(usersData);
     }
   };
+
+  return (
+    <div className={style.chatContainer}>
+      <div className={style.searchContainer}>
+        <div className={style.searchBox}>
+          <img src={searchIcon} alt="search" />
+          <input
+            placeholder="Search by name or address"
+            value={inputVal}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
+      <Users users={users} />
+    </div>
+  );
+};
+
+export const ChatPage: FunctionComponent = () => {
+  const history = useHistory();
 
   return (
     <HeaderLayout
@@ -100,31 +93,7 @@ export const Chat: FunctionComponent = () => {
         </div>
       }
     >
-      <div>
-        {/* Searching */}
-        <div className={style.searchContainer}>
-          <div className={style.searchBox}>
-            <img src={searchIcon} alt="search" />
-            <input
-              placeholder="Search by name or address"
-              value={inputVal}
-              onChange={handleSearch}
-            />
-          </div>
-        </div>
-
-        {/* Messages history */}
-        <div className={style.messagesContainer}>
-          {users.map((user, index) => (
-            <User
-              key={index}
-              name={user.name}
-              message={user.message}
-              isSeen={user.iseSeen}
-            />
-          ))}
-        </div>
-      </div>
+      <ChatView />
     </HeaderLayout>
   );
 };
