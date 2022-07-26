@@ -3,6 +3,7 @@ import { Button } from "reactstrap";
 
 import style from "./style.module.scss";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
+import { useHistory } from "react-router";
 
 interface UserMessage {
   name: string;
@@ -24,8 +25,12 @@ const User = ({
   message: string;
   isSeen: boolean;
 }) => {
+  const history = useHistory();
+  const handleClick = () => {
+    history.push(`/chat/${name}`);
+  };
   return (
-    <div className={style.messageContainer}>
+    <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
         {name.charAt(0).toUpperCase()}
         {!isSeen && <div className={style.unread} />}
