@@ -1,0 +1,44 @@
+.username {
+  margin-left: -12px;
+  margin-right: -12px;
+  padding: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  background-color: #ffffff;
+  border-radius: 6px;
+  flex-direction: row;
+}
+.backBtn {
+  flex-basis: 29px;
+  width: 24px;
+  height: 24px;
+}
+.recieverName {
+  text-align: center;
+  font-size: 16px;
+  color: #525f7f;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.messages {
+  height: 62vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.inputText {
+  margin-left: -12px;
+  margin-right: -12px;
+  margin-bottom: -12px;
+  padding: 10px;
+  background: white;
+  width: auto;
+}
+
+.enterMessageIcon {
+  border: 1px solid #cad1d7;
+  border-radius: 0.375rem;
+}
