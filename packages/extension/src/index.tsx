@@ -8,57 +8,58 @@ import { HashRouter, Route } from "react-router-dom";
 
 import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { ActivityPage } from "./pages/activity";
+import { IBCTransferPage } from "./pages/ibc-transfer";
+import { LockPage } from "./pages/lock";
+import { MainPage } from "./pages/main";
 import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages/register";
-import { MainPage } from "./pages/main";
-import { LockPage } from "./pages/lock";
 import { SendPage } from "./pages/send";
-import { IBCTransferPage } from "./pages/ibc-transfer";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { Banner } from "./components/banner";
 
+import { ConfirmProvider } from "./components/confirm";
+import { LoadingIndicatorProvider } from "./components/loading-indicator";
 import {
   NotificationProvider,
   NotificationStoreProvider,
 } from "./components/notification";
-import { ConfirmProvider } from "./components/confirm";
-import { LoadingIndicatorProvider } from "./components/loading-indicator";
 
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
 
-import { StoreProvider, useStore } from "./stores";
 import { KeyRingStatus } from "@keplr-wallet/background";
-import { SignPage } from "./pages/sign";
-import { ChainSuggestedPage } from "./pages/chain/suggest";
 import Modal from "react-modal";
+import { ChainSuggestedPage } from "./pages/chain/suggest";
+import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
-import { SettingLanguagePage } from "./pages/setting/language";
-import { SettingFiatPage } from "./pages/setting/fiat";
+import { AddressBookPage } from "./pages/setting/address-book";
+import { ClearPage } from "./pages/setting/clear";
 import {
   SettingConnectionsPage,
   SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages/setting/connections";
-import { AddressBookPage } from "./pages/setting/address-book";
 import { CreditPage } from "./pages/setting/credit";
-import { ChangeNamePage } from "./pages/setting/keyring/change";
-import { ClearPage } from "./pages/setting/clear";
 import { ExportPage } from "./pages/setting/export";
-import { LedgerGrantPage } from "./pages/ledger";
+import { SettingFiatPage } from "./pages/setting/fiat";
+import { ChangeNamePage } from "./pages/setting/keyring/change";
+import { SettingLanguagePage } from "./pages/setting/language";
 import { AddTokenPage } from "./pages/setting/token/add";
 import { ManageTokenPage } from "./pages/setting/token/manage";
+import { SignPage } from "./pages/sign";
+import { StoreProvider, useStore } from "./stores";
 
 // import * as BackgroundTxResult from "../../background/tx/foreground";
 
 import { AdditonalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
 
-import manifest from "./manifest.json";
 import { Keplr } from "@keplr-wallet/provider";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { LogPageViewWrapper } from "./components/analytics";
+import manifest from "./manifest.json";
 import { ChatPage } from "./pages/chat";
+import { ChatSection } from "./pages/chatSection";
+import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -148,6 +149,7 @@ const Application: FunctionComponent = () => {
                     <Route exact path="/access" component={AccessPage} />
                     <Route exact path="/activity" component={ActivityPage} />
                     <Route exact path="/chat" component={ChatPage} />
+                    <Route exact path="/chat/:name" component={ChatSection} />
                     <Route exact path="/more" component={MorePage} />
                     <Route
                       exact

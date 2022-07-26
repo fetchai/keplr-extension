@@ -5,6 +5,7 @@ import bellIcon from "../../public/assets/icon/bell.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import style from "./style.module.scss";
 import { Users } from "./users";
+import { Menu } from "../main/menu";
 
 const usersData = [
   {
@@ -67,9 +68,7 @@ export const ChatPage: FunctionComponent = () => {
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
-      onBackButton={() => {
-        history.goBack();
-      }}
+      menuRenderer={<Menu />}
       rightRenderer={
         <div
           style={{
