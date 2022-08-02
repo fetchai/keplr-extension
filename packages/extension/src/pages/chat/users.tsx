@@ -5,6 +5,17 @@ import style from "./style.module.scss";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { useHistory } from "react-router";
 
+const formatAddress = (address: string, length: number) => {
+  const sublength = length / 2;
+  if (address.length > length)
+    return (
+      address.substring(0, sublength) +
+      "..." +
+      address.substring(address.length - sublength, address.length)
+    );
+  else return address;
+};
+
 interface UserMessage {
   name: string;
   message: string;
@@ -36,7 +47,7 @@ const User = ({
         {!isSeen && <div className={style.unread} />}
       </div>
       <div className={style.messageInner}>
-        <div className={style.name}>{name}</div>
+        <div className={style.name}>{formatAddress(name, 10)}</div>
         <div className={style.messageText}>{message}</div>
       </div>
       <div>

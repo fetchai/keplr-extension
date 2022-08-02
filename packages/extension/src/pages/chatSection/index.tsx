@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { ChatMessage } from "../../components/chatMessage";
@@ -9,21 +9,62 @@ import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 
+const messagesData = [
+  {
+    message: "here's the placeholder message that somebody wrote okay ",
+    isSender: false,
+    timestamp: 1659017100,
+  },
+  {
+    message: "I’ve never watched that show in my life I can tell you that",
+    isSender: true,
+    timestamp: 1659017100,
+  },
+  {
+    message: "Listen man Idc about Love Island, it’s not my kinda show",
+    isSender: false,
+    timestamp: 1659017100,
+  },
+  {
+    message: "here's the placeholder message that somebody wrote okay ",
+    isSender: false,
+    timestamp: 1659018100,
+  },
+  {
+    message: "here's the placeholder message that somebody wrote okay ",
+    isSender: true,
+    timestamp: 1659023100,
+  },
+  {
+    message: "here's the placeholder message that somebody wrote okay ",
+    isSender: false,
+    timestamp: 1659025100,
+  },
+  {
+    message: "I’ve never watched that show in my life I can tell you that",
+    isSender: true,
+    timestamp: 1659029100,
+  },
+];
+
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
-  const [messages, setMessages] = useState([
-    { message: "testing message", isSender: false },
-  ]);
+  const [messages, setMessages] = useState(messagesData);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef: any = useRef();
 
   const handleNewMessage = () => {
     const newMessages = [...messages];
-    newMessages.push({ message: newMessage, isSender: true });
+    const timestamp = new Date().getTime();
+    newMessages.push({ message: newMessage, isSender: true, timestamp });
     setMessages(newMessages);
     setNewMessage("");
+    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   const handleKeypress = (e: { keyCode: number }) => {
+    console.log(e);
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
       handleNewMessage();
@@ -68,9 +109,15 @@ export const ChatSection: FunctionComponent = () => {
         <span className={style.recieverName}>{userName}</span>
       </div>
       <div className={style.messages}>
-        {messages.map(({ message, isSender }, index) => (
-          <ChatMessage message={message} isSender={isSender} key={index} />
+        {messages.map(({ message, isSender, timestamp }, index) => (
+          <ChatMessage
+            message={message}
+            isSender={isSender}
+            key={index}
+            timestamp={timestamp || 1549312452}
+          />
         ))}
+        <div ref={messagesEndRef} />
       </div>
       <InputGroup className={style.inputText}>
         <Input

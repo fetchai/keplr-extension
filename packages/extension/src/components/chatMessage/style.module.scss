@@ -9,17 +9,11 @@
   background-color: #ffffff;
   padding-right: 8px;
   margin-top: 10px;
-}
-
-.messageText {
   font-weight: 400;
   line-height: 17px;
   color: #525f7f;
   font-size: 15px;
-}
-
-.senderText {
-  color: #525f7f;
+  margin-right: 12px;
 }
 
 .senderBox {
@@ -29,5 +23,16 @@
 
 .senderAlign {
   display: flex;
+  justify-content: end;
+}
+
+.message {
+  padding-right: 30px;
+  padding-bottom: 3px;
+}
+
+.timestamp {
+  display: flex;
+  align-items: flex-end;
   justify-content: end;
 }

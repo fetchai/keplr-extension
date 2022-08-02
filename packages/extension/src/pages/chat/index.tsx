@@ -9,20 +9,38 @@ import { Menu } from "../main/menu";
 
 const usersData = [
   {
-    name: "Someone",
+    name: "Bryan",
     message: "Hi there",
     iseSeen: false,
     timestamp: "",
   },
   {
-    name: "Someone",
-    message: "Did you review my PR?",
+    name: "Patrick",
+    message: "Did you get the token details",
     iseSeen: false,
     timestamp: "",
   },
   {
     name: "Billy",
+    message: "Are the transactions ",
+    iseSeen: true,
+    timestamp: "",
+  },
+  {
+    name: "fetch1qy3z4lpw3sc2wyvmnrnjthhppkjg3g4ajz8kab",
     message: "Is there a public key string or hex representation?",
+    iseSeen: true,
+    timestamp: "",
+  },
+  {
+    name: "fetch1qy3z4lpw3sc2wyvmnrnjthhppkjg3g4ajz8kcd",
+    message: "that somebody wrote okay so ...",
+    iseSeen: true,
+    timestamp: "",
+  },
+  {
+    name: "fetch1qy3z4lpw3sc2wyvmnrnjthhppkjg3g4ajz8kef",
+    message: "here's the placeholder message ",
     iseSeen: true,
     timestamp: "",
   },
