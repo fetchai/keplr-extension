@@ -80,6 +80,14 @@ export interface NetworksApi {
  */
 export interface AccountsApi {
   /**
+   * Get the currently selected account in the wallet
+   *
+   * @return the currently selected account
+   * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
+   */
+  currentAccount(): Promise<Account>;
+
+  /**
    * Change the current active account to the address specified
    *
    * @param address The address to switch to
