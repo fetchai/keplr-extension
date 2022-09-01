@@ -24,7 +24,7 @@ export const ProgressBar = ({
     const percentageAvailable = data[0] / total;
     const percentageStake = data[1] / total;
     setValues([percentageAvailable * width, percentageStake * width]);
-  }, [width, data[0], data[1], data[2]]);
+  }, [data, width]);
 
   return (
     <div>

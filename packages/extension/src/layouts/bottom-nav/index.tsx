@@ -33,13 +33,7 @@ export const BottomNav = () => {
       icon: chatTabGreyIcon,
       activeTabIcon: chatTabBlueIcon,
       path: "/chat",
-      disabled: true,
-    },
-    {
-      title: "Chat",
-      icon: chatTabGreyIcon,
-      activeTabIcon: chatTabBlueIcon,
-      path: "/chat",
+      disabled: false,
     },
     {
       title: "More",
@@ -59,7 +53,7 @@ export const BottomNav = () => {
           icon={nav.icon}
           activeTabIcon={nav.activeTabIcon}
           path={nav.path}
-          disabled={nav.disabled}
+          disabled={nav.disabled || false}
         />
       ))}
     </div>
