@@ -4,31 +4,29 @@ import { HeaderLayout } from "../../layouts";
 
 import { Card, CardBody } from "reactstrap";
 
-import style from "./style.module.scss";
-import { Menu } from "./menu";
-import { AccountView } from "./account";
-import { AssetView } from "./asset";
-import { StakeView } from "./stake";
-
-import classnames from "classnames";
-import { useHistory } from "react-router";
-import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
-import { TokensView } from "./token";
-import { BIP44SelectModal } from "./bip44-select-modal";
-import { useIntl } from "react-intl";
-import { useConfirm } from "../../components/confirm";
 import { ChainUpdaterService } from "@keplr-wallet/background";
-import { IBCTransferView } from "./ibc-transfer";
 import { DenomHelper } from "@keplr-wallet/common";
 import { Dec } from "@keplr-wallet/unit";
+import classnames from "classnames";
+import { observer } from "mobx-react-lite";
+import { useIntl } from "react-intl";
+import { useHistory } from "react-router";
+import { useConfirm } from "../../components/confirm";
 import bellIcon from "../../public/assets/icon/bell.png";
+import { useStore } from "../../stores";
+import { AccountView } from "./account";
+import { AssetView } from "./asset";
+import { BIP44SelectModal } from "./bip44-select-modal";
+import { Menu } from "./menu";
+import style from "./style.module.scss";
+import { TokensView } from "./token";
+// import { IBCTransferView } from "./ibc-transfer";
 
 export const MainPage: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore, queriesStore } = useStore();
 
   const confirm = useConfirm();
 
@@ -120,26 +118,19 @@ export const MainPage: FunctionComponent = observer(() => {
           </div>
         </CardBody>
       </Card>
-      {chainStore.current.walletUrlForStaking ? (
-        <Card className={classnames(style.card, "shadow")}>
-          <CardBody>
-            <StakeView />
-          </CardBody>
-        </Card>
-      ) : null}
       {hasTokens ? (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>{<TokensView />}</CardBody>
         </Card>
       ) : null}
-      {uiConfigStore.showAdvancedIBCTransfer &&
+      {/* {uiConfigStore.showAdvancedIBCTransfer &&
       chainStore.current.features?.includes("ibc-transfer") ? (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>
             <IBCTransferView />
           </CardBody>
         </Card>
-      ) : null}
+      ) : null} */}
     </HeaderLayout>
   );
 });

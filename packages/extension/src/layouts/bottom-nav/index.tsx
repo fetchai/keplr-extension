@@ -19,12 +19,21 @@ export const BottomNav = () => {
       icon: homeTabGreyIcon,
       activeTabIcon: homeTabBlueIcon,
       path: "/",
+      disabled: false,
     },
     {
       title: "Activity",
       icon: clockTabGreyIcon,
       activeTabIcon: clockTabBlueIcon,
       path: "/activity",
+      disabled: true,
+    },
+    {
+      title: "Chat",
+      icon: chatTabGreyIcon,
+      activeTabIcon: chatTabBlueIcon,
+      path: "/chat",
+      disabled: false,
     },
     {
       title: "Chat",
@@ -37,6 +46,7 @@ export const BottomNav = () => {
       icon: moreTabGreyIcon,
       activeTabIcon: moreTabBlueIcon,
       path: "/more",
+      disabled: false,
     },
   ];
 
@@ -49,6 +59,7 @@ export const BottomNav = () => {
           icon={nav.icon}
           activeTabIcon={nav.activeTabIcon}
           path={nav.path}
+          disabled={nav.disabled || false}
         />
       ))}
     </div>

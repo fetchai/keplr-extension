@@ -1,12 +1,6 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FunctionComponent, useMemo, useState } from "react";
 
-import { Button, Tooltip } from "reactstrap";
+import { Button } from "reactstrap";
 
 import styleTxButton from "./tx-button.module.scss";
 
@@ -14,38 +8,29 @@ import { observer } from "mobx-react-lite";
 
 import { useStore } from "../../stores";
 
-import Modal from "react-modal";
+import { useNotification } from "../../components/notification";
 
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
 
 import { Dec } from "@keplr-wallet/unit";
-import classnames from "classnames";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const QrCode = require("qrcode");
+import reward from "../../public/assets/icon/reward.png";
+import send from "../../public/assets/icon/send.png";
+import stake from "../../public/assets/icon/stake.png";
 
-const DepositModal: FunctionComponent<{
-  bech32Address: string;
-}> = ({ bech32Address }) => {
-  const qrCodeRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (qrCodeRef.current && bech32Address) {
-      QrCode.toCanvas(qrCodeRef.current, bech32Address);
-    }
-  }, [bech32Address]);
-
-  return (
-    <div className={styleTxButton.depositModal}>
-      <h1 style={{ marginBottom: 0 }}>Scan QR code</h1>
-      <canvas className={styleTxButton.qrcode} id="qrcode" ref={qrCodeRef} />
-    </div>
-  );
-};
+import activeReward from "../../public/assets/icon/activeReward.png";
+import activeSend from "../../public/assets/icon/activeSend.png";
+import activeStake from "../../public/assets/icon/activeStake.png";
 
 export const TxButtonView: FunctionComponent = observer(() => {
   const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
+
+  const notification = useNotification();
+
+  const [isActiveSend, setIsActiveSend] = useState(false);
+  const [isActiveStake, setIsActiveStake] = useState(false);
+  const [isActiveReward, setIsActiveReward] = useState(false);
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -53,17 +38,12 @@ export const TxButtonView: FunctionComponent = observer(() => {
     accountInfo.bech32Address
   );
 
-  const [isDepositOpen, setIsDepositOpen] = useState(false);
-
-  const [sendTooltipOpen, setSendTooltipOpen] = useState(false);
-  const [stakeTooltipOpen, setStakeTooltipOpen] = useState(false);
   const history = useHistory();
 
   const hasAssets =
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
     undefined;
 
-  const sendBtnRef = useRef<HTMLButtonElement>(null);
   const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
     accountInfo.bech32Address
   );
@@ -72,53 +52,55 @@ export const TxButtonView: FunctionComponent = observer(() => {
     accountInfo.bech32Address
   ).stakable;
 
-  const isRewardExist = rewards.rewards.length > 0;
+  const isRewardExist = rewards.stakableReward.toDec().gt(new Dec(0));
 
   const isStakableExist = useMemo(() => {
     return stakable.balance.toDec().gt(new Dec(0));
   }, [stakable.balance]);
-  const stakeBtnRef = useRef<HTMLButtonElement>(null);
+
+  const withdrawAllRewards = async () => {
+    if (accountInfo.isReadyToSendMsgs) {
+      try {
+        // When the user delegated too many validators,
+        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
+        // So, to prevent this problem, just send the msgs up to 8.
+        await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
+          rewards.getDescendingPendingRewardValidatorAddresses(8),
+          "",
+          undefined,
+          undefined,
+          {
+            onBroadcasted: () => {
+              analyticsStore.logEvent("Claim reward tx broadcasted", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+              });
+            },
+          }
+        );
+
+        history.replace("/");
+      } catch (e: any) {
+        history.replace("/");
+        notification.push({
+          type: "warning",
+          placement: "top-center",
+          duration: 5,
+          content: `Fail to withdraw rewards: ${e.message}`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      }
+    }
+  };
 
   return (
     <div className={styleTxButton.containerTxButton}>
-      <Modal
-        style={{
-          content: {
-            width: "330px",
-            minWidth: "330px",
-            minHeight: "unset",
-            maxHeight: "unset",
-          },
-        }}
-        isOpen={isDepositOpen}
-        onRequestClose={() => {
-          setIsDepositOpen(false);
-        }}
-      >
-        <DepositModal bech32Address={accountInfo.bech32Address} />
-      </Modal>
       <Button
         className={styleTxButton.button}
-        color="primary"
-        outline
-        onClick={(e) => {
-          e.preventDefault();
-
-          setIsDepositOpen(true);
-        }}
-      >
-        <FormattedMessage id="main.account.button.deposit" />
-      </Button>
-      {/*
-        "Disabled" property in button tag will block the mouse enter/leave events.
-        So, tooltip will not work as expected.
-        To solve this problem, don't add "disabled" property to button tag and just add "disabled" class manually.
-       */}
-      <Button
-        innerRef={sendBtnRef}
-        className={classnames(styleTxButton.button, {
-          disabled: !hasAssets,
-        })}
+        disabled={!hasAssets}
         color="primary"
         outline
         data-loading={accountInfo.isSendingMsg === "send"}
@@ -129,20 +111,49 @@ export const TxButtonView: FunctionComponent = observer(() => {
             history.push("/send");
           }
         }}
+        onMouseEnter={() => {
+          setIsActiveSend(true);
+        }}
+        onMouseLeave={() => {
+          setIsActiveSend(false);
+        }}
       >
+        <img
+          src={isActiveSend ? activeSend : send}
+          alt=""
+          style={{
+            marginRight: "5px",
+            height: "15px",
+          }}
+        />
         <FormattedMessage id="main.account.button.send" />
       </Button>
-      {!hasAssets ? (
-        <Tooltip
-          placement="bottom"
-          isOpen={sendTooltipOpen}
-          target={sendBtnRef}
-          toggle={() => setSendTooltipOpen((value) => !value)}
-          fade
-        >
-          <FormattedMessage id="main.account.tooltip.no-asset" />
-        </Tooltip>
-      ) : null}
+
+      <Button
+        className={styleTxButton.button}
+        outline
+        color="primary"
+        disabled={!accountInfo.isReadyToSendMsgs || !isRewardExist}
+        onClick={withdrawAllRewards}
+        data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
+        onMouseEnter={() => {
+          setIsActiveReward(true);
+        }}
+        onMouseLeave={() => {
+          setIsActiveReward(false);
+        }}
+      >
+        <img
+          src={isActiveReward ? activeReward : reward}
+          alt=""
+          style={{
+            marginRight: "5px",
+            height: "18px",
+          }}
+        />
+        <FormattedMessage id="main.stake.button.claim-rewards" />
+      </Button>
+
       <a
         href={chainStore.current.walletUrlForStaking}
         target="_blank"
@@ -158,32 +169,28 @@ export const TxButtonView: FunctionComponent = observer(() => {
           }
         }}
       >
-        {/*
-            "Disabled" property in button tag will block the mouse enter/leave events.
-            So, tooltip will not work as expected.
-            To solve this problem, don't add "disabled" property to button tag and just add "disabled" class manually.
-          */}
         <Button
-          innerRef={stakeBtnRef}
-          className={classnames(styleTxButton.button, {
-            disabled: !isStakableExist,
-          })}
+          className={styleTxButton.button}
+          disabled={!isStakableExist}
           color="primary"
-          outline={isRewardExist}
+          outline
+          onMouseEnter={() => {
+            setIsActiveStake(true);
+          }}
+          onMouseLeave={() => {
+            setIsActiveStake(false);
+          }}
         >
+          <img
+            src={isActiveStake ? activeStake : stake}
+            alt=""
+            style={{
+              marginRight: "5px",
+              height: "15px",
+            }}
+          />
           <FormattedMessage id="main.stake.button.stake" />
         </Button>
-        {!isStakableExist ? (
-          <Tooltip
-            placement="bottom"
-            isOpen={stakeTooltipOpen}
-            target={stakeBtnRef}
-            toggle={() => setStakeTooltipOpen((value) => !value)}
-            fade
-          >
-            <FormattedMessage id="main.stake.tooltip.no-asset" />
-          </Tooltip>
-        ) : null}
       </a>
     </div>
   );
