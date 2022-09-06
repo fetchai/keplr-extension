@@ -20,6 +20,16 @@
   border-radius: 16px 0px 16px 16px;
   background-color: #d0def5;
 }
+.currentDate {
+  color: #525f7f;
+  margin: 0 auto;
+  max-width: 200px;
+  padding: 4px;
+  border-radius: 10px;
+}
+.currentDateContainer{
+  text-align: center;
+}
 
 .senderAlign {
   display: flex;

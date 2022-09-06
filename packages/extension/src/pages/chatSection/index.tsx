@@ -69,6 +69,19 @@ export const ChatSection: FunctionComponent = () => {
     if (e.keyCode === 13) {
       handleNewMessage();
     }
+  };  const getDateValue = (d: any) => {
+    let date = new Date(d);
+    return date.getDate();
+  };
+  let prevDate = 0;
+  const showDateFunction = (d: any) => {
+    const date = getDateValue(d);
+
+    if (prevDate !== date) {
+      prevDate = date;
+      return true;
+    }
+    return false;
   };
   return (
     <HeaderLayout
@@ -109,14 +122,19 @@ export const ChatSection: FunctionComponent = () => {
         <span className={style.recieverName}>{userName}</span>
       </div>
       <div className={style.messages}>
-        {messages.map(({ message, isSender, timestamp }, index) => (
+      <p>Messages are end to end encrypted. Nobody else can read them except you and the recipient.</p>
+        {messages.map(({ message, isSender, timestamp }, index) => {
+          const check = showDateFunction(timestamp);
+          return (
           <ChatMessage
             message={message}
             isSender={isSender}
             key={index}
             timestamp={timestamp || 1549312452}
+            showDate={check}
+
           />
-        ))}
+        )})}
         <div ref={messagesEndRef} />
       </div>
       <InputGroup className={style.inputText}>
@@ -124,6 +142,7 @@ export const ChatSection: FunctionComponent = () => {
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyPress={handleKeypress}
+          placeholder="Type a new message..."
         />
         <InputGroupAddon addonType="append">
           <Button

@@ -29,6 +29,15 @@
   overflow-y: scroll;
   overflow-x: clip;
   margin-right: -12px;
+  p {
+    width: 320px;
+    text-align: center;
+    font-size: 14px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #525F7F;
+  }
 }
 
 .inputText {
