@@ -11,5 +11,5 @@
     ]
   },
   "include": ["src/**/*"],
-  "excluded" : ["**/*.wasm"]
+  "excluded" : ["**/*.wasm, src/graphQL/*"]
 }
