@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 import { PasswordInput } from "../../components/form";
+// import WalletConnectManager from "../../../../../packages/mobile/src/stores/wallet-connect"
 
 import { Button, Form } from "reactstrap";
 
@@ -17,12 +18,21 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { useHistory } from "react-router";
 import delay from "delay";
+import { getJWT } from "../../utils/auth";
+import { toHex } from "@cosmjs/encoding";
 
 interface FormData {
   password: string;
 }
 
 export const LockPage: FunctionComponent = observer(() => {
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  const pubKey=accountInfo.pubKey
+  console.log("current", current.chainId,"--","accountInfo",toHex(pubKey),"accountInfo", walletAddress);
+  
   const intl = useIntl();
   const history = useHistory();
 
@@ -33,6 +43,11 @@ export const LockPage: FunctionComponent = observer(() => {
       password: "",
     },
   });
+
+  // let client:WalletConnectManager
+  // const keplr = WalletConnectManager.createKeplrAPI(client.session.key);
+  // console.log(keplr);
+  
 
   const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);
@@ -52,10 +67,27 @@ export const LockPage: FunctionComponent = observer(() => {
     <EmptyLayout style={{ backgroundColor: "white", height: "100%" }}>
       <Form
         className={style.formContainer}
+        // onSubmit={()=>{}}
         onSubmit={handleSubmit(async (data) => {
+          console.log(data,'datadatadatadata')
           setLoading(true);
+              //@ts-ignore "required to run below code"
+     
+    
           try {
-            await keyRingStore.unlock(data.password);
+            const res = await getJWT(
+              current.chainId,
+              {
+                address: walletAddress,
+                pubkey: toHex(pubKey)
+              },
+              "https://auth-attila.sandbox-london-b.fetch-ai.com"
+            );
+            console.log("res",res);
+
+    
+    
+            await keyRingStore.unlock(data.password);          
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {
                 // XXX: If the connection doesn't have the permission,

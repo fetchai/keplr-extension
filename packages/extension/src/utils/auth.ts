@@ -1,8 +1,10 @@
 import axios from "axios";
+
+import { Window as KeplrWindow } from "@keplr-wallet/types";
+
 // import { AccountType } from "../components/Keplr/walletSlice";
 import { toBase64 } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
-
 declare let window: Window;
 
 class RequestError extends Error {
@@ -19,9 +21,18 @@ class RejectError extends Error {
   }
 }
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Window extends KeplrWindow {}
+}
+
 const signArbitrary = async (chainId: string, account: any, data: string) => {
+  console.log("chainId,account inside signArbitary", chainId, account);
+
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);
+  console.log("encodedencodeddata", encoded);
+
   const signDoc = {
     chain_id: "",
     account_number: "0",
@@ -41,13 +52,22 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
     ],
     memo: "",
   };
-  //@ts-ignore "ignoring type checking here"
+  console.log("signDocsignDocsignDoc", signDoc);
+  console.log("account.address", account);
+
+  //  console.log("window",window,chainId,);
+  //  console.log("Final details ",chainId,account.address,signDoc,);
+
   const response = await window?.fetchBrowserWallet?.keplr?.signAmino(
     chainId,
     account.address,
     signDoc,
     { isADR36WithString: true } as any
   );
+
+  console.log("response from window ", response);
+
+  console.log("responseresponse", response);
 
   if (response === undefined) {
     return undefined;
@@ -61,6 +81,9 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
 };
 
 export const getJWT = async (chainId: string, account: any, url: string) => {
+  console.log("accountaccountaccountaccount", account, chainId, url);
+  console.log("windowwindowwindowwindow", window);
+
   if (window === undefined) {
     console.log("no fetch wallet");
     return "";
@@ -68,15 +91,28 @@ export const getJWT = async (chainId: string, account: any, url: string) => {
   const config = {
     headers: { "Access-Control-Allow-Origin": "*" },
   };
+
   const request = {
     address: account.address,
     public_key: account.pubkey,
   };
+
+  console.log("request", request);
+
   const r1 = await axios.post(`${url}/request_token`, request, config);
   console.log("Request status: ", r1.status);
+  console.log("data payload", r1.data.payload);
+
   if (r1.status !== 200) throw new RequestError(r1.statusText);
 
   let loginRequest = undefined;
+
+  // let account1={
+  //   address: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
+  //   pubkey: "02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65"
+  // }
+  // let chain_id_1="fetchhub-4"
+
   try {
     loginRequest = await signArbitrary(chainId, account, r1.data.payload);
   } catch (err: any) {
