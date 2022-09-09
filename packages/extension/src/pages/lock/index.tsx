@@ -30,9 +30,9 @@ export const LockPage: FunctionComponent = observer(() => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  const pubKey=accountInfo.pubKey
-  console.log("current", current.chainId,"--","accountInfo",toHex(pubKey),"accountInfo", walletAddress);
-  
+  const pubKey = accountInfo.pubKey;
+  console.log("current",current.chainId,"--","accountInfo",toHex(pubKey),"accountInfo",walletAddress);
+
   const intl = useIntl();
   const history = useHistory();
 
@@ -47,7 +47,6 @@ export const LockPage: FunctionComponent = observer(() => {
   // let client:WalletConnectManager
   // const keplr = WalletConnectManager.createKeplrAPI(client.session.key);
   // console.log(keplr);
-  
 
   const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);
@@ -69,25 +68,22 @@ export const LockPage: FunctionComponent = observer(() => {
         className={style.formContainer}
         // onSubmit={()=>{}}
         onSubmit={handleSubmit(async (data) => {
-          console.log(data,'datadatadatadata')
+          console.log(data, "datadatadatadata");
           setLoading(true);
-              //@ts-ignore "required to run below code"
-     
-    
+          //@ts-ignore "required to run below code"
+
           try {
             const res = await getJWT(
               current.chainId,
               {
                 address: walletAddress,
-                pubkey: toHex(pubKey)
+                pubkey: toHex(pubKey),
               },
               "https://auth-attila.sandbox-london-b.fetch-ai.com"
             );
-            console.log("res",res);
+            console.log("res", res);
 
-    
-    
-            await keyRingStore.unlock(data.password);          
+            await keyRingStore.unlock(data.password);
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {
                 // XXX: If the connection doesn't have the permission,

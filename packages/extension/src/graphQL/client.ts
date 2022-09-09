@@ -20,8 +20,12 @@ export const createWSLink = (token: string) => {
         authorization: `Bearer ${token}`,
       },
       on: {
-        connecting: () => {console.log("connecting");},
-        opened:() => {console.log("opened");},
+        connecting: () => {
+          console.log("connecting");
+        },
+        opened: () => {
+          console.log("opened");
+        },
       },
     })
   );

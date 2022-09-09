@@ -1,6 +1,6 @@
 .messageBox {
   border-radius: 16px 16px 16px 0px;
-  max-width: 344px;
+  max-width: 300px;
   padding-left: 8px;
   padding-top: 8px;
   width: fit-content;
@@ -13,7 +13,7 @@
   line-height: 17px;
   color: #525f7f;
   font-size: 15px;
-  margin-right: 12px;
+  margin: 4px 4px;
 }
 
 .senderBox {
@@ -34,6 +34,11 @@
 .senderAlign {
   display: flex;
   justify-content: end;
+}
+
+.receiverAlign{
+  display: flex;
+  justify-content: start;
 }
 
 .message {

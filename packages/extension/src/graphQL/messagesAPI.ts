@@ -1,18 +1,28 @@
 import { ApolloClient, gql, InMemoryCache, split } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
 import client, { createWSLink, httpLink } from "./client";
-import { listenMessages, receiveMessages, sendMessages } from "./messagesQueries";
+import {
+  listenMessages,
+  receiveMessages,
+  sendMessages,
+} from "./messagesQueries";
+
 
 export const fetchMessages = async () => {
-  const state = store.getState();
+  console.log("fetchMessages ---queryqueryquery");
+  
+  // const state = store.getState();
   const { data } = await client.query({
+
     query: gql(receiveMessages),
+    variables:{ "address": "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr"},
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+        Authorization: `Bearer abc`,
       },
     },
   });
@@ -22,23 +32,28 @@ export const fetchMessages = async () => {
 };
 
 export const delieverMessages = async (newMessage: any) => {
-  const state = store.getState();
+  
+  
+  // const state = store.getState();
   try {
     if (newMessage) {
-      // const encryptedData = await encryptAllData(newMessage);
-
+      console.log("newMessagenewMessage",newMessage);
+      
+      const encryptedData = await encryptAllData(newMessage);
+      console.log("encryptedDataencryptedDataencryptedData",encryptedData);
+      
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
           messages: [
             {
-              contents: `${newMessage}`,
+              contents: `${encryptedData}`,
             },
           ],
         },
         context: {
           headers: {
-            Authorization: `Bearer ${state.user.accessToken}`,
+            Authorization: `Bearer fagf`,
           },
         },
       });
@@ -57,7 +72,10 @@ export const messageListener = () => {
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
-      return definition.kind === "OperationDefinition" && definition.operation === "subscription";
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
     },
     wsLink,
     httpLink
@@ -89,3 +107,21 @@ export const messageListener = () => {
       },
     });
 };
+
+
+
+//keys details
+/*
+  account : fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr
+  pub key: 02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65
+
+*/
+
+
+
+//keys details
+/*
+  account : fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc
+  pub key: 023269c0a9ef2597e739171887d62fd46c496b4c1ef73af41e72f06e9d17ffc9c1
+
+*/

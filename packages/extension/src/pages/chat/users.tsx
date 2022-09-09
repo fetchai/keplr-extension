@@ -1,53 +1,46 @@
-import React from "react";
-import { Button } from "reactstrap";
-
-import style from "./style.module.scss";
-import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-
-const formatAddress = (address: string, length: number) => {
-  const sublength = length / 2;
-  if (address.length > length)
-    return (
-      address.substring(0, sublength) +
-      "..." +
-      address.substring(address.length - sublength, address.length)
-    );
-  else return address;
-};
-
-interface UserMessage {
-  name: string;
-  message: string;
-  iseSeen: boolean;
-  timestamp: string;
-}
+import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
+import { decryptMessage } from "../../utils/decrypt-message";
+import style from "./style.module.scss";
+import { formatAddress } from '../../utils/format';
+import React from "react";
+import { fetchMessages } from "../../graphQL/messagesAPI";
 
 interface UsersProps {
-  users: UserMessage[];
+  userChats: any;
 }
 
-const User = ({
-  name,
-  message,
-  isSeen,
-}: {
-  name: string;
-  message: string;
-  isSeen: boolean;
-}) => {
+const User = ({ chat, contact }: { chat: any, contact:string }) => {
+  console.log("contact",contact,"chat",chat);
+  
+  const [message, setMessage] = useState("")
   const history = useHistory();
   const handleClick = () => {
-    history.push(`/chat/${name}`);
+    history.push(`/chat/${contact}`);
   };
+
+  useEffect(() => {
+    
+    decryptMsg(chat.contents, chat.target === contact)
+  }, [chat.contents, chat.target, contact])
+  
+  const decryptMsg = async (contents: string, isSender: boolean) => {
+    
+    const message : any = await decryptMessage(contents, isSender)
+    console.log("decrypted message",message);
+    
+    setMessage(message)
+  }
+
   return (
     <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
-        {name.charAt(0).toUpperCase()}
-        {!isSeen && <div className={style.unread} />}
+        {contact.charAt(0).toUpperCase()}
+        {!false && <div className={style.unread} />}
       </div>
       <div className={style.messageInner}>
-        <div className={style.name}>{formatAddress(name, 10)}</div>
+        <div className={style.name}>{formatAddress(contact)}</div>
         <div className={style.messageText}>{message}</div>
       </div>
       <div>
@@ -57,22 +50,15 @@ const User = ({
   );
 };
 
-export const Users = ({ users }: UsersProps) => {
+export const Users = ({ userChats }: UsersProps) => {
   return (
     <div className={style.messagesContainer}>
-      {users.length ? (
-        users.map((user, index) => (
-          <User
-            key={index}
-            name={user.name}
-            message={user.message}
-            isSeen={user.iseSeen}
-          />
-        ))
+      {Object.keys(userChats).length ? (
+        Object.keys(userChats).map((contact, index) => <User key={index} chat={userChats[contact]} contact={contact} />)
       ) : (
         <div>
-          <div className={style.resultText}>No result found</div>
-          <Button color="primary">Add new contact to address book</Button>
+          <div className={style.resultText}>testing No result found</div>
+          <button>Add new contact to address book</button>
         </div>
       )}
     </div>

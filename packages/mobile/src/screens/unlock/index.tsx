@@ -186,6 +186,11 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       await delay(10);
       await keyRingStore.unlock(password);
 
+      //@ts-ignore
+      const key = await window?.fetchBrowserWallet?.keplr?.getKey("fetchhub-4");
+      console.log(key);
+      
+
       await hideSplashScreen();
     } catch (e) {
       console.log(e);
