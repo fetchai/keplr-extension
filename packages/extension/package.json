@@ -8,6 +8,8 @@
     "clean": "rm -rf node_modules; rm -rf dist; rm -rf prod",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "cross-env NODE_ENV=development webpack",
+    "dev-sender": "cross-env NODE_ENV=development USER_ENV=1 webpack",
+    "dev-reciever": "cross-env NODE_ENV=development USER_ENV=2 webpack",
     "dev:analyzer": "cross-env NODE_ENV=development ANALYZER=true webpack",
     "test": "jest --passWithNoTests",
     "lint-test": "eslint \"src/**/*\" webpack.config.js && prettier --check \"src/**/*\" webpack.config.js",

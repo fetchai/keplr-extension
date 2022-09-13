@@ -1,17 +1,16 @@
-import {store}  from "../chatStore";
+import { store } from "../chatStore";
 import { addMessageList } from "../chatStore/messages-slice";
-import { fetchMessages } from "../graphQL/messagesAPI";
+import { fetchMessages } from "./messages-api";
 
 export const recieveMessages = async () => {
   // const state = store.getState();
 
-  const { pubAddress, accessToken } = state.user;
+  const { pubAddress } = state.user;
 
   console.log("recieveMessages");
   const messagesArray = await fetchMessages();
   let messageStore = {};
   messagesArray.map((message) => {
-    console.log("textMessage",message);
     const contactAddress =
       message.sender === pubAddress ? message.target : message.sender;
     // const contactAddress = message.target
@@ -26,7 +25,7 @@ export const recieveMessages = async () => {
       messageStore[contactAddress].lastMessage
     );
   });
-  console.log("message store",messageStore);
+  console.log("message store", messageStore);
   store.dispatch(addMessageList(messageStore));
 };
 

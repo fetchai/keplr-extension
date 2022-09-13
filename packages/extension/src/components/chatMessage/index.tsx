@@ -71,7 +71,7 @@ export const ChatMessage = ({
       <Container
         fluid
         className={classnames(style.messageBox, {
-          [style.senderBox]: isSender,
+          [style.senderBox]: !isSender,
         })}
       >
         <div className={style.message}>{decryptedMessage}</div>

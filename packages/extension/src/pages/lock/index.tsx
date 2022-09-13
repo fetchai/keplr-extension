@@ -6,32 +6,29 @@ import { PasswordInput } from "../../components/form";
 import { Button, Form } from "reactstrap";
 
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
-import { Banner } from "../../components/banner";
 import useForm from "react-hook-form";
+import { Banner } from "../../components/banner";
+import { useStore } from "../../stores";
 
 import { EmptyLayout } from "../../layouts/empty-layout";
 
 import style from "./style.module.scss";
 
-import { FormattedMessage, useIntl } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
-import { useHistory } from "react-router";
 import delay from "delay";
-import { getJWT } from "../../utils/auth";
-import { toHex } from "@cosmjs/encoding";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useHistory } from "react-router";
 
 interface FormData {
   password: string;
 }
 
 export const LockPage: FunctionComponent = observer(() => {
-  const { chainStore, accountStore } = useStore();
-  const current = chainStore.current;
-  const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  const pubKey = accountInfo.pubKey;
-  console.log("current",current.chainId,"--","accountInfo",toHex(pubKey),"accountInfo",walletAddress);
+  // const { chainStore, accountStore } = useStore();
+  // const current = chainStore.current;
+  // const accountInfo = accountStore.getAccount(current.chainId);
+  // const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  // const pubKey = accountInfo.pubKey;
 
   const intl = useIntl();
   const history = useHistory();
@@ -68,22 +65,20 @@ export const LockPage: FunctionComponent = observer(() => {
         className={style.formContainer}
         // onSubmit={()=>{}}
         onSubmit={handleSubmit(async (data) => {
-          console.log(data, "datadatadatadata");
           setLoading(true);
           //@ts-ignore "required to run below code"
 
           try {
-            const res = await getJWT(
-              current.chainId,
-              {
-                address: walletAddress,
-                pubkey: toHex(pubKey),
-              },
-              "https://auth-attila.sandbox-london-b.fetch-ai.com"
-            );
-            console.log("res", res);
+            // const res = await getJWT(
+            //   current.chainId,
+            //   {
+            //     address: walletAddress,
+            //     pubkey: toHex(pubKey),
+            //   },
+            //   "https://auth-attila.sandbox-london-b.fetch-ai.com"
+            // );
 
-            await keyRingStore.unlock(data.password);
+            keyRingStore.unlock(data.password);
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {
                 // XXX: If the connection doesn't have the permission,
@@ -111,8 +106,7 @@ export const LockPage: FunctionComponent = observer(() => {
             );
             setLoading(false);
           }
-        })}
-      >
+        })}>
         <Banner
           icon={require("../../public/assets/temp-icon.svg")}
           logo={require("../../public/assets/logo-temp.png")}

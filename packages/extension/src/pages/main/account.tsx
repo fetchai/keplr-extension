@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useEffect } from "react";
 
 import { Address } from "../../components/address";
 
@@ -9,6 +9,7 @@ import { useStore } from "../../stores";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { messageListener } from "../../graphQL/messages-api";
 
 export const AccountView: FunctionComponent = observer(() => {
   const { accountStore, chainStore } = useStore();
@@ -39,6 +40,9 @@ export const AccountView: FunctionComponent = observer(() => {
     [accountInfo.walletStatus, notification, intl]
   );
 
+  useEffect(() => {
+    messageListener();
+  }, []);
   return (
     <div>
       <div className={styleAccount.containerName}>
@@ -55,17 +59,9 @@ export const AccountView: FunctionComponent = observer(() => {
       </div>
       <div className={styleAccount.containerAccount}>
         <div style={{ flex: 1 }} />
-        <div
-          className={styleAccount.address}
-          onClick={() => copyAddress(accountInfo.bech32Address)}
-        >
-          <Address
-            maxCharacters={22}
-            lineBreakBeforePrefix={false}
-            iconClass="fas fa-copy"
-          >
-            {accountInfo.walletStatus === WalletStatus.Loaded &&
-            accountInfo.bech32Address
+        <div className={styleAccount.address} onClick={() => copyAddress(accountInfo.bech32Address)}>
+          <Address maxCharacters={22} lineBreakBeforePrefix={false} iconClass="fas fa-copy">
+            {accountInfo.walletStatus === WalletStatus.Loaded && accountInfo.bech32Address
               ? accountInfo.bech32Address
               : "..."}
           </Address>
@@ -73,18 +69,11 @@ export const AccountView: FunctionComponent = observer(() => {
         <div style={{ flex: 1 }} />
       </div>
       {accountInfo.hasEvmosHexAddress && (
-        <div
-          className={styleAccount.containerAccount}
-          style={{ marginTop: "2px" }}
-        >
+        <div className={styleAccount.containerAccount} style={{ marginTop: "2px" }}>
           <div style={{ flex: 1 }} />
-          <div
-            className={styleAccount.address}
-            onClick={() => copyAddress(accountInfo.evmosHexAddress)}
-          >
+          <div className={styleAccount.address} onClick={() => copyAddress(accountInfo.evmosHexAddress)}>
             <Address maxCharacters={22} lineBreakBeforePrefix={false}>
-              {accountInfo.walletStatus === WalletStatus.Loaded &&
-              accountInfo.evmosHexAddress
+              {accountInfo.walletStatus === WalletStatus.Loaded && accountInfo.evmosHexAddress
                 ? accountInfo.evmosHexAddress
                 : "..."}
             </Address>

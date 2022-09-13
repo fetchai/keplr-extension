@@ -15,7 +15,7 @@ export const httpLink = new HttpLink({
 export const createWSLink = (token: string) => {
   return new GraphQLWsLink(
     createClient({
-      url: "wss://messaging-server.sandbox-london-b.fetch-ai.com/subscription",
+      url: "ws://localhost:4000/subscription",
       connectionParams: {
         authorization: `Bearer ${token}`,
       },

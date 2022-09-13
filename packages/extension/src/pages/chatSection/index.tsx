@@ -1,27 +1,22 @@
-/* eslint-disable jsx-a11y/alt-text */
-import React from "react";
-import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Button, Card, Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { userMessages } from "../../chatStore/messages-slice";
 import { ChatMessage } from "../../components/chatMessage";
-import { delieverMessages } from "../../graphQL/messagesAPI";
+import { delieverMessages } from "../../graphQL/messages-api";
+import { HeaderLayout } from "../../layouts/header-layout";
+import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
-import { userMessages } from "../../chatStore/messages-slice";
 import { formatAddress } from "../../utils/format";
 import { usersData } from "../chat/index";
-import style from "./style.module.scss";
-import classnames from "classnames";
-import bellIcon from "../../public/assets/icon/bell.png";
-import { Header } from "../../components/header";
-import { HeaderLayout } from "../../layouts/header-layout";
 import { Menu } from "../main/menu";
+import style from "./style.module.scss";
 
-export var openValue = true;
-var openPopup = true;
-var openBox = true;
+export let openValue = true;
+let openPopup = true;
 
 const popupData = {
   report: {
@@ -62,17 +57,17 @@ export const ChatSection: FunctionComponent = () => {
 
   // const [openPopup, setOpenPopup] = useState(false)
   const messagesEndRef: any = useRef();
-  const handleNewMessage = () => {
-    const newMessages = [...messages];
-    const timestamp = new Date().getTime();
-    const today = new Date();
-    const time = today.getHours() + ":" + today.getMinutes();
-    newMessages.push({ message: newMessage, isSender: true, timestamp });
-    setMessages(newMessages);
-    setNewMessage("");
-    setOpenBlock(false);
-    // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // const handleNewMessage = () => {
+  //   const newMessages = [...messages];
+  //   const timestamp = new Date().getTime();
+  //   const today = new Date();
+  //   const time = today.getHours() + ":" + today.getMinutes();
+  //   newMessages.push({ message: newMessage, isSender: true, timestamp });
+  //   setMessages(newMessages);
+  //   setNewMessage("");
+  //   setOpenBlock(false);
+  //   // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
   const handleAdd = () => {
     setAdded(true);
@@ -97,7 +92,7 @@ export const ChatSection: FunctionComponent = () => {
   };
 
   const getDateValue = (d: any) => {
-    let date = new Date(d);
+    const date = new Date(d);
     return date.getDate();
   };
   let prevDate = 0;
@@ -113,8 +108,6 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    console.log("Handle message clicked",newMessage);
-    
     try {
       const data = await delieverMessages(newMessage);
       if (data.dispatchMessages.length > 0) {
@@ -154,14 +147,13 @@ export const ChatSection: FunctionComponent = () => {
       block: "end",
       behavior: "smooth",
     });
-    if (!messages.find((message: any) => (message.id === oldMessages.lastMessage.id))) {
+    if (!messages.find((message: any) => message.id === oldMessages.lastMessage.id)) {
       const newMessages = [...messages, oldMessages.lastMessage];
       setMessages(newMessages);
     }
-  }, [oldMessages]);
+  }, [messages, oldMessages]);
 
   return (
-   
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
@@ -174,8 +166,7 @@ export const ChatSection: FunctionComponent = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}
-        >
+          }}>
           <img
             src={bellIcon}
             alt="notification"
@@ -187,12 +178,7 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
         </div>
-      }
-    >
-   
-      
-          
-      
+      }>
       <div className={style.username}>
         <div className={style.leftBox}>
           <img
@@ -209,7 +195,7 @@ export const ChatSection: FunctionComponent = () => {
       </div>
       {showDropdown && <Dropdown added={added} blocked={blocked} />}
       <div className={style.messages}>
-        {usersData.map((user:any) => {
+        {usersData.map((user: any) => {
           if (user.name === userName && user.newUser && openBlock) {
             return (
               <div className={style.newUserText}>
@@ -233,7 +219,7 @@ export const ChatSection: FunctionComponent = () => {
               </div>
             );
           }
-          return <div></div>;
+          return <div key={user.name} />;
         })}
 
         {report && (
@@ -293,9 +279,7 @@ export const ChatSection: FunctionComponent = () => {
           </Button>
         </InputGroupAddon>
       </InputGroup>
-     
-      </HeaderLayout>
-  
+    </HeaderLayout>
   );
 };
 
@@ -327,11 +311,10 @@ const Popup = ({
   text3: string;
   check: string;
 }) => {
-  const [popup, setPopup] = useState(true);
+  // const [popup, setPopup] = useState(true);
 
   const handleClick = () => {
     openPopup = false;
-    openBox = false;
   };
 
   return (

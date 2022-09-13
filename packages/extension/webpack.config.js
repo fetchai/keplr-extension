@@ -10,6 +10,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 
 const isEnvDevelopment = process.env.NODE_ENV !== "production";
+const devbuildfolder = "dev-user"+process.env.USER_ENV;
 const isEnvAnalyzer = process.env.ANALYZER === "true";
 const commonResolve = (dir) => ({
   extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"],
@@ -86,7 +87,7 @@ const extensionConfig = (env, args) => {
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],
     },
     output: {
-      path: path.resolve(__dirname, isEnvDevelopment ? "dist" : "prod"),
+      path: path.resolve(__dirname, isEnvDevelopment ? devbuildfolder : "prod"),
       filename: "[name].bundle.js",
     },
     resolve: commonResolve("src/public/assets"),
@@ -117,7 +118,7 @@ const extensionConfig = (env, args) => {
         excludeChunks: ["background", "contentScripts", "injectedScript"],
       }),
       new WriteFilePlugin(),
-      new webpack.EnvironmentPlugin(["NODE_ENV"]),
+      new webpack.EnvironmentPlugin(["NODE_ENV","USER_ENV"]),
       new BundleAnalyzerPlugin({
         analyzerMode: isEnvAnalyzer ? "server" : "disabled",
       }),

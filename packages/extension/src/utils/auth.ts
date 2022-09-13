@@ -27,8 +27,6 @@ declare global {
 }
 
 const signArbitrary = async (chainId: string, account: any, data: string) => {
-  console.log("chainId,account inside signArbitary", chainId, account);
-
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);
   console.log("encodedencodeddata", encoded);
@@ -52,9 +50,6 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
     ],
     memo: "",
   };
-  console.log("signDocsignDocsignDoc", signDoc);
-  console.log("account.address", account);
-
   //  console.log("window",window,chainId,);
   //  console.log("Final details ",chainId,account.address,signDoc,);
 
@@ -64,10 +59,6 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
     signDoc,
     { isADR36WithString: true } as any
   );
-
-  console.log("response from window ", response);
-
-  console.log("responseresponse", response);
 
   if (response === undefined) {
     return undefined;
@@ -81,9 +72,6 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
 };
 
 export const getJWT = async (chainId: string, account: any, url: string) => {
-  console.log("accountaccountaccountaccount", account, chainId, url);
-  console.log("windowwindowwindowwindow", window);
-
   if (window === undefined) {
     console.log("no fetch wallet");
     return "";
