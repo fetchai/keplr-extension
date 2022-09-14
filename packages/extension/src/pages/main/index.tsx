@@ -96,7 +96,19 @@ export const MainPage: FunctionComponent = observer(() => {
             paddingRight: "20px",
           }}
         >
-          <img
+          <i
+            className="fas fa-user"
+            style={{
+              cursor: "pointer",
+              padding: "4px",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+
+              history.push("/setting/set-keyring");
+            }}
+          />
+          {/* <img
             src={bellIcon}
             alt="notification"
             style={{ width: "16px", cursor: "pointer" }}
@@ -105,7 +117,7 @@ export const MainPage: FunctionComponent = observer(() => {
 
               history.push("/setting/set-keyring");
             }}
-          />
+          /> */}
         </div>
       }
     >
