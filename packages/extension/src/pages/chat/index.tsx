@@ -119,13 +119,13 @@ const ChatView = () => {
               <p>Select who can send you messages</p>
               <form>
                 <input type="radio" name="options" id="option1" />
-                <label htmlFor="option1">Everybody</label>
+                <label htmlFor="option1" className={style["options-label"]}>Everybody</label>
                 <br />
                 <input type="radio" name="options" id="option2" />
-                <label htmlFor="option2">Only contacts in address book</label>
+                <label htmlFor="option2" className={style["options-label"]}>Only contacts in address book</label>
                 <br />
                 <input type="radio" name="options" id="option3" />
-                <label htmlFor="option3">Nobody</label>
+                <label htmlFor="option3" className={style["options-label"]}>Nobody</label>
                 <br />
               </form>
               <p>

@@ -267,17 +267,17 @@ export const ChatSection: FunctionComponent = () => {
       </div>
       <InputGroup className={style.inputText}>
         <Input
-          className={style.inputArea}
+          className={`${style.inputArea} ${style['send-message-inputArea']}`}
           placeholder="Type a new message..."
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyDown={handleKeydown}
         />
-        <InputGroupAddon addonType="append" className={style.enterMessageIcon}>
-          <Button onClick={handleSendMessage}>
+        {newMessage.length?
+          <div className={style['send-message-icon']} onClick={handleSendMessage}>
             <img src={paperAirplaneIcon} />
-          </Button>
-        </InputGroupAddon>
+          </div>
+        :''}
       </InputGroup>
     </HeaderLayout>
   );
