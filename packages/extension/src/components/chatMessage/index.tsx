@@ -6,11 +6,8 @@ import { decryptMessage } from "../../utils/decrypt-message";
 import style from "./style.module.scss";
 
 const formatTime = (timestamp: number) => {
-  const date = new Date(timestamp * 1000);
-
-  const hours = date.getHours();
-  const minutes = "0" + date.getMinutes();
-  return hours + ":" + minutes.substr(-2);
+  const date = new Date(timestamp);
+   return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
 };
 let months: any[]=["january","February","March","April","May","June","July","August","September","October","November","December"]
 
