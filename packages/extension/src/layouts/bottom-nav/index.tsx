@@ -26,7 +26,7 @@ export const BottomNav = () => {
       icon: clockTabGreyIcon,
       activeTabIcon: clockTabBlueIcon,
       path: "/activity",
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Chat",
