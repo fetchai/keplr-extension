@@ -13,6 +13,7 @@
     background-color: #fff;
     z-index: 1000;
     bottom: 40px;
+    left: 18px;
     // border: solid black 1px;
     padding: 10px 20px;
     border-radius: 20px;
@@ -92,6 +93,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0 12px;
       cursor: pointer;
       .initials {
         width: 24px;

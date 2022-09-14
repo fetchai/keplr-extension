@@ -40,7 +40,7 @@ const User = ({ chat, contact }: { chat: any; contact: string }) => {
         <div className={style.messageText}>{message}</div>
       </div>
       <div>
-        <img src={rightArrowIcon} style={{ width: "100%" }} alt="message" />
+        <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
       </div>
     </div>
   );
