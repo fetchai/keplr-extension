@@ -11,7 +11,7 @@ import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
-import { fetchPublicAddress } from "../../utils/fetchPublicAddress";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { usersData } from "../chat/index";
 import { Menu } from "../main/menu";
@@ -127,7 +127,7 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     const setPublicAddress = async () => {
-      const pubAddr = await fetchPublicAddress(userName);
+      const pubAddr = await fetchPublicKey(userName);
       setPubAddress({ contact: userName, value: pubAddr });
     };
     if (!oldMessages.pubKey.length) setPublicAddress();
