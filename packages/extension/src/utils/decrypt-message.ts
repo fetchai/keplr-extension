@@ -27,14 +27,6 @@ export const decryptMessage = async (content: string, isSender: boolean) => {
       Buffer.from(isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData, "base64")
     );
 
-    // const decryptedData = decrypt(
-    //   "02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",
-    //   Buffer.from(
-    //     content,
-    //     "base64"
-    //   )
-    // );
-
     const dataString = Buffer.from(decryptedData.toString("ascii"), "base64").toString("ascii");
 
     const parsedDataString = JSON.parse(dataString);

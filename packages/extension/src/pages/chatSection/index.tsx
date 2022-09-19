@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
+import { setPubAddress } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { delieverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts/header-layout";
@@ -10,6 +11,7 @@ import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
+import { fetchPublicAddress } from "../../utils/fetchPublicAddress";
 import { formatAddress } from "../../utils/format";
 import { usersData } from "../chat/index";
 import { Menu } from "../main/menu";
@@ -55,20 +57,7 @@ export const ChatSection: FunctionComponent = () => {
   const [blocked, setBlocked] = useState(false);
   const [report, setReport] = useState(false);
   const [name, setName] = useState("");
-
-  // const [openPopup, setOpenPopup] = useState(false)
   const messagesEndRef: any = useRef();
-  // const handleNewMessage = () => {
-  //   const newMessages = [...messages];
-  //   const timestamp = new Date().getTime();
-  //   const today = new Date();
-  //   const time = today.getHours() + ":" + today.getMinutes();
-  //   newMessages.push({ message: newMessage, isSender: true, timestamp });
-  //   setMessages(newMessages);
-  //   setNewMessage("");
-  //   setOpenBlock(false);
-  //   // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  // };
 
   console.log("userName userName userName",history.location.pathname);
   
@@ -112,7 +101,7 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await delieverMessages(newMessage);
+      const data = await delieverMessages(newMessage, oldMessages.pubKey);
       if (data.dispatchMessages.length > 0) {
         const newMessages = [...messages];
         newMessages.push({ ...data.dispatchMessages[0] });
@@ -137,12 +126,12 @@ export const ChatSection: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    // 👇️ scroll to bottom every time messages change
-    messagesEndRef.current?.scrollIntoView({
-      block: "end",
-      behavior: "smooth",
-    });
-  }, [messages]);
+    const setPublicAddress = async () => {
+      const pubAddr = await fetchPublicAddress(userName);
+      setPubAddress({ contact: userName, value: pubAddr });
+    };
+    if (!oldMessages.pubKey.length) setPublicAddress();
+  }, [userName]);
 
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
@@ -266,21 +255,23 @@ export const ChatSection: FunctionComponent = () => {
               />
             );
           })}
-        <div ref={messagesEndRef} />
       </div>
+      <div ref={messagesEndRef} />
       <InputGroup className={style.inputText}>
         <Input
-          className={`${style.inputArea} ${style['send-message-inputArea']}`}
+          className={`${style.inputArea} ${style["send-message-inputArea"]}`}
           placeholder="Type a new message..."
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyDown={handleKeydown}
         />
-        {newMessage.length?
-          <div className={style['send-message-icon']} onClick={handleSendMessage}>
+        {newMessage.length ? (
+          <div className={style["send-message-icon"]} onClick={handleSendMessage}>
             <img src={paperAirplaneIcon} />
           </div>
-        :''}
+        ) : (
+          ""
+        )}
       </InputGroup>
     </HeaderLayout>
   );

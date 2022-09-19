@@ -6,14 +6,15 @@ export const userSlice = createSlice({
   initialState: {
     notifications: [],
     accessToken: "",
-    pubAddress: "",
+    pubKey: "",
+    prvKey: "",
   },
   reducers: {
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
     setPubAddress: (state, action) => {
-      state.pubAddress = action.payload;
+      state.pubKey = action.payload;
     },
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
