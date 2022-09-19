@@ -35,17 +35,19 @@ export const AddressBookPage: FunctionComponent<{
   selectHandler?: AddressBookSelectHandler;
   ibcChannelConfig?: IIBCChannelConfig;
   isInTransaction?: boolean;
+  
 }> = observer(
   ({
     onBackButton,
     hideChainDropdown,
     selectHandler,
     ibcChannelConfig,
+    ...rest
     //isInTransaction,
   }) => {
     const intl = useIntl();
     const history = useHistory();
-
+    let values={...rest}
     const { chainStore } = useStore();
     const current = chainStore.current;
 
@@ -81,11 +83,19 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    const [addAddressModalOpen, setAddAddressModalOpen] = useState(false);
+    const [addAddressModalOpen, setAddAddressModalOpen] = useState(values.location.state || false);
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
 
+    const addresses = addressBookConfig.addressBookDatas.map((data) => {
+      return { name: data.name, address: data.address };
+    });
+    console.log("addresses addresses", addresses);
+    // console.log("state state",props.location.state);
+    console.log("props values.children",values.location.state);
+    
+    
     const addressBookIcons = (index: number) => {
       return [
         <i
@@ -132,7 +142,7 @@ export const AddressBookPage: FunctionComponent<{
         />,
       ];
     };
-
+    
     return (
       <HeaderLayout
         showChainName={false}
@@ -220,6 +230,8 @@ export const AddressBookPage: FunctionComponent<{
           </div>
           <div style={{ flex: "1 1 0", overflowY: "auto" }}>
             {addressBookConfig.addressBookDatas.map((data, i) => {
+              console.log("data.name", data.name, " -- ", data.address);
+
               return (
                 <PageButton
                   key={i.toString()}
@@ -238,7 +250,6 @@ export const AddressBookPage: FunctionComponent<{
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-
                     addressBookConfig.selectAddressAt(i);
 
                     if (onBackButton) {

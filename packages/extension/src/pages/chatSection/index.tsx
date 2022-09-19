@@ -44,6 +44,7 @@ const popupData = {
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
+  // const userContactName=history.location.pathname.split("/")[3]
   const allMessages = useSelector(userMessages);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
   const [messages, setMessages] = useState(Object.values(oldMessages.messages));
@@ -69,6 +70,8 @@ export const ChatSection: FunctionComponent = () => {
   //   // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   // };
 
+  console.log("userName userName userName",history.location.pathname);
+  
   const handleAdd = () => {
     setAdded(true);
     setOpenBlock(false);

@@ -18,17 +18,14 @@ import { useInteractionInfo } from "@keplr-wallet/hooks";
 import delay from "delay";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router";
+import { getJWT } from "../../utils/auth";
+import { toHex } from "@cosmjs/encoding";
 
 interface FormData {
   password: string;
 }
 
 export const LockPage: FunctionComponent = observer(() => {
-  // const { chainStore, accountStore } = useStore();
-  // const current = chainStore.current;
-  // const accountInfo = accountStore.getAccount(current.chainId);
-  // const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  // const pubKey = accountInfo.pubKey;
 
   const intl = useIntl();
   const history = useHistory();
@@ -69,15 +66,6 @@ export const LockPage: FunctionComponent = observer(() => {
           //@ts-ignore "required to run below code"
 
           try {
-            // const res = await getJWT(
-            //   current.chainId,
-            //   {
-            //     address: walletAddress,
-            //     pubkey: toHex(pubKey),
-            //   },
-            //   "https://auth-attila.sandbox-london-b.fetch-ai.com"
-            // );
-
             keyRingStore.unlock(data.password);
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {
@@ -95,7 +83,7 @@ export const LockPage: FunctionComponent = observer(() => {
                 history.replace("/");
               }
             }
-          } catch (e) {
+          } catch (e:any) {
             console.log("Fail to decrypt: " + e.message);
             setError(
               "password",

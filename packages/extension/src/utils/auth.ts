@@ -53,7 +53,7 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
   //  console.log("window",window,chainId,);
   //  console.log("Final details ",chainId,account.address,signDoc,);
 
-  const response = await window?.fetchBrowserWallet?.keplr?.signAmino(
+  const response = await window?.keplr?.signAmino(
     chainId,
     account.address,
     signDoc,

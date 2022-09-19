@@ -1,7 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import {store} from "../../chatStore";
 import { userMessages } from "../../chatStore/messages-slice";
+import { userDetails } from "../../chatStore/user-slice";
 import chatIcon from "../../public/assets/hello.png";
 import bellIcon from "../../public/assets/icon/bell.png";
 import newChatIcon from "../../public/assets/icon/new-chat.png";
@@ -11,9 +13,13 @@ import { recieveMessages } from "../../services/recieve-messages";
 import { openValue } from "../chatSection";
 import style from "./style.module.scss";
 import { Users } from "./users";
-
+import {setAccessToken} from "../../chatStore/user-slice"
 import { HeaderLayout } from "../../layouts/header-layout";
 import { Menu } from "../main/menu";
+import { getJWT } from "../../utils/auth";
+import { useStore } from "../../stores";
+import { toHex } from "@cosmjs/encoding";
+
 
 export const usersData = [
   {
@@ -40,19 +46,32 @@ export const usersData = [
 ];
 
 const ChatView = () => {
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  const pubKey = accountInfo.pubKey;
+  
   const history = useHistory();
   const messages = useSelector(userMessages);
-  const [userChats, setUserChats] = useState({});
+  const user=useSelector(userDetails);
+
+
+  const [userChats, setUserChats] = useState<any>({});
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
 
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     recieveMessages();
   }, []);
+  console.log("messages messages", messages);
 
   useEffect(() => {
+    console.log(`Hey ${user.accessToken}`);
+    
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
@@ -70,15 +89,28 @@ const ChatView = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    if (e.target.value.trim().length) {
-      const filteredChats = Object.keys(userChats).filter((contact) =>
-        contact.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setUserChats(filteredChats);
+
+    if (e.target.value.trim()) {
+      const filteredChats = Object.keys(userChats).filter((contact) => { 
+        return contact.toLowerCase().includes(inputVal.toLowerCase());
+      });
+      console.log(filteredChats);    
+     
+      let tempChats:any={}
+      filteredChats.forEach((item:any)=>{
+        tempChats[item]=userChats[item]
+      })
+      
+      setUserChats(tempChats);
+      
     } else {
       fillUserChats();
     }
   };
+  const addresses=[{
+    name:'FetchWallet',
+    address:'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc'
+  }]
 
   return (
     <HeaderLayout
@@ -109,7 +141,7 @@ const ChatView = () => {
       }
     >
       <div className={style.chatContainer}>
-        {isOpen && (
+        {!user.accessToken&& (
           <div className={style.popupContainer}>
             <img src={chatIcon} />
             <br />
@@ -119,13 +151,19 @@ const ChatView = () => {
               <p>Select who can send you messages</p>
               <form>
                 <input type="radio" name="options" id="option1" />
-                <label htmlFor="option1" className={style["options-label"]}>Everybody</label>
+                <label htmlFor="option1" className={style["options-label"]}>
+                  Everybody
+                </label>
                 <br />
                 <input type="radio" name="options" id="option2" />
-                <label htmlFor="option2" className={style["options-label"]}>Only contacts in address book</label>
+                <label htmlFor="option2" className={style["options-label"]}>
+                  Only contacts in address book
+                </label>
                 <br />
                 <input type="radio" name="options" id="option3" />
-                <label htmlFor="option3" className={style["options-label"]}>Nobody</label>
+                <label htmlFor="option3" className={style["options-label"]}>
+                  Nobody
+                </label>
                 <br />
               </form>
               <p>
@@ -133,7 +171,30 @@ const ChatView = () => {
                 menu.
               </p>
             </div>
-            <button type="button" onClick={() => setIsOpen(false)}>
+            <button type="button" onClick={async () => {
+            
+           try{
+            const res = await getJWT(
+              current.chainId,
+              {
+                address: walletAddress,
+                pubkey: toHex(pubKey),
+              },
+              "https://auth-attila.sandbox-london-b.fetch-ai.com"
+            );
+            console.log("response",res);
+            console.log("dispatch message",dispatch);
+            
+            // dispatch(tokenStatus(true))
+            store.dispatch(setAccessToken(res))
+            setIsOpen(false);
+            history.replace("/chat");
+           }
+           catch(e:any){
+            console.log(e.message);
+            
+           }
+            }}>
               Continue
             </button>
           </div>
@@ -149,7 +210,7 @@ const ChatView = () => {
           </div>
           <img src={newChatIcon} alt="" />
         </div>
-        <Users userChats={userChats} />
+        <Users userChats={userChats} addresses={addresses} />
       </div>
     </HeaderLayout>
   );

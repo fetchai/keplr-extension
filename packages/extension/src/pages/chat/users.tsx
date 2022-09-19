@@ -7,14 +7,17 @@ import style from "./style.module.scss";
 
 interface UsersProps {
   userChats: any;
+  addresses:any;
 }
 
-const User = ({ chat, contact }: { chat: any; contact: string }) => {
-  console.log("contact", contact, "chat", chat);
+const User = ({ chat, contact,contactname }: { chat: any; contact: any;contactname:any }) => {
+  console.log("contact", contact, "chat", chat,"contactname", contactname);
 
   const [message, setMessage] = useState("");
   const history = useHistory();
   const handleClick = () => {
+    console.log("contactname",contactname);
+    
     history.push(`/chat/${contact}`);
   };
 
@@ -36,7 +39,7 @@ const User = ({ chat, contact }: { chat: any; contact: string }) => {
         {!false && <div className={style.unread} />}
       </div>
       <div className={style.messageInner}>
-        <div className={style.name}>{formatAddress(contact)}</div>
+        <div className={style.name}>{contactname}</div>
         <div className={style.messageText}>{message}</div>
       </div>
       <div>
@@ -46,17 +49,38 @@ const User = ({ chat, contact }: { chat: any; contact: string }) => {
   );
 };
 
-export const Users = ({ userChats }: UsersProps) => {
+export const Users = ({ userChats,addresses}: UsersProps) => {
+  // const [addAddressModalOpen,setAddAddressModalOpen]=useState(true)
+  const history = useHistory();
+  console.log("userChats userChats",userChats,addresses);
+  
+  const checkAddress=(addresses:any,contact:string)=>{
+    let val=''
+    for(let i=0;i<addresses.length;i++){
+      if(addresses[i].address==contact){
+        val=addresses[i].name
+      }
+    }
+    return val;
+  }
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
-        Object.keys(userChats).map((contact, index) => (
-          <User key={index} chat={userChats[contact]} contact={contact} />
-        ))
+        Object.keys(userChats).map((contact, index) => {
+          console.log("contact", contact);
+          
+          return (
+          <User key={index} chat={userChats[contact]} contact={contact} contactname={checkAddress(addresses,contact)}/>
+        )})
       ) : (
         <div>
           <div className={style.resultText}>testing No result found</div>
-          <button>Add new contact to address book</button>
+          <button  onClick={() => {
+          history.push({
+            pathname: "/setting/address-book",
+            state:true
+          });
+        }}>Add new contact to address book</button>
         </div>
       )}
     </div>
