@@ -1,10 +1,9 @@
 import { toBase64, toHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
-// import { SigningStargateClient } from "@cosmjs/stargate";
 import { encrypt } from "eciesjs";
-import { getWalletKeys } from ".";
-import { CHAIN_ID_DORADO, SENDER_ADDRESS, SENDER_MNEMONIC_DATA } from "../config/config";
-// import { useStore } from "../stores";
+import { store } from "../chatStore";
+import { CHAIN_ID_DORADO } from "../config/config";
+
 
 const encryptMessage = async (chain_id: string, account: any, targetPubKey: string, messageStr: string) => {
   const message: any = {
@@ -54,19 +53,15 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
   return encodedData;
 };
 
-export const encryptAllData = async (message: any, targetPubkey: string) => {
-  // const { chainStore, accountStore } = useStore();
-  // const current = chainStore.current;
-  // const accountInfo = accountStore.getAccount(current.chainId);
-  // const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  // const pubKey = accountInfo.pubKey;
-  const senderKeys = await getWalletKeys(SENDER_MNEMONIC_DATA);
- 
+export const encryptAllData = async (message: any, targetPubkey: string, senderAddress: string) => {
+  const state = store.getState();
+  const { user } = state;
+
   const res = await encryptMessage(
     CHAIN_ID_DORADO,
     {
-      address: SENDER_ADDRESS,
-      pubKey: senderKeys.publicKey, // sender public key
+      address: senderAddress,
+      pubKey: user.pubKey, // sender public key
     },
     targetPubkey,
     message

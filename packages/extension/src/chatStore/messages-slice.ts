@@ -21,7 +21,7 @@ export const messagesSlice = createSlice({
       state[sender].messages[id] = action.payload;
       state[sender].lastMessage = action.payload;
     },
-    setPubKey: (state: any, action) => {
+    setAuthorPubKey: (state: any, action) => {
       const { contact, value } = action.payload;
       state[contact].pubKey = value;
     },
@@ -29,7 +29,7 @@ export const messagesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addMessageList, updateAuthorMessages } = messagesSlice.actions;
+export const { addMessageList, updateAuthorMessages, setAuthorPubKey } = messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages;
 

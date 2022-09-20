@@ -1,10 +1,11 @@
 import { fromBase64, fromHex, fromUtf8 } from "@cosmjs/encoding";
 import { decrypt } from "eciesjs";
-import { getWalletKeys } from ".";
-import { SENDER_MNEMONIC_DATA } from "../config/config";
+import { store } from "../chatStore";
 
 export const decryptMessage = async (content: string, isSender: boolean) => {
   try {
+    const state = store.getState();
+    const { user } = state;
     const data = Buffer.from(content, "base64").toString("ascii");
 
     //@ts-ignore "ignoring type checking here"
@@ -20,10 +21,8 @@ export const decryptMessage = async (content: string, isSender: boolean) => {
 
     const parsedData = JSON.parse(senTargetData);
 
-    const senderKeys = await getWalletKeys(SENDER_MNEMONIC_DATA);
-
     const decryptedData = decrypt(
-      senderKeys.privateKey,
+      user.prvKey,
       Buffer.from(isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData, "base64")
     );
 
