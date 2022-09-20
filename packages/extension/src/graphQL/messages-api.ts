@@ -4,11 +4,7 @@ import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
 import client, { createWSLink, httpLink } from "./client";
-import {
-  listenMessages,
-  receiveMessages,
-  sendMessages,
-} from "./messages-queries";
+import { listenMessages, receiveMessages, sendMessages } from "./messages-queries";
 
 export const fetchMessages = async () => {
   // const state = store.getState();
@@ -27,11 +23,11 @@ export const fetchMessages = async () => {
   return data.mailbox.messages;
 };
 
-export const delieverMessages = async (newMessage: any) => {
+export const delieverMessages = async (newMessage: any, targetPubKey: string) => {
   // const state = store.getState();
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(newMessage);
+      const encryptedData = await encryptAllData(newMessage, targetPubKey);
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
@@ -47,7 +43,6 @@ export const delieverMessages = async (newMessage: any) => {
           },
         },
       });
-      console.log("delieverMessages", data);
       return data;
     }
   } catch (e) {
@@ -62,10 +57,7 @@ export const messageListener = () => {
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
+      return definition.kind === "OperationDefinition" && definition.operation === "subscription";
     },
     wsLink,
     httpLink

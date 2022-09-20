@@ -1,8 +1,15 @@
-import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  FunctionComponent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
+import { setPubAddress } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { delieverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts/header-layout";
@@ -10,6 +17,7 @@ import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { usersData } from "../chat/index";
 import { Menu } from "../main/menu";
@@ -43,7 +51,8 @@ const popupData = {
   },
   delete: {
     heading: "Delete ",
-    text1: "You will lose all your messages in this chat. This action cannot be undone",
+    text1:
+      "You will lose all your messages in this chat. This action cannot be undone",
     button: "Delete",
   },
 };
@@ -53,7 +62,10 @@ export const ChatSection: FunctionComponent = () => {
   const userName = history.location.pathname.split("/")[2];
   // const userContactName=history.location.pathname.split("/")[3]
   const allMessages = useSelector(userMessages);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
+  const oldMessages = useMemo(() => allMessages[userName] || {}, [
+    allMessages,
+    userName,
+  ]);
   const [messages, setMessages] = useState(Object.values(oldMessages.messages));
   const [newMessage, setNewMessage] = useState("");
   const [openBlock, setOpenBlock] = useState(true && openPopup);
@@ -62,86 +74,71 @@ export const ChatSection: FunctionComponent = () => {
   const [blocked, setBlocked] = useState(false);
   const [report, setReport] = useState(false);
   const [name, setName] = useState("");
+
   //
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   // const [openPopup, setOpenPopup] = useState(false)
+
   const messagesEndRef: any = useRef();
-  // const handleNewMessage = () => {
-  //   const newMessages = [...messages];
-  //   const timestamp = new Date().getTime();
-  //   const today = new Date();
-  //   const time = today.getHours() + ":" + today.getMinutes();
-  //   newMessages.push({ message: newMessage, isSender: true, timestamp });
-  //   setMessages(newMessages);
-  //   setNewMessage("");
-  //   setOpenBlock(false);
-  //   // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  // };
 
+  // address book values
+  const queries = queriesStore.get(chainStore.current.chainId);
+  const ibcTransferConfigs = useIBCTransferConfig(
+    chainStore,
+    chainStore.current.chainId,
+    accountInfo.msgOpts.ibcTransfer,
+    accountInfo.bech32Address,
+    queries.queryBalances,
+    EthereumEndpoint
+  );
 
-    // address book values
-    const queries = queriesStore.get(chainStore.current.chainId);
-    const ibcTransferConfigs = useIBCTransferConfig(
-      chainStore,
-      chainStore.current.chainId,
-      accountInfo.msgOpts.ibcTransfer,
-      accountInfo.bech32Address,
-      queries.queryBalances,
-      EthereumEndpoint
-    );
-  
-    const [selectedChainId, setSelectedChainId] = useState(
-      ibcTransferConfigs.channelConfig?.channel
-        ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
-        : current.chainId
-    );
-  
-    const addressBookConfig = useAddressBookConfig(
-      new ExtensionKVStore("address-book"),
-      chainStore,
-      selectedChainId,
-      {
-        setRecipient: (): void => {
-          // noop
-        },
-        setMemo: (): void => {
-          // noop
-        },
-      }
-    );
-      
-   
-    console.log("address book config chatsection page",addressBookConfig);
-    
-    
-    const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
-      return { name: data.name, address: data.address };
-    });
+  const [selectedChainId, setSelectedChainId] = useState(
+    ibcTransferConfigs.channelConfig?.channel
+      ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
+      : current.chainId
+  );
 
-    const contactName=()=>{
-        let val=''
-        console.log("addresses inside loop",addresses);
-        
-        for(let i=0;i<addresses.length;i++){
-          if(addresses[i].address==userName){
-            val=addresses[i].name
-          }
-        }
-        console.log("val ",val);
-        return val;
-
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
     }
+  );
 
-    // console.log("userContactuserContactuserContact",userContact);
-    
-    
+  console.log("address book config chatsection page", addressBookConfig);
+
+  const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+    return { name: data.name, address: data.address };
+  });
+
+  const contactName = (addresses:any) => {
+    let val = "";
+    console.log("addresses inside loop", addresses);
+
+    for (let i = 0; i < addresses.length; i++) {
+      if (addresses[i].address == userName) {
+        val = addresses[i].name;
+      }
+    }
+    console.log("val ", val);
+    return val;
+  };
+
+  // console.log("userContactuserContactuserContact",userContact);
+
   const handleAdd = () => {
     setAdded(true);
     setOpenBlock(false);
   };
-
 
   const handleBlock = (username: string) => {
     setBlocked(!blocked);
@@ -178,7 +175,7 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await delieverMessages(newMessage);
+      const data = await delieverMessages(newMessage, oldMessages.pubKey);
       if (data.dispatchMessages.length > 0) {
         const newMessages = [...messages];
         newMessages.push({ ...data.dispatchMessages[0] });
@@ -212,10 +209,18 @@ export const ChatSection: FunctionComponent = () => {
   console.log("called before or after");
   // const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
   //   console.log(data.name);
-    
+
   //   return { name: data.name, address: data.address };
   // });
   // console.log("addressesssss",addresses);
+
+  useEffect(() => {
+    const setPublicAddress = async () => {
+      const pubAddr = await fetchPublicKey(userName);
+      setPubAddress({ contact: userName, value: pubAddr });
+    };
+    if (!oldMessages?.pubKey?.length) setPublicAddress();
+  }, [userName]);
 
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
@@ -223,7 +228,11 @@ export const ChatSection: FunctionComponent = () => {
       block: "end",
       behavior: "smooth",
     });
-    if (!messages.find((message: any) => message.id === oldMessages.lastMessage.id)) {
+    if (
+      !messages.find(
+        (message: any) => message.id === oldMessages.lastMessage.id
+      )
+    ) {
       const newMessages = [...messages, oldMessages.lastMessage];
       setMessages(newMessages);
     }
@@ -242,7 +251,8 @@ export const ChatSection: FunctionComponent = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -254,7 +264,8 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.username}>
         <div className={style.leftBox}>
           <img
@@ -265,9 +276,14 @@ export const ChatSection: FunctionComponent = () => {
               openValue = false;
             }}
           />
-          <span className={style.recieverName}>{contactName}</span>
+          <span className={style.recieverName}>{contactName(addresses)}</span>
         </div>
-        <img style={{ cursor: "pointer" }} className={style.more} src={moreIcon} onClick={handleDropDown} />
+        <img
+          style={{ cursor: "pointer" }}
+          className={style.more}
+          src={moreIcon}
+          onClick={handleDropDown}
+        />
       </div>
       {showDropdown && <Dropdown added={added} blocked={blocked} />}
       <div className={style.messages}>
@@ -282,7 +298,8 @@ export const ChatSection: FunctionComponent = () => {
                     onClick={() => {
                       user.newUser = false;
                       handleAdd();
-                    }}>
+                    }}
+                  >
                     Add
                   </button>
                   <button type="button" onClick={() => handleBlock(user.name)}>
@@ -321,7 +338,10 @@ export const ChatSection: FunctionComponent = () => {
           />
         )}
 
-        <p>Messages are end to end encrypted. Nobody else can read them except you and the recipient.</p>
+        <p>
+          Messages are end to end encrypted. Nobody else can read them except
+          you and the recipient.
+        </p>
 
         {messages
           ?.sort((a: any, b: any) => {
@@ -339,21 +359,26 @@ export const ChatSection: FunctionComponent = () => {
               />
             );
           })}
-        <div ref={messagesEndRef} />
       </div>
+      <div ref={messagesEndRef} />
       <InputGroup className={style.inputText}>
         <Input
-          className={`${style.inputArea} ${style['send-message-inputArea']}`}
+          className={`${style.inputArea} ${style["send-message-inputArea"]}`}
           placeholder="Type a new message..."
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           onKeyDown={handleKeydown}
         />
-        {newMessage.length?
-          <div className={style['send-message-icon']} onClick={handleSendMessage}>
+        {newMessage?.length ? (
+          <div
+            className={style["send-message-icon"]}
+            onClick={handleSendMessage}
+          >
             <img src={paperAirplaneIcon} />
           </div>
-        :''}
+        ) : (
+          ""
+        )}
       </InputGroup>
     </HeaderLayout>
   );
