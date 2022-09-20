@@ -61,6 +61,7 @@ import { ChatPage } from "./pages/chat";
 import { ChatSection } from "./pages/chatSection";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { ChatStoreProvider } from "./components/chat/store";
+import NewChat from "./pages/newchat/NewChat";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -235,6 +236,11 @@ const Application: FunctionComponent = () => {
                         exact
                         path="/setting/token/manage"
                         component={ManageTokenPage}
+                      />
+                      <Route
+                        exact
+                        path="/chat/newchat"
+                        component={NewChat}
                       />
                       <Route path="/sign" component={SignPage} />
                       <Route

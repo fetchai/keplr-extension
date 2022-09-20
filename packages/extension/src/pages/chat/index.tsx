@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import {store} from "../../chatStore";
+import { store } from "../../chatStore";
 import { userMessages } from "../../chatStore/messages-slice";
 import { userDetails } from "../../chatStore/user-slice";
 import chatIcon from "../../public/assets/hello.png";
@@ -13,13 +13,18 @@ import { recieveMessages } from "../../services/recieve-messages";
 import { openValue } from "../chatSection";
 import style from "./style.module.scss";
 import { Users } from "./users";
-import {setAccessToken} from "../../chatStore/user-slice"
+import { setAccessToken } from "../../chatStore/user-slice";
 import { HeaderLayout } from "../../layouts/header-layout";
 import { Menu } from "../main/menu";
 import { getJWT } from "../../utils/auth";
 import { useStore } from "../../stores";
 import { toHex } from "@cosmjs/encoding";
-
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { EthereumEndpoint } from "../../config.ui";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 
 export const usersData = [
   {
@@ -46,23 +51,39 @@ export const usersData = [
 ];
 
 const ChatView = () => {
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
   const pubKey = accountInfo.pubKey;
-  
+
   const history = useHistory();
   const messages = useSelector(userMessages);
-  const user=useSelector(userDetails);
+  const user = useSelector(userDetails);
 
+  // address book values
+  const queries = queriesStore.get(chainStore.current.chainId);
+  const ibcTransferConfigs = useIBCTransferConfig(
+    chainStore,
+    chainStore.current.chainId,
+    accountInfo.msgOpts.ibcTransfer,
+    accountInfo.bech32Address,
+    queries.queryBalances,
+    EthereumEndpoint
+  );
+
+  const [selectedChainId, setSelectedChainId] = useState(
+    ibcTransferConfigs.channelConfig?.channel
+      ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
+      : current.chainId
+  );
 
   const [userChats, setUserChats] = useState<any>({});
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
 
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     recieveMessages();
@@ -71,7 +92,7 @@ const ChatView = () => {
 
   useEffect(() => {
     console.log(`Hey ${user.accessToken}`);
-    
+
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
@@ -87,30 +108,46 @@ const ChatView = () => {
     setUserChats(userLastMessages);
   };
 
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+
+  // console.log("addressBookConfig", addressBookConfig);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
 
     if (e.target.value.trim()) {
-      const filteredChats = Object.keys(userChats).filter((contact) => { 
+      const filteredChats = Object.keys(userChats).filter((contact) => {
         return contact.toLowerCase().includes(inputVal.toLowerCase());
       });
-      console.log(filteredChats);    
-     
-      let tempChats:any={}
-      filteredChats.forEach((item:any)=>{
-        tempChats[item]=userChats[item]
-      })
-      
+      console.log(filteredChats);
+
+      let tempChats: any = {};
+      filteredChats.forEach((item: any) => {
+        tempChats[item] = userChats[item];
+      });
+
       setUserChats(tempChats);
-      
     } else {
       fillUserChats();
     }
   };
-  const addresses=[{
-    name:'FetchWallet',
-    address:'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc'
-  }]
+  console.log("addressBookConfig from chat",addressBookConfig);
+  
+  const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+    return { name: data.name, address: data.address };
+  });
 
   return (
     <HeaderLayout
@@ -141,7 +178,7 @@ const ChatView = () => {
       }
     >
       <div className={style.chatContainer}>
-        {!user.accessToken&& (
+        {!user.accessToken && (
           <div className={style.popupContainer}>
             <img src={chatIcon} />
             <br />
@@ -171,30 +208,28 @@ const ChatView = () => {
                 menu.
               </p>
             </div>
-            <button type="button" onClick={async () => {
-            
-           try{
-            const res = await getJWT(
-              current.chainId,
-              {
-                address: walletAddress,
-                pubkey: toHex(pubKey),
-              },
-              "https://auth-attila.sandbox-london-b.fetch-ai.com"
-            );
-            console.log("response",res);
-            console.log("dispatch message",dispatch);
-            
-            // dispatch(tokenStatus(true))
-            store.dispatch(setAccessToken(res))
-            setIsOpen(false);
-            history.replace("/chat");
-           }
-           catch(e:any){
-            console.log(e.message);
-            
-           }
-            }}>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const res = await getJWT(
+                    current.chainId,
+                    {
+                      address: walletAddress,
+                      pubkey: toHex(pubKey),
+                    },
+                    "https://auth-attila.sandbox-london-b.fetch-ai.com"
+                  );
+
+                  // dispatch(tokenStatus(true))
+                  store.dispatch(setAccessToken(res));
+                  setIsOpen(false);
+                  history.replace("/chat");
+                } catch (e: any) {
+                  console.log(e.message);
+                }
+              }}
+            >
               Continue
             </button>
           </div>
@@ -208,7 +243,9 @@ const ChatView = () => {
               onChange={handleSearch}
             />
           </div>
-          <img src={newChatIcon} alt="" />
+          <div onClick={() => history.push("/chat/newchat")}>
+            <img src={newChatIcon} alt="" />
+          </div>
         </div>
         <Users userChats={userChats} addresses={addresses} />
       </div>

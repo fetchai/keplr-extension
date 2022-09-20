@@ -79,6 +79,8 @@ export const AddressBookPage: FunctionComponent<{
             },
           }
     );
+    console.log("selectHandler",selectHandler);
+    
 
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);

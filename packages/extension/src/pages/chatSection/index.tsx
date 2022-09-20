@@ -14,6 +14,13 @@ import { formatAddress } from "../../utils/format";
 import { usersData } from "../chat/index";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { EthereumEndpoint } from "../../config.ui";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 
 export let openValue = true;
 let openPopup = true;
@@ -55,7 +62,10 @@ export const ChatSection: FunctionComponent = () => {
   const [blocked, setBlocked] = useState(false);
   const [report, setReport] = useState(false);
   const [name, setName] = useState("");
-
+  //
+  const { chainStore, accountStore, queriesStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
   // const [openPopup, setOpenPopup] = useState(false)
   const messagesEndRef: any = useRef();
   // const handleNewMessage = () => {
@@ -70,12 +80,68 @@ export const ChatSection: FunctionComponent = () => {
   //   // messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   // };
 
-  console.log("userName userName userName",history.location.pathname);
+
+    // address book values
+    const queries = queriesStore.get(chainStore.current.chainId);
+    const ibcTransferConfigs = useIBCTransferConfig(
+      chainStore,
+      chainStore.current.chainId,
+      accountInfo.msgOpts.ibcTransfer,
+      accountInfo.bech32Address,
+      queries.queryBalances,
+      EthereumEndpoint
+    );
   
+    const [selectedChainId, setSelectedChainId] = useState(
+      ibcTransferConfigs.channelConfig?.channel
+        ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
+        : current.chainId
+    );
+  
+    const addressBookConfig = useAddressBookConfig(
+      new ExtensionKVStore("address-book"),
+      chainStore,
+      selectedChainId,
+      {
+        setRecipient: (): void => {
+          // noop
+        },
+        setMemo: (): void => {
+          // noop
+        },
+      }
+    );
+      
+   
+    console.log("address book config chatsection page",addressBookConfig);
+    
+    
+    const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+      return { name: data.name, address: data.address };
+    });
+
+    const contactName=()=>{
+        let val=''
+        console.log("addresses inside loop",addresses);
+        
+        for(let i=0;i<addresses.length;i++){
+          if(addresses[i].address==userName){
+            val=addresses[i].name
+          }
+        }
+        console.log("val ",val);
+        return val;
+
+    }
+
+    // console.log("userContactuserContactuserContact",userContact);
+    
+    
   const handleAdd = () => {
     setAdded(true);
     setOpenBlock(false);
   };
+
 
   const handleBlock = (username: string) => {
     setBlocked(!blocked);
@@ -143,6 +209,13 @@ export const ChatSection: FunctionComponent = () => {
       behavior: "smooth",
     });
   }, [messages]);
+  console.log("called before or after");
+  // const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+  //   console.log(data.name);
+    
+  //   return { name: data.name, address: data.address };
+  // });
+  // console.log("addressesssss",addresses);
 
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
@@ -192,7 +265,7 @@ export const ChatSection: FunctionComponent = () => {
               openValue = false;
             }}
           />
-          <span className={style.recieverName}>{formatAddress(userName)}</span>
+          <span className={style.recieverName}>{contactName}</span>
         </div>
         <img style={{ cursor: "pointer" }} className={style.more} src={moreIcon} onClick={handleDropDown} />
       </div>
