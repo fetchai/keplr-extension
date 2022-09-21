@@ -243,7 +243,7 @@ const ChatView = () => {
               onChange={handleSearch}
             />
           </div>
-          <div onClick={() => history.push("/chat/newchat")}>
+          <div onClick={() => history.push("/newChat")}>
             <img src={newChatIcon} alt="" />
           </div>
         </div>

@@ -62,6 +62,9 @@ export const AddressBookPage: FunctionComponent<{
       selectedChainId,
       EthereumEndpoint
     );
+
+    console.log("recipientConfigrecipientConfigrecipientConfigrecipientConfig",recipientConfig.rawRecipient);
+    
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
 
     const addressBookConfig = useAddressBookConfig(
