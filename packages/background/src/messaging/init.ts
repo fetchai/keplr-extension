@@ -6,12 +6,14 @@ import {
   DecryptMessagingMessage,
   EncryptMessagingMessage,
   GetMessagingPublicKey,
+  SignMessagingPayload,
 } from "./messages";
 
 export function init(router: Router, service: MessagingService): void {
   router.registerMessage(GetMessagingPublicKey);
   router.registerMessage(EncryptMessagingMessage);
   router.registerMessage(DecryptMessagingMessage);
+  router.registerMessage(SignMessagingPayload);
 
   router.addHandler(ROUTE, getHandler(service));
 }

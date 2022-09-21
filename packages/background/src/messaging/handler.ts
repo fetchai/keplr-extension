@@ -3,6 +3,7 @@ import {
   DecryptMessagingMessage,
   EncryptMessagingMessage,
   GetMessagingPublicKey,
+  SignMessagingPayload,
 } from "./messages";
 import { MessagingService } from "./service";
 
@@ -25,6 +26,12 @@ export const getHandler: (service: MessagingService) => Handler = (service) => {
         return handleDecryptMessagingMessage(service)(
           env,
           msg as DecryptMessagingMessage
+        );
+
+      case SignMessagingPayload:
+        return handleSignMessagingPayload(service)(
+          env,
+          msg as SignMessagingPayload
         );
       default:
         throw new Error("Unknown msg type");
@@ -58,5 +65,13 @@ const handleDecryptMessagingMessage: (
 ) => InternalHandler<DecryptMessagingMessage> = (service) => {
   return async (env, msg) => {
     return await service.decryptMessage(env, msg.chainId, msg.cipherText);
+  };
+};
+
+const handleSignMessagingPayload: (
+  service: MessagingService
+) => InternalHandler<SignMessagingPayload> = (service) => {
+  return async (env, msg) => {
+    return await service.sign(env, msg.chainId, msg.payload);
   };
 };

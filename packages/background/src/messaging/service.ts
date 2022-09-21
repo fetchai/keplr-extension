@@ -1,7 +1,7 @@
 import { delay, inject, singleton } from "tsyringe";
 import { KeyRingService } from "../keyring";
 import { Env } from "@keplr-wallet/router";
-import { Hash } from "@keplr-wallet/crypto";
+import { Hash, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
 import { decrypt, encrypt, PrivateKey } from "eciesjs";
 import { fromBase64, toBase64 } from "@cosmjs/encoding";
 
@@ -73,6 +73,28 @@ export class MessagingService {
 
     // encrypt the message
     return toBase64(encrypt(rawTargetPublicKey, rawMessage));
+  }
+
+  /**
+   * Sign the payload
+   *
+   * @param env The extension environment
+   * @param chainId The target chain id
+   * @param payload The base64 encoded payload that should be signed
+   * @returns The base64 encoded signature for the payload
+   */
+  async sign(env: Env, chainId: string, payload: string): Promise<string> {
+    const sk = await this.getPrivateKey(env, chainId);
+    const privateKey = new PrivKeySecp256k1(sk);
+
+    // decode the payload into raw bytes
+    const rawPayload = fromBase64(payload);
+
+    // sign the payload
+    const rawSignature = privateKey.sign(rawPayload);
+
+    // convert and return the signature
+    return toBase64(rawSignature);
   }
 
   /**

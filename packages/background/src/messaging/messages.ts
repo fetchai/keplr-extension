@@ -79,3 +79,30 @@ export class DecryptMessagingMessage extends Message<string> {
     return DecryptMessagingMessage.type();
   }
 }
+
+export class SignMessagingPayload extends Message<string> {
+  public static type() {
+    return "sign-messaging-payload";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly payload: string
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("Chain id is empty");
+    }
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return DecryptMessagingMessage.type();
+  }
+}
