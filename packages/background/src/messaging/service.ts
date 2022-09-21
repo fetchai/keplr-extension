@@ -7,14 +7,17 @@ import { fromBase64, toBase64 } from "@cosmjs/encoding";
 
 @singleton()
 export class MessagingService {
-  private _publicKeyCache: Map<string, string>;
+  // map of target address vs target public key
+  // assumption: chainId incorporated since each network will have a different
+  // bech32 prefix
+  private _publicKeyCache = new Map<string, string>();
+  // map of chainId vs. raw private key
+  private _privateKeyCache = new Map<string, Uint8Array>();
 
   constructor(
     @inject(delay(() => KeyRingService))
     protected readonly keyRingService: KeyRingService
-  ) {
-    this._publicKeyCache = new Map<string, string>();
-  }
+  ) {}
 
   /**
    * Lookup the public key associated with the messaging service
@@ -24,7 +27,8 @@ export class MessagingService {
    * @returns The base64 encoded compressed public key
    */
   public async getPublicKey(env: Env, chainId: string): Promise<string> {
-    const privateKey = await this.getPrivateKey(env, chainId);
+    const sk = await this.getPrivateKey(env, chainId);
+    const privateKey = new PrivateKey(Buffer.from(sk));
     return toBase64(privateKey.publicKey.compressed);
   }
 
@@ -45,7 +49,7 @@ export class MessagingService {
     const sk = await this.getPrivateKey(env, chainId);
     const rawCipherText = Buffer.from(fromBase64(cipherText));
 
-    return toBase64(decrypt(sk.secret, rawCipherText));
+    return toBase64(decrypt(Buffer.from(sk), rawCipherText));
   }
 
   /**
@@ -65,9 +69,10 @@ export class MessagingService {
   ): Promise<string> {
     const rawMessage = Buffer.from(fromBase64(message));
     const targetPublicKey = await this.lookupPublicKey(targetAddress);
+    const rawTargetPublicKey = Buffer.from(fromBase64(targetPublicKey));
 
     // encrypt the message
-    return toBase64(encrypt(targetPublicKey, rawMessage));
+    return toBase64(encrypt(rawTargetPublicKey, rawMessage));
   }
 
   /**
@@ -118,29 +123,35 @@ export class MessagingService {
    * @returns The generated private key object
    * @private
    */
-  private async getPrivateKey(env: Env, chainId: string): Promise<PrivateKey> {
-    const rawPrivateKey = Buffer.from(
-      Hash.sha256(
-        Buffer.from(
-          await this.keyRingService.sign(
-            env,
-            chainId,
-            Buffer.from(
-              JSON.stringify({
-                account_number: 0,
-                chain_id: chainId,
-                fee: [],
-                memo:
-                  "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
-                msgs: [],
-                sequence: 0,
-              })
-            )
+  private async getPrivateKey(env: Env, chainId: string): Promise<Uint8Array> {
+    const cachedPrivateKey = this._privateKeyCache.get(chainId);
+    if (cachedPrivateKey !== undefined) {
+      return cachedPrivateKey;
+    }
+
+    const privateKey = Hash.sha256(
+      Buffer.from(
+        await this.keyRingService.sign(
+          env,
+          chainId,
+          Buffer.from(
+            JSON.stringify({
+              account_number: 0,
+              chain_id: chainId,
+              fee: [],
+              memo:
+                "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
+              msgs: [],
+              sequence: 0,
+            })
           )
         )
       )
     );
 
-    return new PrivateKey(rawPrivateKey);
+    // update the cache
+    this._privateKeyCache.set(chainId, privateKey);
+
+    return privateKey;
   }
 }
