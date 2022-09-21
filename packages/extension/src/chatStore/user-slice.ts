@@ -13,8 +13,11 @@ export const userSlice = createSlice({
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
-    setPubAddress: (state, action) => {
+    setPubKey: (state, action) => {
       state.pubKey = action.payload;
+    },
+    setPrvKey: (state, action) => {
+      state.prvKey = action.payload;
     },
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
@@ -23,11 +26,7 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  setPubAddress,
-  setAccessToken,
-  setNotifications,
-} = userSlice.actions;
+export const { setPrvKey, setPubKey, setAccessToken, setNotifications } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
 

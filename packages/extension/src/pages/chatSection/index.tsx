@@ -1,34 +1,22 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { useAddressBookConfig, useIBCTransferConfig } from "@keplr-wallet/hooks";
+import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
-import { setPubAddress } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
+import { EthereumEndpoint } from "../../config.ui";
 import { delieverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts/header-layout";
 import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
+import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
-import { formatAddress } from "../../utils/format";
-import { usersData } from "../chat/index";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { useStore } from "../../stores";
-import { ExtensionKVStore } from "@keplr-wallet/common";
-import { EthereumEndpoint } from "../../config.ui";
-import {
-  useAddressBookConfig,
-  useIBCTransferConfig,
-} from "@keplr-wallet/hooks";
 
 export let openValue = true;
 let openPopup = true;
@@ -51,8 +39,7 @@ const popupData = {
   },
   delete: {
     heading: "Delete ",
-    text1:
-      "You will lose all your messages in this chat. This action cannot be undone",
+    text1: "You will lose all your messages in this chat. This action cannot be undone",
     button: "Delete",
   },
 };
@@ -60,22 +47,12 @@ const popupData = {
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
-  // const userContactName=history.location.pathname.split("/")[3]
   const allMessages = useSelector(userMessages);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [
-    allMessages,
-    userName,
-  ]);
+  const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
   const [messages, setMessages] = useState(Object.values(oldMessages.messages));
   const [newMessage, setNewMessage] = useState("");
-  const [openBlock, setOpenBlock] = useState(true && openPopup);
+  const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [added, setAdded] = useState(false);
-  const [blocked, setBlocked] = useState(false);
-  const [report, setReport] = useState(false);
-  const [name, setName] = useState("");
-
-  //
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -100,30 +77,20 @@ export const ChatSection: FunctionComponent = () => {
       : current.chainId
   );
 
-  const addressBookConfig = useAddressBookConfig(
-    new ExtensionKVStore("address-book"),
-    chainStore,
-    selectedChainId,
-    {
-      setRecipient: (): void => {
-        // noop
-      },
-      setMemo: (): void => {
-        // noop
-      },
-    }
-  );
-
-  console.log("address book config chatsection page", addressBookConfig);
-
+  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
+    setRecipient: (): void => {
+      // noop
+    },
+    setMemo: (): void => {
+      // noop
+    },
+  });
   const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
     return { name: data.name, address: data.address };
   });
 
-  const contactName = (addresses:any) => {
+  const contactName = (addresses: any) => {
     let val = "";
-    console.log("addresses inside loop", addresses);
-
     for (let i = 0; i < addresses.length; i++) {
       if (addresses[i].address == userName) {
         val = addresses[i].name;
@@ -131,26 +98,6 @@ export const ChatSection: FunctionComponent = () => {
     }
     console.log("val ", val);
     return val;
-  };
-
-  // console.log("userContactuserContactuserContact",userContact);
-
-  const handleAdd = () => {
-    setAdded(true);
-    setOpenBlock(false);
-  };
-
-  const handleBlock = (username: string) => {
-    setBlocked(!blocked);
-    setName(username);
-    setOpenBlock(false);
-  };
-
-  const handleReport = (username: string) => {
-    // openPopup = false;
-    setReport(true);
-    setName(username);
-    setOpenBlock(false);
   };
 
   const handleDropDown = () => {
@@ -175,13 +122,13 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await delieverMessages(newMessage, oldMessages.pubKey);
-      if (data.dispatchMessages.length > 0) {
+      console.log(oldMessages);
+      const data = await delieverMessages(newMessage, targetPubKey, accountInfo.bech32Address);
+      if (data?.dispatchMessages?.length > 0) {
         const newMessages = [...messages];
         newMessages.push({ ...data.dispatchMessages[0] });
         setMessages(newMessages);
         setNewMessage("");
-        setOpenBlock(false);
         messagesEndRef.current?.scrollIntoView({
           block: "end",
           behavior: "smooth",
@@ -200,42 +147,24 @@ export const ChatSection: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    // 👇️ scroll to bottom every time messages change
-    messagesEndRef.current?.scrollIntoView({
-      block: "end",
-      behavior: "smooth",
-    });
-  }, [messages]);
-  console.log("called before or after");
-  // const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
-  //   console.log(data.name);
-
-  //   return { name: data.name, address: data.address };
-  // });
-  // console.log("addressesssss",addresses);
-
-  useEffect(() => {
     const setPublicAddress = async () => {
+      console.log("setPublicAddress");
       const pubAddr = await fetchPublicKey(userName);
-      setPubAddress({ contact: userName, value: pubAddr });
+      setTargetPubKey(pubAddr || "");
     };
     if (!oldMessages?.pubKey?.length) setPublicAddress();
   }, [userName]);
 
   useEffect(() => {
+    if (!messages.find((message: any) => message.id === oldMessages.lastMessage.id)) {
+      const newMessages = [...messages, oldMessages.lastMessage];
+      setMessages(newMessages);
+    }
     // 👇️ scroll to bottom every time messages change
     messagesEndRef.current?.scrollIntoView({
       block: "end",
       behavior: "smooth",
     });
-    if (
-      !messages.find(
-        (message: any) => message.id === oldMessages.lastMessage.id
-      )
-    ) {
-      const newMessages = [...messages, oldMessages.lastMessage];
-      setMessages(newMessages);
-    }
   }, [messages, oldMessages]);
 
   return (
@@ -251,8 +180,7 @@ export const ChatSection: FunctionComponent = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}
-        >
+          }}>
           <img
             src={bellIcon}
             alt="notification"
@@ -264,8 +192,7 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
         </div>
-      }
-    >
+      }>
       <div className={style.username}>
         <div className={style.leftBox}>
           <img
@@ -278,71 +205,10 @@ export const ChatSection: FunctionComponent = () => {
           />
           <span className={style.recieverName}>{contactName(addresses)}</span>
         </div>
-        <img
-          style={{ cursor: "pointer" }}
-          className={style.more}
-          src={moreIcon}
-          onClick={handleDropDown}
-        />
+        <img style={{ cursor: "pointer" }} className={style.more} src={moreIcon} onClick={handleDropDown} />
       </div>
-      {showDropdown && <Dropdown added={added} blocked={blocked} />}
       <div className={style.messages}>
-        {usersData.map((user: any) => {
-          if (user.name === userName && user.newUser && openBlock) {
-            return (
-              <div className={style.newUserText}>
-                <p>This contact is not saved in your address book</p>
-                <div className={style.buttons}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      user.newUser = false;
-                      handleAdd();
-                    }}
-                  >
-                    Add
-                  </button>
-                  <button type="button" onClick={() => handleBlock(user.name)}>
-                    Block
-                  </button>
-                  <button type="button" onClick={() => handleReport(user.name)}>
-                    Report spam
-                  </button>
-                </div>
-              </div>
-            );
-          }
-          return <div key={user.name} />;
-        })}
-
-        {report && (
-          <Popup
-            name={name}
-            heading={popupData.report.heading}
-            button={popupData.report.button}
-            text1={popupData.report.text1}
-            text2={popupData.report.text2}
-            check={popupData.report.check}
-            text3={""}
-          />
-        )}
-        {blocked && (
-          <Popup
-            name={name}
-            heading={popupData.block.heading}
-            button={popupData.block.button}
-            text1={popupData.block.text1}
-            text2={popupData.block.text2}
-            check={popupData.block.check}
-            text3={popupData.block.text3}
-          />
-        )}
-
-        <p>
-          Messages are end to end encrypted. Nobody else can read them except
-          you and the recipient.
-        </p>
-
+        <p>Messages are end to end encrypted. Nobody else can read them except you and the recipient.</p>
         {messages
           ?.sort((a: any, b: any) => {
             return a.commitTimestamp - b.commitTimestamp;
@@ -359,8 +225,9 @@ export const ChatSection: FunctionComponent = () => {
               />
             );
           })}
+        <div ref={messagesEndRef} />
       </div>
-      <div ref={messagesEndRef} />
+
       <InputGroup className={style.inputText}>
         <Input
           className={`${style.inputArea} ${style["send-message-inputArea"]}`}
@@ -370,10 +237,7 @@ export const ChatSection: FunctionComponent = () => {
           onKeyDown={handleKeydown}
         />
         {newMessage?.length ? (
-          <div
-            className={style["send-message-icon"]}
-            onClick={handleSendMessage}
-          >
+          <div className={style["send-message-icon"]} onClick={handleSendMessage}>
             <img src={paperAirplaneIcon} />
           </div>
         ) : (
@@ -395,25 +259,8 @@ const Dropdown = ({ added, blocked }: { added: boolean; blocked: boolean }) => {
   );
 };
 
-const Popup = ({
-  name,
-  heading,
-  button,
-  text1,
-  text2,
-  text3,
-  check,
-}: {
-  name: string;
-  heading: string;
-  button: string;
-  text1: string;
-  text2: string;
-  text3: string;
-  check: string;
-}) => {
-  // const [popup, setPopup] = useState(true);
-
+const Popup = ({ popupData }: { popupData: any }) => {
+  const { name, heading, button, text1, text2, text3, check } = popupData;
   const handleClick = () => {
     openPopup = false;
   };
