@@ -12,7 +12,6 @@ import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useConfirm } from "../../components/confirm";
-import bellIcon from "../../public/assets/icon/bell.png";
 import { useStore } from "../../stores";
 import { AccountView } from "./account";
 import { AssetView } from "./asset";
