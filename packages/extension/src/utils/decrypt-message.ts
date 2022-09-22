@@ -1,6 +1,9 @@
 import { fromBase64, fromHex, fromUtf8 } from "@cosmjs/encoding";
 import { decrypt } from "eciesjs";
 import { store } from "../chatStore";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { DecryptMessagingMessage } from "@keplr-wallet/background/build/messaging";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
 export const decryptMessage = async (content: string, isSender: boolean) => {
   try {
@@ -35,3 +38,24 @@ export const decryptMessage = async (content: string, isSender: boolean) => {
     return "";
   }
 };
+
+/**
+ * Attempt to decrypt the payload of a message envelope for the currently
+ * selected wallet address
+ *
+ * @param chainId The selected chain id
+ * @param content The base64 encoded cipherText to be decrypted
+ */
+export async function decryptMessageContent(
+  chainId: string,
+  content: string
+): Promise<string> {
+  // TODO: ideally this is cached
+  const requester = new InExtensionMessageRequester();
+
+  // build the decryption request message
+  const msg = new DecryptMessagingMessage(chainId, content);
+  const decoded = await requester.sendMessage(BACKGROUND_PORT, msg);
+
+  return fromUtf8(fromBase64(decoded));
+}
