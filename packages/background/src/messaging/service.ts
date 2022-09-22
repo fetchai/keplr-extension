@@ -22,12 +22,21 @@ export class MessagingService {
    *
    * @param env The extension environment
    * @param chainId The target chain id
+   * @param targetAddress Get the public key for the specified address (if specified), otherwise return senders public key
    * @returns The base64 encoded compressed public key
    */
-  public async getPublicKey(env: Env, chainId: string): Promise<string> {
-    const sk = await this.getPrivateKey(env, chainId);
-    const privateKey = new PrivateKey(Buffer.from(sk));
-    return toBase64(privateKey.publicKey.compressed);
+  public async getPublicKey(
+    env: Env,
+    chainId: string,
+    targetAddress: string | null
+  ): Promise<string> {
+    if (targetAddress === null) {
+      const sk = await this.getPrivateKey(env, chainId);
+      const privateKey = new PrivateKey(Buffer.from(sk));
+      return toBase64(privateKey.publicKey.compressed);
+    } else {
+      return await this.lookupPublicKey(targetAddress);
+    }
   }
 
   /**

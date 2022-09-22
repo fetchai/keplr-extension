@@ -6,7 +6,10 @@ export class GetMessagingPublicKey extends Message<string> {
     return "get-messaging-public-key";
   }
 
-  constructor(public readonly chainId: string) {
+  constructor(
+    public readonly chainId: string,
+    public readonly targetAddress: string | null
+  ) {
     super();
   }
 

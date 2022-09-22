@@ -43,7 +43,7 @@ const handleGetMessagingPublicKey: (
   service: MessagingService
 ) => InternalHandler<GetMessagingPublicKey> = (service) => {
   return async (env, msg) => {
-    return await service.getPublicKey(env, msg.chainId);
+    return await service.getPublicKey(env, msg.chainId, msg.targetAddress);
   };
 };
 
