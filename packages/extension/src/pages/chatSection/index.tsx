@@ -49,7 +49,7 @@ export const ChatSection: FunctionComponent = () => {
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
-  const [messages, setMessages] = useState(Object.values(oldMessages.messages));
+  const [messages, setMessages] = useState(Object.values(oldMessages?.messages||[]));
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -105,6 +105,8 @@ export const ChatSection: FunctionComponent = () => {
   };
 
   const getDateValue = (d: any) => {
+    console.log("checking date valuse",d);
+    
     const date = new Date(d);
     return date.getDate();
   };
@@ -156,16 +158,16 @@ export const ChatSection: FunctionComponent = () => {
   }, [userName]);
 
   useEffect(() => {
-    if (!messages.find((message: any) => message.id === oldMessages.lastMessage.id)) {
-      const newMessages = [...messages, oldMessages.lastMessage];
-      setMessages(newMessages);
-    }
+    // if (!messages?.find((message: any) => message?.id === oldMessages?.lastMessage?.id)) {
+    //   const newMessages = [...messages, oldMessages?.lastMessage];
+    //   setMessages(newMessages);
+    // }
     // 👇️ scroll to bottom every time messages change
     messagesEndRef.current?.scrollIntoView({
       block: "end",
       behavior: "smooth",
     });
-  }, [messages, oldMessages]);
+  }, [oldMessages]);
 
   return (
     <HeaderLayout
@@ -213,15 +215,15 @@ export const ChatSection: FunctionComponent = () => {
           ?.sort((a: any, b: any) => {
             return a.commitTimestamp - b.commitTimestamp;
           })
-          .map((message: any, index) => {
-            const check = showDateFunction(message.commitTimestamp);
+          ?.map((message: any, index) => {
+            const check = showDateFunction(message?.commitTimestamp);
             return (
               <ChatMessage
                 showDate={check}
-                message={message.contents}
-                isSender={message.sender === userName}
+                message={message?.contents}
+                isSender={message?.sender === userName}
                 key={index}
-                timestamp={message.commitTimestamp || 1549312452}
+                timestamp={message?.commitTimestamp || 1549312452}
               />
             );
           })}

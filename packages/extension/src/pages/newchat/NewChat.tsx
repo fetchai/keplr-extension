@@ -49,7 +49,7 @@ const NewUser = (props: any) => {
   
   
   const handleClick = () => {
-    console.log("contactname", name);
+    console.log("address from new chatt", address);
 
     history.push(`/chat/${address}`);
   };
