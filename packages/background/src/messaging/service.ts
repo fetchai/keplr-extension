@@ -11,8 +11,6 @@ export class MessagingService {
   // assumption: chainId incorporated since each network will have a different
   // bech32 prefix
   private _publicKeyCache = new Map<string, string>();
-  // map of chainId vs. raw private key
-  private _privateKeyCache = new Map<string, Uint8Array>();
 
   constructor(
     @inject(delay(() => KeyRingService))
@@ -146,12 +144,7 @@ export class MessagingService {
    * @private
    */
   private async getPrivateKey(env: Env, chainId: string): Promise<Uint8Array> {
-    const cachedPrivateKey = this._privateKeyCache.get(chainId);
-    if (cachedPrivateKey !== undefined) {
-      return cachedPrivateKey;
-    }
-
-    const privateKey = Hash.sha256(
+    return Hash.sha256(
       Buffer.from(
         await this.keyRingService.sign(
           env,
@@ -170,10 +163,5 @@ export class MessagingService {
         )
       )
     );
-
-    // update the cache
-    this._privateKeyCache.set(chainId, privateKey);
-
-    return privateKey;
   }
 }
