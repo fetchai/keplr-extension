@@ -156,16 +156,16 @@ export const ChatSection: FunctionComponent = () => {
   }, [userName]);
 
   useEffect(() => {
-    // if (!messages?.find((message: any) => message?.id === oldMessages?.lastMessage?.id)) {
-    //   const newMessages = [...messages, oldMessages?.lastMessage];
-    //   setMessages(newMessages);
-    // }
+    if (!messages?.find((message: any) => message?.id === oldMessages?.lastMessage?.id)) {
+      const newMessages = [...messages, oldMessages?.lastMessage];
+      setMessages(newMessages);
+    }
     // 👇️ scroll to bottom every time messages change
     messagesEndRef.current?.scrollIntoView({
       block: "end",
       behavior: "smooth",
     });
-  }, [oldMessages]);
+  }, [oldMessages,messages]);
 
   return (
     <HeaderLayout
