@@ -100,7 +100,7 @@ export const NewChat: FunctionComponent = () => {
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    setAddresses(useraddresses.filter((address: any) => address.name.includes(inputVal)));
+    setAddresses(useraddresses.filter((address: any) => address.name.toLowerCase().includes(inputVal)));
     
   };
   return (
