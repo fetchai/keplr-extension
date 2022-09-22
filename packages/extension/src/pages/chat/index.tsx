@@ -87,16 +87,19 @@ const ChatView = () => {
       // noop
     },
   });
-
+    
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputVal(e.target.value);
+    const value=e.target.value
+    setInputVal(value);
 
-    if (e.target.value.trim()) {
+    if (value.trim()) {
       const filteredChats = Object.keys(userChats).filter((contact) => {
-        return contact.toLowerCase().includes(inputVal.toLowerCase());
+        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase()))
+        console.log("found",found);
+        return contact.toLowerCase().includes(value.toLowerCase()) || found;
       });
-      console.log(filteredChats);
-
+      console.log("filteredChats",filteredChats);
+      
       let tempChats: any = {};
       filteredChats.forEach((item: any) => {
         tempChats[item] = userChats[item];
@@ -106,6 +109,7 @@ const ChatView = () => {
     } else {
       fillUserChats();
     }
+
   };
 
   const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
@@ -139,7 +143,7 @@ const ChatView = () => {
         </div>
       }>
       <div className={style.chatContainer}>
-        {!user.accessToken && (
+        {/* {!user.accessToken && (
           <div className={style.popupContainer}>
             <img src={chatIcon} />
             <br />
@@ -190,7 +194,7 @@ const ChatView = () => {
               Continue
             </button>
           </div>
-        )}
+        )} */}
         <AuthPopup />
 
         <div className={style.searchContainer}>

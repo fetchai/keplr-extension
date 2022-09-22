@@ -12,6 +12,7 @@ import style from "./style.module.scss";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 
 import { EthereumEndpoint } from "../../config.ui";
+import { observer } from "mobx-react-lite";
 
 
 // const ADDRESSES = [
@@ -52,7 +53,7 @@ const NewUser = (props: any) => {
     </div>
   );
 };
-export const NewChat: FunctionComponent = () => {
+export const NewChat: FunctionComponent = observer(() => {
   const history = useHistory();
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState([]);
@@ -145,4 +146,4 @@ export const NewChat: FunctionComponent = () => {
       </div>
     </HeaderLayout>
   );
-};
+});
