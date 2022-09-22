@@ -1,5 +1,5 @@
 import { Message } from "@keplr-wallet/router";
-import { ROUTE } from "../tokens/constants";
+import { ROUTE } from "./constants";
 
 export class GetMessagingPublicKey extends Message<string> {
   public static type() {
