@@ -23,11 +23,11 @@ export const fetchMessages = async () => {
   return data.mailbox.messages;
 };
 
-export const delieverMessages = async (newMessage: any, targetPubKey: string) => {
+export const delieverMessages = async (newMessage: any, targetPubKey: string, senderAddress: string) => {
   // const state = store.getState();
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(newMessage, targetPubKey);
+      const encryptedData = await encryptAllData(newMessage, targetPubKey, senderAddress);
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {

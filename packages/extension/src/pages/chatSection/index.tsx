@@ -15,41 +15,18 @@ import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
 import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
+import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 
 export let openValue = true;
-let openPopup = true;
-
-const popupData = {
-  report: {
-    heading: "Report ",
-    text1: "The last 5 messages from this contact will be forwarded to Fetch.",
-    text2: "The contact will not be notified.",
-    check: "Also block contact and delete chat",
-    button: "Report",
-  },
-  block: {
-    heading: "Block ",
-    text1: "This contact will not be able to send you messages.",
-    text2: "The contact will not be notified.",
-    check: "Also report contact",
-    text3: "The last 5 messages will be sent to Fetch.",
-    button: "Block",
-  },
-  delete: {
-    heading: "Delete ",
-    text1: "You will lose all your messages in this chat. This action cannot be undone",
-    button: "Delete",
-  },
-};
 
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
-  const [messages, setMessages] = useState(Object.values(oldMessages?.messages||[]));
+  const [messages, setMessages] = useState(Object.values(oldMessages?.messages || []));
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -105,8 +82,6 @@ export const ChatSection: FunctionComponent = () => {
   };
 
   const getDateValue = (d: any) => {
-    console.log("checking date valuse",d);
-    
     const date = new Date(d);
     return date.getDate();
   };
@@ -205,7 +180,9 @@ export const ChatSection: FunctionComponent = () => {
               openValue = false;
             }}
           />
-          <span className={style.recieverName}>{contactName(addresses)}</span>
+          <span className={style.recieverName}>
+            {contactName(addresses).length ? contactName(addresses) : formatAddress(userName)}
+          </span>
         </div>
         <img style={{ cursor: "pointer" }} className={style.more} src={moreIcon} onClick={handleDropDown} />
       </div>
