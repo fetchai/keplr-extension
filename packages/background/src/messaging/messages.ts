@@ -103,6 +103,6 @@ export class SignMessagingPayload extends Message<string> {
   }
 
   type(): string {
-    return DecryptMessagingMessage.type();
+    return SignMessagingPayload.type();
   }
 }
