@@ -1,6 +1,15 @@
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { useAddressBookConfig, useIBCTransferConfig } from "@keplr-wallet/hooks";
-import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
+import React, {
+  FunctionComponent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Input, InputGroup } from "reactstrap";
@@ -17,6 +26,7 @@ import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
+import { ToolTip } from "../../components/tooltip";
 import style from "./style.module.scss";
 
 export let openValue = true;
@@ -25,8 +35,13 @@ export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [allMessages, userName]);
-  const [messages, setMessages] = useState(Object.values(oldMessages?.messages || []));
+  const oldMessages = useMemo(() => allMessages[userName] || {}, [
+    allMessages,
+    userName,
+  ]);
+  const [messages, setMessages] = useState(
+    Object.values(oldMessages?.messages || [])
+  );
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -54,14 +69,19 @@ export const ChatSection: FunctionComponent = () => {
       : current.chainId
   );
 
-  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
-    setRecipient: (): void => {
-      // noop
-    },
-    setMemo: (): void => {
-      // noop
-    },
-  });
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
   const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
     return { name: data.name, address: data.address };
   });
@@ -73,7 +93,6 @@ export const ChatSection: FunctionComponent = () => {
         val = addresses[i].name;
       }
     }
-    console.log("val ", val);
     return val;
   };
 
@@ -100,7 +119,11 @@ export const ChatSection: FunctionComponent = () => {
     e.preventDefault();
     try {
       console.log(oldMessages);
-      const data = await delieverMessages(newMessage, targetPubKey, accountInfo.bech32Address);
+      const data = await delieverMessages(
+        newMessage,
+        targetPubKey,
+        accountInfo.bech32Address
+      );
       if (data?.dispatchMessages?.length > 0) {
         const newMessages = [...messages];
         newMessages.push({ ...data.dispatchMessages[0] });
@@ -157,7 +180,8 @@ export const ChatSection: FunctionComponent = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -169,7 +193,8 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.username}>
         <div className={style.leftBox}>
           <img
@@ -181,13 +206,23 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
           <span className={style.recieverName}>
-            {contactName(addresses).length ? contactName(addresses) : formatAddress(userName)}
+            {contactName(addresses).length
+              ? contactName(addresses)
+              : formatAddress(userName)}
           </span>
         </div>
-        <img style={{ cursor: "pointer" }} className={style.more} src={moreIcon} onClick={handleDropDown} />
+        <img
+          style={{ cursor: "pointer" }}
+          className={style.more}
+          src={moreIcon}
+          onClick={handleDropDown}
+        />
       </div>
       <div className={style.messages}>
-        <p>Messages are end to end encrypted. Nobody else can read them except you and the recipient.</p>
+        <p>
+          Messages are end to end encrypted. Nobody else can read them except
+          you and the recipient.
+        </p>
         {messages
           ?.sort((a: any, b: any) => {
             return a.commitTimestamp - b.commitTimestamp;
@@ -208,15 +243,32 @@ export const ChatSection: FunctionComponent = () => {
       </div>
 
       <InputGroup className={style.inputText}>
-        <Input
-          className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-          placeholder="Type a new message..."
-          value={newMessage}
-          onChange={(event) => setNewMessage(event.target.value)}
-          onKeyDown={handleKeydown}
-        />
+       { targetPubKey.length?<Input
+            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+            placeholder="Type a new message..."
+            value={newMessage}
+            onChange={(event) => setNewMessage(event.target.value)}
+            onKeyDown={handleKeydown}
+            disabled={false}
+          />:<ToolTip
+          trigger="hover"
+          options={{ placement: "top" }}
+          tooltip={<div>No transaction history found for this user</div>}
+        >
+          <Input
+            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+            placeholder="Type a new message..."
+            value={newMessage}
+            onChange={(event) => setNewMessage(event.target.value)}
+            onKeyDown={handleKeydown}
+            disabled={ true}
+          />
+        </ToolTip>}
         {newMessage?.length ? (
-          <div className={style["send-message-icon"]} onClick={handleSendMessage}>
+          <div
+            className={style["send-message-icon"]}
+            onClick={handleSendMessage}
+          >
             <img src={paperAirplaneIcon} />
           </div>
         ) : (
