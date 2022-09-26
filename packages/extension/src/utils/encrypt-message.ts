@@ -2,7 +2,7 @@ import { toBase64, toHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
 import { encrypt } from "eciesjs";
 import { store } from "../chatStore";
-import { CHAIN_ID_DORADO } from "../config/config";
+import { CHAIN_ID_DORADO ,CHAIN_ID_FETCHHUB} from "../config/config";
 
 
 const encryptMessage = async (chain_id: string, account: any, targetPubKey: string, messageStr: string) => {
@@ -42,12 +42,21 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
     memo: "",
   };
 
+  // @ts-ignore
+  const res = await window?.keplr?.signAmino(
+    chain_id,
+    account.address,
+    msg,
+    { isADR36WithString: true } as any
+  );
+    console.log("resresresresresresresresresresres",res);
+    
   const dataEnvalop = {
-    data: toHex(serializeSignDoc(msg)),
+    data: toHex(serializeSignDoc(res.signed)),
     senderPublicKey: account.pubKey,
     destinationPublicKey: targetPubKey,
-    // signature: res.signature.signature,
-    signature: "test signature",
+    signature: res.signature.signature,
+    // signature: "test signature",
   };
   const encodedData = toBase64(Buffer.from(JSON.stringify(dataEnvalop)));
   return encodedData;
@@ -58,7 +67,7 @@ export const encryptAllData = async (message: any, targetPubkey: string, senderA
   const { user } = state;
 
   const res = await encryptMessage(
-    CHAIN_ID_DORADO,
+    CHAIN_ID_FETCHHUB,
     {
       address: senderAddress,
       pubKey: user.pubKey, // sender public key

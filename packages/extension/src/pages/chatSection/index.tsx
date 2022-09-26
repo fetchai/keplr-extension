@@ -48,6 +48,8 @@ export const ChatSection: FunctionComponent = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
+  
+  
   // const [openPopup, setOpenPopup] = useState(false)
 
   const messagesEndRef: any = useRef();
@@ -117,6 +119,7 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
+    console.log("accountInfoaccountInfoaccountInfo",accountInfo.bech32Address);
     try {
       console.log(oldMessages);
       const data = await delieverMessages(

@@ -96,10 +96,12 @@ const ChatView = () => {
    
     if (value.trim()) {
       const filteredChats = Object.keys(userChats).filter((contact) => {
-        // const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase()))
-        // console.log("found",found);
-        // return contact.toLowerCase().includes(value.toLowerCase()) || found;
-        return contact.toLowerCase().includes(value.toLowerCase())
+        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
+        console.log("found",found);
+        console.log("found another way",contact.toLowerCase().includes(value.toLowerCase()));
+        console.log ("contact.toLowerCase().includes(value.toLowerCase()) || found",contact.toLowerCase().includes(value.toLowerCase()) || found);
+        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+        // return contact.toLowerCase().includes(value.toLowerCase())
       });
       console.log("filteredChats",filteredChats);
       

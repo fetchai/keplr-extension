@@ -55,7 +55,7 @@ export const delieverMessages = async (newMessage: any, targetPubKey: string, se
 };
 
 export const messageListener = () => {
-  // const state = store.getState();
+  const state = store.getState();
   const wsLink = createWSLink("Fake Token");
   const splitLink = split(
     ({ query }) => {
@@ -74,7 +74,7 @@ export const messageListener = () => {
       query: gql(listenMessages),
       context: {
         headers: {
-          authorization: `Bearer asd`,
+          authorization: `Bearer ${state.user.accessToken}`,
         },
       },
     })
