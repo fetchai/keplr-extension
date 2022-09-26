@@ -55,6 +55,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
   const [loading, setLoading] = useState(false);
+  const [initialChats,setInitialChats]=useState({})
   const dispatch = useDispatch();
   const intl = useIntl();
 
@@ -69,6 +70,7 @@ const ChatView = () => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
     setUserChats(userLastMessages);
+    setInitialChats(userLastMessages)
   }, [messages, dispatch]);
   // const toggle = () => setIsOpen(!isOpen);
   const fillUserChats = () => {
@@ -87,16 +89,17 @@ const ChatView = () => {
       // noop
     },
   });
-    
+ 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value=e.target.value
     setInputVal(value);
-
+   
     if (value.trim()) {
       const filteredChats = Object.keys(userChats).filter((contact) => {
-        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase()))
-        console.log("found",found);
-        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+        // const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase()))
+        // console.log("found",found);
+        // return contact.toLowerCase().includes(value.toLowerCase()) || found;
+        return contact.toLowerCase().includes(value.toLowerCase())
       });
       console.log("filteredChats",filteredChats);
       
@@ -107,6 +110,7 @@ const ChatView = () => {
 
       setUserChats(tempChats);
     } else {
+      // setUserChats(userChats)
       fillUserChats();
     }
 

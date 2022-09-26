@@ -7,8 +7,9 @@ import client, { createWSLink, httpLink } from "./client";
 import { listenMessages, receiveMessages, sendMessages } from "./messages-queries";
 
 
-const state = store.getState();
 export const fetchMessages = async () => {
+  const state = store.getState();
+ console.log("state access token ",state.user.accessToken);
  
   
   const { data } = await client.query({
@@ -16,7 +17,7 @@ export const fetchMessages = async () => {
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6ZmFsc2UsImF1ZCI6ImZldGNoYWktaGFzdXJhLWdyYXBocWwiLCJleHAiOjE2NjQyNTYyMzMsImhhc3VyYSI6eyJjbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJhbm9ueW1vdXMiXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYW5vbnltb3VzIiwieC1oYXN1cmEtb3JnLWlkIjoiYXV0aF9zZXJ2ZXIiLCJ4LWhhc3VyYS11c2VyLWlkIjoiMCJ9fSwiaWF0IjoxNjY0MTY5ODMzLCJpc3MiOiJodHRwczovL2ZldGNoLmFpIiwibmFtZSI6ImZldGNoMTB1M2Vqd2VudGtrdjRjODN5Y2N5M3Q3c3lqM3JnZGM5a2w0bHNjIiwicHVia2V5IjoiMDIzMjY5YzBhOWVmMjU5N2U3MzkxNzE4ODdkNjJmZDQ2YzQ5NmI0YzFlZjczYWY0MWU3MmYwNmU5ZDE3ZmZjOWMxIiwic3ViIjoiSGFzdXJhQWNjZXNzIn0.eBxx10A-tS-yH___67r0sBUDiVRYewjOL9V6gZwuj2Q`,
+        Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
   });
@@ -26,7 +27,7 @@ export const fetchMessages = async () => {
 };
 
 export const delieverMessages = async (newMessage: any, targetPubKey: string, senderAddress: string) => {
-  // const state = store.getState();
+  const state = store.getState();
   try {
     if (newMessage) {
       const encryptedData = await encryptAllData(newMessage, targetPubKey, senderAddress);

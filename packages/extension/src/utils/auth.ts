@@ -114,5 +114,7 @@ export const getJWT = async (chainId: string, account: any, url: string) => {
   const r2 = await axios.post(`${url}/login`, loginRequest, config);
 
   if (r2.status !== 200) throw new RequestError(r1.statusText);
+  console.log("r2.data.token r2.data.token",r2.data.token);
+  
   return r2.data.token;
 };

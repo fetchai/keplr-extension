@@ -49,18 +49,11 @@ export const AuthPopup = () => {
         onClick={async () => {
           try {
             const data = await keyRingStore.exportKeyRingDatas(password);
-            console.log(data, password);
             const mnemonics = data[0].key;
             const keys = await getWalletKeys(mnemonics);
             store.dispatch(setPrvKey(keys.privateKey));
             store.dispatch(setPubKey(keys.publicKey));
             setIsOpen(false);
-          } catch (e) {
-            console.log("Fail to decrypt: " + e.message);
-          } finally {
-            setLoading(false);
-          }
-          try {
             const res = await getJWT(
               current.chainId,
               {
@@ -74,9 +67,12 @@ export const AuthPopup = () => {
             store.dispatch(setAccessToken(res));
             setIsOpen(false);
             history.replace("/chat");
-          } catch (e: any) {
-            console.log(e.message);
+          } catch (e) {
+            console.log("Fail to decrypt: " + e.message);
+          } finally {
+            setLoading(false);
           }
+         
        
           setLoading(true);
          

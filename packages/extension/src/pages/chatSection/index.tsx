@@ -150,6 +150,8 @@ export const ChatSection: FunctionComponent = () => {
     const setPublicAddress = async () => {
       console.log("setPublicAddress");
       const pubAddr = await fetchPublicKey(userName);
+      
+      
       setTargetPubKey(pubAddr || "");
     };
     if (!oldMessages?.pubKey?.length) setPublicAddress();
