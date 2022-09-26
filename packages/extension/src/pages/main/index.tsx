@@ -12,7 +12,7 @@ import classnames from "classnames";
 import { useHistory } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-import { TokensView } from "./tokens";
+import { TokensView } from "./token";
 import { BIP44SelectModal } from "./bip44-select-modal";
 import { useIntl } from "react-intl";
 import { useConfirm } from "../../components/confirm";
