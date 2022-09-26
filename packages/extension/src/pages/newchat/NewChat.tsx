@@ -14,7 +14,6 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
 
-
 // const ADDRESSES = [
 //   {
 //     name: "fetchWallet2",
@@ -77,32 +76,44 @@ export const NewChat: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
-    setRecipient: (): void => {
-      // noop
-    },
-    setMemo: (): void => {
-      // noop
-    },
-  });
-  const recipientConfig = useRecipientConfig(chainStore, selectedChainId, EthereumEndpoint);
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+  const recipientConfig = useRecipientConfig(
+    chainStore,
+    selectedChainId,
+    EthereumEndpoint
+  );
   // const isENSAddress = ObservableEnsFetcher.isValidENS("absa");
   // const error = recipientConfig.getError();
   // console.log("isENSAddress", isENSAddress, "error ", error);
-  let useraddresses:any = addressBookConfig.addressBookDatas.map((data, i) => {
+  let useraddresses: any = addressBookConfig.addressBookDatas.map((data, i) => {
     return { name: data.name, address: data.address };
   });
   // useEffect(()=>{
   //   setAddresses(useraddresses)
   // },[useraddresses])
-  console.log("addressBookConfig",addressBookConfig);
-  
-  console.log("addresses",addresses);
-  
+  console.log("addressBookConfig", addressBookConfig);
+
+  console.log("addresses", addresses);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    setAddresses(useraddresses.filter((address: any) => address.name.toLowerCase().includes(inputVal)));
-    
+    setAddresses(
+      useraddresses.filter((address: any) =>
+        address.name.toLowerCase().includes(inputVal)
+      )
+    );
   };
   return (
     <HeaderLayout
@@ -119,7 +130,8 @@ export const NewChat: FunctionComponent = observer(() => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -131,19 +143,44 @@ export const NewChat: FunctionComponent = observer(() => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.searchContainer}>
         <div className={style.searchBox}>
           <img src={searchIcon} alt="search" />
-          <input placeholder="Search by name or address" value={inputVal} onChange={handleSearch} />
+          <input
+            placeholder="Search by name or address"
+            value={inputVal}
+            onChange={handleSearch}
+          />
         </div>
       </div>
-      <div className={style.messagesContainer} >
+      <div className={style.messagesContainer}>
         {addresses.map((address: any) => {
           console.log("address address in new component", address);
-          return <NewUser address={address} key={address.address} inputVal={inputVal} />;
+          return (
+            <NewUser
+              address={address}
+              key={address.address}
+              inputVal={inputVal}
+            />
+          );
         })}
       </div>
+      {addresses.length == 0 ? (
+        <button
+          onClick={() => {
+            history.push({
+              pathname: "/setting/address-book",
+              state: true,
+            });
+          }}
+        >
+          Add new contact to address book
+        </button>
+      ) : (
+        ""
+      )}
     </HeaderLayout>
   );
 });

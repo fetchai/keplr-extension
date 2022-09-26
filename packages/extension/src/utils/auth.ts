@@ -85,11 +85,8 @@ export const getJWT = async (chainId: string, account: any, url: string) => {
     public_key: account.pubkey,
   };
 
-  console.log("request", request);
 
   const r1 = await axios.post(`${url}/request_token`, request, config);
-  console.log("Request status: ", r1.status);
-  console.log("data payload", r1.data.payload);
 
   if (r1.status !== 200) throw new RequestError(r1.statusText);
 

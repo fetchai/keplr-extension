@@ -9,8 +9,8 @@ export const sendMessages = `mutation Mutation($messages: [InputMessage!]!) {
     }
   }`;
 
-export const receiveMessages = `query Query($address: String) {
-  mailbox(address: $address) {
+export const receiveMessages = `query Query {
+  mailbox {
     messages {
       id
       sender
