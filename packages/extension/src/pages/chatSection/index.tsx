@@ -35,10 +35,10 @@ export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [
-    allMessages,
-    userName,
-  ]);
+  const oldMessages = useMemo(
+    () => allMessages[userName] || {},
+    [allMessages, userName]
+  );
   const [messages, setMessages] = useState(
     Object.values(oldMessages?.messages || [])
   );
@@ -48,8 +48,7 @@ export const ChatSection: FunctionComponent = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  
-  
+
   // const [openPopup, setOpenPopup] = useState(false)
 
   const messagesEndRef: any = useRef();
@@ -119,7 +118,7 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    console.log("accountInfoaccountInfoaccountInfo",accountInfo.bech32Address);
+    console.log("accountInfoaccountInfoaccountInfo", accountInfo.bech32Address);
     try {
       console.log(oldMessages);
       const data = await delieverMessages(
@@ -153,15 +152,18 @@ export const ChatSection: FunctionComponent = () => {
     const setPublicAddress = async () => {
       console.log("setPublicAddress");
       const pubAddr = await fetchPublicKey(userName);
-      
-      
+
       setTargetPubKey(pubAddr || "");
     };
     if (!oldMessages?.pubKey?.length) setPublicAddress();
   }, [userName]);
 
   useEffect(() => {
-    if (!messages?.find((message: any) => message?.id === oldMessages?.lastMessage?.id)) {
+    if (
+      !messages?.find(
+        (message: any) => message?.id === oldMessages?.lastMessage?.id
+      )
+    ) {
       const newMessages = [...messages, oldMessages?.lastMessage];
       setMessages(newMessages);
     }
@@ -170,7 +172,7 @@ export const ChatSection: FunctionComponent = () => {
       block: "end",
       behavior: "smooth",
     });
-  }, [oldMessages,messages]);
+  }, [oldMessages, messages]);
 
   return (
     <HeaderLayout
@@ -248,27 +250,31 @@ export const ChatSection: FunctionComponent = () => {
       </div>
 
       <InputGroup className={style.inputText}>
-       { targetPubKey.length?<Input
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder="Type a new message..."
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            onKeyDown={handleKeydown}
-            disabled={false}
-          />:<ToolTip
-          trigger="hover"
-          options={{ placement: "top" }}
-          tooltip={<div>No transaction history found for this user</div>}
-        >
+        {targetPubKey.length ? (
           <Input
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
             placeholder="Type a new message..."
             value={newMessage}
             onChange={(event) => setNewMessage(event.target.value)}
             onKeyDown={handleKeydown}
-            disabled={ true}
+            disabled={false}
           />
-        </ToolTip>}
+        ) : (
+          <ToolTip
+            trigger="hover"
+            options={{ placement: "top" }}
+            tooltip={<div>No transaction history found for this user</div>}
+          >
+            <Input
+              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+              placeholder="Type a new message..."
+              value={newMessage}
+              onChange={(event) => setNewMessage(event.target.value)}
+              onKeyDown={handleKeydown}
+              disabled={true}
+            />
+          </ToolTip>
+        )}
         {newMessage?.length ? (
           <div
             className={style["send-message-icon"]}

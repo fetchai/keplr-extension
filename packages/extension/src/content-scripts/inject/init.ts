@@ -22,7 +22,6 @@ export function init(
     if (!window.fetchBrowserWallet) {
       window.fetchBrowserWallet = fetchWallet;
     }
-   
 
     if (!window.getOfflineSigner) {
       window.getOfflineSigner = getOfflineSigner;

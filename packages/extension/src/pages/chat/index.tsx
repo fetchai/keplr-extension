@@ -1,6 +1,9 @@
 import { toHex } from "@cosmjs/encoding";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { useAddressBookConfig, useIBCTransferConfig } from "@keplr-wallet/hooks";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +30,9 @@ const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const pubKey = accountInfo.pubKey;
 
   const history = useHistory();
@@ -55,7 +60,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
   const [loading, setLoading] = useState(false);
-  const [initialChats,setInitialChats]=useState({})
+  const [initialChats, setInitialChats] = useState({});
   const dispatch = useDispatch();
   const intl = useIntl();
 
@@ -70,7 +75,7 @@ const ChatView = () => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
     setUserChats(userLastMessages);
-    setInitialChats(userLastMessages)
+    setInitialChats(userLastMessages);
   }, [messages, dispatch]);
   // const toggle = () => setIsOpen(!isOpen);
   const fillUserChats = () => {
@@ -81,30 +86,45 @@ const ChatView = () => {
     setUserChats(userLastMessages);
   };
 
-  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
-    setRecipient: (): void => {
-      // noop
-    },
-    setMemo: (): void => {
-      // noop
-    },
-  });
- 
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value=e.target.value
+    const value = e.target.value;
     setInputVal(value);
-   
+
     if (value.trim()) {
       const filteredChats = Object.keys(userChats).filter((contact) => {
-        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
-        console.log("found",found);
-        console.log("found another way",contact.toLowerCase().includes(value.toLowerCase()));
-        console.log ("contact.toLowerCase().includes(value.toLowerCase()) || found",contact.toLowerCase().includes(value.toLowerCase()) || found);
+        const found = addresses.some(
+          (address: any) =>
+            address.name.toLowerCase().includes(value.toLowerCase()) &&
+            address.address == contact
+        );
+        console.log("found", found);
+        console.log(
+          "found another way",
+          contact.toLowerCase().includes(value.toLowerCase())
+        );
+        console.log(
+          "contact.toLowerCase().includes(value.toLowerCase()) || found",
+          contact.toLowerCase().includes(value.toLowerCase()) || found
+        );
         return contact.toLowerCase().includes(value.toLowerCase()) || found;
         // return contact.toLowerCase().includes(value.toLowerCase())
       });
-      console.log("filteredChats",filteredChats);
-      
+      console.log("filteredChats", filteredChats);
+
       let tempChats: any = {};
       filteredChats.forEach((item: any) => {
         tempChats[item] = userChats[item];
@@ -115,7 +135,6 @@ const ChatView = () => {
       // setUserChats(userChats)
       fillUserChats();
     }
-
   };
 
   const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
@@ -135,7 +154,8 @@ const ChatView = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -147,7 +167,8 @@ const ChatView = () => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.chatContainer}>
         {/* {!user.accessToken && (
           <div className={style.popupContainer}>
@@ -206,7 +227,11 @@ const ChatView = () => {
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
             <img src={searchIcon} alt="search" />
-            <input placeholder="Search by name or address" value={inputVal} onChange={handleSearch} />
+            <input
+              placeholder="Search by name or address"
+              value={inputVal}
+              onChange={handleSearch}
+            />
           </div>
           <div onClick={() => history.push("/newChat")}>
             <img src={newChatIcon} alt="" />

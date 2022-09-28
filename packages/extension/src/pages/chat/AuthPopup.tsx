@@ -4,7 +4,12 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { store } from "../../chatStore";
-import { setPrvKey, setPubKey, userDetails ,setAccessToken} from "../../chatStore/user-slice";
+import {
+  setPrvKey,
+  setPubKey,
+  userDetails,
+  setAccessToken,
+} from "../../chatStore/user-slice";
 import { PasswordInput } from "../../components/form";
 import { useStore } from "../../stores";
 import { getWalletKeys } from "../../utils";
@@ -19,10 +24,12 @@ export const AuthPopup = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const { chainStore,accountStore } = useStore();
+  const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  const history=useHistory()
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
+  const history = useHistory();
   const accountInfo = accountStore.getAccount(current.chainId);
   const pubKey = accountInfo.pubKey;
   const intl = useIntl();
@@ -72,12 +79,15 @@ export const AuthPopup = () => {
           } finally {
             setLoading(false);
           }
-         
-       
+
           setLoading(true);
-         
-        }}>
-        {loading ? "Loading ..." : <FormattedMessage id="setting.export.button.confirm" />}
+        }}
+      >
+        {loading ? (
+          "Loading ..."
+        ) : (
+          <FormattedMessage id="setting.export.button.confirm" />
+        )}
       </Button>
     </div>
   ) : (

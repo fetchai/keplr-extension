@@ -2,10 +2,14 @@ import { toBase64, toHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
 import { encrypt } from "eciesjs";
 import { store } from "../chatStore";
-import { CHAIN_ID_DORADO ,CHAIN_ID_FETCHHUB} from "../config/config";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../config/config";
 
-
-const encryptMessage = async (chain_id: string, account: any, targetPubKey: string, messageStr: string) => {
+const encryptMessage = async (
+  chain_id: string,
+  account: any,
+  targetPubKey: string,
+  messageStr: string
+) => {
   const message: any = {
     sender: account.pubKey, //public key
     target: targetPubKey, // public key
@@ -16,8 +20,14 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
   };
 
   const encodedRawData = toBase64(Buffer.from(JSON.stringify(message)));
-  const encryptedSenderRawData = encrypt(account.pubKey, Buffer.from(encodedRawData));
-  const encryptedTargetRawData = encrypt(targetPubKey, Buffer.from(encodedRawData));
+  const encryptedSenderRawData = encrypt(
+    account.pubKey,
+    Buffer.from(encodedRawData)
+  );
+  const encryptedTargetRawData = encrypt(
+    targetPubKey,
+    Buffer.from(encodedRawData)
+  );
   const dataPayload = {
     encryptedSenderData: toBase64(encryptedSenderRawData),
     encryptedTargetData: toBase64(encryptedTargetRawData),
@@ -43,14 +53,11 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
   };
 
   // @ts-ignore
-  const res = await window?.keplr?.signAmino(
-    chain_id,
-    account.address,
-    msg,
-    { isADR36WithString: true } as any
-  );
-    console.log("resresresresresresresresresresres",res);
-    
+  const res = await window?.keplr?.signAmino(chain_id, account.address, msg, {
+    isADR36WithString: true,
+  } as any);
+  console.log("resresresresresresresresresresres", res);
+
   const dataEnvalop = {
     data: toHex(serializeSignDoc(res.signed)),
     senderPublicKey: account.pubKey,
@@ -62,7 +69,11 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
   return encodedData;
 };
 
-export const encryptAllData = async (message: any, targetPubkey: string, senderAddress: string) => {
+export const encryptAllData = async (
+  message: any,
+  targetPubkey: string,
+  senderAddress: string
+) => {
   const state = store.getState();
   const { user } = state;
 

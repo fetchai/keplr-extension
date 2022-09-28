@@ -53,13 +53,8 @@ export const SendPage: FunctionComponent = observer(() => {
 
   const notification = useNotification();
 
-  const {
-    chainStore,
-    accountStore,
-    priceStore,
-    queriesStore,
-    analyticsStore,
-  } = useStore();
+  const { chainStore, accountStore, priceStore, queriesStore, analyticsStore } =
+    useStore();
   const current = chainStore.current;
 
   const accountInfo = accountStore.getAccount(current.chainId);

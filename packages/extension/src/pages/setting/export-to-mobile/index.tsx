@@ -315,9 +315,8 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
                 if (payload.params && payload.params.length > 0) {
                   for (const chainId of payload.params[0].addressBookChainIds ??
                     []) {
-                    const addressBookConfig = addressBookConfigMap.getAddressBookConfig(
-                      chainId
-                    );
+                    const addressBookConfig =
+                      addressBookConfigMap.getAddressBookConfig(chainId);
 
                     await addressBookConfig.waitLoaded();
 

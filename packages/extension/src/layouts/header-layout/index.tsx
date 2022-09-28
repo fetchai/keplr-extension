@@ -13,7 +13,6 @@ export interface Props extends HeaderProps {
 }
 
 export const HeaderLayout: FunctionComponent<Props> = (props) => {
-  
   const { children } = props;
 
   const [isMenuOpen, setMenuOpen] = useState(false);

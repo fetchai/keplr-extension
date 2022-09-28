@@ -18,29 +18,29 @@
     padding: 10px 20px;
     border-radius: 20px;
     box-shadow: 0px 0px 100px 20px #585858;
-    
-    .options-label{
+
+    .options-label {
       margin-left: 5px;
     }
     img {
       width: 60%;
-      
+
       border-radius: 500px;
     }
     .infoContainer {
       h3 {
-        color: #3B82F6;
+        color: #3b82f6;
         margin-bottom: 0;
       }
-      p, form {
+      p,
+      form {
         font-size: 14px;
-        color: #525F7F;
-        
+        color: #525f7f;
       }
-      p{
+      p {
         margin-bottom: 0.8rem;
       }
-      p:nth-of-type(2){
+      p:nth-of-type(2) {
         margin-bottom: 0 !important;
       }
     }
@@ -48,7 +48,7 @@
       padding: 14px;
       font-size: medium;
       color: #fff;
-      background-color: #3B82F6;
+      background-color: #3b82f6;
       border: none;
       width: 282px;
       border-radius: 5px;
@@ -134,7 +134,7 @@
           white-space: nowrap;
           font-weight: 400;
           font-size: 15px;
-          color:  #808DA0;
+          color: #808da0;
           height: 20px;
         }
       }

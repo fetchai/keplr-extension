@@ -10,7 +10,15 @@ interface UsersProps {
   addresses: any;
 }
 
-const User = ({ chat, contact, contactname }: { chat: any; contact: any; contactname: any }) => {
+const User = ({
+  chat,
+  contact,
+  contactname,
+}: {
+  chat: any;
+  contact: any;
+  contactname: any;
+}) => {
   console.log("contact", contact, "chat", chat, "contactname", contactname);
 
   const [message, setMessage] = useState("");
@@ -70,14 +78,17 @@ export const Users = ({ userChats, addresses }: UsersProps) => {
               key={index}
               chat={userChats[contact]}
               contact={contact}
-              contactname={checkAddress(addresses, contact).length ? checkAddress(addresses, contact) : formatAddress(contact)}
+              contactname={
+                checkAddress(addresses, contact).length
+                  ? checkAddress(addresses, contact)
+                  : formatAddress(contact)
+              }
             />
           );
         })
       ) : (
         <div>
           <div className={style.resultText}>No result found</div>
-          
         </div>
       )}
     </div>

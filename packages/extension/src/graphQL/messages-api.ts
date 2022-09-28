@@ -4,14 +4,16 @@ import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
 import client, { createWSLink, httpLink } from "./client";
-import { listenMessages, receiveMessages, sendMessages } from "./messages-queries";
-
+import {
+  listenMessages,
+  receiveMessages,
+  sendMessages,
+} from "./messages-queries";
 
 export const fetchMessages = async () => {
   const state = store.getState();
- console.log("state access token ",state.user.accessToken);
- 
-  
+  console.log("state access token ", state.user.accessToken);
+
   const { data } = await client.query({
     query: gql(receiveMessages),
     fetchPolicy: "no-cache",
@@ -26,11 +28,19 @@ export const fetchMessages = async () => {
   return data.mailbox.messages;
 };
 
-export const delieverMessages = async (newMessage: any, targetPubKey: string, senderAddress: string) => {
+export const delieverMessages = async (
+  newMessage: any,
+  targetPubKey: string,
+  senderAddress: string
+) => {
   const state = store.getState();
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(newMessage, targetPubKey, senderAddress);
+      const encryptedData = await encryptAllData(
+        newMessage,
+        targetPubKey,
+        senderAddress
+      );
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
@@ -60,7 +70,10 @@ export const messageListener = () => {
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
-      return definition.kind === "OperationDefinition" && definition.operation === "subscription";
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
     },
     wsLink,
     httpLink

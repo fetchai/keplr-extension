@@ -7,17 +7,25 @@ export const recieveMessages = async (currentAddress) => {
   console.log("messagesArray", messagesArray);
   let messageStore = {};
   messagesArray.map((message) => {
-    const contactAddress = message.sender === currentAddress ? message.target : message.sender;
+    const contactAddress =
+      message.sender === currentAddress ? message.target : message.sender;
     // const contactAddress = message.target
     if (!messageStore[contactAddress])
-      messageStore[contactAddress] = { messages: {}, lastMessage: { commitTimestamp: 0 } };
+      messageStore[contactAddress] = {
+        messages: {},
+        lastMessage: { commitTimestamp: 0 },
+      };
     messageStore[contactAddress].messages[message.id] = message;
-    messageStore[contactAddress].lastMessage = findLastMessage(message, messageStore[contactAddress].lastMessage);
+    messageStore[contactAddress].lastMessage = findLastMessage(
+      message,
+      messageStore[contactAddress].lastMessage
+    );
   });
   store.dispatch(addMessageList(messageStore));
 };
 
 export const findLastMessage = (newMessage, lastMessage) => {
-  if (newMessage.commitTimestamp > lastMessage.commitTimestamp) return newMessage;
+  if (newMessage.commitTimestamp > lastMessage.commitTimestamp)
+    return newMessage;
   return lastMessage;
 };

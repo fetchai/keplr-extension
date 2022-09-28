@@ -59,9 +59,17 @@ export const AccountView: FunctionComponent = observer(() => {
       </div>
       <div className={styleAccount.containerAccount}>
         <div style={{ flex: 1 }} />
-        <div className={styleAccount.address} onClick={() => copyAddress(accountInfo.bech32Address)}>
-          <Address maxCharacters={22} lineBreakBeforePrefix={false} iconClass="fas fa-copy">
-            {accountInfo.walletStatus === WalletStatus.Loaded && accountInfo.bech32Address
+        <div
+          className={styleAccount.address}
+          onClick={() => copyAddress(accountInfo.bech32Address)}
+        >
+          <Address
+            maxCharacters={22}
+            lineBreakBeforePrefix={false}
+            iconClass="fas fa-copy"
+          >
+            {accountInfo.walletStatus === WalletStatus.Loaded &&
+            accountInfo.bech32Address
               ? accountInfo.bech32Address
               : "..."}
           </Address>
@@ -69,11 +77,18 @@ export const AccountView: FunctionComponent = observer(() => {
         <div style={{ flex: 1 }} />
       </div>
       {accountInfo.hasEvmosHexAddress && (
-        <div className={styleAccount.containerAccount} style={{ marginTop: "2px" }}>
+        <div
+          className={styleAccount.containerAccount}
+          style={{ marginTop: "2px" }}
+        >
           <div style={{ flex: 1 }} />
-          <div className={styleAccount.address} onClick={() => copyAddress(accountInfo.evmosHexAddress)}>
+          <div
+            className={styleAccount.address}
+            onClick={() => copyAddress(accountInfo.evmosHexAddress)}
+          >
             <Address maxCharacters={22} lineBreakBeforePrefix={false}>
-              {accountInfo.walletStatus === WalletStatus.Loaded && accountInfo.evmosHexAddress
+              {accountInfo.walletStatus === WalletStatus.Loaded &&
+              accountInfo.evmosHexAddress
                 ? accountInfo.evmosHexAddress
                 : "..."}
             </Address>

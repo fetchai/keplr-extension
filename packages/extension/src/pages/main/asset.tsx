@@ -1,5 +1,10 @@
 import { observer } from "mobx-react-lite";
-import React, { FunctionComponent, useEffect, useState, useCallback } from "react";
+import React, {
+  FunctionComponent,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { ToolTip } from "../../components/tooltip";
 import { useLanguage } from "../../languages";
@@ -15,7 +20,13 @@ import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 
-export const ProgressBar = ({ width, data }: { width: number; data: number[] }) => {
+export const ProgressBar = ({
+  width,
+  data,
+}: {
+  width: number;
+  data: number[];
+}) => {
   const [values, setValues] = useState([0, 0]);
 
   useEffect(() => {
@@ -28,8 +39,14 @@ export const ProgressBar = ({ width, data }: { width: number; data: number[] }) 
   return (
     <div>
       <div className={styleAsset.progressDiv} style={{ width }}>
-        <div style={{ width: `${values[0]}px` }} className={styleAsset.progressAvailable} />
-        <div style={{ width: `${values[0] + values[1]}px` }} className={styleAsset.progressStake} />
+        <div
+          style={{ width: `${values[0]}px` }}
+          className={styleAsset.progressAvailable}
+        />
+        <div
+          style={{ width: `${values[0] + values[1]}px` }}
+          className={styleAsset.progressStake}
+        />
       </div>
     </div>
   );
@@ -49,11 +66,11 @@ const EmptyState = ({
   const [pubKey, setPubKey] = useState("");
   const [bech32Address, setBech32Address] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
-  useEffect(()=>{
+  useEffect(() => {
     const accountInfo = accountStore.getAccount(chainId);
-    setWalletStatus(accountInfo.walletStatus)
-    setBech32Address(accountInfo.bech32Address)
-  },[accountStore, chainStore])
+    setWalletStatus(accountInfo.walletStatus);
+    setBech32Address(accountInfo.bech32Address);
+  }, [accountStore, chainStore]);
 
   useEffect(() => {
     const getPubKey = async () => {
@@ -96,13 +113,18 @@ const EmptyState = ({
         setIsDepositOpen={setIsDepositOpen}
       />
 
-      <h1 className={styleAsset.title}>{pubKey.length ? "No funds added" : "Your wallet isn’t active yet. "}</h1>
+      <h1 className={styleAsset.title}>
+        {pubKey.length ? "No funds added" : "Your wallet isn’t active yet. "}
+      </h1>
       <img src={walletIcon} alt="no fund" />
       {pubKey.length ? (
-        <p className={styleAsset.desc}>That’s okay, you can deposit tokens to your address or buy some.</p>
+        <p className={styleAsset.desc}>
+          That’s okay, you can deposit tokens to your address or buy some.
+        </p>
       ) : (
         <div>
-          To activate your wallet, you need to make a transaction on the network such as:
+          To activate your wallet, you need to make a transaction on the network
+          such as:
           <ul>
             <li>Buy and deposit Native FET</li>
             <li>Stake with a validator</li>
@@ -115,7 +137,8 @@ const EmptyState = ({
           e.preventDefault();
           copyAddress(bech32Address);
           setIsDepositOpen(true);
-        }}>
+        }}
+      >
         Deposit {denom}
       </button>
       {chainId == "fetchhub-4" && (
@@ -123,7 +146,8 @@ const EmptyState = ({
           href={"https://indacoin.io/buy-fetch.ai-with-card"}
           target="_blank"
           rel="noopener noreferrer"
-          className={styleAsset.buyButton}>
+          className={styleAsset.buyButton}
+        >
           <button>
             <img src={buyIcon} alt="buy tokens" /> Buy Tokens
           </button>
@@ -146,7 +170,9 @@ export const AssetView: FunctionComponent = observer(() => {
 
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const balanceStakableQuery = queries.queryBalances.getQueryBech32Address(accountInfo.bech32Address).stakable;
+  const balanceStakableQuery = queries.queryBalances.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).stakable;
 
   const stakable = balanceStakableQuery.balance;
 
@@ -158,7 +184,9 @@ export const AssetView: FunctionComponent = observer(() => {
     .getQueryBech32Address(accountInfo.bech32Address)
     .total.upperCase(true);
 
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(accountInfo.bech32Address);
+  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+    accountInfo.bech32Address
+  );
 
   const stakableReward = rewards.stakableReward;
 
@@ -168,21 +196,30 @@ export const AssetView: FunctionComponent = observer(() => {
 
   const stakablePrice = priceStore.calculatePrice(stakable, fiatCurrency);
   const stakedSumPrice = priceStore.calculatePrice(stakedSum, fiatCurrency);
-  const stakableRewardPrice = priceStore.calculatePrice(stakableReward, fiatCurrency);
+  const stakableRewardPrice = priceStore.calculatePrice(
+    stakableReward,
+    fiatCurrency
+  );
 
   const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
 
   // If fiat value is fetched, show the value that is multiplied with amount and fiat value.
   // If not, just show the amount of asset.
   const data: number[] = [
-    stakablePrice ? parseFloat(stakablePrice.toDec().toString()) : parseFloat(stakable.toDec().toString()),
-    stakedSumPrice ? parseFloat(stakedSumPrice.toDec().toString()) : parseFloat(stakedSum.toDec().toString()),
+    stakablePrice
+      ? parseFloat(stakablePrice.toDec().toString())
+      : parseFloat(stakable.toDec().toString()),
+    stakedSumPrice
+      ? parseFloat(stakedSumPrice.toDec().toString())
+      : parseFloat(stakedSum.toDec().toString()),
     stakableRewardPrice
       ? parseFloat(stakableRewardPrice.toDec().toString())
       : parseFloat(stakableReward.toDec().toString()),
   ];
 
-  const hasBalance = totalPrice ? !totalPrice.toDec().isZero() : !total.toDec().isZero();
+  const hasBalance = totalPrice
+    ? !totalPrice.toDec().isZero()
+    : !total.toDec().isZero();
 
   if (!hasBalance) {
     return (
@@ -206,8 +243,11 @@ export const AssetView: FunctionComponent = observer(() => {
               className={styleAsset.small}
               style={{
                 marginBottom: "20px",
-              }}>
-              {totalPrice ? totalPrice.toString() : total.shrink(true).trim(true).maxDecimals(6).toString()}
+              }}
+            >
+              {totalPrice
+                ? totalPrice.toString()
+                : total.shrink(true).trim(true).maxDecimals(6).toString()}
             </div>
             <div className={styleAsset.indicatorIcon}>
               <React.Fragment>
@@ -215,12 +255,16 @@ export const AssetView: FunctionComponent = observer(() => {
                   <i className="fas fa-spinner fa-spin" />
                 ) : balanceStakableQuery.error ? (
                   <ToolTip
-                    tooltip={balanceStakableQuery.error?.message || balanceStakableQuery.error?.statusText}
+                    tooltip={
+                      balanceStakableQuery.error?.message ||
+                      balanceStakableQuery.error?.statusText
+                    }
                     theme="dark"
                     trigger="hover"
                     options={{
                       placement: "top",
-                    }}>
+                    }}
+                  >
                     <i className="fas fa-exclamation-triangle text-danger" />
                   </ToolTip>
                 ) : null}
@@ -239,7 +283,8 @@ export const AssetView: FunctionComponent = observer(() => {
               className={styleAsset.value}
               style={{
                 color: "#525f7f",
-              }}>
+              }}
+            >
               {stakable.shrink(true).maxDecimals(6).toString()}
             </div>
           </div>
@@ -252,7 +297,8 @@ export const AssetView: FunctionComponent = observer(() => {
               className={styleAsset.value}
               style={{
                 color: "#525f7f",
-              }}>
+              }}
+            >
               {stakedSum.shrink(true).maxDecimals(6).toString()}
             </div>
           </div>
@@ -265,7 +311,8 @@ export const AssetView: FunctionComponent = observer(() => {
               className={styleAsset.value}
               style={{
                 color: "#525f7f",
-              }}>
+              }}
+            >
               {stakableReward.shrink(true).maxDecimals(6).toString()}
             </div>
           </div>

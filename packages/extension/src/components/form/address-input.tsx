@@ -104,8 +104,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         }
       },
     };
-    console.log("selectAddressFromAddressBook",selectAddressFromAddressBook);
-    
+    console.log("selectAddressFromAddressBook", selectAddressFromAddressBook);
 
     return (
       <React.Fragment>
