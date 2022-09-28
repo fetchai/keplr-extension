@@ -18,7 +18,6 @@ import { AssetView } from "./asset";
 import { BIP44SelectModal } from "./bip44-select-modal";
 import { Menu } from "./menu";
 import style from "./style.module.scss";
-import { TokensView } from "./token";
 // import { IBCTransferView } from "./ibc-transfer";
 
 export const MainPage: FunctionComponent = observer(() => {
