@@ -49,20 +49,24 @@ const EmptyState = ({
   const [pubKey, setPubKey] = useState("");
   const [bech32Address, setBech32Address] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
+  const [loading,setLoading]=useState(true)
   useEffect(()=>{
     const accountInfo = accountStore.getAccount(chainId);
     setWalletStatus(accountInfo.walletStatus)
     setBech32Address(accountInfo.bech32Address)
-  },[accountStore, chainStore])
 
-  useEffect(() => {
+   
+  },[accountStore, chainStore])
+  useEffect(()=>{
     const getPubKey = async () => {
+      setLoading(true)
       const value = await fetchPublicKey(bech32Address);
-      console.log(value);
       setPubKey(value || "");
+      setLoading(false)
     };
     getPubKey();
-  }, [bech32Address]);
+  },[bech32Address])
+
   const intl = useIntl();
 
   const notification = useNotification();
@@ -96,9 +100,9 @@ const EmptyState = ({
         setIsDepositOpen={setIsDepositOpen}
       />
 
-      <h1 className={styleAsset.title}>{pubKey.length ? "No funds added" : "Your wallet isn’t active yet. "}</h1>
-      <img src={walletIcon} alt="no fund" />
-      {pubKey.length ? (
+      {!loading && <h1 className={styleAsset.title}>{(pubKey.length) ? "No funds added" : "Your wallet isn’t active yet. "}</h1>}
+      {!loading && <><img src={walletIcon} alt="no fund" />
+      {(pubKey?.length) ? (
         <p className={styleAsset.desc}>That’s okay, you can deposit tokens to your address or buy some.</p>
       ) : (
         <div>
@@ -128,7 +132,7 @@ const EmptyState = ({
             <img src={buyIcon} alt="buy tokens" /> Buy Tokens
           </button>
         </a>
-      )}
+      )}</>}
     </div>
   );
 };

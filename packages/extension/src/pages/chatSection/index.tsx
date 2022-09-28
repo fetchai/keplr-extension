@@ -121,7 +121,6 @@ export const ChatSection: FunctionComponent = () => {
     e.preventDefault();
     console.log("accountInfoaccountInfoaccountInfo",accountInfo.bech32Address);
     try {
-      console.log(oldMessages);
       const data = await delieverMessages(
         newMessage,
         targetPubKey,
@@ -151,13 +150,10 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     const setPublicAddress = async () => {
-      console.log("setPublicAddress");
       const pubAddr = await fetchPublicKey(userName);
-      
-      
-      setTargetPubKey(pubAddr || "");
+      setTargetPubKey(pubAddr || "");                                                           
     };
-    if (!oldMessages?.pubKey?.length) setPublicAddress();
+    if (!oldMessages?.pubKey?.length) setPublicAddress();                               
   }, [userName]);
 
   useEffect(() => {

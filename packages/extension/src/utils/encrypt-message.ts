@@ -42,27 +42,28 @@ const encryptMessage = async (chain_id: string, account: any, targetPubKey: stri
     memo: "",
   };
 
-  // @ts-ignore
-  const res = await window?.keplr?.signAmino(
-    chain_id,
-    account.address,
-    msg,
-    { isADR36WithString: true } as any
-  );
-    console.log("resresresresresresresresresresres",res);
+  // // @ts-ignore
+  // const res = await window?.keplr?.signAmino(
+  //   chain_id,
+  //   account.address,
+  //   msg,
+  //   { isADR36WithString: true } as any
+  // );
+  //   console.log("resresresresresresresresresresres",res);
     
   const dataEnvalop = {
-    data: toHex(serializeSignDoc(res.signed)),
+    data: toHex(serializeSignDoc(msg)),
     senderPublicKey: account.pubKey,
     destinationPublicKey: targetPubKey,
-    signature: res.signature.signature,
-    // signature: "test signature",
+    // signature: res.signature.signature,
+    signature: "test signature",
   };
   const encodedData = toBase64(Buffer.from(JSON.stringify(dataEnvalop)));
   return encodedData;
 };
 
 export const encryptAllData = async (message: any, targetPubkey: string, senderAddress: string) => {
+  
   const state = store.getState();
   const { user } = state;
 

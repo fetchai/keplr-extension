@@ -39,6 +39,7 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
+  value:string
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -50,10 +51,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     label,
     disableAddressBook,
     disabled = false,
+    value
   }) => {
     const intl = useIntl();
 
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
+    const [searchedAddressValue,setSearchedAddressValue]=useState(value)
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -139,9 +142,9 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={recipientConfig.rawRecipient}
+              value={value?.length?searchedAddressValue:recipientConfig.rawRecipient}
               onChange={(e) => {
-                recipientConfig.setRawRecipient(e.target.value);
+                value?.length?setSearchedAddressValue(e.target.value):recipientConfig.setRawRecipient(e.target.value);
                 e.preventDefault();
               }}
               autoComplete="off"

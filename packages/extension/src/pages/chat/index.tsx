@@ -93,26 +93,24 @@ const ChatView = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value=e.target.value
     setInputVal(value);
-   
     if (value.trim()) {
-      const filteredChats = Object.keys(userChats).filter((contact) => {
-        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
-        console.log("found",found);
-        console.log("found another way",contact.toLowerCase().includes(value.toLowerCase()));
-        console.log ("contact.toLowerCase().includes(value.toLowerCase()) || found",contact.toLowerCase().includes(value.toLowerCase()) || found);
-        return contact.toLowerCase().includes(value.toLowerCase()) || found;
-        // return contact.toLowerCase().includes(value.toLowerCase())
+    
+      const userLastMessages: any = {};
+      Object.keys(messages).map((contact: string) => {
+        userLastMessages[contact] = messages[contact]?.lastMessage;
       });
-      console.log("filteredChats",filteredChats);
+      const filteredChats = Object.keys(userLastMessages).filter((contact) => {
+        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
+        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+      });
       
       let tempChats: any = {};
       filteredChats.forEach((item: any) => {
-        tempChats[item] = userChats[item];
+        tempChats[item] = userLastMessages[item];
       });
-
+      
       setUserChats(tempChats);
     } else {
-      // setUserChats(userChats)
       fillUserChats();
     }
 

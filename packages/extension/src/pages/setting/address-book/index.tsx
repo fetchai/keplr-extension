@@ -88,7 +88,7 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    const [addAddressModalOpen, setAddAddressModalOpen] = useState(values.location.state || false);
+    const [addAddressModalOpen, setAddAddressModalOpen] = useState(values?.location?.state?.currentState || false);
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
@@ -99,6 +99,7 @@ export const AddressBookPage: FunctionComponent<{
     console.log("addresses addresses", addresses);
     // console.log("state state",props.location.state);
     console.log("props values.children",values.location.state);
+    console.log("currentValuecurrentValuecurrentValuecurrentValue",values?.location?.state?.currentValue);
     
     
     const addressBookIcons = (index: number) => {
@@ -181,6 +182,7 @@ export const AddressBookPage: FunctionComponent<{
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
+              currentValue={values?.location?.state?.currentValue}
             />
           </ModalBody>
         </Modal>
