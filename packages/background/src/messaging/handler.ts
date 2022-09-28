@@ -3,6 +3,7 @@ import {
   DecryptMessagingMessage,
   EncryptMessagingMessage,
   GetMessagingPublicKey,
+  RegisterPublicKey,
   SignMessagingPayload,
 } from "./messages";
 import { MessagingService } from "./service";
@@ -14,6 +15,12 @@ export const getHandler: (service: MessagingService) => Handler = (service) => {
         return handleGetMessagingPublicKey(service)(
           env,
           msg as GetMessagingPublicKey
+        );
+      
+      case RegisterPublicKey:
+        return handleRegisterPublicKey(service)(
+          env,
+          msg as RegisterPublicKey
         );
 
       case EncryptMessagingMessage:
@@ -43,7 +50,16 @@ const handleGetMessagingPublicKey: (
   service: MessagingService
 ) => InternalHandler<GetMessagingPublicKey> = (service) => {
   return async (env, msg) => {
-    return await service.getPublicKey(env, msg.chainId, msg.targetAddress);
+    const pubKey = await service.getPublicKey(env, msg.chainId, msg.targetAddress, msg.bearer);
+    return pubKey ? pubKey : "";
+  };
+};
+
+const handleRegisterPublicKey: (
+  service: MessagingService
+) => InternalHandler<RegisterPublicKey> = (service) => {
+  return async (env, msg) => {
+    return await service.registerPublicKey(env, msg.chainId, msg.address, msg.bearer);
   };
 };
 
@@ -55,7 +71,8 @@ const handleEncryptMessagingMessage: (
       env,
       msg.chainId,
       msg.targetAddress,
-      msg.message
+      msg.message,
+      msg.bearer
     );
   };
 };

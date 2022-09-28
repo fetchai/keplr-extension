@@ -8,6 +8,7 @@ export class GetMessagingPublicKey extends Message<string> {
 
   constructor(
     public readonly chainId: string,
+    public readonly bearer: string,
     public readonly targetAddress: string | null
   ) {
     super();
@@ -28,6 +29,34 @@ export class GetMessagingPublicKey extends Message<string> {
   }
 }
 
+export class RegisterPublicKey extends Message<string> {
+  public static type() {
+    return "register-public-key";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly bearer: string,
+    public readonly address: string
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("Chain id is empty");
+    }
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return RegisterPublicKey.type();
+  }
+}
+
 export class EncryptMessagingMessage extends Message<string> {
   public static type() {
     return "encrypt-messaging-message";
@@ -36,7 +65,8 @@ export class EncryptMessagingMessage extends Message<string> {
   constructor(
     public readonly chainId: string,
     public readonly targetAddress: string,
-    public readonly message: string
+    public readonly message: string,
+    public readonly bearer: string
   ) {
     super();
   }
