@@ -175,7 +175,6 @@ export class MessagingService {
    */
   private async fetchPublicKey(accessToken: string, _targetAddress: string): Promise<string | undefined> {
     // TODO(EJF): Query the memorandum service for the public key associated with the target address
-    console.log("^^^^", accessToken)
     const pubKey = await getPubKey(accessToken, _targetAddress, MESSAGE_CHANNEL_ID);
     
     if (!pubKey) return;
