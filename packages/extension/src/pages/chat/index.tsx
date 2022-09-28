@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
 import { userMessages } from "../../chatStore/messages-slice";
-import { setAccessToken, userDetails } from "../../chatStore/user-slice";
+import { setAccessToken, setMessagingPubKey, userDetails } from "../../chatStore/user-slice";
 import { EthereumEndpoint } from "../../config.ui";
 import { HeaderLayout } from "../../layouts/header-layout";
 import chatIcon from "../../public/assets/hello.png";
@@ -22,6 +22,11 @@ import { Menu } from "../main/menu";
 import { AuthPopup } from "./AuthPopup";
 import style from "./style.module.scss";
 import { Users } from "./users";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import {
+  RegisterPublicKey,
+} from "@keplr-wallet/background/build/messaging";
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -33,7 +38,6 @@ const ChatView = () => {
   const history = useHistory();
   const messages = useSelector(userMessages);
   const user = useSelector(userDetails);
-
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -54,14 +58,37 @@ const ChatView = () => {
   const [userChats, setUserChats] = useState<any>({});
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const intl = useIntl();
 
+  const requester = new InExtensionMessageRequester();
+
+  const setJWTAndRegisterMsgPubKey = async () => {
+    const res = await getJWT(
+      current.chainId,
+      "http://localhost:5500"
+    );
+
+    store.dispatch(setAccessToken(res));
+
+    const messagingPubKey = await requester.sendMessage(
+      BACKGROUND_PORT,
+      new RegisterPublicKey(current.chainId, res, walletAddress)
+    );
+
+    store.dispatch(setMessagingPubKey(messagingPubKey))
+    
+  }
+
   useEffect(() => {
-    // setPubKey(toHex(pubKey)); will be needed later
-    recieveMessages(walletAddress);
-  }, [pubKey]);
+    setJWTAndRegisterMsgPubKey();
+  }, [current.chainId]);
+
+
+  useEffect(() => {
+    recieveMessages(walletAddress, user.accessToken);
+  }, [user.accessToken]);
 
   useEffect(() => {
     const userLastMessages: any = {};
@@ -195,7 +222,7 @@ const ChatView = () => {
             </button>
           </div>
         )} */}
-        <AuthPopup />
+        {/* <AuthPopup /> */}
 
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
