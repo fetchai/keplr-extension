@@ -46,7 +46,7 @@ export const AddAddressModal: FunctionComponent<{
       memoConfig,
       recipientConfig,
     ]);
-
+    
     return (
       <HeaderLayout
         showChainName={false}

@@ -25,7 +25,7 @@ function getENSProvider(endpoint: string) {
 
 export class ObservableEnsFetcher {
   static isValidENS(name: string): boolean {
-    const strs = name.split(".");
+    const strs = name?.split(".");
     if (strs.length <= 1) {
       return false;
     }

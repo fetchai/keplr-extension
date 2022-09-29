@@ -31,6 +31,8 @@ export const delieverMessages = async (newMessage: any, targetPubKey: string, se
   try {
     if (newMessage) {
       const encryptedData = await encryptAllData(newMessage, targetPubKey, senderAddress);
+      // console.log("new token ",state.user.accessToken);
+      
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
@@ -56,7 +58,7 @@ export const delieverMessages = async (newMessage: any, targetPubKey: string, se
 
 export const messageListener = () => {
   const state = store.getState();
-  const wsLink = createWSLink("Fake Token");
+  const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);

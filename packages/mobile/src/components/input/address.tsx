@@ -45,7 +45,7 @@ export const AddressInput: FunctionComponent<{
 
     const style = useStyle();
 
-    const isENSAddress = ObservableEnsFetcher.isValidENS(
+    const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
 

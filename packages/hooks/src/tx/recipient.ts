@@ -53,7 +53,7 @@ export class RecipientConfig extends TxChainSetter implements IRecipientConfig {
   }
 
   get recipient(): string {
-    if (ObservableEnsFetcher.isValidENS(this.rawRecipient)) {
+    if (ObservableEnsFetcher?.isValidENS(this.rawRecipient)) {
       const ensFetcher = this.getENSFetcher(this.rawRecipient);
       if (ensFetcher) {
         if (ensFetcher.isFetching) {
@@ -112,7 +112,7 @@ export class RecipientConfig extends TxChainSetter implements IRecipientConfig {
       return new EmptyAddressError("Address is empty");
     }
 
-    if (ObservableEnsFetcher.isValidENS(this.rawRecipient)) {
+    if (ObservableEnsFetcher?.isValidENS(this.rawRecipient)) {
       const ensFetcher = this.getENSFetcher(this.rawRecipient);
       if (!ensFetcher) {
         return new ENSNotSupportedError("ENS not supported for this chain");

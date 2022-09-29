@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   FormGroup,
   Label,
@@ -39,7 +39,7 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
-  value:string
+  value: string;
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -51,12 +51,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     label,
     disableAddressBook,
     disabled = false,
-    value
+    value,
   }) => {
     const intl = useIntl();
 
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
-    const [searchedAddressValue,setSearchedAddressValue]=useState(value)
+    const [searchedAddressValue, setSearchedAddressValue] = useState(value);
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -64,11 +64,13 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       return `input-${Buffer.from(bytes).toString("hex")}`;
     });
 
-    const isENSAddress = ObservableEnsFetcher.isValidENS(
+    const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
 
     const error = recipientConfig.getError();
+    console.log("error text", error);
+
     const errorText: string | undefined = useMemo(() => {
       if (error) {
         switch (error.constructor) {
@@ -107,9 +109,20 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         }
       },
     };
-    console.log("selectAddressFromAddressBook",selectAddressFromAddressBook);
-    
-
+    // useEffect(()=>{
+    //   recipientConfig?.setRawRecipient(searchedAddressValue);
+    // },[])
+    const handleSearchInputChange = (e: any) => {
+      debugger;
+      e.preventDefault();
+      recipientConfig.setRawRecipient(e?.target?.value);
+      if (value?.length) {
+        setSearchedAddressValue(e?.target?.value);
+        
+      } else {
+        recipientConfig.setRawRecipient(e?.target?.value);
+      }
+    };
     return (
       <React.Fragment>
         <Modal
@@ -142,11 +155,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={value?.length?searchedAddressValue:recipientConfig.rawRecipient}
-              onChange={(e) => {
-                value?.length?setSearchedAddressValue(e.target.value):recipientConfig.setRawRecipient(e.target.value);
-                e.preventDefault();
-              }}
+              value={
+                value?.length
+                  ? searchedAddressValue
+                  : recipientConfig.rawRecipient
+              }
+              onChange={(e) => handleSearchInputChange(e)}
               autoComplete="off"
               disabled={disabled}
             />
