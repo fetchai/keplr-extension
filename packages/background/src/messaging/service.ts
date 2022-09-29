@@ -3,7 +3,7 @@ import { KeyRingService } from "../keyring";
 import { Env } from "@keplr-wallet/router";
 import { Hash, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
 import { decrypt, encrypt, PrivateKey } from "eciesjs";
-import { fromBase64, toBase64, toHex } from "@cosmjs/encoding";
+import { fromBase64, fromHex, toBase64, toHex } from "@cosmjs/encoding";
 import { getPubKey, registerPubKey } from "./memorandum-client";
 import { MESSAGE_CHANNEL_ID } from "./constants";
 
@@ -37,7 +37,7 @@ export class MessagingService {
     if (targetAddress === null) {
       const sk = await this.getPrivateKey(env, chainId);
       const privateKey = new PrivateKey(Buffer.from(sk));
-      return toBase64(privateKey.publicKey.compressed);
+      return toHex(privateKey.publicKey.compressed);
     } else {
       return await this.lookupPublicKey(accessToken, targetAddress);
     }
@@ -109,7 +109,7 @@ export class MessagingService {
     const targetPublicKey = await this.lookupPublicKey(accessToken, targetAddress);
 
     if (!targetPublicKey) throw new Error("Target pub key not registered");
-    const rawTargetPublicKey = Buffer.from(fromBase64(targetPublicKey));
+    const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey));
 
     // encrypt the message
     return toBase64(encrypt(rawTargetPublicKey, rawMessage));

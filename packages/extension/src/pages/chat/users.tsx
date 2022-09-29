@@ -72,6 +72,7 @@ export const Users = ({ chainId, userChats, addresses }: UsersProps) => {
               chat={userChats[contact]}
               contact={contact}
               contactname={checkAddress(addresses, contact).length ? checkAddress(addresses, contact) : formatAddress(contact)}
+              chainId={chainId}
             />
           );
         })

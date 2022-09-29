@@ -22,11 +22,10 @@ export const fetchMessages = async (accessToken: string) => {
   return data.mailbox.messages;
 };
 
-export const delieverMessages = async (chainId: string, newMessage: any, senderAddress: string, targetAddress: string) => {
-  // const state = store.getState();
+export const deliverMessages = async (accessToken: string, chainId: string, newMessage: any, senderAddress: string, targetAddress: string) => {
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(chainId, newMessage, senderAddress, targetAddress);
+      const encryptedData = await encryptAllData(accessToken, chainId, newMessage, senderAddress, targetAddress);
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
@@ -38,7 +37,7 @@ export const delieverMessages = async (chainId: string, newMessage: any, senderA
         },
         context: {
           headers: {
-            Authorization: `Bearer fagf`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       });

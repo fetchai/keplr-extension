@@ -16,7 +16,7 @@ import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { EthereumEndpoint } from "../../config.ui";
-import { delieverMessages } from "../../graphQL/messages-api";
+import { deliverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts/header-layout";
 import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
@@ -28,6 +28,7 @@ import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import { ToolTip } from "../../components/tooltip";
 import style from "./style.module.scss";
+import { userDetails } from "../../chatStore/user-slice";
 
 export let openValue = true;
 
@@ -42,6 +43,8 @@ export const ChatSection: FunctionComponent = () => {
   const [messages, setMessages] = useState(
     Object.values(oldMessages?.messages || [])
   );
+  const user = useSelector(userDetails);
+
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -119,7 +122,8 @@ export const ChatSection: FunctionComponent = () => {
     e.preventDefault();
     try {
       console.log(oldMessages);
-      const data = await delieverMessages(
+      const data = await deliverMessages(
+        user.accessToken,
         current.chainId,
         newMessage,
         accountInfo.bech32Address,
@@ -150,7 +154,11 @@ export const ChatSection: FunctionComponent = () => {
   useEffect(() => {
     const setPublicAddress = async () => {
       console.log("setPublicAddress");
-      const pubAddr = await fetchPublicKey(userName);
+      const pubAddr = await fetchPublicKey(
+        user.accessToken,
+        current.chainId,
+        userName
+      );
       setTargetPubKey(pubAddr || "");
     };
     if (!oldMessages?.pubKey?.length) setPublicAddress();
@@ -294,9 +302,9 @@ const Dropdown = ({ added, blocked }: { added: boolean; blocked: boolean }) => {
 
 const Popup = ({ popupData }: { popupData: any }) => {
   const { name, heading, button, text1, text2, text3, check } = popupData;
-  const handleClick = () => {
-    openPopup = false;
-  };
+  // const handleClick = () => {
+  //   openPopup = false;
+  // };
 
   return (
     <>
@@ -316,7 +324,7 @@ const Popup = ({ popupData }: { popupData: any }) => {
         </section>
         <div className={style.buttonContainer}>
           <button type="button">Cancel</button>
-          <button type="button" className={style.btn} onClick={handleClick}>
+          <button type="button" className={style.btn} /*onClick={handleClick}*/>
             {button}
           </button>
         </div>

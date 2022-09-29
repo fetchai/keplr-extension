@@ -8,7 +8,7 @@ export class GetMessagingPublicKey extends Message<string> {
 
   constructor(
     public readonly chainId: string,
-    public readonly bearer: string,
+    public readonly accessToken: string,
     public readonly targetAddress: string | null
   ) {
     super();
@@ -36,7 +36,7 @@ export class RegisterPublicKey extends Message<string> {
 
   constructor(
     public readonly chainId: string,
-    public readonly bearer: string,
+    public readonly accessToken: string,
     public readonly address: string
   ) {
     super();
@@ -66,7 +66,7 @@ export class EncryptMessagingMessage extends Message<string> {
     public readonly chainId: string,
     public readonly targetAddress: string,
     public readonly message: string,
-    public readonly bearer: string
+    public readonly accessToken: string
   ) {
     super();
   }

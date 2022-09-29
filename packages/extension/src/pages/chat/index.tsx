@@ -27,17 +27,16 @@ import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import {
   RegisterPublicKey,
 } from "@keplr-wallet/background/build/messaging";
+import { AUTH_SERVER } from "../../config/config";
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
-  const pubKey = accountInfo.pubKey;
 
   const history = useHistory();
   const messages = useSelector(userMessages);
-  const user = useSelector(userDetails);
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -67,7 +66,7 @@ const ChatView = () => {
   const setJWTAndRegisterMsgPubKey = async () => {
     const res = await getJWT(
       current.chainId,
-      "http://localhost:5500"
+      AUTH_SERVER
     );
 
     store.dispatch(setAccessToken(res));
@@ -78,17 +77,11 @@ const ChatView = () => {
     );
 
     store.dispatch(setMessagingPubKey(messagingPubKey))
-    
   }
 
   useEffect(() => {
     setJWTAndRegisterMsgPubKey();
   }, [current.chainId]);
-
-
-  useEffect(() => {
-    recieveMessages(walletAddress, user.accessToken);
-  }, [user.accessToken]);
 
   useEffect(() => {
     const userLastMessages: any = {};
@@ -222,6 +215,7 @@ const ChatView = () => {
             </button>
           </div>
         )} */}
+
         {/* <AuthPopup /> */}
 
         <div className={style.searchContainer}>
@@ -233,7 +227,7 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        <Users userChats={userChats} addresses={addresses} />
+        <Users chainId={current.chainId} userChats={userChats} addresses={addresses} />
       </div>
     </HeaderLayout>
   );

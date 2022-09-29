@@ -8,7 +8,7 @@ import {
 } from "@keplr-wallet/background/build/messaging";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { rawSecp256k1PubkeyToRawAddress } from '@cosmjs/amino';
-import { fromBase64, toBase64, Bech32, toHex } from "@cosmjs/encoding";
+import { toBase64, Bech32, fromHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
 declare let window: Window;
 
@@ -79,24 +79,18 @@ export const getJWT = async (chainId: string, url: string) => {
 
   const requester = new InExtensionMessageRequester();
 
-  const pubKeyBase64 = await requester.sendMessage(
+  const pubKey = await requester.sendMessage(
     BACKGROUND_PORT,
     new GetMessagingPublicKey(chainId, '', null)
   );
 
-  const pubKey = toHex(fromBase64(pubKeyBase64));
-
-  const addr = Bech32.encode('fetch', rawSecp256k1PubkeyToRawAddress(fromBase64(pubKeyBase64)));
+  const addr = Bech32.encode('fetch', rawSecp256k1PubkeyToRawAddress(fromHex(pubKey)));
   const request = {
     address: addr,
     public_key: pubKey,
   };
 
-  console.log("request", request);
-
   const r1 = await axios.post(`${url}/request_token`, request, config);
-  console.log("Request status: ", r1.status);
-  console.log("data payload", r1.data.payload);
 
   if (r1.status !== 200) throw new RequestError(r1.statusText);
 
@@ -107,8 +101,6 @@ export const getJWT = async (chainId: string, url: string) => {
   } catch (err: any) {
     throw new RejectError(err);
   }
-
-  console.log("Login request: ", loginRequest);
 
   if (loginRequest === undefined) {
     console.log("Failed to sign challenge!");
