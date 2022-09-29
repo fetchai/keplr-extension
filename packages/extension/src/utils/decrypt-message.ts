@@ -5,33 +5,37 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { DecryptMessagingMessage } from "@keplr-wallet/background/build/messaging";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
-export const decryptMessage = async (content: string, isSender: boolean) => {
+export const decryptMessage = async (chainId: string, content: string, isSender: boolean) => {
   try {
     const state = store.getState();
-    const { user } = state;
+    // const { user } = state;
     const data = Buffer.from(content, "base64").toString("ascii");
 
     //@ts-ignore "ignoring type checking here"
-    const dataEnvalopDecoded = JSON.parse(data);
+    const dataEnvelopeDecoded = JSON.parse(data);
 
-    const decodedData = fromUtf8(fromHex(dataEnvalopDecoded.data));
+    // const decodedData = fromUtf8(fromHex(dataEnvalopDecoded.data));
+    const decodedData = Buffer.from(dataEnvelopeDecoded.data, "base64").toString("ascii");
 
-    const msgrev = JSON.parse(decodedData);
+    const parsedData = JSON.parse(decodedData);
 
-    const msgrevToAscii = msgrev.msgs[0].value.data;
+    // const msgrevToAscii = msgrev.msgs[0].value.data;
 
-    const senTargetData = Buffer.from(fromBase64(msgrevToAscii)).toString("ascii");
+    // const senTargetData = Buffer.from(fromBase64(msgrevToAscii)).toString("ascii");
 
-    const parsedData = JSON.parse(senTargetData);
+    // const parsedData = JSON.parse(senTargetData);
 
-    const decryptedData = decrypt(
-      user.prvKey,
-      Buffer.from(isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData, "base64")
+    // const decryptedData = decrypt(
+    //   user.prvKey,
+    //   Buffer.from(isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData, "base64")
+    // );
+
+    const decryptedData = await decryptMessageContent(
+      chainId,
+      isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData
     );
 
-    const dataString = Buffer.from(decryptedData.toString("ascii"), "base64").toString("ascii");
-
-    const parsedDataString = JSON.parse(dataString);
+    const parsedDataString = JSON.parse(decryptedData);
     return parsedDataString.content.text;
   } catch (error) {
     console.log("error : ", error);

@@ -120,9 +120,10 @@ export const ChatSection: FunctionComponent = () => {
     try {
       console.log(oldMessages);
       const data = await delieverMessages(
+        current.chainId,
         newMessage,
-        targetPubKey,
-        accountInfo.bech32Address
+        accountInfo.bech32Address,
+        userName
       );
       if (data?.dispatchMessages?.length > 0) {
         const newMessages = [...messages];
@@ -231,6 +232,7 @@ export const ChatSection: FunctionComponent = () => {
             const check = showDateFunction(message?.commitTimestamp);
             return (
               <ChatMessage
+                chainId={current.chainId}
                 showDate={check}
                 message={message?.contents}
                 isSender={message?.sender === userName}

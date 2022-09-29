@@ -14,11 +14,13 @@ let months: any[]=["january","February","March","April","May","June","July","Aug
 
 
 export const ChatMessage = ({
+  chainId,
   message,
   isSender,
   timestamp,
   showDate
 }: {
+  chainId: string;
   isSender: boolean;
   message: string;
   timestamp: number;
@@ -31,7 +33,7 @@ export const ChatMessage = ({
   }, [])
   
   const decryptMsg = async (contents: string) => {
-    const message : any = await decryptMessage(contents, !isSender)
+    const message : any = await decryptMessage(chainId, contents, !isSender)
     setDecryptedMessage(message)
   }
   

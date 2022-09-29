@@ -6,18 +6,14 @@ export const userSlice = createSlice({
   initialState: {
     notifications: [],
     accessToken: "",
-    pubKey: "",
-    prvKey: "",
+    messagingPubKey: "",
   },
   reducers: {
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
-    setPubKey: (state, action) => {
-      state.pubKey = action.payload;
-    },
-    setPrvKey: (state, action) => {
-      state.prvKey = action.payload;
+    setMessagingPubKey: (state, action) => {
+      state.messagingPubKey = action.payload;
     },
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
@@ -26,7 +22,7 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setPrvKey, setPubKey, setAccessToken, setNotifications } = userSlice.actions;
+export const { setMessagingPubKey, setAccessToken, setNotifications } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
 

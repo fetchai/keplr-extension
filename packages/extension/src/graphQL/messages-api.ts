@@ -6,15 +6,14 @@ import { updateAuthorMessages } from "../chatStore/messages-slice";
 import client, { createWSLink, httpLink } from "./client";
 import { listenMessages, receiveMessages, sendMessages } from "./messages-queries";
 
-export const fetchMessages = async () => {
+export const fetchMessages = async (accessToken: string) => {
   // const state = store.getState();
   const { data } = await client.query({
     query: gql(receiveMessages),
-    variables: { address: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr" },
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer abc`,
+        Authorization: `Bearer ${accessToken}`,
       },
     },
   });
@@ -23,11 +22,11 @@ export const fetchMessages = async () => {
   return data.mailbox.messages;
 };
 
-export const delieverMessages = async (newMessage: any, targetPubKey: string, senderAddress: string) => {
+export const delieverMessages = async (chainId: string, newMessage: any, senderAddress: string, targetAddress: string) => {
   // const state = store.getState();
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(newMessage, targetPubKey, senderAddress);
+      const encryptedData = await encryptAllData(chainId, newMessage, senderAddress, targetAddress);
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
