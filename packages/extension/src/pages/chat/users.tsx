@@ -78,16 +78,7 @@ export const Users = ({ chainId, userChats, addresses }: UsersProps) => {
         })
       ) : (
         <div>
-          <div className={style.resultText}>testing No result found</div>
-          <button
-            onClick={() => {
-              history.push({
-                pathname: "/setting/address-book",
-                state: true,
-              });
-            }}>
-            Add new contact to address book
-          </button>
+           <div className={style.resultText}>No result found</div>
         </div>
       )}
     </div>

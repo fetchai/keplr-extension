@@ -29,6 +29,7 @@ import {
 } from "@keplr-wallet/background/build/messaging";
 import { AUTH_SERVER } from "../../config/config";
 
+
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -58,6 +59,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
   const [loading, setLoading] = useState(true);
+  const [initialChats,setInitialChats]=useState({})
   const dispatch = useDispatch();
   const intl = useIntl();
 
@@ -89,6 +91,7 @@ const ChatView = () => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
     setUserChats(userLastMessages);
+    setInitialChats(userLastMessages);
   }, [messages, dispatch]);
   // const toggle = () => setIsOpen(!isOpen);
   const fillUserChats = () => {
@@ -113,16 +116,19 @@ const ChatView = () => {
     setInputVal(value);
 
     if (value.trim()) {
-      const filteredChats = Object.keys(userChats).filter((contact) => {
-        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase()))
-        console.log("found",found);
+      const userLastMessages: any = {};
+      Object.keys(messages).map((contact: string) => {
+        userLastMessages[contact] = messages[contact]?.lastMessage;
+      });
+      const filteredChats = Object.keys(userLastMessages).filter((contact) => {
+        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
         return contact.toLowerCase().includes(value.toLowerCase()) || found;
       });
       console.log("filteredChats",filteredChats);
       
       let tempChats: any = {};
       filteredChats.forEach((item: any) => {
-        tempChats[item] = userChats[item];
+        tempChats[item] = userLastMessages[item];
       });
 
       setUserChats(tempChats);

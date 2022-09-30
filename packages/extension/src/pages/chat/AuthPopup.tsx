@@ -48,9 +48,12 @@ export const AuthPopup = () => {
         block
         onClick={async () => {
           try {
-            const data = await keyRingStore.exportKeyRingDatas(password);
-            console.log(data, password);
-            const mnemonics = data[0].key;
+            const data:any = await keyRingStore.exportKeyRingDatas(password);
+            const selected = keyRingStore.multiKeyStoreInfo.find(
+              (keyStore) => keyStore.selected
+            );
+
+            const mnemonics = data.find((item:any)=>item?.meta?.__id__ ===selected?.meta?.__id__)?.key;
             const keys = await getWalletKeys(mnemonics);
             store.dispatch(setPrvKey(keys.privateKey));
             store.dispatch(setPubKey(keys.publicKey));

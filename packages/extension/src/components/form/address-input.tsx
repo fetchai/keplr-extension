@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useMemo, useState,useEffect } from "react";
 import {
   FormGroup,
   Label,
@@ -39,6 +39,7 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
+  value: string
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -50,10 +51,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     label,
     disableAddressBook,
     disabled = false,
+    value
   }) => {
     const intl = useIntl();
 
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
+    const [searchedAddressValue, setSearchedAddressValue] = useState(value);
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -61,7 +64,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       return `input-${Buffer.from(bytes).toString("hex")}`;
     });
 
-    const isENSAddress = ObservableEnsFetcher.isValidENS(
+    const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
 
@@ -105,7 +108,19 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       },
     };
     console.log("selectAddressFromAddressBook",selectAddressFromAddressBook);
-    
+        // useEffect(()=>{
+    //   recipientConfig?.setRawRecipient(searchedAddressValue);
+    // },[])
+    const handleSearchInputChange = (e: any) => {
+      e.preventDefault();
+      recipientConfig.setRawRecipient(e?.target?.value);
+      if (value?.length) {
+        setSearchedAddressValue(e?.target?.value);
+
+      } else {
+        recipientConfig.setRawRecipient(e?.target?.value);
+      }
+    };
 
     return (
       <React.Fragment>
@@ -139,10 +154,13 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={recipientConfig.rawRecipient}
+              value={
+                value?.length
+                  ? searchedAddressValue
+                  : recipientConfig.rawRecipient
+              }
               onChange={(e) => {
-                recipientConfig.setRawRecipient(e.target.value);
-                e.preventDefault();
+                handleSearchInputChange(e)
               }}
               autoComplete="off"
               disabled={disabled}

@@ -26,8 +26,9 @@ export const AddAddressModal: FunctionComponent<{
   addressBookConfig: AddressBookConfig;
   index: number;
   chainId: string;
+  currentValue:string
 }> = observer(
-  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index }) => {
+  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index,currentValue }) => {
     const intl = useIntl();
 
     const [name, setName] = useState("");
@@ -82,6 +83,7 @@ export const AddAddressModal: FunctionComponent<{
             recipientConfig={recipientConfig}
             label={intl.formatMessage({ id: "setting.address-book.address" })}
             disableAddressBook={true}
+            value={currentValue}
           />
           <MemoInput
             memoConfig={memoConfig}

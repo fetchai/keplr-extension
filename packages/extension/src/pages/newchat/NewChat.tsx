@@ -77,15 +77,24 @@ export const NewChat: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
-    setRecipient: (): void => {
-      // noop
-    },
-    setMemo: (): void => {
-      // noop
-    },
-  });
-  const recipientConfig = useRecipientConfig(chainStore, selectedChainId, EthereumEndpoint);
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+  const recipientConfig = useRecipientConfig(
+    chainStore,
+    selectedChainId,
+    EthereumEndpoint
+  );
   // const isENSAddress = ObservableEnsFetcher.isValidENS("absa");
   // const error = recipientConfig.getError();
   // console.log("isENSAddress", isENSAddress, "error ", error);
@@ -98,11 +107,26 @@ export const NewChat: FunctionComponent = observer(() => {
   console.log("addressBookConfig",addressBookConfig);
   
   console.log("addresses",addresses);
-  
+  useEffect(() => {
+    for (const addressBookData of addressBookConfig.addressBookDatas) {
+      console.log("loop : ", addressBookData.name, addressBookData.address);
+    }
+    let useraddresses: any = addressBookConfig.addressBookDatas.map(
+      (data, i) => {
+        return { name: data.name, address: data.address };
+      }
+    );
+    console.log("useraddresses : ", useraddresses);
+    setAddresses(useraddresses);
+  }, [addressBookConfig.addressBookDatas]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    setAddresses(useraddresses.filter((address: any) => address.name.toLowerCase().includes(inputVal)));
-    
+    let val=e.target.value
+    setAddresses(
+      useraddresses.filter((address: any) =>
+        address.name.toLowerCase().includes(val)
+      )
+    );   
   };
   return (
     <HeaderLayout
@@ -135,15 +159,41 @@ export const NewChat: FunctionComponent = observer(() => {
       <div className={style.searchContainer}>
         <div className={style.searchBox}>
           <img src={searchIcon} alt="search" />
-          <input placeholder="Search by name or address" value={inputVal} onChange={handleSearch} />
-        </div>
+          <input
+            placeholder="Search by name or address"
+            value={inputVal}
+            onChange={handleSearch}
+          />        </div>
       </div>
       <div className={style.messagesContainer} >
         {addresses.map((address: any) => {
           console.log("address address in new component", address);
-          return <NewUser address={address} key={address.address} inputVal={inputVal} />;
+          return (
+            <NewUser
+              address={address}
+              key={address.address}
+              inputVal={inputVal}
+            />
+          );
         })}
       </div>
+      {addresses.length == 0 ? (
+        <button
+          onClick={() => {
+            history.push({
+              pathname: "/setting/address-book",
+              state: {currentState:true,
+              currentValue:inputVal
+            },
+            });
+          }}
+        >
+          Add new contact to address book
+        </button>
+      ) : (
+        ""
+      )}
+       
     </HeaderLayout>
   );
 });

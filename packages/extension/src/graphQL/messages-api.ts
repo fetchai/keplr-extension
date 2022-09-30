@@ -8,12 +8,13 @@ import { listenMessages, receiveMessages, sendMessages } from "./messages-querie
 
 export const fetchMessages = async (accessToken: string) => {
   // const state = store.getState();
+  const state = store.getState();
   const { data } = await client.query({
     query: gql(receiveMessages),
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
   });
@@ -23,6 +24,7 @@ export const fetchMessages = async (accessToken: string) => {
 };
 
 export const deliverMessages = async (accessToken: string, chainId: string, newMessage: any, senderAddress: string, targetAddress: string) => {
+  const state = store.getState();
   try {
     if (newMessage) {
       const encryptedData = await encryptAllData(accessToken, chainId, newMessage, senderAddress, targetAddress);
@@ -37,7 +39,7 @@ export const deliverMessages = async (accessToken: string, chainId: string, newM
         },
         context: {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${state.user.accessToken}`,
           },
         },
       });
@@ -50,7 +52,7 @@ export const deliverMessages = async (accessToken: string, chainId: string, newM
 };
 
 export const messageListener = () => {
-  // const state = store.getState();
+  const state = store.getState();
   const wsLink = createWSLink("Fake Token");
   const splitLink = split(
     ({ query }) => {
@@ -69,7 +71,7 @@ export const messageListener = () => {
       query: gql(listenMessages),
       context: {
         headers: {
-          authorization: `Bearer asd`,
+          authorization: `Bearer ${state.user.accessToken}`,
         },
       },
     })
