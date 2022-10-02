@@ -22,7 +22,6 @@ export const fetchMessages = async () => {
       },
     },
   });
-  console.log("fetchMessages fetchMessages fetchMessages", data);
 
   return data.mailbox.messages;
 };

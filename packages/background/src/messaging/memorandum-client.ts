@@ -42,8 +42,6 @@ export const getPubKey = async (
   channelId: string
 ): Promise<string | undefined> => {
   try {
-    // TODO(EJF): The great console log purge
-    console.log("%%%%", accessToken);
     const { data } = await client.query({
       query: gql(`query Query($address: String!, $channelId: ChannelId!) {
         publicKey(address: $address, channelId: $channelId) {

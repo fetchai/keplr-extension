@@ -14,6 +14,7 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 
 import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
+import { NameAddress } from "../chat/users";
 
 // const ADDRESSES = [
 //   {
@@ -31,8 +32,6 @@ const NewUser = (props: any) => {
   const { name, address } = props.address;
 
   const handleClick = () => {
-    console.log("address from new chatt", address);
-
     history.push(`/chat/${address}`);
   };
 
@@ -58,7 +57,7 @@ const NewUser = (props: any) => {
 export const NewChat: FunctionComponent = observer(() => {
   const history = useHistory();
   const [inputVal, setInputVal] = useState("");
-  const [addresses, setAddresses] = useState([]);
+  const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -98,17 +97,12 @@ export const NewChat: FunctionComponent = observer(() => {
   });
 
   useEffect(() => {
-    for (const addressBookData of addressBookConfig.addressBookDatas) {
-      console.log("loop : ", addressBookData.name, addressBookData.address);
-    }
-
-    const useraddresses: any = addressBookConfig.addressBookDatas.map(
+    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
       (data) => {
         return { name: data.name, address: data.address };
       }
     );
-    console.log("useraddresses : ", useraddresses);
-    setAddresses(useraddresses);
+    setAddresses(userAddresses);
   }, [addressBookConfig.addressBookDatas]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
@@ -161,7 +155,6 @@ export const NewChat: FunctionComponent = observer(() => {
       </div>
       <div className={style.messagesContainer}>
         {addresses.map((address: any) => {
-          console.log("address address in new component", address);
           return (
             <NewUser
               address={address}

@@ -108,10 +108,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         }
       },
     };
-    console.log("selectAddressFromAddressBook", selectAddressFromAddressBook);
-    // useEffect(()=>{
-    //   recipientConfig?.setRawRecipient(searchedAddressValue);
-    // },[])
+
     const handleSearchInputChange = (e: any) => {
       e.preventDefault();
       recipientConfig.setRawRecipient(e?.target?.value);

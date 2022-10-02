@@ -119,9 +119,7 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    console.log("accountInfoaccountInfoaccountInfo", accountInfo.bech32Address);
     try {
-      console.log(oldMessages);
       const data = await deliverMessages(
         user.accessToken,
         current.chainId,
@@ -153,7 +151,6 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     const setPublicAddress = async () => {
-      console.log("setPublicAddress");
       const pubAddr = await fetchPublicKey(
         user.accessToken,
         current.chainId,

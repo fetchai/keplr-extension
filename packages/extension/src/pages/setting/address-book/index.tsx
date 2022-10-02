@@ -62,11 +62,6 @@ export const AddressBookPage: FunctionComponent<{
       EthereumEndpoint
     );
 
-    console.log(
-      "recipientConfigrecipientConfigrecipientConfigrecipientConfig",
-      recipientConfig.rawRecipient
-    );
-
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
 
     const addressBookConfig = useAddressBookConfig(
@@ -84,7 +79,6 @@ export const AddressBookPage: FunctionComponent<{
             },
           }
     );
-    console.log("selectHandler", selectHandler);
 
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
@@ -96,14 +90,6 @@ export const AddressBookPage: FunctionComponent<{
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
-
-    // const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    //   return { name: data.name, address: data.address };
-    // });
-
-    // console.log("addresses addresses", addresses);
-    // console.log("state state",props.location.state);
-    // console.log("props values.children", values.location.state);
 
     const addressBookIcons = (index: number) => {
       return [
@@ -243,8 +229,6 @@ export const AddressBookPage: FunctionComponent<{
           </div>
           <div style={{ flex: "1 1 0", overflowY: "auto" }}>
             {addressBookConfig.addressBookDatas.map((data, i) => {
-              console.log("data.name", data.name, " -- ", data.address);
-
               return (
                 <PageButton
                   key={i.toString()}

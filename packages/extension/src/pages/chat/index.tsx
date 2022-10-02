@@ -122,7 +122,6 @@ const ChatView = () => {
         );
         return contact.toLowerCase().includes(value.toLowerCase()) || found;
       });
-      console.log("filteredChats", filteredChats);
 
       const tempChats: any = {};
       filteredChats.forEach((item: any) => {

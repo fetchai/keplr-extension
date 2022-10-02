@@ -27,9 +27,7 @@ const User: React.FC<{
     contents: string,
     isSender: boolean
   ) => {
-    const message: any = await decryptMessage(chainId, contents, isSender);
-    console.log("decrypted message", message);
-
+    const message = await decryptMessage(chainId, contents, isSender);
     setMessage(message);
   };
 

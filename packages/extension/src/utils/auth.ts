@@ -41,7 +41,6 @@ const signArbitrary = async (
 ) => {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);
-  console.log("encodedencodeddata", encoded);
 
   const signDoc = {
     chain_id: "",
@@ -77,7 +76,6 @@ const signArbitrary = async (
 
 export const getJWT = async (chainId: string, url: string) => {
   if (window === undefined) {
-    console.log("no fetch wallet");
     return "";
   }
   const config = {
@@ -119,14 +117,14 @@ export const getJWT = async (chainId: string, url: string) => {
   }
 
   if (loginRequest === undefined) {
-    console.log("Failed to sign challenge!");
     return undefined;
   }
 
   const r2 = await axios.post(`${url}/login`, loginRequest, config);
 
-  if (r2.status !== 200) throw new RequestError(r1.statusText);
-  console.log("r2.data.token r2.data.token", r2.data.token);
+  if (r2.status !== 200) {
+    throw new RequestError(r1.statusText);
+  }
 
   return r2.data.token;
 };
