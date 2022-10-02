@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlice = createSlice({
@@ -22,7 +21,11 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setMessagingPubKey, setAccessToken, setNotifications } = userSlice.actions;
+export const {
+  setMessagingPubKey,
+  setAccessToken,
+  setNotifications,
+} = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
 

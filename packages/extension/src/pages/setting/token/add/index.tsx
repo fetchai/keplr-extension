@@ -74,8 +74,9 @@ export const AddTokenPage: FunctionComponent = observer(() => {
   const queryContractInfo = query.getQueryContract(contractAddress);
 
   const tokenInfo = queryContractInfo.tokenInfo;
-  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] =
-    useState(false);
+  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] = useState(
+    false
+  );
 
   const notification = useNotification();
   const loadingIndicator = useLoadingIndicator();

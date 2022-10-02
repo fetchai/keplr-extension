@@ -3,7 +3,7 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { MESSAGING_SERVER } from "../config.ui.var";
 
-export default new ApolloClient({
+export const client = new ApolloClient({
   uri: MESSAGING_SERVER,
   cache: new InMemoryCache(),
 });

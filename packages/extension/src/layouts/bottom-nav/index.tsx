@@ -53,7 +53,7 @@ export const BottomNav = () => {
           icon={nav.icon}
           activeTabIcon={nav.activeTabIcon}
           path={nav.path}
-          disabled={nav.disabled || false}
+          disabled={nav.disabled}
         />
       ))}
     </div>

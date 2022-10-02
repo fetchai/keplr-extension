@@ -9,6 +9,7 @@ export const sendMessages = `mutation Mutation($messages: [InputMessage!]!) {
     }
   }`;
 
+// TODO(EJF): Expect these also need types
 export const receiveMessages = `query Query {
   mailbox {
     messages {

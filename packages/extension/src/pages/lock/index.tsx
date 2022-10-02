@@ -1,23 +1,22 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 import { PasswordInput } from "../../components/form";
-// import WalletConnectManager from "../../../../../packages/mobile/src/stores/wallet-connect"
 
 import { Button, Form } from "reactstrap";
 
 import { observer } from "mobx-react-lite";
-import useForm from "react-hook-form";
-import { Banner } from "../../components/banner";
 import { useStore } from "../../stores";
+import { Banner } from "../../components/banner";
+import useForm from "react-hook-form";
 
 import { EmptyLayout } from "../../layouts/empty-layout";
 
 import style from "./style.module.scss";
 
-import { useInteractionInfo } from "@keplr-wallet/hooks";
-import delay from "delay";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { useHistory } from "react-router";
+import delay from "delay";
 
 interface FormData {
   password: string;
@@ -53,13 +52,10 @@ export const LockPage: FunctionComponent = observer(() => {
     <EmptyLayout style={{ backgroundColor: "white", height: "100%" }}>
       <Form
         className={style.formContainer}
-        // onSubmit={()=>{}}
         onSubmit={handleSubmit(async (data) => {
           setLoading(true);
-          //@ts-ignore "required to run below code"
-
           try {
-            keyRingStore.unlock(data.password);
+            await keyRingStore.unlock(data.password);
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {
                 // XXX: If the connection doesn't have the permission,
@@ -76,7 +72,7 @@ export const LockPage: FunctionComponent = observer(() => {
                 history.replace("/");
               }
             }
-          } catch (e: any) {
+          } catch (e) {
             console.log("Fail to decrypt: " + e.message);
             setError(
               "password",

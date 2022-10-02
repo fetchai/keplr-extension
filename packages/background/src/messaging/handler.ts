@@ -16,12 +16,9 @@ export const getHandler: (service: MessagingService) => Handler = (service) => {
           env,
           msg as GetMessagingPublicKey
         );
-      
+
       case RegisterPublicKey:
-        return handleRegisterPublicKey(service)(
-          env,
-          msg as RegisterPublicKey
-        );
+        return handleRegisterPublicKey(service)(env, msg as RegisterPublicKey);
 
       case EncryptMessagingMessage:
         return handleEncryptMessagingMessage(service)(
@@ -50,7 +47,12 @@ const handleGetMessagingPublicKey: (
   service: MessagingService
 ) => InternalHandler<GetMessagingPublicKey> = (service) => {
   return async (env, msg) => {
-    const pubKey = await service.getPublicKey(env, msg.chainId, msg.targetAddress, msg.accessToken);
+    const pubKey = await service.getPublicKey(
+      env,
+      msg.chainId,
+      msg.targetAddress,
+      msg.accessToken
+    );
     return pubKey ? pubKey : "";
   };
 };
@@ -59,7 +61,12 @@ const handleRegisterPublicKey: (
   service: MessagingService
 ) => InternalHandler<RegisterPublicKey> = (service) => {
   return async (env, msg) => {
-    return await service.registerPublicKey(env, msg.chainId, msg.address, msg.accessToken);
+    return await service.registerPublicKey(
+      env,
+      msg.chainId,
+      msg.address,
+      msg.accessToken
+    );
   };
 };
 

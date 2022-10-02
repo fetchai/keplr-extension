@@ -7,9 +7,10 @@ import {
   GetMessagingPublicKey,
 } from "@keplr-wallet/background/build/messaging";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { rawSecp256k1PubkeyToRawAddress } from '@cosmjs/amino';
+import { rawSecp256k1PubkeyToRawAddress } from "@cosmjs/amino";
 import { toBase64, Bech32, fromHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
+
 declare let window: Window;
 
 class RequestError extends Error {
@@ -31,7 +32,13 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 
-const signArbitrary = async (chainId: string, addr: string, pubKey:string, data: string, requester: any) => {
+const signArbitrary = async (
+  chainId: string,
+  addr: string,
+  pubKey: string,
+  data: string,
+  requester: any // TODO(EJF): any
+) => {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);
   console.log("encodedencodeddata", encoded);
@@ -81,10 +88,13 @@ export const getJWT = async (chainId: string, url: string) => {
 
   const pubKey = await requester.sendMessage(
     BACKGROUND_PORT,
-    new GetMessagingPublicKey(chainId, '', null)
+    new GetMessagingPublicKey(chainId, "", null)
   );
 
-  const addr = Bech32.encode('fetch', rawSecp256k1PubkeyToRawAddress(fromHex(pubKey)));
+  const addr = Bech32.encode(
+    "fetch",
+    rawSecp256k1PubkeyToRawAddress(fromHex(pubKey))
+  );
   const request = {
     address: addr,
     public_key: pubKey,
@@ -97,9 +107,15 @@ export const getJWT = async (chainId: string, url: string) => {
   let loginRequest = undefined;
 
   try {
-    loginRequest = await signArbitrary(chainId, addr, pubKey, r1.data.payload, requester);
-  } catch (err: any) {
-    throw new RejectError(err);
+    loginRequest = await signArbitrary(
+      chainId,
+      addr,
+      pubKey,
+      r1.data.payload,
+      requester
+    );
+  } catch (err) {
+    throw new RejectError(err.toString());
   }
 
   if (loginRequest === undefined) {

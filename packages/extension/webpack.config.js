@@ -6,8 +6,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
-const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 const isEnvDevelopment = process.env.NODE_ENV !== "production";
 const isEnvAnalyzer = process.env.ANALYZER === "true";
@@ -105,7 +105,8 @@ const extensionConfig = () => {
             to: "./",
           },
           {
-            from: "../../node_modules/webextension-polyfill/dist/browser-polyfill.js",
+            from:
+              "../../node_modules/webextension-polyfill/dist/browser-polyfill.js",
           },
         ],
         { copyUnmodified: true }

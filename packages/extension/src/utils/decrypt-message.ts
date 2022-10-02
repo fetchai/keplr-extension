@@ -3,24 +3,25 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { DecryptMessagingMessage } from "@keplr-wallet/background/build/messaging";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
-export const decryptMessage = async (chainId: string, content: string, isSender: boolean) => {
-  try {
-    const data = Buffer.from(content, "base64").toString("ascii");
-    const dataEnvelopeDecoded = JSON.parse(data);
-    const decodedData = Buffer.from(dataEnvelopeDecoded.data, "base64").toString("ascii");
-    const parsedData = JSON.parse(decodedData);
+export const decryptMessage = async (
+  chainId: string,
+  content: string,
+  isSender: boolean
+): Promise<string> => {
+  const data = Buffer.from(content, "base64").toString("ascii");
+  const dataEnvelopeDecoded = JSON.parse(data);
+  const decodedData = Buffer.from(dataEnvelopeDecoded.data, "base64").toString(
+    "ascii"
+  );
+  const parsedData = JSON.parse(decodedData);
 
-    const decryptedData = await decryptMessageContent(
-      chainId,
-      isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData
-    );
+  const decryptedData = await decryptMessageContent(
+    chainId,
+    isSender ? parsedData.encryptedSenderData : parsedData.encryptedTargetData
+  );
 
-    const parsedDataString = JSON.parse(decryptedData);
-    return parsedDataString.content.text;
-  } catch (error) {
-    console.log("error : ", error);
-    return "";
-  }
+  const parsedDataString = JSON.parse(decryptedData);
+  return parsedDataString.content.text;
 };
 
 /**

@@ -52,8 +52,6 @@ export const ChatSection: FunctionComponent = () => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  // const [openPopup, setOpenPopup] = useState(false)
-
   const messagesEndRef: any = useRef();
 
   // address book values
@@ -166,8 +164,7 @@ export const ChatSection: FunctionComponent = () => {
     if (!oldMessages?.pubKey?.length) {
       setPublicAddress();
     }
-    // TODO(EJF): Look into dependencies
-  }, [current.chainId, userName]);
+  }, [oldMessages, user.accessToken, current.chainId, userName]);
 
   useEffect(() => {
     if (

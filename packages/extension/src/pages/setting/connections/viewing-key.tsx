@@ -8,8 +8,8 @@ import { HeaderLayout } from "../../../layouts";
 import { useIntl } from "react-intl";
 import { useConfirm } from "../../../components/confirm";
 
-export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
-  observer(() => {
+export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = observer(
+  () => {
     const match = useRouteMatch<{
       contractAddress: string;
     }>();
@@ -73,10 +73,12 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
                         />
                       ),
                       title: intl.formatMessage({
-                        id: "setting.connections.viewing-key.confirm.delete-connection.title",
+                        id:
+                          "setting.connections.viewing-key.confirm.delete-connection.title",
                       }),
                       paragraph: intl.formatMessage({
-                        id: "setting.connections.viewing-key.confirm.delete-connection.paragraph",
+                        id:
+                          "setting.connections.viewing-key.confirm.delete-connection.paragraph",
                       }),
                     })
                   ) {
@@ -90,4 +92,5 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
         </div>
       </HeaderLayout>
     );
-  });
+  }
+);

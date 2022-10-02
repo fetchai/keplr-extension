@@ -26,9 +26,16 @@ export const AddAddressModal: FunctionComponent<{
   addressBookConfig: AddressBookConfig;
   index: number;
   chainId: string;
-  currentValue:string
+  currentValue: string;
 }> = observer(
-  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index,currentValue }) => {
+  ({
+    closeModal,
+    recipientConfig,
+    memoConfig,
+    addressBookConfig,
+    index,
+    currentValue,
+  }) => {
     const intl = useIntl();
 
     const [name, setName] = useState("");

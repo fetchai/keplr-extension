@@ -3,7 +3,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
-import client, { createWSLink, httpLink } from "./client";
+import { client, createWSLink, httpLink } from "./client";
 import {
   listenMessages,
   NewMessageUpdate,
@@ -106,17 +106,3 @@ export const messageListener = () => {
       },
     });
 };
-
-//keys details
-/*
-  account : fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr
-  pub key: 02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65
-
-*/
-
-//keys details
-/*
-  account : fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc
-  pub key: 023269c0a9ef2597e739171887d62fd46c496b4c1ef73af41e72f06e9d17ffc9c1
-
-*/

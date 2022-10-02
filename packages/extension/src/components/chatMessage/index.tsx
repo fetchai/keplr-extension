@@ -13,7 +13,8 @@ const formatTime = (timestamp: number) => {
     hour12: true,
   });
 };
-let months: any[] = [
+
+const months: string[] = [
   "january",
   "February",
   "March",
@@ -33,7 +34,7 @@ export const ChatMessage = ({
   message,
   isSender,
   timestamp,
-  showDate
+  showDate,
 }: {
   chainId: string;
   isSender: boolean;
@@ -41,19 +42,26 @@ export const ChatMessage = ({
   timestamp: number;
   showDate: boolean;
 }) => {
+  const [, setDecryptingState] = useState<
+    "idle" | "in-progress" | "failed" | "success"
+  >("idle");
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
   useEffect(() => {
-    decryptMsg(message)
-  }, [])
-  
-  const decryptMsg = async (contents: string) => {
-    const message : any = await decryptMessage(chainId, contents, !isSender)
-    setDecryptedMessage(message)
-  }
-  
+    setDecryptingState("in-progress");
+    decryptMessage(chainId, message, !isSender)
+      .then((message) => {
+        setDecryptingState("success");
+        setDecryptedMessage(message);
+      })
+      .catch(() => {
+        setDecryptedMessage("failed");
+      });
+  }, [chainId, isSender, message]);
+
+  // TODO(EJF): Should be replaced with `date-fns`
   const currentTime = (time: any) => {
-    const d: any = new Date(time);
+    const d = new Date(time);
     if (d.getDate() === new Date().getDate()) {
       return {
         time: `${d.getHours()}:${d.getMinutes()}`,
@@ -92,7 +100,7 @@ export const ChatMessage = ({
           <div className={style.message}>{decryptedMessage}</div>
           <div className={style.timestamp}>
             {formatTime(timestamp)}
-            {isSender && <img src={deliveredIcon} />}
+            {isSender && <img alt="" src={deliveredIcon} />}
           </div>
         </Container>
       </div>

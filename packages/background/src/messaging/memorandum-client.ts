@@ -34,7 +34,7 @@ export const registerPubKey = async (
   } catch (e) {
     console.log(e);
   }
-}
+};
 
 export const getPubKey = async (
   accessToken: string,
@@ -42,7 +42,8 @@ export const getPubKey = async (
   channelId: string
 ): Promise<string | undefined> => {
   try {
-    console.log("%%%%", accessToken)
+    // TODO(EJF): The great console log purge
+    console.log("%%%%", accessToken);
     const { data } = await client.query({
       query: gql(`query Query($address: String!, $channelId: ChannelId!) {
         publicKey(address: $address, channelId: $channelId) {
@@ -51,7 +52,7 @@ export const getPubKey = async (
       }`),
       variables: {
         address: targetAddress,
-        channelId
+        channelId,
       },
       context: {
         headers: {
@@ -64,4 +65,4 @@ export const getPubKey = async (
   } catch (e) {
     console.log(e);
   }
-}
+};

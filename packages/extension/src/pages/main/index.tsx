@@ -4,21 +4,21 @@ import { HeaderLayout } from "../../layouts";
 
 import { Card, CardBody } from "reactstrap";
 
+import style from "./style.module.scss";
+import { Menu } from "./menu";
+import { AccountView } from "./account";
+import { AssetView } from "./asset";
+import classnames from "classnames";
+import { useHistory } from "react-router";
+import { observer } from "mobx-react-lite";
+import { useStore } from "../../stores";
+import { TokensView } from "./token";
+import { BIP44SelectModal } from "./bip44-select-modal";
+import { useIntl } from "react-intl";
+import { useConfirm } from "../../components/confirm";
 import { ChainUpdaterService } from "@keplr-wallet/background";
 import { DenomHelper } from "@keplr-wallet/common";
 import { Dec } from "@keplr-wallet/unit";
-import classnames from "classnames";
-import { observer } from "mobx-react-lite";
-import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
-import { useConfirm } from "../../components/confirm";
-import { useStore } from "../../stores";
-import { AccountView } from "./account";
-import { AssetView } from "./asset";
-import { BIP44SelectModal } from "./bip44-select-modal";
-import { Menu } from "./menu";
-import style from "./style.module.scss";
-import { TokensView } from "./token";
 // import { IBCTransferView } from "./ibc-transfer";
 
 export const MainPage: FunctionComponent = observer(() => {

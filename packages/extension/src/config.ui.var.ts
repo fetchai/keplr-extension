@@ -11,8 +11,7 @@ export const ADDITIONAL_SIGN_IN_PREPEND:
 
 export const ADDITIONAL_INTL_MESSAGES: IntlMessages = {};
 
-export const MESSAGING_SERVER =
-  "http://localhost:4000/graphql"
+export const MESSAGING_SERVER = "http://localhost:4000/graphql";
 // export const MESSAGING_SERVER ="https://messaging-server.sandbox-london-b.fetch-ai.com/graphql";
 export const AUTH_SERVER = "https://auth-attila.sandbox-london-b.fetch-ai.com";
 export const CHAIN_ID_DORADO = "dorado-1";

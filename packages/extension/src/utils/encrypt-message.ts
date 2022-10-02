@@ -6,7 +6,7 @@ import {
   GetMessagingPublicKey,
   SignMessagingPayload,
 } from "@keplr-wallet/background/build/messaging";
-import { MESSAGE_CHANNEL_ID } from "@keplr-wallet/background/build/messaging/constants"
+import { MESSAGE_CHANNEL_ID } from "@keplr-wallet/background/build/messaging/constants";
 
 export interface MessageEnvelope {
   data: string; // base64 encoded
@@ -14,6 +14,15 @@ export interface MessageEnvelope {
   targetPublicKey: string; // base64 encoded
   signature: string; // base64 encoded signature
   channelId: string;
+}
+
+interface MessagePrimitive {
+  sender: string;
+  target: string;
+  type: 1;
+  content: {
+    text: string;
+  };
 }
 
 export const encryptAllData = async (
@@ -39,8 +48,10 @@ export const encryptAllData = async (
  * to the memorandum service
  *
  * @param chainId The current chainId
- * @param message The plain text message to be encrypted
+ * @param messageStr The plain text message to be encrypted
+ * @param senderAddress The senders address
  * @param targetAddress The target address for the message recipient
+ * @param accessToken The access token for the memorandum service
  */
 export async function encryptToEnvelope(
   chainId: string,
@@ -63,7 +74,7 @@ export async function encryptToEnvelope(
     new GetMessagingPublicKey(chainId, accessToken, targetAddress)
   );
 
-  const message: any = {
+  const message: MessagePrimitive = {
     sender: senderPublicKey, //public key
     target: targetPublicKey, // public key
     type: 1, //private_message
@@ -104,10 +115,7 @@ export async function encryptToEnvelope(
   // get the signature for the payload
   const signature = await requester.sendMessage(
     BACKGROUND_PORT,
-    new SignMessagingPayload(
-      chainId,
-      encodedData
-    )
+    new SignMessagingPayload(chainId, encodedData)
   );
 
   return {
@@ -115,6 +123,6 @@ export async function encryptToEnvelope(
     senderPublicKey,
     targetPublicKey,
     signature,
-    channelId: MESSAGE_CHANNEL_ID
+    channelId: MESSAGE_CHANNEL_ID,
   };
 }

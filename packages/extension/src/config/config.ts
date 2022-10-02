@@ -1,3 +1,4 @@
+// TODO(EJF): Needs to be moved into better configuration place. Also need to handle access credentials better
 export const ACCESS_TOKEN = localStorage.getItem("access_token");
 export const MESSAGING_SERVER =
   "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql";
