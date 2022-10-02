@@ -219,8 +219,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

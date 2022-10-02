@@ -26,7 +26,6 @@ interface FormData {
 }
 
 export const LockPage: FunctionComponent = observer(() => {
-
   const intl = useIntl();
   const history = useHistory();
 
@@ -83,7 +82,7 @@ export const LockPage: FunctionComponent = observer(() => {
                 history.replace("/");
               }
             }
-          } catch (e:any) {
+          } catch (e: any) {
             console.log("Fail to decrypt: " + e.message);
             setError(
               "password",
@@ -94,7 +93,8 @@ export const LockPage: FunctionComponent = observer(() => {
             );
             setLoading(false);
           }
-        })}>
+        })}
+      >
         <Banner
           icon={require("../../public/assets/temp-icon.svg")}
           logo={require("../../public/assets/logo-temp.png")}

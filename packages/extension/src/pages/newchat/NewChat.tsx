@@ -14,7 +14,6 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
 
-
 // const ADDRESSES = [
 //   {
 //     name: "fetchWallet2",
@@ -98,7 +97,7 @@ export const NewChat: FunctionComponent = observer(() => {
   // const isENSAddress = ObservableEnsFetcher.isValidENS("absa");
   // const error = recipientConfig.getError();
   // console.log("isENSAddress", isENSAddress, "error ", error);
-  let useraddresses:any = addressBookConfig.addressBookDatas.map((data, i) => {
+  let useraddresses: any = addressBookConfig.addressBookDatas.map((data, i) => {
     return { name: data.name, address: data.address };
   });
   // useEffect(()=>{
@@ -143,7 +142,8 @@ export const NewChat: FunctionComponent = observer(() => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -155,7 +155,8 @@ export const NewChat: FunctionComponent = observer(() => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.searchContainer}>
         <div className={style.searchBox}>
           <img src={searchIcon} alt="search" />

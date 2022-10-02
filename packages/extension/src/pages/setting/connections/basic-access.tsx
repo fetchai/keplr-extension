@@ -95,8 +95,7 @@ export const SettingConnectionsPage: FunctionComponent = observer(() => {
                       id: "setting.connections.confirm.delete-connection.title",
                     }),
                     paragraph: intl.formatMessage({
-                      id:
-                        "setting.connections.confirm.delete-connection.paragraph",
+                      id: "setting.connections.confirm.delete-connection.paragraph",
                     }),
                   })
                 ) {

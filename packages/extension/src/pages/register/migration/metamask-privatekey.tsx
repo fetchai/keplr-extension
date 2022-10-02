@@ -119,8 +119,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
                 value = value.replace("0x", "");
                 if (value.length !== 64) {
                   return intl.formatMessage({
-                    id:
-                      "register.import.textarea.private-key.error.invalid-length",
+                    id: "register.import.textarea.private-key.error.invalid-length",
                   });
                 }
 
@@ -190,8 +189,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

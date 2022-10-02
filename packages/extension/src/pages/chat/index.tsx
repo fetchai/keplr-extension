@@ -1,6 +1,9 @@
 import { toHex } from "@cosmjs/encoding";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { useAddressBookConfig, useIBCTransferConfig } from "@keplr-wallet/hooks";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,17 +105,22 @@ const ChatView = () => {
     setUserChats(userLastMessages);
   };
 
-  const addressBookConfig = useAddressBookConfig(new ExtensionKVStore("address-book"), chainStore, selectedChainId, {
-    setRecipient: (): void => {
-      // noop
-    },
-    setMemo: (): void => {
-      // noop
-    },
-  });
-    
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value=e.target.value
+    const value = e.target.value;
     setInputVal(value);
 
     if (value.trim()) {
@@ -133,9 +141,9 @@ const ChatView = () => {
 
       setUserChats(tempChats);
     } else {
+      // setUserChats(userChats)
       fillUserChats();
     }
-
   };
 
   const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
@@ -155,7 +163,8 @@ const ChatView = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingRight: "20px",
-          }}>
+          }}
+        >
           <img
             src={bellIcon}
             alt="notification"
@@ -167,7 +176,8 @@ const ChatView = () => {
             }}
           />
         </div>
-      }>
+      }
+    >
       <div className={style.chatContainer}>
         {/* {!user.accessToken && (
           <div className={style.popupContainer}>
@@ -227,7 +237,11 @@ const ChatView = () => {
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
             <img src={searchIcon} alt="search" />
-            <input placeholder="Search by name or address" value={inputVal} onChange={handleSearch} />
+            <input
+              placeholder="Search by name or address"
+              value={inputVal}
+              onChange={handleSearch}
+            />
           </div>
           <div onClick={() => history.push("/newChat")}>
             <img src={newChatIcon} alt="" />

@@ -35,7 +35,6 @@ export const AddressBookPage: FunctionComponent<{
   selectHandler?: AddressBookSelectHandler;
   ibcChannelConfig?: IIBCChannelConfig;
   isInTransaction?: boolean;
-  
 }> = observer(
   ({
     onBackButton,
@@ -47,7 +46,7 @@ export const AddressBookPage: FunctionComponent<{
   }) => {
     const intl = useIntl();
     const history = useHistory();
-    let values={...rest}
+    let values = { ...rest };
     const { chainStore } = useStore();
     const current = chainStore.current;
 
@@ -63,8 +62,11 @@ export const AddressBookPage: FunctionComponent<{
       EthereumEndpoint
     );
 
-    console.log("recipientConfigrecipientConfigrecipientConfigrecipientConfig",recipientConfig.rawRecipient);
-    
+    console.log(
+      "recipientConfigrecipientConfigrecipientConfigrecipientConfig",
+      recipientConfig.rawRecipient
+    );
+
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
 
     const addressBookConfig = useAddressBookConfig(
@@ -82,8 +84,7 @@ export const AddressBookPage: FunctionComponent<{
             },
           }
     );
-    console.log("selectHandler",selectHandler);
-    
+    console.log("selectHandler", selectHandler);
 
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
@@ -98,9 +99,8 @@ export const AddressBookPage: FunctionComponent<{
     });
     console.log("addresses addresses", addresses);
     // console.log("state state",props.location.state);
-    console.log("props values.children",values.location.state);
-    
-    
+    console.log("props values.children", values.location.state);
+
     const addressBookIcons = (index: number) => {
       return [
         <i
@@ -147,7 +147,7 @@ export const AddressBookPage: FunctionComponent<{
         />,
       ];
     };
-    
+
     return (
       <HeaderLayout
         showChainName={false}

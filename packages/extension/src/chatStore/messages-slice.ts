@@ -29,7 +29,8 @@ export const messagesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addMessageList, updateAuthorMessages, setAuthorPubKey } = messagesSlice.actions;
+export const { addMessageList, updateAuthorMessages, setAuthorPubKey } =
+  messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages;
 

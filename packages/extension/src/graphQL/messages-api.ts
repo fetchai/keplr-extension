@@ -18,7 +18,7 @@ export const fetchMessages = async (accessToken: string) => {
       },
     },
   });
-  console.log("fetchMessages", data);
+  console.log("fetchMessages fetchMessages fetchMessages", data);
 
   return data.mailbox.messages;
 };
@@ -57,7 +57,10 @@ export const messageListener = () => {
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
-      return definition.kind === "OperationDefinition" && definition.operation === "subscription";
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
     },
     wsLink,
     httpLink
