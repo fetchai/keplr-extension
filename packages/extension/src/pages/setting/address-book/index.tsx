@@ -41,11 +41,12 @@ export const AddressBookPage: FunctionComponent<{
     hideChainDropdown,
     selectHandler,
     ibcChannelConfig,
+    // ...rest
     //isInTransaction,
   }) => {
     const intl = useIntl();
     const history = useHistory();
-
+    // const values = { ...rest };
     const { chainStore } = useStore();
     const current = chainStore.current;
 
@@ -60,6 +61,7 @@ export const AddressBookPage: FunctionComponent<{
       selectedChainId,
       EthereumEndpoint
     );
+
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
 
     const addressBookConfig = useAddressBookConfig(
@@ -81,7 +83,12 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    const [addAddressModalOpen, setAddAddressModalOpen] = useState(false);
+    // TODO(!!!): This code needs reworking. Was not immediately clear what was
+    //            going on here and there was no typing information for me to
+    //            work with
+    const [addAddressModalOpen, setAddAddressModalOpen] = useState(
+      /*values?.location?.state?.currentState ||*/ false
+    );
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
@@ -112,6 +119,7 @@ export const AddressBookPage: FunctionComponent<{
               await confirm.confirm({
                 img: (
                   <img
+                    alt=""
                     src={require("../../../public/assets/img/trash.svg")}
                     style={{ height: "80px" }}
                   />
@@ -166,6 +174,9 @@ export const AddressBookPage: FunctionComponent<{
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
+              currentValue={
+                "false" /*|| values?.location?.state?.currentValue TODO(!!!): see above*/
+              }
             />
           </ModalBody>
         </Modal>
@@ -238,7 +249,6 @@ export const AddressBookPage: FunctionComponent<{
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-
                     addressBookConfig.selectAddressAt(i);
 
                     if (onBackButton) {

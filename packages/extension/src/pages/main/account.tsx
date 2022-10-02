@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useEffect } from "react";
 
 import { Address } from "../../components/address";
 
@@ -9,6 +9,7 @@ import { useStore } from "../../stores";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { messageListener } from "../../graphQL/messages-api";
 
 export const AccountView: FunctionComponent = observer(() => {
   const { accountStore, chainStore } = useStore();
@@ -39,6 +40,9 @@ export const AccountView: FunctionComponent = observer(() => {
     [accountInfo.walletStatus, notification, intl]
   );
 
+  useEffect(() => {
+    messageListener();
+  }, []);
   return (
     <div>
       <div className={styleAccount.containerName}>

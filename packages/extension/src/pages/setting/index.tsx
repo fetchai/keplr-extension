@@ -6,8 +6,11 @@ import style from "./style.module.scss";
 import { useLanguage } from "../../languages";
 import { useIntl } from "react-intl";
 import { observer } from "mobx-react-lite";
+// import { useStore } from "../../stores";
 
 export const SettingPage: FunctionComponent = observer(() => {
+  // const { uiConfigStore } = useStore();
+
   const language = useLanguage();
   const history = useHistory();
   const intl = useIntl();

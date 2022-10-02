@@ -39,6 +39,9 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
+  // TODO(!!!): Not sure what is going on here, but have fixed the types only
+  //            (was not originally in the type definition)
+  value?: string;
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -50,10 +53,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     label,
     disableAddressBook,
     disabled = false,
+    value,
   }) => {
     const intl = useIntl();
 
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
+    const [searchedAddressValue, setSearchedAddressValue] = useState(value);
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -61,7 +66,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       return `input-${Buffer.from(bytes).toString("hex")}`;
     });
 
-    const isENSAddress = ObservableEnsFetcher.isValidENS(
+    const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
 
@@ -105,6 +110,16 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       },
     };
 
+    const handleSearchInputChange = (e: any) => {
+      e.preventDefault();
+      recipientConfig.setRawRecipient(e?.target?.value);
+      if (value?.length) {
+        setSearchedAddressValue(e?.target?.value);
+      } else {
+        recipientConfig.setRawRecipient(e?.target?.value);
+      }
+    };
+
     return (
       <React.Fragment>
         <Modal
@@ -137,10 +152,13 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={recipientConfig.rawRecipient}
+              value={
+                value?.length
+                  ? searchedAddressValue
+                  : recipientConfig.rawRecipient
+              }
               onChange={(e) => {
-                recipientConfig.setRawRecipient(e.target.value);
-                e.preventDefault();
+                handleSearchInputChange(e);
               }}
               autoComplete="off"
               disabled={disabled}
