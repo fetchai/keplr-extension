@@ -18,8 +18,15 @@ import { DepositModal } from "./qr-code";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
+// import { fetchPublicKey } from "../../utils/fetch-public-key";
 
-export const ProgressBar = ({ width, data }: { width: number; data: number[] }) => {
+export const ProgressBar = ({
+  width,
+  data,
+}: {
+  width: number;
+  data: number[];
+}) => {
   const [values, setValues] = useState([0, 0]);
 
   useEffect(() => {
@@ -55,27 +62,27 @@ const EmptyState = ({
   chainId: string;
 }) => {
   const { chainStore, accountStore } = useStore();
-  const [pubKey, setPubKey] = useState("");
+  // const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [bech32Address, setBech32Address] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
-  const [loading,setLoading]=useState(true)
-  useEffect(()=>{
+  // const [loading, setLoading] = useState(true);
+  useEffect(() => {
     const accountInfo = accountStore.getAccount(chainId);
-    setWalletStatus(accountInfo.walletStatus)
-    setBech32Address(accountInfo.bech32Address)
-  },[accountStore, chainStore])
+    setWalletStatus(accountInfo.walletStatus);
+    setBech32Address(accountInfo.bech32Address);
+  }, [chainId, accountStore, chainStore]);
 
-  useEffect(()=>{
-    const getPubKey = async () => {
-      setLoading(true)
-      const value = await fetchPublicKey(bech32Address);
-      setPubKey(value || "");
-      setLoading(false)
-    };
-    getPubKey();
-  },[bech32Address])
- 
+  // TODO(EJF): Seems like the public key stuff here is a little weird
+  // useEffect(() => {
+  //   const getPubKey = async () => {
+  //     setLoading(true);
+  //     const value = await fetchPublicKey(bech32Address);
+  //     setPubKey(value || "");
+  //     setLoading(false);
+  //   };
+  //   getPubKey();
+  // }, [bech32Address]);
 
   const intl = useIntl();
 
@@ -99,7 +106,7 @@ const EmptyState = ({
         });
       }
     },
-    [walletStatus, bech32Address, notification, intl]
+    [walletStatus, notification, intl]
   );
   return (
     <div className={styleAsset.emptyState}>
@@ -112,10 +119,14 @@ const EmptyState = ({
 
       <h1 className={styleAsset.title}>No funds added</h1>
       <img src={walletIcon} alt="no fund" />
-      <p className={styleAsset.desc}>That’s okay, you can deposit tokens to your address or buy some.</p>
+      <p className={styleAsset.desc}>
+        That’s okay, you can deposit tokens to your address or buy some.
+      </p>
       <button
         onClick={(e) => {
           e.preventDefault();
+
+          // TODO(EJF): Needs to be checked
           copyAddress(bech32Address);
           setIsDepositOpen(true);
         }}

@@ -29,7 +29,7 @@ export const encryptAllData = async (
     senderAddress,
     targetAddress,
     accessToken
-  )
+  );
 
   return toBase64(Buffer.from(JSON.stringify(dataEnvelope)));
 };

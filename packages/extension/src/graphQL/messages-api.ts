@@ -4,10 +4,14 @@ import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
 import client, { createWSLink, httpLink } from "./client";
-import { listenMessages, receiveMessages, sendMessages } from "./messages-queries";
+import {
+  listenMessages,
+  NewMessageUpdate,
+  receiveMessages,
+  sendMessages,
+} from "./messages-queries";
 
-export const fetchMessages = async (accessToken: string) => {
-  // const state = store.getState();
+export const fetchMessages = async () => {
   const state = store.getState();
   const { data } = await client.query({
     query: gql(receiveMessages),
@@ -23,11 +27,23 @@ export const fetchMessages = async (accessToken: string) => {
   return data.mailbox.messages;
 };
 
-export const deliverMessages = async (accessToken: string, chainId: string, newMessage: any, senderAddress: string, targetAddress: string) => {
+export const deliverMessages = async (
+  accessToken: string,
+  chainId: string,
+  newMessage: any,
+  senderAddress: string,
+  targetAddress: string
+) => {
   const state = store.getState();
   try {
     if (newMessage) {
-      const encryptedData = await encryptAllData(accessToken, chainId, newMessage, senderAddress, targetAddress);
+      const encryptedData = await encryptAllData(
+        accessToken,
+        chainId,
+        newMessage,
+        senderAddress,
+        targetAddress
+      );
       const { data } = await client.mutate({
         mutation: gql(sendMessages),
         variables: {
@@ -79,9 +95,7 @@ export const messageListener = () => {
       },
     })
     .subscribe({
-      next({ data }) {
-        //call update messages function
-        console.log("messageListener", data);
+      next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
         store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
       },
       error(err) {

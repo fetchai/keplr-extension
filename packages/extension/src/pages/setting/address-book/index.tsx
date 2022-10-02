@@ -41,12 +41,12 @@ export const AddressBookPage: FunctionComponent<{
     hideChainDropdown,
     selectHandler,
     ibcChannelConfig,
-    ...rest
+    // ...rest
     //isInTransaction,
   }) => {
     const intl = useIntl();
     const history = useHistory();
-    let values = { ...rest };
+    // const values = { ...rest };
     const { chainStore } = useStore();
     const current = chainStore.current;
 
@@ -89,17 +89,21 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    const [addAddressModalOpen, setAddAddressModalOpen] = useState(values?.location?.state?.currentState || false);
+    // TODO(EJF): investigate what is going on here
+    const [addAddressModalOpen, setAddAddressModalOpen] = useState(
+      /*values?.location?.state?.currentState ||*/ false
+    );
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
 
-    const addresses = addressBookConfig.addressBookDatas.map((data) => {
-      return { name: data.name, address: data.address };
-    });
-    console.log("addresses addresses", addresses);
+    // const addresses = addressBookConfig.addressBookDatas.map((data) => {
+    //   return { name: data.name, address: data.address };
+    // });
+
+    // console.log("addresses addresses", addresses);
     // console.log("state state",props.location.state);
-    console.log("props values.children", values.location.state);
+    // console.log("props values.children", values.location.state);
 
     const addressBookIcons = (index: number) => {
       return [
@@ -127,6 +131,7 @@ export const AddressBookPage: FunctionComponent<{
               await confirm.confirm({
                 img: (
                   <img
+                    alt=""
                     src={require("../../../public/assets/img/trash.svg")}
                     style={{ height: "80px" }}
                   />
@@ -181,7 +186,9 @@ export const AddressBookPage: FunctionComponent<{
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
-              currentValue={values?.location?.state?.currentValue}
+              currentValue={
+                "false" /*|| values?.location?.state?.currentValue TODO(EJF): check*/
+              }
             />
           </ModalBody>
         </Modal>

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState,useEffect } from "react";
+import React, { FunctionComponent, useMemo, useState } from "react";
 import {
   FormGroup,
   Label,
@@ -39,7 +39,8 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
-  value: string
+  // TODO(EJF): Not sure what is going on here
+  value?: string;
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -51,7 +52,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     label,
     disableAddressBook,
     disabled = false,
-    value
+    value,
   }) => {
     const intl = useIntl();
 
@@ -107,8 +108,8 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         }
       },
     };
-    console.log("selectAddressFromAddressBook",selectAddressFromAddressBook);
-        // useEffect(()=>{
+    console.log("selectAddressFromAddressBook", selectAddressFromAddressBook);
+    // useEffect(()=>{
     //   recipientConfig?.setRawRecipient(searchedAddressValue);
     // },[])
     const handleSearchInputChange = (e: any) => {
@@ -116,7 +117,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       recipientConfig.setRawRecipient(e?.target?.value);
       if (value?.length) {
         setSearchedAddressValue(e?.target?.value);
-
       } else {
         recipientConfig.setRawRecipient(e?.target?.value);
       }
@@ -160,7 +160,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                   : recipientConfig.rawRecipient
               }
               onChange={(e) => {
-                handleSearchInputChange(e)
+                handleSearchInputChange(e);
               }}
               autoComplete="off"
               disabled={disabled}

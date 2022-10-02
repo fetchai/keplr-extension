@@ -1,9 +1,10 @@
-import { ObservableEnsFetcher } from "@keplr-wallet/ens";
-import { useIBCTransferConfig, useRecipientConfig } from "@keplr-wallet/hooks";
-import { useAddressBookConfig } from "@keplr-wallet/hooks";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { HeaderLayout } from "../../layouts/header-layout";
+import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import searchIcon from "../../public/assets/icon/search.png";
@@ -28,13 +29,15 @@ import { observer } from "mobx-react-lite";
 const NewUser = (props: any) => {
   const history = useHistory();
   const { name, address } = props.address;
-  const inputVal = props.inputVal;
 
   const handleClick = () => {
     console.log("address from new chatt", address);
 
     history.push(`/chat/${address}`);
   };
+
+  // TODO(EJF): Not false unread bit
+
   return (
     <div key={props.key}>
       <div className={style.messageContainer} onClick={handleClick}>
@@ -71,7 +74,7 @@ export const NewChat: FunctionComponent = observer(() => {
     EthereumEndpoint
   );
 
-  const [selectedChainId, setSelectedChainId] = useState(
+  const [selectedChainId] = useState(
     ibcTransferConfigs.channelConfig?.channel
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
@@ -89,29 +92,18 @@ export const NewChat: FunctionComponent = observer(() => {
       },
     }
   );
-  const recipientConfig = useRecipientConfig(
-    chainStore,
-    selectedChainId,
-    EthereumEndpoint
-  );
-  // const isENSAddress = ObservableEnsFetcher.isValidENS("absa");
-  // const error = recipientConfig.getError();
-  // console.log("isENSAddress", isENSAddress, "error ", error);
-  let useraddresses: any = addressBookConfig.addressBookDatas.map((data, i) => {
+
+  const useraddresses: any = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
-  // useEffect(()=>{
-  //   setAddresses(useraddresses)
-  // },[useraddresses])
-  console.log("addressBookConfig",addressBookConfig);
-  
-  console.log("addresses",addresses);
+
   useEffect(() => {
     for (const addressBookData of addressBookConfig.addressBookDatas) {
       console.log("loop : ", addressBookData.name, addressBookData.address);
     }
-    let useraddresses: any = addressBookConfig.addressBookDatas.map(
-      (data, i) => {
+
+    const useraddresses: any = addressBookConfig.addressBookDatas.map(
+      (data) => {
         return { name: data.name, address: data.address };
       }
     );
@@ -120,12 +112,12 @@ export const NewChat: FunctionComponent = observer(() => {
   }, [addressBookConfig.addressBookDatas]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    let val=e.target.value
+    const val = e.target.value;
     setAddresses(
       useraddresses.filter((address: any) =>
         address.name.toLowerCase().includes(val)
       )
-    );   
+    );
   };
   return (
     <HeaderLayout
@@ -164,9 +156,10 @@ export const NewChat: FunctionComponent = observer(() => {
             placeholder="Search by name or address"
             value={inputVal}
             onChange={handleSearch}
-          />        </div>
+          />
+        </div>
       </div>
-      <div className={style.messagesContainer} >
+      <div className={style.messagesContainer}>
         {addresses.map((address: any) => {
           console.log("address address in new component", address);
           return (
@@ -183,9 +176,10 @@ export const NewChat: FunctionComponent = observer(() => {
           onClick={() => {
             history.push({
               pathname: "/setting/address-book",
-              state: {currentState:true,
-              currentValue:inputVal
-            },
+              state: {
+                currentState: true,
+                currentValue: inputVal,
+              },
             });
           }}
         >
@@ -194,7 +188,6 @@ export const NewChat: FunctionComponent = observer(() => {
       ) : (
         ""
       )}
-       
     </HeaderLayout>
   );
 });

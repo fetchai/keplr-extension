@@ -1,27 +1,37 @@
-/* eslint-disable import/no-default-export */
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Message } from "../graphQL/messages-queries";
 
-/**
- * Structure of slice:
- * "contact" :{
- * messageList:{}
- * lastMessage:{}
- * pubKey: ""
- * }
- *
- */
+export interface MessageMap {
+  [key: string]: Message;
+}
+
+interface ContactState {
+  messageList: MessageMap;
+  lastMessage?: Message;
+  pubKey?: string;
+}
+
+interface State {
+  [key: string]: ContactState;
+}
+
+interface PubKey {
+  contact: string;
+  value: string;
+}
+
+const initialState: State = {};
 
 export const messagesSlice = createSlice({
   name: "messages",
-  initialState: {},
+  initialState,
   reducers: {
-    addMessageList: (_state, action) => action.payload,
-    updateAuthorMessages: (state: any, action) => {
+    updateAuthorMessages: (state: any, action: PayloadAction<Message>) => {
       const { sender, id } = action.payload;
       state[sender].messages[id] = action.payload;
       state[sender].lastMessage = action.payload;
     },
-    setAuthorPubKey: (state: any, action) => {
+    setAuthorPubKey: (state, action: PayloadAction<PubKey>) => {
       const { contact, value } = action.payload;
       state[contact].pubKey = value;
     },
@@ -29,8 +39,7 @@ export const messagesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addMessageList, updateAuthorMessages, setAuthorPubKey } =
-  messagesSlice.actions;
+export const { updateAuthorMessages, setAuthorPubKey } = messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages;
 

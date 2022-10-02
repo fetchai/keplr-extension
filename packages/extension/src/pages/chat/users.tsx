@@ -4,16 +4,14 @@ import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
+import { MessageMap } from "../../chatStore/messages-slice";
 
-interface UsersProps {
+const User: React.FC<{
   chainId: string;
-  userChats: any;
-  addresses: any;
-}
-
-const User = ({ chainId, chat, contact, contactname }: { chainId: string; chat: any; contact: any; contactname: any }) => {
-  console.log("contact", contact, "chat", chat, "contactname", contactname);
-
+  chat: any;
+  contact: string;
+  contactName: string;
+}> = ({ chainId, chat, contact, contactName }) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
   const handleClick = () => {
@@ -22,9 +20,13 @@ const User = ({ chainId, chat, contact, contactname }: { chainId: string; chat: 
 
   useEffect(() => {
     decryptMsg(chainId, chat.contents, chat.target === contact);
-  }, [chat.contents, chat.target, contact]);
+  }, [chainId, chat.contents, chat.target, contact]);
 
-  const decryptMsg = async (chainId: string, contents: string, isSender: boolean) => {
+  const decryptMsg = async (
+    chainId: string,
+    contents: string,
+    isSender: boolean
+  ) => {
     const message: any = await decryptMessage(chainId, contents, isSender);
     console.log("decrypted message", message);
 
@@ -38,7 +40,7 @@ const User = ({ chainId, chat, contact, contactname }: { chainId: string; chat: 
         {!false && <div className={style.unread} />}
       </div>
       <div className={style.messageInner}>
-        <div className={style.name}>{contactname}</div>
+        <div className={style.name}>{contactName}</div>
         <div className={style.messageText}>{message}</div>
       </div>
       <div>
@@ -48,37 +50,38 @@ const User = ({ chainId, chat, contact, contactname }: { chainId: string; chat: 
   );
 };
 
-export const Users = ({ chainId, userChats, addresses }: UsersProps) => {
-  // const [addAddressModalOpen,setAddAddressModalOpen]=useState(true)
-  const history = useHistory();
-  console.log("userChats userChats", userChats, addresses);
+export interface NameAddress {
+  name: string;
+  address: string;
+}
 
-  const checkAddress = (addresses: any, contact: string) => {
-    let val = "";
-    for (let i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == contact) {
-        val = addresses[i].name;
-      }
-    }
-    return val;
-  };
+export const Users: React.FC<{
+  chainId: string;
+  userChats: MessageMap;
+  addresses: NameAddress[];
+}> = ({ chainId, userChats, addresses }) => {
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
         Object.keys(userChats).map((contact, index) => {
+          // translate the contact address into the address book name if it exists
+          const contactAddressBookName = addresses.find(
+            (entry) => entry.address === contact
+          )?.name;
+
           return (
             <User
               key={index}
               chat={userChats[contact]}
               contact={contact}
-              contactname={checkAddress(addresses, contact).length ? checkAddress(addresses, contact) : formatAddress(contact)}
+              contactName={contactAddressBookName ?? formatAddress(contact)}
               chainId={chainId}
             />
           );
         })
       ) : (
         <div>
-           <div className={style.resultText}>No result found</div>
+          <div className={style.resultText}>No result found</div>
         </div>
       )}
     </div>

@@ -18,8 +18,6 @@ import { useInteractionInfo } from "@keplr-wallet/hooks";
 import delay from "delay";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router";
-import { getJWT } from "../../utils/auth";
-import { toHex } from "@cosmjs/encoding";
 
 interface FormData {
   password: string;
@@ -36,10 +34,6 @@ export const LockPage: FunctionComponent = observer(() => {
       password: "",
     },
   });
-
-  // let client:WalletConnectManager
-  // const keplr = WalletConnectManager.createKeplrAPI(client.session.key);
-  // console.log(keplr);
 
   const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);

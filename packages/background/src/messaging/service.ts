@@ -32,7 +32,7 @@ export class MessagingService {
     env: Env,
     chainId: string,
     targetAddress: string | null,
-    accessToken: string,
+    accessToken: string
   ): Promise<string | undefined> {
     if (targetAddress === null) {
       const sk = await this.getPrivateKey(env, chainId);
@@ -56,14 +56,15 @@ export class MessagingService {
     env: Env,
     chainId: string,
     address: string,
-    accessToken: string,
+    accessToken: string
   ): Promise<string> {
     const sk = await this.getPrivateKey(env, chainId);
     const privateKey = new PrivateKey(Buffer.from(sk));
     const pubKey = toHex(privateKey.publicKey.compressed);
-    
+
     const regPubKey = await this.lookupPublicKey(accessToken, address);
-    if (!regPubKey) await registerPubKey(accessToken, pubKey, address, MESSAGE_CHANNEL_ID);
+    if (!regPubKey)
+      await registerPubKey(accessToken, pubKey, address, MESSAGE_CHANNEL_ID);
 
     return pubKey;
   }
@@ -91,8 +92,8 @@ export class MessagingService {
   /**
    * Encrypt a message using the messaging protocol key
    *
-   * @param env The extension environment
-   * @param chainId The target chain id
+   * @param _env The extension environment
+   * @param _chainId The target chain id
    * @param targetAddress The target address
    * @param message The base64 encoded message to be processed
    * @param accessToken accessToken token to authenticate in memorandum service
@@ -103,10 +104,13 @@ export class MessagingService {
     _chainId: string,
     targetAddress: string,
     message: string,
-    accessToken: string,
+    accessToken: string
   ): Promise<string> {
     const rawMessage = Buffer.from(fromBase64(message));
-    const targetPublicKey = await this.lookupPublicKey(accessToken, targetAddress);
+    const targetPublicKey = await this.lookupPublicKey(
+      accessToken,
+      targetAddress
+    );
 
     if (!targetPublicKey) throw new Error("Target pub key not registered");
     const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey));
@@ -147,7 +151,10 @@ export class MessagingService {
    * @returns The base64 encoded public key for the target address if successful
    * @protected
    */
-  protected async lookupPublicKey(accessToken: string, targetAddress: string): Promise<string | undefined> {
+  protected async lookupPublicKey(
+    accessToken: string,
+    targetAddress: string
+  ): Promise<string | undefined> {
     // Step 1. Query the cache
     let targetPublicKey = this._publicKeyCache.get(targetAddress);
     if (targetPublicKey !== undefined) {
@@ -157,8 +164,10 @@ export class MessagingService {
     // Step 2. Cache miss, fetch the public key from the memorandum service and
     //         update the cache
     targetPublicKey = await this.fetchPublicKey(accessToken, targetAddress);
-    
-    if (!targetPublicKey) return;
+    if (!targetPublicKey) {
+      return;
+    }
+
     this._publicKeyCache.set(targetAddress, targetPublicKey);
 
     return targetPublicKey;
@@ -173,13 +182,11 @@ export class MessagingService {
    * @returns The base64 encoded public key for the target address if successful
    * @private
    */
-  private async fetchPublicKey(accessToken: string, _targetAddress: string): Promise<string | undefined> {
-    // TODO(EJF): Query the memorandum service for the public key associated with the target address
-    const pubKey = await getPubKey(accessToken, _targetAddress, MESSAGE_CHANNEL_ID);
-    
-    if (!pubKey) return;
-
-    return pubKey;
+  private async fetchPublicKey(
+    accessToken: string,
+    targetAddress: string
+  ): Promise<string | undefined> {
+    return await getPubKey(accessToken, targetAddress, MESSAGE_CHANNEL_ID);
   }
 
   /**

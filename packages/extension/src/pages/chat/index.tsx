@@ -1,43 +1,35 @@
-import { toHex } from "@cosmjs/encoding";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
-import { userMessages } from "../../chatStore/messages-slice";
-import { setAccessToken, setMessagingPubKey, userDetails } from "../../chatStore/user-slice";
+import { MessageMap, userMessages } from "../../chatStore/messages-slice";
+import { setAccessToken, setMessagingPubKey } from "../../chatStore/user-slice";
 import { EthereumEndpoint } from "../../config.ui";
-import { HeaderLayout } from "../../layouts/header-layout";
-import chatIcon from "../../public/assets/hello.png";
+import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
 import newChatIcon from "../../public/assets/icon/new-chat.png";
 import searchIcon from "../../public/assets/icon/search.png";
-import { recieveMessages } from "../../services/recieve-messages";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
-import { openValue } from "../chatSection";
 import { Menu } from "../main/menu";
-import { AuthPopup } from "./AuthPopup";
 import style from "./style.module.scss";
 import { Users } from "./users";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import {
-  RegisterPublicKey,
-} from "@keplr-wallet/background/build/messaging";
+import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { AUTH_SERVER } from "../../config/config";
-
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
 
   const history = useHistory();
   const messages = useSelector(userMessages);
@@ -52,44 +44,38 @@ const ChatView = () => {
     EthereumEndpoint
   );
 
-  const [selectedChainId, setSelectedChainId] = useState(
+  const [selectedChainId] = useState(
     ibcTransferConfigs.channelConfig?.channel
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
 
-  const [userChats, setUserChats] = useState<any>({});
+  const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
-  const [isOpen, setIsOpen] = useState(true && openValue);
-  const [loading, setLoading] = useState(true);
-  const [initialChats,setInitialChats]=useState({})
+  const [, setInitialChats] = useState<MessageMap>({});
   const dispatch = useDispatch();
-  const intl = useIntl();
 
   const requester = new InExtensionMessageRequester();
 
-  const setJWTAndRegisterMsgPubKey = async () => {
-    const res = await getJWT(
-      current.chainId,
-      AUTH_SERVER
-    );
-
-    store.dispatch(setAccessToken(res));
-
-    const messagingPubKey = await requester.sendMessage(
-      BACKGROUND_PORT,
-      new RegisterPublicKey(current.chainId, res, walletAddress)
-    );
-
-    store.dispatch(setMessagingPubKey(messagingPubKey))
-  }
-
   useEffect(() => {
+    const setJWTAndRegisterMsgPubKey = async () => {
+      const res = await getJWT(current.chainId, AUTH_SERVER);
+
+      store.dispatch(setAccessToken(res));
+
+      const messagingPubKey = await requester.sendMessage(
+        BACKGROUND_PORT,
+        new RegisterPublicKey(current.chainId, res, walletAddress)
+      );
+
+      store.dispatch(setMessagingPubKey(messagingPubKey));
+    };
+
     setJWTAndRegisterMsgPubKey();
-  }, [current.chainId]);
+  }, [current.chainId, requester, walletAddress]);
 
   useEffect(() => {
-    const userLastMessages: any = {};
+    const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
@@ -129,12 +115,16 @@ const ChatView = () => {
         userLastMessages[contact] = messages[contact]?.lastMessage;
       });
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
-        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
+        const found = addresses.some(
+          (address: any) =>
+            address.name.toLowerCase().includes(value.toLowerCase()) &&
+            address.address == contact
+        );
         return contact.toLowerCase().includes(value.toLowerCase()) || found;
       });
-      console.log("filteredChats",filteredChats);
-      
-      let tempChats: any = {};
+      console.log("filteredChats", filteredChats);
+
+      const tempChats: any = {};
       filteredChats.forEach((item: any) => {
         tempChats[item] = userLastMessages[item];
       });
@@ -146,7 +136,7 @@ const ChatView = () => {
     }
   };
 
-  const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+  const addresses = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
 
@@ -232,8 +222,6 @@ const ChatView = () => {
           </div>
         )} */}
 
-        {/* <AuthPopup /> */}
-
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
             <img src={searchIcon} alt="search" />
@@ -247,7 +235,11 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        <Users chainId={current.chainId} userChats={userChats} addresses={addresses} />
+        <Users
+          chainId={current.chainId}
+          userChats={userChats}
+          addresses={addresses}
+        />
       </div>
     </HeaderLayout>
   );

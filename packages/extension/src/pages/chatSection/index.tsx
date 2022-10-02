@@ -17,7 +17,7 @@ import { userMessages } from "../../chatStore/messages-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { EthereumEndpoint } from "../../config.ui";
 import { deliverMessages } from "../../graphQL/messages-api";
-import { HeaderLayout } from "../../layouts/header-layout";
+import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
@@ -36,10 +36,10 @@ export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
-  const oldMessages = useMemo(
-    () => allMessages[userName] || {},
-    [allMessages, userName]
-  );
+  const oldMessages = useMemo(() => allMessages[userName] || {}, [
+    allMessages,
+    userName,
+  ]);
   const [messages, setMessages] = useState(
     Object.values(oldMessages?.messages || [])
   );
@@ -67,7 +67,7 @@ export const ChatSection: FunctionComponent = () => {
     EthereumEndpoint
   );
 
-  const [selectedChainId, setSelectedChainId] = useState(
+  const [selectedChainId] = useState(
     ibcTransferConfigs.channelConfig?.channel
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
@@ -86,7 +86,7 @@ export const ChatSection: FunctionComponent = () => {
       },
     }
   );
-  const addresses = addressBookConfig.addressBookDatas.map((data, i) => {
+  const addresses = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
 
@@ -163,8 +163,11 @@ export const ChatSection: FunctionComponent = () => {
       );
       setTargetPubKey(pubAddr || "");
     };
-    if (!oldMessages?.pubKey?.length) setPublicAddress();
-  }, [userName]);
+    if (!oldMessages?.pubKey?.length) {
+      setPublicAddress();
+    }
+    // TODO(EJF): Look into dependencies
+  }, [current.chainId, userName]);
 
   useEffect(() => {
     if (
@@ -213,6 +216,7 @@ export const ChatSection: FunctionComponent = () => {
       <div className={style.username}>
         <div className={style.leftBox}>
           <img
+            alt=""
             className={style.backBtn}
             src={chevronLeft}
             onClick={() => {
@@ -227,6 +231,7 @@ export const ChatSection: FunctionComponent = () => {
           </span>
         </div>
         <img
+          alt=""
           style={{ cursor: "pointer" }}
           className={style.more}
           src={moreIcon}
@@ -289,57 +294,12 @@ export const ChatSection: FunctionComponent = () => {
             className={style["send-message-icon"]}
             onClick={handleSendMessage}
           >
-            <img src={paperAirplaneIcon} />
+            <img src={paperAirplaneIcon} alt="" />
           </div>
         ) : (
           ""
         )}
       </InputGroup>
     </HeaderLayout>
-  );
-};
-
-const Dropdown = ({ added, blocked }: { added: boolean; blocked: boolean }) => {
-  return (
-    <div className={style.dropdown}>
-      {added ? <div>View in address book</div> : <div>Add to address book</div>}
-      {blocked ? <div>Unblock contact</div> : <div>Block contact</div>}
-      <div>Report as spam</div>
-      <div>Delete chat</div>
-    </div>
-  );
-};
-
-const Popup = ({ popupData }: { popupData: any }) => {
-  const { name, heading, button, text1, text2, text3, check } = popupData;
-  // const handleClick = () => {
-  //   openPopup = false;
-  // };
-
-  return (
-    <>
-      <div className={style.popup}>
-        <h4>
-          {heading}
-          <span>{name} ?</span>
-        </h4>
-        <section>
-          <p className={style.textContainer}>{text1}</p>
-          <p className={style.textContainer}>{text2}</p>
-          <div className={style.textContainer}>
-            <input type="checkbox" id="check" />
-            <label htmlFor="check">{check}</label>
-          </div>
-          <p className={style.textContainer}>{text3}</p>
-        </section>
-        <div className={style.buttonContainer}>
-          <button type="button">Cancel</button>
-          <button type="button" className={style.btn} /*onClick={handleClick}*/>
-            {button}
-          </button>
-        </div>
-      </div>
-      {/* } */}
-    </>
   );
 };
