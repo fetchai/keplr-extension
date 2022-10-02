@@ -29,11 +29,13 @@ let months: any[] = [
 ];
 
 export const ChatMessage = ({
+  chainId,
   message,
   isSender,
   timestamp,
-  showDate,
+  showDate
 }: {
+  chainId: string;
   isSender: boolean;
   message: string;
   timestamp: number;
@@ -42,14 +44,14 @@ export const ChatMessage = ({
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
   useEffect(() => {
-    decryptMsg(message);
-  }, []);
-
+    decryptMsg(message)
+  }, [])
+  
   const decryptMsg = async (contents: string) => {
-    const message: any = await decryptMessage(contents, !isSender);
-    setDecryptedMessage(message);
-  };
-
+    const message : any = await decryptMessage(chainId, contents, !isSender)
+    setDecryptedMessage(message)
+  }
+  
   const currentTime = (time: any) => {
     const d: any = new Date(time);
     if (d.getDate() === new Date().getDate()) {

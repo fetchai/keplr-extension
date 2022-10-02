@@ -1,9 +1,14 @@
 import axios from "axios";
 
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-
-// import { AccountType } from "../components/Keplr/walletSlice";
-import { toBase64 } from "@cosmjs/encoding";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import {
+  SignMessagingPayload,
+  GetMessagingPublicKey,
+} from "@keplr-wallet/background/build/messaging";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { rawSecp256k1PubkeyToRawAddress } from '@cosmjs/amino';
+import { toBase64, Bech32, fromHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
 declare let window: Window;
 
@@ -26,7 +31,7 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 
-const signArbitrary = async (chainId: string, account: any, data: string) => {
+const signArbitrary = async (chainId: string, addr: string, pubKey:string, data: string, requester: any) => {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);
   console.log("encodedencodeddata", encoded);
@@ -43,35 +48,27 @@ const signArbitrary = async (chainId: string, account: any, data: string) => {
       {
         type: "sign/MsgSignData",
         value: {
-          signer: account.address,
+          signer: addr,
           data: toBase64(encoded),
         },
       },
     ],
     memo: "",
   };
-  //  console.log("window",window,chainId,);
-  //  console.log("Final details ",chainId,account.address,signDoc,);
 
-  const response = await window?.keplr?.signAmino(
-    chainId,
-    account.address,
-    signDoc,
-    { isADR36WithString: true } as any
+  const signature = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new SignMessagingPayload(chainId, toBase64(serializeSignDoc(signDoc)))
   );
 
-  if (response === undefined) {
-    return undefined;
-  }
-
   return {
-    signature: response.signature.signature,
-    public_key: account.pubkey,
-    signed_bytes: toBase64(serializeSignDoc(response.signed)),
+    signature,
+    public_key: pubKey,
+    signed_bytes: toBase64(serializeSignDoc(signDoc)),
   };
 };
 
-export const getJWT = async (chainId: string, account: any, url: string) => {
+export const getJWT = async (chainId: string, url: string) => {
   if (window === undefined) {
     console.log("no fetch wallet");
     return "";
@@ -80,9 +77,17 @@ export const getJWT = async (chainId: string, account: any, url: string) => {
     headers: { "Access-Control-Allow-Origin": "*" },
   };
 
+  const requester = new InExtensionMessageRequester();
+
+  const pubKey = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new GetMessagingPublicKey(chainId, '', null)
+  );
+
+  const addr = Bech32.encode('fetch', rawSecp256k1PubkeyToRawAddress(fromHex(pubKey)));
   const request = {
-    address: account.address,
-    public_key: account.pubkey,
+    address: addr,
+    public_key: pubKey,
   };
 
   const r1 = await axios.post(`${url}/request_token`, request, config);
@@ -91,19 +96,11 @@ export const getJWT = async (chainId: string, account: any, url: string) => {
 
   let loginRequest = undefined;
 
-  // let account1={
-  //   address: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
-  //   pubkey: "02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65"
-  // }
-  // let chain_id_1="fetchhub-4"
-
   try {
-    loginRequest = await signArbitrary(chainId, account, r1.data.payload);
+    loginRequest = await signArbitrary(chainId, addr, pubKey, r1.data.payload, requester);
   } catch (err: any) {
     throw new RejectError(err);
   }
-
-  console.log("Login request: ", loginRequest);
 
   if (loginRequest === undefined) {
     console.log("Failed to sign challenge!");

@@ -18,15 +18,8 @@ import { DepositModal } from "./qr-code";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
-import { fetchPublicKey } from "../../utils/fetch-public-key";
 
-export const ProgressBar = ({
-  width,
-  data,
-}: {
-  width: number;
-  data: number[];
-}) => {
+export const ProgressBar = ({ width, data }: { width: number; data: number[] }) => {
   const [values, setValues] = useState([0, 0]);
 
   useEffect(() => {
@@ -62,24 +55,28 @@ const EmptyState = ({
   chainId: string;
 }) => {
   const { chainStore, accountStore } = useStore();
-  const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [pubKey, setPubKey] = useState("");
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [bech32Address, setBech32Address] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
-  useEffect(() => {
+  const [loading,setLoading]=useState(true)
+  useEffect(()=>{
     const accountInfo = accountStore.getAccount(chainId);
-    setWalletStatus(accountInfo.walletStatus);
-    setBech32Address(accountInfo.bech32Address);
-  }, [accountStore, chainStore]);
+    setWalletStatus(accountInfo.walletStatus)
+    setBech32Address(accountInfo.bech32Address)
+  },[accountStore, chainStore])
 
-  useEffect(() => {
+  useEffect(()=>{
     const getPubKey = async () => {
+      setLoading(true)
       const value = await fetchPublicKey(bech32Address);
-      console.log(value);
       setPubKey(value || "");
+      setLoading(false)
     };
     getPubKey();
-  }, [bech32Address]);
+  },[bech32Address])
+ 
+
   const intl = useIntl();
 
   const notification = useNotification();
@@ -113,25 +110,9 @@ const EmptyState = ({
         setIsDepositOpen={setIsDepositOpen}
       />
 
-      <h1 className={styleAsset.title}>
-        {pubKey.length ? "No funds added" : "Your wallet isn’t active yet. "}
-      </h1>
+      <h1 className={styleAsset.title}>No funds added</h1>
       <img src={walletIcon} alt="no fund" />
-      {pubKey.length ? (
-        <p className={styleAsset.desc}>
-          That’s okay, you can deposit tokens to your address or buy some.
-        </p>
-      ) : (
-        <div>
-          To activate your wallet, you need to make a transaction on the network
-          such as:
-          <ul>
-            <li>Buy and deposit Native FET</li>
-            <li>Stake with a validator</li>
-            <li>Transfer tokens</li>
-          </ul>
-        </div>
-      )}
+      <p className={styleAsset.desc}>That’s okay, you can deposit tokens to your address or buy some.</p>
       <button
         onClick={(e) => {
           e.preventDefault();

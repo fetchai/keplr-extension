@@ -2,8 +2,8 @@ import { store } from "../chatStore";
 import { addMessageList } from "../chatStore/messages-slice";
 import { fetchMessages } from "../graphQL/messages-api";
 
-export const recieveMessages = async (currentAddress) => {
-  const messagesArray = await fetchMessages();
+export const recieveMessages = async (currentAddress, accessToken) => {
+  const messagesArray = await fetchMessages(accessToken);
   console.log("messagesArray", messagesArray);
   let messageStore = {};
   messagesArray.map((message) => {

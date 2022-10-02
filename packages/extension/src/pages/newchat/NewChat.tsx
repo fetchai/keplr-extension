@@ -103,17 +103,29 @@ export const NewChat: FunctionComponent = observer(() => {
   // useEffect(()=>{
   //   setAddresses(useraddresses)
   // },[useraddresses])
-  console.log("addressBookConfig", addressBookConfig);
-
-  console.log("addresses", addresses);
-
+  console.log("addressBookConfig",addressBookConfig);
+  
+  console.log("addresses",addresses);
+  useEffect(() => {
+    for (const addressBookData of addressBookConfig.addressBookDatas) {
+      console.log("loop : ", addressBookData.name, addressBookData.address);
+    }
+    let useraddresses: any = addressBookConfig.addressBookDatas.map(
+      (data, i) => {
+        return { name: data.name, address: data.address };
+      }
+    );
+    console.log("useraddresses : ", useraddresses);
+    setAddresses(useraddresses);
+  }, [addressBookConfig.addressBookDatas]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
+    let val=e.target.value
     setAddresses(
       useraddresses.filter((address: any) =>
-        address.name.toLowerCase().includes(inputVal)
+        address.name.toLowerCase().includes(val)
       )
-    );
+    );   
   };
   return (
     <HeaderLayout
@@ -152,10 +164,9 @@ export const NewChat: FunctionComponent = observer(() => {
             placeholder="Search by name or address"
             value={inputVal}
             onChange={handleSearch}
-          />
-        </div>
+          />        </div>
       </div>
-      <div className={style.messagesContainer}>
+      <div className={style.messagesContainer} >
         {addresses.map((address: any) => {
           console.log("address address in new component", address);
           return (
@@ -172,7 +183,9 @@ export const NewChat: FunctionComponent = observer(() => {
           onClick={() => {
             history.push({
               pathname: "/setting/address-book",
-              state: true,
+              state: {currentState:true,
+              currentValue:inputVal
+            },
             });
           }}
         >
@@ -181,6 +194,7 @@ export const NewChat: FunctionComponent = observer(() => {
       ) : (
         ""
       )}
+       
     </HeaderLayout>
   );
 });

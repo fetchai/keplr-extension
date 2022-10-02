@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
 import { userMessages } from "../../chatStore/messages-slice";
-import { setAccessToken, userDetails } from "../../chatStore/user-slice";
+import { setAccessToken, setMessagingPubKey, userDetails } from "../../chatStore/user-slice";
 import { EthereumEndpoint } from "../../config.ui";
 import { HeaderLayout } from "../../layouts/header-layout";
 import chatIcon from "../../public/assets/hello.png";
@@ -25,20 +25,22 @@ import { Menu } from "../main/menu";
 import { AuthPopup } from "./AuthPopup";
 import style from "./style.module.scss";
 import { Users } from "./users";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import {
+  RegisterPublicKey,
+} from "@keplr-wallet/background/build/messaging";
+import { AUTH_SERVER } from "../../config/config";
+
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountStore.getAccount(
-    chainStore.current.chainId
-  ).bech32Address;
-  const pubKey = accountInfo.pubKey;
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId).bech32Address;
 
   const history = useHistory();
   const messages = useSelector(userMessages);
-  const user = useSelector(userDetails);
-
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -59,15 +61,32 @@ const ChatView = () => {
   const [userChats, setUserChats] = useState<any>({});
   const [inputVal, setInputVal] = useState("");
   const [isOpen, setIsOpen] = useState(true && openValue);
-  const [loading, setLoading] = useState(false);
-  const [initialChats, setInitialChats] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [initialChats,setInitialChats]=useState({})
   const dispatch = useDispatch();
   const intl = useIntl();
 
+  const requester = new InExtensionMessageRequester();
+
+  const setJWTAndRegisterMsgPubKey = async () => {
+    const res = await getJWT(
+      current.chainId,
+      AUTH_SERVER
+    );
+
+    store.dispatch(setAccessToken(res));
+
+    const messagingPubKey = await requester.sendMessage(
+      BACKGROUND_PORT,
+      new RegisterPublicKey(current.chainId, res, walletAddress)
+    );
+
+    store.dispatch(setMessagingPubKey(messagingPubKey))
+  }
+
   useEffect(() => {
-    // setPubKey(toHex(pubKey)); will be needed later
-    recieveMessages(walletAddress);
-  }, [pubKey]);
+    setJWTAndRegisterMsgPubKey();
+  }, [current.chainId]);
 
   useEffect(() => {
     const userLastMessages: any = {};
@@ -105,29 +124,19 @@ const ChatView = () => {
     setInputVal(value);
 
     if (value.trim()) {
-      const filteredChats = Object.keys(userChats).filter((contact) => {
-        const found = addresses.some(
-          (address: any) =>
-            address.name.toLowerCase().includes(value.toLowerCase()) &&
-            address.address == contact
-        );
-        console.log("found", found);
-        console.log(
-          "found another way",
-          contact.toLowerCase().includes(value.toLowerCase())
-        );
-        console.log(
-          "contact.toLowerCase().includes(value.toLowerCase()) || found",
-          contact.toLowerCase().includes(value.toLowerCase()) || found
-        );
-        return contact.toLowerCase().includes(value.toLowerCase()) || found;
-        // return contact.toLowerCase().includes(value.toLowerCase())
+      const userLastMessages: any = {};
+      Object.keys(messages).map((contact: string) => {
+        userLastMessages[contact] = messages[contact]?.lastMessage;
       });
-      console.log("filteredChats", filteredChats);
-
+      const filteredChats = Object.keys(userLastMessages).filter((contact) => {
+        const found=addresses.some((address:any)=>address.name.toLowerCase().includes(value.toLowerCase())&&address.address==contact)
+        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+      });
+      console.log("filteredChats",filteredChats);
+      
       let tempChats: any = {};
       filteredChats.forEach((item: any) => {
-        tempChats[item] = userChats[item];
+        tempChats[item] = userLastMessages[item];
       });
 
       setUserChats(tempChats);
@@ -222,7 +231,8 @@ const ChatView = () => {
             </button>
           </div>
         )} */}
-        <AuthPopup />
+
+        {/* <AuthPopup /> */}
 
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
@@ -237,7 +247,7 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        <Users userChats={userChats} addresses={addresses} />
+        <Users chainId={current.chainId} userChats={userChats} addresses={addresses} />
       </div>
     </HeaderLayout>
   );

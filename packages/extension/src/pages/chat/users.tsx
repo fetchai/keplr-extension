@@ -6,19 +6,12 @@ import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 
 interface UsersProps {
+  chainId: string;
   userChats: any;
   addresses: any;
 }
 
-const User = ({
-  chat,
-  contact,
-  contactname,
-}: {
-  chat: any;
-  contact: any;
-  contactname: any;
-}) => {
+const User = ({ chainId, chat, contact, contactname }: { chainId: string; chat: any; contact: any; contactname: any }) => {
   console.log("contact", contact, "chat", chat, "contactname", contactname);
 
   const [message, setMessage] = useState("");
@@ -28,11 +21,11 @@ const User = ({
   };
 
   useEffect(() => {
-    decryptMsg(chat.contents, chat.target === contact);
+    decryptMsg(chainId, chat.contents, chat.target === contact);
   }, [chat.contents, chat.target, contact]);
 
-  const decryptMsg = async (contents: string, isSender: boolean) => {
-    const message: any = await decryptMessage(contents, isSender);
+  const decryptMsg = async (chainId: string, contents: string, isSender: boolean) => {
+    const message: any = await decryptMessage(chainId, contents, isSender);
     console.log("decrypted message", message);
 
     setMessage(message);
@@ -55,7 +48,7 @@ const User = ({
   );
 };
 
-export const Users = ({ userChats, addresses }: UsersProps) => {
+export const Users = ({ chainId, userChats, addresses }: UsersProps) => {
   // const [addAddressModalOpen,setAddAddressModalOpen]=useState(true)
   const history = useHistory();
   console.log("userChats userChats", userChats, addresses);
@@ -78,17 +71,14 @@ export const Users = ({ userChats, addresses }: UsersProps) => {
               key={index}
               chat={userChats[contact]}
               contact={contact}
-              contactname={
-                checkAddress(addresses, contact).length
-                  ? checkAddress(addresses, contact)
-                  : formatAddress(contact)
-              }
+              contactname={checkAddress(addresses, contact).length ? checkAddress(addresses, contact) : formatAddress(contact)}
+              chainId={chainId}
             />
           );
         })
       ) : (
         <div>
-          <div className={style.resultText}>No result found</div>
+           <div className={style.resultText}>No result found</div>
         </div>
       )}
     </div>
