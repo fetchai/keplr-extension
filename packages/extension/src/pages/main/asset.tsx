@@ -34,7 +34,7 @@ export const ProgressBar = ({
     const percentageAvailable = data[0] / total;
     const percentageStake = data[1] / total;
     setValues([percentageAvailable * width, percentageStake * width]);
-  }, [data, width]);
+  }, [width, data]);
 
   return (
     <div>
@@ -123,11 +123,9 @@ const EmptyState = ({
         That’s okay, you can deposit tokens to your address or buy some.
       </p>
       <button
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault();
-
-          // TODO(EJF): Needs to be checked
-          copyAddress(bech32Address);
+          await copyAddress(bech32Address);
           setIsDepositOpen(true);
         }}
       >
