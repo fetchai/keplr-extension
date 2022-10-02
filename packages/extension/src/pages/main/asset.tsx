@@ -44,14 +44,27 @@ const EmptyState = ({
   chainId: string;
 }) => {
   const { chainStore, accountStore } = useStore();
+  const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [bech32Address, setBech32Address] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
+  const [loading,setLoading]=useState(true)
   useEffect(()=>{
     const accountInfo = accountStore.getAccount(chainId);
     setWalletStatus(accountInfo.walletStatus)
     setBech32Address(accountInfo.bech32Address)
   },[accountStore, chainStore])
+
+  useEffect(()=>{
+    const getPubKey = async () => {
+      setLoading(true)
+      const value = await fetchPublicKey(bech32Address);
+      setPubKey(value || "");
+      setLoading(false)
+    };
+    getPubKey();
+  },[bech32Address])
+ 
 
   const intl = useIntl();
 
