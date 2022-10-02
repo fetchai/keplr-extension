@@ -16,6 +16,7 @@ import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
 import { NameAddress } from "../chat/users";
 
+// TODO(!!!): Remove debug comments
 // const ADDRESSES = [
 //   {
 //     name: "fetchWallet2",
@@ -35,14 +36,12 @@ const NewUser = (props: any) => {
     history.push(`/chat/${address}`);
   };
 
-  // TODO(EJF): Not false unread bit
-
   return (
     <div key={props.key}>
       <div className={style.messageContainer} onClick={handleClick}>
         <div className={style.initials}>
           {name.charAt(0).toUpperCase()}
-          {!false && <div className={style.unread} />}
+          <div className={style.unread} />
         </div>
         <div className={style.messageInner}>
           <div className={style.name}>{name}</div>

@@ -83,7 +83,9 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    // TODO(EJF): investigate what is going on here
+    // TODO(!!!): This code needs reworking. Was not immediately clear what was
+    //            going on here and there was no typing information for me to
+    //            work with
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
       /*values?.location?.state?.currentState ||*/ false
     );
@@ -173,7 +175,7 @@ export const AddressBookPage: FunctionComponent<{
               index={addAddressModalIndex}
               chainId={selectedChainId}
               currentValue={
-                "false" /*|| values?.location?.state?.currentValue TODO(EJF): check*/
+                "false" /*|| values?.location?.state?.currentValue TODO(!!!): see above*/
               }
             />
           </ModalBody>

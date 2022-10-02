@@ -37,7 +37,7 @@ const signArbitrary = async (
   addr: string,
   pubKey: string,
   data: string,
-  requester: any // TODO(EJF): any
+  requester: any // TODO(!!!): Update types
 ) => {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(data);

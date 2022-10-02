@@ -59,7 +59,7 @@ export const ChatMessage = ({
       });
   }, [chainId, isSender, message]);
 
-  // TODO(EJF): Should be replaced with `date-fns`
+  // TODO(!!!): Should be replaced with `date-fns`
   const currentTime = (time: any) => {
     const d = new Date(time);
     if (d.getDate() === new Date().getDate()) {

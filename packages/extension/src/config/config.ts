@@ -1,7 +1,3 @@
-// TODO(EJF): Needs to be moved into better configuration place. Also need to handle access credentials better
-export const ACCESS_TOKEN = localStorage.getItem("access_token");
-export const MESSAGING_SERVER =
-  "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql";
+// TODO(!!!): Needs to be moved into main configuration location
+//
 export const AUTH_SERVER = "https://auth-attila.sandbox-london-b.fetch-ai.com";
-export const CHAIN_ID_DORADO = "dorado-1";
-export const CHAIN_ID_FETCHHUB = "fetchhub-4";

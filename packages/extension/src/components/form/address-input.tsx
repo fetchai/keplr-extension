@@ -39,7 +39,8 @@ export interface AddressInputProps {
   disableAddressBook?: boolean;
 
   disabled?: boolean;
-  // TODO(EJF): Not sure what is going on here
+  // TODO(!!!): Not sure what is going on here, but have fixed the types only
+  //            (was not originally in the type definition)
   value?: string;
 }
 

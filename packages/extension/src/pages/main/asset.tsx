@@ -73,7 +73,8 @@ const EmptyState = ({
     setBech32Address(accountInfo.bech32Address);
   }, [chainId, accountStore, chainStore]);
 
-  // TODO(EJF): Seems like the public key stuff here is a little weird
+  // TODO(!!!): Commented out this code, seems like the handling here needs a bit
+  //            of work
   // useEffect(() => {
   //   const getPubKey = async () => {
   //     setLoading(true);
