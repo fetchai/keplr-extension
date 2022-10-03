@@ -139,22 +139,6 @@ export const MainPage: FunctionComponent = observer(() => {
           </CardBody>
         </Card>
       )}
-
-      {/* {chainStore.current.walletUrlForStaking ? (
-        <Card className={classnames(style.card, "shadow")}>
-          <CardBody>
-            <StakeView />
-          </CardBody>
-        </Card>
-      ) : null} */}
-      {/* {uiConfigStore.showAdvancedIBCTransfer &&
-      chainStore.current.features?.includes("ibc-transfer") ? (
-        <Card className={classnames(style.card, "shadow")}>
-          <CardBody>
-            <IBCTransferView />
-          </CardBody>
-        </Card>
-      ) : null} */}
     </HeaderLayout>
   );
 });
