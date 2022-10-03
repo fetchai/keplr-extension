@@ -22,7 +22,6 @@ import stake from "../../public/assets/icon/stake.png";
 import activeSend from "../../public/assets/icon/activeSend.png";
 import activeReward from "../../public/assets/icon/activeReward.png";
 import activeStake from "../../public/assets/icon/activeStake.png";
-import { ToolTip } from "../../components/tooltip";
 
 export const TxButtonView: FunctionComponent = observer(() => {
   const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();

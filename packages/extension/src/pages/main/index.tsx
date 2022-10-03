@@ -17,9 +17,6 @@ import { BIP44SelectModal } from "./bip44-select-modal";
 import { useIntl } from "react-intl";
 import { useConfirm } from "../../components/confirm";
 import { ChainUpdaterService } from "@keplr-wallet/background";
-import { DenomHelper } from "@keplr-wallet/common";
-import { Dec } from "@keplr-wallet/unit";
-// import { IBCTransferView } from "./ibc-transfer";
 
 export const MainPage: FunctionComponent = observer(() => {
   const history = useHistory();
