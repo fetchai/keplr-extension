@@ -23,6 +23,8 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { AUTH_SERVER } from "../../config/config";
+import { encryptAllData } from "../../utils/encrypt-message";
+import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -33,6 +35,7 @@ const ChatView = () => {
 
   const history = useHistory();
   const messages = useSelector(userMessages);
+  const [token,setToken]=useState("")
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -54,14 +57,16 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [, setInitialChats] = useState<MessageMap>({});
   const dispatch = useDispatch();
-
+  const state = store.getState();
   const requester = new InExtensionMessageRequester();
 
   useEffect(() => {
     const setJWTAndRegisterMsgPubKey = async () => {
       const res = await getJWT(current.chainId, AUTH_SERVER);
-
+      console.log("res",res);
+      
       store.dispatch(setAccessToken(res));
+      setToken(res)
 
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
@@ -138,7 +143,9 @@ const ChatView = () => {
   const addresses = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
-
+  console.log("state.user.accessToken",state.user.accessToken);
+  
+  let pub_key='02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65'
   return (
     <HeaderLayout
       showChainName={true}
@@ -239,6 +246,11 @@ const ChatView = () => {
           userChats={userChats}
           addresses={addresses}
         />
+        <div>{state.user.accessToken}</div>
+        <button onClick={()=>encryptAllData(token,"fetchhub-4","hi","fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc","fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>get encrypted data</button>
+        <button onClick={()=>getPubKey(token,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr","MESSAGING")}>getPubKey</button>
+        <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button>
+        {/* <button onClick={()=>registerPubKey()}>registerPubKey</button> */}
       </div>
     </HeaderLayout>
   );

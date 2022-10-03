@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
+
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache(),
@@ -41,6 +42,7 @@ export const getPubKey = async (
   targetAddress: string,
   channelId: string
 ): Promise<string | undefined> => {
+  console.log("get pub key dev5",accessToken,targetAddress,channelId);
   try {
     const { data } = await client.query({
       query: gql(`query Query($address: String!, $channelId: ChannelId!) {
@@ -58,7 +60,8 @@ export const getPubKey = async (
         },
       },
     });
-
+    console.log("data.publicKey.publicKey",data.publicKey.publicKey);
+    
     return data.publicKey.publicKey;
   } catch (e) {
     console.log(e);

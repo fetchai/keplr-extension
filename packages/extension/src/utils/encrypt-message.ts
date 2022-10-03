@@ -117,7 +117,13 @@ export async function encryptToEnvelope(
     BACKGROUND_PORT,
     new SignMessagingPayload(chainId, encodedData)
   );
-
+    console.log("encrypted data",{
+      data: encodedData,
+      senderPublicKey,
+      targetPublicKey,
+      signature,
+      channelId: MESSAGE_CHANNEL_ID,
+    })
   return {
     data: encodedData,
     senderPublicKey,
