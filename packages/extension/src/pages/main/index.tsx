@@ -63,11 +63,11 @@ export const MainPage: FunctionComponent = observer(() => {
     }
   }, [chainStore, confirm, chainStore.isInitializing, currentChainId, intl]);
 
-  // const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
-  // const queryBalances = queriesStore
-  //   .get(chainStore.current.chainId)
-  //   .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+  const queryBalances = queriesStore
+    .get(chainStore.current.chainId)
+    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
   // const tokens = queryBalances.unstakables.filter((bal) => {
   //   // Temporary implementation for trimming the 0 balanced native tokens.
@@ -130,13 +130,15 @@ export const MainPage: FunctionComponent = observer(() => {
         </CardBody>
       </Card>
 
-      <Card className={classnames(style.card, "shadow")}>
-        <CardBody>
-          <div className={style.containerAccountInner}>
-            <TokensView />
-          </div>
-        </CardBody>
-      </Card>
+      {queryBalances.unstakables.length > 0 && (
+        <Card className={classnames(style.card, "shadow")}>
+          <CardBody>
+            <div className={style.containerAccountInner}>
+              <TokensView />
+            </div>
+          </CardBody>
+        </Card>
+      )}
 
       {/* {chainStore.current.walletUrlForStaking ? (
         <Card className={classnames(style.card, "shadow")}>
@@ -145,11 +147,6 @@ export const MainPage: FunctionComponent = observer(() => {
           </CardBody>
         </Card>
       ) : null} */}
-      {/* {hasTokens ? (
-        <Card className={classnames(style.card, "shadow")}>
-          <CardBody>{<TokensView />}</CardBody>
-        </Card>
-      ) : null}
       {/* {uiConfigStore.showAdvancedIBCTransfer &&
       chainStore.current.features?.includes("ibc-transfer") ? (
         <Card className={classnames(style.card, "shadow")}>

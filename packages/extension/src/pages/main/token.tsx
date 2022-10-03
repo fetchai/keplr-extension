@@ -12,8 +12,6 @@ import { WrongViewingKeyError } from "@keplr-wallet/stores";
 import { useNotification } from "../../components/notification";
 import { useLoadingIndicator } from "../../components/loading-indicator";
 import sendIcon from "../../public/assets/icon/send.png";
-
-import { DenomHelper } from "@keplr-wallet/common";
 import { Dec } from "@keplr-wallet/unit";
 
 const TokenView: FunctionComponent<{
@@ -32,6 +30,7 @@ const TokenView: FunctionComponent<{
   const name = balance.currency.coinDenom.toUpperCase();
   const minimalDenom = balance.currency.coinMinimalDenom;
   let amount = balance.balance.trim(true).shrink(true);
+  const isZeroBal = balance.balance.toDec().equals(new Dec(0));
 
   const backgroundColor = useMemo(() => {
     const hash = Hash.sha256(Buffer.from(minimalDenom));
@@ -109,17 +108,14 @@ const TokenView: FunctionComponent<{
           {name.length > 0 ? name[0] : "?"}
         </div>
       </div>
-      {/* <div className={styleToken.innerContainer}> */}
-      {/* <div className={styleToken.content}> */}
       <div className={styleToken.tokenName}>{name}</div>
       <div className={styleToken.tokenBalance}>
-        {amount.maxDecimals(6).hideDenom(true).toString()}
         {balance.isFetching ? (
           <i className="fas fa-spinner fa-spin ml-1" />
-        ) : null}
+        ) : (
+          amount.maxDecimals(6).hideDenom(true).toString()
+        )}
       </div>
-      {/* </div> */}
-      {/* <div style={{ flex: 1 }} /> */}
       {error ? (
         <div className={classmames(styleToken.rightIcon, "mr-2")}>
           <i
@@ -180,20 +176,17 @@ const TokenView: FunctionComponent<{
           )}
         </div>
       ) : null}
-      {/* <div className={styleToken.rightIcon}>
-          <i className="fas fa-angle-right" />
-        </div> */}
       <img
         onClick={(e) => {
-          e.preventDefault();
-
-          onClick();
+          if (!isZeroBal) {
+            e.preventDefault();
+            onClick();
+          }
         }}
         src={sendIcon}
-        style={{ cursor: "pointer" }}
+        style={!isZeroBal ? { cursor: "pointer" } : { opacity: 0.5 }}
         alt="send"
       />
-      {/* </div> */}
     </div>
   );
 });
@@ -206,15 +199,7 @@ export const TokensView: FunctionComponent = observer(() => {
   const tokens = queriesStore
     .get(chainStore.current.chainId)
     .queryBalances.getQueryBech32Address(accountInfo.bech32Address)
-    .unstakables.filter((bal) => {
-      // Temporary implementation for trimming the 0 balanced native tokens.
-      // TODO: Remove this part.
-      // if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
-      //   return bal.balance.toDec().gt(new Dec("0"));
-      // }
-      return true;
-    })
-    .sort((a, b) => {
+    .unstakables.sort((a, b) => {
       const aDecIsZero = a.balance.toDec().isZero();
       const bDecIsZero = b.balance.toDec().isZero();
 
