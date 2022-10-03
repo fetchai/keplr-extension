@@ -6,7 +6,6 @@ import { useStore } from "../../stores";
 import { useHistory } from "react-router";
 import { Hash } from "@keplr-wallet/crypto";
 import { ObservableQueryBalanceInner } from "@keplr-wallet/stores/build/query/balances";
-import classmames from "classnames";
 import { UncontrolledTooltip } from "reactstrap";
 import { WrongViewingKeyError } from "@keplr-wallet/stores";
 import { useNotification } from "../../components/notification";
@@ -117,7 +116,7 @@ const TokenView: FunctionComponent<{
         )}
       </div>
       {error ? (
-        <div className={classmames(styleToken.rightIcon, "mr-2")}>
+        <div style={{ paddingRight: "10px" }}>
           <i
             className="fas fa-exclamation-circle text-danger"
             id={validSelector}
@@ -129,7 +128,7 @@ const TokenView: FunctionComponent<{
       ) : null}
       {error?.data && error.data instanceof WrongViewingKeyError ? (
         <div
-          className={classmames(styleToken.rightIcon, "mr-2")}
+          style={{ paddingRight: "10px" }}
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
