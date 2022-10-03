@@ -247,7 +247,7 @@ const ChatView = () => {
           addresses={addresses}
         />
         <div>{state.user.accessToken}</div>
-        <button onClick={()=>encryptAllData(token,"fetchhub-4","hi","fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc","fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>get encrypted data</button>
+        <button onClick={()=>encryptAllData(token,"fetchhub-4","hi",accountInfo.bech32Address,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>get encrypted data</button>
         <button onClick={()=>getPubKey(token,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr","MESSAGING")}>getPubKey</button>
         <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button>
         {/* <button onClick={()=>registerPubKey()}>registerPubKey</button> */}
