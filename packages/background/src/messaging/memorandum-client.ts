@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
   cache: new InMemoryCache(),
 });
 
@@ -60,7 +60,7 @@ export const getPubKey = async (
         },
       },
     });
-    console.log("data.publicKey.publicKey",data.publicKey.publicKey);
+    console.log("data.publicKey.publicKey",data);
     
     return data.publicKey.publicKey;
   } catch (e) {

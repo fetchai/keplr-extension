@@ -16,6 +16,7 @@ import newChatIcon from "../../public/assets/icon/new-chat.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { Users } from "./users";
@@ -24,7 +25,7 @@ import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { AUTH_SERVER } from "../../config/config";
 import { encryptAllData } from "../../utils/encrypt-message";
-import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
+// import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -247,9 +248,9 @@ const ChatView = () => {
           addresses={addresses}
         />
         <div>{state.user.accessToken}</div>
-        <button onClick={()=>encryptAllData(token,"fetchhub-4","hi",accountInfo.bech32Address,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>get encrypted data</button>
-        <button onClick={()=>getPubKey(token,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr","MESSAGING")}>getPubKey</button>
-        <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button>
+        <button onClick={()=>encryptAllData(token,current.chainId,"hi",accountInfo.bech32Address,"fetch1hlkclrxp96lxd2t4f09zp7uyhyvkdr8egdpk4y")}>get encrypted data</button>
+        <button onClick={()=>fetchPublicKey(token, current.chainId, accountInfo.bech32Address)}>getPubKey</button>
+        {/* <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button> */}
         {/* <button onClick={()=>registerPubKey()}>registerPubKey</button> */}
       </div>
     </HeaderLayout>
