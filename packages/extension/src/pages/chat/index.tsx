@@ -25,6 +25,8 @@ import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { AUTH_SERVER } from "../../config/config";
 import { encryptAllData } from "../../utils/encrypt-message";
+import { deliverMessages, fetchMessages } from "../../graphQL/messages-api";
+import { decryptMessage } from "../../utils/decrypt-message";
 // import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
@@ -145,8 +147,8 @@ const ChatView = () => {
     return { name: data.name, address: data.address };
   });
   console.log("state.user.accessToken",state.user.accessToken);
+  console.log("userchats inside function",userChats);
   
-  let pub_key='02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65'
   return (
     <HeaderLayout
       showChainName={true}
@@ -242,16 +244,23 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
+        {/* <div>{current.chainId}</div> */}
+        {/* <div>{userChats}</div> */}
+        {/* <div>{addresses}</div> */}
         <Users
           chainId={current.chainId}
           userChats={userChats}
           addresses={addresses}
         />
-        <div>{state.user.accessToken}</div>
-        <button onClick={()=>encryptAllData(token,current.chainId,"hi",accountInfo.bech32Address,"fetch1hlkclrxp96lxd2t4f09zp7uyhyvkdr8egdpk4y")}>get encrypted data</button>
+        {/* <div>{state.user.accessToken}</div> */}
+        <button onClick={()=>encryptAllData(token,current.chainId,"hi",accountInfo.bech32Address,"fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc")}>get encrypted data</button>
         <button onClick={()=>fetchPublicKey(token, current.chainId, accountInfo.bech32Address)}>getPubKey</button>
         {/* <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button> */}
         {/* <button onClick={()=>registerPubKey()}>registerPubKey</button> */}
+        <button onClick={()=>deliverMessages(token,current.chainId,"hello",accountInfo.bech32Address,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>Send Messages</button>
+        <button onClick={()=>fetchMessages()}>Fetch Messages</button>
+        {/* <button onClick={()=>decryptMessage()}>decryptMessage</button> */}
+        
       </div>
     </HeaderLayout>
   );

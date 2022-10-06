@@ -165,7 +165,7 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     if (
-      !messages?.find(
+      oldMessages?.lastMessage?.id &&!messages?.find(
         (message: any) => message?.id === oldMessages?.lastMessage?.id
       )
     ) {
@@ -200,7 +200,6 @@ export const ChatSection: FunctionComponent = () => {
             style={{ width: "16px", cursor: "pointer" }}
             onClick={(e) => {
               e.preventDefault();
-
               history.push("/setting/set-keyring");
             }}
           />

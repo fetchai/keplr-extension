@@ -1,9 +1,20 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
+const defaultOptions: any = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+}
 
 const client = new ApolloClient({
   uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
   cache: new InMemoryCache(),
+  defaultOptions
 });
 
 export const registerPubKey = async (
