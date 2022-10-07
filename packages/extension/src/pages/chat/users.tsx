@@ -19,8 +19,8 @@ const User: React.FC<{
   };
 
   useEffect(() => {
-    decryptMsg(chainId, chat.contents, chat.target === contact);
-  }, [chainId, chat.contents, chat.target, contact]);
+    decryptMsg(chainId, chat.contents, chat.sender === contact);
+  }, [chainId, chat.contents, chat.sender, contact]);
 
   const decryptMsg = async (
     chainId: string,

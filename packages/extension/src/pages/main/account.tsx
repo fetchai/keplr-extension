@@ -1,15 +1,14 @@
-import React, { FunctionComponent, useCallback, useEffect } from "react";
+import React, { FunctionComponent, useCallback } from "react";
 
 import { Address } from "../../components/address";
 
 import styleAccount from "./account.module.scss";
 
-import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
-import { useNotification } from "../../components/notification";
-import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
-import { messageListener } from "../../graphQL/messages-api";
+import { observer } from "mobx-react-lite";
+import { useIntl } from "react-intl";
+import { useNotification } from "../../components/notification";
+import { useStore } from "../../stores";
 
 export const AccountView: FunctionComponent = observer(() => {
   const { accountStore, chainStore } = useStore();
@@ -40,9 +39,6 @@ export const AccountView: FunctionComponent = observer(() => {
     [accountInfo.walletStatus, notification, intl]
   );
 
-  useEffect(() => {
-    messageListener();
-  }, []);
   return (
     <div>
       <div className={styleAccount.containerName}>

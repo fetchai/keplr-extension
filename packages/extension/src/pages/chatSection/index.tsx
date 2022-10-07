@@ -14,7 +14,9 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
+import { userDetails } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
+import { ToolTip } from "../../components/tooltip";
 import { EthereumEndpoint } from "../../config.ui";
 import { deliverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts";
@@ -26,9 +28,8 @@ import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
-import { ToolTip } from "../../components/tooltip";
+import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
-import { userDetails } from "../../chatStore/user-slice";
 
 export let openValue = true;
 
@@ -165,6 +166,7 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     if (
+      oldMessages?.lastMessage?.id &&
       !messages?.find(
         (message: any) => message?.id === oldMessages?.lastMessage?.id
       )
@@ -230,8 +232,17 @@ export const ChatSection: FunctionComponent = () => {
           className={style.more}
           src={moreIcon}
           onClick={handleDropDown}
+          onBlur={handleDropDown}
         />
       </div>
+
+      <Dropdown
+        added={true}
+        showDropdown={showDropdown}
+        setShowDropdown={setShowDropdown}
+        blocked={oldMessages.isBlocked}
+      />
+
       <div className={style.messages}>
         <p>
           Messages are end to end encrypted. Nobody else can read them except

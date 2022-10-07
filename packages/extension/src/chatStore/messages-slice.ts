@@ -9,6 +9,7 @@ interface ContactState {
   messageList: MessageMap;
   lastMessage?: Message;
   pubKey?: string;
+  isBlocked?: boolean;
 }
 
 interface State {
@@ -26,6 +27,7 @@ export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
+    addMessageList: (_state, action) => action.payload,
     updateAuthorMessages: (state: any, action: PayloadAction<Message>) => {
       const { sender, id } = action.payload;
       state[sender].messages[id] = action.payload;
@@ -39,7 +41,11 @@ export const messagesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { updateAuthorMessages, setAuthorPubKey } = messagesSlice.actions;
+export const {
+  addMessageList,
+  updateAuthorMessages,
+  setAuthorPubKey,
+} = messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages;
 
