@@ -58,10 +58,10 @@ const ChatView = () => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-
+    
   const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
-  const [, setInitialChats] = useState<MessageMap>({});
+  const [initialChats, setInitialChats] = useState<MessageMap>({});
   const dispatch = useDispatch();
   const requester = new InExtensionMessageRequester();
 
@@ -98,9 +98,13 @@ const ChatView = () => {
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-    setUserChats(userLastMessages);
-    setInitialChats(userLastMessages);
-  }, [messages, dispatch]);
+    debugger
+    if(Object.keys(initialChats).length===0){
+      
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
+  }, [messages]);
   // const toggle = () => setIsOpen(!isOpen);
   const fillUserChats = () => {
     const userLastMessages: any = {};
@@ -129,10 +133,12 @@ const ChatView = () => {
     setInputVal(value);
 
     if (value.trim()) {
+      
       const userLastMessages: any = {};
       Object.keys(messages).map((contact: string) => {
         userLastMessages[contact] = messages[contact]?.lastMessage;
       });
+      
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
         const found = addresses.some(
           (address: any) =>
@@ -146,10 +152,11 @@ const ChatView = () => {
       filteredChats.forEach((item: any) => {
         tempChats[item] = userLastMessages[item];
       });
-
+      
+      
       setUserChats(tempChats);
     } else {
-      // setUserChats(userChats)
+     
       fillUserChats();
     }
   };

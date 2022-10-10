@@ -18,11 +18,7 @@ const User: React.FC<{
     history.push(`/chat/${contact}`);
   };
 
-  useEffect(() => {
-    decryptMsg(chainId, chat.contents, chat.sender === contact);
-  }, [chainId, chat.contents, chat.sender, contact]);
-
-  const decryptMsg = async (
+  const decryptMsg =  async(
     chainId: string,
     contents: string,
     isSender: boolean
@@ -30,6 +26,13 @@ const User: React.FC<{
     const message = await decryptMessage(chainId, contents, isSender);
     setMessage(message);
   };
+
+  useEffect(() => {
+
+      decryptMsg(chainId, chat.contents, chat.sender !== contact);
+
+  }, [chainId, chat.contents, chat.sender, contact]);
+
 
   return (
     <div className={style.messageContainer} onClick={handleClick}>
@@ -58,6 +61,8 @@ export const Users: React.FC<{
   userChats: MessageMap;
   addresses: NameAddress[];
 }> = ({ chainId, userChats, addresses }) => {
+  console.log("userChats",userChats);
+  
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
