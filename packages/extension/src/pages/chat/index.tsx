@@ -76,8 +76,8 @@ const ChatView = () => {
       store.dispatch(setAccessToken(res));
     };
 
-    if (!userState?.messagingPubKey && !userState?.accessToken.length)
-      setJWTAndRegisterMsgPubKey();
+    // if (!userState?.messagingPubKey && !userState?.accessToken.length)
+    setJWTAndRegisterMsgPubKey();
   }, [
     current.chainId,
     requester,

@@ -90,7 +90,7 @@ export const ChatMessage = ({
           </span>
         ) : null}
       </div>
-      <div className={!isSender ? style.senderAlign : style.receiverAlign}>
+      <div className={isSender ? style.senderAlign : style.receiverAlign}>
         <Container
           fluid
           className={classnames(style.messageBox, {
