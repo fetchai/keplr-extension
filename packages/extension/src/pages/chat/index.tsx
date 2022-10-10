@@ -1,35 +1,39 @@
+import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
 import { MessageMap, userMessages } from "../../chatStore/messages-slice";
-import { setAccessToken, setMessagingPubKey } from "../../chatStore/user-slice";
+import {
+  setAccessToken,
+  setMessagingPubKey,
+  userDetails,
+} from "../../chatStore/user-slice";
 import { EthereumEndpoint } from "../../config.ui";
+import { AUTH_SERVER } from "../../config/config";
+import { messageListener } from "../../graphQL/messages-api";
+import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
 import newChatIcon from "../../public/assets/icon/new-chat.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
-import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { Users } from "./users";
-import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
-import { AUTH_SERVER } from "../../config/config";
-import { encryptAllData } from "../../utils/encrypt-message";
-import { deliverMessages, fetchMessages } from "../../graphQL/messages-api";
-import { decryptMessage } from "../../utils/decrypt-message";
+
 // import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
+  const userState = useSelector(userDetails);
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -38,7 +42,6 @@ const ChatView = () => {
 
   const history = useHistory();
   const messages = useSelector(userMessages);
-  const [token,setToken]=useState("")
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -60,27 +63,35 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [, setInitialChats] = useState<MessageMap>({});
   const dispatch = useDispatch();
-  const state = store.getState();
   const requester = new InExtensionMessageRequester();
 
   useEffect(() => {
     const setJWTAndRegisterMsgPubKey = async () => {
       const res = await getJWT(current.chainId, AUTH_SERVER);
-      console.log("res",res);
-      
-      store.dispatch(setAccessToken(res));
-      setToken(res)
-
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
         new RegisterPublicKey(current.chainId, res, walletAddress)
       );
-
       store.dispatch(setMessagingPubKey(messagingPubKey));
+      store.dispatch(setAccessToken(res));
     };
 
-    setJWTAndRegisterMsgPubKey();
-  }, [current.chainId, requester, walletAddress]);
+    if (!userState?.messagingPubKey && !userState?.accessToken.length)
+      setJWTAndRegisterMsgPubKey();
+  }, [
+    current.chainId,
+    requester,
+    userState.accessToken.length,
+    userState.messagingPubKey,
+    walletAddress,
+  ]);
+
+  useEffect(() => {
+    if (userState?.accessToken.length && userState?.messagingPubKey) {
+      messageListener();
+      recieveMessages(walletAddress);
+    }
+  }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
 
   useEffect(() => {
     const userLastMessages: MessageMap = {};
@@ -146,9 +157,7 @@ const ChatView = () => {
   const addresses = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
-  console.log("state.user.accessToken",state.user.accessToken);
-  console.log("userchats inside function",userChats);
-  
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -252,22 +261,12 @@ const ChatView = () => {
           userChats={userChats}
           addresses={addresses}
         />
-        {/* <div>{state.user.accessToken}</div> */}
-        <button onClick={()=>encryptAllData(token,current.chainId,"hi",accountInfo.bech32Address,"fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc")}>get encrypted data</button>
-        <button onClick={()=>fetchPublicKey(token, current.chainId, accountInfo.bech32Address)}>getPubKey</button>
-        {/* <button onClick={()=>registerPubKey(token,"02374e853b83f99f516caef4ee117a63bc90a20a89a0929b8d549f46568c63ff65",'fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc',"MESSAGING")}>registerPubKey</button> */}
-        {/* <button onClick={()=>registerPubKey()}>registerPubKey</button> */}
-        <button onClick={()=>deliverMessages(token,current.chainId,"hello",accountInfo.bech32Address,"fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr")}>Send Messages</button>
-        <button onClick={()=>fetchMessages()}>Fetch Messages</button>
-        {/* <button onClick={()=>decryptMessage()}>decryptMessage</button> */}
-        
+
       </div>
     </HeaderLayout>
   );
 };
 
 export const ChatPage: FunctionComponent = () => {
-  // const history = useHistory();
-
   return <ChatView />;
 };

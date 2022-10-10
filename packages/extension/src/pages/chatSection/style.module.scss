@@ -114,11 +114,12 @@
   border: solid #dee2e6 1px;
   background-color: #ffffff;
   border-radius: 5px;
-  width: 170px;
-  padding: 10px;
+  width: 180px;
+  padding: 5px;
   margin-left: 160px;
-  top: 60px;
+  top: 105px;
   z-index: 2;
+  cursor: pointer;
   button {
     border: none;
     padding: 5px;
@@ -127,6 +128,12 @@
     background-color: #ffffff;
     cursor: pointer;
   }
+  div {
+    padding: 5px;
+  }
+  div:hover {
+    background-color: #c9d4e4;
+  }
 }
 
 .popup {
@@ -134,9 +141,11 @@
   position: absolute;
   border: solid #dee2e6 1px;
   background-color: #ffffff;
-  margin: 20px 20px;
+  margin: 20px 15px;
   border-radius: 15px;
   padding-bottom: 10px;
+  cursor: pointer;
+  top: 30%;
   // display: flex;
   // flex-direction: column;
   // padding: 0px 20px;

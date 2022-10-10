@@ -1,10 +1,12 @@
 import { ApolloClient, gql, InMemoryCache, split } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
-import { encryptAllData } from "../utils/encrypt-message";
 import { store } from "../chatStore";
 import { updateAuthorMessages } from "../chatStore/messages-slice";
+import { encryptAllData } from "../utils/encrypt-message";
 import { client, createWSLink, httpLink } from "./client";
 import {
+  block,
+  blockedList,
   listenMessages,
   NewMessageUpdate,
   receiveMessages,
@@ -25,6 +27,43 @@ export const fetchMessages = async () => {
   console.log("data.mailbox.messages",data.mailbox.messages);
   
   return data.mailbox.messages;
+};
+
+export const fetchBlockList = async () => {
+  const state = store.getState();
+  const { data } = await client.query({
+    query: gql(blockedList),
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${state.user.accessToken}`,
+      },
+    },
+    variables: {
+      channelId: "MESSAGING",
+    },
+  });
+
+  console.log("blocked", data);
+};
+
+export const blockUser = async (address: string) => {
+  const state = store.getState();
+  const { data } = await client.mutate({
+    mutation: gql(block),
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${state.user.accessToken}`,
+      },
+    },
+    variables: {
+      blockedAddress: address,
+      channelId: "MESSAGING",
+    },
+  });
+
+  console.log("blocked", data);
 };
 
 export const deliverMessages = async (
@@ -72,7 +111,7 @@ export const deliverMessages = async (
 
 export const messageListener = () => {
   const state = store.getState();
-  const wsLink = createWSLink("Fake Token");
+  const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);

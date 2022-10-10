@@ -49,13 +49,13 @@ export const ChatMessage = ({
 
   useEffect(() => {
     setDecryptingState("in-progress");
-    decryptMessage(chainId, message, !isSender)
+    decryptMessage(chainId, message, isSender)
       .then((message) => {
         setDecryptingState("success");
         setDecryptedMessage(message);
       })
       .catch(() => {
-        setDecryptedMessage("failed");
+        setDecryptingState("failed");
       });
   }, [chainId, isSender, message]);
 
@@ -90,11 +90,11 @@ export const ChatMessage = ({
           </span>
         ) : null}
       </div>
-      <div className={isSender ? style.senderAlign : style.receiverAlign}>
+      <div className={!isSender ? style.senderAlign : style.receiverAlign}>
         <Container
           fluid
           className={classnames(style.messageBox, {
-            [style.senderBox]: !isSender,
+            [style.senderBox]: isSender,
           })}
         >
           <div className={style.message}>{decryptedMessage}</div>
