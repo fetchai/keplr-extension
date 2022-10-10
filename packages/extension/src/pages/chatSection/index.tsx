@@ -130,7 +130,11 @@ export const ChatSection: FunctionComponent = () => {
       );
       if (data?.dispatchMessages?.length > 0) {
         const newMessages = [...messages];
-        newMessages.push({ ...data.dispatchMessages[0] });
+        newMessages.push({
+          ...data.dispatchMessages[0],
+          sender: accountInfo.bech32Address,
+          target: userName,
+        });
         setMessages(newMessages);
         setNewMessage("");
         messagesEndRef.current?.scrollIntoView({
@@ -259,7 +263,7 @@ export const ChatSection: FunctionComponent = () => {
                 chainId={current.chainId}
                 showDate={check}
                 message={message?.contents}
-                isSender={message?.sender === userName}
+                isSender={message?.target === userName} // if target was the user we are chatting with
                 key={index}
                 timestamp={message?.commitTimestamp || 1549312452}
               />

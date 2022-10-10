@@ -66,7 +66,7 @@ export async function encryptToEnvelope(
   // lookup both our (sender) and target public keys
   const senderPublicKey = await requester.sendMessage(
     BACKGROUND_PORT,
-    new GetMessagingPublicKey(chainId, accessToken, null)
+    new GetMessagingPublicKey(chainId, accessToken, senderAddress)
   );
 
   const targetPublicKey = await requester.sendMessage(
@@ -117,13 +117,6 @@ export async function encryptToEnvelope(
     BACKGROUND_PORT,
     new SignMessagingPayload(chainId, encodedData)
   );
-    console.log("encrypted data",{
-      data: encodedData,
-      senderPublicKey,
-      targetPublicKey,
-      signature,
-      channelId: MESSAGE_CHANNEL_ID,
-    })
   return {
     data: encodedData,
     senderPublicKey,
