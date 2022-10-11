@@ -49,11 +49,9 @@ export const ChatMessage = ({
 
   useEffect(() => {
     setDecryptingState("in-progress");
-    
-    
+
     decryptMessage(chainId, message, isSender)
       .then((message) => {
-        
         setDecryptingState("success");
         setDecryptedMessage(message);
       })

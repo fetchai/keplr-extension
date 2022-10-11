@@ -7,7 +7,7 @@ import {
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
 import { MessageMap, userMessages } from "../../chatStore/messages-slice";
@@ -18,7 +18,7 @@ import {
 } from "../../chatStore/user-slice";
 import { EthereumEndpoint } from "../../config.ui";
 import { AUTH_SERVER } from "../../config/config";
-import { messageListener } from "../../graphQL/messages-api";
+import { fetchBlockList, messageListener } from "../../graphQL/messages-api";
 import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
 import bellIcon from "../../public/assets/icon/bell.png";
@@ -58,11 +58,9 @@ const ChatView = () => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-    
+
   const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
-  const [initialChats, setInitialChats] = useState<MessageMap>({});
-  const dispatch = useDispatch();
   const requester = new InExtensionMessageRequester();
 
   useEffect(() => {
@@ -72,11 +70,11 @@ const ChatView = () => {
         BACKGROUND_PORT,
         new RegisterPublicKey(current.chainId, res, walletAddress)
       );
+      console.log("messagingPubKey", messagingPubKey);
       store.dispatch(setMessagingPubKey(messagingPubKey));
       store.dispatch(setAccessToken(res));
     };
 
-    // if (!userState?.messagingPubKey && !userState?.accessToken.length)
     setJWTAndRegisterMsgPubKey();
   }, [
     current.chainId,
@@ -90,6 +88,7 @@ const ChatView = () => {
     if (userState?.accessToken.length && userState?.messagingPubKey) {
       messageListener();
       recieveMessages(walletAddress);
+      fetchBlockList();
     }
   }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
 
@@ -98,14 +97,9 @@ const ChatView = () => {
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-    debugger
-    if(Object.keys(initialChats).length===0){
-      
-      setUserChats(userLastMessages);
-      setInitialChats(userLastMessages);
-    }
+    setUserChats(userLastMessages);
   }, [messages]);
-  // const toggle = () => setIsOpen(!isOpen);
+
   const fillUserChats = () => {
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
@@ -133,12 +127,11 @@ const ChatView = () => {
     setInputVal(value);
 
     if (value.trim()) {
-      
       const userLastMessages: any = {};
       Object.keys(messages).map((contact: string) => {
         userLastMessages[contact] = messages[contact]?.lastMessage;
       });
-      
+
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
         const found = addresses.some(
           (address: any) =>
@@ -152,11 +145,9 @@ const ChatView = () => {
       filteredChats.forEach((item: any) => {
         tempChats[item] = userLastMessages[item];
       });
-      
-      
+
       setUserChats(tempChats);
     } else {
-     
       fillUserChats();
     }
   };
@@ -260,15 +251,11 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        {/* <div>{current.chainId}</div> */}
-        {/* <div>{userChats}</div> */}
-        {/* <div>{addresses}</div> */}
         <Users
           chainId={current.chainId}
           userChats={userChats}
           addresses={addresses}
         />
-
       </div>
     </HeaderLayout>
   );
