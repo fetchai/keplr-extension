@@ -6,7 +6,8 @@ import {
 } from "@keplr-wallet/hooks";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import {getPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
@@ -61,6 +62,9 @@ const ChatView = () => {
     
   const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
+  const [open,setIsOpen]=useState(true)
+  const [messagingPublicKey,setMessagingPublicKey]=useState("")
+  const [openDialog,setIsOpendialog]=useState(false)
 
   const requester = new InExtensionMessageRequester();
 
@@ -71,7 +75,10 @@ const ChatView = () => {
         BACKGROUND_PORT,
         new RegisterPublicKey(current.chainId, res, walletAddress)
       );
-      console.log("messagingPubKey", messagingPubKey);
+      console.log("messagingPubKey", messagingPubKey,"messagingPublicKey",messagingPublicKey);
+      setMessagingPublicKey(messagingPubKey)
+      setIsOpendialog(true)
+
       store.dispatch(setMessagingPubKey(messagingPubKey));
       store.dispatch(setAccessToken(res));
     };
@@ -181,7 +188,6 @@ const ChatView = () => {
             style={{ width: "16px", cursor: "pointer" }}
             onClick={(e) => {
               e.preventDefault();
-
               history.push("/setting/set-keyring");
             }}
           />
@@ -189,9 +195,9 @@ const ChatView = () => {
       }
     >
       <div className={style.chatContainer}>
-        {/* {!user.accessToken && (
+        {(open && openDialog && messagingPublicKey.length==0 )&& (
           <div className={style.popupContainer}>
-            <img src={chatIcon} />
+            {/* <img src={chatIcon} /> */}
             <br />
             <div className={style.infoContainer}>
               <h3>We have just added Chat!</h3>
@@ -220,17 +226,6 @@ const ChatView = () => {
               type="button"
               onClick={async () => {
                 try {
-                  const res = await getJWT(
-                    current.chainId,
-                    {
-                      address: walletAddress,
-                      pubkey: toHex(pubKey),
-                    },
-                    "https://auth-attila.sandbox-london-b.fetch-ai.com"
-                  );
-
-                  // dispatch(tokenStatus(true))
-                  store.dispatch(setAccessToken(res));
                   setIsOpen(false);
                   history.replace("/chat");
                 } catch (e: any) {
@@ -240,7 +235,7 @@ const ChatView = () => {
               Continue
             </button>
           </div>
-        )} */}
+        )}
 
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
@@ -255,15 +250,11 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        {/* <div>{current.chainId}</div> */}
-        {/* <div>{userChats}</div> */}
-        {/* <div>{addresses}</div> */}
         <Users
           chainId={current.chainId}
           userChats={userChats}
           addresses={addresses}
         />
-
       </div>
     </HeaderLayout>
   );
