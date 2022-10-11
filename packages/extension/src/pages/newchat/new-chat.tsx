@@ -142,10 +142,6 @@ export const NewChat: FunctionComponent = observer(() => {
     if (addresses.length === 0 && val) {
       try {
         //check if address is valid
-        console.log(
-          "Prefix address",
-          chainStore.current.bech32Config.bech32PrefixAccAddr
-        );
         Bech32Address.validate(
           val,
           chainStore.current.bech32Config.bech32PrefixAccAddr

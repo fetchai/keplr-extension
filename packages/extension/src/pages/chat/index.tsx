@@ -65,6 +65,7 @@ const ChatView = () => {
   const [open,setIsOpen]=useState(true)
   const [messagingPublicKey,setMessagingPublicKey]=useState("")
   const [openDialog,setIsOpendialog]=useState(false)
+  const [initialChats, setInitialChats] = useState<MessageMap>({});
 
   const requester = new InExtensionMessageRequester();
 
@@ -105,9 +106,11 @@ const ChatView = () => {
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-
-
-    setUserChats(userLastMessages);
+    if(Object.keys(initialChats).length===0){
+      
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
   }, [messages]);
   const fillUserChats = () => {
     const userLastMessages: any = {};
