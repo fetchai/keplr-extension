@@ -11,10 +11,14 @@ import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-
+import { Bech32Address } from "@keplr-wallet/cosmos";
 import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
 import { NameAddress } from "../chat/users";
+import { formatAddress } from "../../utils/format";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
+import { useSelector } from "react-redux";
+import { userDetails } from "../../chatStore/user-slice";
 
 // TODO(!!!): Remove debug comments
 // const ADDRESSES = [
@@ -30,7 +34,26 @@ import { NameAddress } from "../chat/users";
 
 const NewUser = (props: any) => {
   const history = useHistory();
+  const user = useSelector(userDetails);
+  const { chainStore } = useStore();
   const { name, address } = props.address;
+  const [isActive, setIsActive] = useState(false);
+  const current = chainStore.current;
+  useEffect(() => {
+    const isUserActive = async () => {
+      try {
+        const pubKey = await fetchPublicKey(
+          user.accessToken,
+          current.chainId,
+          address
+        );
+        if (pubKey && pubKey.length > 0) setIsActive(true);
+      } catch (e) {
+        console.log("NewUser/isUserActive error", e);
+      }
+    };
+    isUserActive();
+  }, [address, user.accessToken, current.chainId]);
 
   const handleClick = () => {
     history.push(`/chat/${address}`);
@@ -38,13 +61,17 @@ const NewUser = (props: any) => {
 
   return (
     <div key={props.key}>
-      <div className={style.messageContainer} onClick={handleClick}>
+      <div
+        className={style.messageContainer}
+        {...(isActive && { onClick: handleClick })}
+      >
         <div className={style.initials}>
           {name.charAt(0).toUpperCase()}
           <div className={style.unread} />
         </div>
         <div className={style.messageInner}>
           <div className={style.name}>{name}</div>
+          <div className={style.name}>{isActive ? "Active" : "Inactive"}</div>
         </div>
         <div>
           <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
@@ -103,14 +130,37 @@ export const NewChat: FunctionComponent = observer(() => {
     );
     setAddresses(userAddresses);
   }, [addressBookConfig.addressBookDatas]);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    const val = e.target.value;
-    setAddresses(
-      useraddresses.filter((address: any) =>
-        address.name.toLowerCase().includes(val)
-      )
+    const val = e.target.value.toLowerCase();
+    const addresses = useraddresses.filter(
+      (address: any) =>
+        address.name.toLowerCase().includes(val) ||
+        address.address.toLowerCase().includes(val)
     );
+    if (addresses.length === 0 && val) {
+      try {
+        //check if address is valid
+        console.log(
+          "Prefix address",
+          chainStore.current.bech32Config.bech32PrefixAccAddr
+        );
+        Bech32Address.validate(
+          val,
+          chainStore.current.bech32Config.bech32PrefixAccAddr
+        );
+        const address: NameAddress = {
+          name: formatAddress(val),
+          address: val,
+        };
+        setAddresses([address]);
+      } catch (e) {
+        setAddresses([]);
+      }
+    } else {
+      setAddresses(addresses);
+    }
   };
   return (
     <HeaderLayout
@@ -163,7 +213,7 @@ export const NewChat: FunctionComponent = observer(() => {
           );
         })}
       </div>
-      {addresses.length == 0 ? (
+      {/* {addresses.length == 0 ? (
         <button
           onClick={() => {
             history.push({
@@ -179,6 +229,9 @@ export const NewChat: FunctionComponent = observer(() => {
         </button>
       ) : (
         ""
+      )} */}
+      {addresses.length === 0 && (
+        <div className={style.resultText}>No record found</div>
       )}
     </HeaderLayout>
   );
