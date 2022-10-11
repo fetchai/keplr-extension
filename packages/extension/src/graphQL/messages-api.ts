@@ -1,7 +1,12 @@
 import { ApolloClient, gql, InMemoryCache, split } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { store } from "../chatStore";
-import { updateAuthorMessages } from "../chatStore/messages-slice";
+import {
+  setBlockedList,
+  setBlockedUser,
+  setUnblockedUser,
+  updateAuthorMessages,
+} from "../chatStore/messages-slice";
 import { encryptAllData } from "../utils/encrypt-message";
 import { client, createWSLink, httpLink } from "./client";
 import {
@@ -11,11 +16,12 @@ import {
   NewMessageUpdate,
   receiveMessages,
   sendMessages,
+  unblock,
 } from "./messages-queries";
 
 export const fetchMessages = async () => {
   const state = store.getState();
-  const { data } = await client.query({
+  const { data, errors } = await client.query({
     query: gql(receiveMessages),
     fetchPolicy: "no-cache",
     context: {
@@ -24,6 +30,7 @@ export const fetchMessages = async () => {
       },
     },
   });
+  if (errors) console.log("errors", errors);
 
   return data.mailbox.messages;
 };
@@ -42,8 +49,8 @@ export const fetchBlockList = async () => {
       channelId: "MESSAGING",
     },
   });
-
-  console.log("blocked", data);
+  console.log(data);
+  store.dispatch(setBlockedList(data.blockedList));
 };
 
 export const blockUser = async (address: string) => {
@@ -61,8 +68,25 @@ export const blockUser = async (address: string) => {
       channelId: "MESSAGING",
     },
   });
+  store.dispatch(setBlockedUser(data.block));
+};
 
-  console.log("blocked", data);
+export const unblockUser = async (address: string) => {
+  const state = store.getState();
+  const { data } = await client.mutate({
+    mutation: gql(unblock),
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${state.user.accessToken}`,
+      },
+    },
+    variables: {
+      blockedAddress: address,
+      channelId: "MESSAGING",
+    },
+  });
+  store.dispatch(setUnblockedUser(data.unblock));
 };
 
 export const deliverMessages = async (

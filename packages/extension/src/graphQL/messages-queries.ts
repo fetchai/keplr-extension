@@ -71,3 +71,13 @@ export const block = `mutation Mutation($blockedAddress: String!, $channelId: Ch
       timestamp
     }
   }`;
+
+export const unblock = `mutation Mutation($blockedAddress: String!, $channelId: ChannelId!) {
+  unblock(blockedAddress: $blockedAddress, channelId: $channelId) {
+    id
+    blockerAddress
+    blockedAddress
+    channelId
+    timestamp
+  }
+}`;

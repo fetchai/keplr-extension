@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { blockUser } from "../../graphQL/messages-api";
+import { unblockUser } from "../../graphQL/messages-api";
 import style from "./style.module.scss";
 
-export const BlockUserPopup = ({
+export const UnblockUserPopup = ({
   setConfirmAction,
 }: {
   setConfirmAction: Function;
@@ -11,10 +11,10 @@ export const BlockUserPopup = ({
   const [processing, setProcessing] = useState(false);
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
-  const handleBlock = async () => {
+  const handleUnblock = async () => {
     setProcessing(true);
     try {
-      await blockUser(userName);
+      await unblockUser(userName);
     } catch (e) {
       console.log(e);
     } finally {
@@ -29,19 +29,11 @@ export const BlockUserPopup = ({
 
   return (
     <div className={style.popup}>
-      <h4>Block User</h4>
+      <h4>Unblock User</h4>
       <section>
         <p className={style.textContainer}>
-          This contact will not be able to send you messages.The contact will
-          not be notified.
-        </p>
-        {/* <div className={style.textContainer}>
-          <input type="checkbox" id="check" />
-          <label htmlFor="check">Also report contact</label>
-        </div> */}
-
-        <p className={style.textContainer}>
-          The last 5 messages will be sent to Fetch.
+          This contact will be able to send you messages.The contact will not be
+          notified.
         </p>
       </section>
       <div className={style.buttonContainer}>
@@ -51,10 +43,10 @@ export const BlockUserPopup = ({
         <button
           type="button"
           className={style.btn}
-          onClick={handleBlock}
+          onClick={handleUnblock}
           disabled={processing}
         >
-          Block
+          Unblock
         </button>
       </div>
     </div>

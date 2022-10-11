@@ -5,6 +5,7 @@ import {
   DefaultOptions,
 } from "@apollo/client";
 
+
 const defaultOptions: DefaultOptions = {
   watchQuery: {
     fetchPolicy: "no-cache",
@@ -16,10 +17,12 @@ const defaultOptions: DefaultOptions = {
   },
 };
 
+
 const client = new ApolloClient({
   uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
   cache: new InMemoryCache(),
   defaultOptions,
+
 });
 
 export const registerPubKey = async (

@@ -107,11 +107,13 @@ export class MessagingService {
     accessToken: string
   ): Promise<string> {
     const rawMessage = Buffer.from(fromBase64(message));
+    
     const targetPublicKey = await this.lookupPublicKey(
       accessToken,
       targetAddress
     );
-
+      console.log("targetPublicKey",targetPublicKey);
+      
     if (!targetPublicKey) throw new Error("Target pub key not registered");
     const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey));
 
@@ -157,6 +159,8 @@ export class MessagingService {
   ): Promise<string | undefined> {
     // Step 1. Query the cache
     let targetPublicKey = this._publicKeyCache.get(targetAddress);
+      console.log("_publicKeyCache targetPublicKey",targetPublicKey);
+      
     if (targetPublicKey !== undefined) {
       return targetPublicKey;
     }
