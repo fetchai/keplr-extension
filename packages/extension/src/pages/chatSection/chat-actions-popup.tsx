@@ -47,7 +47,9 @@ export const Dropdown = ({
               View in address book
             </div>
           ) : (
-            <div>Add to address book</div>
+            <div onClick={() => history.push("/setting/address-book")}>
+              Add to address book
+            </div>
           )}
           {blocked ? (
             <div onClick={() => handleClick("unblock")}>Unblock contact</div>

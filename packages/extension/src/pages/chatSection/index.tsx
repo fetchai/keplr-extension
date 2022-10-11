@@ -240,7 +240,7 @@ export const ChatSection: FunctionComponent = () => {
       </div>
 
       <Dropdown
-        added={true}
+        added={contactName(addresses).length > 0}
         showDropdown={showDropdown}
         setShowDropdown={setShowDropdown}
         blocked={oldMessages.isBlocked}
