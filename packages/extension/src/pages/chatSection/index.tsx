@@ -275,11 +275,15 @@ export const ChatSection: FunctionComponent = () => {
         {targetPubKey.length ? (
           <Input
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder="Type a new message..."
+            placeholder={
+              oldMessages.isBlocked
+                ? "This contact is blocked"
+                : "Type a new message..."
+            }
             value={newMessage}
             onChange={(event) => setNewMessage(event.target.value)}
             onKeyDown={handleKeydown}
-            disabled={false}
+            disabled={oldMessages.isBlocked}
           />
         ) : (
           <ToolTip

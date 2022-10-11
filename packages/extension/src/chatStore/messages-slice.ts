@@ -37,6 +37,35 @@ export const messagesSlice = createSlice({
       const { contact, value } = action.payload;
       state[contact].pubKey = value;
     },
+    setBlockedList: (state, action) => {
+      const blockedList = action.payload;
+      blockedList.map(({ blockedAddress }: { blockedAddress: string }) => {
+        if (state[blockedAddress]) state[blockedAddress].isBlocked = true;
+        else
+          state[blockedAddress] = {
+            isBlocked: true,
+            messageList: {},
+          };
+      });
+    },
+    setBlockedUser: (state, action) => {
+      const { blockedAddress } = action.payload;
+      if (state[blockedAddress]) state[blockedAddress].isBlocked = true;
+      else
+        state[blockedAddress] = {
+          isBlocked: true,
+          messageList: {},
+        };
+    },
+    setUnblockedUser: (state, action) => {
+      const { blockedAddress } = action.payload;
+      if (state[blockedAddress]) state[blockedAddress].isBlocked = false;
+      else
+        state[blockedAddress] = {
+          isBlocked: false,
+          messageList: {},
+        };
+    },
   },
 });
 
@@ -45,6 +74,9 @@ export const {
   addMessageList,
   updateAuthorMessages,
   setAuthorPubKey,
+  setBlockedList,
+  setBlockedUser,
+  setUnblockedUser,
 } = messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages;

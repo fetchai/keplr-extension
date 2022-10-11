@@ -18,7 +18,9 @@ const User: React.FC<{
     history.push(`/chat/${contact}`);
   };
 
-  const decryptMsg =  async(
+
+  const decryptMsg = async (
+
     chainId: string,
     contents: string,
     isSender: boolean
@@ -29,9 +31,8 @@ const User: React.FC<{
 
   useEffect(() => {
 
-      decryptMsg(chainId, chat.contents, chat.sender !== contact);
-
-  }, [chainId, chat.contents, chat.sender, contact]);
+    if (chat) decryptMsg(chainId, chat.contents, chat.sender !== contact);
+  }, [chainId, chat, contact]);
 
 
   return (
