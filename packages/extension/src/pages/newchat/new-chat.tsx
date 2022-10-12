@@ -10,6 +10,7 @@ import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { EthereumEndpoint } from "../../config.ui";
@@ -19,18 +20,7 @@ import { formatAddress } from "../../utils/format";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { useSelector } from "react-redux";
 import { userDetails } from "../../chatStore/user-slice";
-
-// TODO(!!!): Remove debug comments
-// const ADDRESSES = [
-//   {
-//     name: "fetchWallet2",
-//     address: "fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc",
-//   },
-//   {
-//     name: "user2",
-//     address: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
-//   },
-// ];
+import { Menu } from "../main/menu";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -70,7 +60,7 @@ const NewUser = (props: { address: NameAddress }) => {
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{name}</div>
-        <div className={style.name}>{isActive ? "Active" : "Inactive"}</div>
+        {!isActive && <div className={style.name}>Inactive</div>}
       </div>
       <div>
         <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
@@ -116,24 +106,21 @@ export const NewChat: FunctionComponent = observer(() => {
     }
   );
 
-  const useraddresses: any = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
+    (data) => {
+      return { name: data.name, address: data.address };
+    }
+  );
 
   useEffect(() => {
-    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
-      (data) => {
-        return { name: data.name, address: data.address };
-      }
-    );
-    setAddresses(userAddresses);
+    setAddresses(useraddresses);
   }, [addressBookConfig.addressBookDatas]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
     const searchedVal = e.target.value.toLowerCase();
     const addresses = useraddresses.filter(
-      (address: any) =>
+      (address: NameAddress) =>
         address.address !== walletAddress &&
         (address.name.toLowerCase().includes(searchedVal) ||
           address.address.toLowerCase().includes(searchedVal))
@@ -165,9 +152,7 @@ export const NewChat: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
-      onBackButton={() => {
-        history.goBack();
-      }}
+      menuRenderer={<Menu />}
       rightRenderer={
         <div
           style={{
@@ -191,6 +176,19 @@ export const NewChat: FunctionComponent = observer(() => {
         </div>
       }
     >
+      <div className={style.newChatContainer}>
+        <div className={style.leftBox}>
+          <img
+            alt=""
+            className={style.backBtn}
+            src={chevronLeft}
+            onClick={() => {
+              history.goBack();
+            }}
+          />
+          <span className={style.title}>New Chat</span>
+        </div>
+      </div>
       <div className={style.searchContainer}>
         <div className={style.searchBox}>
           <img src={searchIcon} alt="search" />

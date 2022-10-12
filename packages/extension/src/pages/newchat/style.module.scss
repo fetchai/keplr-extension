@@ -19,6 +19,7 @@
       border: none;
       outline: none;
       background: transparent;
+      flex-grow: 1;
       &::placeholder {
         color: #525f7f;
       }
@@ -80,10 +81,35 @@
       }
     }
   }
-  .resultText {
-    color: #808da0;
-    font-weight: 400;
-    font-size: 15px;
-    margin-bottom: 16px;
+}
+.newChatContainer {
+  margin-left: -12px;
+  margin-right: -12px;
+  padding: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 6px;
+  flex-direction: row;
+  .backBtn {
+    flex-basis: 25px;
+    width: 16px;
+    height: 16px;
   }
+  .title {
+    text-align: center;
+    font-size: 16px;
+    color: #525f7f;
+    line-height: 16px;
+    font-weight: 400;
+    position: relative;
+    margin-left: 5px;
+  }
+}
+.resultText {
+  color: #808da0;
+  font-weight: 400;
+  font-size: 15px;
+  margin-bottom: 16px;
 }
