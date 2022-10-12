@@ -30,6 +30,8 @@ import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
+import TextareaAutosize from 'react-textarea-autosize';
+// import ScrollToBottom from 'react-scroll-to-bottom';
 
 export let openValue = true;
 
@@ -225,71 +227,74 @@ export const ChatSection: FunctionComponent = () => {
         blocked={oldMessages.isBlocked}
       />
 
-      <div className={style.messages}>
-        <p>
-          Messages are end to end encrypted. Nobody else can read them except
-          you and the recipient.
-        </p>
-        {messages
-          ?.sort((a: any, b: any) => {
-            return a.commitTimestamp - b.commitTimestamp;
-          })
-          ?.map((message: any, index) => {
-            const check = showDateFunction(message?.commitTimestamp);
-            return (
-              <ChatMessage
-                key={index}
-                chainId={current.chainId}
-                showDate={check}
-                message={message?.contents}
-                isSender={message?.target === userName} // if target was the user we are chatting with
-                timestamp={message?.commitTimestamp || 1549312452}
-              />
-            );
-          })}
-        <div ref={messagesEndRef} />
-      </div>
-      <InputGroup className={style.inputText}>
-        {targetPubKey.length ? (
-          <Input
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={
-              oldMessages.isBlocked
-                ? "This contact is blocked"
-                : "Type a new message..."
-            }
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            onKeyDown={handleKeydown}
-            disabled={oldMessages.isBlocked}
-          />
-        ) : (
-          <ToolTip
-            trigger="hover"
-            options={{ placement: "top" }}
-            tooltip={<div>No transaction history found for this user</div>}
-          >
-            <Input
+      <div className={style.chatArea}>
+        <div className={style.messages}>
+          <p>
+            Messages are end to end encrypted. Nobody else can read them except
+            you and the recipient.
+          </p>
+          {messages
+            ?.sort((a: any, b: any) => {
+              return a.commitTimestamp - b.commitTimestamp;
+            })
+            ?.map((message: any, index) => {
+              const check = showDateFunction(message?.commitTimestamp);
+              return (
+                <ChatMessage
+                  key={index}
+                  chainId={current.chainId}
+                  showDate={check}
+                  message={message?.contents}
+                  isSender={message?.target === userName} // if target was the user we are chatting with
+                  timestamp={message?.commitTimestamp || 1549312452}
+                />
+              );
+            })}
+          <div ref={messagesEndRef} />
+        </div>
+        <InputGroup className={style.inputText}>
+          {targetPubKey.length ? (
+            <TextareaAutosize
+              maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder="Type a new message..."
+              placeholder={
+                oldMessages.isBlocked
+                  ? "This contact is blocked"
+                  : "Type a new message..."
+              }
               value={newMessage}
               onChange={(event) => setNewMessage(event.target.value)}
               onKeyDown={handleKeydown}
-              disabled={true}
+              disabled={oldMessages.isBlocked}
             />
-          </ToolTip>
-        )}
-        {newMessage?.length ? (
-          <div
-            className={style["send-message-icon"]}
-            onClick={handleSendMessage}
-          >
-            <img src={paperAirplaneIcon} alt="" />
-          </div>
-        ) : (
-          ""
-        )}
-      </InputGroup>
+          ) : (
+            <ToolTip
+              trigger="hover"
+              options={{ placement: "top" }}
+              tooltip={<div>No transaction history found for this user</div>}
+            >
+              <Input
+                className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                placeholder="Type a new message..."
+                value={newMessage}
+                onChange={(event) => setNewMessage(event.target.value)}
+                onKeyDown={handleKeydown}
+                disabled={true}
+              />
+            </ToolTip>
+          )}
+          {newMessage?.length ? (
+            <div
+              className={style["send-message-icon"]}
+              onClick={handleSendMessage}
+            >
+              <img src={paperAirplaneIcon} alt="" />
+            </div>
+          ) : (
+            ""
+          )}
+        </InputGroup>
+      </div>
     </HeaderLayout>
   );
 };
