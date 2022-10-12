@@ -38,8 +38,8 @@ const User: React.FC<{
   return (
     <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
-        {contact.charAt(0).toUpperCase()}
-        {!false && <div className={style.unread} />}
+        {contactName.charAt(0).toUpperCase()}
+        {false && <div className={style.unread} />}
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>

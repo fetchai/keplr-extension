@@ -32,7 +32,7 @@ export const BlockUserPopup = ({
       <h4>Block User</h4>
       <section>
         <p className={style.textContainer}>
-          This contact will not be able to send you messages.The contact will
+          This contact will not be able to send you messages. The contact will
           not be notified.
         </p>
         {/* <div className={style.textContainer}>
@@ -40,9 +40,9 @@ export const BlockUserPopup = ({
           <label htmlFor="check">Also report contact</label>
         </div> */}
 
-        <p className={style.textContainer}>
+        {/* <p className={style.textContainer}>
           The last 5 messages will be sent to Fetch.
-        </p>
+        </p> */}
       </section>
       <div className={style.buttonContainer}>
         <button type="button" onClick={handleCancel} disabled={processing}>

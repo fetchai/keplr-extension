@@ -1,3 +1,4 @@
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
   useIBCTransferConfig,
@@ -5,16 +6,15 @@ import {
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { HeaderLayout } from "../../layouts";
-import bellIcon from "../../public/assets/icon/bell.png";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
-import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
+import { SwitchUser } from "../../components/switch-user";
+import { EthereumEndpoint } from "../../config.ui";
 import { NameAddress } from "../chat/users";
 import { formatAddress } from "../../utils/format";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
@@ -153,28 +153,10 @@ export const NewChat: FunctionComponent = observer(() => {
       showChainName={true}
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          />
-        </div>
-      }
+      onBackButton={() => {
+        history.goBack();
+      }}
+      rightRenderer={<SwitchUser />}
     >
       <div className={style.newChatContainer}>
         <div className={style.leftBox}>

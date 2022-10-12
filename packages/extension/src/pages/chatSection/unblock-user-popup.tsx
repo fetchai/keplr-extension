@@ -32,7 +32,7 @@ export const UnblockUserPopup = ({
       <h4>Unblock User</h4>
       <section>
         <p className={style.textContainer}>
-          This contact will be able to send you messages.The contact will not be
+          This contact will be able to send you messages. The contact will not be
           notified.
         </p>
       </section>
