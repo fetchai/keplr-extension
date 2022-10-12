@@ -96,9 +96,7 @@ export const deliverMessages = async (
   newMessage: any,
   senderAddress: string,
   targetAddress: string
-) => {
-  console.log("calling deliever messages","senderAddress",senderAddress,"targetAddress",targetAddress);
-  
+) => { 
   const state = store.getState();
   try {
     if (newMessage) {
@@ -124,7 +122,6 @@ export const deliverMessages = async (
             },
           },
         });
-        console.log("calling deliever inside loop",data);
       return data;
     }
   } catch (e) {
