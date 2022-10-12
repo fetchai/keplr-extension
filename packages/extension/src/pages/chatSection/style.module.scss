@@ -202,3 +202,28 @@
     background-color: #3b82f6;
   }
 }
+.contactsContainer{
+  .displayText{
+    text-align: center;
+    font-size: 14px;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #525f7f;
+  }
+  .buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    margin: 0 auto;
+  }
+  button{
+    border:2px solid #3B82F6;
+    padding: 7px 18px;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #3B82F6;
+    cursor: pointer;
+  }
+}

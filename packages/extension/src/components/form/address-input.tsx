@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   FormGroup,
   Label,
@@ -27,6 +27,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { ObservableEnsFetcher } from "@keplr-wallet/ens";
+import { useHistory } from "react-router";
 
 export interface AddressInputProps {
   recipientConfig: IRecipientConfig;
@@ -56,9 +57,8 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     value,
   }) => {
     const intl = useIntl();
-
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
-    const [searchedAddressValue, setSearchedAddressValue] = useState(value);
+    const [searchedAddressValue, setSearchedAddressValue] = useState('');
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -69,7 +69,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
-
+    useEffect(()=>{
+      if(value){
+        recipientConfig.setRawRecipient(value);
+        setSearchedAddressValue(value);
+      }
+    },[value])
     const error = recipientConfig.getError();
     const errorText: string | undefined = useMemo(() => {
       if (error) {
@@ -119,7 +124,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         recipientConfig.setRawRecipient(e?.target?.value);
       }
     };
-
     return (
       <React.Fragment>
         <Modal
@@ -153,9 +157,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 styleAddressInput.input
               )}
               value={
-                value?.length
-                  ? searchedAddressValue
-                  : recipientConfig.rawRecipient
+                searchedAddressValue
               }
               onChange={(e) => {
                 handleSearchInputChange(e);

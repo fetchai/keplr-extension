@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "../../../layouts";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import style from "../style.module.scss";
 import {
   Button,
@@ -41,15 +41,16 @@ export const AddressBookPage: FunctionComponent<{
     hideChainDropdown,
     selectHandler,
     ibcChannelConfig,
-    // ...rest
-    //isInTransaction,
+
   }) => {
     const intl = useIntl();
     const history = useHistory();
-    // const values = { ...rest };
     const { chainStore } = useStore();
     const current = chainStore.current;
-
+    const location = useLocation();
+    console.log("location",location);
+    const modalValues=location?.state
+    
     const [selectedChainId, setSelectedChainId] = useState(
       ibcChannelConfig?.channel
         ? ibcChannelConfig.channel.counterpartyChainId
@@ -87,12 +88,19 @@ export const AddressBookPage: FunctionComponent<{
     //            going on here and there was no typing information for me to
     //            work with
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
-      /*values?.location?.state?.currentState ||*/ false
+      modalValues?.modalState|| false
     );
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
+    const closeModal=()=>{
+      if(modalValues?.modalState){
+        history.goBack();
+      }
+      setAddAddressModalOpen(false);
+      setAddAddressModalIndex(-1);
 
+    }
     const addressBookIcons = (index: number) => {
       return [
         <i
@@ -165,18 +173,13 @@ export const AddressBookPage: FunctionComponent<{
         >
           <ModalBody className={styleAddressBook.fullModal}>
             <AddAddressModal
-              closeModal={() => {
-                setAddAddressModalOpen(false);
-                setAddAddressModalIndex(-1);
-              }}
+              closeModal={() => closeModal()}
               recipientConfig={recipientConfig}
               memoConfig={memoConfig}
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
-              currentValue={
-                "false" /*|| values?.location?.state?.currentValue TODO(!!!): see above*/
-              }
+              
             />
           </ModalBody>
         </Modal>
