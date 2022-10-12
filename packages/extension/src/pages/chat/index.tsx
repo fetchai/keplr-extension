@@ -6,8 +6,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import {getPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
-import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
@@ -59,12 +58,13 @@ const ChatView = () => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-    
+
   const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
-  const [open,setIsOpen]=useState(true)
-  const [messagingPublicKey,setMessagingPublicKey]=useState("")
-  const [openDialog,setIsOpendialog]=useState(false)
+  const [open, setIsOpen] = useState(true);
+  const [messagingPublicKey, setMessagingPublicKey] = useState("");
+  const [openDialog, setIsOpendialog] = useState(false);
+  const [initialChats, setInitialChats] = useState<MessageMap>({});
 
   const requester = new InExtensionMessageRequester();
 
@@ -75,9 +75,14 @@ const ChatView = () => {
         BACKGROUND_PORT,
         new RegisterPublicKey(current.chainId, res, walletAddress)
       );
-      console.log("messagingPubKey", messagingPubKey,"messagingPublicKey",messagingPublicKey);
-      setMessagingPublicKey(messagingPubKey)
-      setIsOpendialog(true)
+      console.log(
+        "messagingPubKey",
+        messagingPubKey,
+        "messagingPublicKey",
+        messagingPublicKey
+      );
+      setMessagingPublicKey(messagingPubKey);
+      setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(messagingPubKey));
       store.dispatch(setAccessToken(res));
@@ -105,9 +110,10 @@ const ChatView = () => {
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-
-
-    setUserChats(userLastMessages);
+    if (Object.keys(initialChats).length === 0) {
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
   }, [messages]);
   const fillUserChats = () => {
     const userLastMessages: any = {};
@@ -136,7 +142,6 @@ const ChatView = () => {
     setInputVal(value);
 
     if (value.trim()) {
-      
       const userLastMessages: any = {};
       Object.keys(messages).map((contact: string) => {
         userLastMessages[contact] = messages[contact]?.lastMessage;
@@ -155,8 +160,7 @@ const ChatView = () => {
       filteredChats.forEach((item: any) => {
         tempChats[item] = userLastMessages[item];
       });
-      
-      
+
       setUserChats(tempChats);
     } else {
       fillUserChats();
@@ -195,7 +199,7 @@ const ChatView = () => {
       }
     >
       <div className={style.chatContainer}>
-        {(open && openDialog && messagingPublicKey.length==0 )&& (
+        {open && openDialog && messagingPublicKey.length == 0 && (
           <div className={style.popupContainer}>
             {/* <img src={chatIcon} /> */}
             <br />
@@ -220,7 +224,10 @@ const ChatView = () => {
                 </label>
                 <br />
               </form>
-              <p>These settings can be changed at any time from the settings menu.</p>
+              <p>
+                These settings can be changed at any time from the settings
+                menu.
+              </p>
             </div>
             <button
               type="button"
@@ -231,7 +238,8 @@ const ChatView = () => {
                 } catch (e: any) {
                   console.log(e.message);
                 }
-              }}>
+              }}
+            >
               Continue
             </button>
           </div>
