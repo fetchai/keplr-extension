@@ -16,12 +16,12 @@ import {
   setMessagingPubKey,
   userDetails,
 } from "../../chatStore/user-slice";
+import { SwitchUser } from "../../components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
 import { AUTH_SERVER } from "../../config/config";
 import { fetchBlockList, messageListener } from "../../graphQL/messages-api";
 import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
-import bellIcon from "../../public/assets/icon/bell.png";
 import newChatIcon from "../../public/assets/icon/new-chat.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
@@ -74,8 +74,7 @@ const ChatView = () => {
       store.dispatch(setMessagingPubKey(messagingPubKey));
       store.dispatch(setAccessToken(res));
     };
-
-    setJWTAndRegisterMsgPubKey();
+    if (walletAddress) setJWTAndRegisterMsgPubKey();
   }, [
     current.chainId,
     requester,
@@ -161,28 +160,7 @@ const ChatView = () => {
       showChainName={true}
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          />
-        </div>
-      }
+      rightRenderer={<SwitchUser />}
     >
       <div className={style.chatContainer}>
         {/* {!user.accessToken && (

@@ -4,25 +4,24 @@ import { HeaderLayout } from "../../layouts";
 
 import { Card, CardBody } from "reactstrap";
 
-import style from "./style.module.scss";
-import { Menu } from "./menu";
-import { AccountView } from "./account";
-import { AssetView } from "./asset";
-import classnames from "classnames";
-import { useHistory } from "react-router";
-import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
-import { TokensView } from "./token";
-import { BIP44SelectModal } from "./bip44-select-modal";
-import { useIntl } from "react-intl";
-import { useConfirm } from "../../components/confirm";
 import { ChainUpdaterService } from "@keplr-wallet/background";
 import { DenomHelper } from "@keplr-wallet/common";
 import { Dec } from "@keplr-wallet/unit";
+import classnames from "classnames";
+import { observer } from "mobx-react-lite";
+import { useIntl } from "react-intl";
+import { useConfirm } from "../../components/confirm";
+import { SwitchUser } from "../../components/switch-user";
+import { useStore } from "../../stores";
+import { AccountView } from "./account";
+import { AssetView } from "./asset";
+import { BIP44SelectModal } from "./bip44-select-modal";
+import { Menu } from "./menu";
+import style from "./style.module.scss";
+import { TokensView } from "./token";
 // import { IBCTransferView } from "./ibc-transfer";
 
 export const MainPage: FunctionComponent = observer(() => {
-  const history = useHistory();
   const intl = useIntl();
 
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -85,40 +84,7 @@ export const MainPage: FunctionComponent = observer(() => {
       showChainName
       canChangeChainInfo
       menuRenderer={<Menu />}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <i
-            className="fas fa-user"
-            style={{
-              cursor: "pointer",
-              padding: "4px",
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          />
-          {/* <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          /> */}
-        </div>
-      }
+      rightRenderer={<SwitchUser />}
     >
       <BIP44SelectModal />
       <Card className={classnames(style.card, "shadow")}>

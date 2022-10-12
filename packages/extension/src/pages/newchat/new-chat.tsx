@@ -1,3 +1,4 @@
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
   useIBCTransferConfig,
@@ -5,15 +6,14 @@ import {
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { HeaderLayout } from "../../layouts";
-import bellIcon from "../../public/assets/icon/bell.png";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 
-import { EthereumEndpoint } from "../../config.ui";
 import { observer } from "mobx-react-lite";
+import { SwitchUser } from "../../components/switch-user";
+import { EthereumEndpoint } from "../../config.ui";
 import { NameAddress } from "../chat/users";
 
 // TODO(!!!): Remove debug comments
@@ -119,28 +119,7 @@ export const NewChat: FunctionComponent = observer(() => {
       onBackButton={() => {
         history.goBack();
       }}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          />
-        </div>
-      }
+      rightRenderer={<SwitchUser />}
     >
       <div className={style.searchContainer}>
         <div className={style.searchBox}>

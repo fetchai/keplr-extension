@@ -16,11 +16,11 @@ import { Input, InputGroup } from "reactstrap";
 import { userMessages } from "../../chatStore/messages-slice";
 import { userDetails } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
+import { SwitchUser } from "../../components/switch-user";
 import { ToolTip } from "../../components/tooltip";
 import { EthereumEndpoint } from "../../config.ui";
 import { deliverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts";
-import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
@@ -137,10 +137,6 @@ export const ChatSection: FunctionComponent = () => {
         });
         setMessages(newMessages);
         setNewMessage("");
-        messagesEndRef.current?.scrollIntoView({
-          block: "end",
-          behavior: "smooth",
-        });
       }
     } catch (error) {
       console.log("failed to send : ", error);
@@ -178,39 +174,22 @@ export const ChatSection: FunctionComponent = () => {
       const newMessages = [...messages, oldMessages?.lastMessage];
       setMessages(newMessages);
     }
-    // 👇️ scroll to bottom every time messages change
-    messagesEndRef.current?.scrollIntoView({
-      block: "end",
-      behavior: "smooth",
-    });
   }, [oldMessages, messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length]);
 
   return (
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-              history.push("/setting/set-keyring");
-            }}
-          />
-        </div>
-      }
+      rightRenderer={<SwitchUser />}
     >
       <div className={style.username}>
         <div className={style.leftBox}>
@@ -259,18 +238,17 @@ export const ChatSection: FunctionComponent = () => {
             const check = showDateFunction(message?.commitTimestamp);
             return (
               <ChatMessage
+                key={index}
                 chainId={current.chainId}
                 showDate={check}
                 message={message?.contents}
                 isSender={message?.target === userName} // if target was the user we are chatting with
-                key={index}
                 timestamp={message?.commitTimestamp || 1549312452}
               />
             );
           })}
         <div ref={messagesEndRef} />
       </div>
-
       <InputGroup className={style.inputText}>
         {targetPubKey.length ? (
           <Input
