@@ -153,9 +153,6 @@ export const NewChat: FunctionComponent = observer(() => {
       showChainName={true}
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
-      onBackButton={() => {
-        history.goBack();
-      }}
       rightRenderer={<SwitchUser />}
     >
       <div className={style.newChatContainer}>
@@ -186,23 +183,6 @@ export const NewChat: FunctionComponent = observer(() => {
           return <NewUser address={address} key={address.address} />;
         })}
       </div>
-      {/* {addresses.length == 0 ? (
-        <button
-          onClick={() => {
-            history.push({
-              pathname: "/setting/address-book",
-              state: {
-                currentState: true,
-                currentValue: inputVal,
-              },
-            });
-          }}
-        >
-          Add new contact to address book
-        </button>
-      ) : (
-        ""
-      )} */}
       {addresses.length === 0 && (
         <div className={style.resultText}>No record found</div>
       )}

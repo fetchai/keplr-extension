@@ -57,8 +57,6 @@ export const Users: React.FC<{
   userChats: MessageMap;
   addresses: NameAddress[];
 }> = ({ chainId, userChats, addresses }) => {
-  console.log("userChats", userChats);
-
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (

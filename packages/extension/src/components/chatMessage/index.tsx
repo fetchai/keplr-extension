@@ -42,21 +42,15 @@ export const ChatMessage = ({
   timestamp: number;
   showDate: boolean;
 }) => {
-  const [, setDecryptingState] = useState<
-    "idle" | "in-progress" | "failed" | "success"
-  >("idle");
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
   useEffect(() => {
-    setDecryptingState("in-progress");
     decryptMessage(chainId, message, isSender)
       .then((message) => {
-        
-        setDecryptingState("success");
         setDecryptedMessage(message);
       })
-      .catch(() => {
-        setDecryptingState("failed");
+      .catch((e) => {
+        setDecryptedMessage(e.message);
       });
   }, [chainId, isSender, message]);
 
