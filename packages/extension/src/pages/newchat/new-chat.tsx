@@ -32,7 +32,7 @@ import { userDetails } from "../../chatStore/user-slice";
 //   },
 // ];
 
-const NewUser = (props: any) => {
+const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
   const user = useSelector(userDetails);
   const { chainStore } = useStore();
@@ -60,22 +60,20 @@ const NewUser = (props: any) => {
   };
 
   return (
-    <div key={props.key}>
-      <div
-        className={style.messageContainer}
-        {...(isActive && { onClick: handleClick })}
-      >
-        <div className={style.initials}>
-          {name.charAt(0).toUpperCase()}
-          <div className={style.unread} />
-        </div>
-        <div className={style.messageInner}>
-          <div className={style.name}>{name}</div>
-          <div className={style.name}>{isActive ? "Active" : "Inactive"}</div>
-        </div>
-        <div>
-          <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
-        </div>
+    <div
+      className={style.messageContainer}
+      {...(isActive && { onClick: handleClick })}
+    >
+      <div className={style.initials}>
+        {name.charAt(0).toUpperCase()}
+        <div className={style.unread} />
+      </div>
+      <div className={style.messageInner}>
+        <div className={style.name}>{name}</div>
+        <div className={style.name}>{isActive ? "Active" : "Inactive"}</div>
+      </div>
+      <div>
+        <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
       </div>
     </div>
   );
@@ -87,7 +85,7 @@ export const NewChat: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-
+  const walletAddress = accountInfo.bech32Address;
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -133,26 +131,27 @@ export const NewChat: FunctionComponent = observer(() => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    const val = e.target.value.toLowerCase();
+    const searchedVal = e.target.value.toLowerCase();
     const addresses = useraddresses.filter(
       (address: any) =>
-        address.name.toLowerCase().includes(val) ||
-        address.address.toLowerCase().includes(val)
+        address.address !== walletAddress &&
+        (address.name.toLowerCase().includes(searchedVal) ||
+          address.address.toLowerCase().includes(searchedVal))
     );
-    if (addresses.length === 0 && val) {
+    if (
+      addresses.length === 0 &&
+      searchedVal &&
+      searchedVal !== walletAddress
+    ) {
       try {
-        //check if address is valid
-        console.log(
-          "Prefix address",
-          chainStore.current.bech32Config.bech32PrefixAccAddr
-        );
+        //check if searchedVal is valid address
         Bech32Address.validate(
-          val,
+          searchedVal,
           chainStore.current.bech32Config.bech32PrefixAccAddr
         );
         const address: NameAddress = {
-          name: formatAddress(val),
-          address: val,
+          name: formatAddress(searchedVal),
+          address: searchedVal,
         };
         setAddresses([address]);
       } catch (e) {
@@ -203,14 +202,8 @@ export const NewChat: FunctionComponent = observer(() => {
         </div>
       </div>
       <div className={style.messagesContainer}>
-        {addresses.map((address: any) => {
-          return (
-            <NewUser
-              address={address}
-              key={address.address}
-              inputVal={inputVal}
-            />
-          );
+        {addresses.map((address: NameAddress) => {
+          return <NewUser address={address} key={address.address} />;
         })}
       </div>
       {/* {addresses.length == 0 ? (
