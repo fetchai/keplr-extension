@@ -35,7 +35,7 @@ import { Users } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
-  
+
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -61,9 +61,9 @@ const ChatView = () => {
       : current.chainId
   );
 
-  const [userChats, setUserChats] = useState<MessageMap>({});
+  const [userChats, setUserChats] = useState<MessageMap | undefined>();
   const [inputVal, setInputVal] = useState("");
-  const [openDialog,setIsOpendialog] = useState(false);
+  const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
 
   const requester = new InExtensionMessageRequester();
@@ -72,19 +72,23 @@ const ChatView = () => {
     try {
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
-        new RegisterPublicKey(current.chainId, userState.accessToken, walletAddress)
+        new RegisterPublicKey(
+          current.chainId,
+          userState.accessToken,
+          walletAddress
+        )
       );
 
       store.dispatch(setMessagingPubKey(messagingPubKey));
       setIsOpendialog(false);
     } catch (e) {
       // Show error toaster
-      console.error("error", e)
+      console.error("error", e);
       setIsOpendialog(false);
       // Redirect to home
       history.replace("/");
     }
-  }
+  };
 
   useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
@@ -95,22 +99,19 @@ const ChatView = () => {
       if (!pubKey) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
-    };
-
-    setJWTAndFetchMsgPubKey();
-  }, [
-    current.chainId,
-    requester,
-    walletAddress,
-  ]);
-
-  useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey) {
       messageListener();
       recieveMessages(walletAddress);
       fetchBlockList();
-    }
-  }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
+    };
+    if (!userState?.accessToken.length || !userState?.messagingPubKey.length)
+      setJWTAndFetchMsgPubKey();
+  }, [
+    current.chainId,
+    requester,
+    userState.accessToken.length,
+    userState.messagingPubKey.length,
+    walletAddress,
+  ]);
 
   useEffect(() => {
     const userLastMessages: MessageMap = {};
@@ -185,7 +186,7 @@ const ChatView = () => {
       rightRenderer={<SwitchUser />}
     >
       <div className={style.chatContainer}>
-        {(openDialog && userState.accessToken.length > 0) && (
+        {openDialog && userState.accessToken.length > 0 && (
           <div className={style.popupContainer}>
             {/* <img src={chatIcon} /> */}
             <br />
@@ -215,9 +216,7 @@ const ChatView = () => {
                 menu.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={registerAndSetMessagePubKey}>
+            <button type="button" onClick={registerAndSetMessagePubKey}>
               Continue
             </button>
           </div>
