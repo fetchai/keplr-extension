@@ -4,6 +4,7 @@ import {
   gql,
   DefaultOptions,
 } from "@apollo/client";
+import { PrivacySetting, PubKey } from "./types";
 
 
 const defaultOptions: DefaultOptions = {
@@ -22,13 +23,13 @@ const client = new ApolloClient({
   uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
   cache: new InMemoryCache(),
   defaultOptions,
-
 });
 
 export const registerPubKey = async (
   accessToken: string,
   messagingPubKey: string,
   walletAddress: string,
+  privacySetting: PrivacySetting,
   channelId: string
 ): Promise<void> => {
   try {
@@ -36,6 +37,7 @@ export const registerPubKey = async (
       mutation: gql(`mutation Mutation($publicKeyDetails: InputPublicKey!) {
         updatePublicKey(publicKeyDetails: $publicKeyDetails) {
           publicKey
+          privacySetting
         }
       }`),
       variables: {
@@ -43,6 +45,7 @@ export const registerPubKey = async (
           publicKey: messagingPubKey,
           address: walletAddress,
           channelId,
+          privacySetting,
         },
       },
       context: {
@@ -60,13 +63,13 @@ export const getPubKey = async (
   accessToken: string,
   targetAddress: string,
   channelId: string
-): Promise<string | undefined> => {
-  console.log("get pub key dev5", accessToken, targetAddress, channelId);
+): Promise<PubKey> => {
   try {
     const { data } = await client.query({
       query: gql(`query Query($address: String!, $channelId: ChannelId!) {
         publicKey(address: $address, channelId: $channelId) {
           publicKey
+          privacySetting
         }
       }`),
       variables: {
@@ -79,10 +82,16 @@ export const getPubKey = async (
         },
       },
     });
-    console.log("data.publicKey.publicKey", data);
 
-    return data.publicKey.publicKey;
+    return {
+      publicKey: data.publicKey && data.publicKey.publicKey,
+      privacySetting: data.publicKey && data.publicKey.privacySetting
+    }
   } catch (e) {
     console.log(e);
+    return {
+      publicKey: undefined,
+      privacySetting: undefined
+    }
   }
 };

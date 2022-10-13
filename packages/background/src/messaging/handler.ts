@@ -53,7 +53,7 @@ const handleGetMessagingPublicKey: (
       msg.targetAddress,
       msg.accessToken
     );
-    return pubKey ? pubKey : "";
+    return pubKey;
   };
 };
 
@@ -65,7 +65,8 @@ const handleRegisterPublicKey: (
       env,
       msg.chainId,
       msg.address,
-      msg.accessToken
+      msg.accessToken,
+      msg.privacySetting
     );
   };
 };

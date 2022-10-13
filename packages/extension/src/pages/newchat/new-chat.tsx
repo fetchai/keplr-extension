@@ -37,7 +37,7 @@ const NewUser = (props: { address: NameAddress }) => {
           current.chainId,
           address
         );
-        if (pubKey && pubKey.length > 0) setIsActive(true);
+        if (pubKey && pubKey.publicKey && pubKey.publicKey.length > 0) setIsActive(true);
       } catch (e) {
         console.log("NewUser/isUserActive error", e);
       }

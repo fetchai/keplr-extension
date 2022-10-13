@@ -89,9 +89,11 @@ export const getJWT = async (chainId: string, url: string) => {
     new GetMessagingPublicKey(chainId, "", null)
   );
 
+  if (!pubKey.publicKey) throw new Error('public key not found');
+
   const addr = Bech32.encode(
     "fetch",
-    rawSecp256k1PubkeyToRawAddress(fromHex(pubKey))
+    rawSecp256k1PubkeyToRawAddress(fromHex(pubKey.publicKey))
   );
   const request = {
     address: addr,
@@ -108,11 +110,11 @@ export const getJWT = async (chainId: string, url: string) => {
     loginRequest = await signArbitrary(
       chainId,
       addr,
-      pubKey,
+      pubKey.publicKey,
       r1.data.payload,
       requester
     );
-  } catch (err) {
+  } catch (err: any) {
     throw new RejectError(err.toString());
   }
 

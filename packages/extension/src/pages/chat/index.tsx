@@ -1,4 +1,5 @@
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
@@ -30,8 +31,6 @@ import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { Users } from "./users";
-
-// import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -65,6 +64,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog,setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
+  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
 
   const requester = new InExtensionMessageRequester();
 
@@ -72,7 +72,7 @@ const ChatView = () => {
     try {
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
-        new RegisterPublicKey(current.chainId, userState.accessToken, walletAddress)
+        new RegisterPublicKey(current.chainId, userState.accessToken, walletAddress, selectedPrivacySetting)
       );
 
       store.dispatch(setMessagingPubKey(messagingPubKey));
@@ -92,7 +92,7 @@ const ChatView = () => {
       store.dispatch(setAccessToken(res));
 
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
-      if (!pubKey) return setIsOpendialog(true);
+      if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
     };
@@ -105,12 +105,12 @@ const ChatView = () => {
   ]);
 
   useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey) {
+    if (userState?.accessToken.length && userState?.messagingPubKey && userState?.messagingPubKey.publicKey && userState?.messagingPubKey.privacySetting) {
       messageListener();
       recieveMessages(walletAddress);
       fetchBlockList();
     }
-  }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
+  }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
 
   useEffect(() => {
     const userLastMessages: MessageMap = {};
@@ -194,17 +194,32 @@ const ChatView = () => {
               <p>Now you can chat with other active wallets.</p>
               <p>Select who can send you messages</p>
               <form>
-                <input type="radio" name="options" id="option1" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Everybody}
+                  checked={selectedPrivacySetting === PrivacySetting.Everybody}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option1" className={style["options-label"]}>
                   Everybody
                 </label>
                 <br />
-                <input type="radio" name="options" id="option2" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Contacts}
+                  checked={selectedPrivacySetting === PrivacySetting.Contacts}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option2" className={style["options-label"]}>
                   Only contacts in address book
                 </label>
                 <br />
-                <input type="radio" name="options" id="option3" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Nobody}
+                  checked={selectedPrivacySetting === PrivacySetting.Nobody}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option3" className={style["options-label"]}>
                   Nobody
                 </label>
