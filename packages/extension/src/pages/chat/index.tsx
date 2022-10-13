@@ -97,6 +97,7 @@ const ChatView = () => {
   useEffect(() => {
     if (
       userState?.accessToken.length &&
+      userState?.messagingPubKey.privacySetting &&
       userState?.messagingPubKey.length &&
       walletAddress
     ) {
@@ -106,7 +107,8 @@ const ChatView = () => {
     }
   }, [
     userState.accessToken.length,
-    userState.messagingPubKey.length,
+    userState.messagingPubKey.publicKey,
+    userState.messagingPubKey.privacySetting,
     walletAddress,
   ]);
 
@@ -120,6 +122,7 @@ const ChatView = () => {
       if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
+      setLoadingChats(false);
     };
 
     if (
@@ -134,8 +137,6 @@ const ChatView = () => {
     current.chainId,
     loadingChats,
     requester,
-    userState.accessToken.length,
-    userState.messagingPubKey.length,
     walletAddress,
     userState.accessToken.length,
     userState.messagingPubKey.publicKey,
@@ -185,7 +186,7 @@ const ChatView = () => {
       setUserChats(userLastMessages);
       setInitialChats(userLastMessages);
     }
-  }, [initialChats, messages]);
+  }, [messages]);
 
   const fillUserChats = () => {
     const userLastMessages: any = {};
