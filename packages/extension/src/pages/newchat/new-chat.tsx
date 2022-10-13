@@ -21,6 +21,7 @@ import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { useSelector } from "react-redux";
 import { userDetails } from "../../chatStore/user-slice";
 import { Menu } from "../main/menu";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -43,7 +44,7 @@ const NewUser = (props: { address: NameAddress }) => {
       }
     };
     isUserActive();
-  }, [address, user.accessToken, current.chainId]);
+  }, [address, user.accessToken, user.messagingPubKey.privacySetting, current.chainId]);
 
   const handleClick = () => {
     history.push(`/chat/${address}`);
@@ -70,6 +71,7 @@ const NewUser = (props: { address: NameAddress }) => {
 };
 export const NewChat: FunctionComponent = observer(() => {
   const history = useHistory();
+  const user = useSelector(userDetails);
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -128,7 +130,8 @@ export const NewChat: FunctionComponent = observer(() => {
     if (
       addresses.length === 0 &&
       searchedVal &&
-      searchedVal !== walletAddress
+      searchedVal !== walletAddress &&
+      user?.messagingPubKey.privacySetting === PrivacySetting.Everybody
     ) {
       try {
         //check if searchedVal is valid address
@@ -184,7 +187,17 @@ export const NewChat: FunctionComponent = observer(() => {
         })}
       </div>
       {addresses.length === 0 && (
+        <div>
         <div className={style.resultText}>No record found</div>
+        {
+          user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
+            <div className={style.resultText}>
+              If you are searching for an address not in your address book,
+               you can't see them due to your selected privacy settings being "contact only".
+                Please add the address to your address book to be able to chat with them or change your privacy settings. 
+            </div>
+        }
+        </div>
       )}
     </HeaderLayout>
   );

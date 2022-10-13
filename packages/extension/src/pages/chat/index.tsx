@@ -214,7 +214,10 @@ const ChatView = () => {
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
         const found = Object.keys(addresses).some(
           (address) =>
-            addresses[address].toLowerCase().includes(value.toLowerCase()) &&
+            (
+              addresses[address].toLowerCase().includes(value.toLowerCase()) ||
+              address.toLowerCase().includes(value.toLowerCase())
+            ) &&
             address == contact
         );
         return (
