@@ -123,7 +123,6 @@ export const deliverMessages = async (
           },
         },
       });
-
       if (data?.dispatchMessages?.length > 0) {
         store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
         return data;
