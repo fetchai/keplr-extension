@@ -168,13 +168,13 @@ export class MessagingService {
     // Step 1. Query the cache
     let targetPublicKey = this._publicKeyCache.get(targetAddress);
       
-    if (targetPublicKey !== undefined) {
+    if (targetPublicKey?.publicKey && targetPublicKey?.privacySetting) {
       return targetPublicKey;
     }
 
     // Step 2. Cache miss, fetch the public key from the memorandum service and
     //         update the cache
-    targetPublicKey = await getPubKey(accessToken, targetAddress, MESSAGE_CHANNEL_ID);;
+    targetPublicKey = await getPubKey(accessToken, targetAddress, MESSAGE_CHANNEL_ID);
     if (!targetPublicKey) {
       return {
         publicKey: undefined,

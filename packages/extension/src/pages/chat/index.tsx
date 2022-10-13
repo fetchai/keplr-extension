@@ -30,7 +30,7 @@ import { getJWT } from "../../utils/auth";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { Users } from "./users";
+import { NameAddress, Users } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -97,11 +97,20 @@ const ChatView = () => {
       store.dispatch(setMessagingPubKey(pubKey));
     };
 
-    setJWTAndFetchMsgPubKey();
+    if (
+      !userState?.messagingPubKey.publicKey &&
+      !userState?.messagingPubKey.privacySetting &&
+      !userState?.accessToken.length
+    ) {
+      setJWTAndFetchMsgPubKey();
+    }
   }, [
     current.chainId,
     requester,
     walletAddress,
+    userState.accessToken.length,
+    userState.messagingPubKey.publicKey,
+    userState.messagingPubKey.privacySetting,
   ]);
 
   useEffect(() => {
@@ -112,23 +121,6 @@ const ChatView = () => {
     }
   }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
 
-  useEffect(() => {
-    const userLastMessages: MessageMap = {};
-    Object.keys(messages).map((contact: string) => {
-      userLastMessages[contact] = messages[contact].lastMessage;
-    });
-    if (Object.keys(initialChats).length === 0) {
-      setUserChats(userLastMessages);
-      setInitialChats(userLastMessages);
-    }
-  }, [messages]);
-  const fillUserChats = () => {
-    const userLastMessages: any = {};
-    Object.keys(messages).map((contact: string) => {
-      userLastMessages[contact] = messages[contact].lastMessage;
-    });
-    setUserChats(userLastMessages);
-  };
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
@@ -144,6 +136,41 @@ const ChatView = () => {
     }
   );
 
+  const addresses: NameAddress = {};
+
+  addressBookConfig.addressBookDatas.map((data) => {
+    addresses[data.address] = data.name;
+  });
+
+  useEffect(() => {
+    const userLastMessages: MessageMap = {};
+    Object.keys(messages).map((contact: string) => {
+      if (
+        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
+        !addresses[contact]
+      ) return;
+
+      userLastMessages[contact] = messages[contact].lastMessage;
+    });
+    if (Object.keys(initialChats).length === 0) {
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
+  }, [messages]);
+
+  const fillUserChats = () => {
+    const userLastMessages: any = {};
+    Object.keys(messages).map((contact: string) => {
+      if (
+        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
+        !addresses[contact]
+      ) return;
+
+      userLastMessages[contact] = messages[contact].lastMessage;
+    });
+    setUserChats(userLastMessages);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputVal(value);
@@ -155,12 +182,15 @@ const ChatView = () => {
       });
 
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
-        const found = addresses.some(
-          (address: any) =>
-            address.name.toLowerCase().includes(value.toLowerCase()) &&
-            address.address == contact
+        const found = Object.keys(addresses).some(
+          (address) =>
+            addresses[address].toLowerCase().includes(value.toLowerCase()) &&
+            address == contact
         );
-        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+        return (
+          userState?.messagingPubKey.privacySetting === PrivacySetting.Everybody &&
+          contact.toLowerCase().includes(value.toLowerCase())
+        ) || found;
       });
 
       const tempChats: any = {};
@@ -174,9 +204,20 @@ const ChatView = () => {
     }
   };
 
-  const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  // TODO: better design
+  if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
+    return (
+      <HeaderLayout
+      showChainName={true}
+      canChangeChainInfo={true}
+      menuRenderer={<Menu />}
+      rightRenderer={<SwitchUser />}
+    >
+      <div>Chat deactivated</div>
+    </HeaderLayout>
+    )
+  }
+
   return (
     <HeaderLayout
       showChainName={true}

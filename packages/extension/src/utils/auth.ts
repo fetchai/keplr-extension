@@ -97,7 +97,7 @@ export const getJWT = async (chainId: string, url: string) => {
   );
   const request = {
     address: addr,
-    public_key: pubKey,
+    public_key: pubKey.publicKey,
   };
 
   const r1 = await axios.post(`${url}/request_token`, request, config);
