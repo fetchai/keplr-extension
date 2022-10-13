@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "../../../layouts";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import style from "../style.module.scss";
 import {
   Button,
@@ -29,6 +29,14 @@ import {
 } from "@keplr-wallet/hooks";
 import { EthereumEndpoint } from "../../../config.ui";
 
+export interface chatSectionParams {
+  openModal: boolean;
+  addressInputValue: string;
+}
+export const defaultParamValues: chatSectionParams = {
+  openModal: false,
+  addressInputValue: "",
+};
 export const AddressBookPage: FunctionComponent<{
   onBackButton?: () => void;
   hideChainDropdown?: boolean;
@@ -36,20 +44,14 @@ export const AddressBookPage: FunctionComponent<{
   ibcChannelConfig?: IIBCChannelConfig;
   isInTransaction?: boolean;
 }> = observer(
-  ({
-    onBackButton,
-    hideChainDropdown,
-    selectHandler,
-    ibcChannelConfig,
-    // ...rest
-    //isInTransaction,
-  }) => {
+  ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
     const intl = useIntl();
     const history = useHistory();
-    // const values = { ...rest };
     const { chainStore } = useStore();
     const current = chainStore.current;
-
+    const location = useLocation();
+    const chatSectionParams =
+      (location.state as chatSectionParams) || defaultParamValues;
     const [selectedChainId, setSelectedChainId] = useState(
       ibcChannelConfig?.channel
         ? ibcChannelConfig.channel.counterpartyChainId
@@ -87,12 +89,18 @@ export const AddressBookPage: FunctionComponent<{
     //            going on here and there was no typing information for me to
     //            work with
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
-      /*values?.location?.state?.currentState ||*/ false
+      chatSectionParams.openModal || false
     );
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
-
+    const closeModal = () => {
+      if (chatSectionParams.openModal) {
+        history.goBack();
+      }
+      setAddAddressModalOpen(false);
+      setAddAddressModalIndex(-1);
+    };
     const addressBookIcons = (index: number) => {
       return [
         <i
@@ -165,18 +173,12 @@ export const AddressBookPage: FunctionComponent<{
         >
           <ModalBody className={styleAddressBook.fullModal}>
             <AddAddressModal
-              closeModal={() => {
-                setAddAddressModalOpen(false);
-                setAddAddressModalIndex(-1);
-              }}
+              closeModal={() => closeModal()}
               recipientConfig={recipientConfig}
               memoConfig={memoConfig}
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
-              currentValue={
-                "false" /*|| values?.location?.state?.currentValue TODO(!!!): see above*/
-              }
             />
           </ModalBody>
         </Modal>

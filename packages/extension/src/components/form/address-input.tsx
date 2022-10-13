@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   FormGroup,
   Label,
@@ -41,7 +41,7 @@ export interface AddressInputProps {
   disabled?: boolean;
   // TODO(!!!): Not sure what is going on here, but have fixed the types only
   //            (was not originally in the type definition)
-  value?: string;
+  value: string;
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -56,9 +56,8 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     value,
   }) => {
     const intl = useIntl();
-
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
-    const [searchedAddressValue, setSearchedAddressValue] = useState(value);
+    const [searchedAddressValue, setSearchedAddressValue] = useState("");
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -69,7 +68,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
-
+    useEffect(() => {
+      if (value) {
+        recipientConfig.setRawRecipient(value);
+        setSearchedAddressValue(value);
+      }
+    }, [value]);
     const error = recipientConfig.getError();
     const errorText: string | undefined = useMemo(() => {
       if (error) {
@@ -119,7 +123,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         recipientConfig.setRawRecipient(e?.target?.value);
       }
     };
-
     return (
       <React.Fragment>
         <Modal
@@ -152,11 +155,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={
-                value?.length
-                  ? searchedAddressValue
-                  : recipientConfig.rawRecipient
-              }
+              value={searchedAddressValue}
               onChange={(e) => {
                 handleSearchInputChange(e);
               }}

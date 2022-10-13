@@ -177,6 +177,11 @@ export const ChatSection: FunctionComponent = () => {
     scrollToBottom();
   }, [messages.length]);
 
+  const isNewUser = (): boolean => {
+    const addressExists = addresses.find((item) => item.address === userName);
+    return !Boolean(addressExists) && messages.length === 0;
+  };
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -218,6 +223,31 @@ export const ChatSection: FunctionComponent = () => {
         blocked={oldMessages.isBlocked}
       />
 
+
+      {isNewUser() && (
+        <div className={style.contactsContainer}>
+          <div className={style.displayText}>
+            This contact is not saved in your address book
+          </div>
+          <div className={style.buttons}>
+            <button
+              onClick={() =>
+                history.push({
+                  pathname: "/setting/address-book",
+                  state: {
+                    openModal: true,
+                    addressInputValue: userName,
+                  },
+                })
+              }
+            >
+              Add
+            </button>
+            <button>Block</button>
+          </div>
+        </div>
+      )}
+     
       <div className={style.chatArea}>
         <div className={style.messages}>
           <p>
@@ -247,6 +277,7 @@ export const ChatSection: FunctionComponent = () => {
           {targetPubKey.length ? (
             <TextareaAutosize
               maxRows={3}
+
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
               placeholder={
                 oldMessages.isBlocked

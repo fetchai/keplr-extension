@@ -80,6 +80,7 @@ const ChatView = () => {
           walletAddress
         )
       );
+
       store.dispatch(setMessagingPubKey(messagingPubKey));
     } catch (e) {
       // Show error toaster
@@ -134,17 +135,18 @@ const ChatView = () => {
     userState.messagingPubKey.length,
     walletAddress,
   ]);
-
   useEffect(() => {
     const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
+
     if (Object.keys(initialChats).length !== Object.keys(messages).length) {
       setUserChats(userLastMessages);
       setInitialChats(userLastMessages);
     }
   }, [initialChats, messages]);
+
   const fillUserChats = () => {
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
@@ -257,6 +259,7 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
+
         {loadingChats ? (
           <div>Fetching Details. Please Wait ...</div>
         ) : (
