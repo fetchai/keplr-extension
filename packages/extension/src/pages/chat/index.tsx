@@ -34,7 +34,7 @@ import { NameAddress, Users } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
-  
+
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -60,34 +60,59 @@ const ChatView = () => {
       : current.chainId
   );
 
-  const [userChats, setUserChats] = useState<MessageMap>({});
+  const [userChats, setUserChats] = useState<MessageMap | undefined>();
+  const [loadingChats, setLoadingChats] = useState(false);
   const [inputVal, setInputVal] = useState("");
-  const [openDialog,setIsOpendialog] = useState(false);
+  const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
   const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
 
   const requester = new InExtensionMessageRequester();
 
   const registerAndSetMessagePubKey = async () => {
+    setLoadingChats(true);
     try {
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
-        new RegisterPublicKey(current.chainId, userState.accessToken, walletAddress, selectedPrivacySetting)
+        new RegisterPublicKey(
+          current.chainId,
+          userState.accessToken,
+          walletAddress,
+          selectedPrivacySetting
+        )
       );
 
       store.dispatch(setMessagingPubKey(messagingPubKey));
-      setIsOpendialog(false);
     } catch (e) {
       // Show error toaster
-      console.error("error", e)
-      setIsOpendialog(false);
+      console.error("error", e);
       // Redirect to home
       history.replace("/");
+    } finally {
+      setIsOpendialog(false);
+      setLoadingChats(false);
     }
-  }
+  };
+
+  useEffect(() => {
+    if (
+      userState?.accessToken.length &&
+      userState?.messagingPubKey.length &&
+      walletAddress
+    ) {
+      messageListener();
+      recieveMessages(walletAddress);
+      fetchBlockList();
+    }
+  }, [
+    userState.accessToken.length,
+    userState.messagingPubKey.length,
+    walletAddress,
+  ]);
 
   useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
+      setLoadingChats(true);
       const res = await getJWT(current.chainId, AUTH_SERVER);
       store.dispatch(setAccessToken(res));
 
@@ -100,13 +125,17 @@ const ChatView = () => {
     if (
       !userState?.messagingPubKey.publicKey &&
       !userState?.messagingPubKey.privacySetting &&
-      !userState?.accessToken.length
+      !userState?.accessToken.length &&
+      !loadingChats
     ) {
       setJWTAndFetchMsgPubKey();
     }
   }, [
     current.chainId,
+    loadingChats,
     requester,
+    userState.accessToken.length,
+    userState.messagingPubKey.length,
     walletAddress,
     userState.accessToken.length,
     userState.messagingPubKey.publicKey,
@@ -156,7 +185,7 @@ const ChatView = () => {
       setUserChats(userLastMessages);
       setInitialChats(userLastMessages);
     }
-  }, [messages]);
+  }, [initialChats, messages]);
 
   const fillUserChats = () => {
     const userLastMessages: any = {};
@@ -226,7 +255,7 @@ const ChatView = () => {
       rightRenderer={<SwitchUser />}
     >
       <div className={style.chatContainer}>
-        {(openDialog && userState.accessToken.length > 0) && (
+        {openDialog && userState.accessToken.length > 0 && (
           <div className={style.popupContainer}>
             {/* <img src={chatIcon} /> */}
             <br />
@@ -271,9 +300,7 @@ const ChatView = () => {
                 menu.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={registerAndSetMessagePubKey}>
+            <button type="button" onClick={registerAndSetMessagePubKey}>
               Continue
             </button>
           </div>
@@ -292,11 +319,16 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        <Users
-          chainId={current.chainId}
-          userChats={userChats}
-          addresses={addresses}
-        />
+
+        {loadingChats ? (
+          <div>Fetching Details. Please Wait ...</div>
+        ) : (
+          <Users
+            chainId={current.chainId}
+            userChats={userChats}
+            addresses={addresses}
+          />
+        )}
       </div>
     </HeaderLayout>
   );

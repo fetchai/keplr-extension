@@ -30,6 +30,8 @@ import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
+import TextareaAutosize from "react-textarea-autosize";
+// import ScrollToBottom from 'react-scroll-to-bottom';
 
 export let openValue = true;
 
@@ -121,23 +123,14 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await deliverMessages(
+      const message = await deliverMessages(
         user.accessToken,
         current.chainId,
         newMessage,
         accountInfo.bech32Address,
         userName
       );
-      if (data?.dispatchMessages?.length > 0) {
-        const newMessages = [...messages];
-        newMessages.push({
-          ...data.dispatchMessages[0],
-          sender: accountInfo.bech32Address,
-          target: userName,
-        });
-        setMessages(newMessages);
-        setNewMessage("");
-      }
+      if (message) setNewMessage("");
     } catch (error) {
       console.log("failed to send : ", error);
     }
@@ -184,6 +177,11 @@ export const ChatSection: FunctionComponent = () => {
     scrollToBottom();
   }, [messages.length]);
 
+  const isNewUser = (): boolean => {
+    const addressExists = addresses.find((item) => item.address === userName);
+    return !Boolean(addressExists) && messages.length === 0;
+  };
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -225,71 +223,100 @@ export const ChatSection: FunctionComponent = () => {
         blocked={oldMessages.isBlocked}
       />
 
-      <div className={style.messages}>
-        <p>
-          Messages are end to end encrypted. Nobody else can read them except
-          you and the recipient.
-        </p>
-        {messages
-          ?.sort((a: any, b: any) => {
-            return a.commitTimestamp - b.commitTimestamp;
-          })
-          ?.map((message: any, index) => {
-            const check = showDateFunction(message?.commitTimestamp);
-            return (
-              <ChatMessage
-                key={index}
-                chainId={current.chainId}
-                showDate={check}
-                message={message?.contents}
-                isSender={message?.target === userName} // if target was the user we are chatting with
-                timestamp={message?.commitTimestamp || 1549312452}
-              />
-            );
-          })}
-        <div ref={messagesEndRef} />
-      </div>
-      <InputGroup className={style.inputText}>
-        {targetPubKey.length ? (
-          <Input
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={
-              oldMessages.isBlocked
-                ? "This contact is blocked"
-                : "Type a new message..."
-            }
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            onKeyDown={handleKeydown}
-            disabled={oldMessages.isBlocked}
-          />
-        ) : (
-          <ToolTip
-            trigger="hover"
-            options={{ placement: "top" }}
-            tooltip={<div>No transaction history found for this user</div>}
-          >
-            <Input
+
+      {isNewUser() && (
+        <div className={style.contactsContainer}>
+          <div className={style.displayText}>
+            This contact is not saved in your address book
+          </div>
+          <div className={style.buttons}>
+            <button
+              onClick={() =>
+                history.push({
+                  pathname: "/setting/address-book",
+                  state: {
+                    openModal: true,
+                    addressInputValue: userName,
+                  },
+                })
+              }
+            >
+              Add
+            </button>
+            <button>Block</button>
+          </div>
+        </div>
+      )}
+     
+      <div className={style.chatArea}>
+        <div className={style.messages}>
+          <p>
+            Messages are end to end encrypted. Nobody else can read them except
+            you and the recipient.
+          </p>
+          {messages
+            ?.sort((a: any, b: any) => {
+              return a.commitTimestamp - b.commitTimestamp;
+            })
+            ?.map((message: any, index) => {
+              const check = showDateFunction(message?.commitTimestamp);
+              return (
+                <ChatMessage
+                  key={index}
+                  chainId={current.chainId}
+                  showDate={check}
+                  message={message?.contents}
+                  isSender={message?.target === userName} // if target was the user we are chatting with
+                  timestamp={message?.commitTimestamp || 1549312452}
+                />
+              );
+            })}
+          <div ref={messagesEndRef} />
+        </div>
+        <InputGroup className={style.inputText}>
+          {targetPubKey.length ? (
+            <TextareaAutosize
+              maxRows={3}
+
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder="Type a new message..."
+              placeholder={
+                oldMessages.isBlocked
+                  ? "This contact is blocked"
+                  : "Type a new message..."
+              }
               value={newMessage}
               onChange={(event) => setNewMessage(event.target.value)}
               onKeyDown={handleKeydown}
-              disabled={true}
+              disabled={oldMessages.isBlocked}
             />
-          </ToolTip>
-        )}
-        {newMessage?.length ? (
-          <div
-            className={style["send-message-icon"]}
-            onClick={handleSendMessage}
-          >
-            <img src={paperAirplaneIcon} alt="" />
-          </div>
-        ) : (
-          ""
-        )}
-      </InputGroup>
+          ) : (
+            <ToolTip
+              trigger="hover"
+              options={{ placement: "top" }}
+              tooltip={<div>No transaction history found for this user</div>}
+            >
+              <Input
+                className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                placeholder="Type a new message..."
+                value={newMessage}
+                onChange={(event) => setNewMessage(event.target.value)}
+                onKeyDown={handleKeydown}
+                disabled={true}
+              />
+            </ToolTip>
+          )}
+          {newMessage?.length ? (
+            <div
+              className={style["send-message-icon"]}
+              onClick={handleSendMessage}
+            >
+              <img src={paperAirplaneIcon} alt="" />
+            </div>
+          ) : (
+            ""
+          )}
+        </InputGroup>
+      </div>
     </HeaderLayout>
   );
 };

@@ -8,6 +8,9 @@ import style from "./chain-list.module.scss";
 import { ChainInfoWithEmbed } from "@keplr-wallet/background";
 import { useConfirm } from "../../components/confirm";
 import { useIntl } from "react-intl";
+import { store } from "../../chatStore";
+import { resetUser } from "../../chatStore/user-slice";
+import { addMessageList } from "../../chatStore/messages-slice";
 
 const ChainElement: FunctionComponent<{
   chainInfo: ChainInfoWithEmbed;
@@ -34,6 +37,8 @@ const ChainElement: FunctionComponent<{
           });
           chainStore.selectChain(chainInfo.chainId);
           chainStore.saveLastViewChainId();
+          store.dispatch(resetUser({}));
+          store.dispatch(addMessageList({}));
         }
       }}
     >
