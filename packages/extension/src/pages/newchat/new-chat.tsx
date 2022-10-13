@@ -10,45 +10,60 @@ import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-
+import chevronLeft from "../../public/assets/icon/chevron-left.png";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 import { observer } from "mobx-react-lite";
 import { SwitchUser } from "../../components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
 import { NameAddress } from "../chat/users";
+import { formatAddress } from "../../utils/format";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
+import { useSelector } from "react-redux";
+import { userDetails } from "../../chatStore/user-slice";
+import { Menu } from "../main/menu";
 
-// TODO(!!!): Remove debug comments
-// const ADDRESSES = [
-//   {
-//     name: "fetchWallet2",
-//     address: "fetch10u3ejwentkkv4c83yccy3t7syj3rgdc9kl4lsc",
-//   },
-//   {
-//     name: "user2",
-//     address: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
-//   },
-// ];
-
-const NewUser = (props: any) => {
+const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
+  const user = useSelector(userDetails);
+  const { chainStore } = useStore();
   const { name, address } = props.address;
+  const [isActive, setIsActive] = useState(false);
+  const current = chainStore.current;
+  useEffect(() => {
+    const isUserActive = async () => {
+      try {
+        const pubKey = await fetchPublicKey(
+          user.accessToken,
+          current.chainId,
+          address
+        );
+        if (pubKey && pubKey.length > 0) setIsActive(true);
+      } catch (e) {
+        console.log("NewUser/isUserActive error", e);
+      }
+    };
+    isUserActive();
+  }, [address, user.accessToken, current.chainId]);
 
   const handleClick = () => {
     history.push(`/chat/${address}`);
   };
 
   return (
-    <div key={props.key}>
-      <div className={style.messageContainer} onClick={handleClick}>
-        <div className={style.initials}>
-          {name.charAt(0).toUpperCase()}
-          <div className={style.unread} />
-        </div>
-        <div className={style.messageInner}>
-          <div className={style.name}>{name}</div>
-        </div>
-        <div>
-          <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
-        </div>
+    <div
+      className={style.messageContainer}
+      {...(isActive && { onClick: handleClick })}
+    >
+      <div className={style.initials}>
+        {name.charAt(0).toUpperCase()}
+        <div className={style.unread} />
+      </div>
+      <div className={style.messageInner}>
+        <div className={style.name}>{name}</div>
+        {!isActive && <div className={style.name}>Inactive</div>}
+      </div>
+      <div>
+        <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
       </div>
     </div>
   );
@@ -60,7 +75,7 @@ export const NewChat: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-
+  const walletAddress = accountInfo.bech32Address;
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -91,36 +106,68 @@ export const NewChat: FunctionComponent = observer(() => {
     }
   );
 
-  const useraddresses: any = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
+    (data) => {
+      return { name: data.name, address: data.address };
+    }
+  );
 
   useEffect(() => {
-    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
-      (data) => {
-        return { name: data.name, address: data.address };
-      }
-    );
-    setAddresses(userAddresses);
+    setAddresses(useraddresses);
   }, [addressBookConfig.addressBookDatas]);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
-    const val = e.target.value;
-    setAddresses(
-      useraddresses.filter((address: any) =>
-        address.name.toLowerCase().includes(val)
-      )
+    const searchedVal = e.target.value.toLowerCase();
+    const addresses = useraddresses.filter(
+      (address: NameAddress) =>
+        address.address !== walletAddress &&
+        (address.name.toLowerCase().includes(searchedVal) ||
+          address.address.toLowerCase().includes(searchedVal))
     );
+    if (
+      addresses.length === 0 &&
+      searchedVal &&
+      searchedVal !== walletAddress
+    ) {
+      try {
+        //check if searchedVal is valid address
+        Bech32Address.validate(
+          searchedVal,
+          chainStore.current.bech32Config.bech32PrefixAccAddr
+        );
+        const address: NameAddress = {
+          name: formatAddress(searchedVal),
+          address: searchedVal,
+        };
+        setAddresses([address]);
+      } catch (e) {
+        setAddresses([]);
+      }
+    } else {
+      setAddresses(addresses);
+    }
   };
   return (
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
-      onBackButton={() => {
-        history.goBack();
-      }}
+      menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
+      <div className={style.newChatContainer}>
+        <div className={style.leftBox}>
+          <img
+            alt=""
+            className={style.backBtn}
+            src={chevronLeft}
+            onClick={() => {
+              history.goBack();
+            }}
+          />
+          <span className={style.title}>New Chat</span>
+        </div>
+      </div>
       <div className={style.searchContainer}>
         <div className={style.searchBox}>
           <img src={searchIcon} alt="search" />
@@ -132,32 +179,12 @@ export const NewChat: FunctionComponent = observer(() => {
         </div>
       </div>
       <div className={style.messagesContainer}>
-        {addresses.map((address: any) => {
-          return (
-            <NewUser
-              address={address}
-              key={address.address}
-              inputVal={inputVal}
-            />
-          );
+        {addresses.map((address: NameAddress) => {
+          return <NewUser address={address} key={address.address} />;
         })}
       </div>
-      {addresses.length == 0 ? (
-        <button
-          onClick={() => {
-            history.push({
-              pathname: "/setting/address-book",
-              state: {
-                currentState: true,
-                currentValue: inputVal,
-              },
-            });
-          }}
-        >
-          Add new contact to address book
-        </button>
-      ) : (
-        ""
+      {addresses.length === 0 && (
+        <div className={style.resultText}>No record found</div>
       )}
     </HeaderLayout>
   );

@@ -17,7 +17,6 @@ const User: React.FC<{
   const handleClick = () => {
     history.push(`/chat/${contact}`);
   };
-
   const decryptMsg = async (
     chainId: string,
     contents: string,
@@ -66,7 +65,6 @@ export const Users: React.FC<{
           const contactAddressBookName = addresses.find(
             (entry) => entry.address === contact
           )?.name;
-
           return (
             <User
               key={index}

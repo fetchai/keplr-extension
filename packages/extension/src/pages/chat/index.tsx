@@ -26,6 +26,7 @@ import newChatIcon from "../../public/assets/icon/new-chat.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
+import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { Users } from "./users";
@@ -34,6 +35,7 @@ import { Users } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
+  
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -61,25 +63,44 @@ const ChatView = () => {
 
   const [userChats, setUserChats] = useState<MessageMap>({});
   const [inputVal, setInputVal] = useState("");
+  const [openDialog,setIsOpendialog] = useState(false);
+  const [initialChats, setInitialChats] = useState<MessageMap>({});
+
   const requester = new InExtensionMessageRequester();
 
-  useEffect(() => {
-    const setJWTAndRegisterMsgPubKey = async () => {
-      const res = await getJWT(current.chainId, AUTH_SERVER);
+  const registerAndSetMessagePubKey = async () => {
+    try {
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
-        new RegisterPublicKey(current.chainId, res, walletAddress)
+        new RegisterPublicKey(current.chainId, userState.accessToken, walletAddress)
       );
-      console.log("messagingPubKey", messagingPubKey);
+
       store.dispatch(setMessagingPubKey(messagingPubKey));
+      setIsOpendialog(false);
+    } catch (e) {
+      // Show error toaster
+      console.error("error", e)
+      setIsOpendialog(false);
+      // Redirect to home
+      history.replace("/");
+    }
+  }
+
+  useEffect(() => {
+    const setJWTAndFetchMsgPubKey = async () => {
+      const res = await getJWT(current.chainId, AUTH_SERVER);
       store.dispatch(setAccessToken(res));
+
+      const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
+      if (!pubKey) return setIsOpendialog(true);
+
+      store.dispatch(setMessagingPubKey(pubKey));
     };
-    if (walletAddress) setJWTAndRegisterMsgPubKey();
+
+    setJWTAndFetchMsgPubKey();
   }, [
     current.chainId,
     requester,
-    userState.accessToken.length,
-    userState.messagingPubKey,
     walletAddress,
   ]);
 
@@ -96,9 +117,11 @@ const ChatView = () => {
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-    setUserChats(userLastMessages);
+    if (Object.keys(initialChats).length === 0) {
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
   }, [messages]);
-
   const fillUserChats = () => {
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
@@ -154,7 +177,6 @@ const ChatView = () => {
   const addresses = addressBookConfig.addressBookDatas.map((data) => {
     return { name: data.name, address: data.address };
   });
-
   return (
     <HeaderLayout
       showChainName={true}
@@ -163,9 +185,9 @@ const ChatView = () => {
       rightRenderer={<SwitchUser />}
     >
       <div className={style.chatContainer}>
-        {/* {!user.accessToken && (
+        {(openDialog && userState.accessToken.length > 0) && (
           <div className={style.popupContainer}>
-            <img src={chatIcon} />
+            {/* <img src={chatIcon} /> */}
             <br />
             <div className={style.infoContainer}>
               <h3>We have just added Chat!</h3>
@@ -188,33 +210,18 @@ const ChatView = () => {
                 </label>
                 <br />
               </form>
-              <p>These settings can be changed at any time from the settings menu.</p>
+              <p>
+                These settings can be changed at any time from the settings
+                menu.
+              </p>
             </div>
             <button
               type="button"
-              onClick={async () => {
-                try {
-                  const res = await getJWT(
-                    current.chainId,
-                    {
-                      address: walletAddress,
-                      pubkey: toHex(pubKey),
-                    },
-                    "https://auth-attila.sandbox-london-b.fetch-ai.com"
-                  );
-
-                  // dispatch(tokenStatus(true))
-                  store.dispatch(setAccessToken(res));
-                  setIsOpen(false);
-                  history.replace("/chat");
-                } catch (e: any) {
-                  console.log(e.message);
-                }
-              }}>
+              onClick={registerAndSetMessagePubKey}>
               Continue
             </button>
           </div>
-        )} */}
+        )}
 
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
