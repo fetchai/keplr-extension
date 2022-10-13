@@ -9,19 +9,23 @@
   border-radius: 6px;
   flex-direction: row;
 }
+
 .backBtn {
   flex-basis: 25px;
   width: 24px;
   height: 24px;
 }
+
 .more {
   float: right;
   transform: rotate(90deg);
 }
+
 .send-message-inputArea {
-  height: 32px;
+  // height: 32px;
   outline: none !important;
 }
+
 .recieverName {
   text-align: center;
   font-size: 16px;
@@ -31,27 +35,36 @@
   position: relative;
   margin-left: 5px;
 }
+
 .send-message-icon {
   margin-right: 5px;
   cursor: pointer;
 }
-.messages {
-  height: 63vh;
+
+.chatArea {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: clip;
-  margin-right: -12px;
-  margin-bottom: 10px;
-  scroll-behavior: smooth;
-  p {
-    width: 320px;
-    text-align: center;
-    font-size: 14px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #525f7f;
+  height: 70vh;
+
+  .messages {
+    height: 63vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: clip;
+    margin-right: -12px;
+    margin-bottom: 10px;
+    scroll-behavior: smooth;
+
+    p {
+      width: 320px;
+      text-align: center;
+      font-size: 14px;
+      margin: auto;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #525f7f;
+    }
   }
 }
 
@@ -66,9 +79,13 @@
 
   .inputArea {
     width: 343px;
-    padding: 10px;
+    padding: 4.5px 10px;
     border-radius: 5px;
+    height: 33px;
+    resize: none;
+    border: 0px;
   }
+
   .inputArea:focus {
     outline: solid #11b4ff 0.5px;
   }
@@ -89,15 +106,18 @@
   // position: absolute;
   // background-color: #F2F3F6;
   width: inherit;
+
   p {
     font-size: 14px;
     color: #808da0;
     text-align: center;
   }
+
   .buttons {
     display: flex;
     flex-direction: row;
     justify-content: center;
+
     button {
       padding: 15px 20px;
       margin-right: 5px;
@@ -121,6 +141,7 @@
   top: 105px;
   z-index: 2;
   cursor: pointer;
+
   button {
     border: none;
     padding: 5px;
@@ -129,9 +150,11 @@
     background-color: #ffffff;
     cursor: pointer;
   }
+
   div {
     padding: 5px;
   }
+
   div:hover {
     background-color: #c9d4e4;
   }
@@ -147,6 +170,7 @@
   padding-bottom: 10px;
   cursor: pointer;
   top: 30%;
+
   // display: flex;
   // flex-direction: column;
   // padding: 0px 20px;
@@ -157,22 +181,26 @@
     margin: 10px 0 0 0;
     font-size: 18px;
   }
+
   .textContainer {
     text-align: left;
     padding: 0 15px;
     font-size: 14px;
     color: #808da0;
     width: 280px;
+
     label {
       margin-left: 10px;
     }
   }
+
   .header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-bottom: solid #dee2e6 2px;
     align-items: center;
+
     img {
       width: 8px;
       height: 8px;
@@ -188,6 +216,7 @@
   justify-content: flex-end;
   padding: 10px;
   border-top: solid #dee2e6 2px;
+
   button {
     margin-left: 8px;
     padding: 10px 15px;
@@ -197,10 +226,12 @@
     background-color: #ffffff;
     cursor: pointer;
   }
+
   .btn {
     color: #ffffff;
     background-color: #3b82f6;
   }
+
 }
 .contactsContainer {
   .displayText {
@@ -227,3 +258,4 @@
     font-weight: 600;
   }
 }
+

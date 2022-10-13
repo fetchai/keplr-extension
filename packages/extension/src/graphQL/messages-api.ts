@@ -6,6 +6,7 @@ import {
   setBlockedUser,
   setUnblockedUser,
   updateAuthorMessages,
+  updateSenderMessages,
 } from "../chatStore/messages-slice";
 import { encryptAllData } from "../utils/encrypt-message";
 import { client, createWSLink, httpLink } from "./client";
@@ -121,8 +122,15 @@ export const deliverMessages = async (
               Authorization: `Bearer ${state.user.accessToken}`,
             },
           },
-        });
-      return data;
+
+        })
+      
+      if (data?.dispatchMessages?.length > 0) {
+        store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
+        return data;
+      }
+      return null;
+    
     }
   } catch (e) {
     console.log(e);
@@ -159,6 +167,7 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
+        console.log("message recieved", data);
         store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
       },
       error(err) {

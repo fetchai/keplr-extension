@@ -33,6 +33,11 @@ export const messagesSlice = createSlice({
       state[sender].messages[id] = action.payload;
       state[sender].lastMessage = action.payload;
     },
+    updateSenderMessages: (state: any, action: PayloadAction<Message>) => {
+      const { target, id } = action.payload;
+      state[target].messages[id] = action.payload;
+      state[target].lastMessage = action.payload;
+    },
     setAuthorPubKey: (state, action: PayloadAction<PubKey>) => {
       const { contact, value } = action.payload;
       state[contact].pubKey = value;
@@ -73,6 +78,7 @@ export const messagesSlice = createSlice({
 export const {
   addMessageList,
   updateAuthorMessages,
+  updateSenderMessages,
   setAuthorPubKey,
   setBlockedList,
   setBlockedUser,

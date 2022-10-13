@@ -54,31 +54,37 @@ export interface NameAddress {
 
 export const Users: React.FC<{
   chainId: string;
-  userChats: MessageMap;
+  userChats: MessageMap | undefined;
   addresses: NameAddress[];
 }> = ({ chainId, userChats, addresses }) => {
   return (
     <div className={style.messagesContainer}>
-      {Object.keys(userChats).length ? (
-        Object.keys(userChats).map((contact, index) => {
-          // translate the contact address into the address book name if it exists
-          const contactAddressBookName = addresses.find(
-            (entry) => entry.address === contact
-          )?.name;
-          return (
-            <User
-              key={index}
-              chat={userChats[contact]}
-              contact={contact}
-              contactName={contactAddressBookName ?? formatAddress(contact)}
-              chainId={chainId}
-            />
-          );
-        })
+
+      {userChats ? (
+        Object.keys(userChats).length ? (
+          Object.keys(userChats).map((contact, index) => {
+            // translate the contact address into the address book name if it exists
+            const contactAddressBookName = addresses.find(
+              (entry) => entry.address === contact
+            )?.name;
+            return (
+              <User
+                key={index}
+                chat={userChats[contact]}
+                contact={contact}
+                contactName={contactAddressBookName ?? formatAddress(contact)}
+                chainId={chainId}
+              />
+            );
+          })
+        ) : (
+          <div>
+            <div className={style.resultText}>No result found</div>
+          </div>
+        )
+
       ) : (
-        <div>
-          <div className={style.resultText}>No result found</div>
-        </div>
+        <div className={style.resultText}>Loading Chat History</div>
       )}
     </div>
   );
