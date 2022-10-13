@@ -67,8 +67,6 @@ const ChatView = () => {
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
 
-
-
   const requester = new InExtensionMessageRequester();
 
   const registerAndSetMessagePubKey = async () => {
@@ -92,12 +90,10 @@ const ChatView = () => {
     } finally {
       setIsOpendialog(false);
       setLoadingChats(false);
-
     }
   };
 
   useEffect(() => {
-
     if (
       userState?.accessToken.length &&
       userState?.messagingPubKey.length &&
@@ -123,7 +119,6 @@ const ChatView = () => {
       if (!pubKey) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
-
 
       setLoadingChats(false);
     };

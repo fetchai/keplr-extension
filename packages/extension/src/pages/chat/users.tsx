@@ -59,7 +59,6 @@ export const Users: React.FC<{
 }> = ({ chainId, userChats, addresses }) => {
   return (
     <div className={style.messagesContainer}>
-
       {userChats ? (
         Object.keys(userChats).length ? (
           Object.keys(userChats).map((contact, index) => {
@@ -82,7 +81,6 @@ export const Users: React.FC<{
             <div className={style.resultText}>No result found</div>
           </div>
         )
-
       ) : (
         <div className={style.resultText}>Loading Chat History</div>
       )}
