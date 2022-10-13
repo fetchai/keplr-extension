@@ -250,7 +250,6 @@ export const ChatSection: FunctionComponent = () => {
               Add
             </button>
             <button>Block</button>
-            <button>Report Spam </button>
           </div>
         </div>
       )}

@@ -83,7 +83,12 @@
       }
     }
   }
-
+  .loading {
+    text-align: center;
+    color: #808da0;
+    font-size: 18px;
+    padding-top: 15px;
+  }
   .messagesContainer {
     margin-top: 20px;
     display: flex;
