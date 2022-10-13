@@ -114,6 +114,12 @@ const ChatView = () => {
   ]);
 
   useEffect(() => {
+    if (userState?.accessToken.length && userState?.messagingPubKey) {
+      fetchBlockList();
+    }
+  }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
+
+  useEffect(() => {
     const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;

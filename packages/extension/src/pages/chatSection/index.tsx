@@ -30,7 +30,7 @@ import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
-import TextareaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from "react-textarea-autosize";
 // import ScrollToBottom from 'react-scroll-to-bottom';
 
 export let openValue = true;
@@ -123,23 +123,14 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await deliverMessages(
+      const message = await deliverMessages(
         user.accessToken,
         current.chainId,
         newMessage,
         accountInfo.bech32Address,
         userName
       );
-      if (data?.dispatchMessages?.length > 0) {
-        const newMessages = [...messages];
-        newMessages.push({
-          ...data.dispatchMessages[0],
-          sender: accountInfo.bech32Address,
-          target: userName,
-        });
-        setMessages(newMessages);
-        setNewMessage("");
-      }
+      if (message) setNewMessage("");
     } catch (error) {
       console.log("failed to send : ", error);
     }
