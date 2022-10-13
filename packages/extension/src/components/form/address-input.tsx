@@ -27,7 +27,6 @@ import {
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { ObservableEnsFetcher } from "@keplr-wallet/ens";
-import { useHistory } from "react-router";
 
 export interface AddressInputProps {
   recipientConfig: IRecipientConfig;
@@ -42,7 +41,7 @@ export interface AddressInputProps {
   disabled?: boolean;
   // TODO(!!!): Not sure what is going on here, but have fixed the types only
   //            (was not originally in the type definition)
-  value?: string;
+  value: string;
 }
 
 export const AddressInput: FunctionComponent<AddressInputProps> = observer(
@@ -58,7 +57,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
   }) => {
     const intl = useIntl();
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
-    const [searchedAddressValue, setSearchedAddressValue] = useState('');
+    const [searchedAddressValue, setSearchedAddressValue] = useState("");
 
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -69,12 +68,12 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     const isENSAddress = ObservableEnsFetcher?.isValidENS(
       recipientConfig.rawRecipient
     );
-    useEffect(()=>{
-      if(value){
+    useEffect(() => {
+      if (value) {
         recipientConfig.setRawRecipient(value);
         setSearchedAddressValue(value);
       }
-    },[value])
+    }, [value]);
     const error = recipientConfig.getError();
     const errorText: string | undefined = useMemo(() => {
       if (error) {
@@ -156,9 +155,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={
-                searchedAddressValue
-              }
+              value={searchedAddressValue}
               onChange={(e) => {
                 handleSearchInputChange(e);
               }}

@@ -183,13 +183,10 @@ export const ChatSection: FunctionComponent = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages.length]);
+
   const isNewUser = (): boolean => {
-    console.log("new user",addresses.some((item) => item.address !== userName));
-    
-    return (
-      addresses.filter((item) => item.address === userName).length==0 &&
-      messages.length === 0
-    );
+    const addressExists = addresses.find((item) => item.address === userName);
+    return !Boolean(addressExists) && messages.length === 0;
   };
 
   return (
@@ -232,24 +229,31 @@ export const ChatSection: FunctionComponent = () => {
         setShowDropdown={setShowDropdown}
         blocked={oldMessages.isBlocked}
       />
-        
-    {isNewUser() && <div className={style.contactsContainer}>
-        <div className={style.displayText}>This contact is not saved in your address book</div>
-        <div className={style.buttons}>
-          <button onClick={()=>
-           history.push({
-            pathname: '/setting/address-book',
-            state:{
-              modalState:true,
-              addressInputValue:userName
-            } ,
-          })
-          }>Add</button>
-          <button>Block</button>
-          <button>Report Spam </button>
+
+      {isNewUser() && (
+        <div className={style.contactsContainer}>
+          <div className={style.displayText}>
+            This contact is not saved in your address book
+          </div>
+          <div className={style.buttons}>
+            <button
+              onClick={() =>
+                history.push({
+                  pathname: "/setting/address-book",
+                  state: {
+                    openModal: true,
+                    addressInputValue: userName,
+                  },
+                })
+              }
+            >
+              Add
+            </button>
+            <button>Block</button>
+            <button>Report Spam </button>
+          </div>
         </div>
-      </div>
-      }
+      )}
       <div className={style.messages}>
         <p>
           Messages are end to end encrypted. Nobody else can read them except

@@ -29,6 +29,14 @@ import {
 } from "@keplr-wallet/hooks";
 import { EthereumEndpoint } from "../../../config.ui";
 
+export interface chatSectionParams {
+  openModal: boolean;
+  addressInputValue: string;
+}
+export const defaultParamValues: chatSectionParams = {
+  openModal: false,
+  addressInputValue: "",
+};
 export const AddressBookPage: FunctionComponent<{
   onBackButton?: () => void;
   hideChainDropdown?: boolean;
@@ -36,21 +44,14 @@ export const AddressBookPage: FunctionComponent<{
   ibcChannelConfig?: IIBCChannelConfig;
   isInTransaction?: boolean;
 }> = observer(
-  ({
-    onBackButton,
-    hideChainDropdown,
-    selectHandler,
-    ibcChannelConfig,
-
-  }) => {
+  ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
     const intl = useIntl();
     const history = useHistory();
     const { chainStore } = useStore();
     const current = chainStore.current;
     const location = useLocation();
-    console.log("location",location);
-    const modalValues=location?.state
-    
+    const chatSectionParams =
+      (location.state as chatSectionParams) || defaultParamValues;
     const [selectedChainId, setSelectedChainId] = useState(
       ibcChannelConfig?.channel
         ? ibcChannelConfig.channel.counterpartyChainId
@@ -88,19 +89,18 @@ export const AddressBookPage: FunctionComponent<{
     //            going on here and there was no typing information for me to
     //            work with
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
-      modalValues?.modalState|| false
+      chatSectionParams.openModal || false
     );
     const [addAddressModalIndex, setAddAddressModalIndex] = useState(-1);
 
     const confirm = useConfirm();
-    const closeModal=()=>{
-      if(modalValues?.modalState){
+    const closeModal = () => {
+      if (chatSectionParams.openModal) {
         history.goBack();
       }
       setAddAddressModalOpen(false);
       setAddAddressModalIndex(-1);
-
-    }
+    };
     const addressBookIcons = (index: number) => {
       return [
         <i
@@ -179,7 +179,6 @@ export const AddressBookPage: FunctionComponent<{
               addressBookConfig={addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
-              
             />
           </ModalBody>
         </Modal>
