@@ -62,6 +62,7 @@ const ChatView = () => {
   );
 
   const [userChats, setUserChats] = useState<MessageMap | undefined>();
+  const [loadingChats, setLoadingChats] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
@@ -69,6 +70,7 @@ const ChatView = () => {
   const requester = new InExtensionMessageRequester();
 
   const registerAndSetMessagePubKey = async () => {
+    setLoadingChats(true);
     try {
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
@@ -78,20 +80,37 @@ const ChatView = () => {
           walletAddress
         )
       );
-
       store.dispatch(setMessagingPubKey(messagingPubKey));
-      setIsOpendialog(false);
     } catch (e) {
       // Show error toaster
       console.error("error", e);
-      setIsOpendialog(false);
       // Redirect to home
       history.replace("/");
+    } finally {
+      setIsOpendialog(false);
+      setLoadingChats(false);
     }
   };
 
   useEffect(() => {
+    if (
+      userState?.accessToken.length &&
+      userState?.messagingPubKey.length &&
+      walletAddress
+    ) {
+      messageListener();
+      recieveMessages(walletAddress);
+      fetchBlockList();
+    }
+  }, [
+    userState.accessToken.length,
+    userState.messagingPubKey.length,
+    walletAddress,
+  ]);
+
+  useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
+      setLoadingChats(true);
       const res = await getJWT(current.chainId, AUTH_SERVER);
       store.dispatch(setAccessToken(res));
 
@@ -99,14 +118,17 @@ const ChatView = () => {
       if (!pubKey) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
-      messageListener();
-      recieveMessages(walletAddress);
-      fetchBlockList();
+
+      setLoadingChats(false);
     };
-    if (!userState?.accessToken.length || !userState?.messagingPubKey.length)
+    if (
+      (!userState.accessToken.length || !userState.messagingPubKey.length) &&
+      !loadingChats
+    )
       setJWTAndFetchMsgPubKey();
   }, [
     current.chainId,
+    loadingChats,
     requester,
     userState.accessToken.length,
     userState.messagingPubKey.length,
@@ -114,21 +136,15 @@ const ChatView = () => {
   ]);
 
   useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey) {
-      fetchBlockList();
-    }
-  }, [userState.accessToken, userState.messagingPubKey, walletAddress]);
-
-  useEffect(() => {
     const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-    if (Object.keys(initialChats).length === 0) {
+    if (Object.keys(initialChats).length !== Object.keys(messages).length) {
       setUserChats(userLastMessages);
       setInitialChats(userLastMessages);
     }
-  }, [messages]);
+  }, [initialChats, messages]);
   const fillUserChats = () => {
     const userLastMessages: any = {};
     Object.keys(messages).map((contact: string) => {
@@ -241,11 +257,15 @@ const ChatView = () => {
             <img src={newChatIcon} alt="" />
           </div>
         </div>
-        <Users
-          chainId={current.chainId}
-          userChats={userChats}
-          addresses={addresses}
-        />
+        {loadingChats ? (
+          <div>Fetching Details. Please Wait ...</div>
+        ) : (
+          <Users
+            chainId={current.chainId}
+            userChats={userChats}
+            addresses={addresses}
+          />
+        )}
       </div>
     </HeaderLayout>
   );
