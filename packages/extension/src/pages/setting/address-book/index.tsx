@@ -85,9 +85,6 @@ export const AddressBookPage: FunctionComponent<{
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
 
-    // TODO(!!!): This code needs reworking. Was not immediately clear what was
-    //            going on here and there was no typing information for me to
-    //            work with
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
       chatSectionParams.openModal || false
     );
