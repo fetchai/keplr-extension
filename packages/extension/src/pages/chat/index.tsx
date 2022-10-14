@@ -31,6 +31,7 @@ import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { NameAddress, Users } from "./users";
+import loadingChatGif from "../../public/assets/chat-loading.gif";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -324,8 +325,8 @@ const ChatView = () => {
           </div>
         </div>
 
-        {loadingChats ? (
-          <div>Fetching Details. Please Wait ...</div>
+        {loadingChats || !userChats ? (
+          <ChatLoading />
         ) : (
           <Users
             chainId={current.chainId}
@@ -338,6 +339,20 @@ const ChatView = () => {
   );
 };
 
+const ChatLoading = () => {
+  return (
+    <div
+      style={{
+        textAlign: "center",
+        margin: "140px 0px",
+      }}
+    >
+      <img src={loadingChatGif} width={100} />
+      <br />
+      Loading Chats. Please Wait
+    </div>
+  );
+};
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;
 };

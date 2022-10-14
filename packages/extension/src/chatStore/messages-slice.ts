@@ -35,6 +35,12 @@ export const messagesSlice = createSlice({
     },
     updateSenderMessages: (state: any, action: PayloadAction<Message>) => {
       const { target, id } = action.payload;
+      if (!state[target]) {
+        state[target] = {
+          messages: {},
+          lastMessage: {},
+        };
+      }
       state[target].messages[id] = action.payload;
       state[target].lastMessage = action.payload;
     },
