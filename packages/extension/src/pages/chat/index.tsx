@@ -66,7 +66,11 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
-  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
+  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(
+    userState?.messagingPubKey.privacySetting ? 
+      userState?.messagingPubKey.privacySetting
+      : PrivacySetting.Everybody
+  );
 
   const requester = new InExtensionMessageRequester();
 
@@ -229,7 +233,6 @@ const ChatView = () => {
     }
   };
 
-  // TODO: better design
   if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
     return (
       <HeaderLayout

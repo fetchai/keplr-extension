@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { userMessages } from "../../../chatStore/messages-slice";
 import { fetchBlockList } from "../../../graphQL/messages-api";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 
 export const ChatSettings: FunctionComponent = observer(() => {
   // const language = useLanguage();
@@ -39,11 +40,12 @@ export const ChatSettings: FunctionComponent = observer(() => {
       store.dispatch(setAccessToken(res));
 
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
-      if (!pubKey) {
+      store.dispatch(setMessagingPubKey(pubKey));
+
+      if (!pubKey?.publicKey || pubKey.privacySetting === PrivacySetting.Nobody) {
         setChatPubKeyExists(false);
         return setLoadingChatSettings(false);
       }
-      store.dispatch(setMessagingPubKey(pubKey));
       fetchBlockList();
       setLoadingChatSettings(false);
     };
@@ -59,6 +61,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
     userState.messagingPubKey.length,
     walletAddress,
   ]);
+  
   return (
     <HeaderLayout
       showChainName={false}
@@ -84,17 +87,14 @@ export const ChatSettings: FunctionComponent = observer(() => {
               : "Please Activate Chat Functionality to Proceed"
           }
           onClick={() => {
-            if (
-              Object.values(messages).filter((user: any) => user.isBlocked)
-                .length
-            )
+            if (chatPubKeyExists)
               history.push({
                 pathname: "/setting/chat/block",
               });
           }}
           icons={useMemo(
-            () => [<i key="next" className="fas fa-chevron-right" />],
-            []
+            () => !loadingChatSettings && chatPubKeyExists ? [ <i key="next" className="fas fa-chevron-right" />] : [],
+            [chatPubKeyExists, loadingChatSettings]
           )}
         />
         <PageButton
@@ -104,17 +104,17 @@ export const ChatSettings: FunctionComponent = observer(() => {
           paragraph={intl.formatMessage({
             id: "setting.privacy.paragraph",
           })}
-          // onClick={() => {
-          //   history.push({
-          //     pathname: "/setting/block",
-          //   });
-          // }}
+          onClick={() => {
+            history.push({
+              pathname: "/setting/block",
+            });
+          }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
             []
           )}
         />
-        <PageButton
+        {/* <PageButton
           title={intl.formatMessage({
             id: "setting.receipts",
           })}
@@ -130,7 +130,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             () => [<i key="next" className="fas fa-chevron-right" />],
             []
           )}
-        />
+        /> */}
       </div>
     </HeaderLayout>
   );
