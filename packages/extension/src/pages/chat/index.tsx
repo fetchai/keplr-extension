@@ -24,6 +24,7 @@ import { fetchBlockList, messageListener } from "../../graphQL/messages-api";
 import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
 import newChatIcon from "../../public/assets/icon/new-chat.png";
+import privacyIcon from "../../public/assets/hello.png";
 import searchIcon from "../../public/assets/icon/search.png";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
@@ -66,7 +67,10 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
-  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
+  const [
+    selectedPrivacySetting,
+    setSelectedPrivacySetting,
+  ] = useState<PrivacySetting>(PrivacySetting.Everybody);
 
   const requester = new InExtensionMessageRequester();
 
@@ -120,7 +124,8 @@ const ChatView = () => {
       store.dispatch(setAccessToken(res));
 
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
-      if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting) return setIsOpendialog(true);
+      if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
+        return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
       setLoadingChats(false);
@@ -145,13 +150,22 @@ const ChatView = () => {
   ]);
 
   useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey && userState?.messagingPubKey.publicKey && userState?.messagingPubKey.privacySetting) {
+    if (
+      userState?.accessToken.length &&
+      userState?.messagingPubKey &&
+      userState?.messagingPubKey.publicKey &&
+      userState?.messagingPubKey.privacySetting
+    ) {
       messageListener();
       recieveMessages(walletAddress);
       fetchBlockList();
     }
-  }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
-
+  }, [
+    userState.accessToken,
+    userState.messagingPubKey.publicKey,
+    userState.messagingPubKey.privacySetting,
+    walletAddress,
+  ]);
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
@@ -179,7 +193,8 @@ const ChatView = () => {
       if (
         userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
         !addresses[contact]
-      ) return;
+      )
+        return;
 
       userLastMessages[contact] = messages[contact].lastMessage;
     });
@@ -195,7 +210,8 @@ const ChatView = () => {
       if (
         userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
         !addresses[contact]
-      ) return;
+      )
+        return;
 
       userLastMessages[contact] = messages[contact].lastMessage;
     });
@@ -215,16 +231,16 @@ const ChatView = () => {
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
         const found = Object.keys(addresses).some(
           (address) =>
-            (
-              addresses[address].toLowerCase().includes(value.toLowerCase()) ||
-              address.toLowerCase().includes(value.toLowerCase())
-            ) &&
+            (addresses[address].toLowerCase().includes(value.toLowerCase()) ||
+              address.toLowerCase().includes(value.toLowerCase())) &&
             address == contact
         );
         return (
-          userState?.messagingPubKey.privacySetting === PrivacySetting.Everybody &&
-          contact.toLowerCase().includes(value.toLowerCase())
-        ) || found;
+          (userState?.messagingPubKey.privacySetting ===
+            PrivacySetting.Everybody &&
+            contact.toLowerCase().includes(value.toLowerCase())) ||
+          found
+        );
       });
 
       const tempChats: any = {};
@@ -239,17 +255,20 @@ const ChatView = () => {
   };
 
   // TODO: better design
-  if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
+  if (
+    userState.messagingPubKey.privacySetting &&
+    userState.messagingPubKey.privacySetting === PrivacySetting.Nobody
+  ) {
     return (
       <HeaderLayout
-      showChainName={true}
-      canChangeChainInfo={true}
-      menuRenderer={<Menu />}
-      rightRenderer={<SwitchUser />}
-    >
-      <div>Chat deactivated</div>
-    </HeaderLayout>
-    )
+        showChainName={true}
+        canChangeChainInfo={true}
+        menuRenderer={<Menu />}
+        rightRenderer={<SwitchUser />}
+      >
+        <div>Chat deactivated</div>
+      </HeaderLayout>
+    );
   }
 
   return (
@@ -262,38 +281,44 @@ const ChatView = () => {
       <div className={style.chatContainer}>
         {openDialog && userState.accessToken.length > 0 && (
           <div className={style.popupContainer}>
-            {/* <img src={chatIcon} /> */}
+            <img src={privacyIcon} />
             <br />
             <div className={style.infoContainer}>
               <h3>We have just added Chat!</h3>
               <p>Now you can chat with other active wallets.</p>
               <p>Select who can send you messages</p>
               <form>
-                <input 
+                <input
                   type="radio"
                   value={PrivacySetting.Everybody}
                   checked={selectedPrivacySetting === PrivacySetting.Everybody}
-                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                  onChange={(e) =>
+                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
+                  }
                 />
                 <label htmlFor="option1" className={style["options-label"]}>
                   Everybody
                 </label>
                 <br />
-                <input 
+                <input
                   type="radio"
                   value={PrivacySetting.Contacts}
                   checked={selectedPrivacySetting === PrivacySetting.Contacts}
-                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                  onChange={(e) =>
+                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
+                  }
                 />
                 <label htmlFor="option2" className={style["options-label"]}>
                   Only contacts in address book
                 </label>
                 <br />
-                <input 
+                <input
                   type="radio"
                   value={PrivacySetting.Nobody}
                   checked={selectedPrivacySetting === PrivacySetting.Nobody}
-                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                  onChange={(e) =>
+                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
+                  }
                 />
                 <label htmlFor="option3" className={style["options-label"]}>
                   Nobody
