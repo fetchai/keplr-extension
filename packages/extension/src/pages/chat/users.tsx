@@ -48,23 +48,20 @@ const User: React.FC<{
 };
 
 export interface NameAddress {
-  name: string;
-  address: string;
+  [key: string]: string;
 }
 
 export const Users: React.FC<{
   chainId: string;
   userChats: MessageMap;
-  addresses: NameAddress[];
+  addresses: NameAddress;
 }> = ({ chainId, userChats, addresses }) => {
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
         Object.keys(userChats).map((contact, index) => {
           // translate the contact address into the address book name if it exists
-          const contactAddressBookName = addresses.find(
-            (entry) => entry.address === contact
-          )?.name;
+          const contactAddressBookName = addresses[contact];
           return (
             <User
               key={index}

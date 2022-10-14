@@ -150,7 +150,7 @@ export const ChatSection: FunctionComponent = () => {
         current.chainId,
         userName
       );
-      setTargetPubKey(pubAddr || "");
+      setTargetPubKey(pubAddr?.publicKey || "");
     };
     if (!oldMessages?.pubKey?.length) {
       setPublicAddress();

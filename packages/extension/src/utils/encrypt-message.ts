@@ -75,9 +75,13 @@ export async function encryptToEnvelope(
     new GetMessagingPublicKey(chainId, accessToken, targetAddress)
   );
 
+  if (!senderPublicKey.publicKey || !targetPublicKey.publicKey) {
+    throw new Error('Public key not available');
+  }
+
   const message: MessagePrimitive = {
-    sender: senderPublicKey, //public key
-    target: targetPublicKey, // public key
+    sender: senderPublicKey.publicKey, //public key
+    target: targetPublicKey.publicKey, // public key
     type: 1, //private_message
     content: {
       text: messageStr,
@@ -120,8 +124,8 @@ export async function encryptToEnvelope(
   );
   return {
     data: encodedData,
-    senderPublicKey,
-    targetPublicKey,
+    senderPublicKey: senderPublicKey.publicKey,
+    targetPublicKey: targetPublicKey.publicKey,
     signature,
     channelId: MESSAGE_CHANNEL_ID,
   };

@@ -1,4 +1,5 @@
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
@@ -29,9 +30,8 @@ import { getJWT } from "../../utils/auth";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { Users } from "./users";
+import { NameAddress, Users } from "./users";
 import loadingChatGif from "../../public/assets/chat-loading.gif";
-// import {getPubKey, registerPubKey} from "@keplr-wallet/background/build/messaging/memorandum-client";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -66,6 +66,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
+  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
 
   const requester = new InExtensionMessageRequester();
 
@@ -77,7 +78,8 @@ const ChatView = () => {
         new RegisterPublicKey(
           current.chainId,
           userState.accessToken,
-          walletAddress
+          walletAddress,
+          selectedPrivacySetting
         )
       );
 
@@ -96,6 +98,7 @@ const ChatView = () => {
   useEffect(() => {
     if (
       userState?.accessToken.length &&
+      userState?.messagingPubKey.privacySetting &&
       userState?.messagingPubKey.length &&
       walletAddress
     ) {
@@ -105,7 +108,8 @@ const ChatView = () => {
     }
   }, [
     userState.accessToken.length,
-    userState.messagingPubKey.length,
+    userState.messagingPubKey.publicKey,
+    userState.messagingPubKey.privacySetting,
     walletAddress,
   ]);
 
@@ -116,44 +120,38 @@ const ChatView = () => {
       store.dispatch(setAccessToken(res));
 
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
-      if (!pubKey) return setIsOpendialog(true);
+      if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting) return setIsOpendialog(true);
 
       store.dispatch(setMessagingPubKey(pubKey));
-
       setLoadingChats(false);
     };
+
     if (
-      (!userState.accessToken.length || !userState.messagingPubKey.length) &&
+      !userState?.messagingPubKey.publicKey &&
+      !userState?.messagingPubKey.privacySetting &&
+      !userState?.accessToken.length &&
       !loadingChats
-    )
+    ) {
       setJWTAndFetchMsgPubKey();
+    }
   }, [
     current.chainId,
     loadingChats,
     requester,
-    userState.accessToken.length,
-    userState.messagingPubKey.length,
     walletAddress,
+    userState.accessToken.length,
+    userState.messagingPubKey.publicKey,
+    userState.messagingPubKey.privacySetting,
   ]);
+
   useEffect(() => {
-    const userLastMessages: MessageMap = {};
-    Object.keys(messages).map((contact: string) => {
-      userLastMessages[contact] = messages[contact].lastMessage;
-    });
-
-    if (Object.keys(initialChats).length !== Object.keys(messages).length) {
-      setUserChats(userLastMessages);
-      setInitialChats(userLastMessages);
+    if (userState?.accessToken.length && userState?.messagingPubKey && userState?.messagingPubKey.publicKey && userState?.messagingPubKey.privacySetting) {
+      messageListener();
+      recieveMessages(walletAddress);
+      fetchBlockList();
     }
-  }, [initialChats, messages]);
+  }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
 
-  const fillUserChats = () => {
-    const userLastMessages: any = {};
-    Object.keys(messages).map((contact: string) => {
-      userLastMessages[contact] = messages[contact].lastMessage;
-    });
-    setUserChats(userLastMessages);
-  };
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
@@ -169,6 +167,41 @@ const ChatView = () => {
     }
   );
 
+  const addresses: NameAddress = {};
+
+  addressBookConfig.addressBookDatas.map((data) => {
+    addresses[data.address] = data.name;
+  });
+
+  useEffect(() => {
+    const userLastMessages: MessageMap = {};
+    Object.keys(messages).map((contact: string) => {
+      if (
+        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
+        !addresses[contact]
+      ) return;
+
+      userLastMessages[contact] = messages[contact].lastMessage;
+    });
+    if (Object.keys(initialChats).length === 0) {
+      setUserChats(userLastMessages);
+      setInitialChats(userLastMessages);
+    }
+  }, [messages]);
+
+  const fillUserChats = () => {
+    const userLastMessages: any = {};
+    Object.keys(messages).map((contact: string) => {
+      if (
+        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
+        !addresses[contact]
+      ) return;
+
+      userLastMessages[contact] = messages[contact].lastMessage;
+    });
+    setUserChats(userLastMessages);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputVal(value);
@@ -180,12 +213,18 @@ const ChatView = () => {
       });
 
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
-        const found = addresses.some(
-          (address: any) =>
-            address.name.toLowerCase().includes(value.toLowerCase()) &&
-            address.address == contact
+        const found = Object.keys(addresses).some(
+          (address) =>
+            (
+              addresses[address].toLowerCase().includes(value.toLowerCase()) ||
+              address.toLowerCase().includes(value.toLowerCase())
+            ) &&
+            address == contact
         );
-        return contact.toLowerCase().includes(value.toLowerCase()) || found;
+        return (
+          userState?.messagingPubKey.privacySetting === PrivacySetting.Everybody &&
+          contact.toLowerCase().includes(value.toLowerCase())
+        ) || found;
       });
 
       const tempChats: any = {};
@@ -199,9 +238,20 @@ const ChatView = () => {
     }
   };
 
-  const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  // TODO: better design
+  if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
+    return (
+      <HeaderLayout
+      showChainName={true}
+      canChangeChainInfo={true}
+      menuRenderer={<Menu />}
+      rightRenderer={<SwitchUser />}
+    >
+      <div>Chat deactivated</div>
+    </HeaderLayout>
+    )
+  }
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -219,17 +269,32 @@ const ChatView = () => {
               <p>Now you can chat with other active wallets.</p>
               <p>Select who can send you messages</p>
               <form>
-                <input type="radio" name="options" id="option1" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Everybody}
+                  checked={selectedPrivacySetting === PrivacySetting.Everybody}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option1" className={style["options-label"]}>
                   Everybody
                 </label>
                 <br />
-                <input type="radio" name="options" id="option2" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Contacts}
+                  checked={selectedPrivacySetting === PrivacySetting.Contacts}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option2" className={style["options-label"]}>
                   Only contacts in address book
                 </label>
                 <br />
-                <input type="radio" name="options" id="option3" />
+                <input 
+                  type="radio"
+                  value={PrivacySetting.Nobody}
+                  checked={selectedPrivacySetting === PrivacySetting.Nobody}
+                  onChange={(e) => setSelectedPrivacySetting(e.target.value as PrivacySetting)}
+                />
                 <label htmlFor="option3" className={style["options-label"]}>
                   Nobody
                 </label>

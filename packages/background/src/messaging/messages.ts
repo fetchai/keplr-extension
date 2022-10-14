@@ -1,7 +1,8 @@
 import { Message } from "@keplr-wallet/router";
 import { ROUTE } from "./constants";
+import { PrivacySetting, PubKey } from "./types";
 
-export class GetMessagingPublicKey extends Message<string> {
+export class GetMessagingPublicKey extends Message<PubKey> {
   public static type() {
     return "get-messaging-public-key";
   }
@@ -29,7 +30,7 @@ export class GetMessagingPublicKey extends Message<string> {
   }
 }
 
-export class RegisterPublicKey extends Message<string> {
+export class RegisterPublicKey extends Message<PubKey> {
   public static type() {
     return "register-public-key";
   }
@@ -37,7 +38,8 @@ export class RegisterPublicKey extends Message<string> {
   constructor(
     public readonly chainId: string,
     public readonly accessToken: string,
-    public readonly address: string
+    public readonly address: string,
+    public readonly privacySetting: PrivacySetting
   ) {
     super();
   }
