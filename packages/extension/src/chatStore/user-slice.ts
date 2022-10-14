@@ -5,12 +5,18 @@ export const userSlice = createSlice({
   initialState: {
     notifications: [],
     accessToken: "",
-    messagingPubKey: "",
+    messagingPubKey: {
+      publicKey: null,
+      privacySetting: null
+    },
   },
   reducers: {
     resetUser: (state, _action) => {
       state.notifications = [];
-      state.messagingPubKey = "";
+      state.messagingPubKey = {
+        publicKey: null,
+        privacySetting: null
+      };
       state.accessToken = "";
     },
     setNotifications: (state, action) => {

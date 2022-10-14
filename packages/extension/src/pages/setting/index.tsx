@@ -101,12 +101,10 @@ export const SettingPage: FunctionComponent = observer(() => {
           )}
         />
         <PageButton
-          title={intl.formatMessage({
-            id: "setting.export-to-mobile",
-          })}
+          title={"Chat"}
           onClick={() => {
             history.push({
-              pathname: "/setting/export-to-mobile",
+              pathname: "/setting/chat",
             });
           }}
           icons={useMemo(
