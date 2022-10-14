@@ -93,8 +93,8 @@ export const ChatSettings: FunctionComponent = observer(() => {
               });
           }}
           icons={useMemo(
-            () => !loadingChatSettings && chatPubKeyExists ? [ <i key="next" className="fas fa-chevron-right" />] : [],
-            [chatPubKeyExists, loadingChatSettings]
+            () => chatPubKeyExists ? [ <i key="next" className="fas fa-chevron-right" />] : [],
+            [chatPubKeyExists]
           )}
         />
         <PageButton
@@ -106,7 +106,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
           })}
           onClick={() => {
             history.push({
-              pathname: "/setting/block",
+              pathname: "/setting/chat/privacy",
             });
           }}
           icons={useMemo(

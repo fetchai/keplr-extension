@@ -70,6 +70,10 @@ export class MessagingService {
     const regPubKey = await this.lookupPublicKey(accessToken, address);
     if (!regPubKey.privacySetting || !regPubKey.publicKey || regPubKey.privacySetting !== privacySetting) {
       await registerPubKey(accessToken, pubKey, address, privacySetting, MESSAGE_CHANNEL_ID);
+      this._publicKeyCache.set(address, {
+        publicKey: pubKey,
+        privacySetting
+      });
     }
 
     return {
