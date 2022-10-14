@@ -99,7 +99,7 @@ const ChatView = () => {
     if (
       userState?.accessToken.length &&
       userState?.messagingPubKey.privacySetting &&
-      userState?.messagingPubKey.length &&
+      userState?.messagingPubKey.publicKey &&
       walletAddress
     ) {
       messageListener();
@@ -107,7 +107,7 @@ const ChatView = () => {
       fetchBlockList();
     }
   }, [
-    userState.accessToken.length,
+    userState.accessToken,
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
     walletAddress,
@@ -143,15 +143,6 @@ const ChatView = () => {
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
   ]);
-
-  useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey && userState?.messagingPubKey.publicKey && userState?.messagingPubKey.privacySetting) {
-      messageListener();
-      recieveMessages(walletAddress);
-      fetchBlockList();
-    }
-  }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
-
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
