@@ -152,3 +152,19 @@
     }
   }
 }
+
+.locked-inner-container {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+  color: #808da0;
+
+  .img-lock {
+    height: 120px;
+    margin-bottom: 20px;
+  }
+}

@@ -233,13 +233,25 @@ const ChatView = () => {
   if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
     return (
       <HeaderLayout
-      showChainName={true}
-      canChangeChainInfo={true}
-      menuRenderer={<Menu />}
-      rightRenderer={<SwitchUser />}
-    >
-      <div>Chat deactivated</div>
-    </HeaderLayout>
+        
+        showChainName={true}
+        canChangeChainInfo={true}
+        menuRenderer={<Menu />}
+        rightRenderer={<SwitchUser />}
+      >
+        <div className={style.lockedInnerContainer}>
+          <img
+            className={style.imgLock}
+            src={require("../../public/assets/img/icons8-lock.svg")}
+            alt="lock"
+          />
+
+          <div>
+            Chat is <b>deactivated</b> based on your current chat privacy settings.
+            Please change your chat privacy settings to use this feature.
+          </div>
+        </div>
+      </HeaderLayout>
     )
   }
 
