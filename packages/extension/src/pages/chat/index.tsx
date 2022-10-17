@@ -334,6 +334,7 @@ const ChatView = () => {
           </div>
         )}
 
+        <div className={style.title}>Chats</div>
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
             <img src={searchIcon} alt="search" />

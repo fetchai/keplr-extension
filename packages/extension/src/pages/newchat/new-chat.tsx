@@ -188,7 +188,7 @@ export const NewChat: FunctionComponent = observer(() => {
       </div>
       {addresses.length === 0 && (
         <div>
-        <div className={style.resultText}>No record found</div>
+        <div className={style.resultText}>No results.</div>
         {
           user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
             <div className={style.resultText}>

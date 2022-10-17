@@ -5,6 +5,15 @@
   margin-left: -10px;
   margin-right: -10px;
 
+  .title {
+    text-align: left;
+    font-size: 20px;
+    color: #525f7f;
+    line-height: 16px;
+    font-weight: 500;
+    margin: 0 0 15px 0;
+  }
+
   .popupContainer {
     position: absolute;
     width: 320px;
@@ -145,6 +154,7 @@
       font-weight: 400;
       font-size: 15px;
       margin-bottom: 16px;
+      text-align: center;
     }
   }
 }
