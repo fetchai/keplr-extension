@@ -25,9 +25,13 @@
   }
 }
 .leftBox {
+  display: flex;
+  align-items: center;
   .user {
     word-wrap: break-word;
     max-width: 300px;
+    text-align: left;
+    padding: 2px 10px;
   }
   .userText {
     display: inline-block;

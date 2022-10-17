@@ -5,7 +5,6 @@ import {
 } from "@keplr-wallet/hooks";
 import React, {
   FunctionComponent,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -215,28 +214,22 @@ export const ChatSection: FunctionComponent = () => {
               openValue = false;
             }}
           />
-          <div className={style.userText}>
-            <ToolTip
-              tooltip={
-                contactName(addresses) ? (
-                  <div>{contactName(addresses)}</div>
-                ) : (
-                  <div className={style.user}>{userName}</div>
-                )
-              }
-              theme="dark"
-              trigger="hover"
-              options={{
-                placement: "top",
-              }}
-            >
-              <span className={style.recieverName}>
-                {contactName(addresses).length
-                  ? contactName(addresses)
-                  : formatAddress(userName)}
-              </span>
-            </ToolTip>
-          </div>
+          <span className={style.recieverName}>
+            {contactName(addresses).length ? (
+              contactName(addresses)
+            ) : (
+              <ToolTip
+                tooltip={<div className={style.user}>{userName}</div>}
+                theme="dark"
+                trigger="hover"
+                options={{
+                  placement: "top",
+                }}
+              >
+                {formatAddress(userName)}
+              </ToolTip>
+            )}
+          </span>
         </div>
         <div className={style.rightBox}>
           <span onClick={() => copyAddress(userName)}>
