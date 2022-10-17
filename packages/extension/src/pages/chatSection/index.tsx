@@ -233,7 +233,6 @@ export const ChatSection: FunctionComponent = () => {
         showDropdown={showDropdown}
         setShowDropdown={setShowDropdown}
         blocked={oldMessages.isBlocked}
-        userName={userName}
       />
 
       {isNewUser() && (

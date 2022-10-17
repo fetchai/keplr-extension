@@ -115,11 +115,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     const handleSearchInputChange = (e: any) => {
       e.preventDefault();
       recipientConfig.setRawRecipient(e?.target?.value);
-      if (value?.length) {
-        setSearchedAddressValue(e?.target?.value);
-      } else {
-        recipientConfig.setRawRecipient(e?.target?.value);
-      }
+      setSearchedAddressValue(e?.target?.value);
     };
     return (
       <React.Fragment>

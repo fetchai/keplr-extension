@@ -16,15 +16,16 @@ export const Dropdown = ({
   showDropdown: boolean;
   setShowDropdown: Function;
 }) => {
+  const history = useHistory();
   const [confirmAction, setConfirmAction] = useState(false);
   const [action, setAction] = useState("");
+  const userName = history.location.pathname.split("/")[2];
 
   const handleClick = (data: string) => {
     setAction(data);
     setConfirmAction(true);
     setShowDropdown(false);
   };
-  const history = useHistory();
   return (
     <>
       {confirmAction && (
@@ -47,7 +48,17 @@ export const Dropdown = ({
               View in address book
             </div>
           ) : (
-            <div onClick={() => history.push("/setting/address-book")}>
+            <div
+              onClick={() =>
+                history.push({
+                  pathname: "/setting/address-book",
+                  state: {
+                    openModal: true,
+                    addressInputValue: userName,
+                  },
+                })
+              }
+            >
               Add to address book
             </div>
           )}
@@ -56,7 +67,6 @@ export const Dropdown = ({
           ) : (
             <div onClick={() => handleClick("block")}>Block contact</div>
           )}
-          {/* <div>Report as spam</div> */}
           <div onClick={() => handleClick("delete")}>Delete chat</div>
         </div>
       )}
