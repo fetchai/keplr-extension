@@ -345,7 +345,7 @@ const ChatView = () => {
             />
           </div>
           <div onClick={() => history.push("/newChat")}>
-            <img src={newChatIcon} alt="" />
+            <img style={{ cursor: "pointer" }} src={newChatIcon} alt="" />
           </div>
         </div>
 

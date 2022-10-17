@@ -33,6 +33,8 @@ export const ChatSettings: FunctionComponent = observer(() => {
     .bech32Address;
   const [loadingChatSettings, setLoadingChatSettings] = useState(false);
   const [chatPubKeyExists, setChatPubKeyExists] = useState(true);
+  const [privacyParagraph, setPrivacyParagraph] = useState("setting.privacy.paragraph.everybody");
+
   useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
       setLoadingChatSettings(true);
@@ -42,6 +44,12 @@ export const ChatSettings: FunctionComponent = observer(() => {
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
       store.dispatch(setMessagingPubKey(pubKey));
 
+      if (pubKey?.privacySetting) setPrivacyParagraph(
+        pubKey.privacySetting === PrivacySetting.Nobody ? "setting.privacy.paragraph.nobody" :
+          pubKey.privacySetting === PrivacySetting.Contacts ? "setting.privacy.paragraph.contact" :
+          "setting.privacy.paragraph.everybody"
+      );
+      
       if (!pubKey?.publicKey || pubKey.privacySetting === PrivacySetting.Nobody) {
         setChatPubKeyExists(false);
         return setLoadingChatSettings(false);
@@ -102,7 +110,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             id: "setting.privacy",
           })}
           paragraph={intl.formatMessage({
-            id: "setting.privacy.paragraph",
+            id: privacyParagraph,
           })}
           onClick={() => {
             history.push({
