@@ -13,7 +13,10 @@ import React, {
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Input, InputGroup } from "reactstrap";
-import { userMessages } from "../../chatStore/messages-slice";
+import {
+  userBlockedAddresses,
+  userMessages,
+} from "../../chatStore/messages-slice";
 import { userDetails } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { SwitchUser } from "../../components/switch-user";
@@ -38,6 +41,7 @@ export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
+  const blockedUsers = useSelector(userBlockedAddresses);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [
     allMessages,
     userName,
@@ -215,7 +219,7 @@ export const ChatSection: FunctionComponent = () => {
         added={contactName(addresses).length > 0}
         showDropdown={showDropdown}
         setShowDropdown={setShowDropdown}
-        blocked={oldMessages.isBlocked}
+        blocked={blockedUsers[userName]}
       />
 
       {isNewUser() && (
@@ -276,14 +280,14 @@ export const ChatSection: FunctionComponent = () => {
               maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
               placeholder={
-                oldMessages.isBlocked
+                blockedUsers[userName]
                   ? "This contact is blocked"
                   : "Type a new message..."
               }
               value={newMessage}
               onChange={(event) => setNewMessage(event.target.value)}
               onKeyDown={handleKeydown}
-              disabled={oldMessages.isBlocked}
+              disabled={blockedUsers[userName]}
             />
           ) : (
             <ToolTip

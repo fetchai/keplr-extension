@@ -5,7 +5,10 @@ import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { userMessages } from "../../../../chatStore/messages-slice";
+import {
+  userBlockedAddresses,
+  userMessages,
+} from "../../../../chatStore/messages-slice";
 import { HeaderLayout } from "../../../../layouts";
 import { useStore } from "../../../../stores";
 import { formatAddress } from "../../../../utils/format";
@@ -16,6 +19,7 @@ import { UnblockUserPopup } from "./unblock-user-popup";
 export const BlockList: FunctionComponent = observer(() => {
   // const language = useLanguage();
   const messages = useSelector(userMessages);
+  const blockedAddresses = useSelector(userBlockedAddresses);
   const history = useHistory();
   const intl = useIntl();
   const { chainStore } = useStore();
@@ -48,7 +52,11 @@ export const BlockList: FunctionComponent = observer(() => {
         history.goBack();
       }}
     >
-      <BlockAddresses addresses={addresses} messages={messages} />
+      <BlockAddresses
+        addresses={addresses}
+        messages={messages}
+        blockedAddresses={blockedAddresses}
+      />
     </HeaderLayout>
   );
 });
@@ -56,7 +64,8 @@ export const BlockList: FunctionComponent = observer(() => {
 const BlockAddresses: React.FC<{
   messages: any;
   addresses: NameAddress[];
-}> = ({ messages, addresses }) => {
+  blockedAddresses: { [key: string]: boolean };
+}> = ({ messages, addresses, blockedAddresses }) => {
   const [confirmAction, setConfirmAction] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>("");
 
@@ -69,10 +78,11 @@ const BlockAddresses: React.FC<{
         />
       )}
       <div className={style.messagesContainer}>
-        {Object.keys(messages).filter((contact) => messages[contact].isBlocked)
-          .length ? (
+        {Object.keys(blockedAddresses).filter(
+          (contact) => blockedAddresses[contact]
+        ).length ? (
           Object.keys(messages)
-            .filter((contact) => messages[contact].isBlocked)
+            .filter((contact) => blockedAddresses[contact])
             .map((contact) => {
               const contactName =
                 addresses.find((entry) => entry.address === contact)?.name ||

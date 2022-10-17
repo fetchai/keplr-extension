@@ -1,39 +1,41 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { HeaderLayout } from "../../../layouts";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
+import { HeaderLayout } from "../../../layouts";
 // import { useLanguage } from "../../../languages";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import style from "./style.module.scss";
-import { PageButton } from "../page-button";
-import { getJWT } from "../../../utils/auth";
+import { store } from "../../../chatStore";
+import { userBlockedAddresses } from "../../../chatStore/messages-slice";
 import {
   setAccessToken,
   setMessagingPubKey,
   userDetails,
 } from "../../../chatStore/user-slice";
-import { fetchPublicKey } from "../../../utils/fetch-public-key";
-import { store } from "../../../chatStore";
 import { AUTH_SERVER } from "../../../config/config";
-import { useSelector } from "react-redux";
-import { useStore } from "../../../stores";
-import { userMessages } from "../../../chatStore/messages-slice";
 import { fetchBlockList } from "../../../graphQL/messages-api";
-import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import { useStore } from "../../../stores";
+import { getJWT } from "../../../utils/auth";
+import { fetchPublicKey } from "../../../utils/fetch-public-key";
+import { PageButton } from "../page-button";
+import style from "./style.module.scss";
 
 export const ChatSettings: FunctionComponent = observer(() => {
   // const language = useLanguage();
   const history = useHistory();
   const intl = useIntl();
   const userState = useSelector(userDetails);
-  const messages = useSelector(userMessages);
+  const blockedUsers = useSelector(userBlockedAddresses);
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
   const [loadingChatSettings, setLoadingChatSettings] = useState(false);
   const [chatPubKeyExists, setChatPubKeyExists] = useState(true);
-  const [privacyParagraph, setPrivacyParagraph] = useState("setting.privacy.paragraph.everybody");
+  const [privacyParagraph, setPrivacyParagraph] = useState(
+    "setting.privacy.paragraph.everybody"
+  );
 
   useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
@@ -44,13 +46,19 @@ export const ChatSettings: FunctionComponent = observer(() => {
       const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
       store.dispatch(setMessagingPubKey(pubKey));
 
-      if (pubKey?.privacySetting) setPrivacyParagraph(
-        pubKey.privacySetting === PrivacySetting.Nobody ? "setting.privacy.paragraph.nobody" :
-          pubKey.privacySetting === PrivacySetting.Contacts ? "setting.privacy.paragraph.contact" :
-          "setting.privacy.paragraph.everybody"
-      );
-      
-      if (!pubKey?.publicKey || pubKey.privacySetting === PrivacySetting.Nobody) {
+      if (pubKey?.privacySetting)
+        setPrivacyParagraph(
+          pubKey.privacySetting === PrivacySetting.Nobody
+            ? "setting.privacy.paragraph.nobody"
+            : pubKey.privacySetting === PrivacySetting.Contacts
+            ? "setting.privacy.paragraph.contact"
+            : "setting.privacy.paragraph.everybody"
+        );
+
+      if (
+        !pubKey?.publicKey ||
+        pubKey.privacySetting === PrivacySetting.Nobody
+      ) {
         setChatPubKeyExists(false);
         return setLoadingChatSettings(false);
       }
@@ -69,7 +77,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
     userState.messagingPubKey.length,
     walletAddress,
   ]);
-  
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -89,7 +97,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
           paragraph={
             chatPubKeyExists
               ? `${
-                  Object.values(messages).filter((user: any) => user.isBlocked)
+                  Object.keys(blockedUsers).filter((user) => blockedUsers[user])
                     .length
                 } Addresses Blocked`
               : "Please Activate Chat Functionality to Proceed"
@@ -101,7 +109,10 @@ export const ChatSettings: FunctionComponent = observer(() => {
               });
           }}
           icons={useMemo(
-            () => chatPubKeyExists ? [ <i key="next" className="fas fa-chevron-right" />] : [],
+            () =>
+              chatPubKeyExists
+                ? [<i key="next" className="fas fa-chevron-right" />]
+                : [],
             [chatPubKeyExists]
           )}
         />
