@@ -334,6 +334,7 @@ const ChatView = () => {
           </div>
         )}
 
+        <div className={style.title}>Chats</div>
         <div className={style.searchContainer}>
           <div className={style.searchBox}>
             <img src={searchIcon} alt="search" />
@@ -344,7 +345,7 @@ const ChatView = () => {
             />
           </div>
           <div onClick={() => history.push("/newChat")}>
-            <img src={newChatIcon} alt="" />
+            <img style={{ cursor: "pointer" }} src={newChatIcon} alt="" />
           </div>
         </div>
 

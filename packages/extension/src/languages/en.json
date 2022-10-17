@@ -76,7 +76,9 @@
   "setting.block": "Block List",
 
   "setting.privacy": "Privacy",
-  "setting.privacy.paragraph": "Only contacts in address book can message",
+  "setting.privacy.paragraph.everybody": "Everybody can message",
+  "setting.privacy.paragraph.contact": "Only contacts in address book can message",
+  "setting.privacy.paragraph.nobody": "Chat deactivated, nobody can message",
 
   "setting.receipts": "Read Receipts",
   "setting.receipts.paragraph": "Off - You won't send or receive Read Receipts",

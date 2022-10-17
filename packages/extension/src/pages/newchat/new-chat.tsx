@@ -74,6 +74,8 @@ export const NewChat: FunctionComponent = observer(() => {
   const user = useSelector(userDetails);
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
+  const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
+
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -127,6 +129,7 @@ export const NewChat: FunctionComponent = observer(() => {
         (address.name.toLowerCase().includes(searchedVal) ||
           address.address.toLowerCase().includes(searchedVal))
     );
+    
     if (
       addresses.length === 0 &&
       searchedVal &&
@@ -143,11 +146,15 @@ export const NewChat: FunctionComponent = observer(() => {
           name: formatAddress(searchedVal),
           address: searchedVal,
         };
-        setAddresses([address]);
+        setRandomAddress(address);
+        setAddresses([]);
+        // setAddresses([address]);
       } catch (e) {
         setAddresses([]);
+        setRandomAddress(undefined);
       }
     } else {
+      setRandomAddress(undefined);
       setAddresses(addresses);
     }
   };
@@ -181,22 +188,25 @@ export const NewChat: FunctionComponent = observer(() => {
           />
         </div>
       </div>
+      <div className={style.searchHelp}>You can search your contacts or paste any valid {current.chainName} address to start a conversation.</div>
       <div className={style.messagesContainer}>
+        {randomAddress && <NewUser address={randomAddress} key={randomAddress.address} />}
+        <div>Your contacts</div>
         {addresses.map((address: NameAddress) => {
           return <NewUser address={address} key={address.address} />;
         })}
       </div>
       {addresses.length === 0 && (
         <div>
-        <div className={style.resultText}>No record found</div>
-        {
-          user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
-            <div className={style.resultText}>
-              If you are searching for an address not in your address book,
-               you can't see them due to your selected privacy settings being "contact only".
-                Please add the address to your address book to be able to chat with them or change your privacy settings. 
-            </div>
-        }
+          <div className={style.resultText}>No results in your contacts.</div>
+          {
+            user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
+              <div className={style.resultText}>
+                If you are searching for an address not in your address book,
+                you can't see them due to your selected privacy settings being "contact only".
+                  Please add the address to your address book to be able to chat with them or change your privacy settings. 
+              </div>
+          }
         </div>
       )}
     </HeaderLayout>
