@@ -234,11 +234,11 @@ export const ChatSection: FunctionComponent = () => {
               </ToolTip>
             )}
           </span>
-        </div>
-        <div className={style.rightBox}>
           <span onClick={() => copyAddress(userName)}>
             <i className="fas fa-copy" />
           </span>
+        </div>
+        <div className={style.rightBox}>
           <img
             alt=""
             style={{ cursor: "pointer" }}

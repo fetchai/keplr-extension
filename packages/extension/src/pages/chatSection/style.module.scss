@@ -14,11 +14,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex: 0 0 12%;
-  span i {
-    color: #525f7f;
-    cursor: pointer;
-  }
   .more {
     float: right;
     transform: rotate(90deg);
@@ -35,6 +30,11 @@
   }
   .userText {
     display: inline-block;
+  }
+  span i {
+    color: #525f7f;
+    cursor: pointer;
+    margin-left: 10px;
   }
 }
 .backBtn {
