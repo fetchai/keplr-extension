@@ -105,9 +105,10 @@ export const ChatSettings: FunctionComponent = observer(() => {
             id: "setting.privacy.paragraph",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/chat/privacy",
-            });
+            if (userState.accessToken)
+              history.push({
+                pathname: "/setting/chat/privacy",
+              });
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
