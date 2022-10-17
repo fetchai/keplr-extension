@@ -5,6 +5,7 @@ import {
 } from "@keplr-wallet/hooks";
 import React, {
   FunctionComponent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -31,11 +32,15 @@ import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
 import TextareaAutosize from "react-textarea-autosize";
+import { useNotification } from "../../components/notification";
+import { useIntl } from "react-intl";
 
 export let openValue = true;
 
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
+  const notification = useNotification();
+  const intl = useIntl();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [
@@ -176,6 +181,21 @@ export const ChatSection: FunctionComponent = () => {
     const addressExists = addresses.find((item) => item.address === userName);
     return !Boolean(addressExists) && messages.length === 0;
   };
+  const copyAddress = async (address: string) => {
+    await navigator.clipboard.writeText(address);
+    notification.push({
+      placement: "top-center",
+      type: "success",
+      duration: 2,
+      content: intl.formatMessage({
+        id: "main.address.copied",
+      }),
+      canDelete: true,
+      transition: {
+        duration: 0.25,
+      },
+    });
+  };
 
   return (
     <HeaderLayout
@@ -218,14 +238,19 @@ export const ChatSection: FunctionComponent = () => {
             </ToolTip>
           </div>
         </div>
-        <img
-          alt=""
-          style={{ cursor: "pointer" }}
-          className={style.more}
-          src={moreIcon}
-          onClick={handleDropDown}
-          onBlur={handleDropDown}
-        />
+        <div className={style.rightBox}>
+          <span onClick={() => copyAddress(userName)}>
+            <i className="fas fa-copy" />
+          </span>
+          <img
+            alt=""
+            style={{ cursor: "pointer" }}
+            className={style.more}
+            src={moreIcon}
+            onClick={handleDropDown}
+            onBlur={handleDropDown}
+          />
+        </div>
       </div>
 
       <Dropdown

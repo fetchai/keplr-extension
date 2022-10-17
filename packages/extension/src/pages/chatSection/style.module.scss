@@ -10,22 +10,33 @@
   flex-direction: row;
 }
 
-.user {
-  word-wrap: break-word;
-  max-width: 300px;
+.rightBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 12%;
+  span i {
+    color: #525f7f;
+    cursor: pointer;
+  }
+  .more {
+    float: right;
+    transform: rotate(90deg);
+  }
 }
-.userText {
-  display: inline-block;
+.leftBox {
+  .user {
+    word-wrap: break-word;
+    max-width: 300px;
+  }
+  .userText {
+    display: inline-block;
+  }
 }
 .backBtn {
   flex-basis: 25px;
   width: 24px;
   height: 24px;
-}
-
-.more {
-  float: right;
-  transform: rotate(90deg);
 }
 
 .send-message-inputArea {
