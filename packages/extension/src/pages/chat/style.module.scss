@@ -22,9 +22,11 @@
       margin-left: 5px;
     }
     img {
-      width: 60%;
-
+      margin: 0 auto;
+      width: 50%;
+      display: block;
       border-radius: 500px;
+      margin-top: 10px;
     }
     .infoContainer {
       h3 {
@@ -82,12 +84,6 @@
         flex-grow: 1;
       }
     }
-  }
-  .loading {
-    text-align: center;
-    color: #808da0;
-    font-size: 18px;
-    padding-top: 15px;
   }
   .messagesContainer {
     margin-top: 20px;

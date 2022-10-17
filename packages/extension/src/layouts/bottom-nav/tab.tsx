@@ -22,8 +22,10 @@ export const Tab = ({
 }: TabProps) => {
   const history = useHistory();
   const location = useLocation();
-
-  const isActive = path === location.pathname;
+  const isChatActive =
+    title == "Chat" &&
+    (location.pathname == "/newChat" || location.pathname.startsWith("/chat/"));
+  const isActive = path === location.pathname || isChatActive;
 
   return (
     <div

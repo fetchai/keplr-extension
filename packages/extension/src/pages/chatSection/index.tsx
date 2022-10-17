@@ -31,7 +31,6 @@ import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
 import TextareaAutosize from "react-textarea-autosize";
-// import ScrollToBottom from 'react-scroll-to-bottom';
 
 export let openValue = true;
 
@@ -170,12 +169,8 @@ export const ChatSection: FunctionComponent = () => {
   }, [oldMessages, messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages.length]);
 
   const isNewUser = (): boolean => {
     const addressExists = addresses.find((item) => item.address === userName);
@@ -223,7 +218,6 @@ export const ChatSection: FunctionComponent = () => {
         blocked={oldMessages.isBlocked}
       />
 
-
       {isNewUser() && (
         <div className={style.contactsContainer}>
           <div className={style.displayText}>
@@ -247,7 +241,7 @@ export const ChatSection: FunctionComponent = () => {
           </div>
         </div>
       )}
-     
+
       <div className={style.chatArea}>
         <div className={style.messages}>
           <p>
@@ -260,6 +254,9 @@ export const ChatSection: FunctionComponent = () => {
             })
             ?.map((message: any, index) => {
               const check = showDateFunction(message?.commitTimestamp);
+              if (index == messages.length - 1) {
+                scrollToBottom();
+              }
               return (
                 <ChatMessage
                   key={index}
@@ -277,7 +274,6 @@ export const ChatSection: FunctionComponent = () => {
           {targetPubKey.length ? (
             <TextareaAutosize
               maxRows={3}
-
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
               placeholder={
                 oldMessages.isBlocked
