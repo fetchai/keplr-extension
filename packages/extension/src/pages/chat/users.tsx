@@ -74,7 +74,10 @@ export const Users: React.FC<{
         })
       ) : (
         <div>
-          <div className={style.resultText}>No result found</div>
+          <div className={style.resultText}>
+            No results.
+            Don't worry you can create a new chat by clicking on the icon beside the search box.
+          </div>
         </div>
       )}
     </div>
