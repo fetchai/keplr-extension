@@ -195,11 +195,28 @@ export const ChatSection: FunctionComponent = () => {
               openValue = false;
             }}
           />
-          <span className={style.recieverName}>
-            {contactName(addresses).length
-              ? contactName(addresses)
-              : formatAddress(userName)}
-          </span>
+          <div className={style.userText}>
+            <ToolTip
+              tooltip={
+                contactName(addresses) ? (
+                  <div>{contactName(addresses)}</div>
+                ) : (
+                  <div className={style.user}>{userName}</div>
+                )
+              }
+              theme="dark"
+              trigger="hover"
+              options={{
+                placement: "top",
+              }}
+            >
+              <span className={style.recieverName}>
+                {contactName(addresses).length
+                  ? contactName(addresses)
+                  : formatAddress(userName)}
+              </span>
+            </ToolTip>
+          </div>
         </div>
         <img
           alt=""
@@ -216,6 +233,7 @@ export const ChatSection: FunctionComponent = () => {
         showDropdown={showDropdown}
         setShowDropdown={setShowDropdown}
         blocked={oldMessages.isBlocked}
+        userName={userName}
       />
 
       {isNewUser() && (

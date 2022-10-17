@@ -10,6 +10,13 @@
   flex-direction: row;
 }
 
+.user {
+  word-wrap: break-word;
+  max-width: 300px;
+}
+.userText {
+  display: inline-block;
+}
 .backBtn {
   flex-basis: 25px;
   width: 24px;
