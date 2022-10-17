@@ -138,6 +138,7 @@ export const ChatSection: FunctionComponent = () => {
         userName
       );
       if (message) setNewMessage("");
+      scrollToBottom();
     } catch (error) {
       console.log("failed to send : ", error);
     }
@@ -234,7 +235,10 @@ export const ChatSection: FunctionComponent = () => {
               </ToolTip>
             )}
           </span>
-          <span onClick={() => copyAddress(userName)}>
+          <span
+            className={style.copyIcon}
+            onClick={() => copyAddress(userName)}
+          >
             <i className="fas fa-copy" />
           </span>
         </div>
