@@ -66,7 +66,11 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
-  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(PrivacySetting.Everybody);
+  const [selectedPrivacySetting, setSelectedPrivacySetting] = useState<PrivacySetting>(
+    userState?.messagingPubKey.privacySetting ? 
+      userState?.messagingPubKey.privacySetting
+      : PrivacySetting.Everybody
+  );
 
   const requester = new InExtensionMessageRequester();
 
@@ -99,7 +103,7 @@ const ChatView = () => {
     if (
       userState?.accessToken.length &&
       userState?.messagingPubKey.privacySetting &&
-      userState?.messagingPubKey.length &&
+      userState?.messagingPubKey.publicKey &&
       walletAddress
     ) {
       messageListener();
@@ -107,7 +111,7 @@ const ChatView = () => {
       fetchBlockList();
     }
   }, [
-    userState.accessToken.length,
+    userState.accessToken,
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
     walletAddress,
@@ -143,15 +147,6 @@ const ChatView = () => {
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
   ]);
-
-  useEffect(() => {
-    if (userState?.accessToken.length && userState?.messagingPubKey && userState?.messagingPubKey.publicKey && userState?.messagingPubKey.privacySetting) {
-      messageListener();
-      recieveMessages(walletAddress);
-      fetchBlockList();
-    }
-  }, [userState.accessToken, userState.messagingPubKey.publicKey, userState.messagingPubKey.privacySetting, walletAddress]);
-
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
@@ -238,17 +233,28 @@ const ChatView = () => {
     }
   };
 
-  // TODO: better design
   if (userState.messagingPubKey.privacySetting && userState.messagingPubKey.privacySetting === PrivacySetting.Nobody) {
     return (
       <HeaderLayout
-      showChainName={true}
-      canChangeChainInfo={true}
-      menuRenderer={<Menu />}
-      rightRenderer={<SwitchUser />}
-    >
-      <div>Chat deactivated</div>
-    </HeaderLayout>
+        
+        showChainName={true}
+        canChangeChainInfo={true}
+        menuRenderer={<Menu />}
+        rightRenderer={<SwitchUser />}
+      >
+        <div className={style.lockedInnerContainer}>
+          <img
+            className={style.imgLock}
+            src={require("../../public/assets/img/icons8-lock.svg")}
+            alt="lock"
+          />
+
+          <div>
+            Chat is <b>deactivated</b> based on your current chat privacy settings.
+            Please change your chat privacy settings to use this feature.
+          </div>
+        </div>
+      </HeaderLayout>
     )
   }
 
