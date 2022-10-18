@@ -22,6 +22,9 @@ import { useSelector } from "react-redux";
 import { userDetails } from "../../chatStore/user-slice";
 import { Menu } from "../main/menu";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import jazzicon from "@metamask/jazzicon";
+import ReactHtmlParser from 'react-html-parser';
+import { fromBech32 } from "@cosmjs/encoding";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -56,8 +59,12 @@ const NewUser = (props: { address: NameAddress }) => {
       {...(isActive && { onClick: handleClick })}
     >
       <div className={style.initials}>
-        {name.charAt(0).toUpperCase()}
-        <div className={style.unread} />
+        {ReactHtmlParser(
+          jazzicon(
+            24,
+            parseInt(fromBech32(address).data.toString(), 16)
+          ).outerHTML
+        )}
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{name}</div>
