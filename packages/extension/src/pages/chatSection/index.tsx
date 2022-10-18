@@ -34,11 +34,15 @@ import { Menu } from "../main/menu";
 import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
 import TextareaAutosize from "react-textarea-autosize";
+import { useNotification } from "../../components/notification";
+import { useIntl } from "react-intl";
 
 export let openValue = true;
 
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
+  const notification = useNotification();
+  const intl = useIntl();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
   const blockedUsers = useSelector(userBlockedAddresses);
@@ -134,6 +138,7 @@ export const ChatSection: FunctionComponent = () => {
         userName
       );
       if (message) setNewMessage("");
+      scrollToBottom();
     } catch (error) {
       console.log("failed to send : ", error);
     }
@@ -180,6 +185,21 @@ export const ChatSection: FunctionComponent = () => {
     const addressExists = addresses.find((item) => item.address === userName);
     return !Boolean(addressExists) && messages.length === 0;
   };
+  const copyAddress = async (address: string) => {
+    await navigator.clipboard.writeText(address);
+    notification.push({
+      placement: "top-center",
+      type: "success",
+      duration: 2,
+      content: intl.formatMessage({
+        id: "main.address.copied",
+      }),
+      canDelete: true,
+      transition: {
+        duration: 0.25,
+      },
+    });
+  };
 
   return (
     <HeaderLayout
@@ -200,19 +220,38 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
           <span className={style.recieverName}>
-            {contactName(addresses).length
-              ? contactName(addresses)
-              : formatAddress(userName)}
+            {contactName(addresses).length ? (
+              contactName(addresses)
+            ) : (
+              <ToolTip
+                tooltip={<div className={style.user}>{userName}</div>}
+                theme="dark"
+                trigger="hover"
+                options={{
+                  placement: "top",
+                }}
+              >
+                {formatAddress(userName)}
+              </ToolTip>
+            )}
+          </span>
+          <span
+            className={style.copyIcon}
+            onClick={() => copyAddress(userName)}
+          >
+            <i className="fas fa-copy" />
           </span>
         </div>
-        <img
-          alt=""
-          style={{ cursor: "pointer" }}
-          className={style.more}
-          src={moreIcon}
-          onClick={handleDropDown}
-          onBlur={handleDropDown}
-        />
+        <div className={style.rightBox}>
+          <img
+            alt=""
+            style={{ cursor: "pointer" }}
+            className={style.more}
+            src={moreIcon}
+            onClick={handleDropDown}
+            onBlur={handleDropDown}
+          />
+        </div>
       </div>
 
       <Dropdown

@@ -10,15 +10,37 @@
   flex-direction: row;
 }
 
+.rightBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .more {
+    float: right;
+    transform: rotate(90deg);
+  }
+}
+.leftBox {
+  display: flex;
+  align-items: center;
+  .user {
+    word-wrap: break-word;
+    max-width: 300px;
+    text-align: left;
+    padding: 2px 10px;
+  }
+  .userText {
+    display: inline-block;
+  }
+  .copyIcon {
+    color: #525f7f;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+}
 .backBtn {
   flex-basis: 25px;
   width: 24px;
   height: 24px;
-}
-
-.more {
-  float: right;
-  transform: rotate(90deg);
 }
 
 .send-message-inputArea {

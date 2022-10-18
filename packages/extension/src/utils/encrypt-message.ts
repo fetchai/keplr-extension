@@ -39,8 +39,6 @@ export const encryptAllData = async (
     targetAddress,
     accessToken
   );
-    console.log("inside function toBase64(Buffer.from(JSON.stringify(dataEnvelope)))",toBase64(Buffer.from(JSON.stringify(dataEnvelope))));
-    
   return toBase64(Buffer.from(JSON.stringify(dataEnvelope)));
 };
 
