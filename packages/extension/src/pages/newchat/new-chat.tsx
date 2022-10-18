@@ -117,7 +117,7 @@ export const NewChat: FunctionComponent = observer(() => {
   );
 
   useEffect(() => {
-    setAddresses(useraddresses);
+    setAddresses(useraddresses.filter(a => a.address !== walletAddress));
   }, [addressBookConfig.addressBookDatas]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,7 +191,17 @@ export const NewChat: FunctionComponent = observer(() => {
       <div className={style.searchHelp}>You can search your contacts or paste any valid {current.chainName} address to start a conversation.</div>
       <div className={style.messagesContainer}>
         {randomAddress && <NewUser address={randomAddress} key={randomAddress.address} />}
-        <div>Your contacts</div>
+        <div className={style.contacts}>
+          <div>Your contacts</div>
+          <i
+            className="fa fa-user-plus"
+            style={{ margin: "2px 0 0 12px", cursor: "pointer"}}
+            aria-hidden="true"
+            onClick={() => {
+              history.push("/setting/address-book");
+            }}
+          />
+        </div>
         {addresses.map((address: NameAddress) => {
           return <NewUser address={address} key={address.address} />;
         })}
@@ -205,6 +215,18 @@ export const NewChat: FunctionComponent = observer(() => {
                 If you are searching for an address not in your address book,
                 you can't see them due to your selected privacy settings being "contact only".
                   Please add the address to your address book to be able to chat with them or change your privacy settings. 
+                <br />
+                <a
+                  href="#"
+                  style={{
+                    textDecoration: "underline"
+                  }}
+                  onClick={(e) => {
+                      e.preventDefault();
+                      history.push("/setting/chat/privacy")
+                  }}>
+                    Go to chat privacy settings
+                </a>
               </div>
           }
         </div>
