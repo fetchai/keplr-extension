@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import jazzicon from "@metamask/jazzicon";
+import ReactHtmlParser from 'react-html-parser';
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 import { MessageMap } from "../../chatStore/messages-slice";
+import { fromBech32 } from "@cosmjs/encoding";
 
 const User: React.FC<{
   chainId: string;
@@ -33,8 +36,12 @@ const User: React.FC<{
   return (
     <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
-        {contactName.charAt(0).toUpperCase()}
-        {false && <div className={style.unread} />}
+        {ReactHtmlParser(
+          jazzicon(
+            24,
+            parseInt(fromBech32(contact).data.toString(), 16)
+          ).outerHTML
+        )}
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>
