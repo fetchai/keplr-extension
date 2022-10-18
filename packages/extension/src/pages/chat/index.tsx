@@ -264,6 +264,18 @@ const ChatView = () => {
             settings. Please change your chat privacy settings to use this
             feature.
           </div>
+          <br />
+          <a
+            href="#"
+            style={{
+              textDecoration: "underline"
+            }}
+            onClick={(e) => {
+                e.preventDefault();
+                history.push("/setting/chat/privacy")
+            }}>
+              Go to chat privacy settings
+          </a>
         </div>
       </HeaderLayout>
     );

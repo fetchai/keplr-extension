@@ -215,6 +215,18 @@ export const NewChat: FunctionComponent = observer(() => {
                 If you are searching for an address not in your address book,
                 you can't see them due to your selected privacy settings being "contact only".
                   Please add the address to your address book to be able to chat with them or change your privacy settings. 
+                <br />
+                <a
+                  href="#"
+                  style={{
+                    textDecoration: "underline"
+                  }}
+                  onClick={(e) => {
+                      e.preventDefault();
+                      history.push("/setting/chat/privacy")
+                  }}>
+                    Go to chat privacy settings
+                </a>
               </div>
           }
         </div>
