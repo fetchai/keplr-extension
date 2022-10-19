@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import jazzicon from "@metamask/jazzicon";
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser from "react-html-parser";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
@@ -37,10 +37,8 @@ const User: React.FC<{
     <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
         {ReactHtmlParser(
-          jazzicon(
-            24,
-            parseInt(fromBech32(contact).data.toString(), 16)
-          ).outerHTML
+          jazzicon(24, parseInt(fromBech32(contact).data.toString(), 16))
+            .outerHTML
         )}
       </div>
       <div className={style.messageInner}>
@@ -74,7 +72,11 @@ export const Users: React.FC<{
               key={index}
               chat={userChats[contact]}
               contact={contact}
-              contactName={contactAddressBookName ?? formatAddress(contact)}
+              contactName={
+                contactAddressBookName
+                  ? formatAddress(contactAddressBookName)
+                  : formatAddress(contact)
+              }
               chainId={chainId}
             />
           );
@@ -82,8 +84,8 @@ export const Users: React.FC<{
       ) : (
         <div>
           <div className={style.resultText}>
-            No results.
-            Don't worry you can create a new chat by clicking on the icon beside the search box.
+            No results. Don't worry you can create a new chat by clicking on the
+            icon beside the search box.
           </div>
         </div>
       )}

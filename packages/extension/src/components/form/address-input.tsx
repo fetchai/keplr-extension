@@ -55,8 +55,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
   }) => {
     const intl = useIntl();
     const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
-    const [searchedAddressValue, setSearchedAddressValue] = useState("");
-
     const [inputId] = useState(() => {
       const bytes = new Uint8Array(4);
       crypto.getRandomValues(bytes);
@@ -69,7 +67,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     useEffect(() => {
       if (value) {
         recipientConfig.setRawRecipient(value);
-        setSearchedAddressValue(value);
       }
     }, [value]);
     const error = recipientConfig.getError();
@@ -115,7 +112,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
     const handleSearchInputChange = (e: any) => {
       e.preventDefault();
       recipientConfig.setRawRecipient(e?.target?.value);
-      setSearchedAddressValue(e?.target?.value);
     };
     return (
       <React.Fragment>
@@ -149,7 +145,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput.input
               )}
-              value={searchedAddressValue}
+              value={recipientConfig.rawRecipient}
               onChange={(e) => {
                 handleSearchInputChange(e);
               }}
