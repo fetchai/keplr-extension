@@ -117,7 +117,7 @@ const ChatView = () => {
       } finally {
         setLoadingChats(false);
       }
-    }
+    };
 
     if (
       userState?.accessToken.length &&
@@ -188,7 +188,7 @@ const ChatView = () => {
 
   useEffect(() => {
     setLoadingChats(true);
-    
+
     const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       if (
@@ -307,7 +307,7 @@ const ChatView = () => {
       <div className={style.chatContainer}>
         {openDialog && userState.accessToken.length > 0 && (
           <>
-            <div className={style.overlay}></div>
+            <div className={style.overlay} />
             <div className={style.popupContainer}>
               <img src={privacyIcon} />
               <br />

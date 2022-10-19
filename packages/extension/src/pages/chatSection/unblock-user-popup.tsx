@@ -6,7 +6,7 @@ import style from "./style.module.scss";
 export const UnblockUserPopup = ({
   setConfirmAction,
 }: {
-  setConfirmAction: Function;
+  setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [processing, setProcessing] = useState(false);
   const history = useHistory();
@@ -32,8 +32,8 @@ export const UnblockUserPopup = ({
       <h4>Unblock User</h4>
       <section>
         <p className={style.textContainer}>
-          This contact will be able to send you messages. The contact will not be
-          notified.
+          This contact will be able to send you messages. The contact will not
+          be notified.
         </p>
       </section>
       <div className={style.buttonContainer}>

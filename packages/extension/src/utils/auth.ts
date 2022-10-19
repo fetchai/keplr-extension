@@ -89,7 +89,7 @@ export const getJWT = async (chainId: string, url: string) => {
     new GetMessagingPublicKey(chainId, "", null)
   );
 
-  if (!pubKey.publicKey) throw new Error('public key not found');
+  if (!pubKey.publicKey) throw new Error("public key not found");
 
   const addr = Bech32.encode(
     "fetch",
@@ -127,6 +127,6 @@ export const getJWT = async (chainId: string, url: string) => {
   if (r2.status !== 200) {
     throw new RequestError(r1.statusText);
   }
-  
+
   return r2.data.token;
 };

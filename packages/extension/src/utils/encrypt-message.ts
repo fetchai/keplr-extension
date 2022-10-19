@@ -74,7 +74,7 @@ export async function encryptToEnvelope(
   );
 
   if (!senderPublicKey.publicKey || !targetPublicKey.publicKey) {
-    throw new Error('Public key not available');
+    throw new Error("Public key not available");
   }
 
   const message: MessagePrimitive = {

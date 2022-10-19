@@ -4,7 +4,7 @@ import style from "./style.module.scss";
 export const DeleteChatPopup = ({
   setConfirmAction,
 }: {
-  setConfirmAction: Function;
+  setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const handleDelete = () => {
     setConfirmAction(false);

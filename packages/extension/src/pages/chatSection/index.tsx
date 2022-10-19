@@ -63,9 +63,12 @@ export const ChatSection: FunctionComponent = () => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const messagesEndRef: any = useCallback((node: any) => {
-    if (node) node.scrollIntoView(true);
-  }, [messages]);
+  const messagesEndRef: any = useCallback(
+    (node: any) => {
+      if (node) node.scrollIntoView(true);
+    },
+    [messages]
+  );
 
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -213,7 +216,9 @@ export const ChatSection: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      {!addressBookConfig.isLoaded ? <ChatLoader message="Arranging messages, please wait..." /> : 
+      {!addressBookConfig.isLoaded ? (
+        <ChatLoader message="Arranging messages, please wait..." />
+      ) : (
         <div>
           <div className={style.username}>
             <div className={style.leftBox}>
@@ -299,8 +304,8 @@ export const ChatSection: FunctionComponent = () => {
           <div className={style.chatArea}>
             <div className={style.messages}>
               <p>
-                Messages are end to end encrypted. Nobody else can read them except
-                you and the recipient.
+                Messages are end to end encrypted. Nobody else can read them
+                except you and the recipient.
               </p>
               {messages
                 ?.sort((a: any, b: any) => {
@@ -319,10 +324,7 @@ export const ChatSection: FunctionComponent = () => {
                     />
                   );
                 })}
-              <div
-                ref={messagesEndRef}
-                className={style.messageRef}
-              />
+              <div ref={messagesEndRef} className={style.messageRef} />
             </div>
             <InputGroup className={style.inputText}>
               {targetPubKey.length ? (
@@ -343,7 +345,9 @@ export const ChatSection: FunctionComponent = () => {
                 <ToolTip
                   trigger="hover"
                   options={{ placement: "top" }}
-                  tooltip={<div>No transaction history found for this user</div>}
+                  tooltip={
+                    <div>No transaction history found for this user</div>
+                  }
                 >
                   <Input
                     className={`${style.inputArea} ${style["send-message-inputArea"]}`}
@@ -368,7 +372,7 @@ export const ChatSection: FunctionComponent = () => {
             </InputGroup>
           </div>
         </div>
-      }
+      )}
     </HeaderLayout>
   );
 };

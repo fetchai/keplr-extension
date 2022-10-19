@@ -7,7 +7,7 @@ export const UnblockUserPopup = ({
   setConfirmAction,
 }: {
   userName: string;
-  setConfirmAction: Function;
+  setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [processing, setProcessing] = useState(false);
 

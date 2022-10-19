@@ -8,7 +8,6 @@ export const decryptMessage = async (
   content: string,
   isSender: boolean
 ): Promise<string> => {
-  
   const data = Buffer.from(content, "base64").toString("ascii");
   const dataEnvelopeDecoded = JSON.parse(data);
   const decodedData = Buffer.from(dataEnvelopeDecoded.data, "base64").toString(
@@ -42,6 +41,6 @@ export async function decryptMessageContent(
   // build the decryption request message
   const msg = new DecryptMessagingMessage(chainId, content);
   const decoded = await requester.sendMessage(BACKGROUND_PORT, msg);
-  
+
   return fromUtf8(fromBase64(decoded));
 }

@@ -88,6 +88,7 @@ export const Privacy: FunctionComponent = observer(() => {
               selectedPrivacySetting === PrivacySetting.Everybody
                 ? [
                     <img
+                      key={0}
                       src={require("../../../../public/assets/svg/tick-icon.svg")}
                       style={{ width: "100%" }}
                       alt="message"
@@ -108,6 +109,7 @@ export const Privacy: FunctionComponent = observer(() => {
               selectedPrivacySetting === PrivacySetting.Contacts
                 ? [
                     <img
+                      key={0}
                       src={require("../../../../public/assets/svg/tick-icon.svg")}
                       style={{ width: "100%" }}
                       alt="message"
@@ -128,6 +130,7 @@ export const Privacy: FunctionComponent = observer(() => {
               selectedPrivacySetting === PrivacySetting.Nobody
                 ? [
                     <img
+                      key={0}
                       src={require("../../../../public/assets/svg/tick-icon.svg")}
                       style={{ width: "100%" }}
                       alt="message"
