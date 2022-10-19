@@ -138,12 +138,14 @@ export const ChatSection: FunctionComponent = () => {
         userName
       );
       if (message) setNewMessage("");
-      scrollToBottom();
     } catch (error) {
       console.log("failed to send : ", error);
     }
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  });
   const handleKeydown = (e: { keyCode: number }) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
@@ -220,20 +222,24 @@ export const ChatSection: FunctionComponent = () => {
             }}
           />
           <span className={style.recieverName}>
-            {contactName(addresses).length ? (
-              contactName(addresses)
-            ) : (
-              <ToolTip
-                tooltip={<div className={style.user}>{userName}</div>}
-                theme="dark"
-                trigger="hover"
-                options={{
-                  placement: "top",
-                }}
-              >
-                {formatAddress(userName)}
-              </ToolTip>
-            )}
+            <ToolTip
+              tooltip={
+                <div className={style.user}>
+                  {contactName(addresses).length
+                    ? contactName(addresses)
+                    : userName}
+                </div>
+              }
+              theme="dark"
+              trigger="hover"
+              options={{
+                placement: "top",
+              }}
+            >
+              {contactName(addresses).length
+                ? formatAddress(contactName(addresses))
+                : formatAddress(userName)}
+            </ToolTip>
           </span>
           <span
             className={style.copyIcon}
@@ -297,9 +303,9 @@ export const ChatSection: FunctionComponent = () => {
             })
             ?.map((message: any, index) => {
               const check = showDateFunction(message?.commitTimestamp);
-              if (index == messages.length - 1) {
-                scrollToBottom();
-              }
+              // if (index == messages.length - 1) {
+              //   scrollToBottom();
+              // }
               return (
                 <ChatMessage
                   key={index}
@@ -311,8 +317,12 @@ export const ChatSection: FunctionComponent = () => {
                 />
               );
             })}
-          <div ref={messagesEndRef} />
+          <div
+            ref={messagesEndRef}
+            className={style.messageRef}
+          />
         </div>
+
         <InputGroup className={style.inputText}>
           {targetPubKey.length ? (
             <TextareaAutosize
