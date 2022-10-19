@@ -301,7 +301,11 @@ export const ChatSection: FunctionComponent = () => {
             </div>
           )}
 
-          <div className={style.chatArea}>
+          <div
+            className={`${style.chatArea} ${
+              isNewUser() ? style.showButton : style.hideButton
+            }`}
+          >
             <div className={style.messages}>
               <p>
                 Messages are end to end encrypted. Nobody else can read them
