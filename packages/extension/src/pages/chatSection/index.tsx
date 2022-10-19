@@ -5,9 +5,9 @@ import {
 } from "@keplr-wallet/hooks";
 import React, {
   FunctionComponent,
+  useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { useSelector } from "react-redux";
@@ -36,6 +36,7 @@ import style from "./style.module.scss";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
+import { ChatLoader } from "../../components/chat-loader";
 
 export let openValue = true;
 
@@ -62,7 +63,12 @@ export const ChatSection: FunctionComponent = () => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const messagesEndRef: any = useRef();
+  const messagesEndRef: any = useCallback(
+    (node: any) => {
+      if (node) node.scrollIntoView(true);
+    },
+    [messages]
+  );
 
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -94,9 +100,9 @@ export const ChatSection: FunctionComponent = () => {
       },
     }
   );
-  const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  const addresses = addressBookConfig.addressBookDatas;
+
+  // console.log("####", addressBookConfig.waitLoaded())
 
   const contactName = (addresses: any) => {
     let val = "";
@@ -210,162 +216,163 @@ export const ChatSection: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div className={style.username}>
-        <div className={style.leftBox}>
-          <img
-            alt=""
-            className={style.backBtn}
-            src={chevronLeft}
-            onClick={() => {
-              history.goBack();
-              openValue = false;
-            }}
-          />
-          <span className={style.recieverName}>
-            <ToolTip
-              tooltip={
-                <div className={style.user}>
+      {!addressBookConfig.isLoaded ? (
+        <ChatLoader message="Arranging messages, please wait..." />
+      ) : (
+        <div>
+          <div className={style.username}>
+            <div className={style.leftBox}>
+              <img
+                alt=""
+                className={style.backBtn}
+                src={chevronLeft}
+                onClick={() => {
+                  history.goBack();
+                  openValue = false;
+                }}
+              />
+              <span className={style.recieverName}>
+                <ToolTip
+                  tooltip={
+                    <div className={style.user}>
+                      {contactName(addresses).length
+                        ? contactName(addresses)
+                        : userName}
+                    </div>
+                  }
+                  theme="dark"
+                  trigger="hover"
+                  options={{
+                    placement: "top",
+                  }}
+                >
                   {contactName(addresses).length
-                    ? contactName(addresses)
-                    : userName}
-                </div>
-              }
-              theme="dark"
-              trigger="hover"
-              options={{
-                placement: "top",
-              }}
-            >
-              {contactName(addresses).length
-                ? formatAddress(contactName(addresses))
-                : formatAddress(userName)}
-            </ToolTip>
-          </span>
-          <span
-            className={style.copyIcon}
-            onClick={() => copyAddress(userName)}
-          >
-            <i className="fas fa-copy" />
-          </span>
-        </div>
-        <div className={style.rightBox}>
-          <img
-            alt=""
-            style={{ cursor: "pointer" }}
-            className={style.more}
-            src={moreIcon}
-            onClick={handleDropDown}
-            onBlur={handleDropDown}
-          />
-        </div>
-      </div>
-
-      <Dropdown
-        added={contactName(addresses).length > 0}
-        showDropdown={showDropdown}
-        setShowDropdown={setShowDropdown}
-        blocked={blockedUsers[userName]}
-      />
-
-      {isNewUser() && (
-        <div className={style.contactsContainer}>
-          <div className={style.displayText}>
-            This contact is not saved in your address book
+                    ? formatAddress(contactName(addresses))
+                    : formatAddress(userName)}
+                </ToolTip>
+              </span>
+              <span
+                className={style.copyIcon}
+                onClick={() => copyAddress(userName)}
+              >
+                <i className="fas fa-copy" />
+              </span>
+            </div>
+            <div className={style.rightBox}>
+              <img
+                alt=""
+                style={{ cursor: "pointer" }}
+                className={style.more}
+                src={moreIcon}
+                onClick={handleDropDown}
+                onBlur={handleDropDown}
+              />
+            </div>
           </div>
-          <div className={style.buttons}>
-            <button
-              onClick={() =>
-                history.push({
-                  pathname: "/setting/address-book",
-                  state: {
-                    openModal: true,
-                    addressInputValue: userName,
-                  },
+
+          <Dropdown
+            added={contactName(addresses).length > 0}
+            showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
+            blocked={blockedUsers[userName]}
+          />
+
+          {isNewUser() && (
+            <div className={style.contactsContainer}>
+              <div className={style.displayText}>
+                This contact is not saved in your address book
+              </div>
+              <div className={style.buttons}>
+                <button
+                  onClick={() =>
+                    history.push({
+                      pathname: "/setting/address-book",
+                      state: {
+                        openModal: true,
+                        addressInputValue: userName,
+                      },
+                    })
+                  }
+                >
+                  Add
+                </button>
+                <button>Block</button>
+              </div>
+            </div>
+          )}
+
+          <div className={style.chatArea}>
+            <div className={style.messages}>
+              <p>
+                Messages are end to end encrypted. Nobody else can read them
+                except you and the recipient.
+              </p>
+              {messages
+                ?.sort((a: any, b: any) => {
+                  return a.commitTimestamp - b.commitTimestamp;
                 })
-              }
-            >
-              Add
-            </button>
-            <button>Block</button>
+                ?.map((message: any, index) => {
+                  const check = showDateFunction(message?.commitTimestamp);
+                  return (
+                    <ChatMessage
+                      key={index}
+                      chainId={current.chainId}
+                      showDate={check}
+                      message={message?.contents}
+                      isSender={message?.target === userName} // if target was the user we are chatting with
+                      timestamp={message?.commitTimestamp || 1549312452}
+                    />
+                  );
+                })}
+              <div ref={messagesEndRef} className={style.messageRef} />
+            </div>
+            <InputGroup className={style.inputText}>
+              {targetPubKey.length ? (
+                <TextareaAutosize
+                  maxRows={3}
+                  className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                  placeholder={
+                    blockedUsers[userName]
+                      ? "This contact is blocked"
+                      : "Type a new message..."
+                  }
+                  value={newMessage}
+                  onChange={(event) => setNewMessage(event.target.value)}
+                  onKeyDown={handleKeydown}
+                  disabled={blockedUsers[userName]}
+                />
+              ) : (
+                <ToolTip
+                  trigger="hover"
+                  options={{ placement: "top" }}
+                  tooltip={
+                    <div>No transaction history found for this user</div>
+                  }
+                >
+                  <Input
+                    className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                    placeholder="Type a new message..."
+                    value={newMessage}
+                    onChange={(event) => setNewMessage(event.target.value)}
+                    onKeyDown={handleKeydown}
+                    disabled={true}
+                  />
+                </ToolTip>
+              )}
+              {newMessage?.length ? (
+                <div
+                  className={style["send-message-icon"]}
+                  onClick={handleSendMessage}
+                >
+                  <img src={paperAirplaneIcon} alt="" />
+                </div>
+              ) : (
+                ""
+              )}
+            </InputGroup>
           </div>
         </div>
       )}
-
-      <div className={style.chatArea}>
-        <div className={style.messages}>
-          <p>
-            Messages are end to end encrypted. Nobody else can read them except
-            you and the recipient.
-          </p>
-          {messages
-            ?.sort((a: any, b: any) => {
-              return a.commitTimestamp - b.commitTimestamp;
-            })
-            ?.map((message: any, index) => {
-              const check = showDateFunction(message?.commitTimestamp);
-              // if (index == messages.length - 1) {
-              //   scrollToBottom();
-              // }
-              return (
-                <ChatMessage
-                  key={index}
-                  chainId={current.chainId}
-                  showDate={check}
-                  message={message?.contents}
-                  isSender={message?.target === userName} // if target was the user we are chatting with
-                  timestamp={message?.commitTimestamp || 1549312452}
-                />
-              );
-            })}
-          <div
-            ref={messagesEndRef}
-            className={style.messageRef}
-          />
-        </div>
-
-        <InputGroup className={style.inputText}>
-          {targetPubKey.length ? (
-            <TextareaAutosize
-              maxRows={3}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder={
-                blockedUsers[userName]
-                  ? "This contact is blocked"
-                  : "Type a new message..."
-              }
-              value={newMessage}
-              onChange={(event) => setNewMessage(event.target.value)}
-              onKeyDown={handleKeydown}
-              disabled={blockedUsers[userName]}
-            />
-          ) : (
-            <ToolTip
-              trigger="hover"
-              options={{ placement: "top" }}
-              tooltip={<div>No transaction history found for this user</div>}
-            >
-              <Input
-                className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-                placeholder="Type a new message..."
-                value={newMessage}
-                onChange={(event) => setNewMessage(event.target.value)}
-                onKeyDown={handleKeydown}
-                disabled={true}
-              />
-            </ToolTip>
-          )}
-          {newMessage?.length ? (
-            <div
-              className={style["send-message-icon"]}
-              onClick={handleSendMessage}
-            >
-              <img src={paperAirplaneIcon} alt="" />
-            </div>
-          ) : (
-            ""
-          )}
-        </InputGroup>
-      </div>
     </HeaderLayout>
   );
 };

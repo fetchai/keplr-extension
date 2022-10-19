@@ -32,7 +32,7 @@ import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { NameAddress, Users } from "./users";
-import loadingChatGif from "../../public/assets/chat-loading.gif";
+import { ChatLoader } from "../../components/chat-loader";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -63,7 +63,7 @@ const ChatView = () => {
   );
 
   const [userChats, setUserChats] = useState<MessageMap | undefined>();
-  const [loadingChats, setLoadingChats] = useState(false);
+  const [loadingChats, setLoadingChats] = useState(true);
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [initialChats, setInitialChats] = useState<MessageMap>({});
@@ -105,15 +105,27 @@ const ChatView = () => {
   };
 
   useEffect(() => {
+    const getMessagesAndBlocks = async () => {
+      setLoadingChats(true);
+      try {
+        await messageListener();
+        await recieveMessages(walletAddress);
+        await fetchBlockList();
+      } catch (e) {
+        console.log("error loading messages", e);
+        // Show error visually
+      } finally {
+        setLoadingChats(false);
+      }
+    }
+
     if (
       userState?.accessToken.length &&
       userState?.messagingPubKey.privacySetting &&
       userState?.messagingPubKey.publicKey &&
       walletAddress
     ) {
-      messageListener();
-      recieveMessages(walletAddress);
-      fetchBlockList();
+      getMessagesAndBlocks();
     }
   }, [
     userState.accessToken,
@@ -175,6 +187,8 @@ const ChatView = () => {
   });
 
   useEffect(() => {
+    setLoadingChats(true);
+    
     const userLastMessages: MessageMap = {};
     Object.keys(messages).map((contact: string) => {
       if (
@@ -189,6 +203,7 @@ const ChatView = () => {
       setUserChats(userLastMessages);
       setInitialChats(userLastMessages);
     }
+    setLoadingChats(false);
   }, [messages]);
 
   const fillUserChats = () => {
@@ -373,8 +388,8 @@ const ChatView = () => {
           </div>
         </div>
 
-        {loadingChats || !userChats ? (
-          <ChatLoading />
+        {!addressBookConfig.isLoaded || loadingChats || !userChats ? (
+          <ChatLoader message="Loading chats, please wait..." />
         ) : (
           <Users
             chainId={current.chainId}
@@ -387,20 +402,6 @@ const ChatView = () => {
   );
 };
 
-const ChatLoading = () => {
-  return (
-    <div
-      style={{
-        textAlign: "center",
-        margin: "140px 0px",
-      }}
-    >
-      <img src={loadingChatGif} width={100} />
-      <br />
-      Loading Chats. Please Wait
-    </div>
-  );
-};
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;
 };

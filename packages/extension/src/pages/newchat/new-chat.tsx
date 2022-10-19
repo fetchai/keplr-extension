@@ -25,13 +25,15 @@ import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import jazzicon from "@metamask/jazzicon";
 import ReactHtmlParser from 'react-html-parser';
 import { fromBech32 } from "@cosmjs/encoding";
+import { ChatLoader } from "../../components/chat-loader";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
   const user = useSelector(userDetails);
   const { chainStore } = useStore();
   const { name, address } = props.address;
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const current = chainStore.current;
   useEffect(() => {
     const isUserActive = async () => {
@@ -41,16 +43,19 @@ const NewUser = (props: { address: NameAddress }) => {
           current.chainId,
           address
         );
-        if (pubKey && pubKey.publicKey && pubKey.publicKey.length > 0) setIsActive(true);
+        if (!pubKey || !pubKey.publicKey || !(pubKey.publicKey.length > 0)) setIsActive(false);
       } catch (e) {
         console.log("NewUser/isUserActive error", e);
+      } finally {
+        setIsLoading(false);
       }
     };
     isUserActive();
   }, [address, user.accessToken, user.messagingPubKey.privacySetting, current.chainId]);
 
   const handleClick = () => {
-    history.push(`/chat/${address}`);
+    if (!isLoading)
+      history.push(`/chat/${address}`);
   };
 
   return (
@@ -71,7 +76,9 @@ const NewUser = (props: { address: NameAddress }) => {
         {!isActive && <div className={style.name}>Inactive</div>}
       </div>
       <div>
-        <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
+        {isLoading ? 
+          <i className="fas fa-spinner fa-spin ml-1" /> :
+          <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />}
       </div>
     </div>
   );
@@ -172,72 +179,76 @@ export const NewChat: FunctionComponent = observer(() => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div className={style.newChatContainer}>
-        <div className={style.leftBox}>
-          <img
-            alt=""
-            className={style.backBtn}
-            src={chevronLeft}
-            onClick={() => {
-              history.goBack();
-            }}
-          />
-          <span className={style.title}>New Chat</span>
-        </div>
-      </div>
-      <div className={style.searchContainer}>
-        <div className={style.searchBox}>
-          <img src={searchIcon} alt="search" />
-          <input
-            placeholder="Search by name or address"
-            value={inputVal}
-            onChange={handleSearch}
-          />
-        </div>
-      </div>
-      <div className={style.searchHelp}>You can search your contacts or paste any valid {current.chainName} address to start a conversation.</div>
-      <div className={style.messagesContainer}>
-        {randomAddress && <NewUser address={randomAddress} key={randomAddress.address} />}
-        <div className={style.contacts}>
-          <div>Your contacts</div>
-          <i
-            className="fa fa-user-plus"
-            style={{ margin: "2px 0 0 12px", cursor: "pointer"}}
-            aria-hidden="true"
-            onClick={() => {
-              history.push("/setting/address-book");
-            }}
-          />
-        </div>
-        {addresses.map((address: NameAddress) => {
-          return <NewUser address={address} key={address.address} />;
-        })}
-      </div>
-      {addresses.length === 0 && (
+      {!addressBookConfig.isLoaded ? <ChatLoader message="Loading contacts, please wait..." /> : 
         <div>
-          <div className={style.resultText}>No results in your contacts.</div>
-          {
-            user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
-              <div className={style.resultText}>
-                If you are searching for an address not in your address book,
-                you can't see them due to your selected privacy settings being "contact only".
-                  Please add the address to your address book to be able to chat with them or change your privacy settings. 
-                <br />
-                <a
-                  href="#"
-                  style={{
-                    textDecoration: "underline"
-                  }}
-                  onClick={(e) => {
-                      e.preventDefault();
-                      history.push("/setting/chat/privacy")
-                  }}>
-                    Go to chat privacy settings
-                </a>
-              </div>
-          }
+          <div className={style.newChatContainer}>
+            <div className={style.leftBox}>
+              <img
+                alt=""
+                className={style.backBtn}
+                src={chevronLeft}
+                onClick={() => {
+                  history.goBack();
+                }}
+              />
+              <span className={style.title}>New Chat</span>
+            </div>
+          </div>
+          <div className={style.searchContainer}>
+            <div className={style.searchBox}>
+              <img src={searchIcon} alt="search" />
+              <input
+                placeholder="Search by name or address"
+                value={inputVal}
+                onChange={handleSearch}
+              />
+            </div>
+          </div>
+          <div className={style.searchHelp}>You can search your contacts or paste any valid {current.chainName} address to start a conversation.</div>
+          <div className={style.messagesContainer}>
+            {randomAddress && <NewUser address={randomAddress} key={randomAddress.address} />}
+            <div className={style.contacts}>
+              <div>Your contacts</div>
+              <i
+                className="fa fa-user-plus"
+                style={{ margin: "2px 0 0 12px", cursor: "pointer"}}
+                aria-hidden="true"
+                onClick={() => {
+                  history.push("/setting/address-book");
+                }}
+              />
+            </div>
+            {addresses.map((address: NameAddress) => {
+              return <NewUser address={address} key={address.address} />;
+            })}
+          </div>
+          {addresses.length === 0 && (
+            <div>
+              <div className={style.resultText}>No results in your contacts.</div>
+              {
+                user?.messagingPubKey.privacySetting === PrivacySetting.Contacts && 
+                  <div className={style.resultText}>
+                    If you are searching for an address not in your address book,
+                    you can't see them due to your selected privacy settings being "contact only".
+                      Please add the address to your address book to be able to chat with them or change your privacy settings. 
+                    <br />
+                    <a
+                      href="#"
+                      style={{
+                        textDecoration: "underline"
+                      }}
+                      onClick={(e) => {
+                          e.preventDefault();
+                          history.push("/setting/chat/privacy")
+                      }}>
+                        Go to chat privacy settings
+                    </a>
+                  </div>
+              }
+            </div>
+          )}
         </div>
-      )}
+      }
     </HeaderLayout>
   );
 });
