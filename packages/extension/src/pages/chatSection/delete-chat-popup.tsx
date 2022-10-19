@@ -28,7 +28,7 @@ export const DeleteChatPopup = ({
           Cancel
         </button>
         <button type="button" className={style.btn} onClick={handleDelete}>
-          Block
+          Delete
         </button>
       </div>
     </div>

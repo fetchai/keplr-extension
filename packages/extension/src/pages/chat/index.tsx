@@ -268,13 +268,14 @@ const ChatView = () => {
           <a
             href="#"
             style={{
-              textDecoration: "underline"
+              textDecoration: "underline",
             }}
             onClick={(e) => {
-                e.preventDefault();
-                history.push("/setting/chat/privacy")
-            }}>
-              Go to chat privacy settings
+              e.preventDefault();
+              history.push("/setting/chat/privacy");
+            }}
+          >
+            Go to chat privacy settings
           </a>
         </div>
       </HeaderLayout>
@@ -290,60 +291,71 @@ const ChatView = () => {
     >
       <div className={style.chatContainer}>
         {openDialog && userState.accessToken.length > 0 && (
-          <div className={style.popupContainer}>
-            <img src={privacyIcon} />
-            <br />
-            <div className={style.infoContainer}>
-              <h3>We have just added Chat!</h3>
-              <p>Now you can chat with other active wallets.</p>
-              <p>Select who can send you messages</p>
-              <form>
-                <input
-                  type="radio"
-                  value={PrivacySetting.Everybody}
-                  checked={selectedPrivacySetting === PrivacySetting.Everybody}
-                  onChange={(e) =>
-                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
-                  }
-                />
-                <label htmlFor="option1" className={style["options-label"]}>
-                  Everybody
-                </label>
-                <br />
-                <input
-                  type="radio"
-                  value={PrivacySetting.Contacts}
-                  checked={selectedPrivacySetting === PrivacySetting.Contacts}
-                  onChange={(e) =>
-                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
-                  }
-                />
-                <label htmlFor="option2" className={style["options-label"]}>
-                  Only contacts in address book
-                </label>
-                <br />
-                <input
-                  type="radio"
-                  value={PrivacySetting.Nobody}
-                  checked={selectedPrivacySetting === PrivacySetting.Nobody}
-                  onChange={(e) =>
-                    setSelectedPrivacySetting(e.target.value as PrivacySetting)
-                  }
-                />
-                <label htmlFor="option3" className={style["options-label"]}>
-                  Nobody
-                </label>
-                <br />
-              </form>
-              <p>
-                These settings can be changed at any time from the settings
-                menu.
-              </p>
+          <>
+            <div className={style.overlay}></div>
+            <div className={style.popupContainer}>
+              <img src={privacyIcon} />
+              <br />
+              <div className={style.infoContainer}>
+                <h3>We have just added Chat!</h3>
+                <p>Now you can chat with other active wallets.</p>
+                <p>Select who can send you messages</p>
+                <form>
+                  <input
+                    type="radio"
+                    value={PrivacySetting.Everybody}
+                    checked={
+                      selectedPrivacySetting === PrivacySetting.Everybody
+                    }
+                    onChange={(e) =>
+                      setSelectedPrivacySetting(
+                        e.target.value as PrivacySetting
+                      )
+                    }
+                  />
+                  <label htmlFor="option1" className={style["options-label"]}>
+                    Everybody
+                  </label>
+                  <br />
+                  <input
+                    type="radio"
+                    value={PrivacySetting.Contacts}
+                    checked={selectedPrivacySetting === PrivacySetting.Contacts}
+                    onChange={(e) =>
+                      setSelectedPrivacySetting(
+                        e.target.value as PrivacySetting
+                      )
+                    }
+                  />
+                  <label htmlFor="option2" className={style["options-label"]}>
+                    Only contacts in address book
+                  </label>
+                  <br />
+                  <input
+                    type="radio"
+                    value={PrivacySetting.Nobody}
+                    checked={selectedPrivacySetting === PrivacySetting.Nobody}
+                    onChange={(e) =>
+                      setSelectedPrivacySetting(
+                        e.target.value as PrivacySetting
+                      )
+                    }
+                  />
+                  <label htmlFor="option3" className={style["options-label"]}>
+                    Nobody
+                  </label>
+                  <br />
+                </form>
+                <p>
+                  These settings can be changed at any time from the settings
+                  menu.
+                </p>
+              </div>
+              <button type="button" onClick={registerAndSetMessagePubKey}>
+                Continue
+              </button>
             </div>
-            <button type="button" onClick={registerAndSetMessagePubKey}>
-              Continue
-            </button>
-          </div>
+          </>
         )}
 
         <div className={style.title}>Chats</div>
