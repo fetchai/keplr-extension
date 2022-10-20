@@ -37,6 +37,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
+import { ActionsPopup } from "./actions-popup";
 
 export let openValue = true;
 
@@ -59,6 +60,8 @@ export const ChatSection: FunctionComponent = () => {
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(false);
+  const [action, setAction] = useState("");
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -118,6 +121,12 @@ export const ChatSection: FunctionComponent = () => {
     setShowDropdown(!showDropdown);
   };
 
+  const handleClick = (data: string) => {
+    setAction(data);
+    setConfirmAction(true);
+    setShowDropdown(false);
+  };
+
   const getDateValue = (d: any) => {
     const date = new Date(d);
     return date.getDate();
@@ -149,9 +158,6 @@ export const ChatSection: FunctionComponent = () => {
     }
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  });
   const handleKeydown = (e: { keyCode: number }) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
@@ -273,7 +279,8 @@ export const ChatSection: FunctionComponent = () => {
           <Dropdown
             added={contactName(addresses).length > 0}
             showDropdown={showDropdown}
-            setShowDropdown={setShowDropdown}
+            // setShowDropdown={setShowDropdown}
+            handleClick={handleClick}
             blocked={blockedUsers[userName]}
           />
 
@@ -296,7 +303,13 @@ export const ChatSection: FunctionComponent = () => {
                 >
                   Add
                 </button>
-                <button>Block</button>
+                {blockedUsers[userName] ? (
+                  <button onClick={() => handleClick("unblock")}>
+                    Unblock
+                  </button>
+                ) : (
+                  <button onClick={() => handleClick("block")}>Block</button>
+                )}
               </div>
             </div>
           )}
@@ -375,6 +388,9 @@ export const ChatSection: FunctionComponent = () => {
               )}
             </InputGroup>
           </div>
+          {confirmAction && (
+            <ActionsPopup action={action} setConfirmAction={setConfirmAction} />
+          )}
         </div>
       )}
     </HeaderLayout>

@@ -1,46 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router";
-import { BlockUserPopup } from "./block-user-popup";
-import { DeleteChatPopup } from "./delete-chat-popup";
 import style from "./style.module.scss";
-import { UnblockUserPopup } from "./unblock-user-popup";
 
 export const Dropdown = ({
   added,
   blocked,
   showDropdown,
-  setShowDropdown,
+  handleClick,
 }: {
   added: boolean;
   blocked: boolean;
   showDropdown: boolean;
-  setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClick: Function;
 }) => {
   const history = useHistory();
-  const [confirmAction, setConfirmAction] = useState(false);
-  const [action, setAction] = useState("");
   const userName = history.location.pathname.split("/")[2];
 
-  const handleClick = (data: string) => {
-    setAction(data);
-    setConfirmAction(true);
-    setShowDropdown(false);
-  };
   return (
     <>
-      {confirmAction && (
-        <>
-          {action === "block" && (
-            <BlockUserPopup setConfirmAction={setConfirmAction} />
-          )}
-          {action === "unblock" && (
-            <UnblockUserPopup setConfirmAction={setConfirmAction} />
-          )}
-          {action === "delete" && (
-            <DeleteChatPopup setConfirmAction={setConfirmAction} />
-          )}
-        </>
-      )}
       {showDropdown && (
         <div className={style.dropdown}>
           {added ? (

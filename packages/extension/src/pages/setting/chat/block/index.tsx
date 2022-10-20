@@ -81,8 +81,8 @@ const BlockAddresses: React.FC<{
         {Object.keys(blockedAddresses).filter(
           (contact) => blockedAddresses[contact]
         ).length ? (
-          Object.keys(messages)
-            .filter((contact) => blockedAddresses[contact])
+          Object.keys(blockedAddresses)
+            // .filter((contact) => blockedAddresses[contact])
             .map((contact) => {
               const contactName =
                 addresses.find((entry) => entry.address === contact)?.name ||
