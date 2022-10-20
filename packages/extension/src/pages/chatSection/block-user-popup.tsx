@@ -6,7 +6,7 @@ import style from "./style.module.scss";
 export const BlockUserPopup = ({
   setConfirmAction,
 }: {
-  setConfirmAction: Function;
+  setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [processing, setProcessing] = useState(false);
   const history = useHistory();

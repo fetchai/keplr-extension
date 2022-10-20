@@ -68,7 +68,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       if (value) {
         recipientConfig.setRawRecipient(value);
       }
-    }, [value]);
+    }, [recipientConfig, value]);
     const error = recipientConfig.getError();
     const errorText: string | undefined = useMemo(() => {
       if (error) {

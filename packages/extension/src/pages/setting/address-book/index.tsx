@@ -99,7 +99,7 @@ export const AddressBookPage: FunctionComponent<{
       } else {
         setLoading(false);
       }
-    }, []);
+    }, [chatSectionParams.openModal]);
 
     const confirm = useConfirm();
     const closeModal = () => {

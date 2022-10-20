@@ -1,1 +1,1 @@
-declare module "@metamask/jazzicon"
+declare module "@metamask/jazzicon";

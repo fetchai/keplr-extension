@@ -7,7 +7,7 @@ export const userSlice = createSlice({
     accessToken: "",
     messagingPubKey: {
       publicKey: null,
-      privacySetting: null
+      privacySetting: null,
     },
   },
   reducers: {
@@ -15,7 +15,7 @@ export const userSlice = createSlice({
       state.notifications = [];
       state.messagingPubKey = {
         publicKey: null,
-        privacySetting: null
+        privacySetting: null,
       };
       state.accessToken = "";
     },

@@ -14,7 +14,7 @@ export const Dropdown = ({
   added: boolean;
   blocked: boolean;
   showDropdown: boolean;
-  setShowDropdown: Function;
+  setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const history = useHistory();
   const [confirmAction, setConfirmAction] = useState(false);
