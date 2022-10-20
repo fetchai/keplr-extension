@@ -74,10 +74,9 @@ const handleRegisterPublicKey: (
 const handleEncryptMessagingMessage: (
   service: MessagingService
 ) => InternalHandler<EncryptMessagingMessage> = (service) => {
-  
   return async (env, msg) => {
-    console.log("msg encryptMessage",msg);
-    
+    console.log("msg encryptMessage", msg);
+
     return await service.encryptMessage(
       env,
       msg.chainId,

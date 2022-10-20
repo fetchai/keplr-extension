@@ -44,7 +44,7 @@ export class MessagingService {
       };
     } else {
       return await this.lookupPublicKey(accessToken, targetAddress);
-    };
+    }
   }
 
   /**
@@ -68,17 +68,27 @@ export class MessagingService {
     const pubKey = toHex(privateKey.publicKey.compressed);
 
     const regPubKey = await this.lookupPublicKey(accessToken, address);
-    if (!regPubKey.privacySetting || !regPubKey.publicKey || regPubKey.privacySetting !== privacySetting) {
-      await registerPubKey(accessToken, pubKey, address, privacySetting, MESSAGE_CHANNEL_ID);
+    if (
+      !regPubKey.privacySetting ||
+      !regPubKey.publicKey ||
+      regPubKey.privacySetting !== privacySetting
+    ) {
+      await registerPubKey(
+        accessToken,
+        pubKey,
+        address,
+        privacySetting,
+        MESSAGE_CHANNEL_ID
+      );
       this._publicKeyCache.set(address, {
         publicKey: pubKey,
-        privacySetting
+        privacySetting,
       });
     }
 
     return {
       publicKey: pubKey,
-      privacySetting
+      privacySetting,
     };
   }
 
@@ -120,13 +130,14 @@ export class MessagingService {
     accessToken: string
   ): Promise<string> {
     const rawMessage = Buffer.from(fromBase64(message));
-    
+
     const targetPublicKey = await this.lookupPublicKey(
       accessToken,
       targetAddress
     );
-      
-    if (!targetPublicKey.publicKey) throw new Error("Target pub key not registered");
+
+    if (!targetPublicKey.publicKey)
+      throw new Error("Target pub key not registered");
     const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey.publicKey));
 
     // encrypt the message
@@ -171,14 +182,18 @@ export class MessagingService {
   ): Promise<PubKey> {
     // Step 1. Query the cache
     let targetPublicKey = this._publicKeyCache.get(targetAddress);
-      
+
     if (targetPublicKey?.publicKey && targetPublicKey?.privacySetting) {
       return targetPublicKey;
     }
 
     // Step 2. Cache miss, fetch the public key from the memorandum service and
     //         update the cache
-    targetPublicKey = await getPubKey(accessToken, targetAddress, MESSAGE_CHANNEL_ID);
+    targetPublicKey = await getPubKey(
+      accessToken,
+      targetAddress,
+      MESSAGE_CHANNEL_ID
+    );
     if (!targetPublicKey) {
       return {
         publicKey: undefined,
