@@ -62,7 +62,11 @@ export const ChatMessage = ({
             [style.senderBox]: isSender,
           })}
         >
-          <div className={style.message}>{decryptedMessage}</div>
+          {!decryptedMessage ? (
+            <i className="fas fa-spinner fa-spin ml-1" />
+          ) : (
+            <div className={style.message}>{decryptedMessage}</div>
+          )}
           <div className={style.timestamp}>
             {formatTime(timestamp)}
             {isSender && <img alt="" src={deliveredIcon} />}
