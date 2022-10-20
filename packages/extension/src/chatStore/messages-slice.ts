@@ -27,6 +27,7 @@ interface PubKey {
 interface State {
   chat: MessagesState;
   blockedAddress: BlockedAddressState;
+  errorMessage?: { type: string; message: string; level: number };
 }
 
 const initialState: State = { chat: {}, blockedAddress: {} };
@@ -37,6 +38,7 @@ export const messagesSlice = createSlice({
   reducers: {
     addMessageList: (state, action) => {
       state.chat = action.payload;
+      state.errorMessage = { type: "", message: "", level: 0 };
     },
     updateAuthorMessages: (state: any, action: PayloadAction<Message>) => {
       const { sender, id } = action.payload;
@@ -73,11 +75,15 @@ export const messagesSlice = createSlice({
       const { blockedAddress } = action.payload;
       state.blockedAddress[blockedAddress] = false;
     },
+    setMessageError: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
+  setMessageError,
   addMessageList,
   updateAuthorMessages,
   updateSenderMessages,
@@ -88,6 +94,7 @@ export const {
 } = messagesSlice.actions;
 
 export const userMessages = (state: any) => state.messages.chat;
+export const userMessagesError = (state: any) => state.messages.errorMessage;
 export const userBlockedAddresses = (state: any) =>
   state.messages.blockedAddress;
 export const messageStore = messagesSlice.reducer;

@@ -11,7 +11,11 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { store } from "../../chatStore";
-import { MessageMap, userMessages } from "../../chatStore/messages-slice";
+import {
+  MessageMap,
+  setMessageError,
+  userMessages,
+} from "../../chatStore/messages-slice";
 import {
   setAccessToken,
   setMessagingPubKey,
@@ -33,6 +37,7 @@ import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { NameAddress, Users } from "./users";
 import { ChatLoader } from "../../components/chat-loader";
+import { ChatErrorPopup } from "../../components/chat-error-popup";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -96,6 +101,13 @@ const ChatView = () => {
     } catch (e) {
       // Show error toaster
       console.error("error", e);
+      store.dispatch(
+        setMessageError({
+          type: "setup",
+          message: "Something went wrong, Please try again in sometime.",
+          level: 3,
+        })
+      );
       // Redirect to home
       history.replace("/");
     } finally {
@@ -113,6 +125,13 @@ const ChatView = () => {
         await fetchBlockList();
       } catch (e) {
         console.log("error loading messages", e);
+        store.dispatch(
+          setMessageError({
+            type: "setup",
+            message: "Something went wrong, Please try again in sometime.",
+            level: 3,
+          })
+        );
         // Show error visually
       } finally {
         setLoadingChats(false);
@@ -137,14 +156,29 @@ const ChatView = () => {
   useEffect(() => {
     const setJWTAndFetchMsgPubKey = async () => {
       setLoadingChats(true);
-      const res = await getJWT(current.chainId, AUTH_SERVER);
-      store.dispatch(setAccessToken(res));
+      try {
+        const res = await getJWT(current.chainId, AUTH_SERVER);
+        store.dispatch(setAccessToken(res));
 
-      const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
-      if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
-        return setIsOpendialog(true);
+        const pubKey = await fetchPublicKey(
+          res,
+          current.chainId,
+          walletAddress
+        );
+        if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
+          return setIsOpendialog(true);
 
-      store.dispatch(setMessagingPubKey(pubKey));
+        store.dispatch(setMessagingPubKey(pubKey));
+      } catch (e) {
+        store.dispatch(
+          setMessageError({
+            type: "authorization",
+            message: "Something went wrong, Message can't be delivered",
+            level: 3,
+          })
+        );
+      }
+
       setLoadingChats(false);
     };
 
@@ -304,6 +338,7 @@ const ChatView = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
+      <ChatErrorPopup />
       <div className={style.chatContainer}>
         {openDialog && userState.accessToken.length > 0 && (
           <>

@@ -4,6 +4,7 @@ import { store } from "../chatStore";
 import {
   setBlockedList,
   setBlockedUser,
+  setMessageError,
   setUnblockedUser,
   updateAuthorMessages,
   updateSenderMessages,
@@ -39,56 +40,91 @@ export const fetchMessages = async () => {
 
 export const fetchBlockList = async () => {
   const state = store.getState();
-  const { data } = await client.query({
-    query: gql(blockedList),
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+  try {
+    const { data } = await client.query({
+      query: gql(blockedList),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
       },
-    },
-    variables: {
-      channelId: "MESSAGING",
-    },
-  });
-  console.log(data);
-  store.dispatch(setBlockedList(data.blockedList));
+      variables: {
+        channelId: "MESSAGING",
+      },
+    });
+    store.dispatch(setBlockedList(data.blockedList));
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      setMessageError({
+        type: "block",
+        message: "Something went wrong, Please try again in sometime.",
+        level: 2,
+      })
+    );
+    throw e;
+  }
 };
 
 export const blockUser = async (address: string) => {
   const state = store.getState();
-  const { data } = await client.mutate({
-    mutation: gql(block),
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+  try {
+    const { data } = await client.mutate({
+      mutation: gql(block),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
       },
-    },
-    variables: {
-      blockedAddress: address,
-      channelId: "MESSAGING",
-    },
-  });
-  store.dispatch(setBlockedUser(data.block));
+      variables: {
+        blockedAddress: address,
+        channelId: "MESSAGING",
+      },
+    });
+    store.dispatch(setBlockedUser(data.block));
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      setMessageError({
+        type: "block",
+        message: "Something went wrong, Please try again in sometime.",
+        level: 1,
+      })
+    );
+    throw e;
+  }
 };
 
 export const unblockUser = async (address: string) => {
   const state = store.getState();
-  const { data } = await client.mutate({
-    mutation: gql(unblock),
-    fetchPolicy: "no-cache",
-    context: {
-      headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+  try {
+    const { data } = await client.mutate({
+      mutation: gql(unblock),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
       },
-    },
-    variables: {
-      blockedAddress: address,
-      channelId: "MESSAGING",
-    },
-  });
-  store.dispatch(setUnblockedUser(data.unblock));
+      variables: {
+        blockedAddress: address,
+        channelId: "MESSAGING",
+      },
+    });
+    store.dispatch(setUnblockedUser(data.unblock));
+  } catch (e) {
+    console.log(e);
+    store.dispatch(
+      setMessageError({
+        type: "unblock",
+        message: "Something went wrong, Please try again in sometime.",
+        level: 1,
+      })
+    );
+    throw e;
+  }
 };
 
 export const deliverMessages = async (
@@ -132,7 +168,14 @@ export const deliverMessages = async (
     }
   } catch (e) {
     console.log(e);
-    return e;
+    store.dispatch(
+      setMessageError({
+        type: "delivery",
+        message: "Something went wrong, Message can't be delivered",
+        level: 1,
+      })
+    );
+    return null;
   }
 };
 
@@ -165,11 +208,17 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        console.log("message recieved", data);
         store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
       },
       error(err) {
         console.error("err", err);
+        store.dispatch(
+          setMessageError({
+            type: "subscription",
+            message: "Something went wrong, Cant fetch latest messages",
+            level: 1,
+          })
+        );
       },
       complete() {
         console.log("completed");
