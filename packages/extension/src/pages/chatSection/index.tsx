@@ -191,12 +191,14 @@ export const ChatSection: FunctionComponent = () => {
     }
   }, [oldMessages, messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
-  };
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
+  // };
 
   const isNewUser = (): boolean => {
-    const addressExists = addresses.find((item) => item.address === userName);
+    const addressExists = addresses.find(
+      (item: any) => item.address === userName
+    );
     return !Boolean(addressExists) && messages.length === 0;
   };
   const copyAddress = async (address: string) => {
@@ -376,7 +378,7 @@ export const ChatSection: FunctionComponent = () => {
                   />
                 </ToolTip>
               )}
-              {newMessage?.length ? (
+              {newMessage?.length && newMessage.trim() !== "" ? (
                 <div
                   className={style["send-message-icon"]}
                   onClick={handleSendMessage}

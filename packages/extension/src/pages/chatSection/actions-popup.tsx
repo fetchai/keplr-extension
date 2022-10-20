@@ -8,7 +8,7 @@ export const ActionsPopup = ({
   setConfirmAction,
 }: {
   action: string;
-  setConfirmAction: Function;
+  setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <>

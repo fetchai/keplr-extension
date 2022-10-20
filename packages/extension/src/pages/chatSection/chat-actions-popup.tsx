@@ -11,7 +11,7 @@ export const Dropdown = ({
   added: boolean;
   blocked: boolean;
   showDropdown: boolean;
-  handleClick: Function;
+  handleClick: (data: string) => void;
 }) => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
