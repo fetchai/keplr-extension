@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { ExtensionKVStore } from "@keplr-wallet/common";

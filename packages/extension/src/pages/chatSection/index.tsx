@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,

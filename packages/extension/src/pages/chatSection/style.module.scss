@@ -66,16 +66,15 @@
   margin-right: 5px;
   cursor: pointer;
 }
-.chatArea.showButton{
+.chatArea.showButton {
   height: 57vh;
 }
-.chatArea.hideButton{
+.chatArea.hideButton {
   height: 70vh;
-} 
+}
 .chatArea {
   display: flex;
   flex-direction: column;
-
 
   .messages {
     height: 63vh;
