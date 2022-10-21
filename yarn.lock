@@ -6058,6 +6058,11 @@
   resolved "https://registry.npmjs.org/@types/crypto-js/-/crypto-js-4.0.1.tgz"
   integrity sha512-6+OPzqhKX/cx5xh+yO8Cqg3u3alrkhoxhE5ZOdSEv0DOzJ13lwJ6laqGU0Kv6+XDMFmlnGId04LtY22PsFLQUw==
 
+"@types/domhandler@^2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@types/domhandler/-/domhandler-2.4.2.tgz#5182cf74599b53a583146e13b0a68070b5f456f8"
+  integrity sha512-T6Fx2wcgCMGYAgXsWuc73FJe10QiBdfb0T9abSAMNYYJfxZpVNVlLvwpCuY71OMA0IdZhxpEwjhJpOUVmIEgnQ==
+
 "@types/domutils@*":
   version "1.7.4"
   resolved "https://registry.npmjs.org/@types/domutils/-/domutils-1.7.4.tgz"
@@ -6277,6 +6282,11 @@
   version "13.13.45"
   resolved "https://registry.npmjs.org/@types/node/-/node-13.13.45.tgz"
   integrity sha512-703YTEp8AwQeapI0PTXDOj+Bs/mtdV/k9VcTP7z/de+lx6XjFMKdB+JhKnK+6PZ5za7omgZ3V6qm/dNkMj/Zow==
+
+"@types/node@^14.11.2":
+  version "14.18.32"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.32.tgz#8074f7106731f1a12ba993fe8bad86ee73905014"
+  integrity sha512-Y6S38pFr04yb13qqHf8uk1nHE3lXgQ30WZbv1mLliV9pt0NjvqdWttLcrOYLnXbOafknVYRHZGoMSpR9UwfYow==
 
 "@types/node@^14.14.35":
   version "14.18.5"
@@ -21469,7 +21479,7 @@ react-hook-form@^7.16.1:
 
 react-html-parser@^2.0.2:
   version "2.0.2"
-  resolved "https://registry.npmjs.org/react-html-parser/-/react-html-parser-2.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-html-parser/-/react-html-parser-2.0.2.tgz#6dbe1ddd2cebc1b34ca15215158021db5fc5685e"
   integrity sha512-XeerLwCVjTs3njZcgCOeDUqLgNIt/t+6Jgi5/qPsO/krUWl76kWKXMeVs2LhY2gwM6X378DkhLjur0zUQdpz0g==
   dependencies:
     htmlparser2 "^3.9.0"
