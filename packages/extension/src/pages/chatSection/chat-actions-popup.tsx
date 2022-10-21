@@ -44,7 +44,7 @@ export const Dropdown = ({
           ) : (
             <div onClick={() => handleClick("block")}>Block contact</div>
           )}
-          <div onClick={() => handleClick("delete")}>Delete chat</div>
+          {/* <div onClick={() => handleClick("delete")}>Delete chat</div> */}
         </div>
       )}
     </>

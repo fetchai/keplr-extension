@@ -25,7 +25,7 @@ export const PageButton: FunctionComponent<
       className={classnames(stylePageButton.container, {
         [stylePageButton.withSubParagraph]: subParagraph != null,
       })}
-      // {...attributes}
+      {...attributes}
     >
       <div className={stylePageButton.innerContainer}>
         <ToolTip
