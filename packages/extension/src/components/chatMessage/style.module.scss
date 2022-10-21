@@ -31,12 +31,12 @@
   text-align: center;
 }
 
-.receiverAlign {
+.senderAlign {
   display: flex;
   justify-content: end;
 }
 
-.senderAlign {
+.receiverAlign {
   display: flex;
   justify-content: start;
 }
@@ -44,6 +44,7 @@
 .message {
   padding-right: 30px;
   padding-bottom: 3px;
+  overflow-wrap: break-word;
 }
 
 .timestamp {

@@ -9,6 +9,8 @@ import {
   MemoConfig,
   RecipientConfig,
 } from "@keplr-wallet/hooks";
+import { useLocation } from "react-router";
+import { chatSectionParams, defaultParamValues } from "./index";
 
 /**
  *
@@ -26,20 +28,14 @@ export const AddAddressModal: FunctionComponent<{
   addressBookConfig: AddressBookConfig;
   index: number;
   chainId: string;
-  currentValue: string;
 }> = observer(
-  ({
-    closeModal,
-    recipientConfig,
-    memoConfig,
-    addressBookConfig,
-    index,
-    currentValue,
-  }) => {
+  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index }) => {
     const intl = useIntl();
 
     const [name, setName] = useState("");
-
+    const location = useLocation();
+    const chatSectionParams =
+      (location.state as chatSectionParams) || defaultParamValues;
     useEffect(() => {
       if (index >= 0) {
         const data = addressBookConfig.addressBookDatas[index];
@@ -90,7 +86,7 @@ export const AddAddressModal: FunctionComponent<{
             recipientConfig={recipientConfig}
             label={intl.formatMessage({ id: "setting.address-book.address" })}
             disableAddressBook={true}
-            value={currentValue}
+            value={chatSectionParams.addressInputValue}
           />
           <MemoInput
             memoConfig={memoConfig}
@@ -102,6 +98,7 @@ export const AddAddressModal: FunctionComponent<{
             color="primary"
             disabled={
               !name ||
+              name.trim() === "" ||
               recipientConfig.getError() != null ||
               memoConfig.getError() != null
             }

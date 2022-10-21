@@ -62,6 +62,9 @@ import { ChatSection } from "./pages/chatSection";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { ChatStoreProvider } from "./components/chat/store";
 import { NewChat } from "./pages/newchat/new-chat";
+import { ChatSettings } from "./pages/setting/chat";
+import { BlockList } from "./pages/setting/chat/block";
+import { Privacy } from "./pages/setting/chat/privacy";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -201,6 +204,21 @@ const Application: FunctionComponent = () => {
                         exact
                         path="/setting/export-to-mobile"
                         component={ExportToMobilePage}
+                      />
+                      <Route
+                        exact
+                        path="/setting/chat"
+                        component={ChatSettings}
+                      />
+                      <Route
+                        exact
+                        path="/setting/chat/block"
+                        component={BlockList}
+                      />
+                      <Route
+                        exact
+                        path="/setting/chat/privacy"
+                        component={Privacy}
                       />
                       <Route
                         exact

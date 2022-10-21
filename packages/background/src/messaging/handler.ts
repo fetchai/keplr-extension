@@ -53,7 +53,7 @@ const handleGetMessagingPublicKey: (
       msg.targetAddress,
       msg.accessToken
     );
-    return pubKey ? pubKey : "";
+    return pubKey;
   };
 };
 
@@ -65,7 +65,8 @@ const handleRegisterPublicKey: (
       env,
       msg.chainId,
       msg.address,
-      msg.accessToken
+      msg.accessToken,
+      msg.privacySetting
     );
   };
 };
@@ -74,6 +75,8 @@ const handleEncryptMessagingMessage: (
   service: MessagingService
 ) => InternalHandler<EncryptMessagingMessage> = (service) => {
   return async (env, msg) => {
+    console.log("msg encryptMessage", msg);
+
     return await service.encryptMessage(
       env,
       msg.chainId,

@@ -4,30 +4,12 @@ import { Container } from "reactstrap";
 import deliveredIcon from "../../public/assets/icon/delivered.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import style from "./style.module.scss";
+import { isToday, isYesterday, format } from "date-fns";
 
-const formatTime = (timestamp: number) => {
+const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
-  return date.toLocaleString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  return format(date, "p");
 };
-
-const months: string[] = [
-  "january",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 export const ChatMessage = ({
   chainId,
@@ -42,42 +24,27 @@ export const ChatMessage = ({
   timestamp: number;
   showDate: boolean;
 }) => {
-  const [, setDecryptingState] = useState<
-    "idle" | "in-progress" | "failed" | "success"
-  >("idle");
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
   useEffect(() => {
-    setDecryptingState("in-progress");
-    decryptMessage(chainId, message, !isSender)
+    decryptMessage(chainId, message, isSender)
       .then((message) => {
-        setDecryptingState("success");
         setDecryptedMessage(message);
       })
-      .catch(() => {
-        setDecryptedMessage("failed");
+      .catch((e) => {
+        setDecryptedMessage(e.message);
       });
   }, [chainId, isSender, message]);
 
-  // TODO(!!!): Should be replaced with `date-fns`
-  const currentTime = (time: any) => {
-    const d = new Date(time);
-    if (d.getDate() === new Date().getDate()) {
-      return {
-        time: `${d.getHours()}:${d.getMinutes()}`,
-        date: `Today`,
-      };
+  const getDate = (timestamp: number): string => {
+    const d = new Date(timestamp);
+    if (isToday(d)) {
+      return "Today";
     }
-    if (d.getDate() === new Date().getDate() - 1) {
-      return {
-        time: `${d.getHours()}:${d.getMinutes()}`,
-        date: `Yesterday`,
-      };
+    if (isYesterday(d)) {
+      return "Yesterday";
     }
-    return {
-      time: `${d.getHours()}:${d.getMinutes()}`,
-      date: `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`,
-    };
+    return format(d, "dd MMMM yyyy");
   };
 
   return (
@@ -85,19 +52,21 @@ export const ChatMessage = ({
       <div className={style.currentDateContainer}>
         {" "}
         {showDate ? (
-          <span className={style.currentDate}>
-            {currentTime(timestamp).date}
-          </span>
+          <span className={style.currentDate}>{getDate(timestamp)}</span>
         ) : null}
       </div>
       <div className={isSender ? style.senderAlign : style.receiverAlign}>
         <Container
           fluid
           className={classnames(style.messageBox, {
-            [style.senderBox]: !isSender,
+            [style.senderBox]: isSender,
           })}
         >
-          <div className={style.message}>{decryptedMessage}</div>
+          {!decryptedMessage ? (
+            <i className="fas fa-spinner fa-spin ml-1" />
+          ) : (
+            <div className={style.message}>{decryptedMessage}</div>
+          )}
           <div className={style.timestamp}>
             {formatTime(timestamp)}
             {isSender && <img alt="" src={deliveredIcon} />}

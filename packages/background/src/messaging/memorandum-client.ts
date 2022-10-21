@@ -1,14 +1,33 @@
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  gql,
+  DefaultOptions,
+} from "@apollo/client";
+import { PrivacySetting, PubKey } from "./types";
+
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: "no-cache",
+    errorPolicy: "ignore",
+  },
+  query: {
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  },
+};
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
   cache: new InMemoryCache(),
+  defaultOptions,
 });
 
 export const registerPubKey = async (
   accessToken: string,
   messagingPubKey: string,
   walletAddress: string,
+  privacySetting: PrivacySetting,
   channelId: string
 ): Promise<void> => {
   try {
@@ -16,6 +35,7 @@ export const registerPubKey = async (
       mutation: gql(`mutation Mutation($publicKeyDetails: InputPublicKey!) {
         updatePublicKey(publicKeyDetails: $publicKeyDetails) {
           publicKey
+          privacySetting
         }
       }`),
       variables: {
@@ -23,6 +43,7 @@ export const registerPubKey = async (
           publicKey: messagingPubKey,
           address: walletAddress,
           channelId,
+          privacySetting,
         },
       },
       context: {
@@ -40,12 +61,13 @@ export const getPubKey = async (
   accessToken: string,
   targetAddress: string,
   channelId: string
-): Promise<string | undefined> => {
+): Promise<PubKey> => {
   try {
     const { data } = await client.query({
       query: gql(`query Query($address: String!, $channelId: ChannelId!) {
         publicKey(address: $address, channelId: $channelId) {
           publicKey
+          privacySetting
         }
       }`),
       variables: {
@@ -59,8 +81,15 @@ export const getPubKey = async (
       },
     });
 
-    return data.publicKey.publicKey;
+    return {
+      publicKey: data.publicKey && data.publicKey.publicKey,
+      privacySetting: data.publicKey && data.publicKey.privacySetting,
+    };
   } catch (e) {
     console.log(e);
+    return {
+      publicKey: undefined,
+      privacySetting: undefined,
+    };
   }
 };

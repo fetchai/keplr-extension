@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   useAddressBookConfig,
@@ -5,20 +6,25 @@ import {
 } from "@keplr-wallet/hooks";
 import React, {
   FunctionComponent,
+  useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Input, InputGroup } from "reactstrap";
-import { userMessages } from "../../chatStore/messages-slice";
+import {
+  userBlockedAddresses,
+  userMessages,
+} from "../../chatStore/messages-slice";
+import { userDetails } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
+import { SwitchUser } from "../../components/switch-user";
+import { ToolTip } from "../../components/tooltip";
 import { EthereumEndpoint } from "../../config.ui";
 import { deliverMessages } from "../../graphQL/messages-api";
 import { HeaderLayout } from "../../layouts";
-import bellIcon from "../../public/assets/icon/bell.png";
 import chevronLeft from "../../public/assets/icon/chevron-left.png";
 import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
@@ -26,16 +32,24 @@ import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
-import { ToolTip } from "../../components/tooltip";
+import { Dropdown } from "./chat-actions-popup";
 import style from "./style.module.scss";
-import { userDetails } from "../../chatStore/user-slice";
+import TextareaAutosize from "react-textarea-autosize";
+import { useNotification } from "../../components/notification";
+import { useIntl } from "react-intl";
+import { ChatLoader } from "../../components/chat-loader";
+import { ActionsPopup } from "./actions-popup";
+import { ChatErrorPopup } from "../../components/chat-error-popup";
 
 export let openValue = true;
 
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
+  const notification = useNotification();
+  const intl = useIntl();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
+  const blockedUsers = useSelector(userBlockedAddresses);
   const oldMessages = useMemo(() => allMessages[userName] || {}, [
     allMessages,
     userName,
@@ -48,11 +62,18 @@ export const ChatSection: FunctionComponent = () => {
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(false);
+  const [action, setAction] = useState("");
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const messagesEndRef: any = useRef();
+  const messagesEndRef: any = useCallback(
+    (node: any) => {
+      if (node) node.scrollIntoView(true);
+    },
+    [messages]
+  );
 
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -84,9 +105,9 @@ export const ChatSection: FunctionComponent = () => {
       },
     }
   );
-  const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  const addresses = addressBookConfig.addressBookDatas;
+
+  // console.log("####", addressBookConfig.waitLoaded())
 
   const contactName = (addresses: any) => {
     let val = "";
@@ -100,6 +121,12 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleDropDown = () => {
     setShowDropdown(!showDropdown);
+  };
+
+  const handleClick = (data: string) => {
+    setAction(data);
+    setConfirmAction(true);
+    setShowDropdown(false);
   };
 
   const getDateValue = (d: any) => {
@@ -120,23 +147,14 @@ export const ChatSection: FunctionComponent = () => {
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     try {
-      const data = await deliverMessages(
+      const message = await deliverMessages(
         user.accessToken,
         current.chainId,
         newMessage,
         accountInfo.bech32Address,
         userName
       );
-      if (data?.dispatchMessages?.length > 0) {
-        const newMessages = [...messages];
-        newMessages.push({ ...data.dispatchMessages[0] });
-        setMessages(newMessages);
-        setNewMessage("");
-        messagesEndRef.current?.scrollIntoView({
-          block: "end",
-          behavior: "smooth",
-        });
-      }
+      if (message) setNewMessage("");
     } catch (error) {
       console.log("failed to send : ", error);
     }
@@ -156,7 +174,7 @@ export const ChatSection: FunctionComponent = () => {
         current.chainId,
         userName
       );
-      setTargetPubKey(pubAddr || "");
+      setTargetPubKey(pubAddr?.publicKey || "");
     };
     if (!oldMessages?.pubKey?.length) {
       setPublicAddress();
@@ -165,6 +183,7 @@ export const ChatSection: FunctionComponent = () => {
 
   useEffect(() => {
     if (
+      oldMessages?.lastMessage?.id &&
       !messages?.find(
         (message: any) => message?.id === oldMessages?.lastMessage?.id
       )
@@ -172,128 +191,213 @@ export const ChatSection: FunctionComponent = () => {
       const newMessages = [...messages, oldMessages?.lastMessage];
       setMessages(newMessages);
     }
-    // 👇️ scroll to bottom every time messages change
-    messagesEndRef.current?.scrollIntoView({
-      block: "end",
-      behavior: "smooth",
-    });
   }, [oldMessages, messages]);
+
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
+  // };
+
+  const isNewUser = (): boolean => {
+    const addressExists = addresses.find(
+      (item: any) => item.address === userName
+    );
+    return !Boolean(addressExists) && messages.length === 0;
+  };
+  const copyAddress = async (address: string) => {
+    await navigator.clipboard.writeText(address);
+    notification.push({
+      placement: "top-center",
+      type: "success",
+      duration: 2,
+      content: intl.formatMessage({
+        id: "main.address.copied",
+      }),
+      canDelete: true,
+      transition: {
+        duration: 0.25,
+      },
+    });
+  };
 
   return (
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
-      rightRenderer={
-        <div
-          style={{
-            height: "64px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingRight: "20px",
-          }}
-        >
-          <img
-            src={bellIcon}
-            alt="notification"
-            style={{ width: "16px", cursor: "pointer" }}
-            onClick={(e) => {
-              e.preventDefault();
-
-              history.push("/setting/set-keyring");
-            }}
-          />
-        </div>
-      }
+      rightRenderer={<SwitchUser />}
     >
-      <div className={style.username}>
-        <div className={style.leftBox}>
-          <img
-            alt=""
-            className={style.backBtn}
-            src={chevronLeft}
-            onClick={() => {
-              history.goBack();
-              openValue = false;
-            }}
-          />
-          <span className={style.recieverName}>
-            {contactName(addresses).length
-              ? contactName(addresses)
-              : formatAddress(userName)}
-          </span>
-        </div>
-        <img
-          alt=""
-          style={{ cursor: "pointer" }}
-          className={style.more}
-          src={moreIcon}
-          onClick={handleDropDown}
-        />
-      </div>
-      <div className={style.messages}>
-        <p>
-          Messages are end to end encrypted. Nobody else can read them except
-          you and the recipient.
-        </p>
-        {messages
-          ?.sort((a: any, b: any) => {
-            return a.commitTimestamp - b.commitTimestamp;
-          })
-          ?.map((message: any, index) => {
-            const check = showDateFunction(message?.commitTimestamp);
-            return (
-              <ChatMessage
-                chainId={current.chainId}
-                showDate={check}
-                message={message?.contents}
-                isSender={message?.sender === userName}
-                key={index}
-                timestamp={message?.commitTimestamp || 1549312452}
+      <ChatErrorPopup />
+      {!addressBookConfig.isLoaded ? (
+        <ChatLoader message="Arranging messages, please wait..." />
+      ) : (
+        <div>
+          <div className={style.username}>
+            <div className={style.leftBox}>
+              <img
+                alt=""
+                className={style.backBtn}
+                src={chevronLeft}
+                onClick={() => {
+                  history.goBack();
+                  openValue = false;
+                }}
               />
-            );
-          })}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <InputGroup className={style.inputText}>
-        {targetPubKey.length ? (
-          <Input
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder="Type a new message..."
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            onKeyDown={handleKeydown}
-            disabled={false}
-          />
-        ) : (
-          <ToolTip
-            trigger="hover"
-            options={{ placement: "top" }}
-            tooltip={<div>No transaction history found for this user</div>}
-          >
-            <Input
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder="Type a new message..."
-              value={newMessage}
-              onChange={(event) => setNewMessage(event.target.value)}
-              onKeyDown={handleKeydown}
-              disabled={true}
-            />
-          </ToolTip>
-        )}
-        {newMessage?.length ? (
-          <div
-            className={style["send-message-icon"]}
-            onClick={handleSendMessage}
-          >
-            <img src={paperAirplaneIcon} alt="" />
+              <span className={style.recieverName}>
+                <ToolTip
+                  tooltip={
+                    <div className={style.user}>
+                      {contactName(addresses).length
+                        ? contactName(addresses)
+                        : userName}
+                    </div>
+                  }
+                  theme="dark"
+                  trigger="hover"
+                  options={{
+                    placement: "top",
+                  }}
+                >
+                  {contactName(addresses).length
+                    ? formatAddress(contactName(addresses))
+                    : formatAddress(userName)}
+                </ToolTip>
+              </span>
+              <span
+                className={style.copyIcon}
+                onClick={() => copyAddress(userName)}
+              >
+                <i className="fas fa-copy" />
+              </span>
+            </div>
+            <div className={style.rightBox}>
+              <img
+                alt=""
+                style={{ cursor: "pointer" }}
+                className={style.more}
+                src={moreIcon}
+                onClick={handleDropDown}
+                onBlur={handleDropDown}
+              />
+            </div>
           </div>
-        ) : (
-          ""
-        )}
-      </InputGroup>
+
+          <Dropdown
+            added={contactName(addresses).length > 0}
+            showDropdown={showDropdown}
+            // setShowDropdown={setShowDropdown}
+            handleClick={handleClick}
+            blocked={blockedUsers[userName]}
+          />
+
+          {isNewUser() && (
+            <div className={style.contactsContainer}>
+              <div className={style.displayText}>
+                This contact is not saved in your address book
+              </div>
+              <div className={style.buttons}>
+                <button
+                  onClick={() =>
+                    history.push({
+                      pathname: "/setting/address-book",
+                      state: {
+                        openModal: true,
+                        addressInputValue: userName,
+                      },
+                    })
+                  }
+                >
+                  Add
+                </button>
+                {blockedUsers[userName] ? (
+                  <button onClick={() => handleClick("unblock")}>
+                    Unblock
+                  </button>
+                ) : (
+                  <button onClick={() => handleClick("block")}>Block</button>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div
+            className={`${style.chatArea} ${
+              isNewUser() ? style.showButton : style.hideButton
+            }`}
+          >
+            <div className={style.messages}>
+              <p>
+                Messages are end to end encrypted. Nobody else can read them
+                except you and the recipient.
+              </p>
+              {messages
+                ?.sort((a: any, b: any) => {
+                  return a.commitTimestamp - b.commitTimestamp;
+                })
+                ?.map((message: any, index) => {
+                  const check = showDateFunction(message?.commitTimestamp);
+                  return (
+                    <ChatMessage
+                      key={index}
+                      chainId={current.chainId}
+                      showDate={check}
+                      message={message?.contents}
+                      isSender={message?.target === userName} // if target was the user we are chatting with
+                      timestamp={message?.commitTimestamp || 1549312452}
+                    />
+                  );
+                })}
+              <div ref={messagesEndRef} className={style.messageRef} />
+            </div>
+            <InputGroup className={style.inputText}>
+              {targetPubKey.length ? (
+                <TextareaAutosize
+                  maxRows={3}
+                  className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                  placeholder={
+                    blockedUsers[userName]
+                      ? "This contact is blocked"
+                      : "Type a new message..."
+                  }
+                  value={newMessage}
+                  onChange={(event) => setNewMessage(event.target.value)}
+                  onKeyDown={handleKeydown}
+                  disabled={blockedUsers[userName]}
+                />
+              ) : (
+                <ToolTip
+                  trigger="hover"
+                  options={{ placement: "top" }}
+                  tooltip={
+                    <div>No transaction history found for this user</div>
+                  }
+                >
+                  <Input
+                    className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+                    placeholder="Type a new message..."
+                    value={newMessage}
+                    onChange={(event) => setNewMessage(event.target.value)}
+                    onKeyDown={handleKeydown}
+                    disabled={true}
+                  />
+                </ToolTip>
+              )}
+              {newMessage?.length && newMessage.trim() !== "" ? (
+                <div
+                  className={style["send-message-icon"]}
+                  onClick={handleSendMessage}
+                >
+                  <img src={paperAirplaneIcon} alt="" />
+                </div>
+              ) : (
+                ""
+              )}
+            </InputGroup>
+          </div>
+          {confirmAction && (
+            <ActionsPopup action={action} setConfirmAction={setConfirmAction} />
+          )}
+        </div>
+      )}
     </HeaderLayout>
   );
 };

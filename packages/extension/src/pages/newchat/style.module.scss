@@ -19,6 +19,7 @@
       border: none;
       outline: none;
       background: transparent;
+      flex-grow: 1;
       &::placeholder {
         color: #525f7f;
       }
@@ -26,7 +27,7 @@
   }
 }
 .messagesContainer {
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -80,10 +81,48 @@
       }
     }
   }
-  .resultText {
-    color: #808da0;
-    font-weight: 400;
-    font-size: 15px;
-    margin-bottom: 16px;
+}
+.newChatContainer {
+  margin-left: -12px;
+  margin-right: -12px;
+  padding: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 6px;
+  flex-direction: row;
+  .backBtn {
+    flex-basis: 25px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    cursor: pointer;
   }
+  .title {
+    text-align: center;
+    font-size: 20px;
+    color: #525f7f;
+    line-height: 16px;
+    font-weight: 500;
+    position: relative;
+    margin-left: 5px;
+  }
+}
+.resultText {
+  color: #808da0;
+  font-weight: 400;
+  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.searchHelp {
+  font-size: 13px;
+  color: #808da0;
+  margin-top: 5px;
+}
+
+.contacts {
+  display: flex;
 }

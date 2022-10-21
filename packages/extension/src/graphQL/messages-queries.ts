@@ -51,3 +51,33 @@ export const listenMessages = `subscription NewMessageUpdate {
       }
     }
   }`;
+
+export const blockedList = `query Query($channelId: ChannelId!) {
+    blockedList(channelId: $channelId) {
+      id
+      blockerAddress
+      blockedAddress
+      channelId
+      timestamp
+    }
+  }`;
+
+export const block = `mutation Mutation($blockedAddress: String!, $channelId: ChannelId!) {
+    block(blockedAddress: $blockedAddress, channelId: $channelId) {
+      id
+      blockerAddress
+      blockedAddress
+      channelId
+      timestamp
+    }
+  }`;
+
+export const unblock = `mutation Mutation($blockedAddress: String!, $channelId: ChannelId!) {
+  unblock(blockedAddress: $blockedAddress, channelId: $channelId) {
+    id
+    blockerAddress
+    blockedAddress
+    channelId
+    timestamp
+  }
+}`;

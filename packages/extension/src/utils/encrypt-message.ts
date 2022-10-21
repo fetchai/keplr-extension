@@ -39,7 +39,6 @@ export const encryptAllData = async (
     targetAddress,
     accessToken
   );
-
   return toBase64(Buffer.from(JSON.stringify(dataEnvelope)));
 };
 
@@ -66,7 +65,7 @@ export async function encryptToEnvelope(
   // lookup both our (sender) and target public keys
   const senderPublicKey = await requester.sendMessage(
     BACKGROUND_PORT,
-    new GetMessagingPublicKey(chainId, accessToken, null)
+    new GetMessagingPublicKey(chainId, accessToken, senderAddress)
   );
 
   const targetPublicKey = await requester.sendMessage(
@@ -74,9 +73,13 @@ export async function encryptToEnvelope(
     new GetMessagingPublicKey(chainId, accessToken, targetAddress)
   );
 
+  if (!senderPublicKey.publicKey || !targetPublicKey.publicKey) {
+    throw new Error("Public key not available");
+  }
+
   const message: MessagePrimitive = {
-    sender: senderPublicKey, //public key
-    target: targetPublicKey, // public key
+    sender: senderPublicKey.publicKey, //public key
+    target: targetPublicKey.publicKey, // public key
     type: 1, //private_message
     content: {
       text: messageStr,
@@ -117,11 +120,10 @@ export async function encryptToEnvelope(
     BACKGROUND_PORT,
     new SignMessagingPayload(chainId, encodedData)
   );
-
   return {
     data: encodedData,
-    senderPublicKey,
-    targetPublicKey,
+    senderPublicKey: senderPublicKey.publicKey,
+    targetPublicKey: targetPublicKey.publicKey,
     signature,
     channelId: MESSAGE_CHANNEL_ID,
   };

@@ -6,13 +6,14 @@ import { decrypt, encrypt, PrivateKey } from "eciesjs";
 import { fromBase64, fromHex, toBase64, toHex } from "@cosmjs/encoding";
 import { getPubKey, registerPubKey } from "./memorandum-client";
 import { MESSAGE_CHANNEL_ID } from "./constants";
+import { PrivacySetting, PubKey } from "./types";
 
 @singleton()
 export class MessagingService {
   // map of target address vs target public key
   // assumption: chainId incorporated since each network will have a different
   // bech32 prefix
-  private _publicKeyCache = new Map<string, string>();
+  private _publicKeyCache = new Map<string, PubKey>();
 
   constructor(
     @inject(delay(() => KeyRingService))
@@ -33,11 +34,14 @@ export class MessagingService {
     chainId: string,
     targetAddress: string | null,
     accessToken: string
-  ): Promise<string | undefined> {
+  ): Promise<PubKey> {
     if (targetAddress === null) {
       const sk = await this.getPrivateKey(env, chainId);
       const privateKey = new PrivateKey(Buffer.from(sk));
-      return toHex(privateKey.publicKey.compressed);
+      return {
+        publicKey: toHex(privateKey.publicKey.compressed),
+        privacySetting: undefined,
+      };
     } else {
       return await this.lookupPublicKey(accessToken, targetAddress);
     }
@@ -56,17 +60,36 @@ export class MessagingService {
     env: Env,
     chainId: string,
     address: string,
-    accessToken: string
-  ): Promise<string> {
+    accessToken: string,
+    privacySetting: PrivacySetting
+  ): Promise<PubKey> {
     const sk = await this.getPrivateKey(env, chainId);
     const privateKey = new PrivateKey(Buffer.from(sk));
     const pubKey = toHex(privateKey.publicKey.compressed);
 
     const regPubKey = await this.lookupPublicKey(accessToken, address);
-    if (!regPubKey)
-      await registerPubKey(accessToken, pubKey, address, MESSAGE_CHANNEL_ID);
+    if (
+      !regPubKey.privacySetting ||
+      !regPubKey.publicKey ||
+      regPubKey.privacySetting !== privacySetting
+    ) {
+      await registerPubKey(
+        accessToken,
+        pubKey,
+        address,
+        privacySetting,
+        MESSAGE_CHANNEL_ID
+      );
+      this._publicKeyCache.set(address, {
+        publicKey: pubKey,
+        privacySetting,
+      });
+    }
 
-    return pubKey;
+    return {
+      publicKey: pubKey,
+      privacySetting,
+    };
   }
 
   /**
@@ -107,13 +130,15 @@ export class MessagingService {
     accessToken: string
   ): Promise<string> {
     const rawMessage = Buffer.from(fromBase64(message));
+
     const targetPublicKey = await this.lookupPublicKey(
       accessToken,
       targetAddress
     );
 
-    if (!targetPublicKey) throw new Error("Target pub key not registered");
-    const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey));
+    if (!targetPublicKey.publicKey)
+      throw new Error("Target pub key not registered");
+    const rawTargetPublicKey = Buffer.from(fromHex(targetPublicKey.publicKey));
 
     // encrypt the message
     return toBase64(encrypt(rawTargetPublicKey, rawMessage));
@@ -154,39 +179,31 @@ export class MessagingService {
   protected async lookupPublicKey(
     accessToken: string,
     targetAddress: string
-  ): Promise<string | undefined> {
+  ): Promise<PubKey> {
     // Step 1. Query the cache
     let targetPublicKey = this._publicKeyCache.get(targetAddress);
-    if (targetPublicKey !== undefined) {
+
+    if (targetPublicKey?.publicKey && targetPublicKey?.privacySetting) {
       return targetPublicKey;
     }
 
     // Step 2. Cache miss, fetch the public key from the memorandum service and
     //         update the cache
-    targetPublicKey = await this.fetchPublicKey(accessToken, targetAddress);
+    targetPublicKey = await getPubKey(
+      accessToken,
+      targetAddress,
+      MESSAGE_CHANNEL_ID
+    );
     if (!targetPublicKey) {
-      return;
+      return {
+        publicKey: undefined,
+        privacySetting: undefined,
+      };
     }
 
     this._publicKeyCache.set(targetAddress, targetPublicKey);
 
     return targetPublicKey;
-  }
-
-  /**
-   * Fetch the public key information for a specificed address from the memorandum
-   * service
-   *
-   * @param accessToken accessToken token to authenticate in memorandum service
-   * @param targetAddress The address to lookup the public key for
-   * @returns The base64 encoded public key for the target address if successful
-   * @private
-   */
-  private async fetchPublicKey(
-    accessToken: string,
-    targetAddress: string
-  ): Promise<string | undefined> {
-    return await getPubKey(accessToken, targetAddress, MESSAGE_CHANNEL_ID);
   }
 
   /**
