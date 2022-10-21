@@ -1,7 +1,7 @@
 export enum PrivacySetting {
-  Contacts = 'CONTACTS',
-  Everybody = 'EVERYBODY',
-  Nobody = 'NOBODY'
+  Contacts = "CONTACTS",
+  Everybody = "EVERYBODY",
+  Nobody = "NOBODY",
 }
 
 export interface PubKey {

@@ -37,6 +37,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
+import { ChatErrorPopup } from "../../components/chat-error-popup";
 
 export let openValue = true;
 
@@ -216,6 +217,7 @@ export const ChatSection: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
+      <ChatErrorPopup />
       {!addressBookConfig.isLoaded ? (
         <ChatLoader message="Arranging messages, please wait..." />
       ) : (

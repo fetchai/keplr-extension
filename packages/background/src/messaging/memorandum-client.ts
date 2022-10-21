@@ -6,7 +6,6 @@ import {
 } from "@apollo/client";
 import { PrivacySetting, PubKey } from "./types";
 
-
 const defaultOptions: DefaultOptions = {
   watchQuery: {
     fetchPolicy: "no-cache",
@@ -17,7 +16,6 @@ const defaultOptions: DefaultOptions = {
     errorPolicy: "all",
   },
 };
-
 
 const client = new ApolloClient({
   uri: "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql",
@@ -85,13 +83,13 @@ export const getPubKey = async (
 
     return {
       publicKey: data.publicKey && data.publicKey.publicKey,
-      privacySetting: data.publicKey && data.publicKey.privacySetting
-    }
+      privacySetting: data.publicKey && data.publicKey.privacySetting,
+    };
   } catch (e) {
     console.log(e);
     return {
       publicKey: undefined,
-      privacySetting: undefined
-    }
+      privacySetting: undefined,
+    };
   }
 };
