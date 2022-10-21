@@ -37,6 +37,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
+import { ActionsPopup } from "./actions-popup";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
 
 export let openValue = true;
@@ -60,6 +61,8 @@ export const ChatSection: FunctionComponent = () => {
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(false);
+  const [action, setAction] = useState("");
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -119,6 +122,12 @@ export const ChatSection: FunctionComponent = () => {
     setShowDropdown(!showDropdown);
   };
 
+  const handleClick = (data: string) => {
+    setAction(data);
+    setConfirmAction(true);
+    setShowDropdown(false);
+  };
+
   const getDateValue = (d: any) => {
     const date = new Date(d);
     return date.getDate();
@@ -150,9 +159,6 @@ export const ChatSection: FunctionComponent = () => {
     }
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  });
   const handleKeydown = (e: { keyCode: number }) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
@@ -186,12 +192,14 @@ export const ChatSection: FunctionComponent = () => {
     }
   }, [oldMessages, messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
-  };
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
+  // };
 
   const isNewUser = (): boolean => {
-    const addressExists = addresses.find((item) => item.address === userName);
+    const addressExists = addresses.find(
+      (item: any) => item.address === userName
+    );
     return !Boolean(addressExists) && messages.length === 0;
   };
   const copyAddress = async (address: string) => {
@@ -275,7 +283,8 @@ export const ChatSection: FunctionComponent = () => {
           <Dropdown
             added={contactName(addresses).length > 0}
             showDropdown={showDropdown}
-            setShowDropdown={setShowDropdown}
+            // setShowDropdown={setShowDropdown}
+            handleClick={handleClick}
             blocked={blockedUsers[userName]}
           />
 
@@ -298,12 +307,22 @@ export const ChatSection: FunctionComponent = () => {
                 >
                   Add
                 </button>
-                <button>Block</button>
+                {blockedUsers[userName] ? (
+                  <button onClick={() => handleClick("unblock")}>
+                    Unblock
+                  </button>
+                ) : (
+                  <button onClick={() => handleClick("block")}>Block</button>
+                )}
               </div>
             </div>
           )}
 
-          <div className={style.chatArea}>
+          <div
+            className={`${style.chatArea} ${
+              isNewUser() ? style.showButton : style.hideButton
+            }`}
+          >
             <div className={style.messages}>
               <p>
                 Messages are end to end encrypted. Nobody else can read them
@@ -361,7 +380,7 @@ export const ChatSection: FunctionComponent = () => {
                   />
                 </ToolTip>
               )}
-              {newMessage?.length ? (
+              {newMessage?.length && newMessage.trim() !== "" ? (
                 <div
                   className={style["send-message-icon"]}
                   onClick={handleSendMessage}
@@ -373,6 +392,9 @@ export const ChatSection: FunctionComponent = () => {
               )}
             </InputGroup>
           </div>
+          {confirmAction && (
+            <ActionsPopup action={action} setConfirmAction={setConfirmAction} />
+          )}
         </div>
       )}
     </HeaderLayout>

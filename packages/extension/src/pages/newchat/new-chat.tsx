@@ -75,7 +75,7 @@ const NewUser = (props: { address: NameAddress }) => {
         )}
       </div>
       <div className={style.messageInner}>
-        <div className={style.name}>{name}</div>
+        <div className={style.name}>{formatAddress(name)}</div>
         {!isActive && <div className={style.name}>Inactive</div>}
       </div>
       <div>

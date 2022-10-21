@@ -98,6 +98,7 @@ export const AddAddressModal: FunctionComponent<{
             color="primary"
             disabled={
               !name ||
+              name.trim() === "" ||
               recipientConfig.getError() != null ||
               memoConfig.getError() != null
             }
