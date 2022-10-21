@@ -11,6 +11,7 @@ interface TabProps {
   activeTabIcon: string;
   path: string;
   disabled: boolean;
+  tooltip?: string;
 }
 
 export const Tab = ({
@@ -19,6 +20,7 @@ export const Tab = ({
   activeTabIcon,
   path,
   disabled,
+  tooltip,
 }: TabProps) => {
   const history = useHistory();
   const location = useLocation();
@@ -41,7 +43,7 @@ export const Tab = ({
       <div className={style.title}>{title}</div>
       {disabled && (
         <UncontrolledTooltip placement="top" target={title}>
-          Coming Soon
+          {tooltip}
         </UncontrolledTooltip>
       )}
     </div>
