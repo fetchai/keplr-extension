@@ -71,7 +71,6 @@ const ChatView = () => {
   const [loadingChats, setLoadingChats] = useState(true);
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
-  const [initialChats, setInitialChats] = useState<MessageMap>({});
 
   const [
     selectedPrivacySetting,
@@ -233,10 +232,8 @@ const ChatView = () => {
 
       userLastMessages[contact] = messages[contact].lastMessage;
     });
-    if (Object.keys(initialChats).length === 0) {
-      setUserChats(userLastMessages);
-      setInitialChats(userLastMessages);
-    }
+
+    setUserChats(userLastMessages);
     setLoadingChats(false);
   }, [messages]);
 
