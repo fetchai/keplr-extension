@@ -5,10 +5,7 @@ import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import {
-  userBlockedAddresses,
-  userMessages,
-} from "../../../../chatStore/messages-slice";
+import { userBlockedAddresses } from "../../../../chatStore/messages-slice";
 import { HeaderLayout } from "../../../../layouts";
 import { useStore } from "../../../../stores";
 import { formatAddress } from "../../../../utils/format";
@@ -18,7 +15,6 @@ import { UnblockUserPopup } from "./unblock-user-popup";
 
 export const BlockList: FunctionComponent = observer(() => {
   // const language = useLanguage();
-  const messages = useSelector(userMessages);
   const blockedAddresses = useSelector(userBlockedAddresses);
   const history = useHistory();
   const intl = useIntl();
@@ -38,9 +34,11 @@ export const BlockList: FunctionComponent = observer(() => {
     }
   );
 
-  const addresses = addressBookConfig.addressBookDatas.map((data) => {
-    return { name: data.name, address: data.address };
-  });
+  const addresses = addressBookConfig.addressBookDatas.map(
+    (data: NameAddress) => {
+      return { name: data.name, address: data.address };
+    }
+  );
   return (
     <HeaderLayout
       showChainName={false}
@@ -54,7 +52,6 @@ export const BlockList: FunctionComponent = observer(() => {
     >
       <BlockAddresses
         addresses={addresses}
-        messages={messages}
         blockedAddresses={blockedAddresses}
       />
     </HeaderLayout>
@@ -62,10 +59,9 @@ export const BlockList: FunctionComponent = observer(() => {
 });
 
 const BlockAddresses: React.FC<{
-  messages: any;
   addresses: NameAddress[];
   blockedAddresses: { [key: string]: boolean };
-}> = ({ messages, addresses, blockedAddresses }) => {
+}> = ({ addresses, blockedAddresses }) => {
   const [confirmAction, setConfirmAction] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>("");
 
@@ -81,34 +77,32 @@ const BlockAddresses: React.FC<{
         {Object.keys(blockedAddresses).filter(
           (contact) => blockedAddresses[contact]
         ).length ? (
-          Object.keys(blockedAddresses)
-            // .filter((contact) => blockedAddresses[contact])
-            .map((contact) => {
-              const contactName =
-                addresses.find((entry) => entry.address === contact)?.name ||
-                formatAddress(contact);
-              return (
-                <div key={contact} className={style.messageContainer}>
-                  <div className={style.initials}>
-                    {contactName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className={style.messageInner}>
-                    <div className={style.name}>{contactName}</div>
-                  </div>
-                  <div>
-                    <img
-                      src={require("../../../../public/assets/svg/x-icon.svg")}
-                      style={{ width: "80%" }}
-                      alt="message"
-                      onClick={() => {
-                        setUserName(contact);
-                        setConfirmAction(true);
-                      }}
-                    />
-                  </div>
+          Object.keys(blockedAddresses).map((contact) => {
+            const contactName =
+              addresses.find((entry) => entry.address === contact)?.name ||
+              formatAddress(contact);
+            return (
+              <div key={contact} className={style.messageContainer}>
+                <div className={style.initials}>
+                  {contactName.charAt(0).toUpperCase()}
                 </div>
-              );
-            })
+                <div className={style.messageInner}>
+                  <div className={style.name}>{contactName}</div>
+                </div>
+                <div>
+                  <img
+                    src={require("../../../../public/assets/svg/x-icon.svg")}
+                    style={{ width: "80%" }}
+                    alt="message"
+                    onClick={() => {
+                      setUserName(contact);
+                      setConfirmAction(true);
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })
         ) : (
           <div className={style.messageContainer}>
             <div className={style.messageInner}>
