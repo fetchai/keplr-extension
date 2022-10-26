@@ -79,7 +79,8 @@ export const AddAddressModal: FunctionComponent<{
             autoComplete="off"
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              if (e.target.value.length < 30) setName(e.target.value);
+              else setName(e.target.value.substring(0, 30));
             }}
           />
           <AddressInput

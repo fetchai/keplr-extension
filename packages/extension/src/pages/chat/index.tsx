@@ -24,7 +24,7 @@ import {
 } from "../../chatStore/user-slice";
 import { SwitchUser } from "../../components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
-import { AUTH_SERVER } from "../../config/config";
+import { AUTH_SERVER } from "../../config.ui.var";
 import { fetchBlockList, messageListener } from "../../graphQL/messages-api";
 import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";

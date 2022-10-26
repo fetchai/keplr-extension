@@ -13,7 +13,7 @@ import {
   setMessagingPubKey,
   userDetails,
 } from "../../../chatStore/user-slice";
-import { AUTH_SERVER } from "../../../config/config";
+import { AUTH_SERVER } from "../../../config.ui.var";
 import { fetchBlockList } from "../../../graphQL/messages-api";
 import { useStore } from "../../../stores";
 import { getJWT } from "../../../utils/auth";
