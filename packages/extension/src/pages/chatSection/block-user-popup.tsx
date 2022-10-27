@@ -28,35 +28,38 @@ export const BlockUserPopup = ({
   };
 
   return (
-    <div className={style.popup}>
-      <h4>Block User</h4>
-      <section>
-        <p className={style.textContainer}>
-          This contact will not be able to send you messages. The contact will
-          not be notified.
-        </p>
-        {/* <div className={style.textContainer}>
+    <>
+      <div className={style.overlay} />
+      <div className={style.popup}>
+        <h4>Block User</h4>
+        <section>
+          <p className={style.textContainer}>
+            This contact will not be able to send you messages. The contact will
+            not be notified.
+          </p>
+          {/* <div className={style.textContainer}>
           <input type="checkbox" id="check" />
           <label htmlFor="check">Also report contact</label>
         </div> */}
 
-        {/* <p className={style.textContainer}>
+          {/* <p className={style.textContainer}>
           The last 5 messages will be sent to Fetch.
         </p> */}
-      </section>
-      <div className={style.buttonContainer}>
-        <button type="button" onClick={handleCancel} disabled={processing}>
-          Cancel
-        </button>
-        <button
-          type="button"
-          className={style.btn}
-          onClick={handleBlock}
-          disabled={processing}
-        >
-          Block
-        </button>
+        </section>
+        <div className={style.buttonContainer}>
+          <button type="button" onClick={handleCancel} disabled={processing}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={style.btn}
+            onClick={handleBlock}
+            disabled={processing}
+          >
+            Block
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

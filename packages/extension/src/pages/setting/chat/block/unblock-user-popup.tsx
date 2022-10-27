@@ -28,27 +28,30 @@ export const UnblockUserPopup = ({
   };
 
   return (
-    <div className={style.popup}>
-      <h4>Unblock User</h4>
-      <section>
-        <p className={style.textContainer}>
-          This contact will not be able to send you messages. The contact will
-          not be notified.
-        </p>
-      </section>
-      <div className={style.buttonContainer}>
-        <button type="button" onClick={handleCancel} disabled={processing}>
-          Cancel
-        </button>
-        <button
-          type="button"
-          className={style.btn}
-          onClick={handleBlock}
-          disabled={processing}
-        >
-          Unblock
-        </button>
+    <>
+      <div className={style.overlay} />
+      <div className={style.popup}>
+        <h4>Unblock User</h4>
+        <section>
+          <p className={style.textContainer}>
+            This contact will not be able to send you messages. The contact will
+            not be notified.
+          </p>
+        </section>
+        <div className={style.buttonContainer}>
+          <button type="button" onClick={handleCancel} disabled={processing}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={style.btn}
+            onClick={handleBlock}
+            disabled={processing}
+          >
+            Unblock
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
