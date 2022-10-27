@@ -19,7 +19,7 @@ export const ChatErrorPopup = () => {
     <>
       <div className={style.overlay} />
       <div className={style.popup}>
-        <h4>{errorMessage.type} Error</h4>
+        <h4>Error</h4>
         <section className={style.textContainer}>
           {errorMessage.message}
         </section>
