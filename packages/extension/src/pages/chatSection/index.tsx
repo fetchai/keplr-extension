@@ -146,18 +146,19 @@ export const ChatSection: FunctionComponent = () => {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    try {
-      const message = await deliverMessages(
-        user.accessToken,
-        current.chainId,
-        newMessage,
-        accountInfo.bech32Address,
-        userName
-      );
-      if (message) setNewMessage("");
-    } catch (error) {
-      console.log("failed to send : ", error);
-    }
+    if (newMessage.trim().length)
+      try {
+        const message = await deliverMessages(
+          user.accessToken,
+          current.chainId,
+          newMessage,
+          accountInfo.bech32Address,
+          userName
+        );
+        if (message) setNewMessage("");
+      } catch (error) {
+        console.log("failed to send : ", error);
+      }
   };
 
   const handleKeydown = (e: { keyCode: number }) => {
@@ -245,7 +246,7 @@ export const ChatSection: FunctionComponent = () => {
               <span className={style.recieverName}>
                 <ToolTip
                   tooltip={
-                    <div className={style.user}>
+                    <div className={style.user} style={{ minWidth: "300px" }}>
                       {contactName(addresses).length
                         ? contactName(addresses)
                         : userName}
@@ -296,6 +297,7 @@ export const ChatSection: FunctionComponent = () => {
               </div>
               <div className={style.buttons}>
                 <button
+                  style={{ padding: "4px 20px" }}
                   onClick={() =>
                     history.push({
                       pathname: "/setting/address-book",

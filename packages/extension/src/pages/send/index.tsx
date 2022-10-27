@@ -126,7 +126,7 @@ export const SendPage: FunctionComponent = observer(() => {
             }
       }
       rightRenderer={
-        isDetachedPage ? undefined : (
+        isDetachedPage || true ? undefined : (
           <div
             style={{
               height: "64px",
