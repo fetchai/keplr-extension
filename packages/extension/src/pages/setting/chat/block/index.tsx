@@ -77,32 +77,34 @@ const BlockAddresses: React.FC<{
         {Object.keys(blockedAddresses).filter(
           (contact) => blockedAddresses[contact]
         ).length ? (
-          Object.keys(blockedAddresses).map((contact) => {
-            const contactName =
-              addresses.find((entry) => entry.address === contact)?.name ||
-              formatAddress(contact);
-            return (
-              <div key={contact} className={style.messageContainer}>
-                <div className={style.initials}>
-                  {contactName.charAt(0).toUpperCase()}
+          Object.keys(blockedAddresses)
+            .filter((contact) => blockedAddresses[contact])
+            .map((contact) => {
+              const contactName =
+                addresses.find((entry) => entry.address === contact)?.name ||
+                formatAddress(contact);
+              return (
+                <div key={contact} className={style.messageContainer}>
+                  <div className={style.initials}>
+                    {contactName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className={style.messageInner}>
+                    <div className={style.name}>{contactName}</div>
+                  </div>
+                  <div>
+                    <img
+                      src={require("../../../../public/assets/svg/x-icon.svg")}
+                      style={{ width: "80%" }}
+                      alt="message"
+                      onClick={() => {
+                        setUserName(contact);
+                        setConfirmAction(true);
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className={style.messageInner}>
-                  <div className={style.name}>{contactName}</div>
-                </div>
-                <div>
-                  <img
-                    src={require("../../../../public/assets/svg/x-icon.svg")}
-                    style={{ width: "80%" }}
-                    alt="message"
-                    onClick={() => {
-                      setUserName(contact);
-                      setConfirmAction(true);
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })
+              );
+            })
         ) : (
           <div className={style.messageContainer}>
             <div className={style.messageInner}>
