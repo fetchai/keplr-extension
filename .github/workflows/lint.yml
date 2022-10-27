@@ -5,11 +5,13 @@ on:
     branches:
       - master
       - release/*
+      - integration/*
 
   pull_request:
     branches:
       - master
       - release/*
+      - integration/*
 
 jobs:
   lint:
@@ -20,6 +22,6 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
       - run: npm install --global yarn
       - run: yarn ci-lint

@@ -32,6 +32,7 @@
   "main.menu.settings": "Settings",
   "main.menu.address-book": "Address Book",
   "main.menu.token-list": "Token List",
+  "main.menu.guide": "Guide",
   "main.menu.sign-out": "Sign out",
   "main.menu.footer.github": "Check it out on GitHub",
 
@@ -70,6 +71,18 @@
   "setting.export-to-mobile.input.password.error.required": "Password is required",
   "setting.export-to-mobile.input.password.error.invalid": "Invalid password",
   "setting.export-to-mobile.button.confirm": "Confirm",
+
+  "setting.chat": "Chat",
+
+  "setting.block": "Block List",
+
+  "setting.privacy": "Privacy",
+  "setting.privacy.paragraph.everybody": "Everybody can message",
+  "setting.privacy.paragraph.contact": "Only contacts in address book can message",
+  "setting.privacy.paragraph.nobody": "Chat deactivated, nobody can message",
+
+  "setting.receipts": "Read Receipts",
+  "setting.receipts.paragraph": "Off - You won't send or receive Read Receipts",
 
   "setting.credit": "Special thanks",
 
