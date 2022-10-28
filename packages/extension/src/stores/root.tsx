@@ -1,4 +1,5 @@
 import { ChainStore } from "./chain";
+import { Chat } from "./chat";
 import { EmbedChainInfos } from "../config";
 import { FiatCurrencies, AmplitudeApiKey } from "../config.ui";
 import {
@@ -38,6 +39,7 @@ export class RootStore {
   public readonly uiConfigStore: UIConfigStore;
 
   public readonly chainStore: ChainStore;
+  public readonly chatStore: Chat;
   public readonly keyRingStore: KeyRingStore;
   public readonly ibcChannelStore: IBCChannelStore;
 
@@ -92,7 +94,7 @@ export class RootStore {
       EmbedChainInfos,
       new InExtensionMessageRequester()
     );
-
+    this.chatStore = new Chat();
     this.keyRingStore = new KeyRingStore(
       {
         dispatchEvent: (type: string) => {
