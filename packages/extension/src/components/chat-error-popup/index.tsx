@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import style from "./style.module.scss";
-import { useSelector } from "react-redux";
-import { userMessagesError } from "../../chatStore/messages-slice";
+// import { useSelector } from "react-redux";
+// import { userMessagesError } from "../../chatStore/messages-slice";
+import { useStore } from "../../stores";
+import { observer } from "mobx-react-lite";
 
-export const ChatErrorPopup = () => {
-  const errorMessage = useSelector(userMessagesError);
+export const ChatErrorPopup = observer(() => {
+  const { chatStore } = useStore();
+  // const errorMessage = useSelector(userMessagesError);
+  const errorMessage = chatStore.userMessagesError;
   const [confirmAction, setConfirmAction] = useState(false);
 
   useEffect(() => {
@@ -35,4 +39,4 @@ export const ChatErrorPopup = () => {
   ) : (
     <></>
   );
-};
+});

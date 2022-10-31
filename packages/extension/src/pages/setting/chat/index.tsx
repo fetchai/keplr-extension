@@ -26,8 +26,9 @@ export const ChatSettings: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
   const userState = useSelector(userDetails);
-  const blockedUsers = useSelector(userBlockedAddresses);
-  const { chainStore, accountStore } = useStore();
+  // const blockedUsers = useSelector(userBlockedAddresses);
+  const { chainStore, accountStore, chatStore } = useStore();
+  const blockedUsers = chatStore.userBlockedAddresses;
   const current = chainStore.current;
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;

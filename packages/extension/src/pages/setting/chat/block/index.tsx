@@ -14,11 +14,12 @@ import style from "./style.module.scss";
 import { UnblockUserPopup } from "./unblock-user-popup";
 
 export const BlockList: FunctionComponent = observer(() => {
+  const { chainStore, chatStore } = useStore();
   // const language = useLanguage();
-  const blockedAddresses = useSelector(userBlockedAddresses);
+  // const blockedAddresses = useSelector(userBlockedAddresses);
+  const blockedAddresses = chatStore.userBlockedAddresses;
   const history = useHistory();
   const intl = useIntl();
-  const { chainStore } = useStore();
 
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),

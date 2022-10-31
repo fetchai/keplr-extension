@@ -1,8 +1,9 @@
 import { store } from "../chatStore";
 import { addMessageList } from "../chatStore/messages-slice";
 import { fetchMessages } from "./messages-api";
+import { Chat } from "../stores/chat";
 
-export const recieveMessages = async (userAddress: string) => {
+export const recieveMessages = async (userAddress: string, chatStore: Chat) => {
   const messagesArray = await fetchMessages();
   const messageStore: any = {};
   messagesArray.map((message: any) => {
@@ -20,7 +21,9 @@ export const recieveMessages = async (userAddress: string) => {
       messageStore[contactAddress].lastMessage
     );
   });
-  store.dispatch(addMessageList(messageStore));
+  // console.log("messageStore", messageStore);
+  // store.dispatch(addMessageList(messageStore));
+  chatStore.addMessageList(messageStore);
 };
 
 export const findLastMessage = (newMessage: any, lastMessage: any) => {

@@ -11,6 +11,7 @@ import {
 } from "../chatStore/messages-slice";
 import { encryptAllData } from "../utils/encrypt-message";
 import { client, createWSLink, httpLink } from "./client";
+import { Chat } from "../stores/chat";
 import {
   block,
   blockedList,
@@ -20,6 +21,7 @@ import {
   sendMessages,
   unblock,
 } from "./messages-queries";
+import { useStore } from "../stores";
 
 export const fetchMessages = async () => {
   const state = store.getState();
@@ -38,7 +40,7 @@ export const fetchMessages = async () => {
   return data.mailbox.messages;
 };
 
-export const fetchBlockList = async () => {
+export const fetchBlockList = async (chatStore: Chat) => {
   const state = store.getState();
   try {
     const { data } = await client.query({
@@ -53,21 +55,27 @@ export const fetchBlockList = async () => {
         channelId: "MESSAGING",
       },
     });
-    store.dispatch(setBlockedList(data.blockedList));
+    // store.dispatch(setBlockedList(data.blockedList));
+    chatStore.setBlockedList(data.blockedList);
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "block",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 2,
-      })
-    );
+    // store.dispatch(
+    //   setMessageError({
+    //     type: "block",
+    //     message: "Something went wrong, Please try again in sometime.",
+    //     level: 2,
+    //   })
+    // );
+    chatStore.setMessageError({
+      type: "block",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 2,
+    });
     throw e;
   }
 };
 
-export const blockUser = async (address: string) => {
+export const blockUser = async (address: string, chatStore: Chat) => {
   const state = store.getState();
   try {
     const { data } = await client.mutate({
@@ -83,21 +91,27 @@ export const blockUser = async (address: string) => {
         channelId: "MESSAGING",
       },
     });
-    store.dispatch(setBlockedUser(data.block));
+    // store.dispatch(setBlockedUser(data.block));
+    chatStore.setBlockedUser(data.block);
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "block",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 1,
-      })
-    );
+    // store.dispatch(
+    //   setMessageError({
+    //     type: "block",
+    //     message: "Something went wrong, Please try again in sometime.",
+    //     level: 1,
+    //   })
+    // );
+    chatStore.setMessageError({
+      type: "block",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 1,
+    });
     throw e;
   }
 };
 
-export const unblockUser = async (address: string) => {
+export const unblockUser = async (address: string, chatStore: Chat) => {
   const state = store.getState();
   try {
     const { data } = await client.mutate({
@@ -113,16 +127,22 @@ export const unblockUser = async (address: string) => {
         channelId: "MESSAGING",
       },
     });
-    store.dispatch(setUnblockedUser(data.unblock));
+    // store.dispatch(setUnblockedUser(data.unblock));
+    chatStore.setUnblockedUser(data.unblock);
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "unblock",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 1,
-      })
-    );
+    // store.dispatch(
+    //   setMessageError({
+    //     type: "unblock",
+    //     message: "Something went wrong, Please try again in sometime.",
+    //     level: 1,
+    //   })
+    // );
+    chatStore.setMessageError({
+      type: "unblock",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 1,
+    });
     throw e;
   }
 };
@@ -132,7 +152,8 @@ export const deliverMessages = async (
   chainId: string,
   newMessage: any,
   senderAddress: string,
-  targetAddress: string
+  targetAddress: string,
+  chatStore: Chat
 ) => {
   const state = store.getState();
   try {
@@ -161,25 +182,31 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
+        // store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
+        chatStore.updateSenderMessages(data?.dispatchMessages[0]);
         return data;
       }
       return null;
     }
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "delivery",
-        message: "Something went wrong, Message can't be delivered",
-        level: 1,
-      })
-    );
+    // store.dispatch(
+    //   setMessageError({
+    //     type: "delivery",
+    //     message: "Something went wrong, Message can't be delivered",
+    //     level: 1,
+    //   })
+    // );
+    chatStore.setMessageError({
+      type: "delivery",
+      message: "Something went wrong, Message can't be delivered",
+      level: 1,
+    });
     return null;
   }
 };
 
-export const messageListener = () => {
+export const messageListener = (chatStore: Chat) => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -208,17 +235,23 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
+        // store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
+        chatStore.updateAuthorMessages(data.newMessageUpdate.message);
       },
       error(err) {
         console.error("err", err);
-        store.dispatch(
-          setMessageError({
-            type: "subscription",
-            message: "Something went wrong, Cant fetch latest messages",
-            level: 1,
-          })
-        );
+        // store.dispatch(
+        //   setMessageError({
+        //     type: "subscription",
+        //     message: "Something went wrong, Cant fetch latest messages",
+        //     level: 1,
+        //   })
+        // );
+        chatStore.setMessageError({
+          type: "subscription",
+          message: "Something went wrong, Cant fetch latest messages",
+          level: 1,
+        });
       },
       complete() {
         console.log("completed");

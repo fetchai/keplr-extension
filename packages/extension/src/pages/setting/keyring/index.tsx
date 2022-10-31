@@ -20,7 +20,7 @@ import { addMessageList } from "../../../chatStore/messages-slice";
 export const SetKeyRingPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
-  const { keyRingStore, analyticsStore } = useStore();
+  const { keyRingStore, analyticsStore, chatStore } = useStore();
   const history = useHistory();
 
   const loadingIndicator = useLoadingIndicator();
@@ -111,7 +111,8 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                         analyticsStore.logEvent("Account changed");
                         loadingIndicator.setIsLoading("keyring", false);
                         store.dispatch(resetUser({}));
-                        store.dispatch(addMessageList({}));
+                        // store.dispatch(addMessageList({}));
+                        chatStore.addMessageList({});
                         history.push("/");
                       } catch (e) {
                         console.log(`Failed to change keyring: ${e.message}`);

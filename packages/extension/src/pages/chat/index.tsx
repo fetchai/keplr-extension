@@ -39,20 +39,48 @@ import style from "./style.module.scss";
 import { NameAddress, Users } from "./users";
 import { ChatLoader } from "../../components/chat-loader";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { observer } from "mobx-react-lite";
 
-const ChatView = () => {
+const ChatView = observer(() => {
   const userState = useSelector(userDetails);
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, chatStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
 
   const history = useHistory();
-  const messages = useSelector(userMessages);
+  // const messages = useSelector(userMessages);
+  const messages = chatStore.userMessages;
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
+  chatStore.addMessageList({
+    fetch1e8xgz6nmy9rm56ur6p5vv5jfa2es0arv9emh0r: {
+      messages: {
+        "3a40b528-41e6-49f8-8636-3e281675205c": {
+          id: "3a40b528-41e6-49f8-8636-3e281675205c",
+          sender: "fetch1e8xgz6nmy9rm56ur6p5vv5jfa2es0arv9emh0r",
+          target: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
+          contents:
+            "eyJkYXRhIjoiZXlKbGJtTnllWEIwWldSVFpXNWtaWEpFWVhSaElqb2lRa2huUTFCT2NVMWtWQzlWYTNCek5UZzJUR3g1YkdGT2NUaFZlR2RuVTJaUksyUTVjR3RZVW01Nk1tZDVUa3RqZERSa2VXcDNlV1JFYUZZMGFrRlBUa05XWW5kaGMxRnhjMWRPWTJSSGRsTkNUamxxT1dzd1UwWkNabE5JYlVsUWFuSm1hMGxMTkhWbFkxcFRNV00xUlhONlNUaDVRa1pvU1hORWVsUnVTelY0UldSSFkyZzRTR1kxV2pjemRrMWxOblF4YWpaeUswWTJkMlF6ZW1sRGJtZzVZazVaY1VOUVJXUlJkR0psYUZKT1IyUkxPR3A0TVVzM2NVaDZiblY2VDAxbFpHTlNWamRaYWxOcGNDdHVNbXRpT1dWWlJERnJPWE5GZGxsQ05HNU5WMnhHY0VRMVJWVjJVRVo1TTNCNVJXeEJUVGRsVUZwMGEzWlpZMWxVZURacVkxSk5TR01yTTBZclFWWkJWMVpKYkVNdlZDdDFaMGhvUVRZd2FWRklSM0JqVWtjMVl6UlVhMXBLUzIxTlltVlNNMjl6TjJWUlQyNWhaR2MxYmxSNE9WbHZTbTV5WTJ4UFNFVnhZMU5ZYkhkUFZHMHdZVWNyUmpSYVZFVkJaMHBFY21aUFJEZGxWbUptTW05NWQydHJSMkZoYVZGck4ybE1URVV5VlZVOUlpd2laVzVqY25sd2RHVmtWR0Z5WjJWMFJHRjBZU0k2SWtKRk5uZEpNMHBEVWtzclVUaGxLMk52VkdaeU5reG1MM0ZYWkVsMWRGQk9iekJ3TmxBNFluRkdNV3RITlZnMVIxQllVbFJPU0hkWE5FMUVORGx3WVdweFFrWm1ObmhZTmtZNWFVWkxSSEZOUlV0VWMxUnJkekl2UVZaemJEVk1jMnhFTDBSVWFWRjVZVlJpYWtoWEsxTnRRMHd4VmpWWk5HTXJjMmgwUnpRcmJpOVlXbVoyV1dnMFdTdHBNR2MwWWtOSlkwbFhNVzFXTjBobGJWaFlWVUZUY2trclIwaEVORWhJTWt4SFdtcFRWbTlOWTJSSVN6QlRVamN6WWsxaFRURkdjeXMxWml0RFpITTBNemx2TTB0Tk1XbFBNMllyWVdVelZUZDVTRUZ4VkVvdmFucHFibEJuVkRSNWJqWnlkSFJ0Ym5aM2VHcEVNRVJFUWk4M1QyNXdVVmhZY2xkc0sxUXpVRTF1VGk5Q1NrbE9kV2N5YjBSQ1dURTBkMHBDWVdoUlMySlBSbk40Y0d4WE1HNU9kalZwT0hKamNDdFZTMmhGU0ZsdVZVNWlialZHUm10M1JVazFSRFV5TjNsdloycDZTbTVTVFhoMFdWZzRUMlZEVm5JdlIzTmtjVGM1T1c1MWFqTnVZbVZET1ZsUlpYUnJWSGd3WkU1V1ZXZEJQU0o5Iiwic2VuZGVyUHVibGljS2V5IjoiMDMyYWYxMmU2YTFhYmI4NDQ1ODE1ZGMxOWUwNjk0M2Y3MjI5OGNlYTMxMzI4MzRiYWIzYmRjYjhlZGM0ODhjMGQ3IiwidGFyZ2V0UHVibGljS2V5IjoiMDM5OWViZWQ4ZmI4MTRmNDMyOGI5NDYwOTIzMWIxMDkwYWZmMzljNzM2NTg2YmMyM2ZlZTYwNmE4ZTI3YTczNGMxIiwic2lnbmF0dXJlIjoiUVM1YWtrdHFKd0JzdmJ2K1k4dldxRTk2aTFlNklXWUZINHh0RFdiRHdyTWc5c0UrS1BCRk9IL3hyckpObnpIMDdnMEJCOG9lckpXS0VPcEo0ZzZRb3c9PSIsImNoYW5uZWxJZCI6Ik1FU1NBR0lORyJ9",
+          expiryTimestamp: "1667973567210",
+          commitTimestamp: "1666763967210",
+        },
+      },
+      lastMessage: {
+        id: "3a40b528-41e6-49f8-8636-3e281675205c",
+        sender: "fetch1e8xgz6nmy9rm56ur6p5vv5jfa2es0arv9emh0r",
+        target: "fetch1sv8494ddjgzhqg808umctzl53uytq50qjkjvfr",
+        contents:
+          "eyJkYXRhIjoiZXlKbGJtTnllWEIwWldSVFpXNWtaWEpFWVhSaElqb2lRa2huUTFCT2NVMWtWQzlWYTNCek5UZzJUR3g1YkdGT2NUaFZlR2RuVTJaUksyUTVjR3RZVW01Nk1tZDVUa3RqZERSa2VXcDNlV1JFYUZZMGFrRlBUa05XWW5kaGMxRnhjMWRPWTJSSGRsTkNUamxxT1dzd1UwWkNabE5JYlVsUWFuSm1hMGxMTkhWbFkxcFRNV00xUlhONlNUaDVRa1pvU1hORWVsUnVTelY0UldSSFkyZzRTR1kxV2pjemRrMWxOblF4YWpaeUswWTJkMlF6ZW1sRGJtZzVZazVaY1VOUVJXUlJkR0psYUZKT1IyUkxPR3A0TVVzM2NVaDZiblY2VDAxbFpHTlNWamRaYWxOcGNDdHVNbXRpT1dWWlJERnJPWE5GZGxsQ05HNU5WMnhHY0VRMVJWVjJVRVo1TTNCNVJXeEJUVGRsVUZwMGEzWlpZMWxVZURacVkxSk5TR01yTTBZclFWWkJWMVpKYkVNdlZDdDFaMGhvUVRZd2FWRklSM0JqVWtjMVl6UlVhMXBLUzIxTlltVlNNMjl6TjJWUlQyNWhaR2MxYmxSNE9WbHZTbTV5WTJ4UFNFVnhZMU5ZYkhkUFZHMHdZVWNyUmpSYVZFVkJaMHBFY21aUFJEZGxWbUptTW05NWQydHJSMkZoYVZGck4ybE1URVV5VlZVOUlpd2laVzVqY25sd2RHVmtWR0Z5WjJWMFJHRjBZU0k2SWtKRk5uZEpNMHBEVWtzclVUaGxLMk52VkdaeU5reG1MM0ZYWkVsMWRGQk9iekJ3TmxBNFluRkdNV3RITlZnMVIxQllVbFJPU0hkWE5FMUVORGx3WVdweFFrWm1ObmhZTmtZNWFVWkxSSEZOUlV0VWMxUnJkekl2UVZaemJEVk1jMnhFTDBSVWFWRjVZVlJpYWtoWEsxTnRRMHd4VmpWWk5HTXJjMmgwUnpRcmJpOVlXbVoyV1dnMFdTdHBNR2MwWWtOSlkwbFhNVzFXTjBobGJWaFlWVUZUY2trclIwaEVORWhJTWt4SFdtcFRWbTlOWTJSSVN6QlRVamN6WWsxaFRURkdjeXMxWml0RFpITTBNemx2TTB0Tk1XbFBNMllyWVdVelZUZDVTRUZ4VkVvdmFucHFibEJuVkRSNWJqWnlkSFJ0Ym5aM2VHcEVNRVJFUWk4M1QyNXdVVmhZY2xkc0sxUXpVRTF1VGk5Q1NrbE9kV2N5YjBSQ1dURTBkMHBDWVdoUlMySlBSbk40Y0d4WE1HNU9kalZwT0hKamNDdFZTMmhGU0ZsdVZVNWlialZHUm10M1JVazFSRFV5TjNsdloycDZTbTVTVFhoMFdWZzRUMlZEVm5JdlIzTmtjVGM1T1c1MWFqTnVZbVZET1ZsUlpYUnJWSGd3WkU1V1ZXZEJQU0o5Iiwic2VuZGVyUHVibGljS2V5IjoiMDMyYWYxMmU2YTFhYmI4NDQ1ODE1ZGMxOWUwNjk0M2Y3MjI5OGNlYTMxMzI4MzRiYWIzYmRjYjhlZGM0ODhjMGQ3IiwidGFyZ2V0UHVibGljS2V5IjoiMDM5OWViZWQ4ZmI4MTRmNDMyOGI5NDYwOTIzMWIxMDkwYWZmMzljNzM2NTg2YmMyM2ZlZTYwNmE4ZTI3YTczNGMxIiwic2lnbmF0dXJlIjoiUVM1YWtrdHFKd0JzdmJ2K1k4dldxRTk2aTFlNklXWUZINHh0RFdiRHdyTWc5c0UrS1BCRk9IL3hyckpObnpIMDdnMEJCOG9lckpXS0VPcEo0ZzZRb3c9PSIsImNoYW5uZWxJZCI6Ik1FU1NBR0lORyJ9",
+        expiryTimestamp: "1667973567210",
+        commitTimestamp: "1666763967210",
+      },
+    },
+  });
+  console.log("chatStore", chatStore.userMessages);
+
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     chainStore.current.chainId,
@@ -101,13 +129,11 @@ const ChatView = () => {
     } catch (e) {
       // Show error toaster
       console.error("error", e);
-      store.dispatch(
-        setMessageError({
-          type: "setup",
-          message: "Something went wrong, Please try again in sometime.",
-          level: 3,
-        })
-      );
+      chatStore.setMessageError({
+        type: "setup",
+        message: "Something went wrong, Please try again in sometime.",
+        level: 3,
+      });
       // Redirect to home
       history.replace("/");
     } finally {
@@ -120,18 +146,18 @@ const ChatView = () => {
     const getMessagesAndBlocks = async () => {
       setLoadingChats(true);
       try {
-        await messageListener();
-        await recieveMessages(walletAddress);
-        await fetchBlockList();
+        await messageListener(chatStore);
+        await recieveMessages(walletAddress, chatStore);
+        await fetchBlockList(chatStore);
       } catch (e) {
         console.log("error loading messages", e);
-        store.dispatch(
-          setMessageError({
-            type: "setup",
-            message: "Something went wrong, Please try again in sometime.",
-            level: 3,
-          })
-        );
+        // store.dispatch(
+        chatStore.setMessageError({
+          type: "setup",
+          message: "Something went wrong, Please try again in sometime.",
+          level: 3,
+        });
+        // );
         // Show error visually
       } finally {
         setLoadingChats(false);
@@ -170,13 +196,13 @@ const ChatView = () => {
 
         store.dispatch(setMessagingPubKey(pubKey));
       } catch (e) {
-        store.dispatch(
-          setMessageError({
-            type: "authorization",
-            message: "Something went wrong, Message can't be delivered",
-            level: 3,
-          })
-        );
+        // store.dispatch(
+        chatStore.setMessageError({
+          type: "authorization",
+          message: "Something went wrong, Message can't be delivered",
+          level: 3,
+        });
+        // );
       }
 
       setLoadingChats(false);
@@ -433,7 +459,7 @@ const ChatView = () => {
       </div>
     </HeaderLayout>
   );
-};
+});
 
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;

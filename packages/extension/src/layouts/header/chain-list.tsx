@@ -14,7 +14,7 @@ import style from "./chain-list.module.scss";
 const ChainElement: FunctionComponent<{
   chainInfo: ChainInfoWithEmbed;
 }> = observer(({ chainInfo }) => {
-  const { chainStore, analyticsStore } = useStore();
+  const { chainStore, analyticsStore, chatStore } = useStore();
   const history = useHistory();
   const intl = useIntl();
 
@@ -37,7 +37,7 @@ const ChainElement: FunctionComponent<{
           chainStore.selectChain(chainInfo.chainId);
           chainStore.saveLastViewChainId();
           store.dispatch(resetUser({}));
-          store.dispatch(addMessageList({}));
+          chatStore.addMessageList({});
           history.push("/");
         }
       }}

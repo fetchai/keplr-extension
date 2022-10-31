@@ -9,6 +9,11 @@ export interface Message {
   commitTimestamp: string;
 }
 
+export interface MessageError {
+  type: string;
+  message: string;
+  level: number;
+}
 export interface MessageMap {
   [key: string]: Message;
 }
@@ -53,13 +58,13 @@ export class Chat {
     this.messages.errorMessage = { type: "", message: "", level: 0 };
   }
   @action
-  updateAuthorMessage(message: Message) {
+  updateAuthorMessages(message: Message) {
     const { sender, id } = message;
     this.messages.chat[sender].messages[id] = message;
     this.messages.chat[sender].lastMessage = message;
   }
   @action
-  updateSenderMessage(message: Message) {
+  updateSenderMessages(message: Message) {
     const { target, id } = message;
     if (!this.messages.chat[target]) {
       this.messages.chat[target] = {
@@ -94,7 +99,7 @@ export class Chat {
     this.messages.blockedAddress[blockedAddress] = false;
   }
   @action
-  setMessageError(blockListData: any) {
+  setMessageError(blockListData: MessageError) {
     this.messages.errorMessage = blockListData;
   }
   get userMessages() {

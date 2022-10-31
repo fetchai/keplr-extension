@@ -40,16 +40,20 @@ import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
 import { ActionsPopup } from "./actions-popup";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { observer } from "mobx-react-lite";
 
 export let openValue = true;
 
-export const ChatSection: FunctionComponent = () => {
+export const ChatSection: FunctionComponent = observer(() => {
   const history = useHistory();
+  const { chatStore } = useStore();
   const notification = useNotification();
   const intl = useIntl();
   const userName = history.location.pathname.split("/")[2];
-  const allMessages = useSelector(userMessages);
-  const blockedUsers = useSelector(userBlockedAddresses);
+  // const allMessages = useSelector(userMessages);
+  const allMessages = chatStore.userMessages;
+  // const blockedUsers = useSelector(userBlockedAddresses);
+  const blockedUsers = chatStore.userBlockedAddresses;
   const oldMessages = useMemo(() => allMessages[userName] || {}, [
     allMessages,
     userName,
@@ -153,7 +157,8 @@ export const ChatSection: FunctionComponent = () => {
           current.chainId,
           newMessage,
           accountInfo.bech32Address,
-          userName
+          userName,
+          chatStore
         );
         if (message) setNewMessage("");
       } catch (error) {
@@ -402,4 +407,4 @@ export const ChatSection: FunctionComponent = () => {
       )}
     </HeaderLayout>
   );
-};
+});
