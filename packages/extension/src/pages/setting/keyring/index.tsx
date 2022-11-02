@@ -152,7 +152,7 @@ const KeyRingToolsIcon: FunctionComponent<{
         target={tooltipId}
         isOpen={isOpen}
         toggle={toggleOpen}
-        placement="bottom"
+        placement="bottom-end"
       >
         <PopoverBody
           onClick={(e) => {
