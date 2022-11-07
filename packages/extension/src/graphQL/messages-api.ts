@@ -34,7 +34,6 @@ export const fetchMessages = async () => {
   });
 
   if (errors) console.log("errors", errors);
-
   return data.mailbox.messages;
 };
 
@@ -135,6 +134,7 @@ export const deliverMessages = async (
   targetAddress: string
 ) => {
   const state = store.getState();
+
   try {
     if (newMessage) {
       const encryptedData = await encryptAllData(
@@ -161,6 +161,7 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
+        console.log("data", data);
         store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
         return data;
       }

@@ -2,6 +2,7 @@ import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 import deliveredIcon from "../../public/assets/icon/delivered.png";
+import blueCheck from "../../public/assets/icon/double-check.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
@@ -17,14 +18,21 @@ export const ChatMessage = ({
   isSender,
   timestamp,
   showDate,
+  userLastSeenTimestamp,
+  targetLastSeenTimestamp,
 }: {
   chainId: string;
   isSender: boolean;
   message: string;
   timestamp: number;
   showDate: boolean;
+  userLastSeenTimestamp: number;
+  targetLastSeenTimestamp: number;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState("");
+  console.log("timestamp", timestamp);
+  console.log("userLastSeenTimestamp", userLastSeenTimestamp);
+  console.log("targetLastSeenTimestamp", targetLastSeenTimestamp);
 
   useEffect(() => {
     decryptMessage(chainId, message, isSender)
@@ -68,8 +76,13 @@ export const ChatMessage = ({
             <div className={style.message}>{decryptedMessage}</div>
           )}
           <div className={style.timestamp}>
-            {formatTime(timestamp)}
-            {isSender && <img alt="" src={deliveredIcon} />}
+            <span>{formatTime(timestamp)}</span>
+            {isSender &&
+              (targetLastSeenTimestamp >= timestamp ? (
+                <img src={blueCheck} height={10} width={14} />
+              ) : (
+                <img alt="" src={deliveredIcon} />
+              ))}
           </div>
         </Container>
       </div>

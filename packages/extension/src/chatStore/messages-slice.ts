@@ -40,12 +40,21 @@ export const messagesSlice = createSlice({
       state.chat = action.payload;
       state.errorMessage = { type: "", message: "", level: 0 };
     },
+    addDummyMessageList: (state, action) => {
+      state.chat = action.payload;
+      state.errorMessage = { type: "", message: "", level: 0 };
+    },
     updateAuthorMessages: (state: any, action: PayloadAction<Message>) => {
       const { sender, id } = action.payload;
+      // const { target } = action.payload;
+      // const uniqueKey = getUniqueAddress(sender, target);
+
       state.chat[sender].messages[id] = action.payload;
       state.chat[sender].lastMessage = action.payload;
     },
     updateSenderMessages: (state: any, action: PayloadAction<Message>) => {
+      console.log(action.payload);
+
       const { target, id } = action.payload;
       if (!state.chat[target]) {
         state.chat[target] = {
@@ -85,6 +94,7 @@ export const messagesSlice = createSlice({
 export const {
   setMessageError,
   addMessageList,
+  addDummyMessageList,
   updateAuthorMessages,
   updateSenderMessages,
   setAuthorPubKey,

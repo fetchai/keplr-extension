@@ -49,14 +49,26 @@ export const ChatSection: FunctionComponent = () => {
   const intl = useIntl();
   const userName = history.location.pathname.split("/")[2];
   const allMessages = useSelector(userMessages);
+  const { chainStore, accountStore, queriesStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
+  // const allMessages = data[0];
+
   const blockedUsers = useSelector(userBlockedAddresses);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [
-    allMessages,
-    userName,
-  ]);
+  const oldMessages = useMemo(
+    () => allMessages[`${walletAddress}-${userName}`] || {},
+    [allMessages, userName]
+  );
+  console.log("allMessages", allMessages);
+
+  // console.log("oldMessages after removing api deps", oldMessages);
+
   const [messages, setMessages] = useState(
     Object.values(oldMessages?.messages || [])
   );
+
   const user = useSelector(userDetails);
 
   const [newMessage, setNewMessage] = useState("");
@@ -64,9 +76,6 @@ export const ChatSection: FunctionComponent = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [confirmAction, setConfirmAction] = useState(false);
   const [action, setAction] = useState("");
-  const { chainStore, accountStore, queriesStore } = useStore();
-  const current = chainStore.current;
-  const accountInfo = accountStore.getAccount(current.chainId);
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
@@ -219,6 +228,7 @@ export const ChatSection: FunctionComponent = () => {
       },
     });
   };
+  const userLastSeenTimestamp = 1666857706136;
 
   return (
     <HeaderLayout
@@ -345,6 +355,8 @@ export const ChatSection: FunctionComponent = () => {
                       message={message?.contents}
                       isSender={message?.target === userName} // if target was the user we are chatting with
                       timestamp={message?.commitTimestamp || 1549312452}
+                      userLastSeenTimestamp={userLastSeenTimestamp}
+                      targetLastSeenTimestamp={oldMessages.targetTimeStamp}
                     />
                   );
                 })}

@@ -40,6 +40,8 @@ import { NameAddress, Users } from "./users";
 import { ChatLoader } from "../../components/chat-loader";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
 
+import { data } from "../../../src/dummy-data.json";
+
 const ChatView = () => {
   const userState = useSelector(userDetails);
 
@@ -51,6 +53,7 @@ const ChatView = () => {
 
   const history = useHistory();
   const messages = useSelector(userMessages);
+  // const messages = data[0];
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -122,6 +125,7 @@ const ChatView = () => {
       try {
         await messageListener();
         await recieveMessages(walletAddress);
+        // await receiveDummyMessages(walletAddress);
         await fetchBlockList();
       } catch (e) {
         console.log("error loading messages", e);
@@ -199,7 +203,11 @@ const ChatView = () => {
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
   ]);
+  const getTarget = (contact: any) => {
+    const contacts = contact.split("-");
 
+    return contacts.filter((contact: any) => contact !== walletAddress)[0];
+  };
   const addressBookConfig = useAddressBookConfig(
     new ExtensionKVStore("address-book"),
     chainStore,
@@ -230,8 +238,8 @@ const ChatView = () => {
         !addresses[contact]
       )
         return;
-
-      userLastMessages[contact] = messages[contact].lastMessage;
+      const targetAddress = getTarget(contact);
+      userLastMessages[targetAddress] = messages[contact].lastMessage;
     });
 
     setUserChats(userLastMessages);
@@ -240,14 +248,15 @@ const ChatView = () => {
 
   const fillUserChats = () => {
     const userLastMessages: any = {};
-    Object.keys(messages).map((contact: string) => {
+    Object.keys(messages).map((contact: any) => {
       if (
         userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
         !addresses[contact]
       )
         return;
+      const targetAddress = getTarget(contact);
 
-      userLastMessages[contact] = messages[contact].lastMessage;
+      userLastMessages[targetAddress] = messages[contact].lastMessage;
     });
     setUserChats(userLastMessages);
   };
@@ -259,7 +268,8 @@ const ChatView = () => {
     if (value.trim()) {
       const userLastMessages: any = {};
       Object.keys(messages).map((contact: string) => {
-        userLastMessages[contact] = messages[contact]?.lastMessage;
+        const targetAddress = getTarget(contact);
+        userLastMessages[targetAddress] = messages[contact]?.lastMessage;
       });
 
       const filteredChats = Object.keys(userLastMessages).filter((contact) => {
