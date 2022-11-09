@@ -79,7 +79,7 @@ export const ChatSection: FunctionComponent = () => {
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
-      if (node) node.scrollIntoView(true);
+      if (node) node.scrollIntoView({ block: "end" });
     },
     [messages]
   );
@@ -348,19 +348,29 @@ export const ChatSection: FunctionComponent = () => {
                 ?.map((message: any, index) => {
                   const check = showDateFunction(message?.commitTimestamp);
                   return (
-                    <ChatMessage
-                      key={index}
-                      chainId={current.chainId}
-                      showDate={check}
-                      message={message?.contents}
-                      isSender={message?.target === userName} // if target was the user we are chatting with
-                      timestamp={message?.commitTimestamp || 1549312452}
-                      userLastSeenTimestamp={userLastSeenTimestamp}
-                      targetLastSeenTimestamp={oldMessages.targetTimeStamp}
-                    />
+                    <>
+                      <ChatMessage
+                        key={index}
+                        chainId={current.chainId}
+                        showDate={check}
+                        message={message?.contents}
+                        isSender={message?.target === userName} // if target was the user we are chatting with
+                        timestamp={message?.commitTimestamp || 1549312452}
+                        userLastSeenTimestamp={userLastSeenTimestamp}
+                        targetLastSeenTimestamp={oldMessages.targetTimeStamp}
+                      />
+                      {oldMessages.targetTimeStamp >=
+                        message?.commitTimestamp &&
+                        message?.target === userName && (
+                          <div
+                            ref={messagesEndRef}
+                            className={style.messageRef}
+                          />
+                        )}
+                    </>
                   );
                 })}
-              <div ref={messagesEndRef} className={style.messageRef} />
+              {/* <div ref={messagesEndRef} className={style.messageRef} /> */}
             </div>
             <InputGroup className={style.inputText}>
               {targetPubKey.length ? (
