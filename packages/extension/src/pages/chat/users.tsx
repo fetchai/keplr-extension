@@ -9,6 +9,7 @@ import style from "./style.module.scss";
 import { MessageMap, userMessages } from "../../chatStore/messages-slice";
 import { fromBech32 } from "@cosmjs/encoding";
 import { useSelector } from "react-redux";
+import { getUniqueChatId } from "../../utils/chat";
 
 const User: React.FC<{
   chainId: string;
@@ -66,31 +67,27 @@ export const Users: React.FC<{
   chainId: string;
   userChats: MessageMap;
   addresses: NameAddress;
-}> = ({ chainId, userChats, addresses }) => {
+  walletAddress: string;
+}> = ({ chainId, userChats, addresses, walletAddress }) => {
   const messages = useSelector(userMessages);
   console.log("userchats", userChats);
 
+  const showUnreadNotification = (address: string): boolean => {
+    const lastMessage = userChats[address];
+    // if last message was not sent by user
+    if (lastMessage.sender !== walletAddress) {
+      const chatId = getUniqueChatId(address, walletAddress);
+      const userTimestamp = messages[chatId][walletAddress];
+      return userTimestamp < lastMessage.commitTimestamp;
+    }
+    return false;
+  };
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
         Object.keys(userChats).map((contact: any, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-          console.log("userChats", userChats[contact]);
-
-          const foundMessage =
-            messages[`${userChats[contact].sender}-${contact}`];
-          console.log(
-            "messages[`${userChats[contact].sender}-${contact}`];",
-            `${userChats[contact].sender}-${contact}`
-          );
-          console.log(
-            "foundMessage?.targetTimeStamp",
-            foundMessage?.targetTimeStamp,
-            " userChats[contact].commitTimestamp",
-            userChats[contact].commitTimestamp
-          );
-
           return (
             <User
               key={index}
@@ -102,10 +99,7 @@ export const Users: React.FC<{
                   : formatAddress(contact)
               }
               chainId={chainId}
-              isUnread={
-                foundMessage?.targetTimeStamp <
-                userChats[contact].commitTimestamp
-              }
+              isUnread={showUnreadNotification(contact)}
             />
           );
         })

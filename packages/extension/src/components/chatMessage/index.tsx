@@ -12,6 +12,17 @@ const formatTime = (timestamp: number): string => {
   return format(date, "p");
 };
 
+const getDate = (timestamp: number): string => {
+  const d = new Date(timestamp);
+  if (isToday(d)) {
+    return "Today";
+  }
+  if (isYesterday(d)) {
+    return "Yesterday";
+  }
+  return format(d, "dd MMMM yyyy");
+};
+
 export const ChatMessage = ({
   chainId,
   message,
@@ -43,17 +54,6 @@ export const ChatMessage = ({
         setDecryptedMessage(e.message);
       });
   }, [chainId, isSender, message]);
-
-  const getDate = (timestamp: number): string => {
-    const d = new Date(timestamp);
-    if (isToday(d)) {
-      return "Today";
-    }
-    if (isYesterday(d)) {
-      return "Yesterday";
-    }
-    return format(d, "dd MMMM yyyy");
-  };
 
   return (
     <>
