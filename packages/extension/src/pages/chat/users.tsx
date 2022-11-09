@@ -6,17 +6,21 @@ import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
-import { MessageMap } from "../../chatStore/messages-slice";
+import { MessageMap, userMessages } from "../../chatStore/messages-slice";
 import { fromBech32 } from "@cosmjs/encoding";
+import { useSelector } from "react-redux";
 
 const User: React.FC<{
   chainId: string;
   chat: any;
   contact: string;
   contactName: string;
-}> = ({ chainId, chat, contact, contactName }) => {
+  isUnread: boolean;
+}> = ({ chainId, chat, contact, contactName, isUnread }) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
+  console.log("isUnread", isUnread);
+
   const handleClick = () => {
     history.push(`/chat/${contact}`);
   };
@@ -42,6 +46,8 @@ const User: React.FC<{
         )}
       </div>
       <div className={style.messageInner}>
+        {isUnread ? <div>unread</div> : <div>read</div>}
+        {console.log(isUnread)}
         <div className={style.name}>{contactName}</div>
         <div className={style.messageText}>{message}</div>
       </div>
@@ -61,14 +67,30 @@ export const Users: React.FC<{
   userChats: MessageMap;
   addresses: NameAddress;
 }> = ({ chainId, userChats, addresses }) => {
-  console.log("userChats inside users", userChats);
+  const messages = useSelector(userMessages);
+  console.log("userchats", userChats);
 
   return (
     <div className={style.messagesContainer}>
       {Object.keys(userChats).length ? (
-        Object.keys(userChats).map((contact, index) => {
+        Object.keys(userChats).map((contact: any, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
+          console.log("userChats", userChats[contact]);
+
+          const foundMessage =
+            messages[`${userChats[contact].sender}-${contact}`];
+          console.log(
+            "messages[`${userChats[contact].sender}-${contact}`];",
+            `${userChats[contact].sender}-${contact}`
+          );
+          console.log(
+            "foundMessage?.targetTimeStamp",
+            foundMessage?.targetTimeStamp,
+            " userChats[contact].commitTimestamp",
+            userChats[contact].commitTimestamp
+          );
+
           return (
             <User
               key={index}
@@ -80,6 +102,10 @@ export const Users: React.FC<{
                   : formatAddress(contact)
               }
               chainId={chainId}
+              isUnread={
+                foundMessage?.targetTimeStamp <
+                userChats[contact].commitTimestamp
+              }
             />
           );
         })
