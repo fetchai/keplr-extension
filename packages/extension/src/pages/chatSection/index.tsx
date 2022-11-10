@@ -61,7 +61,6 @@ export const ChatSection: FunctionComponent = () => {
     () => allMessages[`${walletAddress}-${userName}`] || {},
     [allMessages, userName]
   );
-  console.log("allMessages", allMessages);
 
   // console.log("oldMessages after removing api deps", oldMessages);
 

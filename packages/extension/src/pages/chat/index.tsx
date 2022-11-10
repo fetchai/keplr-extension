@@ -55,6 +55,7 @@ const ChatView = () => {
   const messages = useSelector(userMessages);
   // const messages = data[0];
   // address book values
+
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
@@ -240,6 +241,7 @@ const ChatView = () => {
         return;
       const targetAddress = getTarget(contact);
       userLastMessages[targetAddress] = messages[contact].lastMessage;
+      // userLastMessages[targetAddress] = messages[contact].targetTimeStamp;
     });
 
     setUserChats(userLastMessages);

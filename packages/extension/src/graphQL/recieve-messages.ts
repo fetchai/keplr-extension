@@ -4,9 +4,7 @@ import { fetchMessages } from "./messages-api";
 import { data } from "../../src/dummy-data.json";
 
 export const recieveMessages = async (userAddress: string) => {
-  console.log("fetch messages called");
   const messagesArray = await fetchMessages();
-  console.log("messagesArray", messagesArray);
 
   // // receiveDummyMessages(userAddress);
   // const messageStore: any = {};

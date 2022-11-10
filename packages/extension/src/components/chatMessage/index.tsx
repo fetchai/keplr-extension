@@ -30,9 +30,6 @@ export const ChatMessage = ({
   targetLastSeenTimestamp: number;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState("");
-  console.log("timestamp", timestamp);
-  console.log("userLastSeenTimestamp", userLastSeenTimestamp);
-  console.log("targetLastSeenTimestamp", targetLastSeenTimestamp);
 
   useEffect(() => {
     decryptMessage(chainId, message, isSender)

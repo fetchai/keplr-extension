@@ -19,7 +19,6 @@ const User: React.FC<{
 }> = ({ chainId, chat, contact, contactName, isUnread }) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
-  console.log("isUnread", isUnread);
 
   const handleClick = () => {
     history.push(`/chat/${contact}`);
@@ -38,24 +37,29 @@ const User: React.FC<{
   }, [chainId, chat, contact]);
 
   return (
-    <div className={style.messageContainer} onClick={handleClick}>
+    <div
+      className={style.messageContainer}
+      onClick={handleClick}
+      style={{ position: "relative" }}
+    >
+      {isUnread ? (
+        <span
+          style={{
+            height: "19px",
+            width: "19px",
+            backgroundColor: "#d027e5",
+            borderRadius: "20px",
+            position: "relative",
+            bottom: "20px",
+            left: "3px",
+            zIndex: "1000",
+            position: "absolute",
+          }}
+        />
+      ) : (
+        ""
+      )}
       <div className={style.initials}>
-        {isUnread ? (
-          <span
-            style={{
-              height: "14px",
-              width: "26px",
-              backgroundColor: "#d027e5",
-              borderRadius: "20px",
-              position: "relative",
-              bottom: "8px",
-            }}
-          >
-            u
-          </span>
-        ) : (
-          ""
-        )}
         <div>
           {ReactHtmlParser(
             jazzicon(24, parseInt(fromBech32(contact).data.toString(), 16))
@@ -84,7 +88,6 @@ export const Users: React.FC<{
   addresses: NameAddress;
 }> = ({ chainId, userChats, addresses }) => {
   const messages = useSelector(userMessages);
-  console.log("userchats", userChats);
 
   return (
     <div className={style.messagesContainer}>
@@ -92,20 +95,9 @@ export const Users: React.FC<{
         Object.keys(userChats).map((contact: any, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-          console.log("userChats", userChats[contact]);
 
           const foundMessage =
             messages[`${userChats[contact].sender}-${contact}`];
-          console.log(
-            "messages[`${userChats[contact].sender}-${contact}`];",
-            `${userChats[contact].sender}-${contact}`
-          );
-          console.log(
-            "foundMessage?.targetTimeStamp",
-            foundMessage?.targetTimeStamp,
-            " userChats[contact].commitTimestamp",
-            userChats[contact].commitTimestamp
-          );
 
           return (
             <User
