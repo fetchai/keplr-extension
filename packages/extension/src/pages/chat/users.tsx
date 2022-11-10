@@ -40,14 +40,30 @@ const User: React.FC<{
   return (
     <div className={style.messageContainer} onClick={handleClick}>
       <div className={style.initials}>
-        {ReactHtmlParser(
-          jazzicon(24, parseInt(fromBech32(contact).data.toString(), 16))
-            .outerHTML
+        {isUnread ? (
+          <span
+            style={{
+              height: "14px",
+              width: "26px",
+              backgroundColor: "#d027e5",
+              borderRadius: "20px",
+              position: "relative",
+              bottom: "8px",
+            }}
+          >
+            u
+          </span>
+        ) : (
+          ""
         )}
+        <div>
+          {ReactHtmlParser(
+            jazzicon(24, parseInt(fromBech32(contact).data.toString(), 16))
+              .outerHTML
+          )}
+        </div>
       </div>
       <div className={style.messageInner}>
-        {isUnread ? <div>unread</div> : <div>read</div>}
-        {console.log(isUnread)}
         <div className={style.name}>{contactName}</div>
         <div className={style.messageText}>{message}</div>
       </div>
