@@ -40,6 +40,7 @@ import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
 import { ActionsPopup } from "./actions-popup";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { getUniqueChatId } from "../../utils/chat";
 
 export let openValue = true;
 
@@ -57,10 +58,11 @@ export const ChatSection: FunctionComponent = () => {
   // const allMessages = data[0];
 
   const blockedUsers = useSelector(userBlockedAddresses);
-  const oldMessages = useMemo(
-    () => allMessages[`${walletAddress}-${userName}`] || {},
-    [allMessages, userName]
-  );
+  const oldMessages = useMemo(() => {
+    const chatId = getUniqueChatId(userName, walletAddress);
+    return allMessages[chatId] || {};
+  }, [allMessages, userName]);
+  console.log("allMessages", allMessages);
 
   // console.log("oldMessages after removing api deps", oldMessages);
 
@@ -78,7 +80,7 @@ export const ChatSection: FunctionComponent = () => {
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
-      if (node) node.scrollIntoView({ block: "end" });
+      if (node) node.scrollIntoView({ block: "start" });
     },
     [messages]
   );
@@ -227,7 +229,11 @@ export const ChatSection: FunctionComponent = () => {
       },
     });
   };
-  const userLastSeenTimestamp = 1666857706136;
+
+  const isSender = (address: string): boolean => {
+    return address === userName;
+  };
+  // const userLastSeenTimestamp = 1666857706136;
 
   return (
     <HeaderLayout
@@ -346,6 +352,7 @@ export const ChatSection: FunctionComponent = () => {
                 })
                 ?.map((message: any, index) => {
                   const check = showDateFunction(message?.commitTimestamp);
+
                   return (
                     <>
                       <ChatMessage
@@ -355,9 +362,19 @@ export const ChatSection: FunctionComponent = () => {
                         message={message?.contents}
                         isSender={message?.target === userName} // if target was the user we are chatting with
                         timestamp={message?.commitTimestamp || 1549312452}
-                        userLastSeenTimestamp={userLastSeenTimestamp}
-                        targetLastSeenTimestamp={oldMessages.targetTimeStamp}
+                        // userLastSeenTimestamp={
+                        //   isSender(message?.target)
+                        //     ? oldMessages[message.sender]
+                        //     : oldMessages[message.target]
+                        // }
+
+                        targetLastSeenTimestamp={
+                          allMessages[
+                            getUniqueChatId(message.target, message.sender)
+                          ].targetTimeStamp
+                        }
                       />
+                      {/* TODO : change this logic */}
                       {oldMessages.targetTimeStamp >=
                         message?.commitTimestamp &&
                         message?.target === userName && (

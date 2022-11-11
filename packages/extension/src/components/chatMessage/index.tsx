@@ -12,13 +12,24 @@ const formatTime = (timestamp: number): string => {
   return format(date, "p");
 };
 
+const getDate = (timestamp: number): string => {
+  const d = new Date(timestamp);
+  if (isToday(d)) {
+    return "Today";
+  }
+  if (isYesterday(d)) {
+    return "Yesterday";
+  }
+  return format(d, "dd MMMM yyyy");
+};
+
 export const ChatMessage = ({
   chainId,
   message,
   isSender,
   timestamp,
   showDate,
-  userLastSeenTimestamp,
+
   targetLastSeenTimestamp,
 }: {
   chainId: string;
@@ -26,7 +37,7 @@ export const ChatMessage = ({
   message: string;
   timestamp: number;
   showDate: boolean;
-  userLastSeenTimestamp: number;
+
   targetLastSeenTimestamp: number;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState("");
@@ -40,17 +51,6 @@ export const ChatMessage = ({
         setDecryptedMessage(e.message);
       });
   }, [chainId, isSender, message]);
-
-  const getDate = (timestamp: number): string => {
-    const d = new Date(timestamp);
-    if (isToday(d)) {
-      return "Today";
-    }
-    if (isYesterday(d)) {
-      return "Yesterday";
-    }
-    return format(d, "dd MMMM yyyy");
-  };
 
   return (
     <>
@@ -81,6 +81,12 @@ export const ChatMessage = ({
                 <img alt="" src={deliveredIcon} />
               ))}
           </div>
+          {console.log(
+            "targetLastSeenTimestamp",
+            targetLastSeenTimestamp,
+            "timestamp",
+            timestamp
+          )}
         </Container>
       </div>
     </>
