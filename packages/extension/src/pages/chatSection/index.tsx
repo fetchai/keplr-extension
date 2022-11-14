@@ -8,65 +8,72 @@ import React, {
   FunctionComponent,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import TextareaAutosize from "react-textarea-autosize";
 import { Input, InputGroup } from "reactstrap";
 import {
   userBlockedAddresses,
   userMessages,
 } from "../../chatStore/messages-slice";
 import { userDetails } from "../../chatStore/user-slice";
+import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { ChatLoader } from "../../components/chat-loader";
 import { ChatMessage } from "../../components/chatMessage";
 import { SwitchUser } from "../../components/switch-user";
 import { ToolTip } from "../../components/tooltip";
 import { EthereumEndpoint } from "../../config.ui";
 import { deliverMessages } from "../../graphQL/messages-api";
+import { recieveMessages } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
-import chevronLeft from "../../public/assets/icon/chevron-left.png";
-import moreIcon from "../../public/assets/icon/more-grey.png";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
 import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
-import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
-import { Dropdown } from "./chat-actions-popup";
-import style from "./style.module.scss";
-import TextareaAutosize from "react-textarea-autosize";
-import { useNotification } from "../../components/notification";
-import { useIntl } from "react-intl";
-import { ChatLoader } from "../../components/chat-loader";
 import { ActionsPopup } from "./actions-popup";
-import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { Dropdown } from "./chat-actions-popup";
+import { NewUserSection } from "./new-user-section";
+import style from "./style.module.scss";
+import { UserNameSection } from "./username-section";
 
-export let openValue = true;
-
+export const openValue = true;
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
-  const notification = useNotification();
-  const intl = useIntl();
+  const groupId = history.location.pathname.split("/")[3];
   const userName = history.location.pathname.split("/")[2];
+
   const allMessages = useSelector(userMessages);
   const blockedUsers = useSelector(userBlockedAddresses);
-  const oldMessages = useMemo(() => allMessages[userName] || {}, [
-    allMessages,
-    userName,
-  ]);
-  const [messages, setMessages] = useState(
-    Object.values(oldMessages?.messages || [])
-  );
+  const [page, setPage] = useState(0);
+  const [messages, setMessages] = useState([]);
   const user = useSelector(userDetails);
 
   const [newMessage, setNewMessage] = useState("");
   const [targetPubKey, setTargetPubKey] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [confirmAction, setConfirmAction] = useState(false);
+  const [loadingChats, setLoadingChats] = useState(true);
   const [action, setAction] = useState("");
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
+  console.log(userName, groupId, page);
+  useEffect(() => {
+    const getPrevMessages = async () => {
+      setLoadingChats(true);
+      if (groupId) await recieveMessages(userName, groupId, page);
+      setLoadingChats(false);
+    };
+    getPrevMessages();
+  }, []);
+
+  useEffect(() => {
+    if (allMessages)
+      setMessages(Object.values(allMessages[userName]?.messages || []));
+  }, [allMessages]);
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
@@ -177,47 +184,15 @@ export const ChatSection: FunctionComponent = () => {
       );
       setTargetPubKey(pubAddr?.publicKey || "");
     };
-    if (!oldMessages?.pubKey?.length) {
-      setPublicAddress();
-    }
-  }, [oldMessages, user.accessToken, current.chainId, userName]);
-
-  useEffect(() => {
-    if (
-      oldMessages?.lastMessage?.id &&
-      !messages?.find(
-        (message: any) => message?.id === oldMessages?.lastMessage?.id
-      )
-    ) {
-      const newMessages = [...messages, oldMessages?.lastMessage];
-      setMessages(newMessages);
-    }
-  }, [oldMessages, messages]);
-
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current && messagesEndRef.current.scrollIntoView(true);
-  // };
+    setPublicAddress();
+    console.log("setPublicAddress");
+  }, [user.accessToken, current.chainId, userName]);
 
   const isNewUser = (): boolean => {
     const addressExists = addresses.find(
       (item: any) => item.address === userName
     );
     return !Boolean(addressExists) && messages.length === 0;
-  };
-  const copyAddress = async (address: string) => {
-    await navigator.clipboard.writeText(address);
-    notification.push({
-      placement: "top-center",
-      type: "success",
-      duration: 2,
-      content: intl.formatMessage({
-        id: "main.address.copied",
-      }),
-      canDelete: true,
-      transition: {
-        duration: 0.25,
-      },
-    });
   };
 
   return (
@@ -228,97 +203,27 @@ export const ChatSection: FunctionComponent = () => {
       rightRenderer={<SwitchUser />}
     >
       <ChatErrorPopup />
-      {!addressBookConfig.isLoaded ? (
+      {loadingChats ? (
         <ChatLoader message="Arranging messages, please wait..." />
       ) : (
         <div>
-          <div className={style.username}>
-            <div className={style.leftBox}>
-              <img
-                alt=""
-                className={style.backBtn}
-                src={chevronLeft}
-                onClick={() => {
-                  history.goBack();
-                  openValue = false;
-                }}
-              />
-              <span className={style.recieverName}>
-                <ToolTip
-                  tooltip={
-                    <div className={style.user} style={{ minWidth: "300px" }}>
-                      {contactName(addresses).length
-                        ? contactName(addresses)
-                        : userName}
-                    </div>
-                  }
-                  theme="dark"
-                  trigger="hover"
-                  options={{
-                    placement: "top",
-                  }}
-                >
-                  {contactName(addresses).length
-                    ? formatAddress(contactName(addresses))
-                    : formatAddress(userName)}
-                </ToolTip>
-              </span>
-              <span
-                className={style.copyIcon}
-                onClick={() => copyAddress(userName)}
-              >
-                <i className="fas fa-copy" />
-              </span>
-            </div>
-            <div className={style.rightBox}>
-              <img
-                alt=""
-                style={{ cursor: "pointer" }}
-                className={style.more}
-                src={moreIcon}
-                onClick={handleDropDown}
-                onBlur={handleDropDown}
-              />
-            </div>
-          </div>
-
+          <UserNameSection
+            handleDropDown={handleDropDown}
+            addresses={addresses}
+          />
           <Dropdown
             added={contactName(addresses).length > 0}
             showDropdown={showDropdown}
-            // setShowDropdown={setShowDropdown}
             handleClick={handleClick}
             blocked={blockedUsers[userName]}
           />
-
           {isNewUser() && (
-            <div className={style.contactsContainer}>
-              <div className={style.displayText}>
-                This contact is not saved in your address book
-              </div>
-              <div className={style.buttons}>
-                <button
-                  style={{ padding: "4px 20px" }}
-                  onClick={() =>
-                    history.push({
-                      pathname: "/setting/address-book",
-                      state: {
-                        openModal: true,
-                        addressInputValue: userName,
-                      },
-                    })
-                  }
-                >
-                  Add
-                </button>
-                {blockedUsers[userName] ? (
-                  <button onClick={() => handleClick("unblock")}>
-                    Unblock
-                  </button>
-                ) : (
-                  <button onClick={() => handleClick("block")}>Block</button>
-                )}
-              </div>
-            </div>
+            <NewUserSection
+              userName={userName}
+              setShowDropdown={setShowDropdown}
+              setConfirmAction={setConfirmAction}
+              setAction={setAction}
+            />
           )}
 
           <div
@@ -331,23 +236,40 @@ export const ChatSection: FunctionComponent = () => {
                 Messages are end to end encrypted. Nobody else can read them
                 except you and the recipient.
               </p>
-              {messages
-                ?.sort((a: any, b: any) => {
-                  return a.commitTimestamp - b.commitTimestamp;
-                })
-                ?.map((message: any, index) => {
-                  const check = showDateFunction(message?.commitTimestamp);
-                  return (
-                    <ChatMessage
-                      key={index}
-                      chainId={current.chainId}
-                      showDate={check}
-                      message={message?.contents}
-                      isSender={message?.target === userName} // if target was the user we are chatting with
-                      timestamp={message?.commitTimestamp || 1549312452}
-                    />
-                  );
-                })}
+              <InfiniteScroll
+                pageStart={page}
+                loadMore={async () => {
+                  console.log("calling next");
+                  setPage(page + 1);
+                  recieveMessages(userName, groupId, page + 1);
+                }}
+                isReverse={true}
+                hasMore={page < 3}
+                loader={
+                  <div className="loader" key={0}>
+                    Loading ...
+                  </div>
+                }
+              >
+                {messages
+                  ?.sort((a: any, b: any) => {
+                    return a.commitTimestamp - b.commitTimestamp;
+                  })
+                  ?.map((message: any, index) => {
+                    const check = showDateFunction(message?.commitTimestamp);
+                    return (
+                      <ChatMessage
+                        key={index}
+                        chainId={current.chainId}
+                        showDate={check}
+                        message={message?.contents}
+                        isSender={message?.target === userName} // if target was the user we are chatting with
+                        timestamp={message?.commitTimestamp || 1549312452}
+                      />
+                    );
+                  })}
+              </InfiniteScroll>
+
               <div ref={messagesEndRef} className={style.messageRef} />
             </div>
             <InputGroup className={style.inputText}>
