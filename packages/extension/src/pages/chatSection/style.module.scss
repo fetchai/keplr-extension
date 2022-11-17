@@ -108,7 +108,11 @@
     }
   }
 }
-
+.loader {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
 .inputText {
   // margin-left: -12px;
   border: #525f7f 1px solid;

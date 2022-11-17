@@ -11,9 +11,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../chatStore";
 import {
-  Groups,
   setMessageError,
-  userChatGroups,
   userChatStorePopulated,
   userChatSubscriptionActive,
 } from "../../chatStore/messages-slice";
@@ -38,7 +36,7 @@ import { getJWT } from "../../utils/auth";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { NameAddress, Users } from "./users";
+import { ChatsGroupSection, NameAddress } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -50,7 +48,6 @@ const ChatView = () => {
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
 
-  const chatGroups = useSelector(userChatGroups);
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -68,8 +65,7 @@ const ChatView = () => {
       : current.chainId
   );
 
-  const [userGroups, setUserGroups] = useState<Groups | undefined>();
-  const [loadingChats, setLoadingChats] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
 
@@ -81,7 +77,7 @@ const ChatView = () => {
       try {
         if (!chatSubscriptionActive) messageListener();
         if (!chatStorePopulated) {
-          await recieveGroups(0, 10);
+          await recieveGroups(0, walletAddress);
           await fetchBlockList();
         }
       } catch (e) {
@@ -180,78 +176,11 @@ const ChatView = () => {
     addressBookConfig.waitLoaded().then(() => {
       const addressList: NameAddress = {};
       addressBookConfig.addressBookDatas.map((data) => {
-        console.log(data);
         addressList[data.address] = data.name;
       });
       setAddresses(addressList);
     });
   }, [selectedChainId]);
-
-  useEffect(() => {
-    setLoadingChats(true);
-
-    const userLastMessageGroups: Groups = {};
-    Object.keys(chatGroups).map((contact: string) => {
-      if (
-        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
-        !addresses[contact]
-      )
-        return;
-      userLastMessageGroups[contact] = chatGroups[contact];
-    });
-
-    setUserGroups(userLastMessageGroups);
-    setLoadingChats(false);
-  }, [chatGroups]);
-
-  const fillUserChats = () => {
-    const userLastMessageGroups: Groups = {};
-    Object.keys(chatGroups).map((contact: string) => {
-      if (
-        userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts &&
-        !addresses[contact]
-      )
-        return;
-      userLastMessageGroups[contact] = chatGroups[contact];
-    });
-    setUserGroups(userLastMessageGroups);
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputVal(value);
-
-    if (value.trim()) {
-      const userLastMessages: any = {};
-      Object.keys(chatGroups).map((contact: string) => {
-        userLastMessages[contact] = chatGroups[contact];
-      });
-
-      const filteredChats = Object.keys(userLastMessages).filter((contact) => {
-        const found = Object.keys(addresses).some(
-          (address) =>
-            (addresses[address].toLowerCase().includes(value.toLowerCase()) ||
-              address.toLowerCase().includes(value.toLowerCase())) &&
-            address == contact
-        );
-        return (
-          (userState?.messagingPubKey.privacySetting ===
-            PrivacySetting.Everybody &&
-            contact.toLowerCase().includes(value.toLowerCase())) ||
-          found
-        );
-      });
-
-      const tempChats: any = {};
-      filteredChats.forEach((item: any) => {
-        tempChats[item] = userLastMessages[item];
-      });
-
-      setUserGroups(tempChats);
-    } else {
-      fillUserChats();
-    }
-  };
 
   if (
     userState.messagingPubKey.privacySetting &&
@@ -276,13 +205,13 @@ const ChatView = () => {
         />
 
         <div className={style.title}>Chats</div>
-        <ChatSearchInput handleSearch={handleSearch} searchInput={inputVal} />
-        {loadingChats || !userGroups ? (
+        <ChatSearchInput handleSearch={() => {}} searchInput={inputVal} />
+        {loadingChats ? (
           <ChatLoader message="Loading chats, please wait..." />
         ) : (
-          <Users
+          <ChatsGroupSection
+            setLoadingChats={setLoadingChats}
             chainId={current.chainId}
-            userGroups={userGroups}
             addresses={addresses}
           />
         )}

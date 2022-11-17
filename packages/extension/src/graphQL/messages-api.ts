@@ -7,35 +7,64 @@ import {
   setMessageError,
   setUnblockedUser,
   updateAuthorMessages,
-  updateSenderMessages,
+  updateLatestSentMessage,
 } from "../chatStore/messages-slice";
+import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "../utils/encrypt-message";
 import { client, createWSLink, httpLink } from "./client";
 import {
   block,
   blockedList,
+  groups,
   listenMessages,
+  mailbox,
   NewMessageUpdate,
-  receiveMessages,
   sendMessages,
   unblock,
 } from "./messages-queries";
+import { recieveGroups } from "./recieve-messages";
 
-export const fetchMessages = async () => {
+export const fetchMessages = async (groupId: string, page: number) => {
   const state = store.getState();
   const { data, errors } = await client.query({
-    query: gql(receiveMessages),
+    query: gql(mailbox),
     fetchPolicy: "no-cache",
     context: {
       headers: {
         Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
+    variables: {
+      groupId,
+      page,
+      pageCount: CHAT_PAGE_COUNT,
+    },
   });
 
   if (errors) console.log("errors", errors);
+  console.log("data.mailbox", data.mailbox);
+  return data.mailbox;
+};
 
-  return data.mailbox.messages;
+export const fetchGroups = async (page: number) => {
+  const state = store.getState();
+  const { data, errors } = await client.query({
+    query: gql(groups),
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${state.user.accessToken}`,
+      },
+    },
+    variables: {
+      page,
+      pageCount: GROUP_PAGE_COUNT,
+    },
+  });
+  if (errors) console.log("errors", errors);
+
+  console.log("groups", data);
+  return data.groups;
 };
 
 export const fetchBlockList = async () => {
@@ -161,8 +190,9 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
-        return data;
+        console.log(data?.dispatchMessages);
+        store.dispatch(updateLatestSentMessage(data?.dispatchMessages[0]));
+        return data?.dispatchMessages[0];
       }
       return null;
     }
@@ -209,6 +239,7 @@ export const messageListener = () => {
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
         store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
+        recieveGroups(0, data.newMessageUpdate.message.target);
       },
       error(err) {
         console.error("err", err);
