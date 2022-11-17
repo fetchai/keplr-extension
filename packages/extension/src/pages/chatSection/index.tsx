@@ -64,7 +64,7 @@ export const ChatSection: FunctionComponent = () => {
   }, [allMessages, userName]);
   console.log("allMessages", allMessages);
 
-  // console.log("oldMessages after removing api deps", oldMessages);
+  console.log("oldMessages after removing api deps", oldMessages);
 
   const [messages, setMessages] = useState(
     Object.values(oldMessages?.messages || [])

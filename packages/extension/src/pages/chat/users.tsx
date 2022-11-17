@@ -47,13 +47,13 @@ const User: React.FC<{
       {isUnread ? (
         <span
           style={{
-            height: "19px",
-            width: "19px",
+            height: "12px",
+            width: "12px",
             backgroundColor: "#d027e5",
             borderRadius: "20px",
             position: "relative",
             bottom: "20px",
-            left: "3px",
+            left: "6px",
             zIndex: "1000",
             position: "absolute",
           }}
@@ -95,13 +95,16 @@ export const Users: React.FC<{
   const showUnreadNotification = (address: string): boolean => {
     const lastMessage = userChats[address];
     // if last message was not sent by user
-    if (lastMessage.sender !== walletAddress) {
-      const chatId = getUniqueChatId(address, walletAddress);
 
-      const userTimestamp = messages[chatId].targetTimeStamp;
-      console.log("userTimestamp", userTimestamp);
+    const chatId = getUniqueChatId(address, walletAddress);
+    console.log("chatId", chatId);
 
-      return userTimestamp > lastMessage.commitTimestamp;
+    const userTimestamp = messages[chatId].targetTimeStamp;
+    console.log("userTimestamp", userTimestamp);
+    console.log("lastMessage.commitTimestamp", lastMessage.commitTimestamp);
+
+    if (userTimestamp <= lastMessage.commitTimestamp) {
+      return true;
     }
     return false;
   };
