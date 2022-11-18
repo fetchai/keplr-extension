@@ -54,7 +54,7 @@ const User: React.FC<{
             position: "relative",
             bottom: "20px",
             left: "6px",
-            zIndex: "1000",
+            zIndex: "1",
             position: "absolute",
           }}
         />
