@@ -73,9 +73,10 @@ export interface NameAddress {
 
 export const ChatsGroupSection: React.FC<{
   chainId: string;
+  searchString: string;
   addresses: NameAddress;
   setLoadingChats: any;
-}> = ({ chainId, addresses, setLoadingChats }) => {
+}> = ({ chainId, addresses, setLoadingChats, searchString }) => {
   const groups: Groups = useSelector(userChatGroups);
   const groupsPagination: Pagination = useSelector(userChatGroupPagination);
   const [loadingGroups, setLoadingGroups] = useState(false);
@@ -129,6 +130,15 @@ export const ChatsGroupSection: React.FC<{
         {Object.keys(groups).map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
+          if (searchString.length > 0) {
+            if (
+              !contactAddressBookName
+                .toLowerCase()
+                .includes(searchString.trim().toLowerCase()) &&
+              !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+            )
+              return;
+          }
           return (
             <User
               key={index}

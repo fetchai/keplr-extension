@@ -16,6 +16,7 @@ import {
   block,
   blockedList,
   groups,
+  groupsWithAddresses,
   listenMessages,
   mailbox,
   NewMessageUpdate,
@@ -46,20 +47,29 @@ export const fetchMessages = async (groupId: string, page: number) => {
   return data.mailbox;
 };
 
-export const fetchGroups = async (page: number) => {
+export const fetchGroups = async (
+  page: number,
+  addressQueryString: string,
+  addresses: string[]
+) => {
+  const groupsQuery = addresses.length ? groupsWithAddresses : groups;
+  const variables = {
+    page,
+    addressQueryString,
+    addresses,
+    pageCount: GROUP_PAGE_COUNT,
+  };
+  if (addresses.length) variables["addresses"] = addresses;
   const state = store.getState();
   const { data, errors } = await client.query({
-    query: gql(groups),
+    query: gql(groupsQuery),
     fetchPolicy: "no-cache",
     context: {
       headers: {
         Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
-    variables: {
-      page,
-      pageCount: GROUP_PAGE_COUNT,
-    },
+    variables: variables,
   });
   if (errors) console.log("errors", errors);
 

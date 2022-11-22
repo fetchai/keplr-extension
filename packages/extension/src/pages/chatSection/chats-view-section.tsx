@@ -34,9 +34,11 @@ export const ChatsViewSection = ({
 }) => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
+
   const user = useSelector(userDetails);
   const userGroups: Groups = useSelector(userChatGroups);
   const userChats: MessagesState = useSelector(userMessages);
+
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);

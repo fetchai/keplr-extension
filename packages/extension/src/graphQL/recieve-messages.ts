@@ -26,8 +26,17 @@ export const recieveMessages = async (
   return messagesObj;
 };
 
-export const recieveGroups = async (page: number, userAddress: string) => {
-  const { groups, pagination } = await fetchGroups(page);
+export const recieveGroups = async (
+  page: number,
+  userAddress: string,
+  addressQueryString: string = "",
+  addressesList: string[] = []
+) => {
+  const { groups, pagination } = await fetchGroups(
+    page,
+    addressQueryString,
+    addressesList
+  );
   const groupsObj: any = {};
   if (groups && groups.length) {
     console.log("recieveGroups", groups);

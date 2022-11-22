@@ -7,9 +7,11 @@ import style from "./style.module.scss";
 export const ChatSearchInput = ({
   searchInput,
   handleSearch,
+  setSearchInput,
 }: {
   searchInput: string;
   handleSearch: any;
+  setSearchInput: any;
 }) => {
   const history = useHistory();
   return (
@@ -19,7 +21,8 @@ export const ChatSearchInput = ({
         <input
           placeholder="Search by name or address"
           value={searchInput}
-          onChange={handleSearch}
+          onKeyUp={handleSearch}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
       <div onClick={() => history.push("/newChat")}>

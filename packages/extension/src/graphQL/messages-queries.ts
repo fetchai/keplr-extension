@@ -31,21 +31,40 @@ export const mailbox = `query Mailbox($groupId: String, $page: Int, $pageCount: 
   }
 }`;
 
-export const groups = `query Query($page: Int, $pageCount: Int) {
-  groups(page: $page, pageCount: $pageCount) {
+export const groups = `query Query($addressQueryString: String, $page: Int, $pageCount: Int) {
+  groups(addressQueryString: $addressQueryString, page: $page, pageCount: $pageCount) {
     groups {
-      id
-      name
-      lastMessageContents
-      lastMessageSender
       createdAt
+      id
+      lastMessageSender
+      lastMessageContents
+      name
       lastMessageTimestamp
     }
     pagination {
       lastPage
       page
-      pageCount
       total
+      pageCount
+    }
+  }
+}`;
+
+export const groupsWithAddresses = `query Query($addressQueryString: String, $page: Int, $pageCount: Int, $addresses: [String!]) {
+  groups(addressQueryString: $addressQueryString, page: $page, pageCount: $pageCount, addresses: $addresses) {
+    groups {
+      createdAt
+      id
+      lastMessageSender
+      lastMessageContents
+      name
+      lastMessageTimestamp
+    }
+    pagination {
+      lastPage
+      page
+      total
+      pageCount
     }
   }
 }`;

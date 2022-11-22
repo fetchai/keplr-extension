@@ -71,6 +71,19 @@ const ChatView = () => {
 
   const requester = new InExtensionMessageRequester();
 
+  const handleSearch = debounce(() => {
+    const searchString = inputVal.trim();
+    if (
+      searchString.replace("fetch1", "").length > 2 &&
+      !"fetch1".includes(searchString)
+    ) {
+      const addressesList = Object.keys(addresses).filter((contact) =>
+        addresses[contact].toLowerCase().includes(searchString.toLowerCase())
+      );
+      recieveGroups(0, walletAddress, searchString, addressesList);
+    }
+  }, 1000);
+
   useEffect(() => {
     const getMessagesAndBlocks = async () => {
       setLoadingChats(true);
@@ -205,11 +218,16 @@ const ChatView = () => {
         />
 
         <div className={style.title}>Chats</div>
-        <ChatSearchInput handleSearch={() => {}} searchInput={inputVal} />
+        <ChatSearchInput
+          handleSearch={handleSearch}
+          setSearchInput={setInputVal}
+          searchInput={inputVal}
+        />
         {loadingChats ? (
           <ChatLoader message="Loading chats, please wait..." />
         ) : (
           <ChatsGroupSection
+            searchString={inputVal}
             setLoadingChats={setLoadingChats}
             chainId={current.chainId}
             addresses={addresses}
@@ -223,3 +241,13 @@ const ChatView = () => {
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;
 };
+
+function debounce(func: any, timeout = 300) {
+  let timer: any;
+  return (...args: any) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
