@@ -1,8 +1,7 @@
 import { fromBech32 } from "@cosmjs/encoding";
 import jazzicon from "@metamask/jazzicon";
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import InfiniteScroll from "react-infinite-scroller";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
@@ -13,6 +12,7 @@ import {
   userChatGroups,
 } from "../../chatStore/messages-slice";
 import { recieveGroups } from "../../graphQL/recieve-messages";
+import { useOnScreen } from "../../hooks/use-on-screen";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { useStore } from "../../stores";
 import { decryptMessage } from "../../utils/decrypt-message";
@@ -84,15 +84,23 @@ export const ChatsGroupSection: React.FC<{
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
+  //Scrolling Logic
+  const messagesEndRef: any = createRef();
+  const messagesEncRef: any = useRef();
+  const isOnScreen = useOnScreen(messagesEndRef);
+
   useEffect(() => {
-    const getFirstBatchofChats = async () => {
-      setLoadingChats(true);
-      console.log("getFirstBatchofChats");
+    const getChats = async () => {
       await loadUserGroups();
-      setLoadingChats(false);
+      messagesEncRef.current.scrollIntoView(true);
     };
-    if (Object.values(groups).length === 0) getFirstBatchofChats();
-  }, []);
+    if (isOnScreen) getChats();
+  }, [isOnScreen]);
+
+  useEffect(() => {
+    if (groupsPagination.page < 0) setLoadingChats(true);
+    else setLoadingChats(false);
+  }, [groupsPagination]);
 
   const loadUserGroups = async () => {
     if (!loadingGroups) {
@@ -115,45 +123,38 @@ export const ChatsGroupSection: React.FC<{
 
   return (
     <div className={style.messagesContainer}>
-      <InfiniteScroll
-        loadMore={loadUserGroups}
-        useWindow={false}
-        hasMore={
-          groupsPagination?.lastPage > groupsPagination?.page && !loadingGroups
+      {Object.keys(groups).map((contact, index) => {
+        // translate the contact address into the address book name if it exists
+        const contactAddressBookName = addresses[contact];
+        if (searchString.length > 0) {
+          if (
+            !contactAddressBookName
+              .toLowerCase()
+              .includes(searchString.trim().toLowerCase()) &&
+            !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+          )
+            return;
         }
-        loader={
-          <div className={style.loader} key={0}>
-            Loading More Chats ...
-          </div>
-        }
-      >
-        {Object.keys(groups).map((contact, index) => {
-          // translate the contact address into the address book name if it exists
-          const contactAddressBookName = addresses[contact];
-          if (searchString.length > 0) {
-            if (
-              !contactAddressBookName
-                .toLowerCase()
-                .includes(searchString.trim().toLowerCase()) &&
-              !contact.toLowerCase().includes(searchString.trim().toLowerCase())
-            )
-              return;
-          }
-          return (
-            <User
-              key={index}
-              group={groups[contact]}
-              contactName={
-                contactAddressBookName
-                  ? formatAddress(contactAddressBookName)
-                  : formatAddress(contact)
-              }
-              contactAddress={contact}
-              chainId={chainId}
-            />
-          );
-        })}
-      </InfiniteScroll>
+        return (
+          <User
+            key={index}
+            group={groups[contact]}
+            contactName={
+              contactAddressBookName
+                ? formatAddress(contactAddressBookName)
+                : formatAddress(contact)
+            }
+            contactAddress={contact}
+            chainId={chainId}
+          />
+        );
+      })}
+      <div className={style.loader} ref={messagesEncRef} />
+      {groupsPagination?.lastPage > groupsPagination?.page && (
+        <div className={style.loader} ref={messagesEndRef}>
+          Loading More Chats ...
+        </div>
+      )}
     </div>
   );
 };

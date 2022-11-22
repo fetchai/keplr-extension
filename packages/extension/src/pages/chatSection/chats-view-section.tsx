@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
@@ -18,19 +17,19 @@ import { ToolTip } from "../../components/tooltip";
 import { CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { deliverMessages } from "../../graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "../../graphQL/recieve-messages";
+import { useOnScreen } from "../../hooks/use-on-screen";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 export const ChatsViewSection = ({
-  setLoadingChats,
   isNewUser,
   isBlocked,
   targetPubKey,
 }: {
-  setLoadingChats: any;
   isNewUser: boolean;
   isBlocked: boolean;
   targetPubKey: string;
+  setLoadingChats: any;
 }) => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
@@ -42,14 +41,14 @@ export const ChatsViewSection = ({
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const preLoadedChats = useMemo(
-    () =>
+  const preLoadedChats = useMemo(() => {
+    return (
       userChats[userName] || {
         messages: {},
-        pagination: { page: -1, pageCount: CHAT_PAGE_COUNT },
-      },
-    [Object.values(userChats[userName]?.messages || []).length]
-  );
+        pagination: { lastPage: 0, page: -1, pageCount: CHAT_PAGE_COUNT },
+      }
+    );
+  }, [Object.values(userChats[userName]?.messages || []).length]);
   const [messages, setMessages] = useState<any[]>(
     Object.values(preLoadedChats?.messages) || []
   );
@@ -62,23 +61,16 @@ export const ChatsViewSection = ({
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   useEffect(() => {
-    const getFirstBatchofChats = async () => {
-      setLoadingChats(true);
-      console.log("getFirstBatchofChats");
-      if (group) await loadUserList();
-      setLoadingChats(false);
-      scrollToBottom();
-    };
-    if (messages.length === 0) getFirstBatchofChats();
-    scrollToBottom();
-  }, []);
-
-  useEffect(() => {
     setMessages(Object.values(preLoadedChats?.messages));
     setPagination(preLoadedChats?.pagination);
   }, [preLoadedChats]);
 
-  const messagesEndRef: any = useRef(null);
+  //Scrolling Logic
+  const messagesEndRef: any = useRef();
+  const messagesStartRef: any = createRef();
+  const messagesEncRef: any = useRef();
+  const isOnScreen = useOnScreen(messagesStartRef);
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) messagesEndRef.current.scrollIntoView(true);
   };
@@ -87,6 +79,15 @@ export const ChatsViewSection = ({
       messagesEndRef.current.scrollIntoView(true);
     }
   }, [messagesEndRef.current]);
+
+  useEffect(() => {
+    const getChats = async () => {
+      if (group) await loadUserList();
+      if (pagination.page < 0) scrollToBottom();
+      else messagesEncRef.current.scrollIntoView(true);
+    };
+    if (isOnScreen) getChats();
+  }, [isOnScreen]);
 
   const loadUserList = async () => {
     if (group && !loadingMessages) {
@@ -147,20 +148,13 @@ export const ChatsViewSection = ({
         isNewUser ? style.showButton : style.hideButton
       }`}
     >
-      <InfiniteScroll
-        className={style.messages}
-        threshold={1}
-        loadMore={loadUserList}
-        useWindow={false}
-        isReverse={true}
-        hasMore={pagination?.lastPage > pagination?.page && !loadingMessages}
-        loader={
-          <div className={style.loader} key={0}>
+      <div className={style.messages}>
+        {pagination?.lastPage > pagination?.page && (
+          <div id="topOfChat" ref={messagesStartRef} className={style.loader}>
             Loading More Chats ...
           </div>
-        }
-      >
-        <p>
+        )}
+        <p ref={messagesEncRef}>
           Messages are end to end encrypted. Nobody else can read them except
           you and the recipient.
         </p>
@@ -182,7 +176,7 @@ export const ChatsViewSection = ({
             );
           })}
         <div ref={messagesEndRef} className={style.messageRef} />
-      </InfiniteScroll>
+      </div>
 
       <InputGroup className={style.inputText}>
         {targetPubKey.length ? (

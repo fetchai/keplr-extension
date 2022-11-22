@@ -51,7 +51,7 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
 }`;
 
 export const groupsWithAddresses = `query Query($addressQueryString: String, $page: Int, $pageCount: Int, $addresses: [String!]) {
-  groups(addressQueryString: $addressQueryString, page: $page, pageCount: $pageCount, addresses: $addresses) {
+  groups(page: $page, pageCount: $pageCount, addresses: $addresses) {
     groups {
       createdAt
       id

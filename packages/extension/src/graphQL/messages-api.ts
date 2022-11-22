@@ -47,19 +47,26 @@ export const fetchMessages = async (groupId: string, page: number) => {
   return data.mailbox;
 };
 
+interface groupQueryVariables {
+  page: number;
+  pageCount: number;
+  addresses?: string[];
+  addressQueryString?: string;
+}
+
 export const fetchGroups = async (
   page: number,
   addressQueryString: string,
   addresses: string[]
 ) => {
   const groupsQuery = addresses.length ? groupsWithAddresses : groups;
-  const variables = {
+  const variables: groupQueryVariables = {
     page,
-    addressQueryString,
-    addresses,
     pageCount: GROUP_PAGE_COUNT,
   };
   if (addresses.length) variables["addresses"] = addresses;
+  else variables["addressQueryString"] = addressQueryString;
+  console.log(groupsQuery, variables);
   const state = store.getState();
   const { data, errors } = await client.query({
     query: gql(groupsQuery),
