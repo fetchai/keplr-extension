@@ -39,6 +39,7 @@ import style from "./style.module.scss";
 import { NameAddress, Users } from "./users";
 import { ChatLoader } from "../../components/chat-loader";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
+import amplitude from "amplitude-js";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -416,7 +417,13 @@ const ChatView = () => {
               onChange={handleSearch}
             />
           </div>
-          <div onClick={() => history.push("/newChat")}>
+          <div
+            onClick={() => {
+              amplitude.getInstance().logEvent("new Chat", {});
+
+              history.push("/newChat");
+            }}
+          >
             <img style={{ cursor: "pointer" }} src={newChatIcon} alt="" />
           </div>
         </div>

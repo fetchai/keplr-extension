@@ -270,10 +270,11 @@ export class RootStore {
           return new NoopAnalyticsClient();
         } else {
           const amplitudeClient = Amplitude.getInstance();
-          amplitudeClient.init(AmplitudeApiKey, undefined, {
+          amplitudeClient.init(AmplitudeApiKey, "Vinay", {
             saveEvents: true,
             platform: "Extension",
           });
+          console.log(amplitudeClient);
 
           return amplitudeClient;
         }
