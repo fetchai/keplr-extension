@@ -97,17 +97,13 @@ export const ChatsGroupSection: React.FC<{
     if (isOnScreen) getChats();
   }, [isOnScreen]);
 
-  useEffect(() => {
-    if (groupsPagination.page < 0) setLoadingChats(true);
-    else setLoadingChats(false);
-  }, [groupsPagination]);
-
   const loadUserGroups = async () => {
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
       await recieveGroups(page, accountInfo.bech32Address);
       setLoadingGroups(false);
+      setLoadingChats(false);
     }
   };
 
