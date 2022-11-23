@@ -27,6 +27,11 @@ const ChainElement: FunctionComponent<{
         selected: chainInfo.chainId === chainStore.current.chainId,
       })}
       onClick={() => {
+        chainStore.selectChain(chainInfo.chainId);
+        chainStore.saveLastViewChainId();
+        store.dispatch(resetUser({}));
+        store.dispatch(addMessageList({}));
+        history.push("/");
         if (chainInfo.chainId !== chainStore.current.chainId) {
           analyticsStore.logEvent("Chain changed", {
             chainId: chainStore.current.chainId,
@@ -34,11 +39,6 @@ const ChainElement: FunctionComponent<{
             toChainId: chainInfo.chainId,
             toChainName: chainInfo.chainName,
           });
-          chainStore.selectChain(chainInfo.chainId);
-          chainStore.saveLastViewChainId();
-          store.dispatch(resetUser({}));
-          store.dispatch(addMessageList({}));
-          history.push("/");
         }
       }}
     >

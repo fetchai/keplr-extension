@@ -65,6 +65,7 @@ import { NewChat } from "./pages/newchat/new-chat";
 import { ChatSettings } from "./pages/setting/chat";
 import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
+import Amplitude from "amplitude-js";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -103,8 +104,14 @@ Modal.defaultStyles = {
 };
 
 const StateRenderer: FunctionComponent = observer(() => {
-  const { keyRingStore } = useStore();
+  const { keyRingStore, chainStore, accountStore } = useStore();
+  console.log("main page");
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
 
+  if (walletAddress) {
+    Amplitude.getInstance().setUserId(walletAddress);
+  }
   if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
     return <MainPage />;
   } else if (keyRingStore.status === KeyRingStatus.LOCKED) {
