@@ -18,6 +18,9 @@ import { DepositModal } from "./qr-code";
 import { useNotification } from "../../components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { store } from "../../chatStore";
+import { setIsChatActive } from "../../chatStore/user-slice";
+// import { fetchPublicKey } from "../../utils/fetch-public-key";
 
 export const ProgressBar = ({
   width,
@@ -33,7 +36,7 @@ export const ProgressBar = ({
     const percentageAvailable = data[0] / total;
     const percentageStake = data[1] / total;
     setValues([percentageAvailable * width, percentageStake * width]);
-  }, [width, data[0], data[1], data[2]]);
+  }, [width, data]);
 
   return (
     <div>
@@ -55,16 +58,34 @@ const EmptyState = ({
   chainName,
   denom,
   chainId,
-  bech32Address,
-  walletStatus,
 }: {
   chainName: string;
   denom: string;
   chainId: string;
-  bech32Address: string;
-  walletStatus: WalletStatus;
 }) => {
+  const { chainStore, accountStore } = useStore();
+  // const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [bech32Address, setBech32Address] = useState("");
+  const [walletStatus, setWalletStatus] = useState<WalletStatus>();
+  // const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const accountInfo = accountStore.getAccount(chainId);
+    setWalletStatus(accountInfo.walletStatus);
+    setBech32Address(accountInfo.bech32Address);
+  }, [chainId, accountStore, chainStore]);
+
+  // TODO(!!!): Commented out this code, seems like the handling here needs a bit
+  //            of work
+  // useEffect(() => {
+  //   const getPubKey = async () => {
+  //     setLoading(true);
+  //     const value = await fetchPublicKey(bech32Address);
+  //     setPubKey(value || "");
+  //     setLoading(false);
+  //   };
+  //   getPubKey();
+  // }, [bech32Address]);
 
   const intl = useIntl();
 
@@ -88,9 +109,8 @@ const EmptyState = ({
         });
       }
     },
-    [walletStatus, bech32Address, notification, intl]
+    [walletStatus, notification, intl]
   );
-
   return (
     <div className={styleAsset.emptyState}>
       <DepositModal
@@ -106,9 +126,9 @@ const EmptyState = ({
         That’s okay, you can deposit tokens to your address or buy some.
       </p>
       <button
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault();
-          copyAddress(bech32Address);
+          await copyAddress(bech32Address);
           setIsDepositOpen(true);
         }}
       >
@@ -194,14 +214,13 @@ export const AssetView: FunctionComponent = observer(() => {
     ? !totalPrice.toDec().isZero()
     : !total.toDec().isZero();
 
+  store.dispatch(setIsChatActive(hasBalance));
   if (!hasBalance) {
     return (
       <EmptyState
         chainName={current.chainName}
         denom={chainStore.current.stakeCurrency.coinDenom}
         chainId={chainStore.current.chainId}
-        bech32Address={accountInfo.bech32Address}
-        walletStatus={accountInfo.walletStatus}
       />
     );
   }
@@ -250,7 +269,7 @@ export const AssetView: FunctionComponent = observer(() => {
         </div>
         <div className={styleAsset.legendContainer}>
           <div className={styleAsset.legend}>
-            <div className={styleAsset.label} style={{ color: "#5e72e4" }}>
+            <div className={styleAsset.label} style={{ color: "#3B82F6" }}>
               <FormattedMessage id="main.account.chart.available-balance" />
             </div>
             <div style={{ minWidth: "16px" }} />

@@ -34,6 +34,14 @@ export const Menu: FunctionComponent = observer(() => {
       >
         <FormattedMessage id="main.menu.settings" />
       </div>
+      <a
+        className={styleMenu.item}
+        href="https://docs.fetch.ai/fetch-wallet/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FormattedMessage id="main.menu.guide" />
+      </a>
       {(chainStore.current.features ?? []).find(
         (feature) => feature === "cosmwasm" || feature === "secretwasm"
       ) ? (
@@ -68,6 +76,7 @@ export const Menu: FunctionComponent = observer(() => {
         className={styleMenu.item}
         onClick={() => {
           keyRingStore.lock();
+          history.push("/");
         }}
       >
         <FormattedMessage id="main.menu.sign-out" />

@@ -71,7 +71,7 @@ const fileRule = {
   ],
 };
 
-const extensionConfig = (env, args) => {
+const extensionConfig = () => {
   return {
     name: "extension",
     mode: isEnvDevelopment ? "development" : "production",
@@ -117,7 +117,7 @@ const extensionConfig = (env, args) => {
         excludeChunks: ["background", "contentScripts", "injectedScript"],
       }),
       new WriteFilePlugin(),
-      new webpack.EnvironmentPlugin(["NODE_ENV"]),
+      new webpack.EnvironmentPlugin(["NODE_ENV", "USER_ENV"]),
       new BundleAnalyzerPlugin({
         analyzerMode: isEnvAnalyzer ? "server" : "disabled",
       }),

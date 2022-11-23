@@ -12,6 +12,7 @@ import yaml from "js-yaml";
 
 import { Buffer } from "buffer/";
 import { CoinPrimitive } from "@keplr-wallet/stores";
+import { clearDecimals } from "./decimals";
 
 export interface MessageObj {
   readonly type: string;
@@ -570,7 +571,7 @@ export const WasmExecutionMsgView: FunctionComponent<{
         }
       })();
     }
-  }, [chainStore, chainStore.current.chainId, intl, msg]);
+  }, [accountStore, chainStore, chainStore.current.chainId, intl, msg]);
 
   return (
     <div>
@@ -619,22 +620,3 @@ export const UnknownMsgView: FunctionComponent<{ msg: object }> = ({ msg }) => {
     </div>
   );
 };
-
-export function clearDecimals(dec: string): string {
-  if (!dec.includes(".")) {
-    return dec;
-  }
-
-  for (let i = dec.length - 1; i >= 0; i--) {
-    if (dec[i] === "0") {
-      dec = dec.slice(0, dec.length - 1);
-    } else {
-      break;
-    }
-  }
-  if (dec.length > 0 && dec[dec.length - 1] === ".") {
-    dec = dec.slice(0, dec.length - 1);
-  }
-
-  return dec;
-}
