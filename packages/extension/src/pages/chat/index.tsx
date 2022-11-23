@@ -71,6 +71,16 @@ const ChatView = () => {
 
   const requester = new InExtensionMessageRequester();
 
+  function debounce(func: any, timeout = 500) {
+    let timer: any;
+    return (...args: any) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func(args);
+      }, timeout);
+    };
+  }
+
   const handleSearch = debounce(() => {
     const searchString = inputVal.trim();
     if (
@@ -241,13 +251,3 @@ const ChatView = () => {
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;
 };
-
-function debounce(func: any, timeout = 300) {
-  let timer: any;
-  return (...args: any) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(this, args);
-    }, timeout);
-  };
-}

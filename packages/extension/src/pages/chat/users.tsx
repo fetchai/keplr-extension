@@ -125,7 +125,7 @@ export const ChatsGroupSection: React.FC<{
         if (searchString.length > 0) {
           if (
             !contactAddressBookName
-              .toLowerCase()
+              ?.toLowerCase()
               .includes(searchString.trim().toLowerCase()) &&
             !contact.toLowerCase().includes(searchString.trim().toLowerCase())
           )

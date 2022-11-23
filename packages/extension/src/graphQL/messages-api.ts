@@ -79,8 +79,6 @@ export const fetchGroups = async (
     variables: variables,
   });
   if (errors) console.log("errors", errors);
-
-  console.log("groups", data);
   return data.groups;
 };
 

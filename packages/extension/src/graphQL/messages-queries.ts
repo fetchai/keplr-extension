@@ -50,7 +50,7 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
   }
 }`;
 
-export const groupsWithAddresses = `query Query($addressQueryString: String, $page: Int, $pageCount: Int, $addresses: [String!]) {
+export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $addresses: [String!]) {
   groups(page: $page, pageCount: $pageCount, addresses: $addresses) {
     groups {
       createdAt
