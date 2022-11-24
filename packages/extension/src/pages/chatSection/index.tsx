@@ -20,7 +20,6 @@ import { Menu } from "../main/menu";
 import { ActionsPopup } from "./actions-popup";
 import { Dropdown } from "./chat-actions-popup";
 import { ChatsViewSection } from "./chats-view-section";
-import { NewUserSection } from "./new-user-section";
 import { UserNameSection } from "./username-section";
 
 export const openValue = true;
@@ -135,20 +134,13 @@ export const ChatSection: FunctionComponent = () => {
             handleClick={handleClick}
             blocked={blockedUsers[userName]}
           />
-          {isNewUser() && (
-            <NewUserSection
-              userName={userName}
-              setShowDropdown={setShowDropdown}
-              setConfirmAction={setConfirmAction}
-              setAction={setAction}
-            />
-          )}
 
           <ChatsViewSection
             isNewUser={isNewUser()}
             isBlocked={blockedUsers[userName]}
             targetPubKey={targetPubKey}
             setLoadingChats={setLoadingChats}
+            handleClick={handleClick}
           />
 
           {confirmAction && (

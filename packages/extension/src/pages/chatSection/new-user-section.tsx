@@ -7,24 +7,14 @@ import style from "./style.module.scss";
 
 export const NewUserSection = ({
   userName,
-  setShowDropdown,
-  setConfirmAction,
-  setAction,
+  handleClick,
 }: {
   userName: string;
-  setShowDropdown: any;
-  setConfirmAction: any;
-  setAction: any;
+  handleClick: any;
 }) => {
   const history = useHistory();
 
   const blockedUsers = useSelector(userBlockedAddresses);
-
-  const handleClick = (data: string) => {
-    setAction(data);
-    setConfirmAction(true);
-    setShowDropdown(false);
-  };
 
   return (
     <div className={style.contactsContainer}>

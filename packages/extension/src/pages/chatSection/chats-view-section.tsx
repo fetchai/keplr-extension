@@ -20,16 +20,19 @@ import { recieveGroups, recieveMessages } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
 import { useStore } from "../../stores";
+import { NewUserSection } from "./new-user-section";
 import style from "./style.module.scss";
 export const ChatsViewSection = ({
   isNewUser,
   isBlocked,
   targetPubKey,
+  handleClick,
 }: {
   isNewUser: boolean;
   isBlocked: boolean;
   targetPubKey: string;
   setLoadingChats: any;
+  handleClick: any;
 }) => {
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
@@ -68,7 +71,7 @@ export const ChatsViewSection = ({
   //Scrolling Logic
   const messagesEndRef: any = useRef();
   const messagesStartRef: any = createRef();
-  const messagesEncRef: any = useRef();
+  const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
 
   const scrollToBottom = () => {
@@ -84,7 +87,7 @@ export const ChatsViewSection = ({
     const getChats = async () => {
       if (group) await loadUserList();
       if (pagination.page < 0) scrollToBottom();
-      else messagesEncRef.current.scrollIntoView(true);
+      else messagesScrollRef.current.scrollIntoView(true);
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
@@ -150,14 +153,21 @@ export const ChatsViewSection = ({
     >
       <div className={style.messages}>
         {pagination?.lastPage > pagination?.page && (
-          <div id="topOfChat" ref={messagesStartRef} className={style.loader}>
-            Loading More Chats ...
+          <div ref={messagesStartRef} className={style.loader}>
+            Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
           </div>
         )}
-        <p ref={messagesEncRef}>
-          Messages are end to end encrypted. Nobody else can read them except
-          you and the recipient.
-        </p>
+        {pagination?.lastPage <= pagination?.page && (
+          <>
+            {isNewUser && (
+              <NewUserSection userName={userName} handleClick={handleClick} />
+            )}
+            <p>
+              Messages are end to end encrypted. Nobody else can read them
+              except you and the recipient.
+            </p>
+          </>
+        )}
         {messages
           ?.sort((a: any, b: any) => {
             return a.commitTimestamp - b.commitTimestamp;
@@ -165,14 +175,17 @@ export const ChatsViewSection = ({
           ?.map((message: any, index) => {
             const check = showDateFunction(message?.commitTimestamp);
             return (
-              <ChatMessage
-                key={index}
-                chainId={current.chainId}
-                showDate={check}
-                message={message?.contents}
-                isSender={message?.target === userName} // if target was the user we are chatting with
-                timestamp={message?.commitTimestamp || 1549312452}
-              />
+              <>
+                <ChatMessage
+                  key={index}
+                  chainId={current.chainId}
+                  showDate={check}
+                  message={message?.contents}
+                  isSender={message?.target === userName} // if target was the user we are chatting with
+                  timestamp={message?.commitTimestamp || 1549312452}
+                />
+                {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
+              </>
             );
           })}
         <div ref={messagesEndRef} className={style.messageRef} />
