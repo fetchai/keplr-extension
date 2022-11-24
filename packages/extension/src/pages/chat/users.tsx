@@ -119,37 +119,42 @@ export const ChatsGroupSection: React.FC<{
 
   return (
     <div className={style.groupsArea}>
-      {Object.keys(groups).map((contact, index) => {
-        // translate the contact address into the address book name if it exists
-        const contactAddressBookName = addresses[contact];
-        if (searchString.length > 0) {
-          if (
-            !contactAddressBookName
-              ?.toLowerCase()
-              .includes(searchString.trim().toLowerCase()) &&
-            !contact.toLowerCase().includes(searchString.trim().toLowerCase())
-          )
-            return;
-        }
-        return (
-          <>
-            <User
-              key={index}
-              group={groups[contact]}
-              contactName={
-                contactAddressBookName
-                  ? formatAddress(contactAddressBookName)
-                  : formatAddress(contact)
-              }
-              contactAddress={contact}
-              chainId={chainId}
-            />
-            {index === Object.keys(groups).length - 10 && (
-              <div ref={messagesEncRef} />
-            )}
-          </>
-        );
-      })}
+      {Object.keys(groups)
+        .sort(
+          (a, b) =>
+            parseFloat(groups[b].createdAt) - parseFloat(groups[a].createdAt)
+        )
+        .map((contact, index) => {
+          // translate the contact address into the address book name if it exists
+          const contactAddressBookName = addresses[contact];
+          if (searchString.length > 0) {
+            if (
+              !contactAddressBookName
+                ?.toLowerCase()
+                .includes(searchString.trim().toLowerCase()) &&
+              !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+            )
+              return;
+          }
+          return (
+            <>
+              <User
+                key={index}
+                group={groups[contact]}
+                contactName={
+                  contactAddressBookName
+                    ? formatAddress(contactAddressBookName)
+                    : formatAddress(contact)
+                }
+                contactAddress={contact}
+                chainId={chainId}
+              />
+              {index === Object.keys(groups).length - 10 && (
+                <div ref={messagesEncRef} />
+              )}
+            </>
+          );
+        })}
       {groupsPagination?.lastPage > groupsPagination?.page && (
         <div className={style.loader} ref={messagesEndRef}>
           Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
