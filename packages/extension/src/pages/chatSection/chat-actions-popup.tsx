@@ -1,3 +1,4 @@
+import amplitude from "amplitude-js";
 import React from "react";
 import { useHistory } from "react-router";
 import style from "./style.module.scss";
@@ -26,15 +27,16 @@ export const Dropdown = ({
             </div>
           ) : (
             <div
-              onClick={() =>
+              onClick={() => {
+                amplitude.getInstance().logEvent("Add to address click", {});
                 history.push({
                   pathname: "/setting/address-book",
                   state: {
                     openModal: true,
                     addressInputValue: userName,
                   },
-                })
-              }
+                });
+              }}
             >
               Add to address book
             </div>
@@ -42,7 +44,14 @@ export const Dropdown = ({
           {blocked ? (
             <div onClick={() => handleClick("unblock")}>Unblock contact</div>
           ) : (
-            <div onClick={() => handleClick("block")}>Block contact</div>
+            <div
+              onClick={() => {
+                amplitude.getInstance().logEvent("Block click", {});
+                handleClick("block");
+              }}
+            >
+              Block contact
+            </div>
           )}
           {/* <div onClick={() => handleClick("delete")}>Delete chat</div> */}
         </div>

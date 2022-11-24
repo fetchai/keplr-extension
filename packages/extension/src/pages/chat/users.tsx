@@ -8,6 +8,7 @@ import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 import { MessageMap } from "../../chatStore/messages-slice";
 import { fromBech32 } from "@cosmjs/encoding";
+import amplitude from "amplitude-js";
 
 const User: React.FC<{
   chainId: string;
@@ -18,6 +19,7 @@ const User: React.FC<{
   const [message, setMessage] = useState("");
   const history = useHistory();
   const handleClick = () => {
+    amplitude.getInstance().logEvent("Open DM click", {});
     history.push(`/chat/${contact}`);
   };
   const decryptMsg = async (

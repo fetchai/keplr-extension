@@ -40,6 +40,7 @@ import { useIntl } from "react-intl";
 import { ChatLoader } from "../../components/chat-loader";
 import { ActionsPopup } from "./actions-popup";
 import { ChatErrorPopup } from "../../components/chat-error-popup";
+import amplitude from "amplitude-js";
 
 export let openValue = true;
 
@@ -298,15 +299,18 @@ export const ChatSection: FunctionComponent = () => {
               <div className={style.buttons}>
                 <button
                   style={{ padding: "4px 20px" }}
-                  onClick={() =>
+                  onClick={() => {
+                    amplitude
+                      .getInstance()
+                      .logEvent("Add to address Click", {});
                     history.push({
                       pathname: "/setting/address-book",
                       state: {
                         openModal: true,
                         addressInputValue: userName,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   Add
                 </button>
@@ -315,7 +319,14 @@ export const ChatSection: FunctionComponent = () => {
                     Unblock
                   </button>
                 ) : (
-                  <button onClick={() => handleClick("block")}>Block</button>
+                  <button
+                    onClick={() => {
+                      amplitude.getInstance().logEvent("Block Click", {});
+                      handleClick("block");
+                    }}
+                  >
+                    Block
+                  </button>
                 )}
               </div>
             </div>

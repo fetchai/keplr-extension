@@ -26,6 +26,7 @@ import jazzicon from "@metamask/jazzicon";
 import ReactHtmlParser from "react-html-parser";
 import { fromBech32 } from "@cosmjs/encoding";
 import { ChatLoader } from "../../components/chat-loader";
+import amplitude from "amplitude-js";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -226,6 +227,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
                 aria-hidden="true"
                 onClick={() => {
+                  amplitude.getInstance().logEvent("Add address", {});
                   history.push("/setting/address-book");
                 }}
               />

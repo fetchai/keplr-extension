@@ -419,8 +419,10 @@ const ChatView = () => {
           </div>
           <div
             onClick={() => {
-              amplitude.getInstance().logEvent("new Chat", {});
-
+              amplitude.getInstance().logEvent("New chat click", {
+                searching: "",
+                status: "",
+              });
               history.push("/newChat");
             }}
           >
