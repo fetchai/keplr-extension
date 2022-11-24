@@ -105,7 +105,6 @@ Modal.defaultStyles = {
 
 const StateRenderer: FunctionComponent = observer(() => {
   const { keyRingStore, chainStore, accountStore } = useStore();
-  console.log("main page");
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
 

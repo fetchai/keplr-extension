@@ -274,8 +274,6 @@ export class RootStore {
             saveEvents: true,
             platform: "Extension",
           });
-          console.log(amplitudeClient);
-
           return amplitudeClient;
         }
       })(),
