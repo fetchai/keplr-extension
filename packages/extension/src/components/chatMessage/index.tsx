@@ -81,12 +81,6 @@ export const ChatMessage = ({
                 <img alt="" src={deliveredIcon} />
               ))}
           </div>
-          {console.log(
-            "targetLastSeenTimestamp",
-            targetLastSeenTimestamp,
-            "timestamp",
-            timestamp
-          )}
         </Container>
       </div>
     </>

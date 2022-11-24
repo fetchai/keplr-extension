@@ -53,8 +53,6 @@ export const messagesSlice = createSlice({
       state.chat[sender].lastMessage = action.payload;
     },
     updateSenderMessages: (state: any, action: PayloadAction<Message>) => {
-      console.log(action.payload);
-
       const { target, id } = action.payload;
       if (!state.chat[target]) {
         state.chat[target] = {
