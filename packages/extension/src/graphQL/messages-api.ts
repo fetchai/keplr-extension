@@ -161,7 +161,6 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        console.log("data", data);
         store.dispatch(updateSenderMessages(data?.dispatchMessages[0]));
         return data;
       }

@@ -20,7 +20,6 @@ const User: React.FC<{
 }> = ({ chainId, chat, contact, contactName, isUnread }) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
-  console.log("isUnread", isUnread);
 
   const handleClick = () => {
     history.push(`/chat/${contact}`);
@@ -97,11 +96,8 @@ export const Users: React.FC<{
     // if last message was not sent by user
 
     const chatId = getUniqueChatId(address, walletAddress);
-    console.log("chatId", chatId);
 
     const userTimestamp = messages[chatId].targetTimeStamp;
-    console.log("userTimestamp", userTimestamp);
-    console.log("lastMessage.commitTimestamp", lastMessage.commitTimestamp);
 
     if (userTimestamp <= lastMessage.commitTimestamp) {
       return true;
