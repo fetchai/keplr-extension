@@ -112,6 +112,9 @@ const ChatView = () => {
       // Redirect to home
       history.replace("/");
     } finally {
+      amplitude.getInstance().logEvent("Privacy setting click", {
+        SelectedPrivacySetting: selectedPrivacySetting,
+      });
       setIsOpendialog(false);
       setLoadingChats(false);
     }

@@ -49,6 +49,10 @@ const NewUser = (props: { address: NameAddress }) => {
       } catch (e) {
         console.log("NewUser/isUserActive error", e);
       } finally {
+        amplitude.getInstance().logEvent("New chat click", {
+          searching: address,
+          status: isActive ? "Active" : "Inactive",
+        });
         setIsLoading(false);
       }
     };
