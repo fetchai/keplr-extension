@@ -49,7 +49,7 @@ const User: React.FC<{
   }, [chainId, contactAddress, group]);
 
   return (
-    <div className={style.messageContainer} onClick={handleClick}>
+    <div className={style.group} onClick={handleClick}>
       <div className={style.initials}>
         {ReactHtmlParser(
           jazzicon(24, parseInt(fromBech32(contactAddress).data.toString(), 16))
@@ -86,7 +86,7 @@ export const ChatsGroupSection: React.FC<{
 
   //Scrolling Logic
   const messagesEndRef: any = createRef();
-  const messagesEncRef: any = useRef();
+  const messagesEncRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesEndRef);
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export const ChatsGroupSection: React.FC<{
 
   if (!Object.keys(groups).length)
     return (
-      <div className={style.messagesContainer}>
+      <div className={style.groupsArea}>
         <div className={style.resultText}>
           No results. Don&apos;t worry you can create a new chat by clicking on
           the icon beside the search box.
@@ -118,7 +118,7 @@ export const ChatsGroupSection: React.FC<{
     );
 
   return (
-    <div className={style.messagesContainer}>
+    <div className={style.groupsArea}>
       {Object.keys(groups).map((contact, index) => {
         // translate the contact address into the address book name if it exists
         const contactAddressBookName = addresses[contact];
@@ -132,23 +132,27 @@ export const ChatsGroupSection: React.FC<{
             return;
         }
         return (
-          <User
-            key={index}
-            group={groups[contact]}
-            contactName={
-              contactAddressBookName
-                ? formatAddress(contactAddressBookName)
-                : formatAddress(contact)
-            }
-            contactAddress={contact}
-            chainId={chainId}
-          />
+          <>
+            <User
+              key={index}
+              group={groups[contact]}
+              contactName={
+                contactAddressBookName
+                  ? formatAddress(contactAddressBookName)
+                  : formatAddress(contact)
+              }
+              contactAddress={contact}
+              chainId={chainId}
+            />
+            {index === Object.keys(groups).length - 10 && (
+              <div ref={messagesEncRef} />
+            )}
+          </>
         );
       })}
-      <div className={style.loader} ref={messagesEncRef} />
       {groupsPagination?.lastPage > groupsPagination?.page && (
         <div className={style.loader} ref={messagesEndRef}>
-          Loading More Chats ...
+          Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}
     </div>

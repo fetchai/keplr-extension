@@ -17,7 +17,10 @@ export const DeactivatedChat = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div className={style.lockedInnerContainer}>
+      <div
+        className={style.lockedInnerContainer}
+        style={{ textAlign: "center", justifyContent: "center" }}
+      >
         <img
           className={style.imgLock}
           src={require("../../public/assets/img/icons8-lock.svg")}
