@@ -30,11 +30,6 @@ interface BlockedAddressState {
   [key: string]: boolean;
 }
 
-interface PubKey {
-  contact: string;
-  value: string;
-}
-
 export interface Group {
   id: string; // groupID
   name: string; // contactAddress
@@ -98,13 +93,8 @@ export const messagesSlice = createSlice({
       state.chats[userAddress].messages = newMessages;
       state.chats[userAddress].pagination = pagination;
     },
-    resetChatList: (state, _action) => {
-      state.groups = {};
-      state.chats = {};
-      state.blockedAddress = {};
-      state.errorMessage = { type: "", message: "", level: 0 };
-    },
-    updateAuthorMessages: (state: any, action: PayloadAction<Message>) => {
+    resetChatList: (_state, _action) => initialState,
+    updateMessages: (state: any, action: PayloadAction<Message>) => {
       const { sender, id } = action.payload;
       if (!state.chats[sender]) {
         state.chats[sender] = {
@@ -125,10 +115,6 @@ export const messagesSlice = createSlice({
       }
       state.chats[target].messages[id] = action.payload;
       state.chats[target].lastMessage = action.payload;
-    },
-    setAuthorPubKey: (state, action: PayloadAction<PubKey>) => {
-      const { contact, value } = action.payload;
-      state.chats[contact].pubKey = value;
     },
     setBlockedList: (state, action) => {
       const blockedList = action.payload;
@@ -163,9 +149,8 @@ export const {
   setMessageError,
   resetChatList,
   updateChatList,
-  updateAuthorMessages,
+  updateMessages,
   updateLatestSentMessage,
-  setAuthorPubKey,
   setBlockedList,
   setBlockedUser,
   setUnblockedUser,
@@ -174,7 +159,8 @@ export const {
 } = messagesSlice.actions;
 
 export const userChatGroups = (state: any) => state.messages.groups;
-export const userChatGroupPagination = (state: any) => state.messages.groupsPagination;
+export const userChatGroupPagination = (state: any) =>
+  state.messages.groupsPagination;
 
 export const userMessages = (state: any) => state.messages.chats;
 export const userMessagesError = (state: any) => state.messages.errorMessage;

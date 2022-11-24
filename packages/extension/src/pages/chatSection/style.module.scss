@@ -77,16 +77,11 @@
   margin-right: 5px;
   cursor: pointer;
 }
-.chatArea.showButton {
-  height: 57vh;
-}
-.chatArea.hideButton {
-  height: 70vh;
-}
+
 .chatArea {
   display: flex;
   flex-direction: column;
-
+  height: 70vh;
   .messages {
     height: 63vh;
     display: flex;
@@ -112,6 +107,8 @@
   text-align: center;
   display: flex;
   justify-content: center;
+  align-items: center;
+  font-size: 12px;
 }
 .inputText {
   // margin-left: -12px;

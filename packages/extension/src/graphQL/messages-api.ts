@@ -6,7 +6,7 @@ import {
   setBlockedUser,
   setMessageError,
   setUnblockedUser,
-  updateAuthorMessages,
+  updateMessages,
   updateLatestSentMessage,
 } from "../chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
@@ -205,7 +205,6 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        console.log(data?.dispatchMessages);
         store.dispatch(updateLatestSentMessage(data?.dispatchMessages[0]));
         return data?.dispatchMessages[0];
       }
@@ -253,7 +252,7 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        store.dispatch(updateAuthorMessages(data.newMessageUpdate.message));
+        store.dispatch(updateMessages(data.newMessageUpdate.message));
         recieveGroups(0, data.newMessageUpdate.message.target);
       },
       error(err) {
