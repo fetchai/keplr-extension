@@ -27,18 +27,22 @@ const ChainElement: FunctionComponent<{
         selected: chainInfo.chainId === chainStore.current.chainId,
       })}
       onClick={() => {
+        let properties = {};
+        if (chainInfo.chainId !== chainStore.current.chainId) {
+          properties = {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            toChainId: chainInfo.chainId,
+            toChainName: chainInfo.chainName,
+          };
+        }
         chainStore.selectChain(chainInfo.chainId);
         chainStore.saveLastViewChainId();
         store.dispatch(resetUser({}));
         store.dispatch(addMessageList({}));
         history.push("/");
-        if (chainInfo.chainId !== chainStore.current.chainId) {
-          analyticsStore.logEvent("Chain changed", {
-            chainId: chainStore.current.chainId,
-            chainName: chainStore.current.chainName,
-            toChainId: chainInfo.chainId,
-            toChainName: chainInfo.chainName,
-          });
+        if (Object.values(properties).length > 0) {
+          analyticsStore.logEvent("Chain changed", properties);
         }
       }}
     >
