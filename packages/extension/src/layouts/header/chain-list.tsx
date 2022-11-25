@@ -8,6 +8,7 @@ import { store } from "../../chatStore";
 import { resetChatList } from "../../chatStore/messages-slice";
 import { resetUser } from "../../chatStore/user-slice";
 import { useConfirm } from "../../components/confirm";
+import { messageListenerUnsubscribe } from "../../graphQL/messages-api";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 
@@ -38,6 +39,7 @@ const ChainElement: FunctionComponent<{
           chainStore.saveLastViewChainId();
           store.dispatch(resetUser({}));
           store.dispatch(resetChatList({}));
+          messageListenerUnsubscribe();
           history.push("/");
         }
       }}

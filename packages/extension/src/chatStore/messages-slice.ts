@@ -108,7 +108,6 @@ export const messagesSlice = createSlice({
         };
       }
       state.chats[sender].messages[id] = action.payload;
-      state.chats[sender].lastMessage = action.payload;
     },
     updateLatestSentMessage: (state: any, action: PayloadAction<Message>) => {
       const { target, id } = action.payload;
@@ -125,7 +124,6 @@ export const messagesSlice = createSlice({
         };
       }
       state.chats[target].messages[id] = action.payload;
-      state.chats[target].lastMessage = action.payload;
     },
     setBlockedList: (state, action) => {
       const blockedList = action.payload;

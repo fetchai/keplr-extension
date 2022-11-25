@@ -39,10 +39,9 @@ export const recieveGroups = async (
   );
   const groupsObj: any = {};
   if (groups && groups.length) {
-    console.log("recieveGroups", groups);
     groups.map((group: any) => {
       const contactAddress =
-        group.id.split("-")[0] !== userAddress
+        group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
           ? group.id.split("-")[0]
           : group.id.split("-")[1];
       groupsObj[contactAddress] = group;

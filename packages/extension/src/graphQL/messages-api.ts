@@ -1,5 +1,8 @@
 import { ApolloClient, gql, InMemoryCache, split } from "@apollo/client";
-import { getMainDefinition } from "@apollo/client/utilities";
+import {
+  getMainDefinition,
+  ObservableSubscription,
+} from "@apollo/client/utilities";
 import { store } from "../chatStore";
 import {
   setBlockedList,
@@ -24,7 +27,7 @@ import {
   unblock,
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
-
+let querySubscription: ObservableSubscription;
 export const fetchMessages = async (groupId: string, page: number) => {
   const state = store.getState();
   const { data, errors } = await client.query({
@@ -241,7 +244,7 @@ export const messageListener = () => {
     link: splitLink,
     cache: new InMemoryCache(),
   });
-  newClient
+  querySubscription = newClient
     .subscribe({
       query: gql(listenMessages),
       context: {
@@ -269,4 +272,8 @@ export const messageListener = () => {
         console.log("completed");
       },
     });
+};
+
+export const messageListenerUnsubscribe = () => {
+  if (querySubscription) querySubscription.unsubscribe();
 };

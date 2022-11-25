@@ -3,7 +3,7 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
-import { Input, InputGroup } from "reactstrap";
+import { InputGroup } from "reactstrap";
 import {
   Group,
   Groups,
@@ -215,9 +215,15 @@ export const ChatsViewSection = ({
             options={{ placement: "top" }}
             tooltip={<div>No transaction history found for this user</div>}
           >
-            <Input
+            <ReactTextareaAutosize
+              maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder="Type a new message..."
+              placeholder={
+                isBlocked ? "This contact is blocked" : "Type a new message..."
+              }
+              value={newMessage}
+              onChange={(event) => setNewMessage(event.target.value)}
+              onKeyDown={handleKeydown}
               disabled={true}
             />
           </ToolTip>
