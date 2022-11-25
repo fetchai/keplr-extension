@@ -205,7 +205,10 @@ export const ChatsViewSection = ({
               isBlocked ? "This contact is blocked" : "Type a new message..."
             }
             value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
+            onChange={(event) => {
+              if (event.target.value.length < 500)
+                setNewMessage(event.target.value);
+            }}
             onKeyDown={handleKeydown}
             disabled={isBlocked}
           />
@@ -221,9 +224,6 @@ export const ChatsViewSection = ({
               placeholder={
                 isBlocked ? "This contact is blocked" : "Type a new message..."
               }
-              value={newMessage}
-              onChange={(event) => setNewMessage(event.target.value)}
-              onKeyDown={handleKeydown}
               disabled={true}
             />
           </ToolTip>
