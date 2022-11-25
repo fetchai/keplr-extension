@@ -17,17 +17,14 @@ export const DeactivatedChat = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div
-        className={style.lockedInnerContainer}
-        style={{ textAlign: "center", justifyContent: "center" }}
-      >
+      <div className={style.lockedInnerContainer}>
         <img
           className={style.imgLock}
           src={require("../../public/assets/img/icons8-lock.svg")}
           alt="lock"
         />
 
-        <div>
+        <div style={{ marginTop: "25px" }}>
           Chat is <b>deactivated</b> based on your current chat privacy
           settings. Please change your chat privacy settings to use this
           feature.

@@ -89,3 +89,12 @@
     cursor: pointer;
   }
 }
+
+.lockedInnerContainer {
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}

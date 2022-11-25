@@ -9,7 +9,6 @@ export interface MessageMap {
 interface ContactState {
   contactAddress: string;
   messages: MessageMap;
-  lastMessage?: Message;
   pubKey?: string;
   pagination: Pagination;
 }
@@ -98,8 +97,14 @@ export const messagesSlice = createSlice({
       const { sender, id } = action.payload;
       if (!state.chats[sender]) {
         state.chats[sender] = {
+          contactAddress: sender,
           messages: {},
-          lastMessage: {},
+          pagination: {
+            page: 0,
+            pageCount: CHAT_PAGE_COUNT,
+            lastPage: 0,
+            total: CHAT_PAGE_COUNT,
+          },
         };
       }
       state.chats[sender].messages[id] = action.payload;
@@ -109,8 +114,14 @@ export const messagesSlice = createSlice({
       const { target, id } = action.payload;
       if (!state.chats[target]) {
         state.chats[target] = {
+          contactAddress: target,
           messages: {},
-          lastMessage: {},
+          pagination: {
+            page: 0,
+            pageCount: CHAT_PAGE_COUNT,
+            lastPage: 0,
+            total: CHAT_PAGE_COUNT,
+          },
         };
       }
       state.chats[target].messages[id] = action.payload;

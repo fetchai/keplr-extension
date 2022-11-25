@@ -107,12 +107,35 @@ export const ChatsGroupSection: React.FC<{
     }
   };
 
+  const filterGroups = (contact: string) => {
+    const contactAddressBookName = addresses[contact];
+    if (searchString.length > 0) {
+      if (
+        !contactAddressBookName
+          ?.toLowerCase()
+          .includes(searchString.trim().toLowerCase()) &&
+        !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+      )
+        return false;
+    }
+    return true;
+  };
+
   if (!Object.keys(groups).length)
     return (
       <div className={style.groupsArea}>
         <div className={style.resultText}>
           No results. Don&apos;t worry you can create a new chat by clicking on
           the icon beside the search box.
+        </div>
+      </div>
+    );
+
+  if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
+    return (
+      <div className={style.groupsArea}>
+        <div className={style.resultText}>
+          No results found. Please refine your search.
         </div>
       </div>
     );
@@ -124,18 +147,10 @@ export const ChatsGroupSection: React.FC<{
           (a, b) =>
             parseFloat(groups[b].createdAt) - parseFloat(groups[a].createdAt)
         )
+        .filter((contact) => filterGroups(contact))
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-          if (searchString.length > 0) {
-            if (
-              !contactAddressBookName
-                ?.toLowerCase()
-                .includes(searchString.trim().toLowerCase()) &&
-              !contact.toLowerCase().includes(searchString.trim().toLowerCase())
-            )
-              return;
-          }
           return (
             <>
               <User
