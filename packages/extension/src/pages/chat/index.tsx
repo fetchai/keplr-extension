@@ -68,6 +68,7 @@ const ChatView = () => {
   const [loadingChats, setLoadingChats] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
+  const [authFail, setAuthFail] = useState(false);
 
   const requester = new InExtensionMessageRequester();
 
@@ -157,6 +158,7 @@ const ChatView = () => {
             level: 3,
           })
         );
+        setAuthFail(true);
       }
 
       setLoadingChats(false);
@@ -166,7 +168,8 @@ const ChatView = () => {
       !userState?.messagingPubKey.publicKey &&
       !userState?.messagingPubKey.privacySetting &&
       !userState?.accessToken.length &&
-      !loadingChats
+      !loadingChats &&
+      !authFail
     ) {
       setJWTAndFetchMsgPubKey();
     }
