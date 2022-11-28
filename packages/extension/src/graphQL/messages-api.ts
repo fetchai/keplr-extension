@@ -46,7 +46,6 @@ export const fetchMessages = async (groupId: string, page: number) => {
   });
 
   if (errors) console.log("errors", errors);
-  console.log("data.mailbox", data.mailbox);
   return data.mailbox;
 };
 

@@ -71,8 +71,6 @@ export const ChatSection: FunctionComponent = () => {
   );
   const addresses = addressBookConfig.addressBookDatas;
 
-  // console.log("####", addressBookConfig.waitLoaded())
-
   const contactName = (addresses: any) => {
     let val = "";
     for (let i = 0; i < addresses.length; i++) {

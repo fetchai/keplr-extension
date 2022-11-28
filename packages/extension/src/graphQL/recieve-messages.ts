@@ -15,7 +15,6 @@ export const recieveMessages = async (
   const messagesObj: any = {};
 
   if (messages) {
-    console.log("Updating store for page :", page, messages);
     messages.map((message: any) => {
       messagesObj[message.id] = message;
     });
