@@ -3,21 +3,21 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { store } from "../chatStore";
 import { setIsChatSubscriptionActive } from "../chatStore/messages-slice";
-import { MESSAGING_SERVER, SUBSCRIPTION_SERVER } from "../config.ui.var";
+import { GRAPHQL_URL } from "../config.ui.var";
 
 export const client = new ApolloClient({
-  uri: MESSAGING_SERVER,
+  uri: GRAPHQL_URL.MESSAGING_SERVER,
   cache: new InMemoryCache(),
 });
 
 export const httpLink = new HttpLink({
-  uri: MESSAGING_SERVER,
+  uri: GRAPHQL_URL.MESSAGING_SERVER,
 });
 
 export const createWSLink = (token: string) => {
   return new GraphQLWsLink(
     createClient({
-      url: SUBSCRIPTION_SERVER,
+      url: GRAPHQL_URL.SUBSCRIPTION_SERVER,
       connectionParams: {
         authorization: `Bearer ${token}`,
       },
