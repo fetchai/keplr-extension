@@ -22,7 +22,14 @@ export const Dropdown = ({
       {showDropdown && (
         <div className={style.dropdown}>
           {added ? (
-            <div onClick={() => history.push("/setting/address-book")}>
+            <div
+              onClick={() => {
+                amplitude
+                  .getInstance()
+                  .logEvent("View in address book click", {});
+                history.push("/setting/address-book");
+              }}
+            >
               View in address book
             </div>
           ) : (
@@ -30,7 +37,7 @@ export const Dropdown = ({
               onClick={() => {
                 amplitude.getInstance().logEvent("Add to address click", {});
                 history.push({
-                  pathname: "/setting/address-book",
+                  pathname: "",
                   state: {
                     openModal: true,
                     addressInputValue: userName,
@@ -42,7 +49,14 @@ export const Dropdown = ({
             </div>
           )}
           {blocked ? (
-            <div onClick={() => handleClick("unblock")}>Unblock contact</div>
+            <div
+              onClick={() => {
+                amplitude.getInstance().logEvent("Unblock click", {});
+                handleClick("unblock");
+              }}
+            >
+              Unblock contact
+            </div>
           ) : (
             <div
               onClick={() => {

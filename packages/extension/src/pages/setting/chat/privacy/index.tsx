@@ -84,7 +84,7 @@ export const Privacy: FunctionComponent = observer(() => {
             e.preventDefault();
             updatePrivacy(PrivacySetting.Everybody);
             amplitude.getInstance().logEvent("Privacy setting click", {
-              SelectedPrivacySetting: PrivacySetting.Contacts,
+              SelectedPrivacySetting: PrivacySetting.Everybody,
             });
           }}
           icons={useMemo(

@@ -49,10 +49,6 @@ const NewUser = (props: { address: NameAddress }) => {
       } catch (e) {
         console.log("NewUser/isUserActive error", e);
       } finally {
-        amplitude.getInstance().logEvent("New chat click", {
-          searching: address,
-          status: isActive ? "Active" : "Inactive",
-        });
         setIsLoading(false);
       }
     };
@@ -65,7 +61,12 @@ const NewUser = (props: { address: NameAddress }) => {
   ]);
 
   const handleClick = () => {
-    if (!isLoading) history.push(`/chat/${address}`);
+    if (!isLoading) {
+      amplitude.getInstance().logEvent("Open DM click", {
+        from: "New chat",
+      });
+      history.push(`/chat/${address}`);
+    }
   };
 
   return (
@@ -231,7 +232,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
                 aria-hidden="true"
                 onClick={() => {
-                  amplitude.getInstance().logEvent("Add address", {});
+                  amplitude.getInstance().logEvent("Your Contacts click", {});
                   history.push("/setting/address-book");
                 }}
               />
