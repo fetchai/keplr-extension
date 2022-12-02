@@ -34,12 +34,17 @@ export const mailbox = `query Mailbox($groupId: String, $page: Int, $pageCount: 
 export const groups = `query Query($addressQueryString: String, $page: Int, $pageCount: Int) {
   groups(addressQueryString: $addressQueryString, page: $page, pageCount: $pageCount) {
     groups {
-      createdAt
       id
-      lastMessageSender
-      lastMessageContents
       name
+      description
+      lastMessageContents
+      lastMessageSender
       lastMessageTimestamp
+      addresses {
+        address
+        lastSeenTimestamp
+      }
+      createdAt
     }
     pagination {
       lastPage
@@ -53,12 +58,17 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
 export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $addresses: [String!]) {
   groups(page: $page, pageCount: $pageCount, addresses: $addresses) {
     groups {
-      createdAt
       id
-      lastMessageSender
-      lastMessageContents
       name
+      description
+      lastMessageContents
+      lastMessageSender
       lastMessageTimestamp
+      addresses {
+        address
+        lastSeenTimestamp
+      }
+      createdAt
     }
     pagination {
       lastPage
@@ -125,5 +135,18 @@ export const unblock = `mutation Mutation($blockedAddress: String!, $channelId: 
     blockedAddress
     channelId
     timestamp
+  }
+}`;
+
+export interface GroupDetails {
+  groupId: string;
+  lastSeenTimestamp: string;
+}
+
+export const updateGroup = `mutation Mutation($groupDetails: GroupDetails!) {
+  group(groupDetails: $groupDetails) {
+    lastSeenTimestamp
+    name
+    id
   }
 }`;

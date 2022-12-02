@@ -15,7 +15,10 @@ import { userDetails } from "../../chatStore/user-slice";
 import { ChatMessage } from "../../components/chatMessage";
 import { ToolTip } from "../../components/tooltip";
 import { CHAT_PAGE_COUNT } from "../../config.ui.var";
-import { deliverMessages } from "../../graphQL/messages-api";
+import {
+  deliverMessages,
+  updateGroupTimestamp,
+} from "../../graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
 import paperAirplaneIcon from "../../public/assets/icon/paper-airplane.png";
@@ -82,6 +85,19 @@ export const ChatsViewSection = ({
       messagesEndRef.current.scrollIntoView(true);
     }
   }, [messagesEndRef.current]);
+
+  useEffect(() => {
+    const getUpdatedTime = async () => {
+      console.log("conditionedGroup", group);
+      if (group?.id) {
+        await updateGroupTimestamp({
+          groupId: group?.id,
+          lastSeenTimestamp: Date(),
+        });
+      }
+    };
+    getUpdatedTime();
+  }, [group]);
 
   useEffect(() => {
     const getChats = async () => {
@@ -188,6 +204,11 @@ export const ChatsViewSection = ({
                   message={message?.contents}
                   isSender={message?.target === userName} // if target was the user we are chatting with
                   timestamp={message?.commitTimestamp || 1549312452}
+                  lastTimeStamp={
+                    group?.addresses.filter(
+                      (val) => val.address === userName
+                    )[0].lastSeenTimestamp
+                  }
                 />
                 {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
               </>

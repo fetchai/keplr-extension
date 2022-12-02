@@ -29,9 +29,15 @@ interface BlockedAddressState {
   [key: string]: boolean;
 }
 
+interface GroupAddress {
+  address: string;
+  lastSeenTimestamp: string;
+}
+
 export interface Group {
   id: string; // groupID
   name: string; // contactAddress
+  addresses: [GroupAddress];
   lastMessageContents: string;
   createdAt: string;
   lastMessageTimestamp: string;

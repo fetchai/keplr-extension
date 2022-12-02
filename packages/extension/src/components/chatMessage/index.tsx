@@ -2,6 +2,7 @@ import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 import deliveredIcon from "../../public/assets/icon/delivered.png";
+import seenIcon from "../../public/assets/icon/seenStatus.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
@@ -17,12 +18,14 @@ export const ChatMessage = ({
   isSender,
   timestamp,
   showDate,
+  lastTimeStamp,
 }: {
   chainId: string;
   isSender: boolean;
   message: string;
   timestamp: number;
   showDate: boolean;
+  lastTimeStamp: string | undefined | null;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
@@ -69,7 +72,16 @@ export const ChatMessage = ({
           )}
           <div className={style.timestamp}>
             {formatTime(timestamp)}
-            {isSender && <img alt="" src={deliveredIcon} />}
+            {console.log(isSender)}
+            {isSender &&
+              (!lastTimeStamp || !(Number(lastTimeStamp) > timestamp)) && (
+                <img alt="seen" src={seenIcon} />
+              )}
+            {/* {isSender && <div>seen</div>} */}
+            {isSender && Number(lastTimeStamp) > timestamp && (
+              <img alt="delivered" src={deliveredIcon} />
+            )}
+            {/* {isSender && <img alt="delivered Icon" src={deliveredIcon} />} */}
           </div>
         </Container>
       </div>

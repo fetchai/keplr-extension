@@ -30,6 +30,9 @@ const User: React.FC<{
   const handleClick = () => {
     history.push(`/chat/${contactAddress}`);
   };
+  const sender = group.addresses.find((val) => val.address === group.name);
+  const reciever = group.addresses.find((val) => val.address !== group.name);
+  console.log(sender, reciever);
   const decryptMsg = async (
     chainId: string,
     contents: string,
@@ -49,7 +52,27 @@ const User: React.FC<{
   }, [chainId, contactAddress, group]);
 
   return (
-    <div className={style.group} onClick={handleClick}>
+    <div
+      className={style.group}
+      style={{ position: "relative" }}
+      onClick={handleClick}
+    >
+      {(!sender?.lastSeenTimestamp ||
+        Number(reciever?.lastSeenTimestamp) <
+          Number(sender.lastSeenTimestamp)) && (
+        <span
+          style={{
+            height: "12px",
+            width: "12px",
+            backgroundColor: "#d027e5",
+            borderRadius: "20px",
+            bottom: "20px",
+            left: "6px",
+            position: "absolute",
+            zIndex: 1,
+          }}
+        />
+      )}
       <div className={style.initials}>
         {ReactHtmlParser(
           jazzicon(24, parseInt(fromBech32(contactAddress).data.toString(), 16))

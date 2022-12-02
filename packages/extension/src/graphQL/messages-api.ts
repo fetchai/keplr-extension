@@ -18,6 +18,7 @@ import { client, createWSLink, httpLink } from "./client";
 import {
   block,
   blockedList,
+  GroupDetails,
   groups,
   groupsWithAddresses,
   listenMessages,
@@ -25,6 +26,7 @@ import {
   NewMessageUpdate,
   sendMessages,
   unblock,
+  updateGroup,
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
 let querySubscription: ObservableSubscription;
@@ -275,4 +277,34 @@ export const messageListener = () => {
 
 export const messageListenerUnsubscribe = () => {
   if (querySubscription) querySubscription.unsubscribe();
+};
+
+export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
+  const state = store.getState();
+  try {
+    const { data } = await client.mutate({
+      mutation: gql(updateGroup),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
+      },
+      variables: {
+        groupDetails: groupDetails,
+      },
+    });
+    console.log("updated --->", data);
+    // store.dispatch(setUnblockedUser(data.unblock));
+  } catch (e) {
+    // console.log(e);
+    // store.dispatch(
+    //   setMessageError({
+    //     type: "unblock",
+    //     message: "Something went wrong, Please try again in sometime.",
+    //     level: 1,
+    //   })
+    // );
+    throw e;
+  }
 };
