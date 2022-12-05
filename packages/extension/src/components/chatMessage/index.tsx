@@ -74,14 +74,12 @@ export const ChatMessage = ({
             {formatTime(timestamp)}
             {console.log(isSender)}
             {isSender &&
-              (!lastTimeStamp || !(Number(lastTimeStamp) > timestamp)) && (
-                <img alt="seen" src={seenIcon} />
+              (!lastTimeStamp || Number(lastTimeStamp) < timestamp) && (
+                <img alt="delivered" src={deliveredIcon} />
               )}
-            {/* {isSender && <div>seen</div>} */}
             {isSender && Number(lastTimeStamp) > timestamp && (
-              <img alt="delivered" src={deliveredIcon} />
+              <img alt="seen" src={seenIcon} />
             )}
-            {/* {isSender && <img alt="delivered Icon" src={deliveredIcon} />} */}
           </div>
         </Container>
       </div>

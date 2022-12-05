@@ -70,7 +70,6 @@ export const fetchGroups = async (
   };
   if (addresses.length) variables["addresses"] = addresses;
   else variables["addressQueryString"] = addressQueryString;
-  console.log(groupsQuery, variables);
   const state = store.getState();
   const { data, errors } = await client.query({
     query: gql(groupsQuery),
