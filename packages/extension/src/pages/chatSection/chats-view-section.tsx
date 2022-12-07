@@ -67,16 +67,60 @@ export const ChatsViewSection = ({
   );
 
   const [pagination, setPagination] = useState(preLoadedChats?.pagination);
-  const [group] = useState<Group | undefined>(
+  const [group, setGroup] = useState<Group | undefined>(
     Object.values(userGroups).find((group) => group.id.includes(userName))
   );
 
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   useEffect(() => {
+    console.log("New message received");
+
     setMessages(Object.values(preLoadedChats?.messages));
     setPagination(preLoadedChats?.pagination);
+    console.log("Sending my last seen status from new message");
+    const delayInMilliseconds = 500; // (1/2) second
+
+    setTimeout(function () {
+      getUpdatedTime();
+    }, delayInMilliseconds);
   }, [preLoadedChats]);
+
+  useEffect(() => {
+    console.log(
+      "Hello from set group update",
+      Number(
+        Object.values(userGroups)
+          .find((group) => group.id.includes(userName))
+          ?.addresses.filter(
+            (val: { address: string }) => val.address === userName
+          )[0].lastSeenTimestamp
+      ) >=
+        Number(
+          group?.addresses.filter(
+            (val: { address: string }) => val.address === userName
+          )[0].lastSeenTimestamp
+        )
+    );
+
+    if (
+      Number(
+        Object.values(userGroups)
+          .find((group) => group.id.includes(userName))
+          ?.addresses.filter(
+            (val: { address: string }) => val.address === userName
+          )[0].lastSeenTimestamp
+      ) >=
+      Number(
+        group?.addresses.filter(
+          (val: { address: string }) => val.address === userName
+        )[0].lastSeenTimestamp
+      )
+    )
+      setGroup(
+        Object.values(userGroups).find((group) => group.id.includes(userName))
+      );
+  }, [userGroups]);
 
   //Scrolling Logic
   // const messagesEndRef: any = useRef();
@@ -103,18 +147,19 @@ export const ChatsViewSection = ({
   }, [messagesEndRef.current]);
 
   const getUpdatedTime = async () => {
-    console.log("conditionedGroup", group);
     if (group?.id) {
       await updateGroupTimestamp({
         groupId: group?.id,
-        lastSeenTimestamp: Date(),
+        lastSeenTimestamp: new Date(),
       });
     }
   };
 
-  useEffect(() => {
-    getUpdatedTime();
-  }, [group]);
+  // useEffect(() => {
+  //   console.log("Hello from group timestamp update");
+
+  //   getUpdatedTime();
+  // }, [group]);
 
   useEffect(() => {
     const getChats = async () => {
@@ -170,7 +215,6 @@ export const ChatsViewSection = ({
         setMessages(updatedMessagesList);
         if (message) {
           setNewMessage("");
-          getUpdatedTime();
         }
         // scrollToBottom();
         recieveGroups(0, accountInfo.bech32Address);
@@ -215,6 +259,12 @@ export const ChatsViewSection = ({
           })
           ?.map((message: any, index) => {
             const check = showDateFunction(message?.commitTimestamp);
+            function getLastSeen(): string | undefined {
+              return group?.addresses.filter(
+                (val) => val.address === userName
+              )[0].lastSeenTimestamp;
+            }
+
             return (
               <>
                 {group !== undefined && (
@@ -225,22 +275,19 @@ export const ChatsViewSection = ({
                     message={message?.contents}
                     isSender={message?.target === userName} // if target was the user we are chatting with
                     timestamp={message?.commitTimestamp || 1549312452}
-                    lastTimeStamp={
-                      group?.addresses.filter(
-                        (val) => val.address === userName
-                      )[0].lastSeenTimestamp
-                    }
+                    lastTimeStamp={getLastSeen()}
                   />
                 )}
                 {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
                 {Number(message.commitTimestamp) >
                   Number(reciever?.lastSeenTimestamp) &&
                   message?.sender === userName && (
-                    <div ref={messagesEndRef} className={"AAAAAAAAAAAAAAAA"} />
+                    <div ref={messagesEndRef} className={messagesEndRef} />
                   )}
               </>
             );
           })}
+        <div ref={messagesEndRef} className={"AAAAA"} />
       </div>
 
       <InputGroup className={style.inputText}>

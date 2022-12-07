@@ -22,7 +22,6 @@ import {
   GroupDetails,
   groups,
   groupsWithAddresses,
-  GroupUpdate,
   listenGroup,
   listenMessages,
   mailbox,
@@ -231,7 +230,6 @@ export const deliverMessages = async (
 };
 
 export const messageListener = () => {
-  console.log("message listener");
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -260,7 +258,11 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        console.log("_________>", data);
+        console.log(
+          "Hello from message Subscription",
+          data.newMessageUpdate.message
+        );
+
         store.dispatch(updateMessages(data.newMessageUpdate.message));
         recieveGroups(0, data.newMessageUpdate.message.target);
       },
@@ -280,8 +282,7 @@ export const messageListener = () => {
     });
 };
 
-export const groupListener = () => {
-  console.log("group message listener");
+export const groupListener = (userAddress: string) => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -309,10 +310,16 @@ export const groupListener = () => {
       },
     })
     .subscribe({
-      next({ data }: { data: { groupUpdate: GroupUpdate } }) {
-        console.log("+++++++++++++++++++++>", data);
-        store.dispatch(updateGroupsData(data.groupUpdate));
-        // recieveGroups(0, data.newMessageUpdate.message.target);
+      next({ data }: { data: any }) {
+        const group = data.groupUpdate.group;
+
+        group.userAddress =
+          group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
+            ? group.id.split("-")[0]
+            : group.id.split("-")[1];
+        console.log("Hello from group Subscription", group);
+
+        store.dispatch(updateGroupsData(group));
       },
       error(err) {
         console.error("err", err);
@@ -325,7 +332,7 @@ export const groupListener = () => {
         );
       },
       complete() {
-        console.log("group completed");
+        console.log("completed");
       },
     });
 };
@@ -350,17 +357,8 @@ export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
         groupDetails: groupDetails,
       },
     });
-    console.log("updated --->", data);
-    // store.dispatch(setUnblockedUser(data.unblock));
-  } catch (e) {
-    // console.log(e);
-    // store.dispatch(
-    //   setMessageError({
-    //     type: "unblock",
-    //     message: "Something went wrong, Please try again in sometime.",
-    //     level: 1,
-    //   })
-    // );
-    throw e;
+    console.log("Group Timestamp updated --->", data);
+  } catch (err) {
+    console.error("err", err);
   }
 };

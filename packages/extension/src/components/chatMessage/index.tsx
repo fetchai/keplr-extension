@@ -76,7 +76,7 @@ export const ChatMessage = ({
               (!lastTimeStamp || Number(lastTimeStamp) < timestamp) && (
                 <img alt="delivered" src={deliveredIcon} />
               )}
-            {isSender && Number(lastTimeStamp) > timestamp && (
+            {isSender && Number(lastTimeStamp) >= timestamp && (
               <img alt="seen" src={seenIcon} />
             )}
           </div>

@@ -113,17 +113,6 @@ export interface Addresses {
   lastSeenTimestamp: string;
 }
 
-export interface GroupUpdate {
-  addresses: Addresses;
-  id: string;
-  name: string;
-  lastMessageContents: string;
-  lastMessageSender: string;
-  lastMessageTimestamp: string;
-  createdAt: string;
-  description: string;
-}
-
 export const listenGroup = `subscription GroupUpdate {
   groupUpdate {
     group {
@@ -174,7 +163,7 @@ export const unblock = `mutation Mutation($blockedAddress: String!, $channelId: 
 
 export interface GroupDetails {
   groupId: string;
-  lastSeenTimestamp: string;
+  lastSeenTimestamp: Date;
 }
 
 export const updateGroup = `mutation Mutation($groupDetails: GroupDetails!) {

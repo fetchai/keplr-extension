@@ -11,7 +11,6 @@ import {
   userChatGroupPagination,
   userChatGroups,
 } from "../../chatStore/messages-slice";
-import { updateGroupTimestamp } from "../../graphQL/messages-api";
 import { recieveGroups } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
@@ -29,18 +28,7 @@ const User: React.FC<{
   const [message, setMessage] = useState("");
   const history = useHistory();
 
-  const getUpdatedTime = async () => {
-    console.log("conditionedGroup", group);
-    if (group?.id) {
-      await updateGroupTimestamp({
-        groupId: group?.id,
-        lastSeenTimestamp: Date(),
-      });
-    }
-  };
-
   const handleClick = () => {
-    getUpdatedTime();
     history.push(`/chat/${contactAddress}`);
   };
   const sender = group.addresses.find((val) => val.address === contactAddress);
