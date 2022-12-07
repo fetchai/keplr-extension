@@ -232,7 +232,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
                 aria-hidden="true"
                 onClick={() => {
-                  amplitude.getInstance().logEvent("Your Contacts click", {});
+                  amplitude.getInstance().logEvent("Address book viewed", {});
                   history.push("/setting/address-book");
                 }}
               />

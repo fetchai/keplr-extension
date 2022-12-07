@@ -18,7 +18,7 @@ export const Menu: FunctionComponent = observer(() => {
       <div
         className={styleMenu.item}
         onClick={() => {
-          amplitude.getInstance().logEvent("Address book click", {});
+          amplitude.getInstance().logEvent("Address book viewed", {});
           history.push({
             pathname: "/setting/address-book",
           });

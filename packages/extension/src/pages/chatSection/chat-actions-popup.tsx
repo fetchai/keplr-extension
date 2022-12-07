@@ -24,9 +24,7 @@ export const Dropdown = ({
           {added ? (
             <div
               onClick={() => {
-                amplitude
-                  .getInstance()
-                  .logEvent("View in address book click", {});
+                amplitude.getInstance().logEvent("Address book viewed", {});
                 history.push("/setting/address-book");
               }}
             >
@@ -37,7 +35,7 @@ export const Dropdown = ({
               onClick={() => {
                 amplitude.getInstance().logEvent("Add to address click", {});
                 history.push({
-                  pathname: "",
+                  pathname: "/setting/address-book",
                   state: {
                     openModal: true,
                     addressInputValue: userName,
