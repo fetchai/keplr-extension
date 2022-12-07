@@ -108,6 +108,40 @@ export const listenMessages = `subscription NewMessageUpdate {
     }
   }`;
 
+export interface Addresses {
+  address: string;
+  lastSeenTimestamp: string;
+}
+
+export interface GroupUpdate {
+  addresses: Addresses;
+  id: string;
+  name: string;
+  lastMessageContents: string;
+  lastMessageSender: string;
+  lastMessageTimestamp: string;
+  createdAt: string;
+  description: string;
+}
+
+export const listenGroup = `subscription GroupUpdate {
+  groupUpdate {
+    group {
+      addresses {
+        address
+        lastSeenTimestamp
+      }
+      id
+      name
+      lastMessageContents
+      lastMessageSender
+      lastMessageTimestamp
+      createdAt
+      description
+    }
+  }
+}`;
+
 export const blockedList = `query Query($channelId: ChannelId!) {
     blockedList(channelId: $channelId) {
       id

@@ -72,7 +72,6 @@ export const ChatMessage = ({
           )}
           <div className={style.timestamp}>
             {formatTime(timestamp)}
-            {console.log(isSender)}
             {isSender &&
               (!lastTimeStamp || Number(lastTimeStamp) < timestamp) && (
                 <img alt="delivered" src={deliveredIcon} />

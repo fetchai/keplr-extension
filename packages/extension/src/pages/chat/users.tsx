@@ -11,6 +11,7 @@ import {
   userChatGroupPagination,
   userChatGroups,
 } from "../../chatStore/messages-slice";
+import { updateGroupTimestamp } from "../../graphQL/messages-api";
 import { recieveGroups } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
@@ -27,12 +28,25 @@ const User: React.FC<{
 }> = ({ chainId, group, contactName, contactAddress }) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
+
+  const getUpdatedTime = async () => {
+    console.log("conditionedGroup", group);
+    if (group?.id) {
+      await updateGroupTimestamp({
+        groupId: group?.id,
+        lastSeenTimestamp: Date(),
+      });
+    }
+  };
+
   const handleClick = () => {
+    getUpdatedTime();
     history.push(`/chat/${contactAddress}`);
   };
-  const sender = group.addresses.find((val) => val.address === group.name);
-  const reciever = group.addresses.find((val) => val.address !== group.name);
-  console.log(sender, reciever);
+  const sender = group.addresses.find((val) => val.address === contactAddress);
+  const reciever = group.addresses.find(
+    (val) => val.address !== contactAddress
+  );
   const decryptMsg = async (
     chainId: string,
     contents: string,
@@ -58,8 +72,11 @@ const User: React.FC<{
       onClick={handleClick}
     >
       {(!sender?.lastSeenTimestamp ||
-        Number(reciever?.lastSeenTimestamp) <
-          Number(sender.lastSeenTimestamp)) && (
+        (Number(reciever?.lastSeenTimestamp) <
+          Number(sender?.lastSeenTimestamp) &&
+          group.lastMessageSender === contactAddress &&
+          Number(group.lastMessageTimestamp) >
+            Number(reciever?.lastSeenTimestamp))) && (
         <span
           style={{
             height: "12px",

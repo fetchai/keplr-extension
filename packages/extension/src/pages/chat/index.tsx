@@ -28,7 +28,11 @@ import { DeactivatedChat } from "../../components/chat/deactivated-chat";
 import { SwitchUser } from "../../components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
 import { AUTH_SERVER } from "../../config.ui.var";
-import { fetchBlockList, messageListener } from "../../graphQL/messages-api";
+import {
+  fetchBlockList,
+  groupListener,
+  messageListener,
+} from "../../graphQL/messages-api";
 import { recieveGroups } from "../../graphQL/recieve-messages";
 import { HeaderLayout } from "../../layouts";
 import { useStore } from "../../stores";
@@ -100,6 +104,7 @@ const ChatView = () => {
       setLoadingChats(true);
       try {
         if (!chatSubscriptionActive) messageListener();
+        groupListener();
         if (!chatStorePopulated) {
           await recieveGroups(0, walletAddress);
           await fetchBlockList();

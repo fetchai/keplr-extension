@@ -79,6 +79,7 @@ export const messagesSlice = createSlice({
     setGroups: (state, action) => {
       const { groups, pagination } = action.payload;
       state.groups = { ...state.groups, ...groups };
+      console.log(state.groups);
       state.groupsPagination = pagination;
     },
     updateChatList: (state, action) => {
@@ -114,6 +115,17 @@ export const messagesSlice = createSlice({
         };
       }
       state.chats[sender].messages[id] = action.payload;
+    },
+    updateGroupsData: (state: any, action: PayloadAction<any>) => {
+      const { group } = action.payload;
+      // console.log(group?.name);
+      // console.log("state", state.groups, !state.groups);
+      const key = group?.name;
+      const updatedGroup = {
+        [key]: group,
+      };
+      // console.log(updatedGroup);
+      state.groups = { ...state.groups, ...updatedGroup };
     },
     updateLatestSentMessage: (state: any, action: PayloadAction<Message>) => {
       const { target, id } = action.payload;
@@ -165,6 +177,7 @@ export const {
   resetChatList,
   updateChatList,
   updateMessages,
+  updateGroupsData,
   updateLatestSentMessage,
   setBlockedList,
   setBlockedUser,

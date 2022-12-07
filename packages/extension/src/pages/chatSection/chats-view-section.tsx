@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
@@ -72,38 +79,48 @@ export const ChatsViewSection = ({
   }, [preLoadedChats]);
 
   //Scrolling Logic
-  const messagesEndRef: any = useRef();
+  // const messagesEndRef: any = useRef();
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) messagesEndRef.current.scrollIntoView(true);
-  };
+  // const scrollToBottom = () => {
+  //   if (messagesEndRef.current) messagesEndRef.current.scrollIntoView(true);
+  // };
+  const reciever = group?.addresses.find((val) => val.address !== userName);
+
+  const messagesEndRef: any = useCallback(
+    (node: any) => {
+      if (node) node.scrollIntoView({ block: "end" });
+    },
+    [messages]
+  );
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView(true);
     }
   }, [messagesEndRef.current]);
 
+  const getUpdatedTime = async () => {
+    console.log("conditionedGroup", group);
+    if (group?.id) {
+      await updateGroupTimestamp({
+        groupId: group?.id,
+        lastSeenTimestamp: Date(),
+      });
+    }
+  };
+
   useEffect(() => {
-    const getUpdatedTime = async () => {
-      console.log("conditionedGroup", group);
-      if (group?.id) {
-        await updateGroupTimestamp({
-          groupId: group?.id,
-          lastSeenTimestamp: Date(),
-        });
-      }
-    };
     getUpdatedTime();
   }, [group]);
 
   useEffect(() => {
     const getChats = async () => {
       await loadUserList();
-      if (pagination.page < 0) scrollToBottom();
-      else messagesScrollRef.current.scrollIntoView(true);
+      // if (pagination.page < 0) scrollToBottom();
+      // else messagesScrollRef.current.scrollIntoView(true);
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
@@ -151,8 +168,11 @@ export const ChatsViewSection = ({
         );
         const updatedMessagesList = [...messages, message];
         setMessages(updatedMessagesList);
-        if (message) setNewMessage("");
-        scrollToBottom();
+        if (message) {
+          setNewMessage("");
+          getUpdatedTime();
+        }
+        // scrollToBottom();
         recieveGroups(0, accountInfo.bech32Address);
       } catch (error) {
         console.log("failed to send : ", error);
@@ -197,24 +217,30 @@ export const ChatsViewSection = ({
             const check = showDateFunction(message?.commitTimestamp);
             return (
               <>
-                <ChatMessage
-                  key={index}
-                  chainId={current.chainId}
-                  showDate={check}
-                  message={message?.contents}
-                  isSender={message?.target === userName} // if target was the user we are chatting with
-                  timestamp={message?.commitTimestamp || 1549312452}
-                  lastTimeStamp={
-                    group?.addresses.filter(
-                      (val) => val.address === userName
-                    )[0].lastSeenTimestamp
-                  }
-                />
+                {group !== undefined && (
+                  <ChatMessage
+                    key={index}
+                    chainId={current.chainId}
+                    showDate={check}
+                    message={message?.contents}
+                    isSender={message?.target === userName} // if target was the user we are chatting with
+                    timestamp={message?.commitTimestamp || 1549312452}
+                    lastTimeStamp={
+                      group?.addresses.filter(
+                        (val) => val.address === userName
+                      )[0].lastSeenTimestamp
+                    }
+                  />
+                )}
                 {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
+                {Number(message.commitTimestamp) >
+                  Number(reciever?.lastSeenTimestamp) &&
+                  message?.sender === userName && (
+                    <div ref={messagesEndRef} className={"AAAAAAAAAAAAAAAA"} />
+                  )}
               </>
             );
           })}
-        <div ref={messagesEndRef} className={style.messageRef} />
       </div>
 
       <InputGroup className={style.inputText}>

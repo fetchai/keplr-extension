@@ -11,6 +11,7 @@ import {
   setUnblockedUser,
   updateMessages,
   updateLatestSentMessage,
+  updateGroupsData,
 } from "../chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "../utils/encrypt-message";
@@ -21,6 +22,8 @@ import {
   GroupDetails,
   groups,
   groupsWithAddresses,
+  GroupUpdate,
+  listenGroup,
   listenMessages,
   mailbox,
   NewMessageUpdate,
@@ -30,6 +33,7 @@ import {
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
 let querySubscription: ObservableSubscription;
+let queryGroupSubscription: ObservableSubscription;
 export const fetchMessages = async (groupId: string, page: number) => {
   const state = store.getState();
   const { data, errors } = await client.query({
@@ -227,6 +231,7 @@ export const deliverMessages = async (
 };
 
 export const messageListener = () => {
+  console.log("message listener");
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -255,6 +260,7 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
+        console.log("_________>", data);
         store.dispatch(updateMessages(data.newMessageUpdate.message));
         recieveGroups(0, data.newMessageUpdate.message.target);
       },
@@ -274,8 +280,59 @@ export const messageListener = () => {
     });
 };
 
+export const groupListener = () => {
+  console.log("group message listener");
+  const state = store.getState();
+  const wsLink = createWSLink(state.user.accessToken);
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink,
+    httpLink
+  );
+  const newClient = new ApolloClient({
+    link: splitLink,
+    cache: new InMemoryCache(),
+  });
+  queryGroupSubscription = newClient
+    .subscribe({
+      query: gql(listenGroup),
+      context: {
+        headers: {
+          authorization: `Bearer ${state.user.accessToken}`,
+        },
+      },
+    })
+    .subscribe({
+      next({ data }: { data: { groupUpdate: GroupUpdate } }) {
+        console.log("+++++++++++++++++++++>", data);
+        store.dispatch(updateGroupsData(data.groupUpdate));
+        // recieveGroups(0, data.newMessageUpdate.message.target);
+      },
+      error(err) {
+        console.error("err", err);
+        store.dispatch(
+          setMessageError({
+            type: "subscription",
+            message: "Something went wrong, Cant fetch latest messages",
+            level: 1,
+          })
+        );
+      },
+      complete() {
+        console.log("group completed");
+      },
+    });
+};
+
 export const messageListenerUnsubscribe = () => {
   if (querySubscription) querySubscription.unsubscribe();
+  if (queryGroupSubscription) queryGroupSubscription.unsubscribe();
 };
 
 export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
