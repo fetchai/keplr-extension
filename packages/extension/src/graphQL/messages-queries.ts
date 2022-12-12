@@ -166,8 +166,8 @@ export interface GroupDetails {
   lastSeenTimestamp: Date;
 }
 
-export const updateGroup = `mutation Mutation($groupDetails: GroupDetails!) {
-  group(groupDetails: $groupDetails) {
+export const updateGroup = `mutation Mutation($groupId: String!, $lastSeenTimestamp: Date!) {
+  updateGroupLastSeen(groupId: $groupId, lastSeenTimestamp: $lastSeenTimestamp) {
     lastSeenTimestamp
     name
     id

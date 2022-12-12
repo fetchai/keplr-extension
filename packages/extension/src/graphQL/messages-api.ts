@@ -354,7 +354,8 @@ export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
         },
       },
       variables: {
-        groupDetails: groupDetails,
+        groupId: groupDetails.groupId,
+        lastSeenTimestamp: groupDetails.lastSeenTimestamp,
       },
     });
     console.log("Group Timestamp updated --->", data);
