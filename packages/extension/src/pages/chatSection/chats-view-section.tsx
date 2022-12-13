@@ -76,14 +76,32 @@ export const ChatsViewSection = ({
   useEffect(() => {
     console.log("New message received");
 
-    setMessages(Object.values(preLoadedChats?.messages));
+    const updatedMessages = Object.values(preLoadedChats?.messages).sort(
+      (a, b) => {
+        return parseInt(a.commitTimestamp) - parseInt(b.commitTimestamp);
+      }
+    );
+
+    setMessages(updatedMessages);
+
     setPagination(preLoadedChats?.pagination);
     console.log("Sending my last seen status from new message");
-    const delayInMilliseconds = 500; // (1/2) second
 
-    setTimeout(function () {
-      getUpdatedTime();
-    }, delayInMilliseconds);
+    const lastMessage =
+      updatedMessages && updatedMessages.length > 0
+        ? updatedMessages[updatedMessages.length - 1]
+        : null;
+
+    if (
+      group?.id &&
+      lastMessage &&
+      lastMessage.sender !== accountInfo.bech32Address
+    ) {
+      updateGroupTimestamp({
+        groupId: group?.id,
+        lastSeenTimestamp: new Date(lastMessage.commitTimestamp),
+      });
+    }
   }, [preLoadedChats]);
 
   useEffect(() => {
@@ -145,15 +163,6 @@ export const ChatsViewSection = ({
       messagesEndRef.current.scrollIntoView(true);
     }
   }, [messagesEndRef.current]);
-
-  const getUpdatedTime = async () => {
-    if (group?.id) {
-      await updateGroupTimestamp({
-        groupId: group?.id,
-        lastSeenTimestamp: new Date(),
-      });
-    }
-  };
 
   // useEffect(() => {
   //   console.log("Hello from group timestamp update");
@@ -253,40 +262,35 @@ export const ChatsViewSection = ({
             </p>
           </>
         )}
-        {messages
-          ?.sort((a: any, b: any) => {
-            return a.commitTimestamp - b.commitTimestamp;
-          })
-          ?.map((message: any, index) => {
-            const check = showDateFunction(message?.commitTimestamp);
-            function getLastSeen(): string | undefined {
-              return group?.addresses.filter(
-                (val) => val.address === userName
-              )[0].lastSeenTimestamp;
-            }
+        {messages?.map((message: any, index) => {
+          const check = showDateFunction(message?.commitTimestamp);
+          function getLastSeen(): string | undefined {
+            return group?.addresses.filter((val) => val.address === userName)[0]
+              .lastSeenTimestamp;
+          }
 
-            return (
-              <>
-                {group !== undefined && (
-                  <ChatMessage
-                    key={index}
-                    chainId={current.chainId}
-                    showDate={check}
-                    message={message?.contents}
-                    isSender={message?.target === userName} // if target was the user we are chatting with
-                    timestamp={message?.commitTimestamp || 1549312452}
-                    lastTimeStamp={getLastSeen()}
-                  />
+          return (
+            <>
+              {group !== undefined && (
+                <ChatMessage
+                  key={index}
+                  chainId={current.chainId}
+                  showDate={check}
+                  message={message?.contents}
+                  isSender={message?.target === userName} // if target was the user we are chatting with
+                  timestamp={message?.commitTimestamp || 1549312452}
+                  lastTimeStamp={getLastSeen()}
+                />
+              )}
+              {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
+              {Number(message.commitTimestamp) >
+                Number(reciever?.lastSeenTimestamp) &&
+                message?.sender === userName && (
+                  <div ref={messagesEndRef} className={messagesEndRef} />
                 )}
-                {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
-                {Number(message.commitTimestamp) >
-                  Number(reciever?.lastSeenTimestamp) &&
-                  message?.sender === userName && (
-                    <div ref={messagesEndRef} className={messagesEndRef} />
-                  )}
-              </>
-            );
-          })}
+            </>
+          );
+        })}
         <div ref={messagesEndRef} className={"AAAAA"} />
       </div>
 
