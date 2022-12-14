@@ -136,6 +136,8 @@ export const ChatsViewSection = ({
   }, [messagesEndRef.current]);
 
   useEffect(() => {
+    console.log("Hello", isOnScreen);
+
     const getChats = async () => {
       await loadUserList();
       // if (pagination.page < 0) scrollToBottom();
@@ -148,20 +150,27 @@ export const ChatsViewSection = ({
   const loadUserList = async () => {
     if (loadingMessages) return;
     if (group) {
-      let page: number;
-      if (userChats[userName]?.pagination) {
-        page = Math.floor(messages.length / CHAT_PAGE_COUNT);
-      } else {
-        page = 0;
-      }
+      const page = pagination?.page + 1 || 0;
+      // let page: number;
+      // if (userChats[userName]?.pagination) {
+      //   page = Math.floor(messages.length / CHAT_PAGE_COUNT);
+      // } else {
+      //   page = 0;
+      // }
+      console.log("Hello", group.lastMessageTimestamp);
+      console.log("Hello", reciever?.lastSeenTimestamp);
+      console.log(
+        "Hello",
+        reciever?.lastSeenTimestamp &&
+          Number(group.lastMessageTimestamp) >
+            Number(reciever.lastSeenTimestamp)
+          ? reciever?.lastSeenTimestamp
+          : null
+      );
+
       console.log(page, reciever?.lastSeenTimestamp);
       setLoadingMessages(true);
-      await recieveMessages(
-        userName,
-        page === 0 ? reciever?.lastSeenTimestamp : null,
-        page,
-        group.id
-      );
+      await recieveMessages(userName, null, page, group.id);
       setLoadingMessages(false);
     } else {
       const newPagination = pagination;

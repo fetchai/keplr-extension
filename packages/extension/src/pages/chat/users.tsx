@@ -18,6 +18,7 @@ import { useStore } from "../../stores";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
+import amplitude from "amplitude-js";
 
 const User: React.FC<{
   chainId: string;
@@ -29,6 +30,9 @@ const User: React.FC<{
   const history = useHistory();
 
   const handleClick = () => {
+    amplitude.getInstance().logEvent("Open DM click", {
+      from: "Chat history",
+    });
     history.push(`/chat/${contactAddress}`);
   };
   const sender = group.addresses.find((val) => val.address === contactAddress);
