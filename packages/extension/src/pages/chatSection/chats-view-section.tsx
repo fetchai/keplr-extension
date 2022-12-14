@@ -54,7 +54,6 @@ export const ChatsViewSection = ({
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  console.log(userChats);
   const preLoadedChats = useMemo(() => {
     return (
       userChats[userName] || {
@@ -75,8 +74,6 @@ export const ChatsViewSection = ({
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   useEffect(() => {
-    console.log("New message received");
-
     const updatedMessages = Object.values(preLoadedChats?.messages).sort(
       (a, b) => {
         return parseInt(a.commitTimestamp) - parseInt(b.commitTimestamp);
@@ -84,9 +81,7 @@ export const ChatsViewSection = ({
     );
 
     setMessages(updatedMessages);
-
     setPagination(preLoadedChats?.pagination);
-    console.log("Sending my last seen status from new message");
 
     const lastMessage =
       updatedMessages && updatedMessages.length > 0
@@ -136,8 +131,6 @@ export const ChatsViewSection = ({
   }, [messagesEndRef.current]);
 
   useEffect(() => {
-    console.log("Hello", isOnScreen);
-
     const getChats = async () => {
       await loadUserList();
       // if (pagination.page < 0) scrollToBottom();
@@ -145,32 +138,22 @@ export const ChatsViewSection = ({
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
-  console.log(reciever);
 
   const loadUserList = async () => {
     if (loadingMessages) return;
     if (group) {
       const page = pagination?.page + 1 || 0;
-      // let page: number;
-      // if (userChats[userName]?.pagination) {
-      //   page = Math.floor(messages.length / CHAT_PAGE_COUNT);
-      // } else {
-      //   page = 0;
-      // }
-      console.log("Hello", group.lastMessageTimestamp);
-      console.log("Hello", reciever?.lastSeenTimestamp);
-      console.log(
-        "Hello",
+      setLoadingMessages(true);
+      await recieveMessages(
+        userName,
         reciever?.lastSeenTimestamp &&
           Number(group.lastMessageTimestamp) >
             Number(reciever.lastSeenTimestamp)
           ? reciever?.lastSeenTimestamp
-          : null
+          : null,
+        page,
+        group.id
       );
-
-      console.log(page, reciever?.lastSeenTimestamp);
-      setLoadingMessages(true);
-      await recieveMessages(userName, null, page, group.id);
       setLoadingMessages(false);
     } else {
       const newPagination = pagination;

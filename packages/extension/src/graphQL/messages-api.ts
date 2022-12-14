@@ -22,11 +22,10 @@ import {
   GroupDetails,
   groups,
   groupsWithAddresses,
-  listenGroup,
+  groupReadUnread,
   listenMessages,
   mailbox,
-  // mailbox,
-  mailboxTimestamp,
+  mailboxWithTimestamp,
   NewMessageUpdate,
   sendMessages,
   unblock,
@@ -34,7 +33,7 @@ import {
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
 let querySubscription: ObservableSubscription;
-let queryGroupSubscription: ObservableSubscription;
+let queryGroupReadUnreadSubscription: ObservableSubscription;
 
 interface messagesVariables {
   page?: number;
@@ -44,16 +43,15 @@ interface messagesVariables {
 }
 export const fetchMessages = async (
   groupId: string,
-  timestamp: string | null | undefined,
+  afterTimestamp: string | null | undefined,
   page: number
 ) => {
   const state = store.getState();
-  console.log(page, timestamp, groupId);
   let variables: messagesVariables = {
     groupId: groupId,
   };
-  if (!!timestamp) {
-    variables = { ...variables, afterTimestamp: timestamp };
+  if (!!afterTimestamp) {
+    variables = { ...variables, afterTimestamp: afterTimestamp };
   } else {
     variables = {
       ...variables,
@@ -62,8 +60,7 @@ export const fetchMessages = async (
     };
   }
 
-  const messageQuery = !!timestamp ? mailboxTimestamp : mailbox;
-  console.log(variables, mailboxTimestamp);
+  const messageQuery = !!afterTimestamp ? mailboxWithTimestamp : mailbox;
   const { data, errors } = await client.query({
     query: gql(messageQuery),
     fetchPolicy: "no-cache",
@@ -76,7 +73,6 @@ export const fetchMessages = async (
   });
 
   if (errors) console.log("errors", errors);
-  console.log(data.mailbox);
 
   return data.mailbox;
 };
@@ -285,11 +281,6 @@ export const messageListener = () => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        console.log(
-          "Hello from message Subscription",
-          data.newMessageUpdate.message
-        );
-
         store.dispatch(updateMessages(data.newMessageUpdate.message));
         recieveGroups(0, data.newMessageUpdate.message.target);
       },
@@ -309,7 +300,7 @@ export const messageListener = () => {
     });
 };
 
-export const groupListener = (userAddress: string) => {
+export const groupReadUnreadListener = (userAddress: string) => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -327,9 +318,9 @@ export const groupListener = (userAddress: string) => {
     link: splitLink,
     cache: new InMemoryCache(),
   });
-  queryGroupSubscription = newClient
+  queryGroupReadUnreadSubscription = newClient
     .subscribe({
-      query: gql(listenGroup),
+      query: gql(groupReadUnread),
       context: {
         headers: {
           authorization: `Bearer ${state.user.accessToken}`,
@@ -344,8 +335,6 @@ export const groupListener = (userAddress: string) => {
           group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
             ? group.id.split("-")[0]
             : group.id.split("-")[1];
-        console.log("Hello from group Subscription", group);
-
         store.dispatch(updateGroupsData(group));
       },
       error(err) {
@@ -364,15 +353,16 @@ export const groupListener = (userAddress: string) => {
     });
 };
 
-export const messageListenerUnsubscribe = () => {
+export const messageAndGroupListenerUnsubscribe = () => {
   if (querySubscription) querySubscription.unsubscribe();
-  if (queryGroupSubscription) queryGroupSubscription.unsubscribe();
+  if (queryGroupReadUnreadSubscription)
+    queryGroupReadUnreadSubscription.unsubscribe();
 };
 
 export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
   const state = store.getState();
   try {
-    const { data } = await client.mutate({
+    await client.mutate({
       mutation: gql(updateGroup),
       fetchPolicy: "no-cache",
       context: {
@@ -385,7 +375,6 @@ export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
         lastSeenTimestamp: groupDetails.lastSeenTimestamp,
       },
     });
-    console.log("Group Timestamp updated --->", data);
   } catch (err) {
     console.error("err", err);
   }

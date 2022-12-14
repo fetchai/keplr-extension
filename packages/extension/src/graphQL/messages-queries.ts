@@ -12,7 +12,7 @@ export const sendMessages = `mutation Mutation($messages: [InputMessage!]!) {
 // TODO(!!!): I expect these also need types associated for all of the queries
 //            here
 
-export const mailboxTimestamp = `query Query($groupId: String, $afterTimestamp: Date) {
+export const mailboxWithTimestamp = `query Query($groupId: String, $afterTimestamp: Date) {
   mailbox(groupId: $groupId, afterTimestamp: $afterTimestamp) {
     messages {
       commitTimestamp
@@ -128,7 +128,7 @@ export interface Addresses {
   lastSeenTimestamp: string;
 }
 
-export const listenGroup = `subscription GroupUpdate {
+export const groupReadUnread = `subscription GroupUpdate {
   groupUpdate {
     group {
       addresses {

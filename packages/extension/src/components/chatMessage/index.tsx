@@ -1,8 +1,8 @@
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
-import deliveredIcon from "../../public/assets/icon/delivered.png";
-import seenIcon from "../../public/assets/icon/seenStatus.png";
+import deliveredIcon from "../../public/assets/icon/chat-unseen-status.png";
+import chatSeenIcon from "../../public/assets/icon/chat-seen-status.png";
 import { decryptMessage } from "../../utils/decrypt-message";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
@@ -77,7 +77,7 @@ export const ChatMessage = ({
                 <img alt="delivered" src={deliveredIcon} />
               )}
             {isSender && Number(lastTimeStamp) >= timestamp && (
-              <img alt="seen" src={seenIcon} />
+              <img alt="seen" src={chatSeenIcon} />
             )}
           </div>
         </Container>
