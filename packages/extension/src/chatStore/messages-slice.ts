@@ -106,7 +106,7 @@ export const messagesSlice = createSlice({
           contactAddress: sender,
           messages: {},
           pagination: {
-            page: 0,
+            page: -1,
             pageCount: CHAT_PAGE_COUNT,
             lastPage: 0,
             total: CHAT_PAGE_COUNT,
@@ -121,21 +121,7 @@ export const messagesSlice = createSlice({
       const updatedGroup = {
         [key]: group,
       };
-
-      if (
-        Number(
-          group.addresses.filter(
-            (val: { address: string }) => val.address === key
-          )[0].lastSeenTimestamp
-        ) >
-        Number(
-          state.groups[key].addresses.filter(
-            (val: { address: string }) => val.address === key
-          )[0].lastSeenTimestamp
-        )
-      ) {
-        state.groups = { ...state.groups, ...updatedGroup };
-      }
+      state.groups = { ...state.groups, ...updatedGroup };
     },
     updateLatestSentMessage: (state: any, action: PayloadAction<Message>) => {
       const { target, id } = action.payload;

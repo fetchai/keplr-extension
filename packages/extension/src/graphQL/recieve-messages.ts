@@ -8,10 +8,15 @@ import { fetchGroups, fetchMessages } from "./messages-api";
 
 export const recieveMessages = async (
   userAddress: string,
+  timestamp: string | null | undefined,
   page: number,
   _groupId: string
 ) => {
-  const { messages, pagination } = await fetchMessages(_groupId, page);
+  const { messages, pagination } = await fetchMessages(
+    _groupId,
+    timestamp,
+    page
+  );
   const messagesObj: any = {};
 
   if (messages) {

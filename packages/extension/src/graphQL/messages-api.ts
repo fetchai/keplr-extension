@@ -25,6 +25,8 @@ import {
   listenGroup,
   listenMessages,
   mailbox,
+  // mailbox,
+  mailboxTimestamp,
   NewMessageUpdate,
   sendMessages,
   unblock,
@@ -33,24 +35,49 @@ import {
 import { recieveGroups } from "./recieve-messages";
 let querySubscription: ObservableSubscription;
 let queryGroupSubscription: ObservableSubscription;
-export const fetchMessages = async (groupId: string, page: number) => {
+
+interface messagesVariables {
+  page?: number;
+  pageCount?: number;
+  groupId: string;
+  afterTimestamp?: string;
+}
+export const fetchMessages = async (
+  groupId: string,
+  timestamp: string | null | undefined,
+  page: number
+) => {
   const state = store.getState();
+  console.log(page, timestamp, groupId);
+  let variables: messagesVariables = {
+    groupId: groupId,
+  };
+  if (!!timestamp) {
+    variables = { ...variables, afterTimestamp: timestamp };
+  } else {
+    variables = {
+      ...variables,
+      page,
+      pageCount: CHAT_PAGE_COUNT,
+    };
+  }
+
+  const messageQuery = !!timestamp ? mailboxTimestamp : mailbox;
+  console.log(variables, mailboxTimestamp);
   const { data, errors } = await client.query({
-    query: gql(mailbox),
+    query: gql(messageQuery),
     fetchPolicy: "no-cache",
     context: {
       headers: {
         Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
-    variables: {
-      groupId,
-      page,
-      pageCount: CHAT_PAGE_COUNT,
-    },
+    variables: variables,
   });
 
   if (errors) console.log("errors", errors);
+  console.log(data.mailbox);
+
   return data.mailbox;
 };
 

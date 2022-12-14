@@ -54,6 +54,7 @@ export const ChatsViewSection = ({
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
+  console.log(userChats);
   const preLoadedChats = useMemo(() => {
     return (
       userChats[userName] || {
@@ -105,39 +106,9 @@ export const ChatsViewSection = ({
   }, [preLoadedChats]);
 
   useEffect(() => {
-    console.log(
-      "Hello from set group update",
-      Number(
-        Object.values(userGroups)
-          .find((group) => group.id.includes(userName))
-          ?.addresses.filter(
-            (val: { address: string }) => val.address === userName
-          )[0].lastSeenTimestamp
-      ) >=
-        Number(
-          group?.addresses.filter(
-            (val: { address: string }) => val.address === userName
-          )[0].lastSeenTimestamp
-        )
+    setGroup(
+      Object.values(userGroups).find((group) => group.id.includes(userName))
     );
-
-    if (
-      Number(
-        Object.values(userGroups)
-          .find((group) => group.id.includes(userName))
-          ?.addresses.filter(
-            (val: { address: string }) => val.address === userName
-          )[0].lastSeenTimestamp
-      ) >=
-      Number(
-        group?.addresses.filter(
-          (val: { address: string }) => val.address === userName
-        )[0].lastSeenTimestamp
-      )
-    )
-      setGroup(
-        Object.values(userGroups).find((group) => group.id.includes(userName))
-      );
   }, [userGroups]);
 
   //Scrolling Logic
@@ -164,12 +135,6 @@ export const ChatsViewSection = ({
     }
   }, [messagesEndRef.current]);
 
-  // useEffect(() => {
-  //   console.log("Hello from group timestamp update");
-
-  //   getUpdatedTime();
-  // }, [group]);
-
   useEffect(() => {
     const getChats = async () => {
       await loadUserList();
@@ -178,13 +143,25 @@ export const ChatsViewSection = ({
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
+  console.log(reciever);
 
   const loadUserList = async () => {
     if (loadingMessages) return;
     if (group) {
-      const page = pagination?.page + 1 || 0;
+      let page: number;
+      if (userChats[userName]?.pagination) {
+        page = Math.floor(messages.length / CHAT_PAGE_COUNT);
+      } else {
+        page = 0;
+      }
+      console.log(page, reciever?.lastSeenTimestamp);
       setLoadingMessages(true);
-      await recieveMessages(userName, page, group.id);
+      await recieveMessages(
+        userName,
+        page === 0 ? reciever?.lastSeenTimestamp : null,
+        page,
+        group.id
+      );
       setLoadingMessages(false);
     } else {
       const newPagination = pagination;
@@ -264,11 +241,6 @@ export const ChatsViewSection = ({
         )}
         {messages?.map((message: any, index) => {
           const check = showDateFunction(message?.commitTimestamp);
-          function getLastSeen(): string | undefined {
-            return group?.addresses.filter((val) => val.address === userName)[0]
-              .lastSeenTimestamp;
-          }
-
           return (
             <>
               {group !== undefined && (
@@ -279,7 +251,11 @@ export const ChatsViewSection = ({
                   message={message?.contents}
                   isSender={message?.target === userName} // if target was the user we are chatting with
                   timestamp={message?.commitTimestamp || 1549312452}
-                  lastTimeStamp={getLastSeen()}
+                  lastTimeStamp={
+                    group?.addresses.filter(
+                      (val) => val.address === userName
+                    )[0].lastSeenTimestamp
+                  }
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
