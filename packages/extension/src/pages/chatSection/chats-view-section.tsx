@@ -47,6 +47,7 @@ export const ChatsViewSection = ({
   const history = useHistory();
   const userName = history.location.pathname.split("/")[2];
 
+  let enterKeyCount = 0;
   const user = useSelector(userDetails);
   const userGroups: Groups = useSelector(userChatGroups);
   const userChats: MessagesState = useSelector(userMessages);
@@ -135,6 +136,7 @@ export const ChatsViewSection = ({
       await loadUserList();
       // if (pagination.page < 0) scrollToBottom();
       // else messagesScrollRef.current.scrollIntoView(true);
+      if (pagination.page >= 0) messagesScrollRef.current.scrollIntoView(true);
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
@@ -189,23 +191,33 @@ export const ChatsViewSection = ({
           accountInfo.bech32Address,
           userName
         );
-        const updatedMessagesList = [...messages, message];
-        setMessages(updatedMessagesList);
+
         if (message) {
+          const updatedMessagesList = [...messages, message];
+          setMessages(updatedMessagesList);
           setNewMessage("");
         }
         // scrollToBottom();
         recieveGroups(0, accountInfo.bech32Address);
       } catch (error) {
         console.log("failed to send : ", error);
+      } finally {
+        enterKeyCount = 0;
       }
   };
 
-  const handleKeydown = (e: { keyCode: number }) => {
+  const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     //it triggers by pressing the enter key
-    if (e.keyCode === 13) {
+    const { key } = e as React.KeyboardEvent<HTMLTextAreaElement>;
+    if (key === "Enter" && enterKeyCount == 0) {
+      enterKeyCount = 1;
       handleSendMessage(e);
     }
+  };
+
+  const handleActionsClick = (data: string) => {
+    setNewMessage("");
+    handleClick(data);
   };
 
   return (
@@ -223,7 +235,10 @@ export const ChatsViewSection = ({
         {pagination?.lastPage <= pagination?.page && (
           <>
             {isNewUser && (
-              <NewUserSection userName={userName} handleClick={handleClick} />
+              <NewUserSection
+                userName={userName}
+                handleClick={handleActionsClick}
+              />
             )}
             <p>
               Messages are end to end encrypted. Nobody else can read them
@@ -234,10 +249,9 @@ export const ChatsViewSection = ({
         {messages?.map((message: any, index) => {
           const check = showDateFunction(message?.commitTimestamp);
           return (
-            <>
+            <div key={message.id}>
               {group !== undefined && (
                 <ChatMessage
-                  key={index}
                   chainId={current.chainId}
                   showDate={check}
                   message={message?.contents}
@@ -246,17 +260,19 @@ export const ChatsViewSection = ({
                   lastTimeStamp={
                     group?.addresses.filter(
                       (val) => val.address === userName
-                    )[0].lastSeenTimestamp
+                    )[0]?.lastSeenTimestamp
                   }
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
-              {Number(message.commitTimestamp) >
-                Number(reciever?.lastSeenTimestamp) &&
+              {message?.commitTimestamp &&
+                reciever?.lastSeenTimestamp &&
+                Number(message?.commitTimestamp) >
+                  Number(reciever?.lastSeenTimestamp) &&
                 message?.sender === userName && (
                   <div ref={messagesEndRef} className={messagesEndRef} />
                 )}
-            </>
+            </div>
           );
         })}
         <div ref={messagesEndRef} className={"AAAAA"} />

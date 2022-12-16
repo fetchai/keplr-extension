@@ -69,7 +69,7 @@ export const fetchMessages = async (
         Authorization: `Bearer ${state.user.accessToken}`,
       },
     },
-    variables: variables,
+    variables,
   });
 
   if (errors) console.log("errors", errors);
@@ -239,12 +239,12 @@ export const deliverMessages = async (
       }
       return null;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
     store.dispatch(
       setMessageError({
         type: "delivery",
-        message: "Something went wrong, Message can't be delivered",
+        message:
+          e?.message || "Something went wrong, Message can't be delivered",
         level: 1,
       })
     );

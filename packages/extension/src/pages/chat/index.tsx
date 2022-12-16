@@ -103,8 +103,10 @@ const ChatView = () => {
     const getMessagesAndBlocks = async () => {
       setLoadingChats(true);
       try {
-        if (!chatSubscriptionActive) groupReadUnreadListener(walletAddress);
-        if (!chatSubscriptionActive) messageListener();
+        if (!chatSubscriptionActive) {
+          groupReadUnreadListener(walletAddress);
+          messageListener();
+        }
 
         if (!chatStorePopulated) {
           await recieveGroups(0, walletAddress);

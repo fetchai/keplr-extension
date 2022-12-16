@@ -19,6 +19,8 @@ import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 import amplitude from "amplitude-js";
+import { userDetails } from "../../chatStore/user-slice";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 
 const User: React.FC<{
   chainId: string;
@@ -63,25 +65,24 @@ const User: React.FC<{
       style={{ position: "relative" }}
       onClick={handleClick}
     >
-      {(!sender?.lastSeenTimestamp ||
-        (Number(reciever?.lastSeenTimestamp) <
-          Number(sender?.lastSeenTimestamp) &&
-          group.lastMessageSender === contactAddress &&
-          Number(group.lastMessageTimestamp) >
-            Number(reciever?.lastSeenTimestamp))) && (
-        <span
-          style={{
-            height: "12px",
-            width: "12px",
-            backgroundColor: "#d027e5",
-            borderRadius: "20px",
-            bottom: "20px",
-            left: "6px",
-            position: "absolute",
-            zIndex: 1,
-          }}
-        />
-      )}
+      {Number(reciever?.lastSeenTimestamp) <
+        Number(sender?.lastSeenTimestamp) &&
+        group.lastMessageSender === contactAddress &&
+        Number(group.lastMessageTimestamp) >
+          Number(reciever?.lastSeenTimestamp) && (
+          <span
+            style={{
+              height: "12px",
+              width: "12px",
+              backgroundColor: "#d027e5",
+              borderRadius: "20px",
+              bottom: "20px",
+              left: "6px",
+              position: "absolute",
+              zIndex: 1,
+            }}
+          />
+        )}
       <div className={style.initials}>
         {ReactHtmlParser(
           jazzicon(24, parseInt(fromBech32(contactAddress).data.toString(), 16))
@@ -109,6 +110,8 @@ export const ChatsGroupSection: React.FC<{
   addresses: NameAddress;
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
+  const history = useHistory();
+  const userState = useSelector(userDetails);
   const groups: Groups = useSelector(userChatGroups);
   const groupsPagination: Pagination = useSelector(userChatGroupPagination);
   const [loadingGroups, setLoadingGroups] = useState(false);
@@ -141,16 +144,31 @@ export const ChatsGroupSection: React.FC<{
 
   const filterGroups = (contact: string) => {
     const contactAddressBookName = addresses[contact];
-    if (searchString.length > 0) {
-      if (
-        !contactAddressBookName
-          ?.toLowerCase()
-          .includes(searchString.trim().toLowerCase()) &&
-        !contact.toLowerCase().includes(searchString.trim().toLowerCase())
-      )
-        return false;
+
+    if (userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts) {
+      if (searchString.length > 0) {
+        if (
+          !contactAddressBookName
+            ?.toLowerCase()
+            .includes(searchString.trim().toLowerCase())
+        )
+          return false;
+      }
+
+      return !!contactAddressBookName;
+    } else {
+      /// PrivacySetting.Everybody
+      if (searchString.length > 0) {
+        if (
+          !contactAddressBookName
+            ?.toLowerCase()
+            .includes(searchString.trim().toLowerCase()) &&
+          !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+        )
+          return false;
+      }
+      return true;
     }
-    return true;
   };
 
   if (!Object.keys(groups).length)
@@ -159,6 +177,35 @@ export const ChatsGroupSection: React.FC<{
         <div className={style.resultText}>
           No results. Don&apos;t worry you can create a new chat by clicking on
           the icon beside the search box.
+        </div>
+      </div>
+    );
+
+  if (
+    !Object.keys(groups).filter((contact) => filterGroups(contact)).length &&
+    userState.messagingPubKey.privacySetting &&
+    userState.messagingPubKey.privacySetting === PrivacySetting.Contacts
+  )
+    return (
+      <div className={style.groupsArea}>
+        <div className={style.resultText}>
+          If you are searching for an address not in your address book, you
+          can&apos;t see them due to your selected privacy settings being
+          &quot;contact only&quot;. Please add the address to your address book
+          to be able to chat with them or change your privacy settings.
+          <br />
+          <a
+            href="#"
+            style={{
+              textDecoration: "underline",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              history.push("/setting/chat/privacy");
+            }}
+          >
+            Go to chat privacy settings
+          </a>
         </div>
       </div>
     );
@@ -184,9 +231,8 @@ export const ChatsGroupSection: React.FC<{
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
           return (
-            <>
+            <div key={groups[contact].id}>
               <User
-                key={index}
                 group={groups[contact]}
                 contactName={
                   contactAddressBookName
@@ -199,7 +245,7 @@ export const ChatsGroupSection: React.FC<{
               {index === Object.keys(groups).length - 10 && (
                 <div ref={messagesEncRef} />
               )}
-            </>
+            </div>
           );
         })}
       {groupsPagination?.lastPage > groupsPagination?.page && (
