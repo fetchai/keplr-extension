@@ -224,7 +224,8 @@ export const ChatsGroupSection: React.FC<{
       {Object.keys(groups)
         .sort(
           (a, b) =>
-            parseFloat(groups[b].createdAt) - parseFloat(groups[a].createdAt)
+            parseFloat(groups[b].lastMessageTimestamp) -
+            parseFloat(groups[a].lastMessageTimestamp)
         )
         .filter((contact) => filterGroups(contact))
         .map((contact, index) => {

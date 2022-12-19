@@ -288,8 +288,11 @@ export const ChatsViewSection = ({
             }
             value={newMessage}
             onChange={(event) => {
-              if (event.target.value.length < 500)
-                setNewMessage(event.target.value);
+              if (event.target.value.length < 500) {
+                setNewMessage(event.target.value.trim());
+              } else {
+                setNewMessage(event.target.value.substring(0, 499).trim());
+              }
             }}
             onKeyDown={handleKeydown}
             disabled={isBlocked}
