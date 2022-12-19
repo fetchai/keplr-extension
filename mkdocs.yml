@@ -1,8 +1,8 @@
 site_name: Fetch Wallet
-site_url: https://docs.fetch.ai/wallet
+site_url: https://docs.fetch.ai/fetch-wallet
 site_description: Everything you need to know about the Fetch Wallet.
-repo_url: https://github.com/fetchai/wallet
-edit_uri: ""
+repo_url: https://github.com/fetchai/fetch-wallet
+edit_uri: "tree/master/docs/"
 site_author: developer@fetch.ai
 
 strict: true
