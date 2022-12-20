@@ -106,21 +106,6 @@ export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $ad
   }
 }`;
 
-export interface Message {
-  id: string;
-  sender: string;
-  target: string;
-  contents: string;
-  groupId: string;
-  expiryTimestamp: string;
-  commitTimestamp: string;
-}
-
-export interface NewMessageUpdate {
-  type: string;
-  message: Message;
-}
-
 export const listenMessages = `subscription NewMessageUpdate {
     newMessageUpdate {
       type

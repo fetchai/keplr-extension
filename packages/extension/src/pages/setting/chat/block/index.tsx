@@ -6,10 +6,10 @@ import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { userBlockedAddresses } from "../../../../chatStore/messages-slice";
+import { NameAddress } from "../../../../interfaces/chat";
 import { HeaderLayout } from "../../../../layouts";
 import { useStore } from "../../../../stores";
 import { formatAddress } from "../../../../utils/format";
-import { NameAddress } from "../../../chat/users";
 import style from "./style.module.scss";
 import { UnblockUserPopup } from "./unblock-user-popup";
 

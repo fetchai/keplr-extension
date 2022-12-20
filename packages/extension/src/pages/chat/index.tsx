@@ -20,6 +20,8 @@ import {
   setMessagingPubKey,
   userDetails,
 } from "../../chatStore/user-slice";
+import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { ChatLoader } from "../../components/chat-loader";
 import { ChatInitPopup } from "../../components/chat/chat-init-popup";
 import { ChatSearchInput } from "../../components/chat/chat-search-input";
 import { DeactivatedChat } from "../../components/chat/deactivated-chat";
@@ -32,15 +34,14 @@ import {
   messageListener,
 } from "../../graphQL/messages-api";
 import { recieveGroups } from "../../graphQL/recieve-messages";
+import { NameAddress } from "../../interfaces/chat";
 import { HeaderLayout } from "../../layouts";
 import { useStore } from "../../stores";
 import { getJWT } from "../../utils/auth";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { ChatsGroupSection, NameAddress } from "./users";
-import { ChatLoader } from "../../components/chat-loader";
-import { ChatErrorPopup } from "../../components/chat-error-popup";
+import { ChatsGroupSection } from "./users";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);

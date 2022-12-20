@@ -66,6 +66,10 @@ import { ChatSettings } from "./pages/setting/chat";
 import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
 import { ReadRecipt } from "./pages/setting/chat/readRecipt";
+import { CreateGroupChat } from "./pages/groupChat/create-group-chat";
+import { AddMember } from "./pages/groupChat/add-member";
+import { ReviewGroupChat } from "./pages/groupChat/review-details";
+import { GroupChatSection } from "./pages/groupChat/chat-section";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -156,6 +160,26 @@ const Application: FunctionComponent = () => {
                       <Route exact path="/activity" component={ActivityPage} />
                       <Route exact path="/chat" component={ChatPage} />
                       <Route exact path="/chat/:name" component={ChatSection} />
+                      <Route
+                        exact
+                        path="/group-chat/create"
+                        component={CreateGroupChat}
+                      />
+                      <Route
+                        exact
+                        path="/group-chat/add-member"
+                        component={AddMember}
+                      />
+                      <Route
+                        exact
+                        path="/group-chat/review-details"
+                        component={ReviewGroupChat}
+                      />
+                      <Route
+                        exact
+                        path="/group-chat/chat-section/:name"
+                        component={GroupChatSection}
+                      />
                       <Route exact path="/more" component={MorePage} />
                       <Route
                         exact

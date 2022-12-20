@@ -14,6 +14,7 @@ import {
 } from "../../chatStore/messages-slice";
 import { recieveGroups } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
+import { NameAddress } from "../../interfaces/chat";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { useStore } from "../../stores";
 import { decryptGroupTimestamp } from "../../utils/decrypt-group";
@@ -174,10 +175,6 @@ const User: React.FC<{
     </div>
   );
 };
-
-export interface NameAddress {
-  [key: string]: string;
-}
 
 export const ChatsGroupSection: React.FC<{
   chainId: string;
