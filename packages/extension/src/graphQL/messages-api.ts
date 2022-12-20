@@ -15,11 +15,11 @@ import {
 } from "../chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "../utils/encrypt-message";
+import { encryptGroupTimestamp } from "../utils/encrypt-group";
 import { client, createWSLink, httpLink } from "./client";
 import {
   block,
   blockedList,
-  GroupDetails,
   groups,
   groupsWithAddresses,
   groupReadUnread,
@@ -29,7 +29,7 @@ import {
   NewMessageUpdate,
   sendMessages,
   unblock,
-  updateGroup,
+  updateGroupLastSeen,
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
 let querySubscription: ObservableSubscription;
@@ -359,11 +359,35 @@ export const messageAndGroupListenerUnsubscribe = () => {
     queryGroupReadUnreadSubscription.unsubscribe();
 };
 
-export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
+export const updateGroupTimestamp = async (
+  groupId: string,
+  accessToken: string,
+  chainId: string,
+  senderAddress: string,
+  targetAddress: string,
+  lastSeenTimestamp: Date,
+  groupLastSeenTimestamp: Date
+) => {
   const state = store.getState();
   try {
-    await client.mutate({
-      mutation: gql(updateGroup),
+    /// Encrypting last seen timestamp
+    const encryptedLastSeenTimestamp = await encryptGroupTimestamp(
+      accessToken,
+      chainId,
+      lastSeenTimestamp,
+      senderAddress,
+      targetAddress
+    );
+    /// Encrypting group last seen timestamp
+    const encryptedGroupLastSeenTimestamp = await encryptGroupTimestamp(
+      accessToken,
+      chainId,
+      groupLastSeenTimestamp,
+      senderAddress,
+      targetAddress
+    );
+    const { data } = await client.mutate({
+      mutation: gql(updateGroupLastSeen),
       fetchPolicy: "no-cache",
       context: {
         headers: {
@@ -371,10 +395,16 @@ export const updateGroupTimestamp = async (groupDetails: GroupDetails) => {
         },
       },
       variables: {
-        groupId: groupDetails.groupId,
-        lastSeenTimestamp: groupDetails.lastSeenTimestamp,
+        groupId,
+        lastSeenTimestamp: encryptedLastSeenTimestamp,
+        groupLastSeenTimestamp: encryptedGroupLastSeenTimestamp,
       },
     });
+
+    /// Updating the last seen status
+    const group = data.updateGroupLastSeen;
+    group.userAddress = targetAddress;
+    store.dispatch(updateGroupsData(group));
   } catch (err) {
     console.error("err", err);
   }

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
   Group,
+  GroupAddress,
   Groups,
   Pagination,
   userChatGroupPagination,
@@ -15,6 +16,7 @@ import { recieveGroups } from "../../graphQL/recieve-messages";
 import { useOnScreen } from "../../hooks/use-on-screen";
 import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
 import { useStore } from "../../stores";
+import { decryptGroupTimestamp } from "../../utils/decrypt-group";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
@@ -26,38 +28,111 @@ const User: React.FC<{
   chainId: string;
   group: Group;
   contactName: string;
-  contactAddress: string;
-}> = ({ chainId, group, contactName, contactAddress }) => {
+  targetAddress: string;
+}> = ({ chainId, group, contactName, targetAddress }) => {
   const [message, setMessage] = useState("");
+  const [groupData, setGroupData] = useState(group);
+
   const history = useHistory();
 
   const handleClick = () => {
     amplitude.getInstance().logEvent("Open DM click", {
       from: "Chat history",
     });
-    history.push(`/chat/${contactAddress}`);
+    history.push(`/chat/${targetAddress}`);
   };
-  const sender = group.addresses.find((val) => val.address === contactAddress);
-  const reciever = group.addresses.find(
-    (val) => val.address !== contactAddress
+
+  /// Current wallet user
+  const sender = groupData?.addresses.find(
+    (val) => val?.address !== targetAddress
   );
+  /// Target user
+  const receiver = groupData?.addresses.find(
+    (val) => val?.address === targetAddress
+  );
+
+  const decryptGrpAddresses = async (
+    groupAddress: GroupAddress,
+    isSender: boolean
+  ) => {
+    if (groupAddress && groupAddress.groupLastSeenTimestamp) {
+      const data = await decryptGroupTimestamp(
+        chainId,
+        groupAddress.groupLastSeenTimestamp,
+        isSender
+      );
+
+      Object.assign(groupAddress, {
+        groupLastSeenTimestamp: new Date(data).getTime(),
+      });
+    }
+    if (groupAddress && groupAddress.lastSeenTimestamp) {
+      const data = await decryptGroupTimestamp(
+        chainId,
+        groupAddress.lastSeenTimestamp,
+        isSender
+      );
+      Object.assign(groupAddress, {
+        lastSeenTimestamp: new Date(data).getTime(),
+      });
+    }
+
+    return groupAddress;
+  };
+
+  const decryptGrp = async (group: Group) => {
+    const tempGroup = { ...group };
+    let tempSenderAddress: GroupAddress | undefined;
+    let tempReceiverAddress: GroupAddress | undefined;
+
+    /// Shallow copy
+    /// Decrypting sender data
+    const senderAddress = {
+      ...group.addresses.find((val) => val.address !== targetAddress),
+    };
+    if (senderAddress)
+      tempSenderAddress = await decryptGrpAddresses(
+        senderAddress as GroupAddress,
+        group.lastMessageSender === targetAddress
+      );
+
+    /// Decrypting receiver data
+    const receiverAddress = {
+      ...group.addresses.find((val) => val.address === targetAddress),
+    };
+    if (receiverAddress)
+      tempReceiverAddress = await decryptGrpAddresses(
+        receiverAddress as GroupAddress,
+        group.lastMessageSender !== targetAddress
+      );
+
+    /// Storing decryptin address into the group object and updating the UI
+    if (tempSenderAddress && tempReceiverAddress) {
+      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
+      tempGroup.addresses = tempGroupAddress;
+      setGroupData(tempGroup);
+    }
+  };
+
   const decryptMsg = async (
     chainId: string,
     contents: string,
     isSender: boolean
   ) => {
     const message = await decryptMessage(chainId, contents, isSender);
-    setMessage(message);
+    setMessage(message.content.text);
   };
 
   useEffect(() => {
-    if (group)
+    if (group) {
       decryptMsg(
         chainId,
         group.lastMessageContents,
-        group.lastMessageSender !== contactAddress
+        group.lastMessageSender !== targetAddress
       );
-  }, [chainId, contactAddress, group]);
+      decryptGrp(group);
+    }
+  }, [chainId, targetAddress, group]);
 
   return (
     <div
@@ -65,11 +140,11 @@ const User: React.FC<{
       style={{ position: "relative" }}
       onClick={handleClick}
     >
-      {Number(reciever?.lastSeenTimestamp) <
-        Number(sender?.lastSeenTimestamp) &&
-        group.lastMessageSender === contactAddress &&
+      {Number(sender?.lastSeenTimestamp) <
+        Number(receiver?.lastSeenTimestamp) &&
+        group.lastMessageSender === targetAddress &&
         Number(group.lastMessageTimestamp) >
-          Number(reciever?.lastSeenTimestamp) && (
+          Number(sender?.lastSeenTimestamp) && (
           <span
             style={{
               height: "12px",
@@ -85,7 +160,7 @@ const User: React.FC<{
         )}
       <div className={style.initials}>
         {ReactHtmlParser(
-          jazzicon(24, parseInt(fromBech32(contactAddress).data.toString(), 16))
+          jazzicon(24, parseInt(fromBech32(targetAddress).data.toString(), 16))
             .outerHTML
         )}
       </div>
@@ -240,7 +315,7 @@ export const ChatsGroupSection: React.FC<{
                     ? formatAddress(contactAddressBookName)
                     : formatAddress(contact)
                 }
-                contactAddress={contact}
+                targetAddress={contact}
                 chainId={chainId}
               />
               {index === Object.keys(groups).length - 10 && (

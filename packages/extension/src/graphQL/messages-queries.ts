@@ -51,13 +51,19 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
     groups {
       id
       name
+      isDm
       description
       lastMessageContents
       lastMessageSender
       lastMessageTimestamp
+      lastSeenTimestamp
       addresses {
         address
+        pubKey
         lastSeenTimestamp
+        groupLastSeenTimestamp
+        encryptedSymmetricKey
+        isAdmin
       }
       createdAt
     }
@@ -75,13 +81,19 @@ export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $ad
     groups {
       id
       name
+      isDm
       description
       lastMessageContents
       lastMessageSender
       lastMessageTimestamp
+      lastSeenTimestamp
       addresses {
         address
+        pubKey
         lastSeenTimestamp
+        groupLastSeenTimestamp
+        encryptedSymmetricKey
+        isAdmin
       }
       createdAt
     }
@@ -131,17 +143,22 @@ export interface Addresses {
 export const groupReadUnread = `subscription GroupUpdate {
   groupUpdate {
     group {
-      addresses {
-        address
-        lastSeenTimestamp
-      }
       id
       name
+      isDm
       lastMessageContents
       lastMessageSender
       lastMessageTimestamp
+      lastSeenTimestamp
+      addresses {
+        address
+        pubKey
+        lastSeenTimestamp
+        groupLastSeenTimestamp
+        encryptedSymmetricKey
+        isAdmin
+      }
       createdAt
-      description
     }
   }
 }`;
@@ -176,15 +193,24 @@ export const unblock = `mutation Mutation($blockedAddress: String!, $channelId: 
   }
 }`;
 
-export interface GroupDetails {
-  groupId: string;
-  lastSeenTimestamp: Date;
-}
-
-export const updateGroup = `mutation Mutation($groupId: String!, $lastSeenTimestamp: Date!) {
-  updateGroupLastSeen(groupId: $groupId, lastSeenTimestamp: $lastSeenTimestamp) {
-    lastSeenTimestamp
-    name
+export const updateGroupLastSeen = `mutation Mutation($groupId: String!, $lastSeenTimestamp: String!, $groupLastSeenTimestamp: String!) {
+  updateGroupLastSeen(groupId: $groupId, lastSeenTimestamp: $lastSeenTimestamp, groupLastSeenTimestamp: $groupLastSeenTimestamp) {
     id
+    name
+    isDm
+    description
+    lastMessageContents
+    lastMessageSender
+    lastMessageTimestamp
+    lastSeenTimestamp
+    addresses {
+      address
+      pubKey
+      lastSeenTimestamp
+      groupLastSeenTimestamp
+      encryptedSymmetricKey
+      isAdmin
+    }
+    createdAt
   }
 }`;

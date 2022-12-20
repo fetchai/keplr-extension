@@ -189,6 +189,7 @@ const ChatView = () => {
     userState.accessToken.length,
     userState.messagingPubKey.publicKey,
     userState.messagingPubKey.privacySetting,
+    userState.messagingPubKey.chatReadReceiptSetting,
   ]);
 
   const [addresses, setAddresses] = useState<NameAddress>({});

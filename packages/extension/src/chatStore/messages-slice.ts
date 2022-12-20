@@ -29,19 +29,25 @@ interface BlockedAddressState {
   [key: string]: boolean;
 }
 
-interface GroupAddress {
+export interface GroupAddress {
   address: string;
+  pubKey: string;
   lastSeenTimestamp: string;
+  groupLastSeenTimestamp: string;
+  encryptedSymmetricKey: string;
+  isAdmin: boolean;
 }
 
 export interface Group {
   id: string; // groupID
   name: string; // contactAddress
-  addresses: [GroupAddress];
+  isDm: boolean;
+  addresses: GroupAddress[];
   lastMessageContents: string;
-  createdAt: string;
-  lastMessageTimestamp: string;
   lastMessageSender: string;
+  lastMessageTimestamp: string;
+  lastSeenTimestamp: string;
+  createdAt: string;
 }
 
 export interface Groups {
