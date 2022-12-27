@@ -41,7 +41,7 @@ export class MessagingService {
       return {
         publicKey: toHex(privateKey.publicKey.compressed),
         privacySetting: undefined,
-        chatReadReceiptSetting: false,
+        chatReadReceiptSetting: true,
       };
     } else {
       return await this.lookupPublicKey(accessToken, targetAddress);
@@ -205,7 +205,7 @@ export class MessagingService {
       return {
         publicKey: undefined,
         privacySetting: undefined,
-        chatReadReceiptSetting: false,
+        chatReadReceiptSetting: true,
       };
     }
 

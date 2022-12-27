@@ -37,7 +37,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
     "setting.privacy.paragraph.everybody"
   );
   const [chatReadReceiptParagraph, setchatReadReceiptParagraph] = useState(
-    "setting.receipts.paragraph"
+    "setting.receipts.paragraph.on"
   );
   const [privacySetting, setPrivacySetting] = useState(
     PrivacySetting.Everybody
@@ -62,7 +62,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             : "setting.privacy.paragraph.everybody"
         );
 
-      if (pubKey?.chatReadReceiptSetting)
+      if (pubKey?.chatReadReceiptSetting != null)
         setchatReadReceiptParagraph(
           pubKey.chatReadReceiptSetting
             ? "setting.receipts.paragraph.on"

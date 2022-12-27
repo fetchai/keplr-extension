@@ -98,7 +98,7 @@ export const getPubKey = async (
     return {
       publicKey: undefined,
       privacySetting: undefined,
-      chatReadReceiptSetting: false,
+      chatReadReceiptSetting: true,
     };
   }
 };

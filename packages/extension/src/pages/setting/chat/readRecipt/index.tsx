@@ -37,7 +37,9 @@ export const ReadRecipt: FunctionComponent = observer(() => {
       : PrivacySetting.Everybody
   );
   const [chatReceiptSetting, setChatReceiptSetting] = useState(
-    userState.messagingPubKey.chatReadReceiptSetting
+    userState?.messagingPubKey.chatReadReceiptSetting == null
+      ? true
+      : userState?.messagingPubKey.chatReadReceiptSetting
   );
 
   const updatePrivacy = async (setting: boolean) => {

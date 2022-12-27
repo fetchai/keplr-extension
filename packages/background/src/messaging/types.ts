@@ -7,5 +7,5 @@ export enum PrivacySetting {
 export interface PubKey {
   publicKey: string | undefined;
   privacySetting: PrivacySetting | undefined;
-  chatReadReceiptSetting?: boolean | false;
+  chatReadReceiptSetting?: boolean | true;
 }
