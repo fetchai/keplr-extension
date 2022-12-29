@@ -16,14 +16,14 @@ import { RegisterPage } from "./pages/register";
 import { SendPage } from "./pages/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
-import { Banner } from "./components/banner";
+import { Banner } from "@components/banner";
 
-import { ConfirmProvider } from "./components/confirm";
-import { LoadingIndicatorProvider } from "./components/loading-indicator";
+import { ConfirmProvider } from "@components/confirm";
+import { LoadingIndicatorProvider } from "@components/loading-indicator";
 import {
   NotificationProvider,
   NotificationStoreProvider,
-} from "./components/notification";
+} from "@components/notification";
 
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -55,21 +55,21 @@ import { AdditonalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
 
 import { Keplr } from "@keplr-wallet/provider";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { LogPageViewWrapper } from "./components/analytics";
+import { LogPageViewWrapper } from "@components/analytics";
 import manifest from "./manifest.json";
 import { ChatPage } from "./pages/chat";
-import { ChatSection } from "./pages/chatSection";
+import { ChatSection } from "./pages/chat-section";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
-import { ChatStoreProvider } from "./components/chat/store";
+import { ChatStoreProvider } from "@components/chat/store";
 import { NewChat } from "./pages/newchat/new-chat";
 import { ChatSettings } from "./pages/setting/chat";
 import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
 import { ReadRecipt } from "./pages/setting/chat/readRecipt";
-import { CreateGroupChat } from "./pages/groupChat/create-group-chat";
-import { AddMember } from "./pages/groupChat/add-member";
-import { ReviewGroupChat } from "./pages/groupChat/review-details";
-import { GroupChatSection } from "./pages/groupChat/chat-section";
+import { CreateGroupChat } from "./pages/group-chat/create-group-chat";
+import { AddMember } from "./pages/group-chat/add-member";
+import { ReviewGroupChat } from "./pages/group-chat/review-details";
+import { GroupChatSection } from "./pages/group-chat/chat-section";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -78,10 +78,10 @@ window.keplr = new Keplr(
 );
 
 // Make sure that icon file will be included in bundle
-require("./public/assets/temp-icon.svg");
-require("./public/assets/icon/icon-16.png");
-require("./public/assets/icon/icon-48.png");
-require("./public/assets/icon/icon-128.png");
+require("@assets/temp-icon.svg");
+require("@assets/icon/icon-16.png");
+require("@assets/icon/icon-48.png");
+require("@assets/icon/icon-128.png");
 
 configure({
   enforceActions: "always", // Make mobx to strict mode.
@@ -121,8 +121,8 @@ const StateRenderer: FunctionComponent = observer(() => {
     return (
       <div style={{ height: "100%" }}>
         <Banner
-          icon={require("./public/assets/temp-icon.svg")}
-          logo={require("./public/assets/logo-temp.png")}
+          icon={require("@assets/temp-icon.svg")}
+          logo={require("@assets/logo-temp.png")}
         />
       </div>
     );
@@ -130,8 +130,8 @@ const StateRenderer: FunctionComponent = observer(() => {
     return (
       <div style={{ height: "100%" }}>
         <Banner
-          icon={require("./public/assets/temp-icon.svg")}
-          logo={require("./public/assets/logo-temp.png")}
+          icon={require("@assets/temp-icon.svg")}
+          logo={require("@assets/logo-temp.png")}
         />
       </div>
     );

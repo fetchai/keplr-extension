@@ -1,9 +1,9 @@
-import { store } from "../chatStore";
+import { store } from "@chatStore/index";
 import {
   setGroups,
   updateChatList,
   setIsChatGroupPopulated,
-} from "../chatStore/messages-slice";
+} from "@chatStore/messages-slice";
 import { CHAT_PAGE_COUNT } from "../config.ui.var";
 import { fetchGroups, fetchMessages } from "./messages-api";
 

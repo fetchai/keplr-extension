@@ -3,7 +3,7 @@ import {
   getMainDefinition,
   ObservableSubscription,
 } from "@apollo/client/utilities";
-import { store } from "../chatStore";
+import { store } from "@chatStore/index";
 import {
   setBlockedList,
   setBlockedUser,
@@ -12,7 +12,7 @@ import {
   updateMessages,
   updateLatestSentMessage,
   updateGroupsData,
-} from "../chatStore/messages-slice";
+} from "@chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "../utils/encrypt-message";
 import { encryptGroupTimestamp } from "../utils/encrypt-group";
@@ -26,12 +26,12 @@ import {
   listenMessages,
   mailbox,
   mailboxWithTimestamp,
-  NewMessageUpdate,
   sendMessages,
   unblock,
   updateGroupLastSeen,
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
+import { NewMessageUpdate } from "@chatTypes";
 let querySubscription: ObservableSubscription;
 let queryGroupReadUnreadSubscription: ObservableSubscription;
 

@@ -2,7 +2,7 @@ import amplitude from "amplitude-js";
 import React from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { UncontrolledTooltip } from "reactstrap";
-// import { ToolTip } from "../../components/tooltip";
+// import { ToolTip } from "@components/tooltip";
 
 import style from "./style.module.scss";
 

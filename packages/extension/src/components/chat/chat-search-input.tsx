@@ -1,8 +1,8 @@
 import amplitude from "amplitude-js";
 import React from "react";
 import { useHistory } from "react-router";
-import newChatIcon from "../../public/assets/icon/new-chat.png";
-import searchIcon from "../../public/assets/icon/search.png";
+import newChatIcon from "@assets/icon/new-chat.png";
+import searchIcon from "@assets/icon/search.png";
 import style from "./style.module.scss";
 
 export const ChatSearchInput = ({

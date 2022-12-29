@@ -3,9 +3,9 @@ import {
   getMainDefinition,
   ObservableSubscription,
 } from "@apollo/client/utilities";
-import { groupDetails, PublicKeyDetails } from "../@types/chat";
-import { store } from "../chatStore";
-import { setMessageError } from "../chatStore/messages-slice";
+import { groupDetailsParam, PublicKeyDetails } from "@chatTypes";
+import { store } from "@chatStore/index";
+import { setMessageError } from "@chatStore/messages-slice";
 import { client, createWSLink, httpLink } from "./client";
 import {
   Group,
@@ -34,7 +34,7 @@ export const updatePublicKey = async (publicKeyDetails: PublicKeyDetails) => {
   return data.updatePublicKey;
 };
 
-export const createGroup = async (groupDetails: groupDetails) => {
+export const createGroup = async (groupDetails: groupDetailsParam) => {
   const state = store.getState();
   const { data, errors } = await client.mutate({
     mutation: gql(Group),

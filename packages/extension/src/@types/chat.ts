@@ -1,13 +1,6 @@
-export interface addressDetails {
-  address: string;
-  encryptedSymmetricKey: string;
-  isAdmin: boolean;
-  lastSeenTimestamp: string;
-  pubKey: string;
-}
-
-export interface groupDetails {
-  addresses: addressDetails[];
+// Params Type Definitions
+export interface groupDetailsParam {
+  addresses: GroupAddress[];
   createdAt: string;
   description: string;
   id: string;
@@ -21,6 +14,12 @@ export interface PublicKeyDetails {
   publicKey: string;
 }
 
+export interface NewMessageUpdate {
+  type: string;
+  message: Message;
+}
+
+// Graphql Type Definitions
 export interface Message {
   id: string;
   sender: string;
@@ -31,7 +30,60 @@ export interface Message {
   commitTimestamp: string;
 }
 
-export interface NewMessageUpdate {
-  type: string;
-  message: Message;
+export interface GroupAddress {
+  address: string;
+  pubKey: string;
+  lastSeenTimestamp: string;
+  groupLastSeenTimestamp: string;
+  encryptedSymmetricKey: string;
+  isAdmin: boolean;
+}
+
+export interface Group {
+  id: string; // groupID
+  name: string; // contactAddress
+  isDm: boolean;
+  addresses: GroupAddress[];
+  lastMessageContents: string;
+  lastMessageSender: string;
+  lastMessageTimestamp: string;
+  lastSeenTimestamp: string;
+  description?: string;
+  createdAt: string;
+}
+
+export interface Pagination {
+  page: number;
+  pageCount: number;
+  total: number;
+  lastPage: number;
+}
+
+//Redux Selectors Type Definitions
+export interface Messages {
+  [key: string]: Message;
+}
+
+export interface Chat {
+  contactAddress: string;
+  messages: Messages;
+  pubKey?: string;
+  pagination: Pagination;
+}
+
+//key is group ID
+export interface Chats {
+  [key: string]: Chat;
+}
+
+export interface BlockedAddressState {
+  [key: string]: boolean;
+}
+
+export interface Groups {
+  [contactAddress: string]: Group;
+}
+
+export interface NameAddress {
+  [key: string]: string;
 }

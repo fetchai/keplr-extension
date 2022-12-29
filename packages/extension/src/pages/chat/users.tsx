@@ -5,25 +5,27 @@ import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
-  Group,
-  GroupAddress,
-  Groups,
-  Pagination,
   userChatGroupPagination,
   userChatGroups,
-} from "../../chatStore/messages-slice";
-import { recieveGroups } from "../../graphQL/recieve-messages";
-import { useOnScreen } from "../../hooks/use-on-screen";
-import { NameAddress } from "../../interfaces/chat";
-import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
+} from "@chatStore/messages-slice";
+import { recieveGroups } from "@graphQL/recieve-messages";
+import { useOnScreen } from "@hooks/use-on-screen";
+import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { useStore } from "../../stores";
 import { decryptGroupTimestamp } from "../../utils/decrypt-group";
 import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 import amplitude from "amplitude-js";
-import { userDetails } from "../../chatStore/user-slice";
+import { userDetails } from "@chatStore/user-slice";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import {
+  Group,
+  GroupAddress,
+  Groups,
+  NameAddress,
+  Pagination,
+} from "@chatTypes";
 
 const User: React.FC<{
   chainId: string;

@@ -4,7 +4,7 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import {
   useAddressBookConfig,
-  useIBCTransferConfig
+  useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import jazzicon from "@metamask/jazzicon";
 import amplitude from "amplitude-js";
@@ -13,15 +13,15 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { userDetails } from "../../chatStore/user-slice";
-import { ChatLoader } from "../../components/chat-loader";
-import { SwitchUser } from "../../components/switch-user";
+import { NameAddress } from "@chatTypes";
+import { userDetails } from "@chatStore/user-slice";
+import { ChatLoader } from "@components/chat-loader";
+import { SwitchUser } from "@components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
-import { NameAddress } from "../../interfaces/chat";
-import { HeaderLayout } from "../../layouts";
-import chevronLeft from "../../public/assets/icon/chevron-left.png";
-import rightArrowIcon from "../../public/assets/icon/right-arrow.png";
-import searchIcon from "../../public/assets/icon/search.png";
+import { HeaderLayout } from "@layouts/index";
+import chevronLeft from "@assets/icon/chevron-left.png";
+import rightArrowIcon from "@assets/icon/right-arrow.png";
+import searchIcon from "@assets/icon/search.png";
 import { useStore } from "../../stores";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
