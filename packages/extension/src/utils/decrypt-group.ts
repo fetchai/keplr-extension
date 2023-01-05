@@ -53,7 +53,7 @@ export const decryptGroupMessage = async (
       encryptedSymmetricKey
     );
     const decryptedContent = decryptGroupData(
-      symmetricKey.slice(1, symmetricKey.length - 2),
+      symmetricKey.substring(1, symmetricKey.length - 2),
       decodedData
     );
     const parsedData = JSON.parse(

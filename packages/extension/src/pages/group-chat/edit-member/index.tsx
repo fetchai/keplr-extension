@@ -169,7 +169,7 @@ export const EditMember: FunctionComponent = observer(() => {
         const encryptedSymmetricKey = await generateEncryptedSymmetricKeyForAddress(
           current.chainId,
           user.accessToken,
-          symmetricKey,
+          symmetricKey.substring(1, symmetricKey.length - 2),
           contactAddress
         );
         const tempMember: GroupMembers = {
