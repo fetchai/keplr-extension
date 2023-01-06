@@ -1,7 +1,31 @@
+import { toBase64, toUtf8 } from "@cosmjs/encoding";
+import { EncryptMessagingMessage } from "@keplr-wallet/background/build/messaging";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import crypto from "crypto";
 
 export function generateSymmetricKey() {
   return crypto.randomBytes(32).toString("hex");
+}
+
+export async function generateEncryptSymmetricKey(
+  chainId,
+  accessToken,
+  symmetricKey,
+  address
+) {
+  const requester = new InExtensionMessageRequester();
+  const encryptMsg = new EncryptMessagingMessage(
+    chainId,
+    address,
+    toBase64(toUtf8(JSON.stringify(symmetricKey))),
+    accessToken
+  );
+  const encryptSymmetricKey = await requester.sendMessage(
+    BACKGROUND_PORT,
+    encryptMsg
+  );
+  return encryptSymmetricKey;
 }
 
 export function encryptGroupData(key: string, data: string) {
