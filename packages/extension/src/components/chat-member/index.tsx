@@ -6,10 +6,16 @@ import { NameAddress } from "@chatTypes";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
 
-export const ChatMember = (props: { address: NameAddress }) => {
+export const ChatMember = (props: {
+  address: NameAddress;
+  isSelected?: boolean;
+  isShowAdmin?: boolean;
+  onClick: VoidCallback;
+}) => {
   const { name, address } = props.address;
-
-  const handleClick = () => {};
+  const isSelected = props.isSelected;
+  const isShowAdmin = props.isShowAdmin;
+  const onClick = props.onClick;
 
   return (
     <div className={style.memberContainer}>
@@ -22,14 +28,25 @@ export const ChatMember = (props: { address: NameAddress }) => {
       <div className={style.memberInner}>
         <div className={style.name}>{formatAddress(name)}</div>
       </div>
-      <div>
-        <i
-          className="fa fa-user-plus"
-          style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
-          aria-hidden="true"
-          onClick={handleClick}
-        />
-      </div>
+      {isShowAdmin ? (
+        <div className={style.name}>Admin</div>
+      ) : (
+        <div>
+          <i
+            className={!isSelected ? "fa fa-user-plus" : "fa fa-times"}
+            style={{
+              width: "24px",
+              height: "24px",
+              padding: "2px 0 0 12px",
+              cursor: "pointer",
+              alignItems: "end",
+              alignSelf: "end",
+            }}
+            aria-hidden="true"
+            onClick={onClick}
+          />
+        </div>
+      )}
     </div>
   );
 };

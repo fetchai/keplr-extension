@@ -41,7 +41,7 @@ import { getJWT } from "../../utils/auth";
 import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { ChatsGroupSection } from "./users";
+import { ChatsGroupHistory } from "./chat-group-history";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -249,7 +249,7 @@ const ChatView = () => {
         {loadingChats ? (
           <ChatLoader message="Loading chats, please wait..." />
         ) : (
-          <ChatsGroupSection
+          <ChatsGroupHistory
             searchString={inputVal}
             setLoadingChats={setLoadingChats}
             chainId={current.chainId}

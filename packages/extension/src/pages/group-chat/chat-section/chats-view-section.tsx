@@ -11,33 +11,25 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
-import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
+import { Chats, Group, Groups } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatMessage } from "@components/chat-message";
-import { ToolTip } from "@components/tooltip";
 import { CHAT_PAGE_COUNT } from "../../../config.ui.var";
-import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
+import { deliverGroupMessages } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import { useStore } from "../../../stores";
-import { decryptGroupTimestamp } from "../../../utils/decrypt-group";
 import style from "./style.module.scss";
+import { GroupMessageType } from "../../../utils/encrypt-group";
 
-export const ChatsViewSection = ({
-  isNewUser,
-  isBlocked,
-  targetPubKey,
-}: {
-  isNewUser: boolean;
-  isBlocked: boolean;
-  targetPubKey: string;
+export const GroupChatsViewSection = ({}: {
   setLoadingChats: any;
   handleClick: any;
 }) => {
   const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[2];
+  const groupId = history.location.pathname.split("/")[3];
 
   let enterKeyCount = 0;
   const user = useSelector(userDetails);
@@ -49,19 +41,19 @@ export const ChatsViewSection = ({
   const accountInfo = accountStore.getAccount(current.chainId);
   const preLoadedChats = useMemo(() => {
     return (
-      userChats[targetAddress] || {
+      userChats[groupId] || {
         messages: {},
         pagination: { lastPage: 0, page: -1, pageCount: CHAT_PAGE_COUNT },
       }
     );
-  }, [Object.values(userChats[targetAddress]?.messages || []).length]);
+  }, [Object.values(userChats[groupId]?.messages || []).length]);
   const [messages, setMessages] = useState<any[]>(
     Object.values(preLoadedChats?.messages) || []
   );
 
   const [pagination, setPagination] = useState(preLoadedChats?.pagination);
   const [group, setGroup] = useState<Group | undefined>(
-    Object.values(userGroups).find((group) => group.id.includes(targetAddress))
+    Object.values(userGroups).find((group) => group.id.includes(groupId))
   );
 
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -89,80 +81,34 @@ export const ChatsViewSection = ({
     if (preLoadedChats && preLoadedChats.pagination)
       setPagination(preLoadedChats.pagination);
 
-    const lastMessage =
-      updatedMessages && updatedMessages.length > 0
-        ? updatedMessages[updatedMessages.length - 1]
-        : null;
+    // const lastMessage =
+    //   updatedMessages && updatedMessages.length > 0
+    //     ? updatedMessages[updatedMessages.length - 1]
+    //     : null;
 
-    if (
-      group?.id &&
-      lastMessage &&
-      lastMessage.sender !== accountInfo.bech32Address
-    ) {
-      setTimeout(() => {
-        updateGroupTimestamp(
-          group?.id,
-          user.accessToken,
-          current.chainId,
-          accountInfo.bech32Address,
-          targetAddress,
-          new Date(lastMessage.commitTimestamp),
-          new Date(lastMessage.commitTimestamp)
-        );
-      }, 500);
-    }
+    // if (
+    //   group?.id &&
+    //   lastMessage &&
+    //   lastMessage.sender !== accountInfo.bech32Address
+    // ) {
+    //   setTimeout(() => {
+    //     updateGroupTimestamp(
+    //       group?.id,
+    //       user.accessToken,
+    //       current.chainId,
+    //       accountInfo.bech32Address,
+    //       groupId,
+    //       new Date(lastMessage.commitTimestamp),
+    //       new Date(lastMessage.commitTimestamp)
+    //     );
+    //   }, 500);
+    // }
   }, [preLoadedChats]);
 
-  const recieveData = async (tempGroup: Group | undefined) => {
-    const groupAdd = {
-      ...tempGroup?.addresses.find((val) => val?.address == targetAddress),
-    };
-
-    const groupAddress = { ...groupAdd };
-    if (groupAddress && groupAddress.groupLastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        current.chainId,
-        groupAddress.groupLastSeenTimestamp,
-        false
-      );
-      Object.assign(groupAddress, {
-        groupLastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-    if (groupAddress && groupAddress.lastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        current.chainId,
-        groupAddress.lastSeenTimestamp,
-        false
-      );
-
-      Object.assign(groupAddress, {
-        lastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-
-    return groupAddress;
-  };
-
   useEffect(() => {
-    /// Shallow copy
-    const tempGroup = {
-      ...Object.values(userGroups).find((group) =>
-        group.id.includes(targetAddress)
-      ),
-    };
-
-    recieveData(tempGroup as Group).then((groupAddress) => {
-      const sample = (tempGroup as Group)?.addresses.map((value) => {
-        if (value.address === targetAddress) {
-          return groupAddress;
-        }
-        return value;
-      });
-      if (tempGroup) tempGroup.addresses = sample as GroupAddress[];
-
-      setGroup(tempGroup as Group);
-    });
+    setGroup(
+      Object.values(userGroups).find((group) => group.id.includes(groupId))
+    );
   }, [userGroups]);
 
   const messagesEndRef: any = useCallback(
@@ -193,17 +139,7 @@ export const ChatsViewSection = ({
     if (group) {
       const page = pagination?.page + 1 || 0;
       setLoadingMessages(true);
-      await recieveMessages(
-        targetAddress,
-        receiver?.lastSeenTimestamp &&
-          Number(group.lastMessageTimestamp) >
-            Number(receiver.lastSeenTimestamp) &&
-          page == 0
-          ? receiver?.lastSeenTimestamp
-          : null,
-        page,
-        group.id
-      );
+      await recieveMessages(groupId, null, page, group.isDm, groupId);
       setLoadingMessages(false);
     } else {
       const newPagination = pagination;
@@ -228,20 +164,17 @@ export const ChatsViewSection = ({
     return false;
   };
 
-  const receiver = group?.addresses.find(
-    (val) => val.address === targetAddress
-  );
-
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     if (newMessage.trim().length)
       try {
-        const message = await deliverMessages(
+        const message = await deliverGroupMessages(
           user.accessToken,
           current.chainId,
           newMessage,
+          GroupMessageType.message,
           accountInfo.bech32Address,
-          targetAddress
+          groupId
         );
 
         if (message) {
@@ -268,11 +201,7 @@ export const ChatsViewSection = ({
   };
 
   return (
-    <div
-      className={`${style.chatArea} ${
-        isNewUser ? style.showButton : style.hideButton
-      }`}
-    >
+    <div className={style.chatArea}>
       <div className={style.messages}>
         {pagination?.lastPage > pagination?.page && (
           <div ref={messagesStartRef} className={style.loader}>
@@ -296,21 +225,18 @@ export const ChatsViewSection = ({
                   message={message?.contents}
                   isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
                   timestamp={message?.commitTimestamp || 1549312452}
-                  groupLastSeenTimestamp={
-                    receiver && receiver.groupLastSeenTimestamp
-                      ? new Date(receiver.groupLastSeenTimestamp).getTime()
-                      : 0
-                  }
+                  groupLastSeenTimestamp={0}
+                  isDm={group.isDm}
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
-              {message?.commitTimestamp &&
+              {/* {message?.commitTimestamp &&
                 receiver?.lastSeenTimestamp &&
                 Number(message?.commitTimestamp) >
                   Number(receiver?.lastSeenTimestamp) &&
                 message?.sender === targetAddress && (
                   <div ref={messagesEndRef} className={messagesEndRef} />
-                )}
+                )} */}
             </div>
           );
         })}
@@ -318,36 +244,18 @@ export const ChatsViewSection = ({
       </div>
 
       <InputGroup className={style.inputText}>
-        {targetPubKey.length ? (
+        {
           <ReactTextareaAutosize
             maxRows={3}
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={
-              isBlocked ? "This contact is blocked" : "Type a new message..."
-            }
+            placeholder={"Type a new message..."}
             value={newMessage}
             onChange={(event) => {
               setNewMessage(event.target.value.substring(0, 499));
             }}
             onKeyDown={handleKeydown}
-            disabled={isBlocked}
           />
-        ) : (
-          <ToolTip
-            trigger="hover"
-            options={{ placement: "top" }}
-            tooltip={<div>No transaction history found for this user</div>}
-          >
-            <ReactTextareaAutosize
-              maxRows={3}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder={
-                isBlocked ? "This contact is blocked" : "Type a new message..."
-              }
-              disabled={true}
-            />
-          </ToolTip>
-        )}
+        }
         {newMessage?.length && newMessage.trim() !== "" ? (
           <div
             className={style["send-message-icon"]}

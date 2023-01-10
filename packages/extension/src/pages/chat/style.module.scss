@@ -30,9 +30,17 @@
       padding: 0 12px;
       cursor: pointer;
 
+      .groupImage {
+        text-align: center;
+        align-self: center;
+        width: 28px;
+        height: 28px;
+        object-fit: cover;
+      }
+
       .initials {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         background-color: #d0def5;
         color: #525f7f;

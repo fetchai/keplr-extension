@@ -12,8 +12,8 @@ export const sendMessages = `mutation Mutation($messages: [InputMessage!]!) {
 // TODO(!!!): I expect these also need types associated for all of the queries
 //            here
 
-export const mailboxWithTimestamp = `query Query($groupId: String, $afterTimestamp: Date) {
-  mailbox(groupId: $groupId, afterTimestamp: $afterTimestamp) {
+export const mailboxWithTimestamp = `query Query($groupId: String, $isDm: Boolean, $afterTimestamp: Date) {
+  mailbox(groupId: $groupId, isDm: $isDm, afterTimestamp: $afterTimestamp) {
     messages {
       commitTimestamp
       contents
@@ -26,8 +26,8 @@ export const mailboxWithTimestamp = `query Query($groupId: String, $afterTimesta
   }
 }`;
 
-export const mailbox = `query Mailbox($groupId: String, $page: Int, $pageCount: Int) {
-  mailbox(groupId: $groupId, page: $page, pageCount: $pageCount) {
+export const mailbox = `query Mailbox($groupId: String, $isDm: Boolean, $page: Int, $pageCount: Int) {
+  mailbox(groupId: $groupId, isDm: $isDm, page: $page, pageCount: $pageCount) {
     messages {
       id
       target

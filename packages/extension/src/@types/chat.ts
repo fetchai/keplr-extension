@@ -1,10 +1,18 @@
 // Params Type Definitions
-export interface groupDetailsParam {
-  addresses: GroupAddress[];
-  createdAt: string;
+export interface GroupDetails {
+  contents: string;
   description: string;
-  id: string;
+  groupId?: string;
+  members: GroupMembers[];
   name: string;
+  onlyAdminMessages: boolean;
+}
+
+export interface GroupMembers {
+  address: string;
+  pubKey: string;
+  encryptedSymmetricKey: string;
+  isAdmin: boolean;
 }
 
 export interface PublicKeyDetails {
@@ -86,4 +94,12 @@ export interface Groups {
 
 export interface NameAddress {
   [key: string]: string;
+}
+
+export enum GroupChatOptions {
+  groupInfo,
+  muteGroup,
+  leaveGroup,
+  deleteGroup,
+  chatSettings,
 }

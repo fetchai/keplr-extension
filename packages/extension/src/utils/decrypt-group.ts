@@ -33,3 +33,20 @@ export const decryptGroupTimestamp = async (
     return content;
   }
 };
+
+/// Base 64 to plain text
+export const decryptGroupMessage = (content: string): string => {
+  try {
+    const data = Buffer.from(content, "base64").toString("ascii");
+    const dataEnvelopeDecoded = JSON.parse(data);
+    const decodedData = Buffer.from(
+      dataEnvelopeDecoded.data,
+      "base64"
+    ).toString("ascii");
+    const parsedData = JSON.parse(decodedData);
+
+    return parsedData.content.text;
+  } catch (e) {
+    return content;
+  }
+};

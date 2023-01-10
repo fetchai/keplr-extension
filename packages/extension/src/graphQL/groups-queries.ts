@@ -12,22 +12,25 @@ export const UpdatePublicKey = `mutation UpdatePublicKey($publicKeyDetails: Inpu
 
 export const Group = `mutation Mutation($groupDetails: GroupDetails!) {
   group(groupDetails: $groupDetails) {
-    addresses {
-      address
-      encryptedSymmetricKey
-      isAdmin
-      lastSeenTimestamp
-      pubKey
-    }
-    createdAt
-    description
     id
+    name
     isDm
+    description
     lastMessageContents
     lastMessageSender
     lastMessageTimestamp
     lastSeenTimestamp
-    name
+    addresses {
+      address
+      pubKey
+      lastSeenTimestamp
+      groupLastSeenTimestamp
+      encryptedSymmetricKey
+      isAdmin
+      removedAt
+    }
+    createdAt
+    removedAt
   }
 }`;
 

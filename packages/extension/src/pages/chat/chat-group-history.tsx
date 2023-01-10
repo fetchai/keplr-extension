@@ -1,7 +1,4 @@
-import { fromBech32 } from "@cosmjs/encoding";
-import jazzicon from "@metamask/jazzicon";
 import React, { createRef, useEffect, useRef, useState } from "react";
-import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
@@ -10,175 +7,16 @@ import {
 } from "@chatStore/messages-slice";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
-import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { useStore } from "../../stores";
-import { decryptGroupTimestamp } from "../../utils/decrypt-group";
-import { decryptMessage } from "../../utils/decrypt-message";
 import { formatAddress } from "../../utils/format";
 import style from "./style.module.scss";
-import amplitude from "amplitude-js";
 import { userDetails } from "@chatStore/user-slice";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
-import {
-  Group,
-  GroupAddress,
-  Groups,
-  NameAddress,
-  Pagination,
-} from "@chatTypes";
+import { Groups, NameAddress, Pagination } from "@chatTypes";
+import { ChatUser } from "./chat-user";
+import { ChatGroupUser } from "./chat-group-user";
 
-const User: React.FC<{
-  chainId: string;
-  group: Group;
-  contactName: string;
-  targetAddress: string;
-}> = ({ chainId, group, contactName, targetAddress }) => {
-  const [message, setMessage] = useState("");
-  const [groupData, setGroupData] = useState(group);
-
-  const history = useHistory();
-
-  const handleClick = () => {
-    amplitude.getInstance().logEvent("Open DM click", {
-      from: "Chat history",
-    });
-    history.push(`/chat/${targetAddress}`);
-  };
-
-  /// Current wallet user
-  const sender = groupData?.addresses.find(
-    (val) => val?.address !== targetAddress
-  );
-  /// Target user
-  const receiver = groupData?.addresses.find(
-    (val) => val?.address === targetAddress
-  );
-
-  const decryptGrpAddresses = async (
-    groupAddress: GroupAddress,
-    isSender: boolean
-  ) => {
-    if (groupAddress && groupAddress.groupLastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        chainId,
-        groupAddress.groupLastSeenTimestamp,
-        isSender
-      );
-
-      Object.assign(groupAddress, {
-        groupLastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-    if (groupAddress && groupAddress.lastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        chainId,
-        groupAddress.lastSeenTimestamp,
-        isSender
-      );
-      Object.assign(groupAddress, {
-        lastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-
-    return groupAddress;
-  };
-
-  const decryptGrp = async (group: Group) => {
-    const tempGroup = { ...group };
-    let tempSenderAddress: GroupAddress | undefined;
-    let tempReceiverAddress: GroupAddress | undefined;
-
-    /// Shallow copy
-    /// Decrypting sender data
-    const senderAddress = {
-      ...group.addresses.find((val) => val.address !== targetAddress),
-    };
-    if (senderAddress)
-      tempSenderAddress = await decryptGrpAddresses(
-        senderAddress as GroupAddress,
-        group.lastMessageSender === targetAddress
-      );
-
-    /// Decrypting receiver data
-    const receiverAddress = {
-      ...group.addresses.find((val) => val.address === targetAddress),
-    };
-    if (receiverAddress)
-      tempReceiverAddress = await decryptGrpAddresses(
-        receiverAddress as GroupAddress,
-        group.lastMessageSender !== targetAddress
-      );
-
-    /// Storing decryptin address into the group object and updating the UI
-    if (tempSenderAddress && tempReceiverAddress) {
-      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
-      tempGroup.addresses = tempGroupAddress;
-      setGroupData(tempGroup);
-    }
-  };
-
-  const decryptMsg = async (
-    chainId: string,
-    contents: string,
-    isSender: boolean
-  ) => {
-    const message = await decryptMessage(chainId, contents, isSender);
-    setMessage(message.content.text);
-  };
-
-  useEffect(() => {
-    if (group) {
-      decryptMsg(
-        chainId,
-        group.lastMessageContents,
-        group.lastMessageSender !== targetAddress
-      );
-      decryptGrp(group);
-    }
-  }, [chainId, targetAddress, group]);
-
-  return (
-    <div
-      className={style.group}
-      style={{ position: "relative" }}
-      onClick={handleClick}
-    >
-      {Number(sender?.lastSeenTimestamp) <
-        Number(receiver?.lastSeenTimestamp) &&
-        group.lastMessageSender === targetAddress &&
-        Number(group.lastMessageTimestamp) >
-          Number(sender?.lastSeenTimestamp) && (
-          <span
-            style={{
-              height: "12px",
-              width: "12px",
-              backgroundColor: "#d027e5",
-              borderRadius: "20px",
-              bottom: "20px",
-              left: "6px",
-              position: "absolute",
-              zIndex: 1,
-            }}
-          />
-        )}
-      <div className={style.initials}>
-        {ReactHtmlParser(
-          jazzicon(24, parseInt(fromBech32(targetAddress).data.toString(), 16))
-            .outerHTML
-        )}
-      </div>
-      <div className={style.messageInner}>
-        <div className={style.name}>{contactName}</div>
-        <div className={style.messageText}>{message}</div>
-      </div>
-      <div>
-        <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
-      </div>
-    </div>
-  );
-};
-
-export const ChatsGroupSection: React.FC<{
+export const ChatsGroupHistory: React.FC<{
   chainId: string;
   searchString: string;
   addresses: NameAddress;
@@ -305,18 +143,23 @@ export const ChatsGroupSection: React.FC<{
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
+          console.log("Hello 1", contact, "index", index);
           return (
             <div key={groups[contact].id}>
-              <User
-                group={groups[contact]}
-                contactName={
-                  contactAddressBookName
-                    ? formatAddress(contactAddressBookName)
-                    : formatAddress(contact)
-                }
-                targetAddress={contact}
-                chainId={chainId}
-              />
+              {groups[contact].isDm ? (
+                <ChatUser
+                  group={groups[contact]}
+                  contactName={
+                    contactAddressBookName
+                      ? formatAddress(contactAddressBookName)
+                      : formatAddress(contact)
+                  }
+                  targetAddress={contact}
+                  chainId={chainId}
+                />
+              ) : (
+                <ChatGroupUser chainId={chainId} group={groups[contact]} />
+              )}
               {index === Object.keys(groups).length - 10 && (
                 <div ref={messagesEncRef} />
               )}

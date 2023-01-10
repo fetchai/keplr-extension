@@ -11,12 +11,24 @@ import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { ChatMember } from "@components/chat-member";
-import { NameAddress } from "@chatTypes";
-
-export const openValue = true;
+import { GroupDetails, GroupMembers, NameAddress } from "@chatTypes";
+import { useSelector } from "react-redux";
+import {
+  newGroupDetails,
+  resetNewGroup,
+  setNewGroupInfo,
+} from "@chatStore/new-group-slice";
+import { store } from "@chatStore/index";
+import { createGroup } from "@graphQL/groups-api";
+import { Button } from "reactstrap";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
+
+  const newGroupState: GroupDetails = useSelector(newGroupDetails);
+  const selectedMembers: GroupMembers[] = newGroupState.members || [];
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -53,19 +65,35 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   );
 
   useEffect(() => {
-    const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
-      (data) => {
-        return { name: data.name, address: data.address };
+    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
+      (element) => {
+        const addressData = selectedMembers.find(
+          (data) => data.address === element.address
+        );
+
+        if (addressData && addressData.address !== walletAddress)
+          return {
+            name: element.name,
+            address: element.address,
+          };
       }
     );
-    setAddresses(useraddresses);
+    setAddresses([{ name: "You", address: walletAddress }, ...userAddresses]);
   }, [addressBookConfig.addressBookDatas]);
+
+  const handleRemoveMember = async (contactAddress: string) => {
+    const tempAddresses = selectedMembers.filter(
+      (item) => item.address !== contactAddress
+    );
+    store.dispatch(setNewGroupInfo({ members: tempAddresses }));
+    setAddresses(addresses.filter((item) => item.address !== contactAddress));
+  };
 
   return (
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={"super-raven"}
+      alternativeTitle={newGroupState.name}
       onBackButton={() => {
         history.goBack();
       }}
@@ -82,19 +110,37 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       </div>
       <div className={style.membersContainer}>
         {addresses.map((address: NameAddress) => {
-          return <ChatMember address={address} key={address.address} />;
+          const isAdmin = address.address === walletAddress;
+          return (
+            <ChatMember
+              address={address}
+              key={address.address}
+              isSelected={true}
+              isShowAdmin={isAdmin}
+              onClick={() => {
+                handleRemoveMember(address.address);
+              }}
+            />
+          );
         })}
       </div>
-      <button
+      <Button
         className={style.button}
-        onClick={() =>
-          history.push({
-            pathname: "/group-chat/chat-section/" + walletAddress,
-          })
-        }
+        size="large"
+        data-loading={isLoading}
+        onClick={async () => {
+          setIsLoading(true);
+          const group = await createGroup(newGroupState);
+          setIsLoading(false);
+
+          if (group) {
+            store.dispatch(resetNewGroup());
+            history.push(`/group-chat/chat-section/${group.id}`);
+          }
+        }}
       >
         Create Group Chat
-      </button>
+      </Button>
     </HeaderLayout>
   );
 });

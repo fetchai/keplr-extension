@@ -78,6 +78,14 @@
   display: flex;
 }
 
+.button:not(:disabled):not(.disabled) {
+  cursor: pointer;
+  background: #3b82f6;
+  border: 1px solid #3b82f6;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
 .groupHeader {
   height: 40%;
   flex-direction: column;
@@ -88,6 +96,7 @@
 }
 
 .groupName {
+  align-self: start;
   font-size: 0.875rem;
 }
 

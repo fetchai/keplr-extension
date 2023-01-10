@@ -118,6 +118,15 @@
   padding: 10px;
 }
 
+.button:not(:disabled):not(.disabled) {
+  cursor: pointer;
+  background: #3b82f6;
+  font-weight: 700;
+  color: #fff;
+  font-size: 14px;
+  height: 35px;
+}
+
 .membersContainer {
   margin-left: -12px;
   margin-right: -12px;

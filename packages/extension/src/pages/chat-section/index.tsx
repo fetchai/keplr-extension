@@ -25,7 +25,7 @@ import { UserNameSection } from "./username-section";
 export const openValue = true;
 export const ChatSection: FunctionComponent = () => {
   const history = useHistory();
-  const userName = history.location.pathname.split("/")[2];
+  const targetAddress = history.location.pathname.split("/")[2];
 
   const blockedUsers = useSelector(userBlockedAddresses);
   const user = useSelector(userDetails);
@@ -74,7 +74,7 @@ export const ChatSection: FunctionComponent = () => {
   const contactName = (addresses: any) => {
     let val = "";
     for (let i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == userName) {
+      if (addresses[i].address == targetAddress) {
         val = addresses[i].name;
       }
     }
@@ -96,16 +96,16 @@ export const ChatSection: FunctionComponent = () => {
       const pubAddr = await fetchPublicKey(
         user.accessToken,
         current.chainId,
-        userName
+        targetAddress
       );
       setTargetPubKey(pubAddr?.publicKey || "");
     };
     setPublicAddress();
-  }, [user.accessToken, current.chainId, userName]);
+  }, [user.accessToken, current.chainId, targetAddress]);
 
   const isNewUser = (): boolean => {
     const addressExists = addresses.find(
-      (item: any) => item.address === userName
+      (item: any) => item.address === targetAddress
     );
     return !Boolean(addressExists);
   };
@@ -130,12 +130,12 @@ export const ChatSection: FunctionComponent = () => {
             added={contactName(addresses).length > 0}
             showDropdown={showDropdown}
             handleClick={handleClick}
-            blocked={blockedUsers[userName]}
+            blocked={blockedUsers[targetAddress]}
           />
 
           <ChatsViewSection
             isNewUser={isNewUser()}
-            isBlocked={blockedUsers[userName]}
+            isBlocked={blockedUsers[targetAddress]}
             targetPubKey={targetPubKey}
             setLoadingChats={setLoadingChats}
             handleClick={handleClick}

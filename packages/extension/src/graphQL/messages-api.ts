@@ -15,7 +15,11 @@ import {
 } from "@chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "../utils/encrypt-message";
-import { encryptGroupTimestamp } from "../utils/encrypt-group";
+import {
+  encryptGroupMessage,
+  encryptGroupTimestamp,
+  GroupMessageType,
+} from "../utils/encrypt-group";
 import { client, createWSLink, httpLink } from "./client";
 import {
   block,
@@ -39,16 +43,19 @@ interface messagesVariables {
   page?: number;
   pageCount?: number;
   groupId: string;
+  isDm: boolean;
   afterTimestamp?: string;
 }
 export const fetchMessages = async (
   groupId: string,
+  isDm: boolean,
   afterTimestamp: string | null | undefined,
   page: number
 ) => {
   const state = store.getState();
   let variables: messagesVariables = {
-    groupId: groupId,
+    groupId,
+    isDm,
   };
   if (!!afterTimestamp) {
     variables = { ...variables, afterTimestamp: afterTimestamp };
@@ -252,6 +259,61 @@ export const deliverMessages = async (
   }
 };
 
+export const deliverGroupMessages = async (
+  accessToken: string,
+  chainId: string,
+  newMessage: any,
+  messageType: GroupMessageType,
+  senderAddress: string,
+  groupId: string
+) => {
+  const state = store.getState();
+  try {
+    debugger;
+    if (newMessage) {
+      const encryptedData = await encryptGroupMessage(
+        chainId,
+        newMessage,
+        messageType,
+        senderAddress,
+        groupId,
+        accessToken
+      );
+      const { data } = await client.mutate({
+        mutation: gql(sendMessages),
+        variables: {
+          messages: [
+            {
+              contents: `${encryptedData}`,
+            },
+          ],
+        },
+        context: {
+          headers: {
+            Authorization: `Bearer ${state.user.accessToken}`,
+          },
+        },
+      });
+
+      if (data?.dispatchMessages?.length > 0) {
+        store.dispatch(updateLatestSentMessage(data?.dispatchMessages[0]));
+        return data?.dispatchMessages[0];
+      }
+      return null;
+    }
+  } catch (e: any) {
+    store.dispatch(
+      setMessageError({
+        type: "delivery",
+        message:
+          e?.message || "Something went wrong, Message can't be delivered",
+        level: 1,
+      })
+    );
+    return null;
+  }
+};
+
 export const messageListener = () => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
@@ -331,10 +393,14 @@ export const groupReadUnreadListener = (userAddress: string) => {
       next({ data }: { data: any }) {
         const group = data.groupUpdate.group;
 
-        group.userAddress =
-          group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
-            ? group.id.split("-")[0]
-            : group.id.split("-")[1];
+        if (group.isDm) {
+          group.userAddress =
+            group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
+              ? group.id.split("-")[0]
+              : group.id.split("-")[1];
+        } else {
+          group.userAddress = group.id;
+        }
         store.dispatch(updateGroupsData(group));
       },
       error(err) {
@@ -403,6 +469,7 @@ export const updateGroupTimestamp = async (
 
     /// Updating the last seen status
     const group = data.updateGroupLastSeen;
+    /// Todo handle based on isDm
     group.userAddress = targetAddress;
     store.dispatch(updateGroupsData(group));
   } catch (err) {

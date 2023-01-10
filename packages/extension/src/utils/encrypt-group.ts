@@ -21,6 +21,19 @@ export interface GroupTimestampUpdatePrimitive {
   content: Date;
 }
 
+export enum GroupMessageType {
+  message,
+  event,
+}
+
+export interface GroupMessageEnvelope {
+  data: string; // base64 encoded
+  senderPublicKey: string; // base64 encoded
+  targetGroupId: string; // base64 encoded
+  signature: string; // base64 encoded signature
+  channelId: string;
+}
+
 export const encryptGroupTimestamp = async (
   accessToken: string,
   chainId: string,
@@ -117,6 +130,71 @@ export async function encryptGroupTimestampToEnvelope(
     data: encodedData,
     senderPublicKey: senderPublicKey.publicKey,
     targetPublicKey: targetPublicKey.publicKey,
+    signature,
+    channelId: MESSAGE_CHANNEL_ID,
+  };
+}
+
+export const encryptGroupMessage = async (
+  chainId: string,
+  messageStr: string,
+  messageType: GroupMessageType,
+  senderAddress: string,
+  targetGroupId: string,
+  accessToken: string
+): Promise<string> => {
+  const dataEnvelope = await encryptGroupMessageToEnvelope(
+    chainId,
+    messageStr,
+    messageType,
+    senderAddress,
+    targetGroupId,
+    accessToken
+  );
+  return toBase64(Buffer.from(JSON.stringify(dataEnvelope)));
+};
+
+export async function encryptGroupMessageToEnvelope(
+  chainId: string,
+  messageStr: string,
+  messageType: GroupMessageType,
+  senderAddress: string,
+  targetGroupId: string,
+  accessToken: string
+): Promise<GroupMessageEnvelope> {
+  // TODO: ideally this is cached
+  const requester = new InExtensionMessageRequester();
+
+  // lookup both our (sender) and target public keys
+  const senderPublicKey = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new GetMessagingPublicKey(chainId, accessToken, senderAddress)
+  );
+
+  if (!senderPublicKey.publicKey) {
+    throw new Error("Sender Public key not available");
+  }
+
+  const message = {
+    senderPublicKey,
+    targetGroupId,
+    content: {
+      text: messageStr,
+      type: messageType,
+    },
+  };
+
+  const encodedData = toBase64(Buffer.from(JSON.stringify(message)));
+
+  // get the signature for the payload
+  const signature = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new SignMessagingPayload(chainId, encodedData)
+  );
+  return {
+    data: encodedData,
+    senderPublicKey: senderPublicKey.publicKey,
+    targetGroupId,
     signature,
     channelId: MESSAGE_CHANNEL_ID,
   };

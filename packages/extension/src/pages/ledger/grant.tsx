@@ -232,10 +232,7 @@ const ConfirmLedgerDialog: FunctionComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <img
-          src={require("@assets/img/icons8-pen.svg")}
-          alt="pen"
-        />
+        <img src={require("@assets/img/icons8-pen.svg")} alt="pen" />
       </div>
       <p>
         <FormattedMessage id="ledger.confirm.waiting.paragraph" />
@@ -270,15 +267,9 @@ const SignCompleteDialog: FunctionComponent<{
         }}
       >
         {!rejected ? (
-          <img
-            src={require("@assets/img/icons8-checked.svg")}
-            alt="success"
-          />
+          <img src={require("@assets/img/icons8-checked.svg")} alt="success" />
         ) : (
-          <img
-            src={require("@assets/img/icons8-cancel.svg")}
-            alt="rejected"
-          />
+          <img src={require("@assets/img/icons8-cancel.svg")} alt="rejected" />
         )}
       </div>
       <p>

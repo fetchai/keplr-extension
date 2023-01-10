@@ -1,10 +1,71 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useHistory } from "react-router";
 import { HeaderLayout } from "@layouts/index";
 import style from "./style.module.scss";
+import { store } from "@chatStore/index";
+import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
+import { useSelector } from "react-redux";
+import { GroupDetails } from "@chatTypes";
+import { useNotification } from "@components/notification";
+import { Button } from "reactstrap";
+import {
+  encryptGroupMessage,
+  GroupMessageType,
+} from "../../../utils/encrypt-group";
+import { useStore } from "../../../stores";
+import { userDetails } from "@chatStore/user-slice";
+
 export const openValue = true;
+
 export const CreateGroupChat: FunctionComponent = () => {
   const history = useHistory();
+  const notification = useNotification();
+  const user = useSelector(userDetails);
+
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const newGroupState: GroupDetails = useSelector(newGroupDetails);
+
+  const [name, setName] = useState(newGroupState.name);
+  const [description, setDescription] = useState(newGroupState.description);
+
+  async function validateAndContinue(): Promise<void> {
+    if (!name) {
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: `Please enter the group name`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+      return;
+    }
+
+    const contents = await encryptGroupMessage(
+      current.chainId,
+      `Group created by -${accountInfo.bech32Address}`,
+      GroupMessageType.event,
+      accountInfo.bech32Address,
+      "new group id",
+      user.accessToken
+    );
+    console.log("Hey", contents);
+
+    store.dispatch(
+      setNewGroupInfo({
+        name,
+        description,
+        contents,
+      })
+    );
+    history.push({
+      pathname: "/group-chat/add-member",
+    });
+  }
 
   return (
     <HeaderLayout
@@ -30,6 +91,10 @@ export const CreateGroupChat: FunctionComponent = () => {
             className={style.inputText}
             placeholder="Type your group chat name"
             type="text"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value.substring(0, 30));
+            }}
           />
         </div>
         <div className={style.input}>
@@ -37,22 +102,23 @@ export const CreateGroupChat: FunctionComponent = () => {
           <textarea
             className={style.inputText}
             placeholder="Tell us more about your group"
+            value={description}
+            onChange={(event) => {
+              setDescription(event.target.value.substring(0, 256));
+            }}
           />
         </div>
         <div className={style.adminToggle}>
           <img className={style.toggle} src={require("@assets/toggle.svg")} />
           <span className={style.adminText}>Only admins can send messages</span>
         </div>
-        <button
+        <Button
           className={style.button}
-          onClick={() =>
-            history.push({
-              pathname: "/group-chat/add-member",
-            })
-          }
+          size="large"
+          onClick={() => validateAndContinue()}
         >
           Add Members
-        </button>
+        </Button>
       </div>
     </HeaderLayout>
   );

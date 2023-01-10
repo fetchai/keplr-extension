@@ -27,6 +27,8 @@ import { fetchPublicKey } from "../../utils/fetch-public-key";
 import { formatAddress } from "../../utils/format";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
+import { store } from "@chatStore/index";
+import { resetNewGroup } from "@chatStore/new-group-slice";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -224,11 +226,12 @@ export const NewChat: FunctionComponent = observer(() => {
             <br /> or <br />
             <button
               className={style.button}
-              onClick={() =>
+              onClick={() => {
+                store.dispatch(resetNewGroup());
                 history.push({
                   pathname: "/group-chat/create",
-                })
-              }
+                });
+              }}
             >
               Create new group chat
             </button>

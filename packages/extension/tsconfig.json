@@ -13,7 +13,7 @@
       "@chatTypes": ["src/@types/chat"],
       "@hooks/*": ["src/hooks/*"],
       "@chatStore/*": ["src/stores/chats/*"],
-      "@assets/*": ["src/public/assets/*"],
+      "@assets/*": ["src/public/assets/*"]
     },
     "typeRoots": [
       "./node_modules/@types",

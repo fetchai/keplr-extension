@@ -6,32 +6,19 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import chevronLeft from "@assets/icon/chevron-left.png";
 import moreIcon from "@assets/icon/more-grey.png";
-import { formatAddress } from "../../../utils/format";
 import style from "./style.module.scss";
 
 export let openValue = true;
 export const UserNameSection = ({
   handleDropDown,
-  addresses,
+  groupName,
 }: {
   handleDropDown: any;
-  addresses: any;
+  groupName: string;
 }) => {
   const history = useHistory();
   const notification = useNotification();
   const intl = useIntl();
-
-  const userName = history.location.pathname.split("/")[2];
-
-  const contactName = (addresses: any) => {
-    let val = "";
-    for (let i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == userName) {
-        val = addresses[i].name;
-      }
-    }
-    return val;
-  };
 
   const copyAddress = async (address: string) => {
     await navigator.clipboard.writeText(address);
@@ -65,9 +52,7 @@ export const UserNameSection = ({
           <ToolTip
             tooltip={
               <div className={style.user} style={{ minWidth: "300px" }}>
-                {contactName(addresses).length
-                  ? contactName(addresses)
-                  : userName}
+                {groupName}
               </div>
             }
             theme="dark"
@@ -76,12 +61,10 @@ export const UserNameSection = ({
               placement: "top",
             }}
           >
-            {contactName(addresses).length
-              ? formatAddress(contactName(addresses))
-              : formatAddress(userName)}
+            {groupName}
           </ToolTip>
         </span>
-        <span className={style.copyIcon} onClick={() => copyAddress(userName)}>
+        <span className={style.copyIcon} onClick={() => copyAddress(groupName)}>
           <i className="fas fa-copy" />
         </span>
       </div>

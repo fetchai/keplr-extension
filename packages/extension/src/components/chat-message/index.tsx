@@ -8,6 +8,7 @@ import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
 import { store } from "@chatStore/index";
 import { setMessageError } from "@chatStore/messages-slice";
+import { decryptGroupMessage } from "../../utils/decrypt-group";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -21,6 +22,7 @@ export const ChatMessage = ({
   timestamp,
   showDate,
   groupLastSeenTimestamp,
+  isDm,
 }: {
   chainId: string;
   isSender: boolean;
@@ -28,10 +30,16 @@ export const ChatMessage = ({
   timestamp: number;
   showDate: boolean;
   groupLastSeenTimestamp: number;
+  isDm?: boolean;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState("");
 
   useEffect(() => {
+    if (!isDm) {
+      setDecryptedMessage(decryptGroupMessage(message));
+      return;
+    }
+
     decryptMessage(chainId, message, isSender)
       .then((message) => {
         setDecryptedMessage(message.content.text);

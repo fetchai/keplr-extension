@@ -12,7 +12,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { NameAddress } from "@chatTypes";
+import { GroupDetails, GroupMembers, NameAddress } from "@chatTypes";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatMember } from "@components/chat-member";
@@ -22,10 +22,19 @@ import searchIcon from "@assets/icon/search.png";
 import { useStore } from "../../../stores";
 import { formatAddress } from "../../../utils/format";
 import style from "./style.module.scss";
+import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
+import { store } from "@chatStore/index";
+import { fetchPublicKey } from "../../../utils/fetch-public-key";
+import { Button } from "reactstrap";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
   const user = useSelector(userDetails);
+  const newGroupState: GroupDetails = useSelector(newGroupDetails);
+  const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
+    newGroupState.members || []
+  );
+
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
@@ -64,20 +73,23 @@ export const AddMember: FunctionComponent = observer(() => {
     }
   );
 
-  const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
+  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
     (data) => {
       return { name: data.name, address: data.address };
     }
   );
 
   useEffect(() => {
-    setAddresses(useraddresses.filter((a) => a.address !== walletAddress));
+    setAddresses(userAddresses.filter((a) => a.address !== walletAddress));
+
+    /// Adding login user into the list
+    handleAddRemoveMember(walletAddress, true);
   }, [addressBookConfig.addressBookDatas]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
     const searchedVal = e.target.value.toLowerCase();
-    const addresses = useraddresses.filter(
+    const addresses = userAddresses.filter(
       (address: NameAddress) =>
         address.address !== walletAddress &&
         (address.name.toLowerCase().includes(searchedVal) ||
@@ -112,6 +124,43 @@ export const AddMember: FunctionComponent = observer(() => {
       setAddresses(addresses);
     }
   };
+
+  const isMemberExist = (contactAddress: string) =>
+    !!selectedMembers.find((element) => element.address === contactAddress);
+
+  const handleAddRemoveMember = async (
+    contactAddress: string,
+    isAdmin?: boolean
+  ) => {
+    if (!isMemberExist(contactAddress)) {
+      const pubAddr = await fetchPublicKey(
+        user.accessToken,
+        current.chainId,
+        contactAddress
+      );
+
+      if (pubAddr && pubAddr.publicKey) {
+        const tempMember: GroupMembers = {
+          address: contactAddress,
+          pubKey: pubAddr.publicKey,
+          encryptedSymmetricKey: "",
+          isAdmin: isAdmin || false,
+        };
+
+        const tempMembers = [...selectedMembers, tempMember];
+
+        store.dispatch(setNewGroupInfo({ members: tempMembers }));
+        setSelectedMembers(tempMembers);
+      }
+    } else {
+      const tempMembers = selectedMembers.filter(
+        (item) => item.address !== contactAddress
+      );
+      store.dispatch(setNewGroupInfo({ members: tempMembers }));
+      setSelectedMembers(tempMembers);
+    }
+  };
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -137,10 +186,22 @@ export const AddMember: FunctionComponent = observer(() => {
           </div>
           <div className={style.membersContainer}>
             {randomAddress && (
-              <ChatMember address={randomAddress} key={randomAddress.address} />
+              <ChatMember
+                address={randomAddress}
+                key={randomAddress.address}
+                isSelected={isMemberExist(randomAddress.address)}
+                onClick={() => handleAddRemoveMember(randomAddress.address)}
+              />
             )}
             {addresses.map((address: NameAddress) => {
-              return <ChatMember address={address} key={address.address} />;
+              return (
+                <ChatMember
+                  address={address}
+                  key={address.address}
+                  isSelected={isMemberExist(address.address)}
+                  onClick={() => handleAddRemoveMember(address.address)}
+                />
+              );
             })}
           </div>
           {addresses.length === 0 && (
@@ -184,19 +245,22 @@ export const AddMember: FunctionComponent = observer(() => {
             ).outerHTML
           )}
           <div className={style.groupHeader}>
-            <span className={style.groupName}>super-raven</span>
-            <span className={style.memberTotal}>1 member</span>
+            <span className={style.groupName}>{newGroupState.name}</span>
+            <span className={style.memberTotal}>
+              {selectedMembers.length} member
+            </span>
           </div>
         </div>
 
-        <button
+        <Button
           className={style.button}
+          size="large"
           onClick={() => {
             history.push("/group-chat/review-details");
           }}
         >
           Review
-        </button>
+        </Button>
       </div>
     </HeaderLayout>
   );

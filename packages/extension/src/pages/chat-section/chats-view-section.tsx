@@ -204,6 +204,7 @@ export const ChatsViewSection = ({
           ? receiver?.lastSeenTimestamp
           : null,
         page,
+        group.isDm,
         group.id
       );
       setLoadingMessages(false);
@@ -311,6 +312,7 @@ export const ChatsViewSection = ({
                   message={message?.contents}
                   isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
                   timestamp={message?.commitTimestamp || 1549312452}
+                  isDm={group.isDm}
                   groupLastSeenTimestamp={
                     receiver && receiver.groupLastSeenTimestamp
                       ? new Date(receiver.groupLastSeenTimestamp).getTime()
