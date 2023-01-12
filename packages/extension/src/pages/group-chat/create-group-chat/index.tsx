@@ -5,7 +5,7 @@ import style from "./style.module.scss";
 import { store } from "@chatStore/index";
 import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
 import { useSelector } from "react-redux";
-import { GroupDetails } from "@chatTypes";
+import { NewGroupDetails } from "@chatTypes";
 import { useNotification } from "@components/notification";
 import { Button } from "reactstrap";
 import {
@@ -25,10 +25,12 @@ export const CreateGroupChat: FunctionComponent = () => {
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const newGroupState: GroupDetails = useSelector(newGroupDetails);
+  const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
 
-  const [name, setName] = useState(newGroupState.name);
-  const [description, setDescription] = useState(newGroupState.description);
+  const [name, setName] = useState(newGroupState.group.name);
+  const [description, setDescription] = useState(
+    newGroupState.group.description
+  );
 
   async function validateAndContinue(): Promise<void> {
     if (!name) {
@@ -53,7 +55,6 @@ export const CreateGroupChat: FunctionComponent = () => {
       "new group id",
       user.accessToken
     );
-    console.log("Hey", contents);
 
     store.dispatch(
       setNewGroupInfo({

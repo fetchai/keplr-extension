@@ -1,4 +1,6 @@
+import { GroupMessagePayload } from "@chatTypes";
 import { decryptMessageContent } from "./decrypt-message";
+import { GroupMessageType } from "./encrypt-group";
 
 /**
  * Attempt to decrypt the payload of a group timestamp envelope for the currently
@@ -35,7 +37,7 @@ export const decryptGroupTimestamp = async (
 };
 
 /// Base 64 to plain text
-export const decryptGroupMessage = (content: string): string => {
+export const decryptGroupMessage = (content: string): GroupMessagePayload => {
   try {
     const data = Buffer.from(content, "base64").toString("ascii");
     const dataEnvelopeDecoded = JSON.parse(data);
@@ -45,8 +47,14 @@ export const decryptGroupMessage = (content: string): string => {
     ).toString("ascii");
     const parsedData = JSON.parse(decodedData);
 
-    return parsedData.content.text;
+    return {
+      message: parsedData.content.text,
+      type: parsedData.content.type,
+    };
   } catch (e) {
-    return content;
+    return {
+      message: content,
+      type: GroupMessageType[GroupMessageType.message],
+    };
   }
 };

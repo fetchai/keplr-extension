@@ -180,7 +180,7 @@ export async function encryptGroupMessageToEnvelope(
     targetGroupId,
     content: {
       text: messageStr,
-      type: messageType,
+      type: GroupMessageType[messageType],
     },
   };
 

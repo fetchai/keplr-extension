@@ -143,7 +143,6 @@ export const ChatsGroupHistory: React.FC<{
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-          console.log("Hello 1", contact, "index", index);
           return (
             <div key={groups[contact].id}>
               {groups[contact].isDm ? (

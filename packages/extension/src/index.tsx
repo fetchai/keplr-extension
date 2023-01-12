@@ -70,6 +70,7 @@ import { CreateGroupChat } from "./pages/group-chat/create-group-chat";
 import { AddMember } from "./pages/group-chat/add-member";
 import { ReviewGroupChat } from "./pages/group-chat/review-details";
 import { GroupChatSection } from "./pages/group-chat/chat-section";
+import { EditMember } from "./pages/group-chat/edit-member";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -169,6 +170,11 @@ const Application: FunctionComponent = () => {
                         exact
                         path="/group-chat/add-member"
                         component={AddMember}
+                      />
+                      <Route
+                        exact
+                        path="/group-chat/edit-member"
+                        component={EditMember}
                       />
                       <Route
                         exact

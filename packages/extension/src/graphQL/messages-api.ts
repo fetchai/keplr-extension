@@ -269,7 +269,6 @@ export const deliverGroupMessages = async (
 ) => {
   const state = store.getState();
   try {
-    debugger;
     if (newMessage) {
       const encryptedData = await encryptGroupMessage(
         chainId,
@@ -344,7 +343,10 @@ export const messageListener = () => {
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
         store.dispatch(updateMessages(data.newMessageUpdate.message));
-        recieveGroups(0, data.newMessageUpdate.message.target);
+        const { target, groupId } = data.newMessageUpdate.message;
+        /// Distinguish between Group and Single chat
+        const id = groupId.split("-").length == 2 ? target : groupId;
+        recieveGroups(0, id);
       },
       error(err) {
         console.error("err", err);

@@ -11,7 +11,7 @@ import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { ChatMember } from "@components/chat-member";
-import { GroupDetails, GroupMembers, NameAddress } from "@chatTypes";
+import { GroupMembers, NameAddress, NewGroupDetails } from "@chatTypes";
 import { useSelector } from "react-redux";
 import {
   newGroupDetails,
@@ -21,12 +21,13 @@ import {
 import { store } from "@chatStore/index";
 import { createGroup } from "@graphQL/groups-api";
 import { Button } from "reactstrap";
+import { setGroups } from "@chatStore/messages-slice";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
 
-  const newGroupState: GroupDetails = useSelector(newGroupDetails);
-  const selectedMembers: GroupMembers[] = newGroupState.members || [];
+  const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
+  const selectedMembers: GroupMembers[] = newGroupState.group.members || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
@@ -93,7 +94,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={newGroupState.name}
+      alternativeTitle={newGroupState.group.name}
       onBackButton={() => {
         history.goBack();
       }}
@@ -104,43 +105,65 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           src={require("@assets/group710.svg")}
         />
         <span className={style.recommendedSize}>
-          Lorem ipsum dolor sit amet consectetur. Eu eu semper vel eu arcu
-          felis. Lectus arcu quis.
+          {newGroupState.group.description}
         </span>
+        {newGroupState.isEditGroup && (
+          <Button
+            className={style.button}
+            size="large"
+            onClick={async () => {
+              history.push("/group-chat/edit-member");
+            }}
+          >
+            Edit Chat Settings
+          </Button>
+        )}
       </div>
       <div className={style.membersContainer}>
         {addresses.map((address: NameAddress) => {
-          const isAdmin = address.address === walletAddress;
           return (
             <ChatMember
               address={address}
               key={address.address}
+              /// showSelectedIcon: isEditGroup true means remove the cross icon
+              showSelectedIcon={!newGroupState.isEditGroup}
               isSelected={true}
-              isShowAdmin={isAdmin}
-              onClick={() => {
+              isShowAdmin={
+                selectedMembers.find(
+                  (element) => element.address === address.address
+                )?.isAdmin ?? false
+              }
+              onIconClick={() => {
                 handleRemoveMember(address.address);
               }}
             />
           );
         })}
       </div>
-      <Button
-        className={style.button}
-        size="large"
-        data-loading={isLoading}
-        onClick={async () => {
-          setIsLoading(true);
-          const group = await createGroup(newGroupState);
-          setIsLoading(false);
+      {!newGroupState.isEditGroup && (
+        <Button
+          className={style.button}
+          size="large"
+          data-loading={isLoading}
+          onClick={async () => {
+            setIsLoading(true);
+            const group = await createGroup(newGroupState.group);
+            setIsLoading(false);
 
-          if (group) {
-            store.dispatch(resetNewGroup());
-            history.push(`/group-chat/chat-section/${group.id}`);
-          }
-        }}
-      >
-        Create Group Chat
-      </Button>
+            if (group) {
+              store.dispatch(resetNewGroup());
+              const groupsObj: any = {};
+              groupsObj[group.id] = group;
+
+              store.dispatch(setGroups({ groups: groupsObj }));
+              /// Todo handle backstack
+              history.push(`/group-chat/chat-section/${group.id}`);
+            }
+          }}
+        >
+          Create Group Chat
+        </Button>
+      )}
     </HeaderLayout>
   );
 });

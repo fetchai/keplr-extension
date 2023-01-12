@@ -60,10 +60,12 @@ export const messagesSlice = createSlice({
     },
     resetChatList: (_state, _action) => initialState,
     updateMessages: (state: any, action: PayloadAction<Message>) => {
-      const { sender, id } = action.payload;
-      if (!state.chats[sender]) {
-        state.chats[sender] = {
-          contactAddress: sender,
+      const { sender, id, groupId } = action.payload;
+      /// Distinguish between Group and Single chat
+      const tempId = groupId.split("-").length == 2 ? sender : groupId;
+      if (!state.chats[tempId]) {
+        state.chats[tempId] = {
+          contactAddress: tempId,
           messages: {},
           pagination: {
             page: -1,
@@ -73,7 +75,7 @@ export const messagesSlice = createSlice({
           },
         };
       }
-      state.chats[sender].messages[id] = action.payload;
+      state.chats[tempId].messages[id] = action.payload;
     },
     updateGroupsData: (state: any, action: PayloadAction<any>) => {
       const group = action.payload;
@@ -84,10 +86,12 @@ export const messagesSlice = createSlice({
       state.groups = { ...state.groups, ...updatedGroup };
     },
     updateLatestSentMessage: (state: any, action: PayloadAction<Message>) => {
-      const { target, id } = action.payload;
-      if (!state.chats[target]) {
-        state.chats[target] = {
-          contactAddress: target,
+      const { target, id, groupId } = action.payload;
+      /// Distinguish between Group and Single chat
+      const tempId = groupId.split("-").length == 2 ? target : groupId;
+      if (!state.chats[tempId]) {
+        state.chats[tempId] = {
+          contactAddress: tempId,
           messages: {},
           pagination: {
             page: 0,
@@ -97,7 +101,7 @@ export const messagesSlice = createSlice({
           },
         };
       }
-      state.chats[target].messages[id] = action.payload;
+      state.chats[tempId].messages[id] = action.payload;
     },
     setBlockedList: (state, action) => {
       const blockedList = action.payload;

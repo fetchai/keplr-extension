@@ -1,13 +1,16 @@
-import { GroupDetails } from "@chatTypes";
+import { GroupDetails, GroupMembers, NewGroupDetails } from "@chatTypes";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: GroupDetails = {
-  contents: "",
-  description: "",
-  // groupId: "",
-  members: [],
-  name: "",
-  onlyAdminMessages: false,
+const initialState: NewGroupDetails = {
+  isEditGroup: false,
+  group: {
+    contents: "",
+    description: "",
+    groupId: "",
+    members: [] as GroupMembers[],
+    name: "",
+    onlyAdminMessages: false,
+  } as GroupDetails,
 };
 
 export const newGroupSlice = createSlice({
@@ -16,13 +19,20 @@ export const newGroupSlice = createSlice({
   reducers: {
     resetNewGroup: () => initialState,
     setNewGroupInfo: (state, action) => {
-      return { ...state, ...action.payload };
+      state.group = { ...state.group, ...action.payload };
+    },
+    setIsGroupEdit: (state, action) => {
+      state.isEditGroup = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { resetNewGroup, setNewGroupInfo } = newGroupSlice.actions;
+export const {
+  resetNewGroup,
+  setNewGroupInfo,
+  setIsGroupEdit,
+} = newGroupSlice.actions;
 
 export const newGroupDetails = (state: { newGroup: any }) => state.newGroup;
 

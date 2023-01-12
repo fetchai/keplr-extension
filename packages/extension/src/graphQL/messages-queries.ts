@@ -3,6 +3,7 @@ export const sendMessages = `mutation Mutation($messages: [InputMessage!]!) {
       id
       sender
       target
+      groupId
       contents
       expiryTimestamp
       commitTimestamp
@@ -111,6 +112,7 @@ export const listenMessages = `subscription NewMessageUpdate {
       type
       message {
         id
+        groupId
         sender
         target
         contents

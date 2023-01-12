@@ -12,7 +12,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { GroupDetails, GroupMembers, NameAddress } from "@chatTypes";
+import { GroupMembers, NameAddress, NewGroupDetails } from "@chatTypes";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatMember } from "@components/chat-member";
@@ -30,9 +30,9 @@ import { Button } from "reactstrap";
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
   const user = useSelector(userDetails);
-  const newGroupState: GroupDetails = useSelector(newGroupDetails);
+  const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
   const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
-    newGroupState.members || []
+    newGroupState.group.members || []
   );
 
   const [inputVal, setInputVal] = useState("");
@@ -190,7 +190,7 @@ export const AddMember: FunctionComponent = observer(() => {
                 address={randomAddress}
                 key={randomAddress.address}
                 isSelected={isMemberExist(randomAddress.address)}
-                onClick={() => handleAddRemoveMember(randomAddress.address)}
+                onIconClick={() => handleAddRemoveMember(randomAddress.address)}
               />
             )}
             {addresses.map((address: NameAddress) => {
@@ -199,7 +199,7 @@ export const AddMember: FunctionComponent = observer(() => {
                   address={address}
                   key={address.address}
                   isSelected={isMemberExist(address.address)}
-                  onClick={() => handleAddRemoveMember(address.address)}
+                  onIconClick={() => handleAddRemoveMember(address.address)}
                 />
               );
             })}
@@ -245,7 +245,7 @@ export const AddMember: FunctionComponent = observer(() => {
             ).outerHTML
           )}
           <div className={style.groupHeader}>
-            <span className={style.groupName}>{newGroupState.name}</span>
+            <span className={style.groupName}>{newGroupState.group.name}</span>
             <span className={style.memberTotal}>
               {selectedMembers.length} member
             </span>

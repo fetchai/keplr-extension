@@ -14,7 +14,6 @@ import { InputGroup } from "reactstrap";
 import { Chats, Group, Groups } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
-import { ChatMessage } from "@components/chat-message";
 import { CHAT_PAGE_COUNT } from "../../../config.ui.var";
 import { deliverGroupMessages } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
@@ -23,6 +22,7 @@ import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { GroupMessageType } from "../../../utils/encrypt-group";
+import { GroupChatMessage } from "@components/group-chat-message";
 
 export const GroupChatsViewSection = ({}: {
   setLoadingChats: any;
@@ -219,14 +219,13 @@ export const GroupChatsViewSection = ({}: {
           return (
             <div key={message.id}>
               {group !== undefined && (
-                <ChatMessage
+                <GroupChatMessage
                   chainId={current.chainId}
                   showDate={check}
                   message={message?.contents}
                   isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
                   timestamp={message?.commitTimestamp || 1549312452}
                   groupLastSeenTimestamp={0}
-                  isDm={group.isDm}
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}

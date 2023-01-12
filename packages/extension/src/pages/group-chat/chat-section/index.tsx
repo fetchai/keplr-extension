@@ -11,13 +11,16 @@ import { GroupChatsViewSection } from "./chats-view-section";
 import { ChatActionsPopup } from "@components/chat-actions-popup";
 import { useSelector } from "react-redux";
 import { userChatGroups } from "@chatStore/messages-slice";
-import { GroupChatOptions, Groups } from "@chatTypes";
+import { GroupChatOptions, GroupMembers, Groups } from "@chatTypes";
 import { GroupChatActionsDropdown } from "@components/group-chat-actions-dropdown";
+import { store } from "@chatStore/index";
+import { setIsGroupEdit, setNewGroupInfo } from "@chatStore/new-group-slice";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
   const groupId = history.location.pathname.split("/")[3];
   const groups: Groups = useSelector(userChatGroups);
+  const group = groups[groupId];
 
   //const blockedUsers = useSelector(userBlockedAddresses);
   //const user = useSelector(userDetails);
@@ -32,9 +35,34 @@ export const GroupChatSection: FunctionComponent = () => {
   };
 
   const handleClick = (option: GroupChatOptions) => {
-    setAction(option.toString());
-    setConfirmAction(true);
     setShowDropdown(false);
+    switch (option) {
+      case GroupChatOptions.groupInfo:
+        const members: GroupMembers[] = group.addresses.map((element) => {
+          return {
+            address: element.address,
+            pubKey: element.pubKey,
+            encryptedSymmetricKey: element.encryptedSymmetricKey,
+            isAdmin: element.isAdmin,
+          };
+        });
+        store.dispatch(
+          setNewGroupInfo({
+            description: group.description,
+            groupId: group.id,
+            members: members,
+            name: group.name,
+          })
+        );
+        store.dispatch(setIsGroupEdit(true));
+        history.push("/group-chat/review-details");
+        break;
+
+      default:
+        setAction(option.toString());
+        setConfirmAction(true);
+        break;
+    }
   };
 
   return (
@@ -51,7 +79,7 @@ export const GroupChatSection: FunctionComponent = () => {
         <div>
           <UserNameSection
             handleDropDown={handleDropDown}
-            groupName={groups[groupId].name}
+            groupName={group.name}
           />
 
           <GroupChatActionsDropdown

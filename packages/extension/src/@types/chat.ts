@@ -1,8 +1,13 @@
 // Params Type Definitions
+
+export interface NewGroupDetails {
+  isEditGroup: boolean;
+  group: GroupDetails;
+}
 export interface GroupDetails {
   contents: string;
   description: string;
-  groupId?: string;
+  groupId: string;
   members: GroupMembers[];
   name: string;
   onlyAdminMessages: boolean;
@@ -13,6 +18,11 @@ export interface GroupMembers {
   pubKey: string;
   encryptedSymmetricKey: string;
   isAdmin: boolean;
+}
+
+export interface GroupMessagePayload {
+  message: string;
+  type: string;
 }
 
 export interface PublicKeyDetails {
@@ -102,4 +112,12 @@ export enum GroupChatOptions {
   leaveGroup,
   deleteGroup,
   chatSettings,
+}
+
+export enum GroupChatMemberOptions {
+  addToAddressBook,
+  messageMember,
+  removeMember,
+  removeAdminStatus,
+  makeAdminStatus,
 }

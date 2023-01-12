@@ -7,7 +7,7 @@ export const GroupChatActionsDropdown = ({
   handleClick,
 }: {
   showDropdown: boolean;
-  handleClick: (options: GroupChatOptions) => void;
+  handleClick: (option: GroupChatOptions) => void;
 }) => {
   return (
     <>
