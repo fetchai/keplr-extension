@@ -207,6 +207,7 @@ export const GroupChatsViewSection = ({}: {
     e.preventDefault();
     if (newMessage.trim().length)
       try {
+        // Todo : send encryptedsymmetrickey as well as parameter
         const message = await deliverGroupMessages(
           user.accessToken,
           current.chainId,

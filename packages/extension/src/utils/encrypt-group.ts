@@ -180,6 +180,11 @@ export async function encryptGroupMessageToEnvelope(
     throw new Error("Sender Public key not available");
   }
 
+  const symmetricKey = await decryptMessageContent(
+    chainId,
+    encryptedSymmetricKey
+  );
+
   const message = {
     senderPublicKey,
     targetGroupId,
@@ -190,10 +195,7 @@ export async function encryptGroupMessageToEnvelope(
   };
 
   const encodedData = toBase64(Buffer.from(JSON.stringify(message)));
-  const symmetricKey = await decryptMessageContent(
-    chainId,
-    encryptedSymmetricKey
-  );
+
   const encryptedContent = encryptGroupData(symmetricKey, encodedData);
   // get the signature for the payload
   const signature = await requester.sendMessage(

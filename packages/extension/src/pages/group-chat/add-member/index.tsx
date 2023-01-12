@@ -171,7 +171,6 @@ export const AddMember: FunctionComponent = observer(() => {
         current.chainId,
         contactAddress
       );
-
       if (pubAddr && pubAddr.publicKey) {
         const tempMember: GroupMembers = {
           address: contactAddress,

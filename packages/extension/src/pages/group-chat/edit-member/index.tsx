@@ -155,6 +155,12 @@ export const EditMember: FunctionComponent = observer(() => {
       );
 
       if (pubAddr && pubAddr.publicKey) {
+        //Todo: get symmetricKey of group using
+        /*const symmetricKey = await decryptMessageContent(
+          chainId,
+          encryptedSymmetricKey
+        ); */
+        //Todo: generateEncryptedSymmetricKeyForAddress needs to be called to get value of encryptedSymmetricKey
         const tempMember: GroupMembers = {
           address: contactAddress,
           pubKey: pubAddr.publicKey,

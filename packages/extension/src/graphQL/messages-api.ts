@@ -263,6 +263,7 @@ export const deliverGroupMessages = async (
   accessToken: string,
   chainId: string,
   newMessage: any,
+  encryptedSymmetricKey: string,
   messageType: GroupMessageType,
   senderAddress: string,
   groupId: string
@@ -274,6 +275,7 @@ export const deliverGroupMessages = async (
         chainId,
         newMessage,
         messageType,
+        encryptedSymmetricKey,
         senderAddress,
         groupId,
         accessToken

@@ -68,3 +68,6 @@ export const decryptGroupMessage = async (
     };
   }
 };
+
+// IF Not working: Comment out line where decryptGroupData is called
+// IF Not working: Comment out line where encryptGroupData is called

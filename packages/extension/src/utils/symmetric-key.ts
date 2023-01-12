@@ -3,7 +3,7 @@ import { EncryptMessagingMessage } from "@keplr-wallet/background/build/messagin
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import crypto from "crypto";
-import { GroupAddress } from "@chatTypes";
+import { GroupMembers } from "@chatTypes";
 
 function generateSymmetricKey() {
   return crypto.randomBytes(32).toString("hex");
@@ -30,7 +30,7 @@ export async function generateEncryptedSymmetricKeyForAddress(
 }
 
 export const createEncryptedSymmetricKeyForAddresses = async (
-  addresses: GroupAddress[],
+  addresses: GroupMembers[],
   chainId: string,
   accessToken: string
 ) => {

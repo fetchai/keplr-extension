@@ -157,6 +157,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           data-loading={isLoading}
           onClick={async () => {
             setIsLoading(true);
+            // newGroupState.group.members
+            // TODO: createEncryptedSymmetricKeyForAddresses ==> return members array with encrypted symmetric key
             const group = await createGroup(newGroupState.group);
             setIsLoading(false);
 
