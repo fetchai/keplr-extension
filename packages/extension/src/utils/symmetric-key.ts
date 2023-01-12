@@ -3,16 +3,17 @@ import { EncryptMessagingMessage } from "@keplr-wallet/background/build/messagin
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import crypto from "crypto";
+import { GroupAddress } from "@chatTypes";
 
-export function generateSymmetricKey() {
+function generateSymmetricKey() {
   return crypto.randomBytes(32).toString("hex");
 }
 
-export async function generateEncryptSymmetricKey(
-  chainId,
-  accessToken,
-  symmetricKey,
-  address
+export async function generateEncryptedSymmetricKeyForAddress(
+  chainId: string,
+  accessToken: string,
+  symmetricKey: string,
+  address: string
 ) {
   const requester = new InExtensionMessageRequester();
   const encryptMsg = new EncryptMessagingMessage(
@@ -27,6 +28,28 @@ export async function generateEncryptSymmetricKey(
   );
   return encryptSymmetricKey;
 }
+
+export const createEncryptedSymmetricKeyForAddresses = async (
+  addresses: GroupAddress[],
+  chainId: string,
+  accessToken: string
+) => {
+  const newAddresses = [];
+  const newSymmetricKey = generateSymmetricKey();
+  for (let i = 0; i < addresses.length; i++) {
+    const groupAddress = addresses[i];
+    newAddresses[i] = groupAddress;
+    newAddresses[
+      i
+    ].encryptedSymmetricKey = await generateEncryptedSymmetricKeyForAddress(
+      chainId,
+      accessToken,
+      newSymmetricKey,
+      groupAddress.address
+    );
+  }
+  return newAddresses;
+};
 
 export function encryptGroupData(key: string, data: string) {
   const iv = crypto.randomBytes(16);
