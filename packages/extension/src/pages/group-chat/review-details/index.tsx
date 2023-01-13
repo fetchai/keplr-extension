@@ -66,20 +66,24 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   );
 
   useEffect(() => {
-    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
-      (element) => {
-        const addressData = selectedMembers.find(
-          (data) => data.address === element.address
-        );
+    const userAddresses: NameAddress[] = selectedMembers.map((element) => {
+      const addressData = addressBookConfig.addressBookDatas.find(
+        (data) => data.address === element.address
+      );
 
-        if (addressData && addressData.address !== walletAddress)
-          return {
-            name: element.name,
-            address: element.address,
-          };
-      }
-    );
-    setAddresses([{ name: "You", address: walletAddress }, ...userAddresses]);
+      if (addressData && addressData.address !== walletAddress)
+        return {
+          name: addressData.name,
+          address: addressData.address,
+        };
+
+      return {
+        name: element.address === walletAddress ? "You" : element.address,
+        address: element.address,
+      };
+    });
+
+    setAddresses(userAddresses);
   }, [addressBookConfig.addressBookDatas]);
 
   const handleRemoveMember = async (contactAddress: string) => {
@@ -156,8 +160,12 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
               groupsObj[group.id] = group;
 
               store.dispatch(setGroups({ groups: groupsObj }));
-              /// Todo handle backstack
-              history.push(`/group-chat/chat-section/${group.id}`);
+              /// Clearing stack till chat tab
+              history.go(-4);
+              setTimeout(
+                () => history.push(`/group-chat/chat-section/${group.id}`),
+                100
+              );
             }
           }}
         >

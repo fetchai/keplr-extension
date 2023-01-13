@@ -1,6 +1,7 @@
 import React from "react";
 import style from "./style.module.scss";
 import { GroupChatMemberOptions, GroupMembers } from "@chatTypes";
+import { formatAddress } from "../../utils/format";
 
 export const GroupChatPopup = ({
   name,
@@ -19,11 +20,12 @@ export const GroupChatPopup = ({
       <div className={style.popup}>
         {
           <Option
-            title={`Message ${name}`}
+            title={`Message ${formatAddress(name)}`}
             onClick={() => onClick(GroupChatMemberOptions.messageMember)}
           />
         }
         {
+          //// Todo: add view address book option
           <Option
             title={"Add to Address Book"}
             onClick={() => onClick(GroupChatMemberOptions.addToAddressBook)}

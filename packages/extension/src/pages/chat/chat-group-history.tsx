@@ -57,12 +57,13 @@ export const ChatsGroupHistory: React.FC<{
   const filterGroups = (contact: string) => {
     const contactAddressBookName = addresses[contact];
 
+    const searchValue = searchString.trim();
     if (userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts) {
       if (searchString.length > 0) {
         if (
           !contactAddressBookName
             ?.toLowerCase()
-            .includes(searchString.trim().toLowerCase())
+            .includes(searchValue.toLowerCase())
         )
           return false;
       }
@@ -74,8 +75,8 @@ export const ChatsGroupHistory: React.FC<{
         if (
           !contactAddressBookName
             ?.toLowerCase()
-            .includes(searchString.trim().toLowerCase()) &&
-          !contact.toLowerCase().includes(searchString.trim().toLowerCase())
+            .includes(searchValue.toLowerCase()) &&
+          !contact.toLowerCase().includes(searchValue.toLowerCase())
         )
           return false;
       }

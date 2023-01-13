@@ -396,10 +396,11 @@ export const groupReadUnreadListener = (userAddress: string) => {
         const group = data.groupUpdate.group;
 
         if (group.isDm) {
+          const ids = group.id.split("-");
           group.userAddress =
-            group.id.split("-")[0].toLowerCase() !== userAddress.toLowerCase()
-              ? group.id.split("-")[0]
-              : group.id.split("-")[1];
+            ids[0].toLowerCase() !== userAddress.toLowerCase()
+              ? ids[0]
+              : ids[1];
         } else {
           group.userAddress = group.id;
         }

@@ -6,8 +6,9 @@ import chatSeenIcon from "@assets/icon/chat-seen-status.png";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
 import { decryptGroupMessage } from "../../utils/decrypt-group";
-import { GroupMessagePayload } from "@chatTypes";
+import { GroupMessagePayload, NameAddress } from "@chatTypes";
 import { GroupMessageType } from "../../utils/encrypt-group";
+import { formatAddress } from "../../utils/format";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -16,6 +17,8 @@ const formatTime = (timestamp: number): string => {
 
 export const GroupChatMessage = ({
   chainId,
+  senderAddress,
+  addresses,
   message,
   isSender,
   timestamp,
@@ -23,6 +26,8 @@ export const GroupChatMessage = ({
   groupLastSeenTimestamp,
 }: {
   chainId: string;
+  senderAddress: string;
+  addresses: NameAddress;
   isSender: boolean;
   message: string;
   timestamp: number;
@@ -34,9 +39,12 @@ export const GroupChatMessage = ({
     setDecryptedMessage,
   ] = useState<GroupMessagePayload>();
 
+  // translate the contact address into the address book name if it exists
+  const contactAddressBookName = addresses[senderAddress];
+
   useEffect(() => {
     setDecryptedMessage(decryptGroupMessage(message));
-  }, [chainId, isSender, message]);
+  }, [chainId, message]);
 
   const getDate = (timestamp: number): string => {
     const d = new Date(timestamp);
@@ -49,6 +57,30 @@ export const GroupChatMessage = ({
     return format(d, "dd MMMM yyyy");
   };
 
+  function getContactName(address: string): string {
+    return contactAddressBookName
+      ? formatAddress(contactAddressBookName)
+      : formatAddress(address);
+  }
+
+  function removeByIndex(str: string, index: number) {
+    return str.slice(0, index) + str.slice(index + 1);
+  }
+
+  function getEventMessage(message: string): string {
+    const data = message.split(" ");
+    const tempAddress = data.find((element) => element.startsWith("-"));
+    if (tempAddress) {
+      const finalData = message.replace(
+        tempAddress,
+        getContactName(removeByIndex(tempAddress, 0))
+      );
+      return finalData;
+    }
+
+    return message;
+  }
+
   return (
     <>
       <div className={style.currentDateContainer}>
@@ -57,16 +89,14 @@ export const GroupChatMessage = ({
           <span className={style.currentDate}>{getDate(timestamp)}</span>
         ) : null}
       </div>
-      {console.log("Hey :", decryptedMessage?.type)}
-      {console.log("Hey ::", GroupMessageType.event.toString())}
       {decryptedMessage &&
       (decryptedMessage.type == GroupMessageType.event.toString() ||
         decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
-        <div className={style.currentDateContainer}>
+        <div className={style.currentEventContainer}>
           {" "}
           {
-            <span className={style.currentDate}>
-              {decryptedMessage.message}
+            <span className={style.currentEvent}>
+              {getEventMessage(decryptedMessage.message)}
             </span>
           }
         </div>
@@ -78,6 +108,9 @@ export const GroupChatMessage = ({
               [style.senderBox]: isSender,
             })}
           >
+            {!isSender && (
+              <div className={style.title}>{getContactName(senderAddress)}</div>
+            )}
             {!decryptedMessage ? (
               <i className="fas fa-spinner fa-spin ml-1" />
             ) : (

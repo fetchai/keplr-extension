@@ -11,7 +11,9 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
-import { Chats, Group, Groups } from "@chatTypes";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { AddressBookConfigMap } from "@keplr-wallet/hooks";
+import { Chats, Group, Groups, NameAddress } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { CHAT_PAGE_COUNT } from "../../../config.ui.var";
@@ -39,6 +41,32 @@ export const GroupChatsViewSection = ({}: {
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
+
+  const [addresses, setAddresses] = useState<NameAddress>({});
+  useEffect(() => {
+    const configMap = new AddressBookConfigMap(
+      new ExtensionKVStore("address-book"),
+      chainStore
+    );
+
+    const addressBookConfig = configMap.getAddressBookConfig(current.chainId);
+    addressBookConfig.setSelectHandler({
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    });
+    addressBookConfig.waitLoaded().then(() => {
+      const addressList: NameAddress = {};
+      addressBookConfig.addressBookDatas.map((data) => {
+        addressList[data.address] = data.name;
+      });
+      setAddresses(addressList);
+    });
+  }, [current.chainId]);
+
   const preLoadedChats = useMemo(() => {
     return (
       userChats[groupId] || {
@@ -215,13 +243,15 @@ export const GroupChatsViewSection = ({}: {
           </p>
         )}
         {messages?.map((message: any, index) => {
-          const check = showDateFunction(message?.commitTimestamp);
+          const isShowDate = showDateFunction(message?.commitTimestamp);
           return (
             <div key={message.id}>
               {group !== undefined && (
                 <GroupChatMessage
                   chainId={current.chainId}
-                  showDate={check}
+                  addresses={addresses}
+                  senderAddress={message?.sender}
+                  showDate={isShowDate}
                   message={message?.contents}
                   isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
                   timestamp={message?.commitTimestamp || 1549312452}

@@ -17,12 +17,14 @@ export const ChatMember = (props: {
   onClick?: VoidCallback;
 }) => {
   const { name, address } = props.address;
-  const isSelected = props.isSelected;
-  const isShowAdmin = props.isShowAdmin;
-  const showSelectedIcon = props.showSelectedIcon ?? true;
-  const showPointer = props.showPointer ?? false;
-  const onIconClick = props.onIconClick;
-  const onClick = props.onClick;
+  const {
+    isSelected,
+    isShowAdmin,
+    showSelectedIcon = true,
+    showPointer = false,
+    onIconClick,
+    onClick,
+  } = props;
 
   return (
     <div

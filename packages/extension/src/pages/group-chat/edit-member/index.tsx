@@ -93,21 +93,38 @@ export const EditMember: FunctionComponent = observer(() => {
     }
   );
 
-  useEffect(() => {
-    const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
-      (element) => {
-        const addressData = selectedMembers.find(
+  const updateUserAddresses = () => {
+    /// Todo: handle it in better way
+    const userAddresses: NameAddress[] = selectedMembers
+      .map((element) => {
+        const addressData = addressBookConfig.addressBookDatas.find(
           (data) => data.address === element.address
         );
 
         if (addressData && addressData.address !== walletAddress)
           return {
-            name: element.name,
-            address: element.address,
+            name: addressData.name,
+            address: addressData.address,
           };
-      }
-    );
-    setAddresses([{ name: "You", address: walletAddress }, ...userAddresses]);
+
+        return {
+          name: element.address,
+          address: element.address,
+        };
+      })
+      .filter((element) => element.address !== walletAddress);
+
+    setAddresses([
+      ...userAddresses,
+      {
+        name: "You",
+        address: walletAddress,
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    updateUserAddresses();
 
     /// Adding login user into the group list
     handleAddRemoveMember(
@@ -181,23 +198,7 @@ export const EditMember: FunctionComponent = observer(() => {
 
       if (tempGroup) {
         /// Updating the UI
-        const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
-          (element) => {
-            const addressData = tempMembers.find(
-              (data) => data.address === element.address
-            );
-
-            if (addressData && addressData.address !== walletAddress)
-              return {
-                name: element.name,
-                address: element.address,
-              };
-          }
-        );
-        setAddresses([
-          { name: "You", address: walletAddress },
-          ...userAddresses,
-        ]);
+        updateUserAddresses();
 
         /// updating the new updated group
         store.dispatch(setNewGroupInfo({ contents, members: tempMembers }));
