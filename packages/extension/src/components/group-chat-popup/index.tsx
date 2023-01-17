@@ -7,11 +7,13 @@ export const GroupChatPopup = ({
   name,
   selectedMember,
   isLoginUserAdmin,
+  isAdded,
   onClick,
 }: {
   name: string;
   selectedMember: GroupMembers | undefined;
   isLoginUserAdmin: boolean;
+  isAdded: boolean;
   onClick: (option: GroupChatMemberOptions) => void;
 }) => {
   return (
@@ -24,13 +26,17 @@ export const GroupChatPopup = ({
             onClick={() => onClick(GroupChatMemberOptions.messageMember)}
           />
         }
-        {
-          //// Todo: add view address book option
+        {isAdded ? (
+          <Option
+            title={"View in Address Book"}
+            onClick={() => onClick(GroupChatMemberOptions.viewInAddressBook)}
+          />
+        ) : (
           <Option
             title={"Add to Address Book"}
             onClick={() => onClick(GroupChatMemberOptions.addToAddressBook)}
           />
-        }
+        )}
         {isLoginUserAdmin && !selectedMember?.isAdmin && (
           <Option
             title={"Give admin status"}
@@ -45,7 +51,7 @@ export const GroupChatPopup = ({
         )}
         {isLoginUserAdmin && (
           <Option
-            title={`Remove ${name}`}
+            title={`Remove ${formatAddress(name)}`}
             onClick={() => onClick(GroupChatMemberOptions.removeMember)}
           />
         )}

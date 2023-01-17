@@ -116,6 +116,7 @@ export enum GroupChatOptions {
 
 export enum GroupChatMemberOptions {
   addToAddressBook,
+  viewInAddressBook,
   messageMember,
   removeMember,
   removeAdminStatus,

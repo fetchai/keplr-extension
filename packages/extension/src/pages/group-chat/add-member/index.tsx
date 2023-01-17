@@ -204,7 +204,7 @@ export const AddMember: FunctionComponent = observer(() => {
               );
             })}
           </div>
-          {addresses.length === 0 && (
+          {addresses.length === 0 && !randomAddress && (
             <div>
               <div className={style.resultText}>
                 No results in your contacts.

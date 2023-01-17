@@ -39,9 +39,6 @@ export const GroupChatMessage = ({
     setDecryptedMessage,
   ] = useState<GroupMessagePayload>();
 
-  // translate the contact address into the address book name if it exists
-  const contactAddressBookName = addresses[senderAddress];
-
   useEffect(() => {
     setDecryptedMessage(decryptGroupMessage(message));
   }, [chainId, message]);
@@ -58,6 +55,8 @@ export const GroupChatMessage = ({
   };
 
   function getContactName(address: string): string {
+    // translate the contact address into the address book name if it exists
+    const contactAddressBookName = addresses[address];
     return contactAddressBookName
       ? formatAddress(contactAddressBookName)
       : formatAddress(address);

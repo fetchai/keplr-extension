@@ -239,10 +239,13 @@ export const EditMember: FunctionComponent = observer(() => {
         (item) => item.address !== contactAddress
       );
       const tempMembers = [...newMembers, updatedMember];
-
+      console.log("contactAddress", contactAddress);
+      const statement = isAdmin
+        ? `-${contactAddress} now an admin.`
+        : `-${contactAddress} removed as admin.`;
       const contents = await encryptGroupMessage(
         current.chainId,
-        `-${contactAddress} now an admin.`,
+        statement,
         GroupMessageType.event,
         accountInfo.bech32Address,
         newGroupState.group.groupId,
@@ -336,6 +339,10 @@ export const EditMember: FunctionComponent = observer(() => {
       case GroupChatMemberOptions.removeAdminStatus:
         updateAdminStatus(selectedAddress.address, false);
         break;
+
+      case GroupChatMemberOptions.viewInAddressBook:
+        history.push("/setting/address-book");
+        break;
     }
   }
 
@@ -384,6 +391,13 @@ export const EditMember: FunctionComponent = observer(() => {
 
         {confirmAction && (
           <GroupChatPopup
+            isAdded={
+              (selectedAddress &&
+                addresses.some(
+                  (address) => address[selectedAddress.address]
+                )) ??
+              false
+            }
             name={selectedAddress?.name ?? ""}
             selectedMember={selectedMembers.find(
               (element) => element.address === selectedAddress?.address
