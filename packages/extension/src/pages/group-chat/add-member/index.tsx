@@ -12,7 +12,12 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { GroupMembers, NameAddress, NewGroupDetails } from "@chatTypes";
+import {
+  GroupDetails,
+  GroupMembers,
+  NameAddress,
+  NewGroupDetails,
+} from "@chatTypes";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatMember } from "@components/chat-member";
@@ -26,6 +31,12 @@ import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
 import { store } from "@chatStore/index";
 import { fetchPublicKey } from "../../../utils/fetch-public-key";
 import { Button } from "reactstrap";
+import {
+  encryptGroupMessage,
+  GroupMessageType,
+} from "../../../utils/encrypt-group";
+import { createGroup } from "@graphQL/groups-api";
+import { setGroups } from "@chatStore/messages-slice";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -34,7 +45,9 @@ export const AddMember: FunctionComponent = observer(() => {
   const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
     newGroupState.group.members || []
   );
+  const [newAddedMembers, setNewAddedMembers] = useState<string[]>([]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
@@ -73,9 +86,15 @@ export const AddMember: FunctionComponent = observer(() => {
     }
   );
 
-  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
+  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
     (data) => {
-      return { name: data.name, address: data.address };
+      if (newGroupState.isEditGroup) {
+        const isAlreadyMember = selectedMembers.find(
+          (element) => element.address === data.address
+        );
+        /// removing already added member
+        if (!isAlreadyMember) return { name: data.name, address: data.address };
+      } else return { name: data.name, address: data.address };
     }
   );
 
@@ -83,7 +102,7 @@ export const AddMember: FunctionComponent = observer(() => {
     setAddresses(userAddresses.filter((a) => a.address !== walletAddress));
 
     /// Adding login user into the list
-    handleAddRemoveMember(walletAddress, true);
+    if (!newGroupState.isEditGroup) handleAddRemoveMember(walletAddress, true);
   }, [addressBookConfig.addressBookDatas]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,9 +131,23 @@ export const AddMember: FunctionComponent = observer(() => {
           name: formatAddress(searchedVal),
           address: searchedVal,
         };
+
+        /// validating the address in selected member in case of edit
+        /// to avoid display the alread added member address
+        if (newGroupState.isEditGroup) {
+          const isAlreadyMember = selectedMembers.find(
+            (element) => element.address === searchedVal
+          );
+
+          if (isAlreadyMember) {
+            setAddresses([]);
+            setRandomAddress(undefined);
+            return;
+          }
+        }
+
         setRandomAddress(address);
         setAddresses([]);
-        // setAddresses([address]);
       } catch (e) {
         setAddresses([]);
         setRandomAddress(undefined);
@@ -146,11 +179,11 @@ export const AddMember: FunctionComponent = observer(() => {
           encryptedSymmetricKey: "",
           isAdmin: isAdmin || false,
         };
-
         const tempMembers = [...selectedMembers, tempMember];
 
         store.dispatch(setNewGroupInfo({ members: tempMembers }));
         setSelectedMembers(tempMembers);
+        setNewAddedMembers([...newAddedMembers, contactAddress]);
       }
     } else {
       const tempMembers = selectedMembers.filter(
@@ -160,6 +193,41 @@ export const AddMember: FunctionComponent = observer(() => {
       setSelectedMembers(tempMembers);
     }
   };
+
+  async function handleUpdateGroup() {
+    if (newAddedMembers.length === 0) {
+      history.goBack();
+      return;
+    }
+
+    setIsLoading(true);
+    const contents = await encryptGroupMessage(
+      current.chainId,
+      `-${accountInfo.bech32Address} added [${newAddedMembers.join()}]`,
+      GroupMessageType.event,
+      accountInfo.bech32Address,
+      newGroupState.group.groupId,
+      user.accessToken
+    );
+    const updatedGroupInfo: GroupDetails = {
+      description: newGroupState.group.description ?? "",
+      groupId: newGroupState.group.groupId,
+      contents: contents,
+      members: selectedMembers,
+      name: newGroupState.group.name,
+      onlyAdminMessages: false,
+    };
+    const group = await createGroup(updatedGroupInfo);
+    setIsLoading(false);
+
+    if (group) {
+      const groupsObj: any = {};
+      groupsObj[group.id] = group;
+
+      store.dispatch(setGroups({ groups: groupsObj }));
+      history.goBack();
+    }
+  }
 
   return (
     <HeaderLayout
@@ -246,8 +314,10 @@ export const AddMember: FunctionComponent = observer(() => {
           )}
           <div className={style.groupHeader}>
             <span className={style.groupName}>{newGroupState.group.name}</span>
-            <span className={style.memberTotal}>
-              {selectedMembers.length} member
+            <span className={style.groupMembers}>
+              {`${selectedMembers.length} member${
+                selectedMembers.length > 1 ? "s" : ""
+              }`}
             </span>
           </div>
         </div>
@@ -255,11 +325,16 @@ export const AddMember: FunctionComponent = observer(() => {
         <Button
           className={style.button}
           size="large"
+          data-loading={isLoading}
           onClick={() => {
-            history.push("/group-chat/review-details");
+            if (newGroupState.isEditGroup) {
+              handleUpdateGroup();
+            } else {
+              history.push("/group-chat/review-details");
+            }
           }}
         >
-          Review
+          {newGroupState.isEditGroup ? "Update" : "Review"}
         </Button>
       </div>
     </HeaderLayout>

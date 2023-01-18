@@ -158,7 +158,11 @@ export const ChatsGroupHistory: React.FC<{
                   chainId={chainId}
                 />
               ) : (
-                <ChatGroupUser chainId={chainId} group={groups[contact]} />
+                <ChatGroupUser
+                  chainId={chainId}
+                  group={groups[contact]}
+                  addresses={addresses}
+                />
               )}
               {index === Object.keys(groups).length - 10 && (
                 <div ref={messagesEncRef} />

@@ -8,6 +8,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
+  CommonPopupOptions,
   Group,
   GroupChatMemberOptions,
   GroupDetails,
@@ -35,6 +36,8 @@ import {
 } from "../../../utils/encrypt-group";
 import { createGroup } from "@graphQL/groups-api";
 import { useLoadingIndicator } from "@components/loading-indicator";
+import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
+import { formatAddress } from "../../../utils/format";
 
 export const EditMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -58,6 +61,9 @@ export const EditMember: FunctionComponent = observer(() => {
   /// Selected member info for displaying the dynamic popup
   const [selectedAddress, setSelectedAddresse] = useState<NameAddress>();
   const [confirmAction, setConfirmAction] = useState(false);
+
+  /// Show alert popup for remove member
+  const [removeMemberPopup, setRemoveMemberPopup] = useState(false);
 
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -170,6 +176,17 @@ export const EditMember: FunctionComponent = observer(() => {
     }
   };
 
+  function showRemoveMemberPopup(action: CommonPopupOptions) {
+    setRemoveMemberPopup(false);
+    if (!selectedAddress) {
+      return;
+    }
+
+    if (action === CommonPopupOptions.ok) {
+      removeMember(selectedAddress.address);
+    }
+  }
+
   const removeMember = async (contactAddress: string) => {
     loadingIndicator.setIsLoading("group-action", true);
 
@@ -239,7 +256,6 @@ export const EditMember: FunctionComponent = observer(() => {
         (item) => item.address !== contactAddress
       );
       const tempMembers = [...newMembers, updatedMember];
-      console.log("contactAddress", contactAddress);
       const statement = isAdmin
         ? `-${contactAddress} now an admin.`
         : `-${contactAddress} removed as admin.`;
@@ -329,7 +345,7 @@ export const EditMember: FunctionComponent = observer(() => {
         break;
 
       case GroupChatMemberOptions.removeMember:
-        removeMember(selectedAddress.address);
+        setRemoveMemberPopup(true);
         break;
 
       case GroupChatMemberOptions.makeAdminStatus:
@@ -350,7 +366,7 @@ export const EditMember: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={newGroupState.group.name}
+      alternativeTitle={"New Group Chat"}
       onBackButton={() => {
         history.goBack();
       }}
@@ -359,10 +375,34 @@ export const EditMember: FunctionComponent = observer(() => {
         <div className={style.groupContainer}>
           <div className={style.groupHeader}>
             <span className={style.groupName}>{newGroupState.group.name}</span>
-            <span className={style.memberTotal}>
-              {selectedMembers.length} member
+            <span
+              className={style.groupMembers}
+              onClick={() => {
+                history.push({
+                  pathname: "/group-chat/add-member",
+                });
+              }}
+            >
+              {`${selectedMembers.length} member${
+                selectedMembers.length > 1 ? "s" : ""
+              }`}
+              <i
+                className={"fa fa-user-plus"}
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  padding: "2px 0 0 12px",
+                  cursor: "pointer",
+                  alignItems: "end",
+                  alignSelf: "end",
+                }}
+                aria-hidden="true"
+              />
             </span>
           </div>
+          <span className={style.groupDescription}>
+            {newGroupState.group.description}
+          </span>
         </div>
         {!addressBookConfig.isLoaded ? (
           <ChatLoader message="Loading contacts, please wait..." />
@@ -388,7 +428,20 @@ export const EditMember: FunctionComponent = observer(() => {
             </div>
           </div>
         )}
-
+        {removeMemberPopup && (
+          <AlertPopup
+            setConfirmAction={setConfirmAction}
+            heading={`Remove ${formatAddress(selectedAddress?.name ?? "")}`}
+            description={`${formatAddress(
+              selectedAddress?.name ?? ""
+            )} will no longer receive messages from this group. ${"\n"} ${"\n"} The group will be notified that they have been removed.`}
+            firstButtonTitle="Cancel"
+            secondButtonTitle="Remove"
+            onClick={(action) => {
+              showRemoveMemberPopup(action);
+            }}
+          />
+        )}
         {confirmAction && (
           <GroupChatPopup
             isAdded={

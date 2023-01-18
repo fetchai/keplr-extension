@@ -94,11 +94,18 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     setAddresses(addresses.filter((item) => item.address !== contactAddress));
   };
 
+  const isUserAdmin = (address: string): boolean => {
+    return (
+      selectedMembers.find((element) => element.address === address)?.isAdmin ??
+      false
+    );
+  };
+
   return (
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={newGroupState.group.name}
+      alternativeTitle={"New Group Chat"}
       onBackButton={() => {
         history.goBack();
       }}
@@ -108,10 +115,13 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           className={style.groupImage}
           src={require("@assets/group710.svg")}
         />
-        <span className={style.recommendedSize}>
+        <span className={style.groupDescription}>
+          {newGroupState.group.name}
+        </span>
+        <span className={style.groupDescription}>
           {newGroupState.group.description}
         </span>
-        {newGroupState.isEditGroup && (
+        {newGroupState.isEditGroup && isUserAdmin(walletAddress) && (
           <Button
             className={style.button}
             size="large"
@@ -132,11 +142,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
               /// showSelectedIcon: isEditGroup true means remove the cross icon
               showSelectedIcon={!newGroupState.isEditGroup}
               isSelected={true}
-              isShowAdmin={
-                selectedMembers.find(
-                  (element) => element.address === address.address
-                )?.isAdmin ?? false
-              }
+              isShowAdmin={isUserAdmin(address.address)}
               onIconClick={() => {
                 handleRemoveMember(address.address);
               }}

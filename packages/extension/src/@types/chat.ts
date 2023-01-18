@@ -121,4 +121,10 @@ export enum GroupChatMemberOptions {
   removeMember,
   removeAdminStatus,
   makeAdminStatus,
+  dissmisPopup,
+}
+
+export enum CommonPopupOptions {
+  cancel,
+  ok,
 }

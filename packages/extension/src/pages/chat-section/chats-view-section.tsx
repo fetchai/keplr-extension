@@ -69,16 +69,11 @@ export const ChatsViewSection = ({
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   const [newMessage, setNewMessage] = useState("");
+  const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
 
-  //Scrolling Logic
-  // const messagesEndRef: any = useRef();
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
-
-  // const scrollToBottom = () => {
-  //   if (messagesEndRef.current) messagesEndRef.current.scrollIntoView(true);
-  // };
 
   useEffect(() => {
     const updatedMessages = Object.values(preLoadedChats?.messages).sort(
@@ -115,18 +110,47 @@ export const ChatsViewSection = ({
     }
   }, [preLoadedChats]);
 
-  const recieveData = async (tempGroup: Group | undefined) => {
-    const groupAdd = {
-      ...tempGroup?.addresses.find((val) => val?.address == targetAddress),
-    };
+  // const recieveData = async (tempGroup: Group | undefined) => {
+  //   const groupAdd = {
+  //     ...tempGroup?.addresses.find((val) => val?.address == targetAddress),
+  //   };
 
-    const groupAddress = { ...groupAdd };
+  //   const groupAddress = { ...groupAdd };
+  //   if (groupAddress && groupAddress.groupLastSeenTimestamp) {
+  //     const data = await decryptGroupTimestamp(
+  //       current.chainId,
+  //       groupAddress.groupLastSeenTimestamp,
+  //       false
+  //     );
+  //     Object.assign(groupAddress, {
+  //       groupLastSeenTimestamp: new Date(data).getTime(),
+  //     });
+  //   }
+  //   if (groupAddress && groupAddress.lastSeenTimestamp) {
+  //     const data = await decryptGroupTimestamp(
+  //       current.chainId,
+  //       groupAddress.lastSeenTimestamp,
+  //       false
+  //     );
+
+  //     Object.assign(groupAddress, {
+  //       lastSeenTimestamp: new Date(data).getTime(),
+  //     });
+  //   }
+
+  //   return groupAddress;
+  // };
+  const decryptGrpAddresses = async (
+    groupAddress: GroupAddress,
+    isSender: boolean
+  ) => {
     if (groupAddress && groupAddress.groupLastSeenTimestamp) {
       const data = await decryptGroupTimestamp(
         current.chainId,
         groupAddress.groupLastSeenTimestamp,
-        false
+        isSender
       );
+
       Object.assign(groupAddress, {
         groupLastSeenTimestamp: new Date(data).getTime(),
       });
@@ -135,9 +159,8 @@ export const ChatsViewSection = ({
       const data = await decryptGroupTimestamp(
         current.chainId,
         groupAddress.lastSeenTimestamp,
-        false
+        isSender
       );
-
       Object.assign(groupAddress, {
         lastSeenTimestamp: new Date(data).getTime(),
       });
@@ -146,6 +169,39 @@ export const ChatsViewSection = ({
     return groupAddress;
   };
 
+  const decryptGrp = async (group: Group) => {
+    const tempGroup = { ...group };
+    let tempSenderAddress: GroupAddress | undefined;
+    let tempReceiverAddress: GroupAddress | undefined;
+
+    /// Shallow copy
+    /// Decrypting sender data
+    const senderAddress = {
+      ...group.addresses.find((val) => val.address !== targetAddress),
+    };
+    if (senderAddress)
+      tempSenderAddress = await decryptGrpAddresses(
+        senderAddress as GroupAddress,
+        true
+      );
+
+    /// Decrypting receiver data
+    const receiverAddress = {
+      ...group.addresses.find((val) => val.address === targetAddress),
+    };
+    if (receiverAddress)
+      tempReceiverAddress = await decryptGrpAddresses(
+        receiverAddress as GroupAddress,
+        false
+      );
+
+    /// Storing decryptin address into the group object and updating the UI
+    if (tempSenderAddress && tempReceiverAddress) {
+      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
+      tempGroup.addresses = tempGroupAddress;
+      setGroup(tempGroup);
+    }
+  };
   useEffect(() => {
     /// Shallow copy
     const tempGroup = {
@@ -153,18 +209,18 @@ export const ChatsViewSection = ({
         group.id.includes(targetAddress)
       ),
     };
+    decryptGrp(tempGroup as Group);
+    // recieveData(tempGroup as Group).then((groupAddress) => {
+    //   const sample = (tempGroup as Group)?.addresses.map((value) => {
+    //     if (value.address === targetAddress) {
+    //       return groupAddress;
+    //     }
+    //     return value;
+    //   });
+    //   if (tempGroup) tempGroup.addresses = sample as GroupAddress[];
 
-    recieveData(tempGroup as Group).then((groupAddress) => {
-      const sample = (tempGroup as Group)?.addresses.map((value) => {
-        if (value.address === targetAddress) {
-          return groupAddress;
-        }
-        return value;
-      });
-      if (tempGroup) tempGroup.addresses = sample as GroupAddress[];
-
-      setGroup(tempGroup as Group);
-    });
+    //   setGroup(tempGroup as Group);
+    // });
   }, [userGroups]);
 
   const messagesEndRef: any = useCallback(
@@ -234,6 +290,18 @@ export const ChatsViewSection = ({
   const receiver = group?.addresses.find(
     (val) => val.address === targetAddress
   );
+  useEffect(() => {
+    const time = group?.addresses.find((val) => val.address !== targetAddress)
+      ?.lastSeenTimestamp;
+    if (lastUnreadMesageId === "") {
+      const firstMessageUnseen = messages
+        .filter((message) => message.commitTimestamp > Number(time))
+        .sort();
+      if (firstMessageUnseen.length > 0) {
+        setLastUnreadMesageId(firstMessageUnseen[0].id);
+      }
+    }
+  }, [messages, group]);
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
@@ -250,6 +318,7 @@ export const ChatsViewSection = ({
         if (message) {
           const updatedMessagesList = [...messages, message];
           setMessages(updatedMessagesList);
+          setLastUnreadMesageId("");
           setNewMessage("");
         }
         // scrollToBottom();
@@ -325,12 +394,18 @@ export const ChatsViewSection = ({
                 Number(message?.commitTimestamp) >
                   Number(receiver?.lastSeenTimestamp) &&
                 message?.sender === targetAddress && (
-                  <div ref={messagesEndRef} className={messagesEndRef} />
+                  <div className={messagesEndRef} /> //ref={messagesEndRef}
                 )}
+              {lastUnreadMesageId === message.id && (
+                <div ref={messagesEndRef} className={"AAAAA"} />
+              )}
             </div>
           );
         })}
-        <div ref={messagesEndRef} className={"AAAAA"} />
+
+        {lastUnreadMesageId === "" && (
+          <div ref={messagesEndRef} className={"AAAAA"} />
+        )}
       </div>
 
       <InputGroup className={style.inputText}>

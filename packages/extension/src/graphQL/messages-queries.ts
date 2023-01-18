@@ -66,6 +66,7 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
         encryptedSymmetricKey
         isAdmin
       }
+      removedAt
       createdAt
     }
     pagination {
@@ -96,6 +97,7 @@ export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $ad
         encryptedSymmetricKey
         isAdmin
       }
+      removedAt
       createdAt
     }
     pagination {
@@ -146,6 +148,7 @@ export const groupReadUnread = `subscription GroupUpdate {
         isAdmin
       }
       createdAt
+      removedAt
     }
   }
 }`;
@@ -199,5 +202,6 @@ export const updateGroupLastSeen = `mutation Mutation($groupId: String!, $lastSe
       isAdmin
     }
     createdAt
+    removedAt
   }
 }`;

@@ -86,6 +86,7 @@ export const GroupChatsViewSection = ({}: {
 
   const [loadingMessages, setLoadingMessages] = useState(false);
 
+  const [isUserRemoved, setUserRemoved] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
   //Scrolling Logic
@@ -134,9 +135,19 @@ export const GroupChatsViewSection = ({}: {
   }, [preLoadedChats]);
 
   useEffect(() => {
-    setGroup(
-      Object.values(userGroups).find((group) => group.id.includes(groupId))
+    const groupData = Object.values(userGroups).find((group) =>
+      group.id.includes(groupId)
     );
+    setGroup(groupData);
+
+    const currentUser = groupData?.addresses.find(
+      (element) => element.address === accountInfo.bech32Address
+    );
+    if (!currentUser && !isUserRemoved) {
+      setUserRemoved(true);
+    } else if (currentUser && isUserRemoved) {
+      setUserRemoved(false);
+    }
   }, [userGroups]);
 
   const messagesEndRef: any = useCallback(
@@ -277,12 +288,17 @@ export const GroupChatsViewSection = ({}: {
           <ReactTextareaAutosize
             maxRows={3}
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={"Type a new message..."}
+            placeholder={
+              isUserRemoved
+                ? "You can't send messages to this group because you're no longer a participant"
+                : "Type a new message..."
+            }
             value={newMessage}
             onChange={(event) => {
               setNewMessage(event.target.value.substring(0, 499));
             }}
             onKeyDown={handleKeydown}
+            disabled={isUserRemoved}
           />
         }
         {newMessage?.length && newMessage.trim() !== "" ? (

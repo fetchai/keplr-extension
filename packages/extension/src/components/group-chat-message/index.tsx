@@ -8,7 +8,7 @@ import { isToday, isYesterday, format } from "date-fns";
 import { decryptGroupMessage } from "../../utils/decrypt-group";
 import { GroupMessagePayload, NameAddress } from "@chatTypes";
 import { GroupMessageType } from "../../utils/encrypt-group";
-import { formatAddress } from "../../utils/format";
+import { getContactName, getEventMessage } from "../../utils";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -54,32 +54,6 @@ export const GroupChatMessage = ({
     return format(d, "dd MMMM yyyy");
   };
 
-  function getContactName(address: string): string {
-    // translate the contact address into the address book name if it exists
-    const contactAddressBookName = addresses[address];
-    return contactAddressBookName
-      ? formatAddress(contactAddressBookName)
-      : formatAddress(address);
-  }
-
-  function removeByIndex(str: string, index: number) {
-    return str.slice(0, index) + str.slice(index + 1);
-  }
-
-  function getEventMessage(message: string): string {
-    const data = message.split(" ");
-    const tempAddress = data.find((element) => element.startsWith("-"));
-    if (tempAddress) {
-      const finalData = message.replace(
-        tempAddress,
-        getContactName(removeByIndex(tempAddress, 0))
-      );
-      return finalData;
-    }
-
-    return message;
-  }
-
   return (
     <>
       <div className={style.currentDateContainer}>
@@ -95,7 +69,7 @@ export const GroupChatMessage = ({
           {" "}
           {
             <span className={style.currentEvent}>
-              {getEventMessage(decryptedMessage.message)}
+              {getEventMessage(addresses, decryptedMessage.message)}
             </span>
           }
         </div>
@@ -108,7 +82,9 @@ export const GroupChatMessage = ({
             })}
           >
             {!isSender && (
-              <div className={style.title}>{getContactName(senderAddress)}</div>
+              <div className={style.title}>
+                {getContactName(addresses, senderAddress)}
+              </div>
             )}
             {!decryptedMessage ? (
               <i className="fas fa-spinner fa-spin ml-1" />

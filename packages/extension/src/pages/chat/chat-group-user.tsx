@@ -3,14 +3,20 @@ import { useHistory } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import style from "./style.module.scss";
 import amplitude from "amplitude-js";
-import { Group, GroupMessagePayload } from "@chatTypes";
+import { Group, GroupMessagePayload, NameAddress } from "@chatTypes";
 import { decryptGroupMessage } from "../../utils/decrypt-group";
+import { GroupMessageType } from "../../utils/encrypt-group";
+import { getEventMessage } from "../../utils";
 
 export const ChatGroupUser: React.FC<{
   chainId: string;
   group: Group;
-}> = ({ chainId, group }) => {
-  const [message, setMessage] = useState<GroupMessagePayload>();
+  addresses: NameAddress;
+}> = ({ chainId, group, addresses }) => {
+  const [
+    decryptedMessage,
+    setDecryptedMessage,
+  ] = useState<GroupMessagePayload>();
   const history = useHistory();
 
   const handleClick = () => {
@@ -22,7 +28,7 @@ export const ChatGroupUser: React.FC<{
 
   useEffect(() => {
     if (group) {
-      setMessage(decryptGroupMessage(group.lastMessageContents));
+      setDecryptedMessage(decryptGroupMessage(group.lastMessageContents));
     }
   }, [chainId, group]);
 
@@ -58,7 +64,13 @@ export const ChatGroupUser: React.FC<{
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{group.name}</div>
-        <div className={style.messageText}>{message?.message ?? ""}</div>
+        <div className={style.messageText}>
+          {decryptedMessage &&
+          (decryptedMessage.type == GroupMessageType.event.toString() ||
+            decryptedMessage.type === GroupMessageType[GroupMessageType.event])
+            ? getEventMessage(addresses, decryptedMessage.message)
+            : decryptedMessage?.message}
+        </div>
       </div>
       <div>
         <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />

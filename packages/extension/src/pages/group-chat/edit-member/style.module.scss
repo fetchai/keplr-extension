@@ -88,9 +88,10 @@
 
 .groupHeader {
   height: 40%;
-  flex-direction: column;
+  flex-direction: row;
+  flex: 1;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   margin-top: 2px;
   display: flex;
 }
@@ -100,7 +101,12 @@
   font-size: 0.875rem;
 }
 
-.memberTotal {
+.groupDescription {
+  text-align: center;
+  margin-bottom: 19px;
+}
+
+.groupMembers {
   align-self: start;
   color: #525f7f;
 }
@@ -126,4 +132,34 @@
   justify-content: space-between;
   gap: 10px;
   align-items: center;
+}
+
+.memberContainer {
+  display: flex;
+  align-items: center;
+
+  .initials1 {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #d0def5;
+    color: #525f7f;
+    margin-right: 8px;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .memberInner {
+    width: 80%;
+    .name {
+      font-weight: 400;
+      font-size: 15px;
+      color: #525f7f;
+      height: 20px;
+    }
+  }
 }

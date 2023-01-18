@@ -1,6 +1,7 @@
 import React from "react";
 import style from "./style.module.scss";
 import { GroupChatMemberOptions, GroupMembers } from "@chatTypes";
+import { ChatOption } from "@components/chat-option";
 import { formatAddress } from "../../utils/format";
 
 export const GroupChatPopup = ({
@@ -18,52 +19,47 @@ export const GroupChatPopup = ({
 }) => {
   return (
     <>
-      <div className={style.overlay} />
+      <div
+        className={style.overlay}
+        onClick={() => onClick(GroupChatMemberOptions.dissmisPopup)}
+      />
       <div className={style.popup}>
         {
-          <Option
+          <ChatOption
             title={`Message ${formatAddress(name)}`}
             onClick={() => onClick(GroupChatMemberOptions.messageMember)}
           />
         }
         {isAdded ? (
-          <Option
+          <ChatOption
             title={"View in Address Book"}
             onClick={() => onClick(GroupChatMemberOptions.viewInAddressBook)}
           />
         ) : (
-          <Option
+          <ChatOption
             title={"Add to Address Book"}
             onClick={() => onClick(GroupChatMemberOptions.addToAddressBook)}
           />
         )}
         {isLoginUserAdmin && !selectedMember?.isAdmin && (
-          <Option
+          <ChatOption
             title={"Give admin status"}
             onClick={() => onClick(GroupChatMemberOptions.makeAdminStatus)}
           />
         )}
         {isLoginUserAdmin && selectedMember?.isAdmin && (
-          <Option
+          <ChatOption
             title={"Remove admin status"}
             onClick={() => onClick(GroupChatMemberOptions.removeAdminStatus)}
           />
         )}
         {isLoginUserAdmin && (
-          <Option
+          <ChatOption
             title={`Remove ${formatAddress(name)}`}
             onClick={() => onClick(GroupChatMemberOptions.removeMember)}
           />
         )}
       </div>
     </>
-  );
-};
-
-const Option = ({ title, onClick }: { title: string; onClick: () => void }) => {
-  return (
-    <div onClick={() => onClick()}>
-      <h4>{title}</h4>
-    </div>
   );
 };
