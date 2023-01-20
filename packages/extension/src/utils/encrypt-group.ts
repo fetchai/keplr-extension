@@ -184,7 +184,6 @@ export async function encryptGroupMessageToEnvelope(
     chainId,
     encryptedSymmetricKey
   );
-
   const message = {
     senderPublicKey,
     targetGroupId,
@@ -193,17 +192,22 @@ export async function encryptGroupMessageToEnvelope(
       type: GroupMessageType[messageType],
     },
   };
-
   const encodedData = toBase64(Buffer.from(JSON.stringify(message)));
 
-  const encryptedContent = encryptGroupData(symmetricKey, encodedData);
+  const encryptedContent = encryptGroupData(
+    symmetricKey.substring(1, symmetricKey.length - 2),
+    encodedData
+  );
+  const encodedContent = toBase64(
+    Buffer.from(JSON.stringify(encryptedContent))
+  );
   // get the signature for the payload
   const signature = await requester.sendMessage(
     BACKGROUND_PORT,
-    new SignMessagingPayload(chainId, encryptedContent)
+    new SignMessagingPayload(chainId, encodedContent)
   );
   return {
-    data: encryptedContent,
+    data: encodedContent,
     senderPublicKey: senderPublicKey.publicKey,
     targetGroupId,
     signature,

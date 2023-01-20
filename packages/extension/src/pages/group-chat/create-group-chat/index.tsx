@@ -44,10 +44,16 @@ export const CreateGroupChat: FunctionComponent = () => {
 
   async function updateGroupInfo() {
     setIsLoading(true);
+    const groupAddresses = newGroupState.group.members;
+    const userGroupAddress = groupAddresses.find(
+      (address) => address.address == accountInfo.bech32Address
+    );
+    const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
     const contents = await encryptGroupMessage(
       current.chainId,
       `Group info updated by -${accountInfo.bech32Address}`,
       GroupMessageType.event,
+      encryptedSymmetricKey,
       accountInfo.bech32Address,
       newGroupState.group.groupId,
       user.accessToken
@@ -92,14 +98,10 @@ export const CreateGroupChat: FunctionComponent = () => {
       return;
     }
 
-    const contents = await encryptGroupMessage(
-      current.chainId,
-      `Group created by -${accountInfo.bech32Address}`,
-      GroupMessageType.event,
-      accountInfo.bech32Address,
-      "new group id",
-      user.accessToken
-    );
+    const contents = {
+      text: `Group created by -${accountInfo.bech32Address}`,
+      type: GroupMessageType[GroupMessageType.event],
+    };
 
     store.dispatch(
       setNewGroupInfo({

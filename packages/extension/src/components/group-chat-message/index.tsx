@@ -18,6 +18,7 @@ const formatTime = (timestamp: number): string => {
 export const GroupChatMessage = ({
   chainId,
   senderAddress,
+  encryptedSymmetricKey,
   addresses,
   message,
   isSender,
@@ -27,6 +28,7 @@ export const GroupChatMessage = ({
 }: {
   chainId: string;
   senderAddress: string;
+  encryptedSymmetricKey: string;
   addresses: NameAddress;
   isSender: boolean;
   message: string;
@@ -40,7 +42,15 @@ export const GroupChatMessage = ({
   ] = useState<GroupMessagePayload>();
 
   useEffect(() => {
-    setDecryptedMessage(decryptGroupMessage(message));
+    async function loadDecryptedMessage() {
+      const decryptedMsg = await decryptGroupMessage(
+        message,
+        chainId,
+        encryptedSymmetricKey
+      );
+      setDecryptedMessage(decryptedMsg);
+    }
+    loadDecryptedMessage();
   }, [chainId, message]);
 
   const getDate = (timestamp: number): string => {

@@ -45,29 +45,29 @@ export const decryptGroupMessage = async (
   try {
     const data = Buffer.from(content, "base64").toString("ascii");
     const dataEnvelopeDecoded = JSON.parse(data);
-    const decodedData = Buffer.from(
-      dataEnvelopeDecoded.data,
-      "base64"
-    ).toString("ascii");
-
+    const decodedData = JSON.parse(
+      Buffer.from(dataEnvelopeDecoded.data, "base64").toString("ascii")
+    );
     const symmetricKey = await decryptMessageContent(
       chainId,
       encryptedSymmetricKey
     );
-    const decryptedContent = decryptGroupData(symmetricKey, decodedData);
-    const parsedData = JSON.parse(decryptedContent);
-
+    const decryptedContent = decryptGroupData(
+      symmetricKey.slice(1, symmetricKey.length - 2),
+      decodedData
+    );
+    const parsedData = JSON.parse(
+      Buffer.from(decryptedContent, "base64").toString("ascii")
+    );
     return {
       message: parsedData.content.text,
       type: parsedData.content.type,
     };
   } catch (e) {
+    console.log("error", e.message);
     return {
       message: content,
       type: GroupMessageType[GroupMessageType.message],
     };
   }
 };
-
-// IF Not working: Comment out line where decryptGroupData is called
-// IF Not working: Comment out line where encryptGroupData is called

@@ -38,6 +38,8 @@ import { createGroup } from "@graphQL/groups-api";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
 import { formatAddress } from "../../../utils/format";
+import { decryptMessageContent } from "../../../utils/decrypt-message";
+import { generateEncryptedSymmetricKeyForAddress } from "../../../utils/symmetric-key";
 
 export const EditMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -69,6 +71,9 @@ export const EditMember: FunctionComponent = observer(() => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
+  const userGroupAddress = group.addresses.find(
+    (address) => address.address == walletAddress
+  );
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -155,16 +160,22 @@ export const EditMember: FunctionComponent = observer(() => {
       );
 
       if (pubAddr && pubAddr.publicKey) {
-        //Todo: get symmetricKey of group using
-        /*const symmetricKey = await decryptMessageContent(
-          chainId,
-          encryptedSymmetricKey
-        ); */
-        //Todo: generateEncryptedSymmetricKeyForAddress needs to be called to get value of encryptedSymmetricKey
+        //get symmetricKey of group using
+        const symmetricKey = await decryptMessageContent(
+          current.chainId,
+          userGroupAddress?.encryptedSymmetricKey || ""
+        );
+        //generateEncryptedSymmetricKeyForAddress needs to be called to get value of encryptedSymmetricKey
+        const encryptedSymmetricKey = await generateEncryptedSymmetricKeyForAddress(
+          current.chainId,
+          user.accessToken,
+          symmetricKey,
+          contactAddress
+        );
         const tempMember: GroupMembers = {
           address: contactAddress,
           pubKey: pubAddr.publicKey,
-          encryptedSymmetricKey: "",
+          encryptedSymmetricKey,
           isAdmin: isAdmin || false,
         };
 
@@ -205,6 +216,7 @@ export const EditMember: FunctionComponent = observer(() => {
         current.chainId,
         `-${contactAddress} has been removed.`,
         GroupMessageType.event,
+        userGroupAddress?.encryptedSymmetricKey || "",
         accountInfo.bech32Address,
         newGroupState.group.groupId,
         user.accessToken
@@ -269,6 +281,7 @@ export const EditMember: FunctionComponent = observer(() => {
         current.chainId,
         statement,
         GroupMessageType.event,
+        userGroupAddress?.encryptedSymmetricKey || "",
         accountInfo.bech32Address,
         newGroupState.group.groupId,
         user.accessToken
