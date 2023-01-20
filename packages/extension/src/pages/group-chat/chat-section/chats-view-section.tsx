@@ -13,7 +13,7 @@ import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { AddressBookConfigMap } from "@keplr-wallet/hooks";
-import { Chats, Group, Groups, NameAddress } from "@chatTypes";
+import { Chats, Group, Groups, GroupAddress, NameAddress } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { CHAT_PAGE_COUNT } from "../../../config.ui.var";
@@ -83,7 +83,9 @@ export const GroupChatsViewSection = ({}: {
   const [group, setGroup] = useState<Group | undefined>(
     Object.values(userGroups).find((group) => group.id.includes(groupId))
   );
-
+  const [userGroupAddress, setUserGroupAddress] = useState<
+    GroupAddress | undefined
+  >();
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   const [isUserRemoved, setUserRemoved] = useState(false);
@@ -143,6 +145,7 @@ export const GroupChatsViewSection = ({}: {
     const currentUser = groupData?.addresses.find(
       (element) => element.address === accountInfo.bech32Address
     );
+    setUserGroupAddress(currentUser);
     if (!currentUser && !isUserRemoved) {
       setUserRemoved(true);
     } else if (currentUser && isUserRemoved) {
@@ -205,12 +208,15 @@ export const GroupChatsViewSection = ({}: {
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    if (newMessage.trim().length)
+    if (newMessage.trim().length && userGroupAddress)
       try {
+        // get encryptedsymmetrickey as well as parameter
+        const { encryptedSymmetricKey } = userGroupAddress;
         const message = await deliverGroupMessages(
           user.accessToken,
           current.chainId,
           newMessage,
+          encryptedSymmetricKey || "",
           GroupMessageType.message,
           accountInfo.bech32Address,
           groupId
@@ -255,20 +261,27 @@ export const GroupChatsViewSection = ({}: {
         )}
         {messages?.map((message: any, index) => {
           const isShowDate = showDateFunction(message?.commitTimestamp);
+          if (!group) return;
+          const groupAddresses = group.addresses;
+          const userGroupAddress = groupAddresses.find(
+            (address) => address.address == accountInfo.bech32Address
+          );
+          const encryptedSymmetricKey =
+            userGroupAddress?.encryptedSymmetricKey || "";
+
           return (
             <div key={message.id}>
-              {group !== undefined && (
-                <GroupChatMessage
-                  chainId={current.chainId}
-                  addresses={addresses}
-                  senderAddress={message?.sender}
-                  showDate={isShowDate}
-                  message={message?.contents}
-                  isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
-                  timestamp={message?.commitTimestamp || 1549312452}
-                  groupLastSeenTimestamp={0}
-                />
-              )}
+              <GroupChatMessage
+                chainId={current.chainId}
+                encryptedSymmetricKey={encryptedSymmetricKey}
+                addresses={addresses}
+                senderAddress={message?.sender}
+                showDate={isShowDate}
+                message={message?.contents}
+                isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
+                timestamp={message?.commitTimestamp || 1549312452}
+                groupLastSeenTimestamp={0}
+              />
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
               {/* {message?.commitTimestamp &&
                 receiver?.lastSeenTimestamp &&

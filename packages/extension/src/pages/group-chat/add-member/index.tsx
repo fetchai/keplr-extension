@@ -171,7 +171,6 @@ export const AddMember: FunctionComponent = observer(() => {
         current.chainId,
         contactAddress
       );
-
       if (pubAddr && pubAddr.publicKey) {
         const tempMember: GroupMembers = {
           address: contactAddress,
@@ -201,10 +200,16 @@ export const AddMember: FunctionComponent = observer(() => {
     }
 
     setIsLoading(true);
+    const groupAddresses = newGroupState.group.members;
+    const userGroupAddress = groupAddresses.find(
+      (address) => address.address == accountInfo.bech32Address
+    );
+    const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
     const contents = await encryptGroupMessage(
       current.chainId,
       `-${accountInfo.bech32Address} added [${newAddedMembers.join()}]`,
       GroupMessageType.event,
+      encryptedSymmetricKey,
       accountInfo.bech32Address,
       newGroupState.group.groupId,
       user.accessToken

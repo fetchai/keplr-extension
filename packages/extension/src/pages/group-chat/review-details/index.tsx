@@ -22,13 +22,19 @@ import { store } from "@chatStore/index";
 import { createGroup } from "@graphQL/groups-api";
 import { Button } from "reactstrap";
 import { setGroups } from "@chatStore/messages-slice";
+import { createEncryptedSymmetricKeyForAddresses } from "../../../utils/symmetric-key";
+import { userDetails } from "@chatStore/user-slice";
+import {
+  encryptGroupMessage,
+  GroupMessageType,
+} from "../../../utils/encrypt-group";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
 
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
   const selectedMembers: GroupMembers[] = newGroupState.group.members || [];
-
+  const user = useSelector(userDetails);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -157,7 +163,35 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           data-loading={isLoading}
           onClick={async () => {
             setIsLoading(true);
-            const group = await createGroup(newGroupState.group);
+            // newGroupState.group.members
+            const updatedGroupMembers = await createEncryptedSymmetricKeyForAddresses(
+              newGroupState.group.members,
+              current.chainId,
+              user.accessToken
+            );
+            const userGroupAddress = updatedGroupMembers.find(
+              (address) => address.address == accountInfo.bech32Address
+            );
+            const encryptedSymmetricKey =
+              userGroupAddress?.encryptedSymmetricKey || "";
+            const contents = await encryptGroupMessage(
+              current.chainId,
+              `Group created by -${accountInfo.bech32Address}`,
+              GroupMessageType.event,
+              encryptedSymmetricKey,
+              accountInfo.bech32Address,
+              `Group created by -${
+                accountInfo.bech32Address
+              } at ${new Date().getTime()}`,
+              user.accessToken
+            );
+
+            const newGroupData = {
+              ...newGroupState.group,
+              members: updatedGroupMembers,
+              contents,
+            };
+            const group = await createGroup(newGroupData);
             setIsLoading(false);
 
             if (group) {

@@ -2,6 +2,7 @@ import { GroupMessagePayload } from "@chatTypes";
 import { decryptMessageContent } from "./decrypt-message";
 import { GroupMessageType } from "./encrypt-group";
 
+import { decryptGroupData } from "./symmetric-key";
 /**
  * Attempt to decrypt the payload of a group timestamp envelope for the currently
  * selected wallet address
@@ -36,22 +37,34 @@ export const decryptGroupTimestamp = async (
   }
 };
 
-/// Base 64 to plain text
-export const decryptGroupMessage = (content: string): GroupMessagePayload => {
+export const decryptGroupMessage = async (
+  content: string,
+  chainId: string,
+  encryptedSymmetricKey: string
+): Promise<GroupMessagePayload> => {
   try {
     const data = Buffer.from(content, "base64").toString("ascii");
     const dataEnvelopeDecoded = JSON.parse(data);
-    const decodedData = Buffer.from(
-      dataEnvelopeDecoded.data,
-      "base64"
-    ).toString("ascii");
-    const parsedData = JSON.parse(decodedData);
-
+    const decodedData = JSON.parse(
+      Buffer.from(dataEnvelopeDecoded.data, "base64").toString("ascii")
+    );
+    const symmetricKey = await decryptMessageContent(
+      chainId,
+      encryptedSymmetricKey
+    );
+    const decryptedContent = decryptGroupData(
+      symmetricKey.slice(1, symmetricKey.length - 2),
+      decodedData
+    );
+    const parsedData = JSON.parse(
+      Buffer.from(decryptedContent, "base64").toString("ascii")
+    );
     return {
       message: parsedData.content.text,
       type: parsedData.content.type,
     };
   } catch (e) {
+    console.log("error", e.message);
     return {
       message: content,
       type: GroupMessageType[GroupMessageType.message],

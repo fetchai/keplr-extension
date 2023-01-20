@@ -11,8 +11,9 @@ import { getEventMessage } from "../../utils";
 export const ChatGroupUser: React.FC<{
   chainId: string;
   group: Group;
+  encryptedSymmetricKey: string;
   addresses: NameAddress;
-}> = ({ chainId, group, addresses }) => {
+}> = ({ chainId, group, encryptedSymmetricKey, addresses }) => {
   const [
     decryptedMessage,
     setDecryptedMessage,
@@ -27,10 +28,18 @@ export const ChatGroupUser: React.FC<{
   };
 
   useEffect(() => {
-    if (group) {
-      setDecryptedMessage(decryptGroupMessage(group.lastMessageContents));
+    async function loadDecryptedMessage() {
+      const decryptedMsg = await decryptGroupMessage(
+        group.lastMessageContents,
+        chainId,
+        encryptedSymmetricKey
+      );
+      setDecryptedMessage(decryptedMsg);
     }
-  }, [chainId, group]);
+    if (group) {
+      loadDecryptedMessage();
+    }
+  }, [chainId, encryptedSymmetricKey, group]);
 
   return (
     <div

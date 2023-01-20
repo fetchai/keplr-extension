@@ -144,9 +144,10 @@ export const ChatsGroupHistory: React.FC<{
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-          return (
-            <div key={groups[contact].id}>
-              {groups[contact].isDm ? (
+
+          if (groups[contact].isDm)
+            return (
+              <div key={groups[contact].id}>
                 <ChatUser
                   group={groups[contact]}
                   contactName={
@@ -157,13 +158,26 @@ export const ChatsGroupHistory: React.FC<{
                   targetAddress={contact}
                   chainId={chainId}
                 />
-              ) : (
-                <ChatGroupUser
-                  chainId={chainId}
-                  group={groups[contact]}
-                  addresses={addresses}
-                />
-              )}
+                {index === Object.keys(groups).length - 10 && (
+                  <div ref={messagesEncRef} />
+                )}
+              </div>
+            );
+
+          const groupAddresses = groups[contact].addresses;
+          const userGroupAddress = groupAddresses.find(
+            (address) => address.address == accountInfo.bech32Address
+          );
+          const encryptedSymmetricKey =
+            userGroupAddress?.encryptedSymmetricKey || "";
+          return (
+            <div key={groups[contact].id}>
+              <ChatGroupUser
+                chainId={chainId}
+                encryptedSymmetricKey={encryptedSymmetricKey}
+                group={groups[contact]}
+                addresses={addresses}
+              />
               {index === Object.keys(groups).length - 10 && (
                 <div ref={messagesEncRef} />
               )}

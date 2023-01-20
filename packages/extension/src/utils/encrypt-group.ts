@@ -7,6 +7,8 @@ import {
   SignMessagingPayload,
 } from "@keplr-wallet/background/build/messaging";
 import { MESSAGE_CHANNEL_ID } from "@keplr-wallet/background/build/messaging/constants";
+import { decryptMessageContent } from "./decrypt-message";
+import { encryptGroupData } from "./symmetric-key";
 
 export interface GroupTimestampUpdateEnvelope {
   data: string; // base64 encoded
@@ -139,6 +141,7 @@ export const encryptGroupMessage = async (
   chainId: string,
   messageStr: string,
   messageType: GroupMessageType,
+  encryptedSymmetricKey: string,
   senderAddress: string,
   targetGroupId: string,
   accessToken: string
@@ -147,6 +150,7 @@ export const encryptGroupMessage = async (
     chainId,
     messageStr,
     messageType,
+    encryptedSymmetricKey,
     senderAddress,
     targetGroupId,
     accessToken
@@ -158,6 +162,7 @@ export async function encryptGroupMessageToEnvelope(
   chainId: string,
   messageStr: string,
   messageType: GroupMessageType,
+  encryptedSymmetricKey: string,
   senderAddress: string,
   targetGroupId: string,
   accessToken: string
@@ -175,6 +180,10 @@ export async function encryptGroupMessageToEnvelope(
     throw new Error("Sender Public key not available");
   }
 
+  const symmetricKey = await decryptMessageContent(
+    chainId,
+    encryptedSymmetricKey
+  );
   const message = {
     senderPublicKey,
     targetGroupId,
@@ -183,16 +192,22 @@ export async function encryptGroupMessageToEnvelope(
       type: GroupMessageType[messageType],
     },
   };
-
   const encodedData = toBase64(Buffer.from(JSON.stringify(message)));
 
+  const encryptedContent = encryptGroupData(
+    symmetricKey.substring(1, symmetricKey.length - 2),
+    encodedData
+  );
+  const encodedContent = toBase64(
+    Buffer.from(JSON.stringify(encryptedContent))
+  );
   // get the signature for the payload
   const signature = await requester.sendMessage(
     BACKGROUND_PORT,
-    new SignMessagingPayload(chainId, encodedData)
+    new SignMessagingPayload(chainId, encodedContent)
   );
   return {
-    data: encodedData,
+    data: encodedContent,
     senderPublicKey: senderPublicKey.publicKey,
     targetGroupId,
     signature,
