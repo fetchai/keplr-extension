@@ -390,7 +390,7 @@ export const EditMember: FunctionComponent = observer(() => {
         history.goBack();
       }}
     >
-      <div>
+      <div className={style.group}>
         <div className={style.groupContainer}>
           <div className={style.groupHeader}>
             <span className={style.groupName}>{newGroupState.group.name}</span>
@@ -419,6 +419,8 @@ export const EditMember: FunctionComponent = observer(() => {
               />
             </span>
           </div>
+        </div>
+        <div>
           <span className={style.groupDescription}>
             {newGroupState.group.description}
           </span>
@@ -470,6 +472,7 @@ export const EditMember: FunctionComponent = observer(() => {
                 )) ??
               false
             }
+            isFromReview={false}
             name={selectedAddress?.name ?? ""}
             selectedMember={selectedMembers.find(
               (element) => element.address === selectedAddress?.address

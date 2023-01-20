@@ -354,3 +354,18 @@
 .showPointer {
   cursor: pointer;
 }
+
+.adminHeading {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 30px;
+  align-items: center;
+  font-weight: 400;
+  font-size: 15px;
+  height: 30px;
+  width: 80px;
+  border: 1.5px solid black;
+  border-color: #d43bf6;
+  background-color: #f8e8fb;
+  color: #d43bf6;
+}

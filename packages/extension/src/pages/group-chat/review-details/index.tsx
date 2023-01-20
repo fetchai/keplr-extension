@@ -11,7 +11,14 @@ import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { ChatMember } from "@components/chat-member";
-import { GroupMembers, NameAddress, NewGroupDetails } from "@chatTypes";
+import {
+  Group,
+  GroupChatMemberOptions,
+  GroupMembers,
+  Groups,
+  NameAddress,
+  NewGroupDetails,
+} from "@chatTypes";
 import { useSelector } from "react-redux";
 import {
   newGroupDetails,
@@ -21,13 +28,15 @@ import {
 import { store } from "@chatStore/index";
 import { createGroup } from "@graphQL/groups-api";
 import { Button } from "reactstrap";
-import { setGroups } from "@chatStore/messages-slice";
+import { setGroups, userChatGroups } from "@chatStore/messages-slice";
 import { createEncryptedSymmetricKeyForAddresses } from "../../../utils/symmetric-key";
 import { userDetails } from "@chatStore/user-slice";
 import {
   encryptGroupMessage,
   GroupMessageType,
 } from "../../../utils/encrypt-group";
+import amplitude from "amplitude-js";
+import { GroupChatPopup } from "@components/group-chat-popup";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -37,10 +46,17 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   const user = useSelector(userDetails);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
+
+  const groups: Groups = useSelector(userChatGroups);
+  const group: Group = groups[newGroupState.group.groupId];
+  const [selectedAddress, setSelectedAddresse] = useState<NameAddress>();
+  const [confirmAction, setConfirmAction] = useState(false);
+
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
+
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -107,6 +123,56 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     );
   };
 
+  const AddContactOption = (address: string) => {
+    const history = useHistory();
+    return (
+      <div
+        onClick={() => {
+          amplitude.getInstance().logEvent("Add to address click", {});
+          history.push({
+            pathname: "/setting/address-book",
+            state: {
+              openModal: true,
+              addressInputValue: address,
+            },
+          });
+        }}
+      >
+        Add to address book
+      </div>
+    );
+  };
+  function showGroupPopup(address: NameAddress): void {
+    if (address.address !== walletAddress) {
+      setSelectedAddresse(address);
+      setConfirmAction(true);
+    }
+  }
+  function handlePopupAction(action: GroupChatMemberOptions) {
+    setConfirmAction(false);
+
+    if (!selectedAddress) {
+      return;
+    }
+
+    switch (action) {
+      case GroupChatMemberOptions.messageMember:
+        amplitude.getInstance().logEvent("Open DM click", {
+          from: "Group Info",
+        });
+        history.push(`/chat/${selectedAddress.address}`);
+        break;
+
+      case GroupChatMemberOptions.addToAddressBook:
+        AddContactOption(selectedAddress.address);
+        break;
+
+      case GroupChatMemberOptions.viewInAddressBook:
+        history.push("/setting/address-book");
+        break;
+    }
+  }
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -140,6 +206,13 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         )}
       </div>
       <div className={style.membersContainer}>
+        {
+          <text className={style.memberText}>
+            {selectedMembers.length} member
+            {selectedMembers.length > 1 ? "s" : ""}
+          </text>
+        }
+
         {addresses.map((address: NameAddress) => {
           return (
             <ChatMember
@@ -149,6 +222,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
               showSelectedIcon={!newGroupState.isEditGroup}
               isSelected={true}
               isShowAdmin={isUserAdmin(address.address)}
+              showPointer
+              onClick={() => showGroupPopup(address)}
               onIconClick={() => {
                 handleRemoveMember(address.address);
               }}
@@ -163,7 +238,6 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           data-loading={isLoading}
           onClick={async () => {
             setIsLoading(true);
-            // newGroupState.group.members
             const updatedGroupMembers = await createEncryptedSymmetricKeyForAddresses(
               newGroupState.group.members,
               current.chainId,
@@ -211,6 +285,27 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         >
           Create Group Chat
         </Button>
+      )}
+      {confirmAction && !isUserAdmin(walletAddress) && (
+        <GroupChatPopup
+          isAdded={
+            (selectedAddress &&
+              addresses.some((address) => address[selectedAddress.address])) ??
+            false
+          }
+          isFromReview={true}
+          name={selectedAddress?.name ?? ""}
+          selectedMember={selectedMembers.find(
+            (element) => element.address === selectedAddress?.address
+          )}
+          isLoginUserAdmin={
+            group.addresses.find((element) => element.address === walletAddress)
+              ?.isAdmin ?? false
+          }
+          onClick={(action) => {
+            handlePopupAction(action);
+          }}
+        />
       )}
     </HeaderLayout>
   );

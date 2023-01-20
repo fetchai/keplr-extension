@@ -9,12 +9,14 @@ export const GroupChatPopup = ({
   selectedMember,
   isLoginUserAdmin,
   isAdded,
+  isFromReview,
   onClick,
 }: {
   name: string;
   selectedMember: GroupMembers | undefined;
   isLoginUserAdmin: boolean;
   isAdded: boolean;
+  isFromReview: boolean;
   onClick: (option: GroupChatMemberOptions) => void;
 }) => {
   return (
@@ -41,19 +43,19 @@ export const GroupChatPopup = ({
             onClick={() => onClick(GroupChatMemberOptions.addToAddressBook)}
           />
         )}
-        {isLoginUserAdmin && !selectedMember?.isAdmin && (
+        {isLoginUserAdmin && !selectedMember?.isAdmin && !isFromReview && (
           <ChatOption
             title={"Give admin status"}
             onClick={() => onClick(GroupChatMemberOptions.makeAdminStatus)}
           />
         )}
-        {isLoginUserAdmin && selectedMember?.isAdmin && (
+        {isLoginUserAdmin && selectedMember?.isAdmin && !isFromReview && (
           <ChatOption
             title={"Remove admin status"}
             onClick={() => onClick(GroupChatMemberOptions.removeAdminStatus)}
           />
         )}
-        {isLoginUserAdmin && (
+        {isLoginUserAdmin && !isFromReview && (
           <ChatOption
             title={`Remove ${formatAddress(name)}`}
             onClick={() => onClick(GroupChatMemberOptions.removeMember)}

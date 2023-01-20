@@ -130,13 +130,24 @@
 .membersContainer {
   margin-left: -12px;
   margin-right: -12px;
-
-  padding: 10px;
+  margin-top: 10px;
+  padding: 10px 20px;
   background-color: #ffffff;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow-y: scroll;
-  height: 52%;
+  min-height: 42%;
+  height: auto;
+
+  .memberText {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    white-space: nowrap;
+    font-weight: 400;
+    font-size: 15px;
+    color: #525f7f;
+    height: 20px;
+  }
 }

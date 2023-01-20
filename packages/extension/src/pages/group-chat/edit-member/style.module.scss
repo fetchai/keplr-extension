@@ -86,6 +86,10 @@
   font-size: 0.875rem;
 }
 
+.group {
+  flex-direction: column;
+}
+
 .groupHeader {
   height: 40%;
   flex-direction: row;

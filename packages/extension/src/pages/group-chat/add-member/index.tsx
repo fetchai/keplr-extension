@@ -13,8 +13,10 @@ import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import {
+  Group,
   GroupDetails,
   GroupMembers,
+  Groups,
   NameAddress,
   NewGroupDetails,
 } from "@chatTypes";
@@ -36,12 +38,19 @@ import {
   GroupMessageType,
 } from "../../../utils/encrypt-group";
 import { createGroup } from "@graphQL/groups-api";
-import { setGroups } from "@chatStore/messages-slice";
+import { setGroups, userChatGroups } from "@chatStore/messages-slice";
+import { generateEncryptedSymmetricKeyForAddress } from "../../../utils/symmetric-key";
+import { decryptMessageContent } from "../../../utils/decrypt-message";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
   const user = useSelector(userDetails);
+  /// Current Group State
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
+  /// Group Info
+  const groups: Groups = useSelector(userChatGroups);
+  const group: Group = groups[newGroupState.group.groupId];
+
   const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
     newGroupState.group.members || []
   );
@@ -56,6 +65,9 @@ export const AddMember: FunctionComponent = observer(() => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
+  const userGroupAddress = group.addresses.find(
+    (address) => address.address == walletAddress
+  );
   // address book values
   const queries = queriesStore.get(chainStore.current.chainId);
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -172,10 +184,22 @@ export const AddMember: FunctionComponent = observer(() => {
         contactAddress
       );
       if (pubAddr && pubAddr.publicKey) {
+        //get symmetricKey of group using
+        const symmetricKey = await decryptMessageContent(
+          current.chainId,
+          userGroupAddress?.encryptedSymmetricKey || ""
+        );
+        //generateEncryptedSymmetricKeyForAddress needs to be called to get value of encryptedSymmetricKey
+        const encryptedSymmetricKey = await generateEncryptedSymmetricKeyForAddress(
+          current.chainId,
+          user.accessToken,
+          symmetricKey.substring(1, symmetricKey.length - 2),
+          contactAddress
+        );
         const tempMember: GroupMembers = {
           address: contactAddress,
           pubKey: pubAddr.publicKey,
-          encryptedSymmetricKey: "",
+          encryptedSymmetricKey,
           isAdmin: isAdmin || false,
         };
         const tempMembers = [...selectedMembers, tempMember];

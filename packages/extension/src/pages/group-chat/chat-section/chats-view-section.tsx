@@ -248,11 +248,12 @@ export const GroupChatsViewSection = ({}: {
   return (
     <div className={style.chatArea}>
       <div className={style.messages}>
-        {pagination?.lastPage > pagination?.page && (
-          <div ref={messagesStartRef} className={style.loader}>
-            Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
-          </div>
-        )}
+        {pagination?.lastPage > pagination?.page &&
+          (messages.length === 30 || messages.length == 0) && (
+            <div ref={messagesStartRef} className={style.loader}>
+              Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
+            </div>
+          )}
         {pagination?.lastPage <= pagination?.page && (
           <p>
             Messages are end to end encrypted. Nobody else can read them except
