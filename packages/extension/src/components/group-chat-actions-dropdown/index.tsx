@@ -7,16 +7,22 @@ export const GroupChatActionsDropdown = ({
   showDropdown,
   handleClick,
   isAdmin,
+  isMemberRemoved,
 }: {
   showDropdown: boolean;
   isAdmin: boolean;
+  isMemberRemoved: boolean;
   handleClick: (option: GroupChatOptions) => void;
 }) => {
   const options = [
     { title: "Group info", option: GroupChatOptions.groupInfo },
     //{ title: "Mute group", option: GroupChatOptions.muteGroup },
-    { title: "Leave group", option: GroupChatOptions.leaveGroup },
   ];
+
+  /// Add Leave group option when member info available in group detail
+  if (!isMemberRemoved) {
+    options.push({ title: "Leave group", option: GroupChatOptions.leaveGroup });
+  }
 
   if (isAdmin) {
     options.push({

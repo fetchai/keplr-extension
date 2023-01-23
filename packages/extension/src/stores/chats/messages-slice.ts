@@ -79,7 +79,13 @@ export const messagesSlice = createSlice({
     },
     updateGroupsData: (state: any, action: PayloadAction<any>) => {
       const group = action.payload;
-      const key = group?.userAddress;
+      let key;
+      if (group.isDm) {
+        key = group?.userAddress;
+      } else {
+        key = group.id;
+      }
+
       const updatedGroup = {
         [key]: group,
       };

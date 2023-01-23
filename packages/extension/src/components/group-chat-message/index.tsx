@@ -8,7 +8,7 @@ import { isToday, isYesterday, format } from "date-fns";
 import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessagePayload, NameAddress } from "@chatTypes";
 import { GroupMessageType } from "@utils/encrypt-group";
-import { getContactName, getEventMessage } from "../../utils";
+import { getContactName, getEventMessage } from "@utils/index";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);

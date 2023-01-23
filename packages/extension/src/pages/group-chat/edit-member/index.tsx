@@ -453,7 +453,7 @@ export const EditMember: FunctionComponent = observer(() => {
             heading={`Remove ${formatAddress(selectedAddress?.name ?? "")}`}
             description={`${formatAddress(
               selectedAddress?.name ?? ""
-            )} will no longer receive messages from this group. ${"\n"} ${"\n"} The group will be notified that they have been removed.`}
+            )} will no longer receive messages from this group. ${"\n\n"} The group will be notified that they have been removed.`}
             firstButtonTitle="Cancel"
             secondButtonTitle="Remove"
             onClick={(action) => {

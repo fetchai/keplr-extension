@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useStore } from "../../../stores";
 import { ChatErrorPopup } from "@components/chat-error-popup";
-import { ChatLoader } from "@components/chat-loader";
 import { SwitchUser } from "@components/switch-user";
 import { HeaderLayout } from "@layouts/index";
 import { Menu } from "../../main/menu";
@@ -16,10 +15,8 @@ import { GroupChatOptions, GroupMembers, Groups } from "@chatTypes";
 import { GroupChatActionsDropdown } from "@components/group-chat-actions-dropdown";
 import { store } from "@chatStore/index";
 import { setIsGroupEdit, setNewGroupInfo } from "@chatStore/new-group-slice";
-import { useNotification } from "@components/notification";
 
 export const GroupChatSection: FunctionComponent = () => {
-  const notification = useNotification();
   const history = useHistory();
   const groupId = history.location.pathname.split("/")[3];
   const groups: Groups = useSelector(userChatGroups);
@@ -36,8 +33,25 @@ export const GroupChatSection: FunctionComponent = () => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [confirmAction, setConfirmAction] = useState(false);
-  const [loadingChats, setLoadingChats] = useState(false);
+  const [isMemberRemoved, setMemberRemoved] = useState(false);
   const [action, setAction] = useState("");
+
+  useEffect(() => {
+    /// Find the current user and check user exists in the group or not
+    const currentUser = group.addresses.find(
+      (element) => element.address === accountInfo.bech32Address
+    );
+
+    if (group?.removedAt) {
+      /// User is removed by admin
+      setMemberRemoved(true);
+    } else if (!currentUser && !isMemberRemoved) {
+      /// User removed from group address array
+      setMemberRemoved(true);
+    } else if (currentUser && isMemberRemoved) {
+      setMemberRemoved(false);
+    }
+  }, [groups]);
 
   const handleDropDown = () => {
     setShowDropdown(!showDropdown);
@@ -75,25 +89,15 @@ export const GroupChatSection: FunctionComponent = () => {
         navigateToPage("/group-chat/create");
         break;
 
-      case GroupChatOptions.leaveGroup:
-        notification.push({
-          type: "warning",
-          placement: "top-center",
-          duration: 5,
-          content: `Under-Development`,
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
-        break;
       case GroupChatOptions.deleteGroup:
         setAction("deleteGroup");
         setConfirmAction(true);
         break;
 
+      case GroupChatOptions.leaveGroup:
       default:
-        setAction(option.toString());
+        debugger;
+        setAction(GroupChatOptions[option]);
         setConfirmAction(true);
         break;
     }
@@ -114,34 +118,28 @@ export const GroupChatSection: FunctionComponent = () => {
         rightRenderer={<SwitchUser />}
       >
         <ChatErrorPopup />
-        {loadingChats ? (
-          <ChatLoader message="Arranging messages, please wait..." />
-        ) : (
-          <div>
-            <UserNameSection
-              handleDropDown={handleDropDown}
-              groupName={group.name}
-            />
+        <div>
+          <UserNameSection
+            handleDropDown={handleDropDown}
+            groupName={group.name}
+          />
 
-            <GroupChatActionsDropdown
-              showDropdown={showDropdown}
-              isAdmin={isAdmin}
-              handleClick={handleClick}
-            />
+          <GroupChatActionsDropdown
+            isMemberRemoved={isMemberRemoved}
+            showDropdown={showDropdown}
+            isAdmin={isAdmin}
+            handleClick={handleClick}
+          />
 
-            <GroupChatsViewSection
-              setLoadingChats={setLoadingChats}
-              handleClick={handleClick}
-            />
+          <GroupChatsViewSection isMemberRemoved={isMemberRemoved} />
 
-            {confirmAction && (
-              <ChatActionsPopup
-                action={action}
-                setConfirmAction={setConfirmAction}
-              />
-            )}
-          </div>
-        )}
+          {confirmAction && (
+            <ChatActionsPopup
+              action={action}
+              setConfirmAction={setConfirmAction}
+            />
+          )}
+        </div>
       </HeaderLayout>
     </div>
   );

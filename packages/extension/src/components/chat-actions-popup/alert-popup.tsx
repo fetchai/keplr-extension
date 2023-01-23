@@ -6,6 +6,7 @@ export const AlertPopup = ({
   description,
   firstButtonTitle,
   secondButtonTitle,
+  processing,
   onClick,
 }: {
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,14 +14,12 @@ export const AlertPopup = ({
   description: string;
   firstButtonTitle: string;
   secondButtonTitle: string;
+  processing?: boolean;
   onClick: (option: CommonPopupOptions) => void;
 }) => {
   return (
     <>
-      <div
-        className={style.overlay}
-        // onClick={() => onClick(CommonPopupOptions.cancel)}
-      />
+      <div className={style.overlay} />
       <div className={style.popup}>
         <h4>{heading}</h4>
         <section>
@@ -31,6 +30,7 @@ export const AlertPopup = ({
         <div className={style.buttonContainer}>
           <button
             type="button"
+            disabled={processing}
             onClick={() => onClick(CommonPopupOptions.cancel)}
           >
             {firstButtonTitle}
@@ -38,6 +38,7 @@ export const AlertPopup = ({
           <button
             type="button"
             className={style.btn}
+            disabled={processing}
             onClick={() => onClick(CommonPopupOptions.ok)}
           >
             {secondButtonTitle}

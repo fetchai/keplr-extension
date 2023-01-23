@@ -26,6 +26,7 @@ export function getContactName(
     : formatAddress(address);
 }
 
+/// Todo need to update the payload to refractor event messages
 export function getEventMessage(
   addressBook: NameAddress,
   message: string

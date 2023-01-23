@@ -14,7 +14,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@chatStore/*": ["src/stores/chats/*"],
       "@assets/*": ["src/public/assets/*"],
-      "@utils/*": ["src/utils/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "typeRoots": [
       "./node_modules/@types",

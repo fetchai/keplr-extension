@@ -34,6 +34,10 @@ export const Group = `mutation Mutation($groupDetails: GroupDetails!) {
   }
 }`;
 
+export const leaveGroupMutation = `mutation Mutation($groupId: String) {
+  leaveGroup(groupId: $groupId)
+}`;
+
 export const UpdateGroupLastSeen = `mutation Mutation($groupId: String!, $lastSeenTimestamp: Date!) {
   updateGroupLastSeen(groupId: $groupId, lastSeenTimestamp: $lastSeenTimestamp) {
     addresses {

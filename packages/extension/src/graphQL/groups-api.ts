@@ -5,10 +5,15 @@ import {
 } from "@apollo/client/utilities";
 import { GroupDetails, PublicKeyDetails } from "@chatTypes";
 import { store } from "@chatStore/index";
-import { removeGroup, setMessageError } from "@chatStore/messages-slice";
+import {
+  removeGroup,
+  setMessageError,
+  updateGroupsData,
+} from "@chatStore/messages-slice";
 import { client, createWSLink, httpLink } from "./client";
 import {
   Group,
+  leaveGroupMutation,
   listenGroups,
   UpdateGroupLastSeen,
   UpdatePublicKey,
@@ -71,6 +76,48 @@ export const createGroup = async (groupDetails: GroupDetails) => {
   }
 };
 
+export const leaveGroup = async (groupId: string) => {
+  const state = store.getState();
+
+  try {
+    const { data, errors } = await client.mutate({
+      mutation: gql(leaveGroupMutation),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
+      },
+      variables: { groupId },
+    });
+    if (errors) {
+      store.dispatch(
+        setMessageError({
+          type: "Group",
+          message: errors || "Something went wrong, Group can't be left",
+          level: 1,
+        })
+      );
+      return null;
+    }
+    /// updating the group info using shallow copy
+    const group = { ...state.messages.groups[groupId] };
+    group.removedAt = new Date();
+
+    store.dispatch(updateGroupsData(group));
+    return data.group;
+  } catch (e: any) {
+    store.dispatch(
+      setMessageError({
+        type: "Group",
+        message: e?.message || "Something went wrong, Group can't be left",
+        level: 1,
+      })
+    );
+    return null;
+  }
+};
+
 export const deleteGroup = async (groupId: string) => {
   const state = store.getState();
 
@@ -91,7 +138,7 @@ export const deleteGroup = async (groupId: string) => {
       store.dispatch(
         setMessageError({
           type: "Group",
-          message: errors || "Something went wrong, Group can't be created",
+          message: errors || "Something went wrong, Group can't be deleted",
           level: 1,
         })
       );
@@ -103,7 +150,7 @@ export const deleteGroup = async (groupId: string) => {
     store.dispatch(
       setMessageError({
         type: "Group",
-        message: e?.message || "Something went wrong, Group can't be created",
+        message: e?.message || "Something went wrong, Group can't be deleted",
         level: 1,
       })
     );

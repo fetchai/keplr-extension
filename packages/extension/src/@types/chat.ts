@@ -68,6 +68,7 @@ export interface Group {
   lastSeenTimestamp: string;
   description?: string;
   createdAt: string;
+  removedAt: Date;
 }
 
 export interface Pagination {

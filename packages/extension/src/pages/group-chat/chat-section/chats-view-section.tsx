@@ -26,9 +26,10 @@ import style from "./style.module.scss";
 import { GroupMessageType } from "@utils/encrypt-group";
 import { GroupChatMessage } from "@components/group-chat-message";
 
-export const GroupChatsViewSection = ({}: {
-  setLoadingChats: any;
-  handleClick: any;
+export const GroupChatsViewSection = ({
+  isMemberRemoved,
+}: {
+  isMemberRemoved: boolean;
 }) => {
   const history = useHistory();
   const groupId = history.location.pathname.split("/")[3];
@@ -88,7 +89,6 @@ export const GroupChatsViewSection = ({}: {
   >();
   const [loadingMessages, setLoadingMessages] = useState(false);
 
-  const [isUserRemoved, setUserRemoved] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
   //Scrolling Logic
@@ -146,11 +146,6 @@ export const GroupChatsViewSection = ({}: {
       (element) => element.address === accountInfo.bech32Address
     );
     setUserGroupAddress(currentUser);
-    if (!currentUser && !isUserRemoved) {
-      setUserRemoved(true);
-    } else if (currentUser && isUserRemoved) {
-      setUserRemoved(false);
-    }
   }, [userGroups]);
 
   const messagesEndRef: any = useCallback(
@@ -303,7 +298,7 @@ export const GroupChatsViewSection = ({}: {
             maxRows={3}
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
             placeholder={
-              isUserRemoved
+              isMemberRemoved
                 ? "You can't send messages to this group because you're no longer a participant"
                 : "Type a new message..."
             }
@@ -312,7 +307,7 @@ export const GroupChatsViewSection = ({}: {
               setNewMessage(event.target.value.substring(0, 499));
             }}
             onKeyDown={handleKeydown}
-            disabled={isUserRemoved}
+            disabled={isMemberRemoved}
           />
         }
         {newMessage?.length && newMessage.trim() !== "" ? (
