@@ -12,10 +12,7 @@ import { useSelector } from "react-redux";
 import { CommonPopupOptions, GroupDetails, NewGroupDetails } from "@chatTypes";
 import { useNotification } from "@components/notification";
 import { Button } from "reactstrap";
-import {
-  encryptGroupMessage,
-  GroupMessageType,
-} from "../../../utils/encrypt-group";
+import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import { useStore } from "../../../stores";
 import { userDetails } from "@chatStore/user-slice";
 import { AlertPopup } from "@components/chat-actions-popup/alert-popup";

@@ -10,7 +10,7 @@ import { userBlockedAddresses } from "@chatStore/messages-slice";
 import { UnblockUserPopup } from "@components/chat-actions-popup/unblock-user-popup";
 import { HeaderLayout } from "@layouts/index";
 import { useStore } from "../../../../stores";
-import { formatAddress } from "../../../../utils/format";
+import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
 
 export const BlockList: FunctionComponent = observer(() => {

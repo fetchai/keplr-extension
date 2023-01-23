@@ -16,8 +16,8 @@ import {
 import { AUTH_SERVER } from "../../../config.ui.var";
 import { fetchBlockList } from "@graphQL/messages-api";
 import { useStore } from "../../../stores";
-import { getJWT } from "../../../utils/auth";
-import { fetchPublicKey } from "../../../utils/fetch-public-key";
+import { getJWT } from "@utils/auth";
+import { fetchPublicKey } from "@utils/fetch-public-key";
 import { PageButton } from "../page-button";
 import style from "./style.module.scss";
 

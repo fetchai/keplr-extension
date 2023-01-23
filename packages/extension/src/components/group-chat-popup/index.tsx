@@ -2,7 +2,7 @@ import React from "react";
 import style from "./style.module.scss";
 import { GroupChatMemberOptions, GroupMembers } from "@chatTypes";
 import { ChatOption } from "@components/chat-option";
-import { formatAddress } from "../../utils/format";
+import { formatAddress } from "@utils/format";
 
 export const GroupChatPopup = ({
   name,

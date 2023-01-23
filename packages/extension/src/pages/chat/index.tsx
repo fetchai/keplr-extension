@@ -37,8 +37,8 @@ import {
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { HeaderLayout } from "@layouts/index";
 import { useStore } from "../../stores";
-import { getJWT } from "../../utils/auth";
-import { fetchPublicKey } from "../../utils/fetch-public-key";
+import { getJWT } from "@utils/auth";
+import { fetchPublicKey } from "@utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { ChatsGroupHistory } from "./chat-group-history";

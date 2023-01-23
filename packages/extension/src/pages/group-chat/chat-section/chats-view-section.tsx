@@ -23,7 +23,7 @@ import { useOnScreen } from "@hooks/use-on-screen";
 import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
-import { GroupMessageType } from "../../../utils/encrypt-group";
+import { GroupMessageType } from "@utils/encrypt-group";
 import { GroupChatMessage } from "@components/group-chat-message";
 
 export const GroupChatsViewSection = ({}: {

@@ -3,7 +3,7 @@ import jazzicon from "@metamask/jazzicon";
 import React from "react";
 import ReactHtmlParser from "react-html-parser";
 import { NameAddress } from "@chatTypes";
-import { formatAddress } from "../../utils/format";
+import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
 import classnames from "classnames";
 

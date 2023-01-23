@@ -8,7 +8,7 @@ import {
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import { useStore } from "../../stores";
-import { formatAddress } from "../../utils/format";
+import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
 import { userDetails } from "@chatStore/user-slice";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";

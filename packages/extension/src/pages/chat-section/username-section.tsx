@@ -6,7 +6,7 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import chevronLeft from "@assets/icon/chevron-left.png";
 import moreIcon from "@assets/icon/more-grey.png";
-import { formatAddress } from "../../utils/format";
+import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
 
 export let openValue = true;

@@ -16,7 +16,7 @@ import { SwitchUser } from "@components/switch-user";
 import { EthereumEndpoint } from "../../config.ui";
 import { HeaderLayout } from "@layouts/index";
 import { useStore } from "../../stores";
-import { fetchPublicKey } from "../../utils/fetch-public-key";
+import { fetchPublicKey } from "@utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import { ChatActionsDropdown } from "@components/chat-actions-dropdown";
 import { ChatsViewSection } from "./chats-view-section";

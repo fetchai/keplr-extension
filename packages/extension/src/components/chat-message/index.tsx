@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 import deliveredIcon from "@assets/icon/chat-unseen-status.png";
 import chatSeenIcon from "@assets/icon/chat-seen-status.png";
-import { decryptMessage } from "../../utils/decrypt-message";
+import { decryptMessage } from "@utils/decrypt-message";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
 import { store } from "@chatStore/index";

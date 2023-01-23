@@ -5,9 +5,9 @@ import deliveredIcon from "@assets/icon/chat-unseen-status.png";
 import chatSeenIcon from "@assets/icon/chat-seen-status.png";
 import style from "./style.module.scss";
 import { isToday, isYesterday, format } from "date-fns";
-import { decryptGroupMessage } from "../../utils/decrypt-group";
+import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessagePayload, NameAddress } from "@chatTypes";
-import { GroupMessageType } from "../../utils/encrypt-group";
+import { GroupMessageType } from "@utils/encrypt-group";
 import { getContactName, getEventMessage } from "../../utils";
 
 const formatTime = (timestamp: number): string => {

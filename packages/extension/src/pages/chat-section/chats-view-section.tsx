@@ -22,7 +22,7 @@ import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import { useStore } from "../../stores";
-import { decryptGroupTimestamp } from "../../utils/decrypt-group";
+import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { NewUserSection } from "./new-user-section";
 import style from "./style.module.scss";
 

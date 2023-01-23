@@ -14,12 +14,12 @@ import {
   updateGroupsData,
 } from "@chatStore/messages-slice";
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
-import { encryptAllData } from "../utils/encrypt-message";
+import { encryptAllData } from "@utils/encrypt-message";
 import {
   encryptGroupMessage,
   encryptGroupTimestamp,
   GroupMessageType,
-} from "../utils/encrypt-group";
+} from "@utils/encrypt-group";
 import { client, createWSLink, httpLink } from "./client";
 import {
   block,

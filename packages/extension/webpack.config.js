@@ -21,6 +21,7 @@ const commonResolve = () => ({
     "@chatTypes": path.resolve(__dirname, "src/@types/chat"),
     "@hooks": path.resolve(__dirname, "src/hooks"),
     "@assets": path.resolve(__dirname, "src/public/assets"),
+    "@utils": path.resolve(__dirname, "src/utils"),
   },
 });
 const sassRule = {

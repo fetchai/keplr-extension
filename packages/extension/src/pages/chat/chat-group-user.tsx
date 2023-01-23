@@ -4,8 +4,8 @@ import rightArrowIcon from "@assets/icon/right-arrow.png";
 import style from "./style.module.scss";
 import amplitude from "amplitude-js";
 import { Group, GroupMessagePayload, NameAddress } from "@chatTypes";
-import { decryptGroupMessage } from "../../utils/decrypt-group";
-import { GroupMessageType } from "../../utils/encrypt-group";
+import { decryptGroupMessage } from "@utils/decrypt-group";
+import { GroupMessageType } from "@utils/encrypt-group";
 import { getEventMessage } from "../../utils";
 
 export const ChatGroupUser: React.FC<{
