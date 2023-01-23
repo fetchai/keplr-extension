@@ -29,12 +29,9 @@ import { store } from "@chatStore/index";
 import { createGroup } from "@graphQL/groups-api";
 import { Button } from "reactstrap";
 import { setGroups, userChatGroups } from "@chatStore/messages-slice";
-import { createEncryptedSymmetricKeyForAddresses } from "../../../utils/symmetric-key";
+import { createEncryptedSymmetricKeyForAddresses } from "@utils/symmetric-key";
 import { userDetails } from "@chatStore/user-slice";
-import {
-  encryptGroupMessage,
-  GroupMessageType,
-} from "../../../utils/encrypt-group";
+import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import amplitude from "amplitude-js";
 import { GroupChatPopup } from "@components/group-chat-popup";
 

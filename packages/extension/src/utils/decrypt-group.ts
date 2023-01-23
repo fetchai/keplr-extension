@@ -2,7 +2,10 @@ import { GroupMessagePayload } from "@chatTypes";
 import { decryptMessageContent } from "./decrypt-message";
 import { GroupMessageType } from "./encrypt-group";
 
-import { decryptGroupData } from "./symmetric-key";
+import {
+  decryptEncryptedSymmetricKey,
+  decryptGroupData,
+} from "./symmetric-key";
 /**
  * Attempt to decrypt the payload of a group timestamp envelope for the currently
  * selected wallet address
@@ -48,14 +51,11 @@ export const decryptGroupMessage = async (
     const decodedData = JSON.parse(
       Buffer.from(dataEnvelopeDecoded.data, "base64").toString("ascii")
     );
-    const symmetricKey = await decryptMessageContent(
+    const symmetricKey = await decryptEncryptedSymmetricKey(
       chainId,
       encryptedSymmetricKey
     );
-    const decryptedContent = decryptGroupData(
-      symmetricKey.substring(1, symmetricKey.length - 2),
-      decodedData
-    );
+    const decryptedContent = decryptGroupData(symmetricKey, decodedData);
     const parsedData = JSON.parse(
       Buffer.from(decryptedContent, "base64").toString("ascii")
     );

@@ -1,14 +1,16 @@
 import { toBase64, toUtf8 } from "@cosmjs/encoding";
-import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import {
   EncryptMessagingMessage,
   GetMessagingPublicKey,
   SignMessagingPayload,
 } from "@keplr-wallet/background/build/messaging";
 import { MESSAGE_CHANNEL_ID } from "@keplr-wallet/background/build/messaging/constants";
-import { decryptMessageContent } from "./decrypt-message";
-import { encryptGroupData } from "./symmetric-key";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import {
+  decryptEncryptedSymmetricKey,
+  encryptGroupData,
+} from "./symmetric-key";
 
 export interface GroupTimestampUpdateEnvelope {
   data: string; // base64 encoded
@@ -180,7 +182,7 @@ export async function encryptGroupMessageToEnvelope(
     throw new Error("Sender Public key not available");
   }
 
-  const symmetricKey = await decryptMessageContent(
+  const symmetricKey = await decryptEncryptedSymmetricKey(
     chainId,
     encryptedSymmetricKey
   );
@@ -194,10 +196,7 @@ export async function encryptGroupMessageToEnvelope(
   };
   const encodedData = toBase64(Buffer.from(JSON.stringify(message)));
 
-  const encryptedContent = encryptGroupData(
-    symmetricKey.substring(1, symmetricKey.length - 2),
-    encodedData
-  );
+  const encryptedContent = encryptGroupData(symmetricKey, encodedData);
   const encodedContent = toBase64(
     Buffer.from(JSON.stringify(encryptedContent))
   );

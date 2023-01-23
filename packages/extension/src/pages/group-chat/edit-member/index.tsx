@@ -1,12 +1,7 @@
-import { ExtensionKVStore } from "@keplr-wallet/common";
-import {
-  useAddressBookConfig,
-  useIBCTransferConfig,
-} from "@keplr-wallet/hooks";
-import { observer } from "mobx-react-lite";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { store } from "@chatStore/index";
+import { setGroups, userChatGroups } from "@chatStore/messages-slice";
+import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
+import { userDetails } from "@chatStore/user-slice";
 import {
   CommonPopupOptions,
   Group,
@@ -17,29 +12,33 @@ import {
   NameAddress,
   NewGroupDetails,
 } from "@chatTypes";
-import { userDetails } from "@chatStore/user-slice";
+import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatMember } from "@components/chat-member";
-import { EthereumEndpoint } from "../../../config.ui";
-import { HeaderLayout } from "@layouts/index";
-import { useStore } from "../../../stores";
-import style from "./style.module.scss";
-import { newGroupDetails, setNewGroupInfo } from "@chatStore/new-group-slice";
-import { store } from "@chatStore/index";
-import { fetchPublicKey } from "../../../utils/fetch-public-key";
 import { GroupChatPopup } from "@components/group-chat-popup";
-import amplitude from "amplitude-js";
-import { setGroups, userChatGroups } from "@chatStore/messages-slice";
-import {
-  encryptGroupMessage,
-  GroupMessageType,
-} from "../../../utils/encrypt-group";
-import { createGroup } from "@graphQL/groups-api";
 import { useLoadingIndicator } from "@components/loading-indicator";
-import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
-import { formatAddress } from "../../../utils/format";
-import { decryptMessageContent } from "../../../utils/decrypt-message";
-import { generateEncryptedSymmetricKeyForAddress } from "../../../utils/symmetric-key";
+import { createGroup } from "@graphQL/groups-api";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
+import { HeaderLayout } from "@layouts/index";
+import amplitude from "amplitude-js";
+import { observer } from "mobx-react-lite";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
+import { EthereumEndpoint } from "../../../config.ui";
+import { useStore } from "../../../stores";
+import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
+import { fetchPublicKey } from "@utils/fetch-public-key";
+import { formatAddress } from "@utils/format";
+import {
+  decryptEncryptedSymmetricKey,
+  encryptSymmetricKey,
+} from "@utils/symmetric-key";
+import style from "./style.module.scss";
 
 export const EditMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -161,15 +160,14 @@ export const EditMember: FunctionComponent = observer(() => {
 
       if (pubAddr && pubAddr.publicKey) {
         //get symmetricKey of group using
-        const symmetricKey = await decryptMessageContent(
+        const symmetricKey = await decryptEncryptedSymmetricKey(
           current.chainId,
           userGroupAddress?.encryptedSymmetricKey || ""
         );
-        //generateEncryptedSymmetricKeyForAddress needs to be called to get value of encryptedSymmetricKey
-        const encryptedSymmetricKey = await generateEncryptedSymmetricKeyForAddress(
+        const encryptedSymmetricKey = await encryptSymmetricKey(
           current.chainId,
           user.accessToken,
-          symmetricKey.substring(1, symmetricKey.length - 2),
+          symmetricKey,
           contactAddress
         );
         const tempMember: GroupMembers = {
