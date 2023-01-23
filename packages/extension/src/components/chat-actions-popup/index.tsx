@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router";
 import { BlockUserPopup } from "./block-user-popup";
 import { DeleteChatPopup } from "./delete-chat-popup";
+import { DeleteGroupPopup } from "./delete-group-popup";
 import { UnblockUserPopup } from "./unblock-user-popup";
 
 export const ChatActionsPopup = ({
@@ -27,6 +28,9 @@ export const ChatActionsPopup = ({
       )}
       {action === "delete" && (
         <DeleteChatPopup setConfirmAction={setConfirmAction} />
+      )}
+      {action === "deleteGroup" && (
+        <DeleteGroupPopup setConfirmAction={setConfirmAction} />
       )}
     </>
   );

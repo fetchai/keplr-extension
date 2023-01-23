@@ -85,6 +85,10 @@ export const messagesSlice = createSlice({
       };
       state.groups = { ...state.groups, ...updatedGroup };
     },
+    removeGroup: (state: any, action: PayloadAction<any>) => {
+      const groupId = action.payload;
+      delete state.groups[groupId];
+    },
     updateLatestSentMessage: (state: any, action: PayloadAction<Message>) => {
       const { target, id, groupId } = action.payload;
       /// Distinguish between Group and Single chat
@@ -138,6 +142,7 @@ export const {
   updateChatList,
   updateMessages,
   updateGroupsData,
+  removeGroup,
   updateLatestSentMessage,
   setBlockedList,
   setBlockedUser,

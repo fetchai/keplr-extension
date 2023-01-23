@@ -5,7 +5,7 @@ import {
 } from "@apollo/client/utilities";
 import { GroupDetails, PublicKeyDetails } from "@chatTypes";
 import { store } from "@chatStore/index";
-import { setMessageError } from "@chatStore/messages-slice";
+import { removeGroup, setMessageError } from "@chatStore/messages-slice";
 import { client, createWSLink, httpLink } from "./client";
 import {
   Group,
@@ -58,6 +58,46 @@ export const createGroup = async (groupDetails: GroupDetails) => {
       );
       return null;
     }
+    return data.group;
+  } catch (e: any) {
+    store.dispatch(
+      setMessageError({
+        type: "Group",
+        message: e?.message || "Something went wrong, Group can't be created",
+        level: 1,
+      })
+    );
+    return null;
+  }
+};
+
+export const deleteGroup = async (groupId: string) => {
+  const state = store.getState();
+
+  try {
+    const { data, errors } = await client.mutate({
+      mutation: gql(`mutation Mutation($groupId: String) {
+        deleteGroup(groupId: $groupId)
+      }`),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
+      },
+      variables: { groupId },
+    });
+    if (errors) {
+      store.dispatch(
+        setMessageError({
+          type: "Group",
+          message: errors || "Something went wrong, Group can't be created",
+          level: 1,
+        })
+      );
+      return null;
+    }
+    store.dispatch(removeGroup(groupId));
     return data.group;
   } catch (e: any) {
     store.dispatch(

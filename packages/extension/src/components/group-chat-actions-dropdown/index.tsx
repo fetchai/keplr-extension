@@ -16,13 +16,16 @@ export const GroupChatActionsDropdown = ({
     { title: "Group info", option: GroupChatOptions.groupInfo },
     //{ title: "Mute group", option: GroupChatOptions.muteGroup },
     { title: "Leave group", option: GroupChatOptions.leaveGroup },
-    // { title: "Delete group", option: GroupChatOptions.deleteGroup },
   ];
 
   if (isAdmin) {
     options.push({
       title: "Chat settings",
       option: GroupChatOptions.chatSettings,
+    });
+    options.push({
+      title: "Delete group",
+      option: GroupChatOptions.deleteGroup,
     });
   }
 

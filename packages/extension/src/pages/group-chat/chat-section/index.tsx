@@ -87,6 +87,10 @@ export const GroupChatSection: FunctionComponent = () => {
           },
         });
         break;
+      case GroupChatOptions.deleteGroup:
+        setAction("deleteGroup");
+        setConfirmAction(true);
+        break;
 
       default:
         setAction(option.toString());
