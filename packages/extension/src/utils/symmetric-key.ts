@@ -23,7 +23,7 @@ export async function decryptEncryptedSymmetricKey(
     chainId,
     encryptedSymmetricKey
   );
-  return symmetricKey.substring(1, symmetricKey.length - 2);
+  return symmetricKey.substring(1, symmetricKey.length - 1);
 }
 
 export async function encryptSymmetricKey(
