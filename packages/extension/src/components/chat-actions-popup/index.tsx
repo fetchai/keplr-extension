@@ -1,5 +1,4 @@
 import { CommonPopupOptions } from "@chatTypes";
-import { leaveGroup } from "@graphQL/groups-api";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { AlertPopup } from "./alert-popup";
@@ -11,9 +10,11 @@ import { UnblockUserPopup } from "./unblock-user-popup";
 export const ChatActionsPopup = ({
   action,
   setConfirmAction,
+  handleAction,
 }: {
   action: string;
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
+  handleAction?: () => void;
 }) => {
   const [processing, setProcessing] = useState(false);
   const history = useHistory();
@@ -22,9 +23,7 @@ export const ChatActionsPopup = ({
 
   const handleLeaveGroup = async () => {
     setProcessing(true);
-    const groupId = history.location.pathname.split("/")[3];
-    leaveGroup(groupId);
-    setConfirmAction(false);
+    if (handleAction) handleAction();
   };
 
   return (

@@ -5,11 +5,7 @@ import {
 } from "@apollo/client/utilities";
 import { GroupDetails, PublicKeyDetails } from "@chatTypes";
 import { store } from "@chatStore/index";
-import {
-  removeGroup,
-  setMessageError,
-  updateGroupsData,
-} from "@chatStore/messages-slice";
+import { removeGroup, setMessageError } from "@chatStore/messages-slice";
 import { client, createWSLink, httpLink } from "./client";
 import {
   Group,
@@ -100,12 +96,7 @@ export const leaveGroup = async (groupId: string) => {
       );
       return null;
     }
-    /// updating the group info using shallow copy
-    const group = { ...state.messages.groups[groupId] };
-    group.removedAt = new Date();
-
-    store.dispatch(updateGroupsData(group));
-    return data.group;
+    return data;
   } catch (e: any) {
     store.dispatch(
       setMessageError({

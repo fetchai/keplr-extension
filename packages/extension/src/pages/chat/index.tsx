@@ -106,7 +106,7 @@ const ChatView = () => {
       try {
         if (!chatSubscriptionActive) {
           groupReadUnreadListener(walletAddress);
-          messageListener();
+          messageListener(walletAddress);
         }
 
         if (!chatStorePopulated) {

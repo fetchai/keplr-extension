@@ -39,6 +39,7 @@ import {
   encryptSymmetricKey,
 } from "@utils/symmetric-key";
 import style from "./style.module.scss";
+import { recieveMessages } from "@graphQL/recieve-messages";
 
 export const EditMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -103,15 +104,15 @@ export const EditMember: FunctionComponent = observer(() => {
     }
   );
 
-  const updateUserAddresses = () => {
+  const updateUserAddresses = (members: GroupMembers[]) => {
     /// Todo: handle it in better way
-    const userAddresses: NameAddress[] = selectedMembers
+    const userAddresses: NameAddress[] = members
       .map((element) => {
         const addressData = addressBookConfig.addressBookDatas.find(
           (data) => data.address === element.address
         );
 
-        if (addressData && addressData.address !== walletAddress)
+        if (addressData)
           return {
             name: addressData.name,
             address: addressData.address,
@@ -134,7 +135,7 @@ export const EditMember: FunctionComponent = observer(() => {
   };
 
   useEffect(() => {
-    updateUserAddresses();
+    updateUserAddresses(selectedMembers);
 
     /// Adding login user into the group list
     handleAddRemoveMember(
@@ -231,16 +232,18 @@ export const EditMember: FunctionComponent = observer(() => {
 
       if (tempGroup) {
         /// Updating the UI
-        updateUserAddresses();
-
+        updateUserAddresses(tempMembers);
         /// updating the new updated group
         store.dispatch(setNewGroupInfo({ contents, members: tempMembers }));
+        /// update state of selected member
         setSelectedMembers(tempMembers);
 
         /// updating the group(chat history) object
-        const groupsObj: any = {};
-        groupsObj[tempGroup.id] = tempGroup;
-        store.dispatch(setGroups({ groups: groupsObj }));
+        const groups: any = { [tempGroup.id]: tempGroup };
+        store.dispatch(setGroups({ groups }));
+
+        /// fetching the group messages again
+        await recieveMessages(group.id, null, 0, group.isDm, group.id);
       }
     } catch (e) {
       // Show error toaster
@@ -302,9 +305,11 @@ export const EditMember: FunctionComponent = observer(() => {
           setSelectedMembers(tempMembers);
 
           /// updating the group(chat history) object
-          const groupsObj: any = {};
-          groupsObj[tempGroup.id] = tempGroup;
-          store.dispatch(setGroups({ groups: groupsObj }));
+          const groups: any = { [tempGroup.id]: tempGroup };
+          store.dispatch(setGroups({ groups }));
+
+          /// fetching the group messages again
+          await recieveMessages(group.id, null, 0, group.isDm, group.id);
         }
       } catch (e) {
         // Show error toaster
@@ -418,11 +423,9 @@ export const EditMember: FunctionComponent = observer(() => {
             </span>
           </div>
         </div>
-        <div>
-          <span className={style.groupDescription}>
-            {newGroupState.group.description}
-          </span>
-        </div>
+        <span className={style.groupDescription}>
+          {newGroupState.group.description}
+        </span>
         {!addressBookConfig.isLoaded ? (
           <ChatLoader message="Loading contacts, please wait..." />
         ) : (

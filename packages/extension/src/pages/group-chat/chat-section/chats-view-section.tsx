@@ -244,7 +244,9 @@ export const GroupChatsViewSection = ({
     <div className={style.chatArea}>
       <div className={style.messages}>
         {pagination?.lastPage > pagination?.page &&
-          (messages.length === 30 || messages.length == 0) && (
+          (pagination?.page === -1 ||
+            messages.length === 30 ||
+            messages.length == 0) && (
             <div ref={messagesStartRef} className={style.loader}>
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>

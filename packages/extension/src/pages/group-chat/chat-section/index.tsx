@@ -10,17 +10,29 @@ import { UserNameSection } from "./username-section";
 import { GroupChatsViewSection } from "./chats-view-section";
 import { ChatActionsPopup } from "@components/chat-actions-popup";
 import { useSelector } from "react-redux";
-import { userChatGroups } from "@chatStore/messages-slice";
-import { GroupChatOptions, GroupMembers, Groups } from "@chatTypes";
+import {
+  updateChatList,
+  updateGroupsData,
+  userChatGroups,
+  userMessages,
+} from "@chatStore/messages-slice";
+import { Chats, GroupChatOptions, GroupMembers, Groups } from "@chatTypes";
 import { GroupChatActionsDropdown } from "@components/group-chat-actions-dropdown";
 import { store } from "@chatStore/index";
 import { setIsGroupEdit, setNewGroupInfo } from "@chatStore/new-group-slice";
+import { leaveGroup } from "@graphQL/groups-api";
+import { deliverGroupMessages } from "@graphQL/messages-api";
+import { GroupMessageType } from "@utils/encrypt-group";
+import { userDetails } from "@chatStore/user-slice";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
   const groupId = history.location.pathname.split("/")[3];
   const groups: Groups = useSelector(userChatGroups);
+  const userChats: Chats = useSelector(userMessages);
+
   const group = groups[groupId];
+  const user = useSelector(userDetails);
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -36,12 +48,12 @@ export const GroupChatSection: FunctionComponent = () => {
   const [isMemberRemoved, setMemberRemoved] = useState(false);
   const [action, setAction] = useState("");
 
-  useEffect(() => {
-    /// Find the current user and check user exists in the group or not
-    const currentUser = group.addresses.find(
-      (element) => element.address === accountInfo.bech32Address
-    );
+  /// Find the current user and check user exists in the group or not
+  const currentUser = group.addresses.find(
+    (element) => element.address === accountInfo.bech32Address
+  );
 
+  useEffect(() => {
     if (group?.removedAt) {
       /// User is removed by admin
       setMemberRemoved(true);
@@ -58,14 +70,16 @@ export const GroupChatSection: FunctionComponent = () => {
   };
 
   function navigateToPage(page: string) {
-    const members: GroupMembers[] = group.addresses.map((element) => {
-      return {
-        address: element.address,
-        pubKey: element.pubKey,
-        encryptedSymmetricKey: element.encryptedSymmetricKey,
-        isAdmin: element.isAdmin,
-      };
-    });
+    const members: GroupMembers[] = group.addresses
+      .filter((element) => !element.removedAt)
+      .map((element) => {
+        return {
+          address: element.address,
+          pubKey: element.pubKey,
+          encryptedSymmetricKey: element.encryptedSymmetricKey,
+          isAdmin: element.isAdmin,
+        };
+      });
     store.dispatch(
       setNewGroupInfo({
         description: group.description,
@@ -96,11 +110,55 @@ export const GroupChatSection: FunctionComponent = () => {
 
       case GroupChatOptions.leaveGroup:
       default:
-        debugger;
         setAction(GroupChatOptions[option]);
         setConfirmAction(true);
         break;
     }
+  };
+
+  const handleAction = async () => {
+    if (currentUser) {
+      const { encryptedSymmetricKey } = currentUser;
+
+      const message = await deliverGroupMessages(
+        user.accessToken,
+        current.chainId,
+        `-${accountInfo.bech32Address} left this group chat.`,
+        encryptedSymmetricKey || "",
+        GroupMessageType.event,
+        accountInfo.bech32Address,
+        groupId
+      );
+
+      if (message) {
+        await leaveGroup(groupId);
+        const messagesObj: any = { [message.id]: message };
+        const messages = { ...userChats[groupId].messages, ...messagesObj };
+
+        /// updating the group info
+        const updatedGroup = {
+          ...group,
+          addresses: group.addresses.filter((element) => {
+            if (element.address === walletAddress) {
+              return {
+                ...element,
+                removedAt: new Date(),
+              };
+            }
+
+            return element;
+          }),
+          lastMessageContents: message.contents,
+          lastMessageSender: message.sender,
+          lastMessageTimestamp: message.commitTimestamp,
+          removedAt: new Date(),
+        };
+
+        store.dispatch(updateGroupsData(updatedGroup));
+        store.dispatch(updateChatList({ userAddress: groupId, messages }));
+      }
+    }
+    setConfirmAction(false);
   };
 
   return (
@@ -137,6 +195,7 @@ export const GroupChatSection: FunctionComponent = () => {
             <ChatActionsPopup
               action={action}
               setConfirmAction={setConfirmAction}
+              handleAction={handleAction}
             />
           )}
         </div>

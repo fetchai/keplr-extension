@@ -40,6 +40,7 @@ import {
   encryptSymmetricKey,
 } from "@utils/symmetric-key";
 import style from "./style.module.scss";
+import { recieveMessages } from "@graphQL/recieve-messages";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -216,6 +217,12 @@ export const AddMember: FunctionComponent = observer(() => {
       );
       store.dispatch(setNewGroupInfo({ members: tempMembers }));
       setSelectedMembers(tempMembers);
+
+      /// Removing new address
+      const newMembers = newAddedMembers.filter(
+        (item) => item !== contactAddress
+      );
+      setNewAddedMembers(newMembers);
     }
   };
 
@@ -252,10 +259,11 @@ export const AddMember: FunctionComponent = observer(() => {
     setIsLoading(false);
 
     if (group) {
-      const groupsObj: any = {};
-      groupsObj[group.id] = group;
-
-      store.dispatch(setGroups({ groups: groupsObj }));
+      /// updating the group(chat history) object
+      const groups: any = { [group.id]: group };
+      store.dispatch(setGroups({ groups }));
+      /// fetching the group messages again
+      await recieveMessages(group.id, null, 0, group.isDm, group.id);
       history.goBack();
     }
   }

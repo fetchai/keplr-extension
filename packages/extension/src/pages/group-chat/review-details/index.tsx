@@ -120,6 +120,18 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     );
   };
 
+  /// check login user is admin and part of group
+  const isLoginUserAdmin = (): boolean => {
+    const groupAddress = group.addresses.find(
+      (element) => element.address === walletAddress
+    );
+    if (groupAddress) {
+      return groupAddress.isAdmin && !groupAddress.removedAt;
+    }
+
+    return false;
+  };
+
   const AddContactOption = (address: string) => {
     const history = useHistory();
     return (
@@ -267,10 +279,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
 
             if (group) {
               store.dispatch(resetNewGroup());
-              const groupsObj: any = {};
-              groupsObj[group.id] = group;
-
-              store.dispatch(setGroups({ groups: groupsObj }));
+              const groups: any = { [group.id]: group };
+              store.dispatch(setGroups({ groups }));
               /// Clearing stack till chat tab
               history.go(-4);
               setTimeout(
@@ -284,6 +294,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         </Button>
       )}
       {confirmAction && !isUserAdmin(walletAddress) && (
+        /// Display popup for non admin member
         <GroupChatPopup
           isAdded={
             (selectedAddress &&
@@ -295,10 +306,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           selectedMember={selectedMembers.find(
             (element) => element.address === selectedAddress?.address
           )}
-          isLoginUserAdmin={
-            group.addresses.find((element) => element.address === walletAddress)
-              ?.isAdmin ?? false
-          }
+          isLoginUserAdmin={isLoginUserAdmin()}
           onClick={(action) => {
             handlePopupAction(action);
           }}

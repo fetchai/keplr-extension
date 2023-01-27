@@ -18,6 +18,7 @@ import { userDetails } from "@chatStore/user-slice";
 import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
 import { createGroup } from "@graphQL/groups-api";
 import { setGroups } from "@chatStore/messages-slice";
+import { recieveMessages } from "@graphQL/recieve-messages";
 
 export const openValue = true;
 
@@ -64,15 +65,16 @@ export const CreateGroupChat: FunctionComponent = () => {
       onlyAdminMessages: false,
     };
     const group = await createGroup(updatedGroupInfo);
-    setIsLoading(false);
 
     if (group) {
-      const groupsObj: any = {};
-      groupsObj[group.id] = group;
-
-      store.dispatch(setGroups({ groups: groupsObj }));
+      /// updating the group(chat history) object
+      const groups: any = { [group.id]: group };
+      store.dispatch(setGroups({ groups }));
+      /// fetching the group messages again
+      await recieveMessages(group.id, null, 0, group.isDm, group.id);
       history.goBack();
     }
+    setIsLoading(false);
   }
 
   async function validateAndContinue(): Promise<void> {

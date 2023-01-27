@@ -65,6 +65,7 @@ export const groups = `query Query($addressQueryString: String, $page: Int, $pag
         groupLastSeenTimestamp
         encryptedSymmetricKey
         isAdmin
+        removedAt
       }
       removedAt
       createdAt
@@ -96,6 +97,7 @@ export const groupsWithAddresses = `query Query($page: Int, $pageCount: Int, $ad
         groupLastSeenTimestamp
         encryptedSymmetricKey
         isAdmin
+        removedAt
       }
       removedAt
       createdAt
@@ -146,6 +148,7 @@ export const groupReadUnread = `subscription GroupUpdate {
         groupLastSeenTimestamp
         encryptedSymmetricKey
         isAdmin
+        removedAt
       }
       createdAt
       removedAt
@@ -200,6 +203,7 @@ export const updateGroupLastSeen = `mutation Mutation($groupId: String!, $lastSe
       groupLastSeenTimestamp
       encryptedSymmetricKey
       isAdmin
+      removedAt
     }
     createdAt
     removedAt

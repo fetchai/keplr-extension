@@ -55,6 +55,7 @@ export interface GroupAddress {
   groupLastSeenTimestamp: string;
   encryptedSymmetricKey: string;
   isAdmin: boolean;
+  removedAt: Date;
 }
 
 export interface Group {

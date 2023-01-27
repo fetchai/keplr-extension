@@ -315,7 +315,7 @@ export const deliverGroupMessages = async (
   }
 };
 
-export const messageListener = () => {
+export const messageListener = (userAddress: string) => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -347,7 +347,7 @@ export const messageListener = () => {
         store.dispatch(updateMessages(data.newMessageUpdate.message));
         const { target, groupId } = data.newMessageUpdate.message;
         /// Distinguish between Group and Single chat
-        const id = groupId.split("-").length == 2 ? target : groupId;
+        const id = groupId.split("-").length == 2 ? target : userAddress;
         recieveGroups(0, id);
       },
       error(err) {
@@ -474,7 +474,6 @@ export const updateGroupTimestamp = async (
 
     /// Updating the last seen status
     const group = data.updateGroupLastSeen;
-    /// Todo handle based on isDm
     group.userAddress = targetAddress;
     store.dispatch(updateGroupsData(group));
   } catch (err) {

@@ -24,7 +24,7 @@ export const GroupChatActionsDropdown = ({
     options.push({ title: "Leave group", option: GroupChatOptions.leaveGroup });
   }
 
-  if (isAdmin) {
+  if (isAdmin && !isMemberRemoved) {
     options.push({
       title: "Chat settings",
       option: GroupChatOptions.chatSettings,
