@@ -229,7 +229,7 @@ export const NewChat: FunctionComponent = observer(() => {
               onClick={() => {
                 store.dispatch(resetNewGroup());
                 history.push({
-                  pathname: "/group-chat/create",
+                  pathname: "/chat/group-chat/create",
                 });
               }}
             >

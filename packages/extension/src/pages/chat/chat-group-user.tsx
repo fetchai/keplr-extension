@@ -6,7 +6,8 @@ import amplitude from "amplitude-js";
 import { Group, GroupMessagePayload, NameAddress } from "@chatTypes";
 import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessageType } from "@utils/encrypt-group";
-import { getEventMessage } from "../../utils";
+import { getUserName, getEventMessage } from "@utils/index";
+import { useStore } from "../../stores";
 
 export const ChatGroupUser: React.FC<{
   chainId: string;
@@ -20,11 +21,15 @@ export const ChatGroupUser: React.FC<{
   ] = useState<GroupMessagePayload>();
   const history = useHistory();
 
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+
   const handleClick = () => {
     amplitude.getInstance().logEvent("Open Group click", {
       from: "Chat history",
     });
-    history.push(`/group-chat/chat-section/${group.id}`);
+    history.push(`/chat/group-chat-section/${group.id}`);
   };
 
   useEffect(() => {
@@ -40,6 +45,14 @@ export const ChatGroupUser: React.FC<{
       loadDecryptedMessage();
     }
   }, [chainId, encryptedSymmetricKey, group]);
+
+  function getLastMessage(): string {
+    return `${getUserName(
+      accountInfo.bech32Address,
+      addresses,
+      group.lastMessageSender
+    )}: ${decryptedMessage?.message}`;
+  }
 
   return (
     <div
@@ -77,8 +90,12 @@ export const ChatGroupUser: React.FC<{
           {decryptedMessage &&
           (decryptedMessage.type == GroupMessageType.event.toString() ||
             decryptedMessage.type === GroupMessageType[GroupMessageType.event])
-            ? getEventMessage(addresses, decryptedMessage.message)
-            : decryptedMessage?.message}
+            ? getEventMessage(
+                accountInfo.bech32Address,
+                addresses,
+                decryptedMessage.message
+              )
+            : getLastMessage()}
         </div>
       </div>
       <div>

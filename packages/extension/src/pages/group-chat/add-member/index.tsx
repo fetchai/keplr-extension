@@ -363,13 +363,16 @@ export const AddMember: FunctionComponent = observer(() => {
 
         <Button
           className={style.button}
-          size="large"
+          color="primary"
           data-loading={isLoading}
+          disabled={
+            newGroupState.isEditGroup ? newAddedMembers.length === 0 : undefined
+          }
           onClick={() => {
             if (newGroupState.isEditGroup) {
               handleUpdateGroup();
             } else {
-              history.push("/group-chat/review-details");
+              history.push("/chat/group-chat/review-details");
             }
           }}
         >

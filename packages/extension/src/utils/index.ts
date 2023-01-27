@@ -15,11 +15,17 @@ export function removeByIndex(str: string, index: number) {
   return str.slice(0, index) + str.slice(index + 1);
 }
 
-export function getContactName(
+export function getUserName(
+  walletAddress: string,
   addressBook: NameAddress,
   address: string
 ): string {
   // translate the contact address into the address book name if it exists
+
+  if (walletAddress === address) {
+    return "You";
+  }
+
   const contactAddressBookName = addressBook[address];
   return contactAddressBookName
     ? formatAddress(contactAddressBookName)
@@ -28,6 +34,7 @@ export function getContactName(
 
 /// Todo need to update the payload to refractor event messages
 export function getEventMessage(
+  walletAddress: string,
   addressBook: NameAddress,
   message: string
 ): string {
@@ -46,12 +53,18 @@ export function getEventMessage(
           const finalData = message
             .replace(
               tempAddress,
-              getContactName(addressBook, removeByIndex(tempAddress, 0))
+              getUserName(
+                walletAddress,
+                addressBook,
+                removeByIndex(tempAddress, 0)
+              )
             )
             .replace(
               lastObj,
               tempAddressess
-                .map((address) => getContactName(addressBook, address))
+                .map((address) =>
+                  getUserName(walletAddress, addressBook, address)
+                )
                 .join(", ")
             );
           return finalData;
@@ -59,16 +72,23 @@ export function getEventMessage(
           const finalData = message
             .replace(
               tempAddress,
-              getContactName(addressBook, removeByIndex(tempAddress, 0))
+              getUserName(
+                walletAddress,
+                addressBook,
+                removeByIndex(tempAddress, 0)
+              )
             )
-            .replace(lastObj, getContactName(addressBook, addresses));
+            .replace(
+              lastObj,
+              getUserName(walletAddress, addressBook, addresses)
+            );
           return finalData;
         }
       }
     } else {
       const finalData = message.replace(
         tempAddress,
-        getContactName(addressBook, removeByIndex(tempAddress, 0))
+        getUserName(walletAddress, addressBook, removeByIndex(tempAddress, 0))
       );
       return finalData;
     }

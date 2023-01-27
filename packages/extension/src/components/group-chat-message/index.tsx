@@ -8,7 +8,8 @@ import { isToday, isYesterday, format } from "date-fns";
 import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessagePayload, NameAddress } from "@chatTypes";
 import { GroupMessageType } from "@utils/encrypt-group";
-import { getContactName, getEventMessage } from "@utils/index";
+import { getUserName, getEventMessage } from "@utils/index";
+import { useStore } from "../../stores";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -40,6 +41,10 @@ export const GroupChatMessage = ({
     decryptedMessage,
     setDecryptedMessage,
   ] = useState<GroupMessagePayload>();
+
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
 
   useEffect(() => {
     async function loadDecryptedMessage() {
@@ -79,7 +84,11 @@ export const GroupChatMessage = ({
           {" "}
           {
             <span className={style.currentEvent}>
-              {getEventMessage(addresses, decryptedMessage.message)}
+              {getEventMessage(
+                accountInfo.bech32Address,
+                addresses,
+                decryptedMessage.message
+              )}
             </span>
           }
         </div>
@@ -93,7 +102,11 @@ export const GroupChatMessage = ({
           >
             {!isSender && (
               <div className={style.title}>
-                {getContactName(addresses, senderAddress)}
+                {getUserName(
+                  accountInfo.bech32Address,
+                  addresses,
+                  senderAddress
+                )}
               </div>
             )}
             {!decryptedMessage ? (

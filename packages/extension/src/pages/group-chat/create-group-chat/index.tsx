@@ -20,8 +20,6 @@ import { createGroup } from "@graphQL/groups-api";
 import { setGroups } from "@chatStore/messages-slice";
 import { recieveMessages } from "@graphQL/recieve-messages";
 
-export const openValue = true;
-
 export const CreateGroupChat: FunctionComponent = () => {
   const history = useHistory();
   const notification = useNotification();
@@ -111,7 +109,7 @@ export const CreateGroupChat: FunctionComponent = () => {
     );
     store.dispatch(setIsGroupEdit(false));
     history.push({
-      pathname: "/group-chat/add-member",
+      pathname: "/chat/group-chat/add-member",
     });
   }
 
@@ -126,8 +124,8 @@ export const CreateGroupChat: FunctionComponent = () => {
   function handleBackButton() {
     if (newGroupState.isEditGroup) {
       if (
-        newGroupState.group.name !== name ||
-        newGroupState.group.description !== description
+        newGroupState.group.name != name ||
+        newGroupState.group.description != description
       ) {
         setConfirmAction(true);
         return;
@@ -196,8 +194,12 @@ export const CreateGroupChat: FunctionComponent = () => {
         </div>
         <Button
           className={style.button}
-          size="large"
+          color="primary"
           data-loading={isLoading}
+          disabled={
+            newGroupState.group.name == name &&
+            newGroupState.group.description == description
+          }
           onClick={() => validateAndContinue()}
         >
           {newGroupState.isEditGroup ? "Save changes" : "Add Members"}

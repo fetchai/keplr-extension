@@ -12,7 +12,6 @@ import { ChatActionsPopup } from "@components/chat-actions-popup";
 import { useSelector } from "react-redux";
 import {
   updateChatList,
-  updateGroupsData,
   userChatGroups,
   userMessages,
 } from "@chatStore/messages-slice";
@@ -24,6 +23,7 @@ import { leaveGroup } from "@graphQL/groups-api";
 import { deliverGroupMessages } from "@graphQL/messages-api";
 import { GroupMessageType } from "@utils/encrypt-group";
 import { userDetails } from "@chatStore/user-slice";
+import { recieveGroups } from "@graphQL/recieve-messages";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
@@ -82,7 +82,7 @@ export const GroupChatSection: FunctionComponent = () => {
       });
     store.dispatch(
       setNewGroupInfo({
-        description: group.description,
+        description: group.description === null ? "" : group.description,
         groupId: group.id,
         members: members,
         name: group.name,
@@ -96,11 +96,11 @@ export const GroupChatSection: FunctionComponent = () => {
     setShowDropdown(false);
     switch (option) {
       case GroupChatOptions.groupInfo:
-        navigateToPage("/group-chat/review-details");
+        navigateToPage("/chat/group-chat/review-details");
         break;
 
       case GroupChatOptions.chatSettings:
-        navigateToPage("/group-chat/create");
+        navigateToPage("/chat/group-chat/create");
         break;
 
       case GroupChatOptions.deleteGroup:
@@ -123,7 +123,7 @@ export const GroupChatSection: FunctionComponent = () => {
       const message = await deliverGroupMessages(
         user.accessToken,
         current.chainId,
-        `-${accountInfo.bech32Address} left this group chat.`,
+        `-${accountInfo.bech32Address} leave this group chat.`,
         encryptedSymmetricKey || "",
         GroupMessageType.event,
         accountInfo.bech32Address,
@@ -132,29 +132,9 @@ export const GroupChatSection: FunctionComponent = () => {
 
       if (message) {
         await leaveGroup(groupId);
+        recieveGroups(0, accountInfo.bech32Address);
         const messagesObj: any = { [message.id]: message };
         const messages = { ...userChats[groupId].messages, ...messagesObj };
-
-        /// updating the group info
-        const updatedGroup = {
-          ...group,
-          addresses: group.addresses.filter((element) => {
-            if (element.address === walletAddress) {
-              return {
-                ...element,
-                removedAt: new Date(),
-              };
-            }
-
-            return element;
-          }),
-          lastMessageContents: message.contents,
-          lastMessageSender: message.sender,
-          lastMessageTimestamp: message.commitTimestamp,
-          removedAt: new Date(),
-        };
-
-        store.dispatch(updateGroupsData(updatedGroup));
         store.dispatch(updateChatList({ userAddress: groupId, messages }));
       }
     }

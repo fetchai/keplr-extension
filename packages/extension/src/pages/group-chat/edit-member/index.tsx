@@ -401,7 +401,7 @@ export const EditMember: FunctionComponent = observer(() => {
               className={style.groupMembers}
               onClick={() => {
                 history.push({
-                  pathname: "/group-chat/add-member",
+                  pathname: "/chat/group-chat/add-member",
                 });
               }}
             >
