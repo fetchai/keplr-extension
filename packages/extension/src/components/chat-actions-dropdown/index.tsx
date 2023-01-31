@@ -95,7 +95,7 @@ const UnblockOption = ({
         handleClick("unblock");
       }}
     >
-      Block contact
+      Unblock contact
     </div>
   );
 };

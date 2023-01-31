@@ -54,6 +54,7 @@ export const UserNameSection = ({
       <div className={style.leftBox}>
         <img
           alt=""
+          draggable="false"
           className={style.backBtn}
           src={chevronLeft}
           onClick={() => {
@@ -88,6 +89,7 @@ export const UserNameSection = ({
       <div className={style.rightBox}>
         <img
           alt=""
+          draggable="false"
           style={{ cursor: "pointer" }}
           className={style.more}
           src={moreIcon}

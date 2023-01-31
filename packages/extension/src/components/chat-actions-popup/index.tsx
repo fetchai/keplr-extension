@@ -48,7 +48,7 @@ export const ChatActionsPopup = ({
           setConfirmAction={setConfirmAction}
           heading={"Leave Group Chat?"}
           description={
-            "You won’t receive further messages from this group. \n\nThe group will be notified that you have left."
+            "You won’t receive further messages from this group. \nThe group will be notified that you have left."
           }
           firstButtonTitle="Cancel"
           secondButtonTitle="Leave"

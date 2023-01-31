@@ -97,7 +97,9 @@
 
 .groupName {
   align-self: start;
+  text-align: start;
   font-size: 0.875rem;
+  word-break: break-word;
 }
 
 .groupMembers {

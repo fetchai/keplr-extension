@@ -8,7 +8,6 @@ import chevronLeft from "@assets/icon/chevron-left.png";
 import moreIcon from "@assets/icon/more-grey.png";
 import style from "./style.module.scss";
 
-export let openValue = true;
 export const UserNameSection = ({
   handleDropDown,
   groupName,
@@ -45,7 +44,6 @@ export const UserNameSection = ({
           src={chevronLeft}
           onClick={() => {
             history.goBack();
-            openValue = false;
           }}
         />
         <span className={style.recieverName}>

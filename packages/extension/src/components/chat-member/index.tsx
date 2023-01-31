@@ -44,9 +44,7 @@ export const ChatMember = (props: {
         <div className={style.name}>{formatAddress(name)}</div>
       </div>
       {isShowAdmin ? (
-        <div className={style.adminHeading}>
-          <text>Admin</text>
-        </div>
+        <div className={style.adminHeading}>Admin </div>
       ) : (
         showSelectedIcon && (
           <div>

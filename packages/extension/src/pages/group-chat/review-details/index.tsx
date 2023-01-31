@@ -39,13 +39,16 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
 
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
-  const selectedMembers: GroupMembers[] = newGroupState.group.members || [];
+  const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
+    newGroupState.group.members || []
+  );
   const user = useSelector(userDetails);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
 
   const groups: Groups = useSelector(userChatGroups);
   const group: Group = groups[newGroupState.group.groupId];
+
   const [selectedAddress, setSelectedAddresse] = useState<NameAddress>();
   const [confirmAction, setConfirmAction] = useState(false);
 
@@ -103,7 +106,26 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     });
 
     setAddresses(userAddresses);
-  }, [addressBookConfig.addressBookDatas]);
+  }, [addressBookConfig.addressBookDatas, selectedMembers]);
+
+  useEffect(() => {
+    const groupData = Object.values(groups).find((group) =>
+      group.id.includes(newGroupState.group.groupId)
+    );
+    if (groupData) {
+      const updatedMembers: GroupMembers[] = groupData.addresses
+        .filter((element) => !element.removedAt)
+        .map((element) => {
+          return {
+            address: element.address,
+            pubKey: element.pubKey,
+            encryptedSymmetricKey: element.encryptedSymmetricKey,
+            isAdmin: element.isAdmin,
+          };
+        });
+      setSelectedMembers(updatedMembers);
+    }
+  }, [groups, newGroupState.group.groupId]);
 
   const handleRemoveMember = async (contactAddress: string) => {
     const tempAddresses = selectedMembers.filter(
@@ -122,7 +144,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
 
   /// check login user is admin and part of group
   const isLoginUserAdmin = (): boolean => {
-    const groupAddress = group.addresses.find(
+    const groupAddress = group?.addresses.find(
       (element) => element.address === walletAddress
     );
     if (groupAddress) {
@@ -151,12 +173,14 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       </div>
     );
   };
+
   function showGroupPopup(address: NameAddress): void {
     if (address.address !== walletAddress) {
       setSelectedAddresse(address);
       setConfirmAction(true);
     }
   }
+
   function handlePopupAction(action: GroupChatMemberOptions) {
     setConfirmAction(false);
 
@@ -181,6 +205,50 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         break;
     }
   }
+
+  const createNewGroup = async () => {
+    setIsLoading(true);
+    const updatedGroupMembers = await createEncryptedSymmetricKeyForAddresses(
+      newGroupState.group.members,
+      current.chainId,
+      user.accessToken
+    );
+    const userGroupAddress = updatedGroupMembers.find(
+      (address) => address.address == accountInfo.bech32Address
+    );
+    const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
+    const contents = await encryptGroupMessage(
+      current.chainId,
+      `Group created by -${accountInfo.bech32Address}`,
+      GroupMessageType.event,
+      encryptedSymmetricKey,
+      accountInfo.bech32Address,
+      `Group created by -${
+        accountInfo.bech32Address
+      } at ${new Date().getTime()}`,
+      user.accessToken
+    );
+
+    const newGroupData = {
+      ...newGroupState.group,
+      members: updatedGroupMembers,
+      contents,
+    };
+    const groupData = await createGroup(newGroupData);
+    setIsLoading(false);
+
+    if (groupData) {
+      store.dispatch(resetNewGroup());
+      const groups: any = { [groupData.id]: groupData };
+      store.dispatch(setGroups({ groups }));
+      /// Clearing stack till chat tab
+      history.go(-4);
+      setTimeout(
+        () => history.push(`/chat/group-chat-section/${groupData.id}`),
+        100
+      );
+    }
+  };
 
   return (
     <HeaderLayout
@@ -245,49 +313,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           className={style.button}
           size="large"
           data-loading={isLoading}
-          onClick={async () => {
-            setIsLoading(true);
-            const updatedGroupMembers = await createEncryptedSymmetricKeyForAddresses(
-              newGroupState.group.members,
-              current.chainId,
-              user.accessToken
-            );
-            const userGroupAddress = updatedGroupMembers.find(
-              (address) => address.address == accountInfo.bech32Address
-            );
-            const encryptedSymmetricKey =
-              userGroupAddress?.encryptedSymmetricKey || "";
-            const contents = await encryptGroupMessage(
-              current.chainId,
-              `Group created by -${accountInfo.bech32Address}`,
-              GroupMessageType.event,
-              encryptedSymmetricKey,
-              accountInfo.bech32Address,
-              `Group created by -${
-                accountInfo.bech32Address
-              } at ${new Date().getTime()}`,
-              user.accessToken
-            );
-
-            const newGroupData = {
-              ...newGroupState.group,
-              members: updatedGroupMembers,
-              contents,
-            };
-            const group = await createGroup(newGroupData);
-            setIsLoading(false);
-
-            if (group) {
-              store.dispatch(resetNewGroup());
-              const groups: any = { [group.id]: group };
-              store.dispatch(setGroups({ groups }));
-              /// Clearing stack till chat tab
-              history.go(-4);
-              setTimeout(
-                () => history.push(`/chat/group-chat-section/${group.id}`),
-                100
-              );
-            }
+          onClick={() => {
+            createNewGroup();
           }}
         >
           Create Group Chat
