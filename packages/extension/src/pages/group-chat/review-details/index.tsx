@@ -16,7 +16,6 @@ import {
   GroupChatMemberOptions,
   GroupMembers,
   Groups,
-  NameAddress,
   NewGroupDetails,
 } from "@chatTypes";
 import { useSelector } from "react-redux";
@@ -46,12 +45,12 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   );
   const user = useSelector(userDetails);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [addresses, setAddresses] = useState<NameAddress[]>([]);
+  const [addresses, setAddresses] = useState<any[]>([]);
 
   const groups: Groups = useSelector(userChatGroups);
   const group: Group = groups[newGroupState.group.groupId];
 
-  const [selectedAddress, setSelectedAddresse] = useState<NameAddress>();
+  const [selectedAddress, setSelectedAddresse] = useState<any>();
   const [confirmAction, setConfirmAction] = useState(false);
 
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -90,7 +89,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   );
 
   useEffect(() => {
-    const userAddresses: NameAddress[] = selectedMembers.map((element) => {
+    const userAddresses: any[] = selectedMembers.map((element) => {
       const addressData = addressBookConfig.addressBookDatas.find(
         (data) => data.address === element.address
       );
@@ -99,11 +98,13 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         return {
           name: addressData.name,
           address: addressData.address,
+          existsInAddressBook: true,
         };
 
       return {
         name: element.address === walletAddress ? "You" : element.address,
         address: element.address,
+        existsInAddressBook: false,
       };
     });
 
@@ -159,26 +160,17 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    const history = useHistory();
-    return (
-      <div
-        onClick={() => {
-          amplitude.getInstance().logEvent("Add to address click", {});
-          history.push({
-            pathname: "/setting/address-book",
-            state: {
-              openModal: true,
-              addressInputValue: address,
-            },
-          });
-        }}
-      >
-        Add to address book
-      </div>
-    );
+    amplitude.getInstance().logEvent("Add to address click", {});
+    history.push({
+      pathname: "/setting/address-book",
+      state: {
+        openModal: true,
+        addressInputValue: address,
+      },
+    });
   };
 
-  function showGroupPopup(address: NameAddress): void {
+  function showGroupPopup(address: any): void {
     if (address.address !== walletAddress) {
       setSelectedAddresse(address);
       setConfirmAction(true);
@@ -294,7 +286,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           </text>
         }
 
-        {addresses.map((address: NameAddress) => {
+        {addresses.map((address: any) => {
           return (
             <ChatMember
               address={address}
@@ -340,11 +332,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       {confirmAction && !isUserAdmin(walletAddress) && (
         /// Display popup for non admin member
         <GroupChatPopup
-          isAdded={
-            (selectedAddress &&
-              addresses.some((address) => address[selectedAddress.address])) ??
-            false
-          }
+          isAdded={selectedAddress.existsInAddressBook}
           isFromReview={true}
           name={selectedAddress?.name ?? ""}
           selectedMember={selectedMembers.find(

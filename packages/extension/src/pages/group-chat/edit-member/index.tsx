@@ -9,7 +9,6 @@ import {
   GroupDetails,
   GroupMembers,
   Groups,
-  NameAddress,
   NewGroupDetails,
 } from "@chatTypes";
 import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
@@ -58,10 +57,10 @@ export const EditMember: FunctionComponent = observer(() => {
   const group: Group = groups[newGroupState.group.groupId];
 
   /// Displaying list of addresses along with name
-  const [addresses, setAddresses] = useState<NameAddress[]>([]);
+  const [addresses, setAddresses] = useState<any[]>([]);
 
   /// Selected member info for displaying the dynamic popup
-  const [selectedAddress, setSelectedAddresse] = useState<NameAddress>();
+  const [selectedAddress, setSelectedAddresse] = useState<any>();
   const [confirmAction, setConfirmAction] = useState(false);
 
   /// Show alert popup for remove member
@@ -106,7 +105,7 @@ export const EditMember: FunctionComponent = observer(() => {
 
   const updateUserAddresses = (members: GroupMembers[]) => {
     /// Todo: handle it in better way
-    const userAddresses: NameAddress[] = members
+    const userAddresses: any = members
       .map((element) => {
         const addressData = addressBookConfig.addressBookDatas.find(
           (data) => data.address === element.address
@@ -116,11 +115,13 @@ export const EditMember: FunctionComponent = observer(() => {
           return {
             name: addressData.name,
             address: addressData.address,
+            existsInAddressBook: true,
           };
 
         return {
           name: element.address,
           address: element.address,
+          existsInAddressBook: false,
         };
       })
       .filter((element) => element.address !== walletAddress);
@@ -130,6 +131,7 @@ export const EditMember: FunctionComponent = observer(() => {
       {
         name: "You",
         address: walletAddress,
+        existsInAddressBook: false,
       },
     ]);
   };
@@ -321,26 +323,17 @@ export const EditMember: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    const history = useHistory();
-    return (
-      <div
-        onClick={() => {
-          amplitude.getInstance().logEvent("Add to address click", {});
-          history.push({
-            pathname: "/setting/address-book",
-            state: {
-              openModal: true,
-              addressInputValue: address,
-            },
-          });
-        }}
-      >
-        Add to address book
-      </div>
-    );
+    amplitude.getInstance().logEvent("Add to address click", {});
+    history.push({
+      pathname: "/setting/address-book",
+      state: {
+        openModal: true,
+        addressInputValue: address,
+      },
+    });
   };
 
-  function showGroupPopup(address: NameAddress): void {
+  function showGroupPopup(address: any): void {
     if (address.address !== walletAddress) {
       setSelectedAddresse(address);
       setConfirmAction(true);
@@ -429,7 +422,7 @@ export const EditMember: FunctionComponent = observer(() => {
         ) : (
           <div className={style.newMemberContainer}>
             <div className={style.membersContainer}>
-              {addresses.map((address: NameAddress) => {
+              {addresses.map((address: any) => {
                 return (
                   <ChatMember
                     address={address}
@@ -464,13 +457,7 @@ export const EditMember: FunctionComponent = observer(() => {
         )}
         {confirmAction && (
           <GroupChatPopup
-            isAdded={
-              (selectedAddress &&
-                addresses.some(
-                  (address) => address[selectedAddress.address]
-                )) ??
-              false
-            }
+            isAdded={selectedAddress.existsInAddressBook}
             isFromReview={false}
             name={selectedAddress?.name ?? ""}
             selectedMember={selectedMembers.find(
