@@ -26,6 +26,20 @@ export const GroupChatPopup = ({
         onClick={() => onClick(GroupChatMemberOptions.dissmisPopup)}
       />
       <div className={style.popup}>
+        <i
+          className={"fa fa-times"}
+          style={{
+            width: "24px",
+            height: "24px",
+            cursor: "pointer",
+            position: "absolute",
+            float: "right",
+            right: "0px",
+            top: "10px",
+          }}
+          aria-hidden="true"
+          onClick={() => onClick(GroupChatMemberOptions.dissmisPopup)}
+        />
         {
           <ChatOption
             title={`Message ${formatAddress(name)}`}
