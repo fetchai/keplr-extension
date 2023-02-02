@@ -7,6 +7,7 @@ import { ToolTip } from "@components/tooltip";
 import chevronLeft from "@assets/icon/chevron-left.png";
 import moreIcon from "@assets/icon/more-grey.png";
 import style from "./style.module.scss";
+import { formatGroupName } from "@utils/format";
 
 export const UserNameSection = ({
   handleDropDown,
@@ -59,7 +60,7 @@ export const UserNameSection = ({
               placement: "top",
             }}
           >
-            {groupName}
+            {formatGroupName(groupName)}
           </ToolTip>
         </span>
         <span className={style.copyIcon} onClick={() => copyAddress(groupName)}>
