@@ -34,9 +34,11 @@ import { userDetails } from "@chatStore/user-slice";
 import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import amplitude from "amplitude-js";
 import { GroupChatPopup } from "@components/group-chat-popup";
+import { useNotification } from "@components/notification";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
+  const notification = useNotification();
 
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
   const [selectedMembers, setSelectedMembers] = useState<GroupMembers[]>(
@@ -109,23 +111,25 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   }, [addressBookConfig.addressBookDatas, selectedMembers]);
 
   useEffect(() => {
-    const groupData = Object.values(groups).find((group) =>
-      group.id.includes(newGroupState.group.groupId)
-    );
-    if (groupData) {
-      const updatedMembers: GroupMembers[] = groupData.addresses
-        .filter((element) => !element.removedAt)
-        .map((element) => {
-          return {
-            address: element.address,
-            pubKey: element.pubKey,
-            encryptedSymmetricKey: element.encryptedSymmetricKey,
-            isAdmin: element.isAdmin,
-          };
-        });
-      setSelectedMembers(updatedMembers);
+    if (newGroupState.isEditGroup) {
+      const groupData = Object.values(groups).find((group) =>
+        group.id.includes(newGroupState.group.groupId)
+      );
+      if (groupData) {
+        const updatedMembers: GroupMembers[] = groupData.addresses
+          .filter((element) => !element.removedAt)
+          .map((element) => {
+            return {
+              address: element.address,
+              pubKey: element.pubKey,
+              encryptedSymmetricKey: element.encryptedSymmetricKey,
+              isAdmin: element.isAdmin,
+            };
+          });
+        setSelectedMembers(updatedMembers);
+      }
     }
-  }, [groups, newGroupState.group.groupId]);
+  }, [groups, newGroupState.group.groupId, newGroupState.isEditGroup]);
 
   const handleRemoveMember = async (contactAddress: string) => {
     const tempAddresses = selectedMembers.filter(
@@ -314,7 +318,20 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           size="large"
           data-loading={isLoading}
           onClick={() => {
-            createNewGroup();
+            if (selectedMembers.length > 1) {
+              createNewGroup();
+            } else {
+              notification.push({
+                type: "warning",
+                placement: "top-center",
+                duration: 5,
+                content: `At least 2 members must be selected`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
+              });
+            }
           }}
         >
           Create Group Chat

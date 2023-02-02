@@ -123,7 +123,7 @@ export const GroupChatSection: FunctionComponent = () => {
       const message = await deliverGroupMessages(
         user.accessToken,
         current.chainId,
-        `-${accountInfo.bech32Address} leave this group chat.`,
+        `-${accountInfo.bech32Address} left this group chat.`,
         encryptedSymmetricKey || "",
         GroupMessageType.event,
         accountInfo.bech32Address,

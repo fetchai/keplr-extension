@@ -304,7 +304,7 @@ export const GroupChatsViewSection = ({
                 ? "You can't send messages to this group because you're no longer a participant"
                 : "Type a new message..."
             }
-            value={newMessage}
+            value={isMemberRemoved ? "" : newMessage}
             onChange={(event) => {
               setNewMessage(event.target.value.substring(0, 499));
             }}

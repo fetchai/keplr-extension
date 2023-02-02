@@ -55,9 +55,21 @@ export const ChatsGroupHistory: React.FC<{
   };
 
   const filterGroups = (contact: string) => {
+    const searchValue = searchString.trim();
+    const group = groups[contact];
+
+    /// For Group search
+    if (!group.isDm) {
+      if (searchValue.length > 0) {
+        return group.name.toLowerCase().includes(searchValue.toLowerCase());
+      }
+
+      return true;
+    }
+
+    /// For DM
     const contactAddressBookName = addresses[contact];
 
-    const searchValue = searchString.trim();
     if (userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts) {
       if (searchString.length > 0) {
         if (

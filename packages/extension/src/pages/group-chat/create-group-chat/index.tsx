@@ -102,8 +102,8 @@ export const CreateGroupChat: FunctionComponent = () => {
 
     store.dispatch(
       setNewGroupInfo({
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         contents,
       })
     );
@@ -125,6 +125,7 @@ export const CreateGroupChat: FunctionComponent = () => {
     if (newGroupState.isEditGroup) {
       if (
         newGroupState.group.name != name ||
+        name.trim().length == 0 ||
         newGroupState.group.description != description
       ) {
         setConfirmAction(true);
@@ -133,6 +134,18 @@ export const CreateGroupChat: FunctionComponent = () => {
     }
 
     history.goBack();
+  }
+
+  function isBtnDisable(): boolean | undefined {
+    if (newGroupState.isEditGroup) {
+      return (
+        (newGroupState.group.name == name &&
+          newGroupState.group.description == description) ||
+        name.trim().length == 0
+      );
+    }
+
+    return name.trim().length == 0;
   }
 
   return (
@@ -157,9 +170,12 @@ export const CreateGroupChat: FunctionComponent = () => {
         )}
       </div>
       <div className={style.tokens}>
-        <span className={style.groupImageText}>Group Image (optional)</span>
+        <span className={style.groupImageText} hidden={true}>
+          Group Image (Optional)
+        </span>
         <img
           className={style.groupImage}
+          draggable="false"
           src={require("@assets/group710.svg")}
         />
         <span className={style.recommendedSize}>
@@ -178,7 +194,7 @@ export const CreateGroupChat: FunctionComponent = () => {
           />
         </div>
         <div className={style.input}>
-          <span className={style.text}>Description (optional)</span>
+          <span className={style.text}>Description (Optional)</span>
           <textarea
             className={style.inputText}
             placeholder="Tell us more about your group"
@@ -196,10 +212,7 @@ export const CreateGroupChat: FunctionComponent = () => {
           className={style.button}
           color="primary"
           data-loading={isLoading}
-          disabled={
-            newGroupState.group.name == name &&
-            newGroupState.group.description == description
-          }
+          disabled={isBtnDisable()}
           onClick={() => validateAndContinue()}
         >
           {newGroupState.isEditGroup ? "Save changes" : "Add Members"}

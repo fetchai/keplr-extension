@@ -397,14 +397,7 @@ export const EditMember: FunctionComponent = observer(() => {
         <div className={style.groupContainer}>
           <div className={style.groupHeader}>
             <span className={style.groupName}>{newGroupState.group.name}</span>
-            <span
-              className={style.groupMembers}
-              onClick={() => {
-                history.push({
-                  pathname: "/chat/group-chat/add-member",
-                });
-              }}
-            >
+            <span className={style.groupMembers}>
               {`${selectedMembers.length} member${
                 selectedMembers.length > 1 ? "s" : ""
               }`}
@@ -419,6 +412,11 @@ export const EditMember: FunctionComponent = observer(() => {
                   alignSelf: "end",
                 }}
                 aria-hidden="true"
+                onClick={() => {
+                  history.push({
+                    pathname: "/chat/group-chat/add-member",
+                  });
+                }}
               />
             </span>
           </div>

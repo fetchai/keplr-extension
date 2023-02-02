@@ -29,6 +29,9 @@ export const GroupChatActionsDropdown = ({
       title: "Chat settings",
       option: GroupChatOptions.chatSettings,
     });
+  }
+
+  if (isMemberRemoved) {
     options.push({
       title: "Delete group",
       option: GroupChatOptions.deleteGroup,
