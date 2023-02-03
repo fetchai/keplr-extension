@@ -81,16 +81,13 @@ export const GroupChatMessage = ({
       (decryptedMessage.type == GroupMessageType.event.toString() ||
         decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
         <div className={style.currentEventContainer}>
-          {" "}
-          {
-            <span className={style.currentEvent}>
-              {getEventMessage(
-                accountInfo.bech32Address,
-                addresses,
-                decryptedMessage.message
-              )}
-            </span>
-          }
+          <span className={style.currentEvent}>
+            {getEventMessage(
+              accountInfo.bech32Address,
+              addresses,
+              decryptedMessage.message
+            )}
+          </span>
         </div>
       ) : (
         <div className={isSender ? style.senderAlign : style.receiverAlign}>

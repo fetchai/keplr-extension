@@ -344,10 +344,16 @@ export const messageListener = (userAddress: string) => {
     })
     .subscribe({
       next({ data }: { data: { newMessageUpdate: NewMessageUpdate } }) {
-        store.dispatch(updateMessages(data.newMessageUpdate.message));
         const { target, groupId } = data.newMessageUpdate.message;
         /// Distinguish between Group and Single chat
         const id = groupId.split("-").length == 2 ? target : userAddress;
+        // Check if person removed from group then dont update message
+        if (groupId.split("-").length != 2) {
+          const newState = store.getState();
+          const group = newState.messages.groups[groupId];
+          if (group.removedAt) return;
+        }
+        store.dispatch(updateMessages(data.newMessageUpdate.message));
         recieveGroups(0, id);
       },
       error(err) {

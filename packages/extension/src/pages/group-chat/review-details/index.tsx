@@ -34,6 +34,7 @@ import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import amplitude from "amplitude-js";
 import { GroupChatPopup } from "@components/group-chat-popup";
 import { useNotification } from "@components/notification";
+import { createGroupEvent } from "@utils/group-events";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -215,13 +216,11 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
     const contents = await encryptGroupMessage(
       current.chainId,
-      `Group created by -${accountInfo.bech32Address}`,
+      createGroupEvent(accountInfo.bech32Address),
       GroupMessageType.event,
       encryptedSymmetricKey,
       accountInfo.bech32Address,
-      `Group created by -${
-        accountInfo.bech32Address
-      } at ${new Date().getTime()}`,
+      createGroupEvent(accountInfo.bech32Address),
       user.accessToken
     );
 

@@ -41,6 +41,7 @@ import {
 } from "@utils/symmetric-key";
 import style from "./style.module.scss";
 import { recieveMessages } from "@graphQL/recieve-messages";
+import { addMemberEvent } from "@utils/group-events";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -240,7 +241,7 @@ export const AddMember: FunctionComponent = observer(() => {
     const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
     const contents = await encryptGroupMessage(
       current.chainId,
-      `-${accountInfo.bech32Address} added [${newAddedMembers.join()}]`,
+      addMemberEvent(accountInfo.bech32Address, newAddedMembers.join()),
       GroupMessageType.event,
       encryptedSymmetricKey,
       accountInfo.bech32Address,

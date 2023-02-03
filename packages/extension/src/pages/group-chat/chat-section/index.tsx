@@ -24,6 +24,7 @@ import { deliverGroupMessages } from "@graphQL/messages-api";
 import { GroupMessageType } from "@utils/encrypt-group";
 import { userDetails } from "@chatStore/user-slice";
 import { recieveGroups } from "@graphQL/recieve-messages";
+import { leaveGroupEvent } from "@utils/group-events";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
@@ -123,7 +124,7 @@ export const GroupChatSection: FunctionComponent = () => {
       const message = await deliverGroupMessages(
         user.accessToken,
         current.chainId,
-        `-${accountInfo.bech32Address} left this group chat.`,
+        leaveGroupEvent(accountInfo.bech32Address),
         encryptedSymmetricKey || "",
         GroupMessageType.event,
         accountInfo.bech32Address,

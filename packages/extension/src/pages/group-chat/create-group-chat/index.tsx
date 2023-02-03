@@ -19,6 +19,7 @@ import { AlertPopup } from "@components/chat-actions-popup/alert-popup";
 import { createGroup } from "@graphQL/groups-api";
 import { setGroups } from "@chatStore/messages-slice";
 import { recieveMessages } from "@graphQL/recieve-messages";
+import { createGroupEvent, updateInfoEvent } from "@utils/group-events";
 
 export const CreateGroupChat: FunctionComponent = () => {
   const history = useHistory();
@@ -47,7 +48,7 @@ export const CreateGroupChat: FunctionComponent = () => {
     const encryptedSymmetricKey = userGroupAddress?.encryptedSymmetricKey || "";
     const contents = await encryptGroupMessage(
       current.chainId,
-      `Group info updated by -${accountInfo.bech32Address}`,
+      updateInfoEvent(accountInfo.bech32Address),
       GroupMessageType.event,
       encryptedSymmetricKey,
       accountInfo.bech32Address,
@@ -96,7 +97,7 @@ export const CreateGroupChat: FunctionComponent = () => {
     }
 
     const contents = {
-      text: `Group created by -${accountInfo.bech32Address}`,
+      text: createGroupEvent(accountInfo.bech32Address),
       type: GroupMessageType[GroupMessageType.event],
     };
 

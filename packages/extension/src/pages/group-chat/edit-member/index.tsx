@@ -39,6 +39,11 @@ import {
 } from "@utils/symmetric-key";
 import style from "./style.module.scss";
 import { recieveMessages } from "@graphQL/recieve-messages";
+import {
+  addAdminEvent,
+  removedAdminEvent,
+  removeMemberEvent,
+} from "@utils/group-events";
 
 export const EditMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -215,7 +220,7 @@ export const EditMember: FunctionComponent = observer(() => {
     try {
       const contents = await encryptGroupMessage(
         current.chainId,
-        `-${contactAddress} has been removed.`,
+        removeMemberEvent(contactAddress),
         GroupMessageType.event,
         userGroupAddress?.encryptedSymmetricKey || "",
         accountInfo.bech32Address,
@@ -278,8 +283,8 @@ export const EditMember: FunctionComponent = observer(() => {
       );
       const tempMembers = [...newMembers, updatedMember];
       const statement = isAdmin
-        ? `-${contactAddress} now an admin.`
-        : `-${contactAddress} removed as admin.`;
+        ? addAdminEvent(contactAddress)
+        : removedAdminEvent(contactAddress);
       const contents = await encryptGroupMessage(
         current.chainId,
         statement,
