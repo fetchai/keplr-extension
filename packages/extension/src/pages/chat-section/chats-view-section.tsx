@@ -83,8 +83,7 @@ export const ChatsViewSection = ({
     );
 
     setMessages(updatedMessages);
-    if (preLoadedChats && preLoadedChats.pagination)
-      setPagination(preLoadedChats.pagination);
+    setPagination(preLoadedChats.pagination);
 
     const lastMessage =
       updatedMessages && updatedMessages.length > 0

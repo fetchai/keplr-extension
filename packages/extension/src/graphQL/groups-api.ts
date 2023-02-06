@@ -1,20 +1,14 @@
-import { ApolloClient, gql, InMemoryCache, split } from "@apollo/client";
-import {
-  getMainDefinition,
-  ObservableSubscription,
-} from "@apollo/client/utilities";
+import { gql } from "@apollo/client";
 import { GroupDetails, PublicKeyDetails } from "@chatTypes";
 import { store } from "@chatStore/index";
 import { removeGroup, setMessageError } from "@chatStore/messages-slice";
-import { client, createWSLink, httpLink } from "./client";
+import { client } from "./client";
 import {
   Group,
   leaveGroupMutation,
-  listenGroups,
   UpdateGroupLastSeen,
   UpdatePublicKey,
 } from "./groups-queries";
-let querySubscription: ObservableSubscription;
 
 export const updatePublicKey = async (publicKeyDetails: PublicKeyDetails) => {
   const state = store.getState();
@@ -167,53 +161,4 @@ export const updateGroupLastSeen = async (
   });
   if (errors) console.log("errors", errors);
   return data.updateGroupLastSeen;
-};
-
-export const groupsListener = () => {
-  const state = store.getState();
-  const wsLink = createWSLink(state.user.accessToken);
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
-    },
-    wsLink,
-    httpLink
-  );
-  const newClient = new ApolloClient({
-    link: splitLink,
-    cache: new InMemoryCache(),
-  });
-  querySubscription = newClient
-    .subscribe({
-      query: gql(listenGroups),
-      context: {
-        headers: {
-          authorization: `Bearer ${state.user.accessToken}`,
-        },
-      },
-    })
-    .subscribe({
-      next() {},
-      error(err) {
-        console.error("err", err);
-        store.dispatch(
-          setMessageError({
-            type: "subscription",
-            message: "Something went wrong, Cant fetch latest messages",
-            level: 1,
-          })
-        );
-      },
-      complete() {
-        console.log("completed");
-      },
-    });
-};
-
-export const groupsListenerUnsubscribe = () => {
-  if (querySubscription) querySubscription.unsubscribe();
 };

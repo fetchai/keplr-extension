@@ -129,28 +129,64 @@ export const EditMember: FunctionComponent = observer(() => {
           existsInAddressBook: false,
         };
       })
-      .filter((element) => element.address !== walletAddress);
+      .sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
 
-    setAddresses([
-      ...userAddresses,
-      {
-        name: "You",
-        address: walletAddress,
-        existsInAddressBook: false,
-      },
-    ]);
+    const myself = userAddresses.find(
+      (element: any) => element.address === walletAddress
+    );
+    /// checking self info available in the group
+    if (myself) {
+      setAddresses([
+        {
+          name: "You",
+          address: walletAddress,
+          existsInAddressBook: false,
+        },
+        /// Removing self info from user address array because the info is already added as "You"
+        ...userAddresses.filter(
+          (element: any) => element.address !== walletAddress
+        ),
+      ]);
+    } else {
+      setAddresses(userAddresses);
+    }
   };
 
   useEffect(() => {
     updateUserAddresses(selectedMembers);
 
-    /// Adding login user into the group list
-    handleAddRemoveMember(
-      walletAddress,
-      group.addresses.find((element) => element.address === walletAddress)
-        ?.isAdmin ?? false
+    if (!newGroupState.isEditGroup) {
+      /// Adding login user into the group list
+      handleAddRemoveMember(
+        walletAddress,
+        group.addresses.find((element) => element.address === walletAddress)
+          ?.isAdmin ?? false
+      );
+    }
+  }, [addressBookConfig.addressBookDatas, selectedMembers]);
+
+  /// Listening the live group updates
+  useEffect(() => {
+    const groupData = Object.values(groups).find((group) =>
+      group.id.includes(newGroupState.group.groupId)
     );
-  }, [addressBookConfig.addressBookDatas]);
+    if (groupData) {
+      const updatedMembers: GroupMembers[] = groupData.addresses
+        .filter((element) => !element.removedAt)
+        .map((element) => {
+          return {
+            address: element.address,
+            pubKey: element.pubKey,
+            encryptedSymmetricKey: element.encryptedSymmetricKey,
+            isAdmin: element.isAdmin,
+          };
+        });
+      setSelectedMembers(updatedMembers);
+      store.dispatch(setNewGroupInfo({ members: updatedMembers }));
+    }
+  }, [groups, newGroupState.group.groupId]);
 
   const isMemberExist = (contactAddress: string) =>
     !!selectedMembers.find((element) => element.address === contactAddress);
@@ -394,11 +430,9 @@ export const EditMember: FunctionComponent = observer(() => {
       <div className={style.group}>
         <div className={style.groupContainer}>
           <div className={style.groupHeader}>
-            <span className={style.groupName}>{newGroupState.group.name}</span>
+            <span className={style.groupName}>{group.name}</span>
             <span className={style.groupMembers}>
-              {`${selectedMembers.length} member${
-                selectedMembers.length > 1 ? "s" : ""
-              }`}
+              {`${addresses.length} member${addresses.length > 1 ? "s" : ""}`}
               <i
                 className={"fa fa-user-plus"}
                 style={{
@@ -419,9 +453,7 @@ export const EditMember: FunctionComponent = observer(() => {
             </span>
           </div>
         </div>
-        <span className={style.groupDescription}>
-          {newGroupState.group.description}
-        </span>
+        <span className={style.groupDescription}>{group.description}</span>
         {!addressBookConfig.isLoaded ? (
           <ChatLoader message="Loading contacts, please wait..." />
         ) : (

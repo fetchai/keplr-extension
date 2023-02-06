@@ -31,7 +31,7 @@ import { EthereumEndpoint } from "../../config.ui";
 import { AUTH_SERVER } from "../../config.ui.var";
 import {
   fetchBlockList,
-  groupReadUnreadListener,
+  groupsListener,
   messageListener,
 } from "@graphQL/messages-api";
 import { recieveGroups } from "@graphQL/recieve-messages";
@@ -105,7 +105,7 @@ const ChatView = () => {
       setLoadingChats(true);
       try {
         if (!chatSubscriptionActive) {
-          groupReadUnreadListener(walletAddress);
+          groupsListener(walletAddress);
           messageListener(walletAddress);
         }
 

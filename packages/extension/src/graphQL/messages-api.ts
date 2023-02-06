@@ -26,7 +26,7 @@ import {
   blockedList,
   groups,
   groupsWithAddresses,
-  groupReadUnread,
+  listenGroups,
   listenMessages,
   mailbox,
   mailboxWithTimestamp,
@@ -37,7 +37,7 @@ import {
 import { recieveGroups } from "./recieve-messages";
 import { NewMessageUpdate } from "@chatTypes";
 let querySubscription: ObservableSubscription;
-let queryGroupReadUnreadSubscription: ObservableSubscription;
+let queryGroupSubscription: ObservableSubscription;
 
 interface messagesVariables {
   page?: number;
@@ -347,14 +347,12 @@ export const messageListener = (userAddress: string) => {
         const { target, groupId } = data.newMessageUpdate.message;
         /// Distinguish between Group and Single chat
         const id = groupId.split("-").length == 2 ? target : userAddress;
-        // Check if person removed from group then dont update message
-        if (groupId.split("-").length != 2) {
-          const newState = store.getState();
-          const group = newState.messages.groups[groupId];
-          if (group.removedAt) return;
-        }
         store.dispatch(updateMessages(data.newMessageUpdate.message));
-        recieveGroups(0, id);
+
+        /// Adding timeout for temporaray as Remove At Group subscription not working
+        setTimeout(() => {
+          recieveGroups(0, id);
+        }, 100);
       },
       error(err) {
         console.error("err", err);
@@ -372,7 +370,7 @@ export const messageListener = (userAddress: string) => {
     });
 };
 
-export const groupReadUnreadListener = (userAddress: string) => {
+export const groupsListener = (userAddress: string) => {
   const state = store.getState();
   const wsLink = createWSLink(state.user.accessToken);
   const splitLink = split(
@@ -390,9 +388,9 @@ export const groupReadUnreadListener = (userAddress: string) => {
     link: splitLink,
     cache: new InMemoryCache(),
   });
-  queryGroupReadUnreadSubscription = newClient
+  queryGroupSubscription = newClient
     .subscribe({
-      query: gql(groupReadUnread),
+      query: gql(listenGroups),
       context: {
         headers: {
           authorization: `Bearer ${state.user.accessToken}`,
@@ -432,8 +430,7 @@ export const groupReadUnreadListener = (userAddress: string) => {
 
 export const messageAndGroupListenerUnsubscribe = () => {
   if (querySubscription) querySubscription.unsubscribe();
-  if (queryGroupReadUnreadSubscription)
-    queryGroupReadUnreadSubscription.unsubscribe();
+  if (queryGroupSubscription) queryGroupSubscription.unsubscribe();
 };
 
 export const updateGroupTimestamp = async (

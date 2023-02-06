@@ -90,26 +90,46 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   );
 
   useEffect(() => {
-    const userAddresses: any[] = selectedMembers.map((element) => {
-      const addressData = addressBookConfig.addressBookDatas.find(
-        (data) => data.address === element.address
-      );
+    const userAddresses: any[] = selectedMembers
+      .map((element) => {
+        const addressData = addressBookConfig.addressBookDatas.find(
+          (data) => data.address === element.address
+        );
 
-      if (addressData && addressData.address !== walletAddress)
+        if (addressData && addressData.address !== walletAddress)
+          return {
+            name: addressData.name,
+            address: addressData.address,
+            existsInAddressBook: true,
+          };
+
         return {
-          name: addressData.name,
-          address: addressData.address,
-          existsInAddressBook: true,
+          name: element.address,
+          address: element.address,
+          existsInAddressBook: false,
         };
+      })
+      .sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
 
-      return {
-        name: element.address === walletAddress ? "You" : element.address,
-        address: element.address,
-        existsInAddressBook: false,
-      };
-    });
-
-    setAddresses(userAddresses);
+    const myself = userAddresses.find(
+      (element) => element.address === walletAddress
+    );
+    /// checking self info available in the group
+    if (myself) {
+      setAddresses([
+        {
+          name: "You",
+          address: walletAddress,
+          existsInAddressBook: false,
+        },
+        /// Removing self info from user address array because the info is already added as "You"
+        ...userAddresses.filter((element) => element.address !== walletAddress),
+      ]);
+    } else {
+      setAddresses(userAddresses);
+    }
   }, [addressBookConfig.addressBookDatas, selectedMembers]);
 
   useEffect(() => {
@@ -129,6 +149,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
             };
           });
         setSelectedMembers(updatedMembers);
+        store.dispatch(setNewGroupInfo({ members: updatedMembers }));
       }
     }
   }, [groups, newGroupState.group.groupId, newGroupState.isEditGroup]);
@@ -138,6 +159,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       (item) => item.address !== contactAddress
     );
     store.dispatch(setNewGroupInfo({ members: tempAddresses }));
+    setSelectedMembers(tempAddresses);
     setAddresses(addresses.filter((item) => item.address !== contactAddress));
   };
 
@@ -260,10 +282,10 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
           src={require("@assets/group710.svg")}
         />
         <span className={style.groupDescription}>
-          {newGroupState.group.name}
+          {group?.name ?? newGroupState.group.name}
         </span>
         <span className={style.groupDescription}>
-          {newGroupState.group.description}
+          {group?.description ?? newGroupState.group.description}
         </span>
         {newGroupState.isEditGroup && isUserAdmin(walletAddress) && (
           <Button
@@ -280,8 +302,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       <div className={style.membersContainer}>
         {
           <text className={style.memberText}>
-            {selectedMembers.length} member
-            {selectedMembers.length > 1 ? "s" : ""}
+            {addresses.length} member
+            {addresses.length > 1 ? "s" : ""}
           </text>
         }
 

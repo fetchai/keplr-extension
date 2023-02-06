@@ -48,7 +48,7 @@ export const messagesSlice = createSlice({
           contactAddress: userAddress,
           messages: {},
           pagination: {
-            page: 0,
+            page: -1,
             pageCount: CHAT_PAGE_COUNT,
             lastPage: 0,
             total: CHAT_PAGE_COUNT,

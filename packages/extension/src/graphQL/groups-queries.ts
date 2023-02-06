@@ -58,26 +58,3 @@ export const UpdateGroupLastSeen = `mutation Mutation($groupId: String!, $lastSe
     name
   }
 }`;
-
-export const listenGroups = `subscription Subscription {
-  groupUpdate {
-    group {
-      addresses {
-        address
-        encryptedSymmetricKey
-        isAdmin
-        lastSeenTimestamp
-        pubKey
-      }
-      createdAt
-      description
-      id
-      isDm
-      lastMessageContents
-      lastMessageSender
-      lastMessageTimestamp
-      lastSeenTimestamp
-      name
-    }
-  }
-}`;

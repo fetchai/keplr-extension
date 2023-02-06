@@ -23,27 +23,30 @@ export const DeleteGroupPopup = ({
   };
 
   return (
-    <div className={style.popup}>
-      <h4>Delete Group</h4>
-      <section>
-        <p className={style.textContainer}>
-          You will lose all your messages in this group. This action cannot be
-          undone
-        </p>
-      </section>
-      <div className={style.buttonContainer}>
-        <button type="button" onClick={handleCancel} disabled={processing}>
-          Cancel
-        </button>
-        <button
-          type="button"
-          className={style.btn}
-          onClick={handleDelete}
-          disabled={processing}
-        >
-          Delete
-        </button>
+    <>
+      <div className={style.overlay} />
+      <div className={style.popup}>
+        <h4>Delete Group</h4>
+        <section>
+          <p className={style.textContainer}>
+            You will lose all your messages in this group. This action cannot be
+            undone
+          </p>
+        </section>
+        <div className={style.buttonContainer}>
+          <button type="button" onClick={handleCancel} disabled={processing}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={style.btn}
+            onClick={handleDelete}
+            disabled={processing}
+          >
+            Delete
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

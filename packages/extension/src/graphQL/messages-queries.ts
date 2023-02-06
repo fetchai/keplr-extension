@@ -131,7 +131,7 @@ export interface Addresses {
   lastSeenTimestamp: string;
 }
 
-export const groupReadUnread = `subscription GroupUpdate {
+export const listenGroups = `subscription GroupUpdate {
   groupUpdate {
     group {
       id

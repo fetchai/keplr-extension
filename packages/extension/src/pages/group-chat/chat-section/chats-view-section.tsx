@@ -109,8 +109,7 @@ export const GroupChatsViewSection = ({
     );
 
     setMessages(updatedMessages);
-    if (preLoadedChats && preLoadedChats.pagination)
-      setPagination(preLoadedChats.pagination);
+    setPagination(preLoadedChats.pagination);
 
     // const lastMessage =
     //   updatedMessages && updatedMessages.length > 0
@@ -154,6 +153,12 @@ export const GroupChatsViewSection = ({
     },
     [messages]
   );
+
+  useEffect(() => {
+    if (isMemberRemoved && newMessage.length > 0) {
+      setNewMessage("");
+    }
+  }, [isMemberRemoved]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -234,7 +239,7 @@ export const GroupChatsViewSection = ({
   const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     //it triggers by pressing the enter key
     const { key } = e as React.KeyboardEvent<HTMLTextAreaElement>;
-    if (key === "Enter" && enterKeyCount == 0) {
+    if (key === "Enter" && !e.shiftKey && enterKeyCount == 0) {
       enterKeyCount = 1;
       handleSendMessage(e);
     }
@@ -253,8 +258,10 @@ export const GroupChatsViewSection = ({
           )}
         {pagination?.lastPage <= pagination?.page && (
           <p>
-            Messages are end to end encrypted. Nobody else can read them except
-            you and the recipient.
+            {` Messages are end to end encrypted. Nobody else can read them except
+            you and the recipient${
+              group && group?.addresses.length > 2 ? "s" : ""
+            }.`}
           </p>
         )}
         {messages?.map((message: any, index) => {
@@ -304,7 +311,7 @@ export const GroupChatsViewSection = ({
                 ? "You can't send messages to this group because you're no longer a participant"
                 : "Type a new message..."
             }
-            value={isMemberRemoved ? "" : newMessage}
+            value={newMessage}
             onChange={(event) => {
               setNewMessage(event.target.value.substring(0, 499));
             }}
