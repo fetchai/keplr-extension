@@ -82,10 +82,10 @@ export const ChatMessage = ({
           <div className={style.timestamp}>
             {formatTime(timestamp)}
             {isSender && groupLastSeenTimestamp < timestamp && (
-              <img alt="delivered" src={deliveredIcon} />
+              <img draggable={false} alt="delivered" src={deliveredIcon} />
             )}
             {isSender && groupLastSeenTimestamp >= timestamp && (
-              <img alt="seen" src={chatSeenIcon} />
+              <img draggable={false} alt="seen" src={chatSeenIcon} />
             )}
           </div>
         </Container>

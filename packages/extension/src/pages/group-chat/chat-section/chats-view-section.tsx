@@ -324,7 +324,7 @@ export const GroupChatsViewSection = ({
             className={style["send-message-icon"]}
             onClick={handleSendMessage}
           >
-            <img src={paperAirplaneIcon} alt="" />
+            <img draggable={false} src={paperAirplaneIcon} alt="" />
           </div>
         ) : (
           ""

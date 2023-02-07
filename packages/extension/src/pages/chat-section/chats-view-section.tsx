@@ -446,7 +446,7 @@ export const ChatsViewSection = ({
             className={style["send-message-icon"]}
             onClick={handleSendMessage}
           >
-            <img src={paperAirplaneIcon} alt="" draggable="false" />
+            <img draggable={false} src={paperAirplaneIcon} alt="" />
           </div>
         ) : (
           ""

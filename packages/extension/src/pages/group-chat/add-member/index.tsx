@@ -295,7 +295,7 @@ export const AddMember: FunctionComponent = observer(() => {
         <div className={style.newMemberContainer}>
           <div className={style.searchContainer}>
             <div className={style.searchBox}>
-              <img src={searchIcon} alt="search" />
+              <img draggable={false} src={searchIcon} alt="search" />
               <input
                 placeholder="Search by name or address"
                 value={inputVal}
@@ -366,18 +366,16 @@ export const AddMember: FunctionComponent = observer(() => {
           <div className={style.groupHeader}>
             <span className={style.groupName}>
               <ToolTip
-                tooltip={
-                  <div className={style.user} style={{ minWidth: "300px" }}>
-                    {newGroupState.group.name}
-                  </div>
-                }
+                tooltip={newGroupState.group.name}
                 theme="dark"
                 trigger="hover"
                 options={{
                   placement: "top",
                 }}
               >
-                {formatGroupName(newGroupState.group.name)}
+                <div className={style.user}>
+                  {formatGroupName(newGroupState.group.name)}
+                </div>
               </ToolTip>
             </span>
             <span className={style.groupMembers}>

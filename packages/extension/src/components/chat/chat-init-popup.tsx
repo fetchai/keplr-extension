@@ -82,7 +82,7 @@ export const ChatInitPopup = ({
     <>
       <div className={style.overlay} />
       <div className={style.popupContainer}>
-        <img src={privacyIcon} />
+        <img draggable={false} src={privacyIcon} />
         <br />
         <div className={style.infoContainer}>
           <h3>We have just added Chat!</h3>

@@ -18,7 +18,7 @@ export const ChatSearchInput = ({
   return (
     <div className={style.searchContainer}>
       <div className={style.searchBox}>
-        <img src={searchIcon} alt="search" />
+        <img draggable={false} src={searchIcon} alt="search" />
         <input
           placeholder="Search by name or address"
           value={searchInput}
@@ -32,7 +32,12 @@ export const ChatSearchInput = ({
           history.push("/newChat");
         }}
       >
-        <img className={style.newChatIcon} src={newChatIcon} alt="" />
+        <img
+          draggable={false}
+          className={style.newChatIcon}
+          src={newChatIcon}
+          alt=""
+        />
       </div>
     </div>
   );

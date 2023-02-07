@@ -206,7 +206,11 @@ export const CreateGroupChat: FunctionComponent = () => {
           />
         </div>
         <div className={style.adminToggle}>
-          <img className={style.toggle} src={require("@assets/toggle.svg")} />
+          <img
+            draggable={false}
+            className={style.toggle}
+            src={require("@assets/toggle.svg")}
+          />
           <span className={style.adminText}>Only admins can send messages</span>
         </div>
         <Button
