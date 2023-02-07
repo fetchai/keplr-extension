@@ -101,8 +101,11 @@
 }
 
 .groupName {
+  width: 75%;
   align-self: start;
   font-size: 0.875rem;
+  word-break: break-word;
+  text-align: start;
 }
 
 .groupDescription {

@@ -49,11 +49,7 @@ export const UserNameSection = ({
         />
         <span className={style.recieverName}>
           <ToolTip
-            tooltip={
-              <div className={style.user} style={{ minWidth: "300px" }}>
-                {groupName}
-              </div>
-            }
+            tooltip={<div className={style.user}>{groupName}</div>}
             theme="dark"
             trigger="hover"
             options={{

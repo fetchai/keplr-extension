@@ -91,45 +91,43 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
 
   useEffect(() => {
     const userAddresses: any[] = selectedMembers
-      .map((element) => {
+      .reduce((acc: any[], element: GroupMembers) => {
         const addressData = addressBookConfig.addressBookDatas.find(
           (data) => data.address === element.address
         );
-
-        if (addressData && addressData.address !== walletAddress)
-          return {
-            name: addressData.name,
-            address: addressData.address,
-            existsInAddressBook: true,
-          };
-
-        return {
-          name: element.address,
-          address: element.address,
-          existsInAddressBook: false,
-        };
-      })
+        if (addressData && addressData.address !== walletAddress) {
+          return [
+            ...acc,
+            {
+              name: addressData.name,
+              address: addressData.address,
+              existsInAddressBook: true,
+            },
+          ];
+        } else {
+          return element.address === walletAddress
+            ? [
+                {
+                  name: "You",
+                  address: walletAddress,
+                  existsInAddressBook: false,
+                },
+                ...acc,
+              ]
+            : [
+                ...acc,
+                {
+                  name: element.address,
+                  address: element.address,
+                  existsInAddressBook: false,
+                },
+              ];
+        }
+      }, [])
       .sort(function (a, b) {
-        return a.name.localeCompare(b.name);
+        return b.address === walletAddress ? 0 : a.name.localeCompare(b.name);
       });
-
-    const myself = userAddresses.find(
-      (element) => element.address === walletAddress
-    );
-    /// checking self info available in the group
-    if (myself) {
-      setAddresses([
-        {
-          name: "You",
-          address: walletAddress,
-          existsInAddressBook: false,
-        },
-        /// Removing self info from user address array because the info is already added as "You"
-        ...userAddresses.filter((element) => element.address !== walletAddress),
-      ]);
-    } else {
-      setAddresses(userAddresses);
-    }
+    setAddresses(userAddresses);
   }, [addressBookConfig.addressBookDatas, selectedMembers]);
 
   useEffect(() => {

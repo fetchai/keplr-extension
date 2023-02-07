@@ -34,7 +34,7 @@ import { EthereumEndpoint } from "../../../config.ui";
 import { useStore } from "../../../stores";
 import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import { fetchPublicKey } from "@utils/fetch-public-key";
-import { formatAddress } from "@utils/format";
+import { formatAddress, formatGroupName } from "@utils/format";
 import {
   decryptEncryptedSymmetricKey,
   encryptSymmetricKey,
@@ -42,6 +42,8 @@ import {
 import style from "./style.module.scss";
 import { recieveMessages } from "@graphQL/recieve-messages";
 import { addMemberEvent } from "@utils/group-events";
+import { ToolTip } from "@components/tooltip";
+import { DeactivatedChat } from "@components/chat/deactivated-chat";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -96,8 +98,8 @@ export const AddMember: FunctionComponent = observer(() => {
     }
   );
 
-  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas.filter(
-    (data) => {
+  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas
+    .filter((data) => {
       if (newGroupState.isEditGroup) {
         const isAlreadyMember = selectedMembers.find(
           (element) => element.address === data.address
@@ -105,8 +107,10 @@ export const AddMember: FunctionComponent = observer(() => {
         /// removing already added member
         if (!isAlreadyMember) return { name: data.name, address: data.address };
       } else return { name: data.name, address: data.address };
-    }
-  );
+    })
+    .sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
 
   useEffect(() => {
     setAddresses(userAddresses.filter((a) => a.address !== walletAddress));
@@ -269,6 +273,13 @@ export const AddMember: FunctionComponent = observer(() => {
     }
   }
 
+  if (
+    user.messagingPubKey.privacySetting &&
+    user.messagingPubKey.privacySetting === PrivacySetting.Nobody
+  ) {
+    return <DeactivatedChat />;
+  }
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -353,7 +364,22 @@ export const AddMember: FunctionComponent = observer(() => {
             ).outerHTML
           )}
           <div className={style.groupHeader}>
-            <span className={style.groupName}>{newGroupState.group.name}</span>
+            <span className={style.groupName}>
+              <ToolTip
+                tooltip={
+                  <div className={style.user} style={{ minWidth: "300px" }}>
+                    {newGroupState.group.name}
+                  </div>
+                }
+                theme="dark"
+                trigger="hover"
+                options={{
+                  placement: "top",
+                }}
+              >
+                {formatGroupName(newGroupState.group.name)}
+              </ToolTip>
+            </span>
             <span className={style.groupMembers}>
               {`${selectedMembers.length} member${
                 selectedMembers.length > 1 ? "s" : ""

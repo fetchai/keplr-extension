@@ -9,7 +9,6 @@ import moreIcon from "@assets/icon/more-grey.png";
 import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
 
-export let openValue = true;
 export const UserNameSection = ({
   handleDropDown,
   addresses,
@@ -59,7 +58,6 @@ export const UserNameSection = ({
           src={chevronLeft}
           onClick={() => {
             history.goBack();
-            openValue = false;
           }}
         />
         <span className={style.recieverName}>

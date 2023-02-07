@@ -29,6 +29,7 @@ import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { store } from "@chatStore/index";
 import { resetNewGroup } from "@chatStore/new-group-slice";
+import { DeactivatedChat } from "@components/chat/deactivated-chat";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -138,11 +139,13 @@ export const NewChat: FunctionComponent = observer(() => {
     }
   );
 
-  const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas.map(
-    (data) => {
+  const useraddresses: NameAddress[] = addressBookConfig.addressBookDatas
+    .map((data) => {
       return { name: data.name, address: data.address };
-    }
-  );
+    })
+    .sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
 
   useEffect(() => {
     setAddresses(useraddresses.filter((a) => a.address !== walletAddress));
@@ -186,6 +189,14 @@ export const NewChat: FunctionComponent = observer(() => {
       setAddresses(addresses);
     }
   };
+
+  if (
+    user.messagingPubKey.privacySetting &&
+    user.messagingPubKey.privacySetting === PrivacySetting.Nobody
+  ) {
+    return <DeactivatedChat />;
+  }
+
   return (
     <HeaderLayout
       showChainName={true}
