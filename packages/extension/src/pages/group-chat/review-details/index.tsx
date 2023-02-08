@@ -181,7 +181,9 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    amplitude.getInstance().logEvent("Add to address click", {});
+    amplitude.getInstance().logEvent("Add to address click", {
+      from: "Group Info",
+    });
     history.push({
       pathname: "/setting/address-book",
       state: {
@@ -218,6 +220,9 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         break;
 
       case GroupChatMemberOptions.viewInAddressBook:
+        amplitude.getInstance().logEvent("Address book viewed", {
+          from: "Group Info",
+        });
         history.push("/setting/address-book");
         break;
     }
@@ -258,10 +263,10 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       store.dispatch(setGroups({ groups }));
       /// Clearing stack till chat tab
       history.go(-4);
-      setTimeout(
-        () => history.push(`/chat/group-chat-section/${groupData.id}`),
-        100
-      );
+      setTimeout(() => {
+        amplitude.getInstance().logEvent("New group created", {});
+        history.push(`/chat/group-chat-section/${groupData.id}`);
+      }, 100);
     }
   };
 

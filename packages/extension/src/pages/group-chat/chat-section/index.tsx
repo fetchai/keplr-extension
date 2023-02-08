@@ -25,6 +25,7 @@ import { GroupMessageType } from "@utils/encrypt-group";
 import { userDetails } from "@chatStore/user-slice";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { leaveGroupEvent } from "@utils/group-events";
+import amplitude from "amplitude-js";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
@@ -97,10 +98,12 @@ export const GroupChatSection: FunctionComponent = () => {
     setShowDropdown(false);
     switch (option) {
       case GroupChatOptions.groupInfo:
+        amplitude.getInstance().logEvent("Group info click", {});
         navigateToPage("/chat/group-chat/review-details");
         break;
 
       case GroupChatOptions.chatSettings:
+        amplitude.getInstance().logEvent("Group Chat setting click", {});
         navigateToPage("/chat/group-chat/create");
         break;
 
@@ -137,6 +140,7 @@ export const GroupChatSection: FunctionComponent = () => {
         const messagesObj: any = { [message.id]: message };
         const messages = { ...userChats[groupId].messages, ...messagesObj };
         store.dispatch(updateChatList({ userAddress: groupId, messages }));
+        amplitude.getInstance().logEvent("Leave group click", {});
       }
     }
     setConfirmAction(false);

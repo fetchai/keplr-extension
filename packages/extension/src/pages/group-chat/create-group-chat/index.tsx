@@ -20,6 +20,7 @@ import { createGroup } from "@graphQL/groups-api";
 import { setGroups } from "@chatStore/messages-slice";
 import { recieveMessages } from "@graphQL/recieve-messages";
 import { createGroupEvent, updateInfoEvent } from "@utils/group-events";
+import amplitude from "amplitude-js";
 
 export const CreateGroupChat: FunctionComponent = () => {
   const history = useHistory();
@@ -71,6 +72,9 @@ export const CreateGroupChat: FunctionComponent = () => {
       store.dispatch(setGroups({ groups }));
       /// fetching the group messages again
       await recieveMessages(group.id, null, 0, group.isDm, group.id);
+      amplitude.getInstance().logEvent("Group info updated", {
+        from: "Group Info",
+      });
       history.goBack();
     }
     setIsLoading(false);

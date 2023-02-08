@@ -1,4 +1,5 @@
 import { deleteGroup } from "@graphQL/groups-api";
+import amplitude from "amplitude-js";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import style from "./style.module.scss";
@@ -15,6 +16,7 @@ export const DeleteGroupPopup = ({
     const groupId = history.location.pathname.split("/")[3];
     deleteGroup(groupId);
     setConfirmAction(false);
+    amplitude.getInstance().logEvent("Delete group click", {});
     history.push("/chat");
   };
 

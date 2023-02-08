@@ -44,6 +44,7 @@ import { recieveMessages } from "@graphQL/recieve-messages";
 import { addMemberEvent } from "@utils/group-events";
 import { ToolTip } from "@components/tooltip";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
+import amplitude from "amplitude-js";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -269,6 +270,9 @@ export const AddMember: FunctionComponent = observer(() => {
       store.dispatch(setGroups({ groups }));
       /// fetching the group messages again
       await recieveMessages(group.id, null, 0, group.isDm, group.id);
+      amplitude.getInstance().logEvent("New members added", {
+        from: "Group Info",
+      });
       history.goBack();
     }
   }

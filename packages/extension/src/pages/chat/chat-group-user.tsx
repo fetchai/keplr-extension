@@ -47,6 +47,25 @@ export const ChatGroupUser: React.FC<{
   }, [chainId, encryptedSymmetricKey, group]);
 
   function getLastMessage(): string {
+    /// Show last message if user removed/leave from group
+    if (group.removedAt) {
+      return "You left or have been removed";
+    }
+
+    /// Show event type last message
+    if (
+      decryptedMessage &&
+      (decryptedMessage.type == GroupMessageType.event.toString() ||
+        decryptedMessage.type === GroupMessageType[GroupMessageType.event])
+    ) {
+      return getEventMessage(
+        accountInfo.bech32Address,
+        addresses,
+        decryptedMessage.message
+      );
+    }
+
+    /// Show last message
     return `${getUserName(
       accountInfo.bech32Address,
       addresses,
@@ -86,17 +105,7 @@ export const ChatGroupUser: React.FC<{
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{group.name}</div>
-        <div className={style.messageText}>
-          {decryptedMessage &&
-          (decryptedMessage.type == GroupMessageType.event.toString() ||
-            decryptedMessage.type === GroupMessageType[GroupMessageType.event])
-            ? getEventMessage(
-                accountInfo.bech32Address,
-                addresses,
-                decryptedMessage.message
-              )
-            : getLastMessage()}
-        </div>
+        <div className={style.messageText}>{getLastMessage()}</div>
       </div>
       <div>
         <img
