@@ -56,7 +56,7 @@ export const GroupChatSection: FunctionComponent = () => {
   );
 
   useEffect(() => {
-    if (group?.removedAt) {
+    if (group?.removedAt || currentUser?.removedAt) {
       /// User is removed by admin
       setMemberRemoved(true);
     } else if (!currentUser && !isMemberRemoved) {

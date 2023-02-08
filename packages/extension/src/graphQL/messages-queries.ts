@@ -137,6 +137,7 @@ export const listenGroups = `subscription GroupUpdate {
       id
       name
       isDm
+      description
       lastMessageContents
       lastMessageSender
       lastMessageTimestamp
