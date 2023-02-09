@@ -30,6 +30,8 @@ import style from "./style.module.scss";
 import { store } from "@chatStore/index";
 import { resetNewGroup } from "@chatStore/new-group-slice";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
+import { AGENT_ADDRESS } from "../../config.ui.var";
+import { ContactsOnlyMessage } from "@components/contacts-only-message";
 
 const NewUser = (props: { address: NameAddress }) => {
   const history = useHistory();
@@ -246,6 +248,17 @@ export const NewChat: FunctionComponent = observer(() => {
             >
               Create new group chat
             </button>
+            <br />
+            <button
+              className={style.button}
+              onClick={() => {
+                history.push({
+                  pathname: "/chat/" + AGENT_ADDRESS,
+                });
+              }}
+            >
+              Talk to my uAgent
+            </button>
           </div>
 
           <div className={style.messagesContainer}>
@@ -274,28 +287,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 No results in your contacts.
               </div>
               {user?.messagingPubKey.privacySetting ===
-                PrivacySetting.Contacts && (
-                <div className={style.resultText}>
-                  If you are searching for an address not in your address book,
-                  you can&apos;t see them due to your selected privacy settings
-                  being &quot;contact only&quot;. Please add the address to your
-                  address book to be able to chat with them or change your
-                  privacy settings.
-                  <br />
-                  <a
-                    href="#"
-                    style={{
-                      textDecoration: "underline",
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      history.push("/setting/chat/privacy");
-                    }}
-                  >
-                    Go to chat privacy settings
-                  </a>
-                </div>
-              )}
+                PrivacySetting.Contacts && <ContactsOnlyMessage />}
             </div>
           )}
         </div>

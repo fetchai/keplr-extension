@@ -61,7 +61,7 @@ import { ChatPage } from "./pages/chat";
 import { ChatSection } from "./pages/chat-section";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { ChatStoreProvider } from "@components/chat/store";
-import { NewChat } from "./pages/newchat/new-chat";
+import { NewChat } from "./pages/new-chat";
 import { ChatSettings } from "./pages/setting/chat";
 import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
@@ -290,7 +290,7 @@ const Application: FunctionComponent = () => {
                         path="/setting/token/manage"
                         component={ManageTokenPage}
                       />
-                      <Route exact path="/newchat" component={NewChat} />
+                      <Route exact path="/new-chat" component={NewChat} />
                       <Route path="/sign" component={SignPage} />
                       <Route
                         path="/suggest-chain"

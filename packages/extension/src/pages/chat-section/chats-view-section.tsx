@@ -399,15 +399,13 @@ export const ChatsViewSection = ({
                   <div className={messagesEndRef} /> //ref={messagesEndRef}
                 )}
               {lastUnreadMesageId === message.id && (
-                <div ref={messagesEndRef} className={"AAAAA"} />
+                <div ref={messagesEndRef} />
               )}
             </div>
           );
         })}
 
-        {lastUnreadMesageId === "" && (
-          <div ref={messagesEndRef} className={"AAAAA"} />
-        )}
+        {lastUnreadMesageId === "" && <div ref={messagesEndRef} />}
       </div>
 
       <InputGroup className={style.inputText}>

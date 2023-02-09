@@ -21,6 +21,7 @@ import { Menu } from "../main/menu";
 import { ChatActionsDropdown } from "@components/chat-actions-dropdown";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
+import { AGENT_ADDRESS } from "../../config.ui.var";
 
 export const openValue = true;
 export const ChatSection: FunctionComponent = () => {
@@ -104,9 +105,9 @@ export const ChatSection: FunctionComponent = () => {
   }, [user.accessToken, current.chainId, targetAddress]);
 
   const isNewUser = (): boolean => {
-    const addressExists = addresses.find(
-      (item: any) => item.address === targetAddress
-    );
+    const addressExists =
+      addresses.find((item: any) => item.address === targetAddress) ||
+      targetAddress == AGENT_ADDRESS;
     return !Boolean(addressExists);
   };
 
