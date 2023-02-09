@@ -298,7 +298,7 @@ export const GroupChatsViewSection = ({
             </div>
           );
         })}
-        <div ref={messagesEndRef} className={"AAAAA"} />
+        <div ref={messagesEndRef} />
       </div>
 
       <InputGroup className={style.inputText}>

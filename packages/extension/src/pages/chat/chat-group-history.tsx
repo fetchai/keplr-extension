@@ -1,20 +1,20 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import {
   userChatGroupPagination,
   userChatGroups,
 } from "@chatStore/messages-slice";
+import { userDetails } from "@chatStore/user-slice";
+import { Groups, NameAddress, Pagination } from "@chatTypes";
+import { ContactsOnlyMessage } from "@components/contacts-only-message";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
-import { useStore } from "../../stores";
-import { formatAddress } from "@utils/format";
-import style from "./style.module.scss";
-import { userDetails } from "@chatStore/user-slice";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
-import { Groups, NameAddress, Pagination } from "@chatTypes";
-import { ChatUser } from "./chat-user";
+import { formatAddress } from "@utils/format";
+import React, { createRef, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useStore } from "../../stores";
 import { ChatGroupUser } from "./chat-group-user";
+import { ChatUser } from "./chat-user";
+import style from "./style.module.scss";
 
 export const ChatsGroupHistory: React.FC<{
   chainId: string;
@@ -22,7 +22,6 @@ export const ChatsGroupHistory: React.FC<{
   addresses: NameAddress;
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
-  const history = useHistory();
   const userState = useSelector(userDetails);
   const groups: Groups = useSelector(userChatGroups);
   const groupsPagination: Pagination = useSelector(userChatGroupPagination);
@@ -55,44 +54,24 @@ export const ChatsGroupHistory: React.FC<{
   };
 
   const filterGroups = (contact: string) => {
-    const searchValue = searchString.trim();
+    const searchValue = searchString.trim().toLowerCase();
     const group = groups[contact];
+    const contactAddressBookName = addresses[contact]?.toLowerCase();
+
+    if (searchValue.length === 0) return true;
 
     /// For Group search
-    if (!group.isDm) {
-      if (searchValue.length > 0) {
-        return group.name.toLowerCase().includes(searchValue.toLowerCase());
-      }
-
-      return true;
-    }
+    if (!group.isDm) return group.name.toLowerCase().includes(searchValue);
 
     /// For DM
-    const contactAddressBookName = addresses[contact];
-
     if (userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts) {
-      if (searchString.length > 0) {
-        if (
-          !contactAddressBookName
-            ?.toLowerCase()
-            .includes(searchValue.toLowerCase())
-        )
-          return false;
-      }
-
-      return !!contactAddressBookName;
+      return contactAddressBookName?.includes(searchValue);
     } else {
       /// PrivacySetting.Everybody
-      if (searchString.length > 0) {
-        if (
-          !contactAddressBookName
-            ?.toLowerCase()
-            .includes(searchValue.toLowerCase()) &&
-          !contact.toLowerCase().includes(searchValue.toLowerCase())
-        )
-          return false;
-      }
-      return true;
+      return (
+        contactAddressBookName?.includes(searchValue) ||
+        contact.toLowerCase().includes(searchValue)
+      );
     }
   };
 
@@ -113,25 +92,7 @@ export const ChatsGroupHistory: React.FC<{
   )
     return (
       <div className={style.groupsArea}>
-        <div className={style.resultText}>
-          If you are searching for an address not in your address book, you
-          can&apos;t see them due to your selected privacy settings being
-          &quot;contact only&quot;. Please add the address to your address book
-          to be able to chat with them or change your privacy settings.
-          <br />
-          <a
-            href="#"
-            style={{
-              textDecoration: "underline",
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              history.push("/setting/chat/privacy");
-            }}
-          >
-            Go to chat privacy settings
-          </a>
-        </div>
+        <ContactsOnlyMessage />
       </div>
     );
 
