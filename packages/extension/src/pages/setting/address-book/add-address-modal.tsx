@@ -11,6 +11,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { useLocation } from "react-router";
 import { chatSectionParams, defaultParamValues } from "./index";
+import { useNotification } from "@components/notification";
 
 /**
  *
@@ -34,6 +35,8 @@ export const AddAddressModal: FunctionComponent<{
 
     const [name, setName] = useState("");
     const location = useLocation();
+    const notification = useNotification();
+
     const chatSectionParams =
       (location.state as chatSectionParams) || defaultParamValues;
     useEffect(() => {
@@ -79,8 +82,7 @@ export const AddAddressModal: FunctionComponent<{
             autoComplete="off"
             value={name}
             onChange={(e) => {
-              if (e.target.value.length < 30) setName(e.target.value);
-              else setName(e.target.value.substring(0, 30));
+              setName(e.target.value.substring(0, 30));
             }}
           />
           <AddressInput
@@ -111,18 +113,35 @@ export const AddAddressModal: FunctionComponent<{
                 throw new Error("Invalid address");
               }
 
-              if (index < 0) {
-                await addressBookConfig.addAddressBook({
-                  name,
+              const addressAvailableList = addressBookConfig.addressBookDatas.filter(
+                (element) => element.address === recipientConfig.recipient
+              );
+              if (index < 0 && addressAvailableList.length === 0) {
+                addressBookConfig.addAddressBook({
+                  name: name.trim(),
+                  address: recipientConfig.recipient,
+                  memo: memoConfig.memo,
+                });
+              } else if (index > 0 && addressAvailableList.length > 1) {
+                addressBookConfig.editAddressBookAt(index, {
+                  name: name.trim(),
                   address: recipientConfig.recipient,
                   memo: memoConfig.memo,
                 });
               } else {
-                await addressBookConfig.editAddressBookAt(index, {
-                  name,
-                  address: recipientConfig.recipient,
-                  memo: memoConfig.memo,
+                notification.push({
+                  placement: "top-center",
+                  type: "warning",
+                  duration: 2,
+                  content: intl.formatMessage({
+                    id: "main.menu.address-available",
+                  }),
+                  canDelete: true,
+                  transition: {
+                    duration: 0.25,
+                  },
                 });
+                return;
               }
 
               // Clear the recipient and memo before closing
