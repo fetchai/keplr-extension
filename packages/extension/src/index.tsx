@@ -71,6 +71,7 @@ import { AddMember } from "./pages/group-chat/add-member";
 import { ReviewGroupChat } from "./pages/group-chat/review-details";
 import { GroupChatSection } from "./pages/group-chat/chat-section";
 import { EditMember } from "./pages/group-chat/edit-member";
+import { AgentChatSection } from "./pages/agent-chat-section";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -185,6 +186,11 @@ const Application: FunctionComponent = () => {
                         exact
                         path="/chat/group-chat-section/:name"
                         component={GroupChatSection}
+                      />
+                      <Route
+                        exact
+                        path="/agent/:name"
+                        component={AgentChatSection}
                       />
                       <Route exact path="/more" component={MorePage} />
                       <Route
