@@ -113,16 +113,25 @@ export const AddAddressModal: FunctionComponent<{
                 throw new Error("Invalid address");
               }
 
-              const addressAvailableList = addressBookConfig.addressBookDatas.filter(
+              /// return -1 if address not matched
+              const addressIndex = addressBookConfig.addressBookDatas.findIndex(
                 (element) => element.address === recipientConfig.recipient
               );
-              if (index < 0 && addressAvailableList.length === 0) {
+
+              /// Validating a new address is unique in the address book
+              if (index < 0 && addressIndex < 0) {
                 addressBookConfig.addAddressBook({
                   name: name.trim(),
                   address: recipientConfig.recipient,
                   memo: memoConfig.memo,
                 });
-              } else if (index > 0 && addressAvailableList.length > 1) {
+              } else if (
+                index >= 0 &&
+                (index === addressIndex || addressIndex === -1)
+              ) {
+                /// Validating edit case and address is already added in the address book
+                /// [addressIndex === -1] replacing old address to unique address
+                /// [index === addressIndex] if the index and address index is same that means we are dealing with unique address
                 addressBookConfig.editAddressBookAt(index, {
                   name: name.trim(),
                   address: recipientConfig.recipient,

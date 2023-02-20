@@ -32,7 +32,6 @@ export const ChatsViewSection = ({
   isNewUser: boolean;
   isBlocked: boolean;
   targetPubKey: string;
-  setLoadingChats: any;
   handleClick: any;
 }) => {
   const history = useHistory();
@@ -106,36 +105,6 @@ export const ChatsViewSection = ({
     }
   }, [preLoadedChats]);
 
-  // const recieveData = async (tempGroup: Group | undefined) => {
-  //   const groupAdd = {
-  //     ...tempGroup?.addresses.find((val) => val?.address == targetAddress),
-  //   };
-
-  //   const groupAddress = { ...groupAdd };
-  //   if (groupAddress && groupAddress.groupLastSeenTimestamp) {
-  //     const data = await decryptGroupTimestamp(
-  //       current.chainId,
-  //       groupAddress.groupLastSeenTimestamp,
-  //       false
-  //     );
-  //     Object.assign(groupAddress, {
-  //       groupLastSeenTimestamp: new Date(data).getTime(),
-  //     });
-  //   }
-  //   if (groupAddress && groupAddress.lastSeenTimestamp) {
-  //     const data = await decryptGroupTimestamp(
-  //       current.chainId,
-  //       groupAddress.lastSeenTimestamp,
-  //       false
-  //     );
-
-  //     Object.assign(groupAddress, {
-  //       lastSeenTimestamp: new Date(data).getTime(),
-  //     });
-  //   }
-
-  //   return groupAddress;
-  // };
   const decryptGrpAddresses = async (
     groupAddress: GroupAddress,
     isSender: boolean

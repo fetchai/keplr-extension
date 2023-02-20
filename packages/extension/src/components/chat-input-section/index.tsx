@@ -28,7 +28,11 @@ export const ChatInputSection = (props: {
   return (
     <div className={style.inputSection}>
       <div className={style.messageDisappear}>
-        <img src={require("@assets/svg/ic-clock.svg")} alt="clock" />
+        <img
+          src={require("@assets/svg/ic-clock.svg")}
+          draggable={false}
+          alt="clock"
+        />
         <FormattedMessage id="chat.disappear-message" />
       </div>
       <InputGroup className={style.inputText}>

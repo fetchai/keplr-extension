@@ -323,5 +323,5 @@
   "component.ibc.channel-registrar.chain-selector.add.channel.placeholder": "Source Channel ID",
   "component.ibc.channel-registrar.chain-selector.add.channel.button": "Save",
 
-  "chat.disappear-message": "Messages disappear after 14 days."
+  "chat.disappear-message": "Messages will disappear after 14 days."
 }

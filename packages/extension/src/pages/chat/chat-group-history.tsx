@@ -122,6 +122,7 @@ export const ChatsGroupHistory: React.FC<{
           <br />
           <a
             href="#"
+            draggable={false}
             style={{
               textDecoration: "underline",
             }}
@@ -148,7 +149,11 @@ export const ChatsGroupHistory: React.FC<{
   return (
     <div className={style.groupsArea}>
       <div className={style.messageDisappear}>
-        <img src={require("@assets/svg/ic-clock.svg")} alt="clock" />
+        <img
+          src={require("@assets/svg/ic-clock.svg")}
+          draggable={false}
+          alt="clock"
+        />
         <FormattedMessage id="chat.disappear-message" />
       </div>
       {Object.keys(groups)
