@@ -20,7 +20,7 @@
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    height: 63vh;
+    height: 56vh;
     gap: 10px;
     overflow-y: auto;
     overflow-x: clip;
@@ -124,4 +124,15 @@
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+.chatTabList {
+  display: flex;
+  flex-direction: row;
+}
+
+.chatTab {
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
 }

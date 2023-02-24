@@ -242,7 +242,7 @@ export const NewChat: FunctionComponent = observer(() => {
               onClick={() => {
                 store.dispatch(resetNewGroup());
                 history.push({
-                  pathname: "/chat/group-chat/create",
+                  pathname: "/group-chat/create",
                 });
               }}
             >
@@ -257,7 +257,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 });
               }}
             >
-              Talk to my uAgent
+              Talk to Fetchbot
             </button>
           </div>
 

@@ -164,7 +164,7 @@ const Application: FunctionComponent = () => {
                       <Route exact path="/chat/:name" component={ChatSection} />
                       <Route
                         exact
-                        path="/chat/group-chat/create"
+                        path="/group-chat/create"
                         component={CreateGroupChat}
                       />
                       <Route
@@ -174,17 +174,17 @@ const Application: FunctionComponent = () => {
                       />
                       <Route
                         exact
-                        path="/chat/group-chat/edit-member"
+                        path="/group-chat/edit-member"
                         component={EditMember}
                       />
                       <Route
                         exact
-                        path="/chat/group-chat/review-details"
+                        path="/group-chat/review-details"
                         component={ReviewGroupChat}
                       />
                       <Route
                         exact
-                        path="/chat/group-chat-section/:name"
+                        path="/group-chat-section/:name"
                         component={GroupChatSection}
                       />
                       <Route

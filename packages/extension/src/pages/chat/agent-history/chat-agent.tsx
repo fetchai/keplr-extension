@@ -6,11 +6,11 @@ import { useHistory } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
-import style from "./style.module.scss";
+import style from "../style.module.scss";
 import amplitude from "amplitude-js";
 import { Group, GroupAddress } from "@chatTypes";
 
-export const ChatUser: React.FC<{
+export const ChatAgent: React.FC<{
   chainId: string;
   group: Group;
   contactName: string;
@@ -22,10 +22,10 @@ export const ChatUser: React.FC<{
   const history = useHistory();
 
   const handleClick = () => {
-    amplitude.getInstance().logEvent("Open DM click", {
+    amplitude.getInstance().logEvent("Open Agent click", {
       from: "Chat history",
     });
-    history.push(`/chat/${targetAddress}`);
+    history.push(`/agent/${targetAddress}`);
   };
 
   /// Current wallet user

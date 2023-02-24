@@ -379,7 +379,7 @@ export const AddMember: FunctionComponent = observer(() => {
             if (newGroupState.isEditGroup) {
               handleUpdateGroup();
             } else {
-              history.push("/chat/group-chat/review-details");
+              history.push("/group-chat/review-details");
             }
           }}
         >

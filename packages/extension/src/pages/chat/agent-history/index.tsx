@@ -1,29 +1,25 @@
 import {
+  userChatAgents,
   userChatGroupPagination,
-  userChatGroups,
 } from "@chatStore/messages-slice";
-import { userDetails } from "@chatStore/user-slice";
 import { Groups, NameAddress, Pagination } from "@chatTypes";
-import { ContactsOnlyMessage } from "@components/contacts-only-message";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
-import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { formatAddress } from "@utils/format";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useStore } from "../../stores";
-import { ChatGroupUser } from "./chat-group-user";
-import { ChatUser } from "./chat-user";
-import style from "./style.module.scss";
+import { useStore } from "../../../stores";
+import { ChatAgent } from "./chat-agent";
+import style from "../style.module.scss";
+import { AgentInitPopup } from "@components/chat/agent-init-popup";
 
-export const ChatsGroupHistory: React.FC<{
+export const AgentsHistory: React.FC<{
   chainId: string;
   searchString: string;
   addresses: NameAddress;
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
-  const userState = useSelector(userDetails);
-  const groups: Groups = useSelector(userChatGroups);
+  const groups: Groups = useSelector(userChatAgents);
   const groupsPagination: Pagination = useSelector(userChatGroupPagination);
   const [loadingGroups, setLoadingGroups] = useState(false);
   const { chainStore, accountStore } = useStore();
@@ -55,46 +51,18 @@ export const ChatsGroupHistory: React.FC<{
 
   const filterGroups = (contact: string) => {
     const searchValue = searchString.trim().toLowerCase();
-    const group = groups[contact];
     const contactAddressBookName = addresses[contact]?.toLowerCase();
 
     if (searchValue.length === 0) return true;
 
-    /// For Group search
-    if (!group.isDm) return group.name.toLowerCase().includes(searchValue);
-
-    /// For DM
-    if (userState?.messagingPubKey.privacySetting === PrivacySetting.Contacts) {
-      return contactAddressBookName?.includes(searchValue);
-    } else {
-      /// PrivacySetting.Everybody
-      return (
-        contactAddressBookName?.includes(searchValue) ||
-        contact.toLowerCase().includes(searchValue)
-      );
-    }
+    /// PrivacySetting.Everybody
+    return (
+      contactAddressBookName?.includes(searchValue) ||
+      contact.toLowerCase().includes(searchValue)
+    );
   };
 
-  if (!Object.keys(groups).length)
-    return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
-          No results. Don&apos;t worry you can create a new chat by clicking on
-          the icon beside the search box.
-        </div>
-      </div>
-    );
-
-  if (
-    !Object.keys(groups).filter((contact) => filterGroups(contact)).length &&
-    userState.messagingPubKey.privacySetting &&
-    userState.messagingPubKey.privacySetting === PrivacySetting.Contacts
-  )
-    return (
-      <div className={style.groupsArea}>
-        <ContactsOnlyMessage />
-      </div>
-    );
+  if (!Object.keys(groups).length) return <AgentInitPopup />;
 
   if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
     return (
@@ -117,39 +85,17 @@ export const ChatsGroupHistory: React.FC<{
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
           const contactAddressBookName = addresses[contact];
-
-          if (groups[contact].isDm)
-            return (
-              <div key={groups[contact].id}>
-                <ChatUser
-                  group={groups[contact]}
-                  contactName={
-                    contactAddressBookName
-                      ? formatAddress(contactAddressBookName)
-                      : formatAddress(contact)
-                  }
-                  targetAddress={contact}
-                  chainId={chainId}
-                />
-                {index === Object.keys(groups).length - 10 && (
-                  <div ref={messagesEncRef} />
-                )}
-              </div>
-            );
-
-          const groupAddresses = groups[contact].addresses;
-          const userGroupAddress = groupAddresses.find(
-            (address) => address.address == accountInfo.bech32Address
-          );
-          const encryptedSymmetricKey =
-            userGroupAddress?.encryptedSymmetricKey || "";
           return (
             <div key={groups[contact].id}>
-              <ChatGroupUser
-                chainId={chainId}
-                encryptedSymmetricKey={encryptedSymmetricKey}
+              <ChatAgent
                 group={groups[contact]}
-                addresses={addresses}
+                contactName={
+                  contactAddressBookName
+                    ? formatAddress(contactAddressBookName)
+                    : formatAddress(contact)
+                }
+                targetAddress={contact}
+                chainId={chainId}
               />
               {index === Object.keys(groups).length - 10 && (
                 <div ref={messagesEncRef} />

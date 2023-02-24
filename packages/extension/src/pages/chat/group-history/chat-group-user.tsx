@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
-import style from "./style.module.scss";
+import style from "../style.module.scss";
 import amplitude from "amplitude-js";
 import { Group, GroupMessagePayload, NameAddress } from "@chatTypes";
 import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessageType } from "@utils/encrypt-group";
 import { getUserName, getEventMessage } from "@utils/index";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
 
 export const ChatGroupUser: React.FC<{
   chainId: string;
@@ -29,7 +29,7 @@ export const ChatGroupUser: React.FC<{
     amplitude.getInstance().logEvent("Open Group click", {
       from: "Chat history",
     });
-    history.push(`/chat/group-chat-section/${group.id}`);
+    history.push(`/group-chat-section/${group.id}`);
   };
 
   useEffect(() => {

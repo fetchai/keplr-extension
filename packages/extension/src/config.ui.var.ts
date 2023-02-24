@@ -39,4 +39,4 @@ if (process.env.NODE_ENV === "production") {
 export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
 
 export const AGENT_ADDRESS =
-  "agent17a9lvnapx4dn2h5n4030samjqdlqryf0evq2uvysssxrcyake7atxwpm4zg";
+  "agent1q0jajw7jmzevwn34xy96sfpydtn0ljtrf0zsz34dtde60n5ll3gc23ek8zq";

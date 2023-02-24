@@ -97,11 +97,11 @@ export const GroupChatSection: FunctionComponent = () => {
     setShowDropdown(false);
     switch (option) {
       case GroupChatOptions.groupInfo:
-        navigateToPage("/chat/group-chat/review-details");
+        navigateToPage("/group-chat/review-details");
         break;
 
       case GroupChatOptions.chatSettings:
-        navigateToPage("/chat/group-chat/create");
+        navigateToPage("/group-chat/create");
         break;
 
       case GroupChatOptions.deleteGroup:

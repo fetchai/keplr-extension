@@ -1,15 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
-import { ExtensionKVStore } from "@keplr-wallet/common";
-import {
-  AddressBookConfigMap,
-  useIBCTransferConfig,
-} from "@keplr-wallet/hooks";
-import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { NameAddress } from "@chatTypes";
 import { store } from "@chatStore/index";
 import {
   setMessageError,
@@ -21,27 +11,38 @@ import {
   setMessagingPubKey,
   userDetails,
 } from "@chatStore/user-slice";
+import { NameAddress } from "@chatTypes";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatInitPopup } from "@components/chat/chat-init-popup";
 import { ChatSearchInput } from "@components/chat/chat-search-input";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { SwitchUser } from "@components/switch-user";
-import { EthereumEndpoint } from "../../config.ui";
-import { AUTH_SERVER } from "../../config.ui.var";
 import {
   fetchBlockList,
   groupsListener,
   messageListener,
 } from "@graphQL/messages-api";
 import { recieveGroups } from "@graphQL/recieve-messages";
+import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import {
+  AddressBookConfigMap,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { HeaderLayout } from "@layouts/index";
-import { useStore } from "../../stores";
 import { getJWT } from "@utils/auth";
 import { fetchPublicKey } from "@utils/fetch-public-key";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { EthereumEndpoint } from "../../config.ui";
+import { AUTH_SERVER } from "../../config.ui.var";
+import { useStore } from "../../stores";
 import { Menu } from "../main/menu";
+import { AgentsHistory } from "./agent-history";
+import { GroupsHistory } from "./group-history";
 import style from "./style.module.scss";
-import { ChatsGroupHistory } from "./chat-group-history";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -74,6 +75,7 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [authFail, setAuthFail] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(1);
 
   const requester = new InExtensionMessageRequester();
 
@@ -246,10 +248,39 @@ const ChatView = () => {
           setSearchInput={setInputVal}
           searchInput={inputVal}
         />
+        <div className={style.chatTabList}>
+          <div
+            className={style.chatTab}
+            style={{
+              borderBottom: selectedTab == 1 ? "2px solid #D43BF6" : "",
+              color: selectedTab == 1 ? "#D43BF6" : "#000000",
+            }}
+            onClick={() => setSelectedTab(1)}
+          >
+            People
+          </div>
+          <div
+            className={style.chatTab}
+            style={{
+              borderBottom: selectedTab == 2 ? "2px solid #3B82F6" : "",
+              color: selectedTab == 2 ? "#3B82F6" : "#000000",
+            }}
+            onClick={() => setSelectedTab(2)}
+          >
+            Agent
+          </div>
+        </div>
         {loadingChats ? (
           <ChatLoader message="Loading chats, please wait..." />
+        ) : selectedTab == 1 ? (
+          <GroupsHistory
+            searchString={inputVal}
+            setLoadingChats={setLoadingChats}
+            chainId={current.chainId}
+            addresses={addresses}
+          />
         ) : (
-          <ChatsGroupHistory
+          <AgentsHistory
             searchString={inputVal}
             setLoadingChats={setLoadingChats}
             chainId={current.chainId}

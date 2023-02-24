@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
-import { userChatGroups, userMessages } from "@chatStore/messages-slice";
+import { userChatAgents, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
 import { ChatMessage } from "@components/chat-message";
@@ -36,7 +36,7 @@ export const ChatsViewSection = ({
 
   let enterKeyCount = 0;
   const user = useSelector(userDetails);
-  const userGroups: Groups = useSelector(userChatGroups);
+  const userAgents: Groups = useSelector(userChatAgents);
   const userChats: Chats = useSelector(userMessages);
 
   const { chainStore, accountStore } = useStore();
@@ -56,7 +56,7 @@ export const ChatsViewSection = ({
 
   const [pagination, setPagination] = useState(preLoadedChats?.pagination);
   const [group, setGroup] = useState<Group | undefined>(
-    Object.values(userGroups).find((group) => group.id.includes(targetAddress))
+    Object.values(userAgents).find((group) => group.id.includes(targetAddress))
   );
 
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -167,12 +167,12 @@ export const ChatsViewSection = ({
   useEffect(() => {
     /// Shallow copy
     const tempGroup = {
-      ...Object.values(userGroups).find((group) =>
+      ...Object.values(userAgents).find((group) =>
         group.id.includes(targetAddress)
       ),
     };
     decryptGrp(tempGroup as Group);
-  }, [userGroups]);
+  }, [userAgents]);
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
