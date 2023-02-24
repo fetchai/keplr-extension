@@ -359,7 +359,9 @@ export const EditMember: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    amplitude.getInstance().logEvent("Add to address click", {});
+    amplitude.getInstance().logEvent("Add to address click", {
+      from: "Group Info",
+    });
     history.push({
       pathname: "/setting/address-book",
       state: {
@@ -397,17 +399,29 @@ export const EditMember: FunctionComponent = observer(() => {
 
       case GroupChatMemberOptions.removeMember:
         setRemoveMemberPopup(true);
+        amplitude.getInstance().logEvent("Remove Member from Group", {
+          from: "Group Info",
+        });
         break;
 
       case GroupChatMemberOptions.makeAdminStatus:
         updateAdminStatus(selectedAddress.address, true);
+        amplitude.getInstance().logEvent("Make member an Admin", {
+          from: "Group Info",
+        });
         break;
 
       case GroupChatMemberOptions.removeAdminStatus:
         updateAdminStatus(selectedAddress.address, false);
+        amplitude.getInstance().logEvent("Remove member as Admin", {
+          from: "Group Info",
+        });
         break;
 
       case GroupChatMemberOptions.viewInAddressBook:
+        amplitude.getInstance().logEvent("Address book viewed", {
+          from: "Group Info",
+        });
         history.push("/setting/address-book");
         break;
     }

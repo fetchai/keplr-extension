@@ -94,7 +94,12 @@ const NewUser = (props: { address: NameAddress }) => {
         {isLoading ? (
           <i className="fas fa-spinner fa-spin ml-1" />
         ) : (
-          <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
+          <img
+            draggable={false}
+            src={rightArrowIcon}
+            style={{ width: "80%" }}
+            alt="message"
+          />
         )}
       </div>
     </div>
@@ -225,7 +230,7 @@ export const NewChat: FunctionComponent = observer(() => {
           </div>
           <div className={style.searchContainer}>
             <div className={style.searchBox}>
-              <img src={searchIcon} alt="search" />
+              <img draggable={false} src={searchIcon} alt="search" />
               <input
                 placeholder="Search by name or address"
                 value={inputVal}

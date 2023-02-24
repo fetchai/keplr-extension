@@ -145,6 +145,11 @@ export const GroupChatsViewSection = ({
       (element) => element.address === accountInfo.bech32Address
     );
     setUserGroupAddress(currentUser);
+
+    if (currentUser?.removedAt) {
+      /// receive last updated message as message subscription not called
+      recieveMessages(groupId, null, 0, false, groupId);
+    }
   }, [userGroups]);
 
   const messagesEndRef: any = useCallback(
@@ -324,7 +329,7 @@ export const GroupChatsViewSection = ({
             className={style["send-message-icon"]}
             onClick={handleSendMessage}
           >
-            <img src={paperAirplaneIcon} alt="" />
+            <img draggable={false} src={paperAirplaneIcon} alt="" />
           </div>
         ) : (
           ""

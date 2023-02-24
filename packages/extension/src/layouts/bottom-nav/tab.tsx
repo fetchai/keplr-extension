@@ -46,7 +46,7 @@ export const Tab = ({
         }
       }}
     >
-      <img src={isActive ? activeTabIcon : icon} alt="tab" />
+      <img draggable={false} src={isActive ? activeTabIcon : icon} alt="tab" />
       <div className={style.title}>{title}</div>
       {disabled && (
         <UncontrolledTooltip placement="top" target={title}>

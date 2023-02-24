@@ -27,7 +27,7 @@ export const UserNameSection = ({
       type: "success",
       duration: 2,
       content: intl.formatMessage({
-        id: "main.address.copied",
+        id: "main.name.copied",
       }),
       canDelete: true,
       transition: {
@@ -47,18 +47,20 @@ export const UserNameSection = ({
             history.goBack();
           }}
         />
-        <span className={style.recieverName}>
-          <ToolTip
-            tooltip={<div className={style.user}>{groupName}</div>}
-            theme="dark"
-            trigger="hover"
-            options={{
-              placement: "top",
-            }}
-          >
+
+        <ToolTip
+          tooltip={groupName}
+          theme="dark"
+          trigger="hover"
+          options={{
+            placement: "top",
+          }}
+        >
+          <span className={style.recieverName}>
             {formatGroupName(groupName)}
-          </ToolTip>
-        </span>
+          </span>
+        </ToolTip>
+
         <span className={style.copyIcon} onClick={() => copyAddress(groupName)}>
           <i className="fas fa-copy" />
         </span>

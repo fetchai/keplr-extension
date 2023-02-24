@@ -63,11 +63,7 @@ export const UserNameSection = ({
         <span className={style.recieverName}>
           <ToolTip
             tooltip={
-              <div className={style.user} style={{ minWidth: "300px" }}>
-                {contactName(addresses).length
-                  ? contactName(addresses)
-                  : userName}
-              </div>
+              contactName(addresses).length ? contactName(addresses) : userName
             }
             theme="dark"
             trigger="hover"
@@ -75,9 +71,11 @@ export const UserNameSection = ({
               placement: "top",
             }}
           >
-            {contactName(addresses).length
-              ? formatAddress(contactName(addresses))
-              : formatAddress(userName)}
+            <div className={style.user}>
+              {contactName(addresses).length
+                ? formatAddress(contactName(addresses))
+                : formatAddress(userName)}
+            </div>
           </ToolTip>
         </span>
         <span className={style.copyIcon} onClick={() => copyAddress(userName)}>

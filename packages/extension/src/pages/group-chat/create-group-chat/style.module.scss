@@ -70,6 +70,12 @@
   display: flex;
 }
 
+textarea.inputText {
+  resize: none;
+  min-height: 75px;
+  max-height: 75px;
+}
+
 .input {
   color: #525f7f;
   flex-direction: column;

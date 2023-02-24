@@ -45,6 +45,7 @@ import { addMemberEvent } from "@utils/group-events";
 import { ToolTip } from "@components/tooltip";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
+import amplitude from "amplitude-js";
 
 export const AddMember: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -270,6 +271,9 @@ export const AddMember: FunctionComponent = observer(() => {
       store.dispatch(setGroups({ groups }));
       /// fetching the group messages again
       await recieveMessages(group.id, null, 0, group.isDm, group.id);
+      amplitude.getInstance().logEvent("New members added", {
+        from: "Group Info",
+      });
       history.goBack();
     }
   }
@@ -296,7 +300,7 @@ export const AddMember: FunctionComponent = observer(() => {
         <div className={style.newMemberContainer}>
           <div className={style.searchContainer}>
             <div className={style.searchBox}>
-              <img src={searchIcon} alt="search" />
+              <img draggable={false} src={searchIcon} alt="search" />
               <input
                 placeholder="Search by name or address"
                 value={inputVal}
@@ -346,18 +350,16 @@ export const AddMember: FunctionComponent = observer(() => {
           <div className={style.groupHeader}>
             <span className={style.groupName}>
               <ToolTip
-                tooltip={
-                  <div className={style.user} style={{ minWidth: "300px" }}>
-                    {newGroupState.group.name}
-                  </div>
-                }
+                tooltip={newGroupState.group.name}
                 theme="dark"
                 trigger="hover"
                 options={{
                   placement: "top",
                 }}
               >
-                {formatGroupName(newGroupState.group.name)}
+                <div className={style.user}>
+                  {formatGroupName(newGroupState.group.name)}
+                </div>
               </ToolTip>
             </span>
             <span className={style.groupMembers}>
