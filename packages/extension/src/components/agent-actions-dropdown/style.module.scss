@@ -1,0 +1,30 @@
+.dropdown {
+  position: absolute;
+    border: solid #dee2e6 1px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    width: 90%;
+    padding: 5px;
+    margin-left: 3px;
+    bottom: 90px;
+    z-index: 2;
+    cursor: pointer;
+
+  button {
+    border: none;
+    padding: 5px;
+    color: #343a40;
+    font-size: 14px;
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+
+  div {
+    align-items: center;
+    padding: 5px;
+  }
+
+  div:hover {
+    background-color: #c9d4e4;
+  }
+}
