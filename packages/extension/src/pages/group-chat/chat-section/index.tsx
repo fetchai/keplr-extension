@@ -29,7 +29,7 @@ import amplitude from "amplitude-js";
 
 export const GroupChatSection: FunctionComponent = () => {
   const history = useHistory();
-  const groupId = history.location.pathname.split("/")[3];
+  const groupId = history.location.pathname.split("/")[2];
   const groups: Groups = useSelector(userChatGroups);
   const userChats: Chats = useSelector(userMessages);
 
