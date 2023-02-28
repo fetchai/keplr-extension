@@ -1,30 +1,43 @@
-import privacyIcon from "@assets/hello.png";
-import React from "react";
-import { useHistory } from "react-router";
-import { AGENT_ADDRESS } from "../../config.ui.var";
+import React, { useState } from "react";
 import style from "./style.module.scss";
 
 export const AgentInitPopup = () => {
-  const history = useHistory();
   // address book values
+  const [openDialog, setIsOpendialog] = useState(true);
 
-  return (
-    <div className={style.agentContainer}>
-      <img src={privacyIcon} />
-      <br />
-      <div className={style.infoContainer}>
-        <h3>We have just added Agents!</h3>
-        <p>
-          Now you can chat with an autonomous agent to ask questions and perform
-          wallet functions.
-        </p>
+  return openDialog ? (
+    <>
+      <div className={style.overlay} />
+      <div className={style.popupContainer}>
+        <div className={style.infoContainer}>
+          <h2 style={{ color: "#3B82F6", margin: "15px", textAlign: "center" }}>
+            Agents can do more!!
+          </h2>
+          <p>Type / to access a list of commands such as .....</p>
+          <div
+            style={{
+              height: "120px",
+              borderRadius: "10px",
+              background: "#D9D9D9",
+              marginBottom: "10px",
+            }}
+          />
+          <p>You can also...</p>
+          <div
+            style={{
+              height: "120px",
+              borderRadius: "10px",
+              background: "#D9D9D9",
+              marginBottom: "10px",
+            }}
+          />
+        </div>
+        <button type="button" onClick={() => setIsOpendialog(false)}>
+          Get Started
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={() => history.replace("/agent/" + AGENT_ADDRESS)}
-      >
-        Talk to an Agent
-      </button>
-    </div>
+    </>
+  ) : (
+    <></>
   );
 };

@@ -1,14 +1,12 @@
-import { fromBech32 } from "@cosmjs/encoding";
-import jazzicon from "@metamask/jazzicon";
-import React, { useEffect, useState } from "react";
-import ReactHtmlParser from "react-html-parser";
-import { useHistory } from "react-router";
+import agentIcon from "@assets/icon/agent-icon.png";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
+import { Group, GroupAddress } from "@chatTypes";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
-import style from "../style.module.scss";
 import amplitude from "amplitude-js";
-import { Group, GroupAddress } from "@chatTypes";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import style from "../style.module.scss";
 
 export const ChatAgent: React.FC<{
   chainId: string;
@@ -144,12 +142,9 @@ export const ChatAgent: React.FC<{
             }}
           />
         )}
-      <div className={style.initials}>
-        {ReactHtmlParser(
-          jazzicon(28, parseInt(fromBech32(targetAddress).data.toString(), 16))
-            .outerHTML
-        )}
-      </div>
+
+      <img src={agentIcon} width="40px" />
+
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>
         <div className={style.messageText}>{message}</div>

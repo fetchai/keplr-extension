@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { ChatAgent } from "./chat-agent";
 import style from "../style.module.scss";
-import { AgentInitPopup } from "@components/chat/agent-init-popup";
+import { AgentInit } from "@components/chat/agent-init";
 
 export const AgentsHistory: React.FC<{
   chainId: string;
@@ -62,7 +62,7 @@ export const AgentsHistory: React.FC<{
     );
   };
 
-  if (!Object.keys(groups).length) return <AgentInitPopup />;
+  if (!Object.keys(groups).length) return <AgentInit />;
 
   if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
     return (
