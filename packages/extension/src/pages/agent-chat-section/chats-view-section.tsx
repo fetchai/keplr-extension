@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
-import { userChatAgents, userMessages } from "@chatStore/messages-slice";
+import agentCommandIcon from "@assets/icon/agent-command.png";
+import {
+  setMessageError,
+  userChatAgents,
+  userMessages,
+} from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
 import { ChatMessage } from "@components/chat-message";
@@ -24,6 +29,11 @@ import { InputGroup } from "reactstrap";
 import { CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { AgentActionsDropdown } from "@components/agent-actions-dropdown";
+import { store } from "@chatStore/index";
+import { AgentInitPopup } from "@components/chat/agent-init-popup";
+
+const COMMANDS = ["/sendToken", "/autoCompound", "/claimToken"];
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -62,6 +72,8 @@ export const ChatsViewSection = ({
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   const [newMessage, setNewMessage] = useState("");
+  const [isCommand, setIsCommand] = useState(false);
+  const [showCommandDropdown, setShowCommandDropdown] = useState(false);
   const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
 
   const messagesStartRef: any = createRef();
@@ -254,6 +266,16 @@ export const ChatsViewSection = ({
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
+    if (isCommand && !COMMANDS.includes(newMessage)) {
+      store.dispatch(
+        setMessageError({
+          type: "manual",
+          message: "Following Command is not Recognised by Fetchbot",
+          level: 1,
+        })
+      );
+      return;
+    }
     if (newMessage.trim().length)
       try {
         const message = await deliverMessages(
@@ -288,8 +310,15 @@ export const ChatsViewSection = ({
     }
   };
 
+  const handleCommand = (command: string) => {
+    setIsCommand(true);
+    setShowCommandDropdown(false);
+    setNewMessage(command);
+  };
+
   return (
     <div className={style.chatArea}>
+      {!loadingMessages && !messages.length && <AgentInitPopup />}
       <div className={style.messages}>
         {pagination?.lastPage <= pagination?.page && (
           <p>
@@ -305,6 +334,10 @@ export const ChatsViewSection = ({
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}
+        <AgentActionsDropdown
+          showDropdown={showCommandDropdown}
+          handleClick={handleCommand}
+        />
         {messages?.map((message: any, index) => {
           const check = showDateFunction(message?.commitTimestamp);
           return (
@@ -346,9 +379,21 @@ export const ChatsViewSection = ({
           <ReactTextareaAutosize
             maxRows={3}
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={"Type a new message..."}
+            placeholder={"Ask a question or type / for commands"}
             value={newMessage}
             onChange={(event) => {
+              if (
+                event.target.value.length &&
+                COMMANDS.find((command: string) =>
+                  command.includes(event.target.value)
+                )
+              ) {
+                setIsCommand(true);
+                setShowCommandDropdown(true);
+              } else {
+                setIsCommand(false);
+                setShowCommandDropdown(false);
+              }
               setNewMessage(event.target.value.substring(0, 499));
             }}
             onKeyDown={handleKeydown}
@@ -367,16 +412,23 @@ export const ChatsViewSection = ({
             />
           </ToolTip>
         )}
-        {newMessage?.length && newMessage.trim() !== "" ? (
-          <div
-            className={style["send-message-icon"]}
-            onClick={handleSendMessage}
-          >
-            <img src={paperAirplaneIcon} alt="" draggable="false" />
-          </div>
-        ) : (
-          ""
-        )}
+        <div className={style["send-message-icon"]}>
+          {newMessage?.length && newMessage.trim() !== "" ? (
+            <img
+              src={paperAirplaneIcon}
+              alt=""
+              draggable="false"
+              onClick={handleSendMessage}
+            />
+          ) : (
+            <img
+              src={agentCommandIcon}
+              alt=""
+              draggable="false"
+              onClick={() => setShowCommandDropdown(!showCommandDropdown)}
+            />
+          )}
+        </div>
       </InputGroup>
     </div>
   );

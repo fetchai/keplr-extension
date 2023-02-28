@@ -1,14 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
-import { userChatAgents, userMessages } from "@chatStore/messages-slice";
-import { userDetails } from "@chatStore/user-slice";
-import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
-import { ChatMessage } from "@components/chat-message";
-import { ToolTip } from "@components/tooltip";
-import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
-import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
-import { useOnScreen } from "@hooks/use-on-screen";
-import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import React, {
   createRef,
   useCallback,
@@ -21,7 +11,6 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
-
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
@@ -38,26 +27,23 @@ import { NewUserSection } from "./new-user-section";
 import style from "./style.module.scss";
 
 export const ChatsViewSection = ({
+  isNewUser,
+  isBlocked,
   targetPubKey,
+  handleClick,
 }: {
+  isNewUser: boolean;
+  isBlocked: boolean;
   targetPubKey: string;
   setLoadingChats: any;
->>>>>>> master
+  handleClick: any;
 }) => {
   const history = useHistory();
   const targetAddress = history.location.pathname.split("/")[2];
 
   let enterKeyCount = 0;
   const user = useSelector(userDetails);
-<<<<<<< HEAD
   const userGroups: Groups = useSelector(userChatGroups);
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-  const userAgents: Groups = useSelector(userChatAgents);
-=======
-  const userGroups: Groups = useSelector(userChatGroups);
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
   const userChats: Chats = useSelector(userMessages);
 
   const { chainStore, accountStore } = useStore();
@@ -77,11 +63,7 @@ export const ChatsViewSection = ({
 
   const [pagination, setPagination] = useState(preLoadedChats?.pagination);
   const [group, setGroup] = useState<Group | undefined>(
-<<<<<<< HEAD
     Object.values(userGroups).find((group) => group.id.includes(targetAddress))
-=======
-    Object.values(userAgents).find((group) => group.id.includes(targetAddress))
->>>>>>> master
   );
 
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -127,11 +109,6 @@ export const ChatsViewSection = ({
     }
   }, [preLoadedChats]);
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-=======
->>>>>>> master
   // const recieveData = async (tempGroup: Group | undefined) => {
   //   const groupAdd = {
   //     ...tempGroup?.addresses.find((val) => val?.address == targetAddress),
@@ -162,10 +139,6 @@ export const ChatsViewSection = ({
 
   //   return groupAddress;
   // };
-<<<<<<< HEAD
-=======
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
   const decryptGrpAddresses = async (
     groupAddress: GroupAddress,
     isSender: boolean
@@ -231,21 +204,11 @@ export const ChatsViewSection = ({
   useEffect(() => {
     /// Shallow copy
     const tempGroup = {
-<<<<<<< HEAD
       ...Object.values(userGroups).find((group) =>
-=======
-      ...Object.values(userAgents).find((group) =>
->>>>>>> master
         group.id.includes(targetAddress)
       ),
     };
     decryptGrp(tempGroup as Group);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-  }, [userAgents]);
-=======
->>>>>>> master
     // recieveData(tempGroup as Group).then((groupAddress) => {
     //   const sample = (tempGroup as Group)?.addresses.map((value) => {
     //     if (value.address === targetAddress) {
@@ -258,10 +221,6 @@ export const ChatsViewSection = ({
     //   setGroup(tempGroup as Group);
     // });
   }, [userGroups]);
-<<<<<<< HEAD
-=======
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
@@ -279,11 +238,8 @@ export const ChatsViewSection = ({
   useEffect(() => {
     const getChats = async () => {
       await loadUserList();
-<<<<<<< HEAD
       // if (pagination.page < 0) scrollToBottom();
       // else messagesScrollRef.current.scrollIntoView(true);
-=======
->>>>>>> master
       if (pagination.page >= 0) messagesScrollRef.current.scrollIntoView(true);
     };
     if (isOnScreen) getChats();
@@ -382,7 +338,6 @@ export const ChatsViewSection = ({
     }
   };
 
-<<<<<<< HEAD
   const handleActionsClick = (data: string) => {
     setNewMessage("");
     handleClick(data);
@@ -408,16 +363,6 @@ export const ChatsViewSection = ({
               except you and the recipient.
             </p>
           </>
-=======
-  return (
-    <div className={style.chatArea}>
-      <div className={style.messages}>
-        {pagination?.lastPage <= pagination?.page && (
-          <p>
-            Messages are end to end encrypted. Nobody else can read them except
-            you and the recipient.
-          </p>
->>>>>>> master
         )}
         {pagination?.lastPage > pagination?.page &&
           (pagination?.page === -1 ||
@@ -454,31 +399,15 @@ export const ChatsViewSection = ({
                   <div className={messagesEndRef} /> //ref={messagesEndRef}
                 )}
               {lastUnreadMesageId === message.id && (
-<<<<<<< HEAD
-                <div ref={messagesEndRef} />
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-                <div ref={messagesEndRef} />
-=======
                 <div ref={messagesEndRef} className={"AAAAA"} />
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
               )}
             </div>
           );
         })}
 
-<<<<<<< HEAD
-        {lastUnreadMesageId === "" && <div ref={messagesEndRef} />}
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-        {lastUnreadMesageId === "" && <div ref={messagesEndRef} />}
-=======
         {lastUnreadMesageId === "" && (
           <div ref={messagesEndRef} className={"AAAAA"} />
         )}
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
       </div>
 
       <InputGroup className={style.inputText}>
@@ -486,43 +415,28 @@ export const ChatsViewSection = ({
           <ReactTextareaAutosize
             maxRows={3}
             className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-<<<<<<< HEAD
             placeholder={
               isBlocked ? "This contact is blocked" : "Type a new message..."
             }
-=======
-            placeholder={"Type a new message..."}
->>>>>>> master
             value={newMessage}
             onChange={(event) => {
               setNewMessage(event.target.value.substring(0, 499));
             }}
             onKeyDown={handleKeydown}
-<<<<<<< HEAD
             disabled={isBlocked}
-=======
->>>>>>> master
           />
         ) : (
           <ToolTip
             trigger="hover"
             options={{ placement: "top" }}
-<<<<<<< HEAD
             tooltip={<div>No transaction history found for this user</div>}
-=======
-            tooltip={<div>The Agent is inactive</div>}
->>>>>>> master
           >
             <ReactTextareaAutosize
               maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-<<<<<<< HEAD
               placeholder={
                 isBlocked ? "This contact is blocked" : "Type a new message..."
               }
-=======
-              placeholder={"Type a new message..."}
->>>>>>> master
               disabled={true}
             />
           </ToolTip>
@@ -532,15 +446,7 @@ export const ChatsViewSection = ({
             className={style["send-message-icon"]}
             onClick={handleSendMessage}
           >
-<<<<<<< HEAD
-            <img src={paperAirplaneIcon} alt="" draggable="false" />
-=======
-<<<<<<< HEAD:packages/extension/src/pages/agent-chat-section/chats-view-section.tsx
-            <img src={paperAirplaneIcon} alt="" draggable="false" />
-=======
             <img draggable={false} src={paperAirplaneIcon} alt="" />
->>>>>>> master:packages/extension/src/pages/chat-section/chats-view-section.tsx
->>>>>>> master
           </div>
         ) : (
           ""
