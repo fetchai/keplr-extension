@@ -1,0 +1,48 @@
+.listItem {
+  display: flex;
+
+  .checkbox {
+    height: 16px;
+    width: 16px;
+    border-radius: 2px;
+    margin: auto 0;
+    opacity: 40%;
+    &:checked {
+      opacity: 100%;
+    }
+  }
+
+  .image {
+    margin: auto 0;
+    margin-left: 10px;
+    margin-right: 8px;
+    box-sizing: content-box;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #d0def5;
+    color: #525f7f;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    img {
+      width: 100%;
+    }
+  }
+
+  .name {
+    margin: auto 0;
+    margin-left: 10px;
+    font-family: "Nunito Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    color: #525f7f;
+  }
+}

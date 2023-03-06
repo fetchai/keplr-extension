@@ -1,9 +1,11 @@
 import React from "react";
 import { FunctionComponent } from "react";
-import { useHistory } from "react-router";
 
-export const SwitchUser: FunctionComponent = () => {
-  const history = useHistory();
+interface Props {
+  setShowNotifications: React.Dispatch<React.SetStateAction<boolean>>;
+  showNotifications: boolean;
+}
+export const ShowNotification: FunctionComponent<Props> = (props) => {
   return (
     <div
       style={{
@@ -11,20 +13,18 @@ export const SwitchUser: FunctionComponent = () => {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        paddingRight: "20px",
       }}
     >
       <div
-        style={{ width: "16px", cursor: "pointer" }}
+        style={{ width: "16px", cursor: "pointer", margin: "0 2.5vw" }}
         onClick={(e) => {
           e.preventDefault();
 
-          history.push("/setting/set-keyring");
+          props.setShowNotifications(!props.showNotifications);
         }}
       >
-        <i
-          className="fa fa-user"
-          aria-hidden="true"
+        <img
+          src={require("@assets/svg/bell-icon.svg")}
           style={{ width: "100%" }}
         />
       </div>

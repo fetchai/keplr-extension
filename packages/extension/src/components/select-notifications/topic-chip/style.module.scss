@@ -1,0 +1,51 @@
+.topicChips {
+  margin: 0 8px;
+  // padding: 16px;
+  // display: inline-block;
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    // width: 42px;
+    // height: 24px;
+    display: inline-block;
+    line-height: 1;
+    margin: 0;
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .contentInverter {
+        background-color: #2563eb;
+        color: #ffffff;
+      }
+    }
+
+    .contentInverter {
+      // position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 33px;
+      padding: 8px 16px;
+      // gap: 10px;
+      // width: 62px;
+      // height: 38px;
+      background: #ffffff;
+      border: 2px solid #2563eb;
+      border-radius: 33px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 22px;
+      color: #2563eb;
+    }
+  }
+}

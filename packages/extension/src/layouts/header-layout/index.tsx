@@ -6,17 +6,20 @@ import { Header, Props as HeaderProps } from "../header";
 import { BottomNav } from "../bottom-nav";
 
 import style from "./style.module.scss";
+import { NotificationModal } from "@components/notification-modal/index";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Props extends HeaderProps {
   style?: CSSProperties;
+  showBottomMenu?: boolean;
+  setShowNotifications?: React.Dispatch<React.SetStateAction<boolean>>;
+  showNotifications?: boolean;
 }
 
 export const HeaderLayout: FunctionComponent<Props> = (props) => {
   const { children } = props;
 
   const [isMenuOpen, setMenuOpen] = useState(false);
-
   const menuContext: MenuContext = {
     open: () => {
       setMenuOpen(true);
@@ -34,7 +37,10 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
       <div className={style.container} style={props.style}>
         <Header {...props} isMenuOpen={isMenuOpen} />
         <div className={style.innerContainer}>{children}</div>
-        <BottomNav />
+
+        {(props.showBottomMenu ?? true) && <BottomNav />}
+
+        {props.showNotifications && <NotificationModal />}
       </div>
     </MenuProvider>
   );

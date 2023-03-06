@@ -120,6 +120,18 @@ export const SettingPage: FunctionComponent = observer(() => {
             []
           )}
         />
+        <PageButton
+          title={"Notifications"}
+          onClick={() => {
+            history.push({
+              pathname: "/setting/notifications",
+            });
+          }}
+          icons={useMemo(
+            () => [<i key="next" className="fas fa-chevron-right" />],
+            []
+          )}
+        />
         {/* <PageButton
           title="Show Advanced IBC Transfers"
           onClick={() => {

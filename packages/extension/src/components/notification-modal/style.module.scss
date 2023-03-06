@@ -1,0 +1,171 @@
+.notificationModal {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+
+  position: absolute;
+  width: 328px;
+  min-height: 244px;
+  max-height: 90%;
+  overflow-y: auto;
+  left: 16px;
+  top: 66px;
+  z-index: 1000;
+  background: #ffffff;
+  overflow: visible;
+  border-radius: 4px;
+  border: 1px solid #e5e7e6;
+  filter: drop-shadow(4px 4px 16px rgba(0, 0, 0, 0.25));
+
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
+
+  color: #525f7f;
+
+  &::before {
+    content: " ";
+    position: absolute;
+    right: 22px;
+    top: -13px;
+    border-top: none;
+    border-right: 14px solid transparent;
+    border-left: 14px solid transparent;
+    border-bottom: 18px solid #ffffff;
+    z-index: 2000;
+  }
+
+  .heading {
+    padding: 8px 12px;
+    display: flex;
+
+    .settings {
+      margin: auto 0;
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    .deleteIcon {
+      margin: auto 0;
+      cursor: pointer;
+
+      .clearAll {
+        margin: auto 2vw;
+        align-self: flex-end;
+        display: inline;
+      }
+    }
+  }
+
+  .settings {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+    margin-right: 16px;
+  }
+
+  .notification {
+    margin-top: 1vh;
+    border-top: 1px solid #f2f3f6;
+    padding: 8px 16px;
+
+    .notificationHead {
+      display: flex;
+
+      .headName {
+        margin: auto 2vw;
+        font-weight: 700;
+      }
+
+      .notificationIcons {
+        margin-left: auto;
+
+        img {
+          margin: 0 1vw;
+        }
+      }
+    }
+
+    .notificationMsg {
+      font-weight: 400;
+
+      p {
+        margin: 0;
+        margin-left: auto;
+      }
+    }
+
+    .notificationTime {
+      display: flex;
+      justify-content: flex-end;
+      font-weight: 300;
+      color: #808da0;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .flagged {
+      border-top: 1px solid #f2f3f6;
+
+      .flaggedText {
+        margin: 0;
+        margin-top: 8px;
+        line-height: 1;
+      }
+    }
+  }
+
+  .notifyContainer {
+    .greyCircle {
+      margin-top: 8px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 0;
+      height: 179px;
+      width: 179px;
+      background: #d9d9d9;
+      border-radius: 50%;
+    }
+
+    .notifyHeading {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 16px;
+      text-align: center;
+      margin-top: 16px;
+      color: #525f7f;
+    }
+
+    .notifyDescription {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+
+      margin: 0 auto 8px;
+      width: 296px;
+      text-align: center;
+      color: #525f7f;
+    }
+
+    .notifyButton {
+      width: 296px;
+      margin: 0 16px;
+      display: block;
+    }
+  }
+
+  .isLoading {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    text-align: center;
+    height: 100%;
+    margin: auto;
+  }
+}

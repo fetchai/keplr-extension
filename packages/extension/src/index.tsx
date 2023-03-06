@@ -71,6 +71,10 @@ import { AddMember } from "./pages/group-chat/add-member";
 import { ReviewGroupChat } from "./pages/group-chat/review-details";
 import { GroupChatSection } from "./pages/group-chat/chat-section";
 import { EditMember } from "./pages/group-chat/edit-member";
+import { NotificationOrganizations } from "./pages/notification/notification-organizations/index";
+import { NotificationTopics } from "./pages/notification/notification-topics/index";
+import { SettingNotifications } from "./pages/setting/notification/index";
+import { ReviewNotification } from "./pages/notification/review-notification/index";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -159,6 +163,22 @@ const Application: FunctionComponent = () => {
                       <Route exact path="/unlock" component={LockPage} />
                       <Route exact path="/access" component={AccessPage} />
                       <Route exact path="/activity" component={ActivityPage} />
+                      <Route
+                        exact
+                        path="/notification/organizations/:type"
+                        component={NotificationOrganizations}
+                      />
+                      <Route
+                        exact
+                        path="/notification/topics/:type"
+                        component={NotificationTopics}
+                      />
+                      <Route
+                        exact
+                        path="/notification/review"
+                        component={ReviewNotification}
+                      />
+
                       <Route exact path="/chat" component={ChatPage} />
                       <Route exact path="/chat/:name" component={ChatSection} />
                       <Route
@@ -210,6 +230,12 @@ const Application: FunctionComponent = () => {
                         path="/setting/language"
                         component={SettingLanguagePage}
                       />
+                      <Route
+                        exact
+                        path="/setting/notifications"
+                        component={SettingNotifications}
+                      />
+
                       <Route
                         exact
                         path="/setting/fiat"
