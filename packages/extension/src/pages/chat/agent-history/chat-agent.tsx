@@ -104,7 +104,12 @@ export const ChatAgent: React.FC<{
     isSender: boolean
   ) => {
     const message = await decryptMessage(chainId, contents, isSender);
-    setMessage(message.content.text);
+    if (message.type == 1) {
+      setMessage(message.content.text);
+      return;
+    }
+
+    setMessage("Please sign your transaction.");
   };
 
   useEffect(() => {

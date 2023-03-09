@@ -13,7 +13,6 @@ import { Menu } from "../main/menu";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
 
-export const openValue = true;
 export const AgentChatSection: FunctionComponent = () => {
   const history = useHistory();
   const targetAddress = history.location.pathname.split("/")[2];

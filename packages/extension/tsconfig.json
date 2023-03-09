@@ -22,6 +22,6 @@
       "./@types"
     ]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "window.d.ts"],
   "excluded": ["**/*.wasm"]
 }

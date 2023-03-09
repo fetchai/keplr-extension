@@ -33,7 +33,7 @@ import { AgentActionsDropdown } from "@components/agent-actions-dropdown";
 import { store } from "@chatStore/index";
 import { AgentInitPopup } from "@components/chat/agent-init-popup";
 
-const COMMANDS = ["/sendToken", "/autoCompound", "/claimToken"];
+const COMMANDS = ["/sendToken", "/autoCompound", "/claimToken", "/transferFET"];
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -176,6 +176,7 @@ export const ChatsViewSection = ({
       setGroup(tempGroup);
     }
   };
+
   useEffect(() => {
     /// Shallow copy
     const tempGroup = {
@@ -316,6 +317,38 @@ export const ChatsViewSection = ({
     setNewMessage(command);
   };
 
+  const signTxn = async (data: string) => {
+    const payload = JSON.parse(data);
+    const current = chainStore.current;
+    const accountInfo = accountStore.getAccount(current.chainId);
+
+    const msg = {
+      chain_id: current.chainId,
+      account_number: "0",
+      msgs: payload.body.messages,
+      sequence: payload.authInfo.signerInfos[0].sequence,
+      fee: {
+        ...payload.authInfo.fee,
+        gas: payload.authInfo.fee.gasLimit,
+      },
+      memo: "",
+    };
+
+    try {
+      //sendTx
+      const data = await window?.keplr?.signAmino(
+        current.chainId,
+        accountInfo.bech32Address,
+        msg
+      );
+
+      console.log("Signed Data", data);
+    } catch (_) {
+    } finally {
+      history.goBack();
+    }
+  };
+
   return (
     <div className={style.chatArea}>
       {!loadingMessages && !messages.length && <AgentInitPopup />}
@@ -354,6 +387,7 @@ export const ChatsViewSection = ({
                       ? new Date(receiver.groupLastSeenTimestamp).getTime()
                       : 0
                   }
+                  onClickSignTxn={signTxn}
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}

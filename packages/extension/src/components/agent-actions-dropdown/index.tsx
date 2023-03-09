@@ -14,48 +14,44 @@ export const AgentActionsDropdown = ({
     <>
       {showDropdown && (
         <div className={style.dropdown}>
-          <SendTokenOption handleClick={handleClick} />
-          <AutoCompoundOption handleClick={handleClick} />
-          <ClaimTokenOption handleClick={handleClick} />
+          <CommandOption
+            title={"Transfer FET"}
+            icon={sendTokenIcon}
+            handleClick={() => handleClick("/transferFET")}
+          />
+          <CommandOption
+            title={"Send Token"}
+            icon={sendTokenIcon}
+            handleClick={() => handleClick("/sendToken")}
+          />
+          <CommandOption
+            title={"Auto-Compound Rewards"}
+            icon={autoCompoundIcon}
+            handleClick={() => handleClick("/autoCompound")}
+          />
+          <CommandOption
+            title={"Claim Token"}
+            icon={claimTokenIcon}
+            handleClick={() => handleClick("/claimToken")}
+          />
         </div>
       )}
     </>
   );
 };
 
-const SendTokenOption = ({
+const CommandOption = ({
+  title,
+  icon,
   handleClick,
 }: {
-  handleClick: (data: string) => void;
+  title: string;
+  icon: any;
+  handleClick: () => void;
 }) => {
   return (
-    <div onClick={() => handleClick("/sendToken")}>
-      <img src={sendTokenIcon} alt="" draggable="false" /> Send Token
-    </div>
-  );
-};
-
-const AutoCompoundOption = ({
-  handleClick,
-}: {
-  handleClick: (data: string) => void;
-}) => {
-  return (
-    <div onClick={() => handleClick("/autoCompound")}>
-      <img src={autoCompoundIcon} alt="" draggable="false" /> Auto-Compound
-      Rewards
-    </div>
-  );
-};
-
-const ClaimTokenOption = ({
-  handleClick,
-}: {
-  handleClick: (data: string) => void;
-}) => {
-  return (
-    <div onClick={() => handleClick("/claimToken")}>
-      <img src={claimTokenIcon} alt="" draggable="false" /> Claim Token
+    <div onClick={() => handleClick()}>
+      <img src={icon} alt="" draggable="false" /> {title}
     </div>
   );
 };
