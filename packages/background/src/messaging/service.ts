@@ -69,29 +69,6 @@ export class MessagingService {
     const privateKey = new PrivateKey(Buffer.from(sk));
     const pubKey = toHex(privateKey.publicKey.compressed);
 
-    const encoder = new TextEncoder();
-
-    const encoded = encoder.encode(pubKey);
-    const signDoc = {
-      chain_id: "",
-      account_number: "0",
-      sequence: "0",
-      fee: {
-        gas: "0",
-        amount: [],
-      },
-      msgs: [
-        {
-          type: "sign/MsgSignData",
-          value: {
-            signer: address,
-            data: toBase64(encoded),
-          },
-        },
-      ],
-      memo: "",
-    };
-
     const regPubKey = await this.lookupPublicKey(accessToken, address);
     if (
       !regPubKey.privacySetting ||
@@ -100,17 +77,44 @@ export class MessagingService {
       regPubKey.privacySetting !== privacySetting ||
       regPubKey.chatReadReceiptSetting !== chatReadReceiptSetting
     ) {
-      const {
-        signature,
-        signed,
-      } = await this.keyRingService.requestSignAmino(
-        env,
-        "",
-        chainId,
-        address,
-        signDoc,
-        { isADR36WithString: true }
-      );
+      let signature;
+      let signed;
+      if (!regPubKey.publicKey || regPubKey.publicKey !== pubKey) {
+        const encoder = new TextEncoder();
+
+        const encoded = encoder.encode(pubKey);
+        const signDoc = {
+          chain_id: "",
+          account_number: "0",
+          sequence: "0",
+          fee: {
+            gas: "0",
+            amount: [],
+          },
+          msgs: [
+            {
+              type: "sign/MsgSignData",
+              value: {
+                signer: address,
+                data: toBase64(encoded),
+              },
+            },
+          ],
+          memo: "",
+        };
+
+        const signData = await this.keyRingService.requestSignAmino(
+          env,
+          "",
+          chainId,
+          address,
+          signDoc,
+          { isADR36WithString: true }
+        );
+
+        signature = signData.signature;
+        signed = signData.signed;
+      }
 
       await registerPubKey(
         accessToken,
@@ -119,9 +123,11 @@ export class MessagingService {
         MESSAGE_CHANNEL_ID,
         privacySetting,
         chatReadReceiptSetting,
-        signature.pub_key.value,
-        signature.signature,
-        Buffer.from(JSON.stringify(signed)).toString("base64")
+        signature ? signature.pub_key.value : undefined,
+        signature ? signature.signature : undefined,
+        signed
+          ? Buffer.from(JSON.stringify(signed)).toString("base64")
+          : undefined
       );
 
       this._publicKeyCache.set(address, {
