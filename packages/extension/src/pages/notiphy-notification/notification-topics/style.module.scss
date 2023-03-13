@@ -4,12 +4,22 @@
   display: flex;
   flex-direction: column;
 
+  .isLoading {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    text-align: center;
+    height: 100%;
+  }
+
   .topicChipsContainer {
     // display: grid;
     // grid-template-columns: 1fr 1fr 1fr 1fr;
     margin: 0;
     margin-left: 10px;
     margin-right: auto;
+    overflow-y: auto;
   }
 
   .selectedTopics {

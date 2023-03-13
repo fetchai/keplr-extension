@@ -71,10 +71,10 @@ import { AddMember } from "./pages/group-chat/add-member";
 import { ReviewGroupChat } from "./pages/group-chat/review-details";
 import { GroupChatSection } from "./pages/group-chat/chat-section";
 import { EditMember } from "./pages/group-chat/edit-member";
-import { NotificationOrganizations } from "./pages/notification/notification-organizations/index";
-import { NotificationTopics } from "./pages/notification/notification-topics/index";
+import { NotificationOrganizations } from "./pages/notiphy-notification/notification-organizations/index";
+import { NotificationTopics } from "./pages/notiphy-notification/notification-topics/index";
 import { SettingNotifications } from "./pages/setting/notification/index";
-import { ReviewNotification } from "./pages/notification/review-notification/index";
+import { ReviewNotification } from "./pages/notiphy-notification/review-notification/index";
 
 window.keplr = new Keplr(
   manifest.version,

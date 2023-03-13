@@ -1,24 +1,33 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Button } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "@layouts/header-layout";
 import { useHistory, useParams } from "react-router";
-import newstyle from "./style.module.scss";
+import style from "./style.module.scss";
 import { PageTitle } from "@components/page-title/page-title";
 import { NotificationOrg } from "@components/notification-org/notification-org";
 import {
   fetchFollowedOrganisations,
   fetchOrganisations,
   followOrganisation,
+  unfollowOrganisation,
 } from "@utils/fetch-notification";
 import { useStore } from "../../../stores";
-import { NotyphiOrganisation } from "@notificationTypes";
+import {
+  NotificationSetup,
+  NotyphiOrganisation,
+  NotyphiOrganisations,
+} from "@notificationTypes";
 import { NotiSearchInput } from "@components/page-title/noti-search-input";
+import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
+import { store } from "@chatStore/index";
+import { useSelector } from "react-redux";
 
 const pageOptions = {
   edit: "edit",
   add: "add",
 };
+
 export const NotificationOrganizations: FunctionComponent = observer(() => {
   const { type } = useParams<{ type?: string }>();
   const history = useHistory();
@@ -29,10 +38,13 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   const [inputVal, setInputVal] = useState("");
   const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
+  const [selectedOrg, setSelectedOrg] = useState<NotyphiOrganisation[]>([]);
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
 
-  const [checkBoxState, setCheckBoxState] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSendingData, setIsSendingData] = useState(false);
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
+
+  const followUnfollowObj = useRef<NotyphiOrganisations>({});
 
   useEffect(() => {
     fetchOrganisations().then((res) => {
@@ -41,51 +53,70 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       setOrgList(res.items);
 
       if (type === pageOptions.edit) {
-        fetchFollowedOrganisations(accountInfo.bech32Address).then(
-          (followOrganisationList: NotyphiOrganisation[]) => {
-            const selectedArray: string[] = [];
-            res.items.forEach((element: NotyphiOrganisation) => {
-              const data = followOrganisationList.find(
-                (item) => item.id === element.id
-              );
-
-              if (data) {
-                selectedArray.push(element.id);
-              }
-            });
-            setCheckBoxState(selectedArray);
-          }
-        );
+        const organisations = Object.values(notificationInfo.organisations);
+        if (organisations.length == 0) {
+          /// Updating the pre-selected orgs.
+          fetchFollowedOrganisations(accountInfo.bech32Address).then(
+            (followOrganisationList: NotyphiOrganisation[]) => {
+              setSelectedOrg(followOrganisationList);
+            }
+          );
+        } else {
+          setSelectedOrg(organisations);
+        }
       }
     });
   }, [accountInfo.bech32Address, type]);
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let arr = [...checkBoxState];
-    if (arr.includes(e.target.id)) {
-      arr = arr.filter((elem) => elem != e.target.id);
+  const handleCheck = (isChecked: boolean, index: number) => {
+    const item = orgList[index];
+
+    if (isChecked) {
+      setSelectedOrg([...selectedOrg, item]);
+      followUnfollowObj.current[item.id] = {
+        ...item,
+        follow: isChecked,
+      };
     } else {
-      arr.push(e.target.id);
+      setSelectedOrg(selectedOrg.filter((element) => element.id != item.id));
+
+      /// Unfollow is available in edit section only
+      if (type === pageOptions.edit) {
+        followUnfollowObj.current[item.id] = {
+          ...item,
+          follow: isChecked,
+        };
+      }
     }
-    setCheckBoxState(arr);
   };
 
   const handleNextPage = async () => {
-    setIsSendingData(true);
-    const allPromises = [];
+    setIsBtnLoading(true);
+    const allPromises: any = [];
 
-    for (let i = 0; i < checkBoxState.length; i++) {
-      allPromises.push(
-        followOrganisation(accountInfo.bech32Address, checkBoxState[i])
-      );
-    }
+    Object.values(followUnfollowObj.current).map((element) => {
+      if (element.follow) {
+        allPromises.push(
+          followOrganisation(accountInfo.bech32Address, element.id)
+        );
+      } else {
+        allPromises.push(
+          unfollowOrganisation(accountInfo.bech32Address, element.id)
+        );
+      }
+    });
 
-    /// Todo optimise the api call when no changes done by user in edit case
     Promise.allSettled(allPromises).then((_) => {
+      store.dispatch(
+        setNotifications({
+          organisations: selectedOrg,
+        })
+      );
+
       if (type === pageOptions.edit) {
         history.goBack();
       } else {
-        history.push({ pathname: "/notification/topics/add" });
+        history.push({ pathname: "/notification/review" });
       }
     });
   };
@@ -121,31 +152,35 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         setInputVal={setInputVal}
       />
 
-      <div className={newstyle.listContainer}>
+      <div className={style.listContainer}>
         {isLoading ? (
-          <div className={newstyle.isLoading}>
+          <div className={style.isLoading}>
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : (
-          orgList.map((elem: NotyphiOrganisation) => (
+          orgList.map((elem: NotyphiOrganisation, index: number) => (
             <NotificationOrg
-              handleCheck={handleCheck}
-              checkBoxState={checkBoxState}
+              handleCheck={(isChecked) => {
+                handleCheck(isChecked, index);
+              }}
+              isChecked={
+                selectedOrg.find((item) => item.id === elem.id) ? true : false
+              }
               elem={elem}
               key={elem.id}
             />
           ))
         )}
       </div>
-      <div className={newstyle.buttonContainer}>
-        <p>{checkBoxState.length} selected</p>
+      <div className={style.buttonContainer}>
+        <p>{selectedOrg.length} selected</p>
         <Button
-          className={newstyle.button}
+          className={style.button}
           color="primary"
-          disabled={checkBoxState.length == 0}
+          disabled={selectedOrg.length == 0}
           onClick={handleNextPage}
         >
-          {isSendingData ? (
+          {isBtnLoading ? (
             <i className="fa fa-spinner fa-spin fa-fw" />
           ) : type === pageOptions.edit ? (
             "Update Notification Preferences"

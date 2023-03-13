@@ -4,9 +4,13 @@ import { useHistory } from "react-router";
 import style from "./style.module.scss";
 import { NotificationOption } from "../../../components/notification-option/notification-option";
 import { PageButton } from "../page-button";
+import { notificationsDetails } from "@chatStore/user-slice";
+import { NotificationSetup } from "@notificationTypes";
+import { useSelector } from "react-redux";
 
 export const SettingNotifications: FunctionComponent = () => {
   const history = useHistory();
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
 
   return (
     <HeaderLayout
@@ -25,7 +29,9 @@ export const SettingNotifications: FunctionComponent = () => {
 
         <PageButton
           title="Organisations"
-          paragraph="Following 1 organisation"
+          paragraph={`Following ${
+            Object.values(notificationInfo.organisations).length
+          } organisation`}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
             []
@@ -38,6 +44,7 @@ export const SettingNotifications: FunctionComponent = () => {
         <PageButton
           title="Topics"
           paragraph="None followed "
+          style={{ display: "none" }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
             []

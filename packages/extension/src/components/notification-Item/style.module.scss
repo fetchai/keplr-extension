@@ -1,0 +1,62 @@
+.notification {
+  border-top: 1px solid #f2f3f6;
+  padding: 16px;
+
+  .notificationHead {
+    display: flex;
+
+    .headName {
+      margin: auto 2vw;
+      font-weight: 700;
+    }
+
+    .notificationIcons {
+      margin-left: auto;
+      margin-top: 8px;
+
+      .flag,
+      .cross {
+        margin: 0 1vw;
+        &:hover {
+          transform: scale(1.2);
+          cursor: pointer;
+        }
+      }
+      .disabled {
+        // filter: invert(0.5) sepia(1) saturate(7) hue-rotate(155deg);
+        filter: brightness(0) saturate(100%) invert(55%) sepia(7%)
+          saturate(3602%) hue-rotate(135deg) brightness(96%) contrast(88%);
+      }
+    }
+  }
+
+  .notificationMsg {
+    font-weight: 400;
+
+    p {
+      margin: 4px 0 0;
+      // margin-left: auto;
+    }
+  }
+
+  .notificationTime {
+    display: flex;
+    justify-content: flex-end;
+    font-weight: 300;
+    color: #808da0;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.flagged {
+  border-top: 1px solid #f2f3f6;
+  padding: 8px 16px;
+  .flaggedText {
+    margin: 0;
+    margin-top: 8px;
+    line-height: 1;
+  }
+}

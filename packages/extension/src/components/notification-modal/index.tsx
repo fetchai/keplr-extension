@@ -4,12 +4,23 @@ import style from "./style.module.scss";
 import { Button } from "reactstrap";
 import { NotificationItem } from "@components/notification-Item/index";
 import { PoweredByNote } from "./powered-by-note/powered-by-note";
-import { fetchFollowedOrganisations } from "@utils/fetch-notification";
+import {
+  fetchAllNotifications,
+  fetchFollowedOrganisations,
+  markDeliveryAsRead,
+  markDeliveryAsRejected,
+} from "@utils/fetch-notification";
 import { useStore } from "../../stores";
-import { NotyphiOrganisation } from "@notificationTypes";
+import {
+  NotyphiNotification,
+  NotyphiNotifications,
+  NotyphiOrganisation,
+} from "@notificationTypes";
+import { store } from "@chatStore/index";
+import { setNotifications } from "@chatStore/user-slice";
 interface NotificationPayload {
   modalType: NotificationModalType;
-  notificationList?: any[];
+  notificationList?: NotyphiNotification[];
   heading: string;
   paragraph?: string;
   showSetting?: boolean;
@@ -47,11 +58,55 @@ export const NotificationModal = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    const notificationData = await fetchAllNotifications();
+    const notifications: NotyphiNotifications = {};
+
+    /// fetch notification from local db
+    const localNotifications: NotyphiNotification[] = JSON.parse(
+      localStorage.getItem("notifications") ?? JSON.stringify([])
+    );
+
+    /// Combining the server and local notifications data
+    notificationData.map((element) => {
+      notifications[element.delivery_id] = element;
+    });
+    localNotifications.map((element) => {
+      notifications[element.delivery_id] = element;
+    });
+
+    localStorage.setItem(
+      "notifications",
+      JSON.stringify(Object.values(notifications))
+    );
+
+    if (Object.values(notifications).length === 0) {
+      setNotificationPayload({
+        modalType: NotificationModalType.empty,
+        heading: "No new notifications.",
+        paragraph: "Add more topics or organisations in Settings",
+        showSetting: true,
+      });
+    } else {
+      setNotificationPayload({
+        modalType: NotificationModalType.notifications,
+        notificationList: Object.values(notifications),
+        heading: "",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchFollowedOrganisations(accountInfo.bech32Address).then(
       (followOrganisationList: NotyphiOrganisation[]) => {
         setIsLoading(false);
-        if (followOrganisationList.length == 0) {
+        store.dispatch(
+          setNotifications({
+            organisations: followOrganisationList,
+          })
+        );
+
+        if (followOrganisationList.length === 0) {
           setNotificationPayload({
             modalType: NotificationModalType.initial,
             heading: "We've just added Notifications!",
@@ -61,17 +116,80 @@ export const NotificationModal = () => {
             headingColor: "#3b82f6",
           });
         } else {
-          /// Todo call fetch notification api
-          setNotificationPayload({
-            modalType: NotificationModalType.empty,
-            heading: "No new notifications.",
-            paragraph: "Add more topics or organisations in Settings",
-            showSetting: true,
-          });
+          fetchNotifications();
         }
       }
     );
   }, [accountInfo.bech32Address]);
+
+  const onCrossClick = (deliveryId: string) => {
+    markDeliveryAsRead(deliveryId, "wallet1")
+      .catch((err) => console.log(err))
+      .finally(() => {
+        if (notificationPayload?.notificationList) {
+          const unreadNotifications = notificationPayload?.notificationList.filter(
+            (notification: NotyphiNotification) =>
+              notification.delivery_id !== deliveryId
+          );
+
+          if (unreadNotifications.length === 0) {
+            setNotificationPayload({
+              modalType: NotificationModalType.empty,
+              heading: "No new notifications.",
+              paragraph: "Add more topics or organisations in Settings",
+              showSetting: true,
+            });
+          } else {
+            setNotificationPayload({
+              modalType: NotificationModalType.notifications,
+              notificationList: unreadNotifications,
+              heading: "",
+            });
+          }
+          localStorage.setItem(
+            "notifications",
+            JSON.stringify(unreadNotifications)
+          );
+        }
+      });
+  };
+
+  const onFlagClick = (deliveryId: string) => {
+    markDeliveryAsRejected(deliveryId, "wallet1")
+      .catch((err) => console.log(err))
+      .finally(() => {
+        /// Getting updated info everytime as flag UI take 2 sec delay to update
+        const localNotifications = JSON.parse(
+          localStorage.getItem("notifications") || JSON.stringify([])
+        );
+
+        const newLocalNotifications = localNotifications.filter(
+          (notification: NotyphiNotification) =>
+            notification.delivery_id !== deliveryId
+        );
+        localStorage.setItem(
+          "notifications",
+          JSON.stringify(newLocalNotifications)
+        );
+
+        /// Removing flag notification from list after 2 sec
+        setTimeout(() => {
+          if (newLocalNotifications.length)
+            setNotificationPayload({
+              modalType: NotificationModalType.notifications,
+              notificationList: newLocalNotifications,
+              heading: "",
+            });
+          else
+            setNotificationPayload({
+              modalType: NotificationModalType.empty,
+              heading: "No new notifications.",
+              paragraph: "Add more topics or organisations in Settings",
+              showSetting: true,
+            });
+        }, 2000);
+      });
+  };
 
   function decideNotificationView(): React.ReactNode {
     if (isLoading) {
@@ -86,18 +204,24 @@ export const NotificationModal = () => {
       return (
         <>
           <div className={style.heading}>
-            <p className={style.deleteIcon}>
+            <div className={style.deleteIcon}>
               <img src={require("@assets/svg/delete-icon.svg")} />
               <p className={style.clearAll}>Clear all</p>
-            </p>
+            </div>
             <p className={style.settings} onClick={navigateToSettingsHandler}>
               Settings
             </p>
           </div>
 
           {notificationPayload.notificationList.map((elem) => (
-            <NotificationItem key={elem.id} elem={elem} />
+            <NotificationItem
+              key={elem.delivery_id}
+              elem={elem}
+              onCrossClick={onCrossClick}
+              onFlagClick={onFlagClick}
+            />
           ))}
+          <PoweredByNote />
         </>
       );
     }
@@ -144,6 +268,8 @@ export const NotificationModal = () => {
   }
 
   return (
-    <div className={style.notificationModal}>{decideNotificationView()}</div>
+    <div className={style.notificationModal}>
+      <div className={style.scrollView}>{decideNotificationView()}</div>
+    </div>
   );
 };

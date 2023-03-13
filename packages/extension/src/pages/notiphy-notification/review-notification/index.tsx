@@ -1,11 +1,25 @@
+import { notificationsDetails } from "@chatStore/user-slice";
 import { HeaderLayout } from "@layouts/header-layout";
-import React, { FunctionComponent } from "react";
+import { NotificationSetup, NotyphiOrganisation } from "@notificationTypes";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useHistory } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
 export const ReviewNotification: FunctionComponent = () => {
   const history = useHistory();
+
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const [organisations, setOriganisations] = useState("");
+
+  useEffect(() => {
+    const data = Object.values(notificationInfo.organisations)
+      .map((item: NotyphiOrganisation) => item.name)
+      .join(", ");
+
+    setOriganisations(data);
+  }, [notificationInfo.organisations]);
 
   return (
     <HeaderLayout
@@ -25,11 +39,11 @@ export const ReviewNotification: FunctionComponent = () => {
 
         <p className={style.reviewChoice}>Organisations</p>
         <p className={style.reviewOptions}>
-          {/* {state.added.map((item: any) => (
-            <span>{`${item},`}</span>
-          ))} */}
+          <span>{organisations}</span>
         </p>
-        <p className={style.reviewChoice}>Topics</p>
+        <p className={style.reviewChoice} style={{ display: "none" }}>
+          Topics
+        </p>
         <p className={style.reviewOptions} style={{ display: "none" }}>
           Defi, Defi, SomethingElse, Defi, Defi, Defi
         </p>

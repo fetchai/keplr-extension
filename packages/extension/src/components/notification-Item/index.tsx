@@ -1,37 +1,66 @@
+import { NotyphiNotification } from "@notificationTypes";
 import React, { FunctionComponent, useState } from "react";
-import style from "../notification-modal/style.module.scss";
+import style from "./style.module.scss";
 
 interface Props {
-  elem: any;
+  elem: NotyphiNotification;
+  onCrossClick: (deliveryId: string) => void;
+  onFlagClick: (deliveryId: string, flag: boolean) => void;
 }
-export const NotificationItem: FunctionComponent<Props> = ({ elem }) => {
+export const NotificationItem: FunctionComponent<Props> = ({
+  elem,
+  onCrossClick,
+  onFlagClick,
+}) => {
   const [flag, setFlag] = useState(false);
+  const { delivery_id } = elem;
 
   const handleFlag = () => {
-    setFlag(!flag);
+    if (!flag) {
+      setFlag(true);
+      onFlagClick(delivery_id, flag);
+      const elem = document.getElementById(delivery_id);
+      /// Todo handle in different way
+      if (elem) {
+        elem.classList.remove(style.flag);
+        elem.classList.add(style.disabled);
+      }
+    }
   };
+
+  const handleRead = () => {
+    onCrossClick(delivery_id);
+  };
+
   return (
-    <div className={style.notification}>
-      <div className={style.notificationHead}>
-        <img src={require("@assets/svg/" + elem.icon)} />
-        <p className={style.headName}>{elem.name}</p>
-        <div className={style.notificationIcons}>
-          <img
-            src={require("@assets/svg/flag-icon.svg")}
-            onClick={handleFlag}
-          />
-          <img src={require("@assets/svg/cross-icon.svg")} />
+    <>
+      <div className={style.notification}>
+        <div className={style.notificationHead}>
+          <img src={require("@assets/svg/fetchai-icon.svg")} />
+          <p className={style.headName}>{elem.title}</p>
+          <div className={style.notificationIcons}>
+            <img
+              src={require("@assets/svg/flag-icon.svg")}
+              id={delivery_id}
+              className={style.flag}
+              onClick={handleFlag}
+            />
+            <img
+              src={require("@assets/svg/cross-icon.svg")}
+              className={style.cross}
+              onClick={handleRead}
+            />
+          </div>
+        </div>
+
+        <div className={style.notificationMsg}>
+          <p>{elem.content}</p>
+        </div>
+
+        <div className={style.notificationTime}>
+          <p>1 min ago</p>
         </div>
       </div>
-
-      <div className={style.notificationMsg}>
-        <p>{elem.message}</p>
-      </div>
-
-      <div className={style.notificationTime}>
-        <p>1 min ago</p>
-      </div>
-
       {flag && (
         <div className={style.flagged}>
           <p className={style.flaggedText}>
@@ -39,11 +68,6 @@ export const NotificationItem: FunctionComponent<Props> = ({ elem }) => {
           </p>
         </div>
       )}
-
-      <p>
-        Powered by
-        <img src={require("@assets/svg/notiphy-icon.svg")} />
-      </p>
-    </div>
+    </>
   );
 };

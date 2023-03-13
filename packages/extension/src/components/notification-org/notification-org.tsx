@@ -1,30 +1,32 @@
 import React, { FunctionComponent } from "react";
-import newstyle from "./style.module.scss";
+import style from "./style.module.scss";
 import ReactHtmlParser from "react-html-parser";
 import jazzicon from "@metamask/jazzicon";
+import { NotyphiOrganisation } from "@notificationTypes";
 
 interface Props {
-  elem: any;
-  handleCheck: React.ChangeEventHandler<HTMLInputElement>;
-  checkBoxState: string[];
+  elem: NotyphiOrganisation;
+  handleCheck: (isChecked: boolean) => void;
+  isChecked: boolean;
 }
 
 export const NotificationOrg: FunctionComponent<Props> = (props) => {
-  const { elem, handleCheck, checkBoxState } = props;
+  const { elem, handleCheck, isChecked } = props;
+
   return (
-    <div className={newstyle.listItem}>
+    <div className={style.listItem}>
       <input
+        className={style.checkbox}
         key={elem.id}
-        onChange={handleCheck}
+        onChange={() => handleCheck(!isChecked)}
         type="checkbox"
-        className={newstyle.checkbox}
         id={elem.id}
-        checked={checkBoxState.includes(elem.id) ? true : false}
+        checked={isChecked}
       />
-      <div className={newstyle.image}>
+      <div className={style.image}>
         {ReactHtmlParser(jazzicon(28, elem.id).outerHTML)}
       </div>
-      <p className={newstyle.name}>{elem.name}</p>
+      <p className={style.name}>{elem.name}</p>
     </div>
   );
 };

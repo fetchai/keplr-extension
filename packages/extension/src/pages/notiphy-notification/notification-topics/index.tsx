@@ -4,6 +4,8 @@ import { Chip } from "@components/select-notifications/topic-chip";
 import { HeaderLayout } from "@layouts/header-layout";
 import { fetchTopics } from "@utils/fetch-notification";
 import React, { FunctionComponent, useEffect, useState } from "react";
+import { NotyphiTopic } from "@notificationTypes";
+
 import { useHistory, useParams } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
@@ -11,12 +13,14 @@ const pageOptions = {
   edit: "edit",
   add: "add",
 };
+
 export const NotificationTopics: FunctionComponent = () => {
   const history = useHistory();
   const [inputVal, setInputVal] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [topicsList, setTopicsList] = useState<any[]>([]);
-  const [mainTopicsList, setMainTopicsList] = useState<any[]>([]);
+  const [topicsList, setTopicsList] = useState<NotyphiTopic[]>([]);
+  const [mainTopicsList, setMainTopicsList] = useState<NotyphiTopic[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { type } = useParams<{ type?: string }>();
 
@@ -44,6 +48,7 @@ export const NotificationTopics: FunctionComponent = () => {
     fetchTopics().then((res) => {
       setTopicsList(res.items);
       setMainTopicsList(res.items);
+      setIsLoading(false);
     });
   }, []);
 
@@ -74,16 +79,24 @@ export const NotificationTopics: FunctionComponent = () => {
           handleSearch={handleSearch}
           setInputVal={setInputVal}
         />
-        <div className={style.topicChipsContainer}>
-          {topicsList.map((topic) => (
-            <Chip
-              key={topic.name}
-              topic={topic}
-              checked={selectedTopics.indexOf(topic.name) === -1 ? false : true}
-              handleCheck={handleCheck}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className={style.isLoading}>
+            <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
+          </div>
+        ) : (
+          <div className={style.topicChipsContainer}>
+            {topicsList.map((topic: NotyphiTopic) => (
+              <Chip
+                key={topic.name}
+                topic={topic}
+                checked={
+                  selectedTopics.indexOf(topic.name) === -1 ? false : true
+                }
+                handleCheck={handleCheck}
+              />
+            ))}
+          </div>
+        )}
 
         <p className={style.selectedTopics}>
           {selectedTopics.length} topics selected

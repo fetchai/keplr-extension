@@ -1,3 +1,4 @@
+import { NotificationSetup } from "@notificationTypes";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface WalletConfig {
@@ -7,7 +8,11 @@ export interface WalletConfig {
 }
 
 const initialState = {
-  notifications: [],
+  notifications: {
+    isNotificationOn: true,
+    organisations: {},
+    topics: [],
+  } as NotificationSetup,
   accessToken: "",
   walletConfig: {
     notiphyWhitelist: [],
@@ -58,5 +63,7 @@ export const {
 export const userDetails = (state: { user: any }) => state.user;
 export const userChatActive = (state: { user: any }) => state.user.isChatActive;
 export const walletConfig = (state: { user: any }) => state.user.walletConfig;
+export const notificationsDetails = (state: { user: any }) =>
+  state.user.notifications;
 
 export const userStore = userSlice.reducer;
