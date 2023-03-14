@@ -2,7 +2,7 @@ import React from "react";
 import style from "./style.module.scss";
 import searchIcon from "@assets/icon/search.png";
 
-export const NotiSearchInput = ({
+export const NotificationSearchInput = ({
   inputVal,
   handleSearch,
   setInputVal,

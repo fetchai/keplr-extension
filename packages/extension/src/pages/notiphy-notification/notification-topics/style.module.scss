@@ -4,6 +4,17 @@
   display: flex;
   flex-direction: column;
 
+  .heading {
+    width: 328px;
+    height: 38px;
+    font-family: "Nunito Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    color: #525f7f;
+  }
+
   .isLoading {
     justify-content: center;
     align-items: center;
@@ -14,12 +25,20 @@
   }
 
   .topicChipsContainer {
-    // display: grid;
-    // grid-template-columns: 1fr 1fr 1fr 1fr;
-    margin: 0;
-    margin-left: 10px;
-    margin-right: auto;
+    height: 325px;
     overflow-y: auto;
+
+    .resultText {
+      color: #808da0;
+      font-weight: 400;
+      font-size: 15px;
+      display: flex;
+      height: 100%;
+      p {
+        margin: auto;
+        text-align: center;
+      }
+    }
   }
 
   .selectedTopics {

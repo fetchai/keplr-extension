@@ -24,7 +24,11 @@ export const NotificationOrg: FunctionComponent<Props> = (props) => {
         checked={isChecked}
       />
       <div className={style.image}>
-        {ReactHtmlParser(jazzicon(28, elem.id).outerHTML)}
+        {elem.logo_href ? (
+          <img draggable={false} src={elem.logo_href} />
+        ) : (
+          ReactHtmlParser(jazzicon(28, elem.id).outerHTML)
+        )}
       </div>
       <p className={style.name}>{elem.name}</p>
     </div>

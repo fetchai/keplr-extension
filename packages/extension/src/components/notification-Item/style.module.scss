@@ -1,19 +1,41 @@
 .notification {
   border-top: 1px solid #f2f3f6;
   padding: 16px;
-
+  cursor: pointer;
+  .notificationLink {
+    text-decoration: none;
+    color: inherit;
+  }
   .notificationHead {
     display: flex;
 
+    .notificationImage {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
     .headName {
       margin: auto 2vw;
       font-weight: 700;
+      line-height: 1.2;
+      width: 70%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: pre-wrap;
     }
 
     .notificationIcons {
       margin-left: auto;
       margin-top: 8px;
-
+      width: 15%;
       .flag,
       .cross {
         margin: 0 1vw;
@@ -23,7 +45,7 @@
         }
       }
       .disabled {
-        // filter: invert(0.5) sepia(1) saturate(7) hue-rotate(155deg);
+        margin: 0 1vw;
         filter: brightness(0) saturate(100%) invert(55%) sepia(7%)
           saturate(3602%) hue-rotate(135deg) brightness(96%) contrast(88%);
       }
@@ -32,10 +54,16 @@
 
   .notificationMsg {
     font-weight: 400;
-
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    white-space: pre-wrap;
     p {
-      margin: 4px 0 0;
-      // margin-left: auto;
+      font-family: "Nunito Sans";
+      font-style: normal;
+      margin: 8px 0 0;
+      line-height: 16px;
     }
   }
 

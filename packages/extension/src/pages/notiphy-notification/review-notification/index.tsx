@@ -1,6 +1,12 @@
 import { notificationsDetails } from "@chatStore/user-slice";
 import { HeaderLayout } from "@layouts/header-layout";
-import { NotificationSetup, NotyphiOrganisation } from "@notificationTypes";
+import {
+  NotificationSetup,
+  NotyphiOrganisation,
+  NotyphiTopic,
+} from "@notificationTypes";
+
+import { useStore } from "../../../stores";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -9,9 +15,16 @@ import { Button } from "reactstrap";
 import style from "./style.module.scss";
 export const ReviewNotification: FunctionComponent = () => {
   const history = useHistory();
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
 
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
   const [organisations, setOriganisations] = useState("");
+  const topics: NotyphiTopic[] = JSON.parse(
+    localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
+      JSON.stringify([])
+  );
 
   useEffect(() => {
     const data = Object.values(notificationInfo.organisations)
@@ -41,11 +54,11 @@ export const ReviewNotification: FunctionComponent = () => {
         <p className={style.reviewOptions}>
           <span>{organisations}</span>
         </p>
-        <p className={style.reviewChoice} style={{ display: "none" }}>
-          Topics
-        </p>
-        <p className={style.reviewOptions} style={{ display: "none" }}>
-          Defi, Defi, SomethingElse, Defi, Defi, Defi
+        {Object.values(topics).length > 0 && (
+          <p className={style.reviewChoice}>Topics</p>
+        )}
+        <p className={style.reviewOptions}>
+          {topics.map((item: NotyphiTopic) => item.name).join(", ")}
         </p>
         <p className={style.reviewNote}>
           These can be changed at any time from the settings menu.
@@ -61,7 +74,7 @@ export const ReviewNotification: FunctionComponent = () => {
           <Button
             className={style.button}
             color="primary"
-            onClick={() => history.go(-2)}
+            onClick={() => history.go(-3)}
           >
             Back Home
           </Button>

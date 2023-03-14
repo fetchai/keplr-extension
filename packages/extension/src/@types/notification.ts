@@ -17,20 +17,22 @@ export interface NotyphiTopic {
 export interface NotyphiNotifications {
   [key: string]: NotyphiNotification;
 }
+
 export interface NotyphiNotification {
   delivery_id: string;
   title: string;
   content: string;
   cta_title: string;
   cta_url: string;
-  delivered_at: string;
-  read_at: string;
-  clicked_at: string;
-  rejected_at: string;
+  delivered_at: Date;
+  read_at: Date;
+  clicked_at: Date;
+  rejected_at: Date;
+  organisation_name: string;
+  image_url: string;
 }
 
 export interface NotificationSetup {
   isNotificationOn: boolean;
   organisations: NotyphiOrganisations;
-  topics: string[];
 }

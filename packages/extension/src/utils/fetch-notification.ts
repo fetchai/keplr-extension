@@ -1,10 +1,12 @@
-import { NotyphiNotification } from "@notificationTypes";
+import { NotyphiTopic } from "@notificationTypes";
 import axios from "axios";
+import { NOTYPHI_BASE_URL } from "../config.ui.var";
 
 export const fetchOrganisations = async () => {
   return await axios
-    .get("https://api-staging.notyphi.com/v1/organisations?page=1&size=50")
-    .then((res) => res.data);
+    .get(`${NOTYPHI_BASE_URL}/organisations?page=1&size=50`)
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
 };
 
 export const fetchFollowedOrganisations = async (walletAddress: string) => {
@@ -12,10 +14,11 @@ export const fetchFollowedOrganisations = async (walletAddress: string) => {
     "x-wallet-address": walletAddress,
   };
   return await axios
-    .get("https://api-staging.notyphi.com/v1/profile/following", {
+    .get(`${NOTYPHI_BASE_URL}/profile/following`, {
       headers: headers,
     })
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
 };
 
 export const followOrganisation = async (
@@ -27,12 +30,11 @@ export const followOrganisation = async (
   };
 
   return await axios
-    .post(
-      `https://api-staging.notyphi.com/v1/notifications/${orgId}/follow`,
-      "",
-      { headers: headers }
-    )
-    .then((response) => response.data);
+    .post(`${NOTYPHI_BASE_URL}/notifications/${orgId}/follow`, "", {
+      headers: headers,
+    })
+    .then((response) => response.data)
+    .catch((err) => console.log(err));
 };
 
 export const unfollowOrganisation = async (
@@ -44,59 +46,41 @@ export const unfollowOrganisation = async (
   };
 
   return await axios
-    .get(`https://api-staging.notyphi.com/v1/notifications/${orgId}/unfollow`, {
+    .get(`${NOTYPHI_BASE_URL}/notifications/${orgId}/unfollow`, {
       headers: headers,
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((err) => console.log(err));
 };
 
 export const fetchTopics = async () => {
   return await axios
-    .get("https://api-staging.notyphi.com/v1/tags?page=1&size=50")
-    .then((res) => res.data);
+    .get(`${NOTYPHI_BASE_URL}/tags?page=1&size=50`)
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
 };
 
-export const fetchAllNotifications = async () => {
-  const notificationList: NotyphiNotification[] = [
-    {
-      delivery_id: "df4db5fc-b474-41cf-b532-c0e5779d3d57",
-      title: "cheeky-ultramarine-hornet",
-      content:
-        "Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content ",
-      cta_title: "titles",
-      cta_url: "www.flimsy-amethyst-termite.com",
-      delivered_at: "2023-03-13T10:46:01.111826+00:00",
-      read_at: "",
-      clicked_at: "",
-      rejected_at: "",
-    },
-    {
-      delivery_id: "45af2f93-fd42-49e7-8e03-b72e5e8c3ea2",
-      title: "skanky-smalt-liger",
-      content:
-        "Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content ",
-      cta_title: "titles",
-      cta_url: "www.silly-smalt-orangutan.com",
-      delivered_at: "2023-03-13T10:46:01.114166+00:00",
-      read_at: "",
-      clicked_at: "",
-      rejected_at: "",
-    },
-    {
-      delivery_id: "f9b66694-24fa-48c6-8e41-ecf4ab885ec5",
-      title: "sleazy-buff-newt",
-      content:
-        "Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content Lots of content ",
-      cta_title: "titles",
-      cta_url: "www.scanty-celadon-mongoose.com",
-      delivered_at: "2023-03-13T10:46:01.115960+00:00",
-      read_at: "",
-      clicked_at: "",
-      rejected_at: "",
-    },
-  ];
+export const fetchAllNotifications = async (walletAddress: string) => {
+  const headers = {
+    "x-wallet-address": walletAddress,
+  };
 
-  return notificationList;
+  /// fetch notification topics from db
+  const topics: NotyphiTopic[] = JSON.parse(
+    localStorage.getItem(`topics-${walletAddress}`) || JSON.stringify([])
+  );
+
+  const data = {
+    timezone: 0,
+    categories: [],
+    tags: topics.map((topic) => topic.name),
+  };
+  return await axios
+    .post(`${NOTYPHI_BASE_URL}/notifications`, data, {
+      headers: headers,
+    })
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
 };
 
 export const markDeliveryAsRead = async (
@@ -107,13 +91,18 @@ export const markDeliveryAsRead = async (
     "x-wallet-address": walletAddress,
   };
 
+  const data = {
+    timezone: 0,
+    categories: [],
+    tags: ["Fetch.ai"],
+  };
+
   return await axios
-    .post(
-      `https://api-staging.notyphi.com/v1/notifications/${deliveryId}/read`,
-      "",
-      { headers: headers }
-    )
-    .then((response) => response.data);
+    .post(`${NOTYPHI_BASE_URL}/notifications/${deliveryId}/read`, data, {
+      headers: headers,
+    })
+    .then((response) => response.data)
+    .catch((error) => console.log(error));
 };
 
 export const markDeliveryAsRejected = async (
@@ -125,10 +114,25 @@ export const markDeliveryAsRejected = async (
   };
 
   return await axios
-    .post(
-      `https://api-staging.notyphi.com/v1/notifications/${deliveryId}/rejected`,
-      "",
-      { headers: headers }
-    )
-    .then((response) => response.data);
+    .post(`${NOTYPHI_BASE_URL}/notifications/${deliveryId}/rejected`, "", {
+      headers: headers,
+    })
+    .then((response) => response.data)
+    .catch((error) => console.log(error));
+};
+
+export const markDeliveryAsClicked = async (
+  deliveryId: string,
+  walletAddress: string
+) => {
+  const headers = {
+    "x-wallet-address": walletAddress,
+  };
+
+  return await axios
+    .post(`${NOTYPHI_BASE_URL}/notifications/${deliveryId}/clicked`, "", {
+      headers: headers,
+    })
+    .then((response) => response.data)
+    .catch((error) => console.log(error));
 };

@@ -1,7 +1,7 @@
 .notificationModal {
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: 8px 0 0;
 
   position: absolute;
   width: 328px;
@@ -60,6 +60,7 @@
           margin: auto 2vw;
           align-self: flex-end;
           display: inline;
+          font-weight: 400;
         }
       }
     }
@@ -70,6 +71,7 @@
       justify-content: flex-end;
       padding: 0;
       margin-right: 16px;
+      font-weight: 400;
     }
 
     .notifyContainer {
@@ -95,10 +97,10 @@
 
       .notifyDescription {
         font-weight: 400;
-        font-size: 14px;
-        line-height: 20px;
+        font-size: 16px;
+        line-height: 16px;
 
-        margin: 0 auto 8px;
+        margin: 0 auto 16px;
         width: 296px;
         text-align: center;
         color: #525f7f;
@@ -106,7 +108,7 @@
 
       .notifyButton {
         width: 296px;
-        margin: 0 16px;
+        margin: 0 16px 16px;
         display: block;
       }
     }

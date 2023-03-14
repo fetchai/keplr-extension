@@ -1,14 +1,15 @@
-import { NotiSearchInput } from "@components/page-title/noti-search-input";
-import { PageTitle } from "@components/page-title/page-title";
+import { NotificationSearchInput } from "@components/notification-search-input";
 import { Chip } from "@components/select-notifications/topic-chip";
 import { HeaderLayout } from "@layouts/header-layout";
 import { fetchTopics } from "@utils/fetch-notification";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { NotyphiTopic } from "@notificationTypes";
+import { useStore } from "../../../stores";
 
 import { useHistory, useParams } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
+
 const pageOptions = {
   edit: "edit",
   add: "add",
@@ -17,14 +18,35 @@ const pageOptions = {
 export const NotificationTopics: FunctionComponent = () => {
   const history = useHistory();
   const [inputVal, setInputVal] = useState("");
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+
   const [topicsList, setTopicsList] = useState<NotyphiTopic[]>([]);
   const [mainTopicsList, setMainTopicsList] = useState<NotyphiTopic[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedTopics, setSelectedTopics] = useState<NotyphiTopic[]>(
+    JSON.parse(
+      localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
+        JSON.stringify([])
+    )
+  );
 
+  const [isLoading, setIsLoading] = useState(true);
   const { type } = useParams<{ type?: string }>();
 
+  useEffect(() => {
+    fetchTopics().then((res) => {
+      setTopicsList(res.items);
+      setMainTopicsList(res.items);
+      setIsLoading(false);
+    });
+  }, []);
+
   const handleNextPage = () => {
+    localStorage.setItem(
+      `topics-${accountInfo.bech32Address}`,
+      JSON.stringify(selectedTopics)
+    );
     if (type === pageOptions.edit) {
       history.goBack();
       return;
@@ -35,31 +57,28 @@ export const NotificationTopics: FunctionComponent = () => {
 
   const handleSearch = () => {
     const searchString = inputVal.trim();
-    const filteredTopics = mainTopicsList
-      .map((topic: any) => topic)
-      .filter((topic: any) =>
-        topic.name.toLowerCase().includes(searchString.toLowerCase())
-      );
 
-    setTopicsList(filteredTopics);
+    if (searchString.length == 0) {
+      setTopicsList(mainTopicsList);
+    } else {
+      const filteredOrg: NotyphiTopic[] = mainTopicsList.filter(
+        (org: NotyphiTopic) =>
+          org.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setTopicsList(filteredOrg);
+    }
   };
 
-  useEffect(() => {
-    fetchTopics().then((res) => {
-      setTopicsList(res.items);
-      setMainTopicsList(res.items);
-      setIsLoading(false);
-    });
-  }, []);
+  const handleCheck = (isChecked: boolean, index: number) => {
+    const item = topicsList[index];
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let arr = [...selectedTopics];
-    if (arr.includes(e.target.id)) {
-      arr = arr.filter((elem) => elem != e.target.id);
+    if (isChecked) {
+      setSelectedTopics([...selectedTopics, item]);
     } else {
-      arr.push(e.target.id);
+      setSelectedTopics(
+        selectedTopics.filter((element) => element.name != item.name)
+      );
     }
-    setSelectedTopics(arr);
   };
 
   return (
@@ -73,8 +92,10 @@ export const NotificationTopics: FunctionComponent = () => {
       }}
     >
       <div className={style.topicsContainer}>
-        <PageTitle headingValue="Select the topics you are interested in receiving notifications for" />
-        <NotiSearchInput
+        <div className={style.heading}>
+          Select the topics you are interested in receiving notifications for
+        </div>
+        <NotificationSearchInput
           inputVal={inputVal}
           handleSearch={handleSearch}
           setInputVal={setInputVal}
@@ -85,14 +106,24 @@ export const NotificationTopics: FunctionComponent = () => {
           </div>
         ) : (
           <div className={style.topicChipsContainer}>
-            {topicsList.map((topic: NotyphiTopic) => (
+            {!topicsList.length && (
+              <div className={style.resultText}>
+                <p>
+                  No results found. <br />
+                  Please refine your search.
+                </p>
+              </div>
+            )}
+            {topicsList.map((topic: NotyphiTopic, index: number) => (
               <Chip
                 key={topic.name}
                 topic={topic}
                 checked={
-                  selectedTopics.indexOf(topic.name) === -1 ? false : true
+                  selectedTopics.find((item) => item.name === topic.name)
+                    ? true
+                    : false
                 }
-                handleCheck={handleCheck}
+                handleCheck={(isChecked) => handleCheck(isChecked, index)}
               />
             ))}
           </div>
@@ -107,6 +138,11 @@ export const NotificationTopics: FunctionComponent = () => {
             className={style.button}
             color="primary"
             onClick={handleNextPage}
+            disabled={
+              !selectedTopics.length && !topicsList.length && inputVal.length
+                ? true
+                : false
+            }
           >
             {type === pageOptions.add
               ? "Finish"

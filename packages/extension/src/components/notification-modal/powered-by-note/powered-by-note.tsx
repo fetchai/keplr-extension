@@ -4,7 +4,8 @@ export const PoweredByNote: FunctionComponent = () => {
   return (
     <div className={style.poweredByNoteContainer}>
       <p className={style.poweredByNoteText}>
-        Powered by <img src={require("@assets/svg/notiphy-icon.svg")} />
+        Powered by{" "}
+        <img draggable={false} src={require("@assets/svg/notiphy-icon.svg")} />
       </p>
     </div>
   );

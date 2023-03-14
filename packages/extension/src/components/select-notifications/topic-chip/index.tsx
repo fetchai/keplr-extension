@@ -1,10 +1,11 @@
+import { NotyphiTopic } from "@notificationTypes";
 import React, { FunctionComponent } from "react";
 import style from "./style.module.scss";
 
 interface Props {
-  topic: any;
+  topic: NotyphiTopic;
   checked: boolean;
-  handleCheck: React.ChangeEventHandler<HTMLInputElement>;
+  handleCheck: (checked: boolean) => void;
 }
 export const Chip: FunctionComponent<Props> = (props) => {
   const { handleCheck, checked, topic } = props;
@@ -14,7 +15,7 @@ export const Chip: FunctionComponent<Props> = (props) => {
         <input
           type="checkbox"
           checked={checked}
-          onChange={handleCheck}
+          onChange={() => handleCheck(!checked)}
           id={topic.name}
         />
         <span className={style.contentInverter}>{topic.name}</span>

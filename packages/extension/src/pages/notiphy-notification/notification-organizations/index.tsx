@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "@layouts/header-layout";
 import { useHistory, useParams } from "react-router";
 import style from "./style.module.scss";
-import { PageTitle } from "@components/page-title/page-title";
 import { NotificationOrg } from "@components/notification-org/notification-org";
 import {
   fetchFollowedOrganisations,
@@ -18,7 +17,7 @@ import {
   NotyphiOrganisation,
   NotyphiOrganisations,
 } from "@notificationTypes";
-import { NotiSearchInput } from "@components/page-title/noti-search-input";
+import { NotificationSearchInput } from "@components/notification-search-input";
 import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { store } from "@chatStore/index";
 import { useSelector } from "react-redux";
@@ -36,9 +35,11 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const [inputVal, setInputVal] = useState("");
+
   const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<NotyphiOrganisation[]>([]);
+
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -116,7 +117,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       if (type === pageOptions.edit) {
         history.goBack();
       } else {
-        history.push({ pathname: "/notification/review" });
+        history.push({ pathname: "/notification/topics/add" });
       }
     });
   };
@@ -144,9 +145,10 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         history.goBack();
       }}
     >
-      <PageTitle headingValue="Select atleast one organization you want notifications from:" />
-
-      <NotiSearchInput
+      <div className={style.heading}>
+        Select atleast one organization you want notifications from:
+      </div>
+      <NotificationSearchInput
         handleSearch={handleSearch}
         inputVal={inputVal}
         setInputVal={setInputVal}
@@ -158,18 +160,25 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : (
-          orgList.map((elem: NotyphiOrganisation, index: number) => (
-            <NotificationOrg
-              handleCheck={(isChecked) => {
-                handleCheck(isChecked, index);
-              }}
-              isChecked={
-                selectedOrg.find((item) => item.id === elem.id) ? true : false
-              }
-              elem={elem}
-              key={elem.id}
-            />
-          ))
+          <>
+            {!orgList.length && (
+              <div className={style.resultText}>
+                <p>
+                  No results found. <br /> Please refine your search.
+                </p>
+              </div>
+            )}
+            {orgList.map((elem: NotyphiOrganisation, index: number) => (
+              <NotificationOrg
+                handleCheck={(isChecked) => handleCheck(isChecked, index)}
+                isChecked={
+                  selectedOrg.find((item) => item.id === elem.id) ? true : false
+                }
+                elem={elem}
+                key={elem.id}
+              />
+            ))}
+          </>
         )}
       </div>
       <div className={style.buttonContainer}>

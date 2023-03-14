@@ -7,10 +7,19 @@ import { PageButton } from "../page-button";
 import { notificationsDetails } from "@chatStore/user-slice";
 import { NotificationSetup } from "@notificationTypes";
 import { useSelector } from "react-redux";
+import { useStore } from "../../../stores";
 
 export const SettingNotifications: FunctionComponent = () => {
   const history = useHistory();
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const topicInfo = JSON.parse(
+    localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
+      JSON.stringify([])
+  );
 
   return (
     <HeaderLayout
@@ -43,8 +52,7 @@ export const SettingNotifications: FunctionComponent = () => {
 
         <PageButton
           title="Topics"
-          paragraph="None followed "
-          style={{ display: "none" }}
+          paragraph={`${topicInfo.length} topics followed`}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
             []

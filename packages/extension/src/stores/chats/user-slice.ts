@@ -11,7 +11,6 @@ const initialState = {
   notifications: {
     isNotificationOn: true,
     organisations: {},
-    topics: [],
   } as NotificationSetup,
   accessToken: "",
   walletConfig: {
