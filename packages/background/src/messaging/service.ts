@@ -44,7 +44,7 @@ export class MessagingService {
         chatReadReceiptSetting: true,
       };
     } else {
-      return await this.lookupPublicKey(accessToken, targetAddress);
+      return await this.lookupPublicKey(accessToken, targetAddress, chainId);
     }
   }
 
@@ -69,7 +69,7 @@ export class MessagingService {
     const privateKey = new PrivateKey(Buffer.from(sk));
     const pubKey = toHex(privateKey.publicKey.compressed);
 
-    const regPubKey = await this.lookupPublicKey(accessToken, address);
+    const regPubKey = await this.lookupPublicKey(accessToken, address, chainId);
     if (
       !regPubKey.privacySetting ||
       !regPubKey.publicKey ||
@@ -122,6 +122,7 @@ export class MessagingService {
         address,
         MESSAGE_CHANNEL_ID,
         privacySetting,
+        chainId,
         chatReadReceiptSetting,
         signature ? signature.pub_key.value : undefined,
         signature ? signature.signature : undefined,
@@ -130,7 +131,7 @@ export class MessagingService {
           : undefined
       );
 
-      this._publicKeyCache.set(address, {
+      this._publicKeyCache.set(`${address}-${chainId}`, {
         publicKey: pubKey,
         privacySetting,
         chatReadReceiptSetting,
@@ -185,7 +186,8 @@ export class MessagingService {
 
     const targetPublicKey = await this.lookupPublicKey(
       accessToken,
-      targetAddress
+      targetAddress,
+      _chainId
     );
 
     if (!targetPublicKey.publicKey)
@@ -230,10 +232,13 @@ export class MessagingService {
    */
   protected async lookupPublicKey(
     accessToken: string,
-    targetAddress: string
+    targetAddress: string,
+    chainId: string
   ): Promise<PubKey> {
     // Step 1. Query the cache
-    let targetPublicKey = this._publicKeyCache.get(targetAddress);
+    let targetPublicKey = this._publicKeyCache.get(
+      `${targetAddress}-${chainId}`
+    );
 
     if (targetPublicKey?.publicKey && targetPublicKey?.privacySetting) {
       return targetPublicKey;
@@ -244,7 +249,8 @@ export class MessagingService {
     targetPublicKey = await getPubKey(
       accessToken,
       targetAddress,
-      MESSAGE_CHANNEL_ID
+      MESSAGE_CHANNEL_ID,
+      chainId
     );
     if (!targetPublicKey) {
       return {
@@ -254,7 +260,7 @@ export class MessagingService {
       };
     }
 
-    this._publicKeyCache.set(targetAddress, targetPublicKey);
+    this._publicKeyCache.set(`${targetAddress}-${chainId}`, targetPublicKey);
 
     return targetPublicKey;
   }
