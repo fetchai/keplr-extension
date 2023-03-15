@@ -1,5 +1,8 @@
 import { IntlMessages } from "./languages";
 import { RegisterOption } from "@keplr-wallet/hooks";
+import sendTokenIcon from "@assets/icon/send-token.png";
+import claimTokenIcon from "@assets/icon/claim-token.png";
+import autoCompoundIcon from "@assets/icon/auto-compound.png";
 
 export const PROD_AMPLITUDE_API_KEY =
   process.env["PROD_AMPLITUDE_API_KEY"] || "";
@@ -39,4 +42,31 @@ if (process.env.NODE_ENV === "production") {
 export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
 
 export const AGENT_ADDRESS =
-  "agent1q0jajw7jmzevwn34xy96sfpydtn0ljtrf0zsz34dtde60n5ll3gc23ek8zq";
+  "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf";
+
+export const AGENT_COMMANDS = [
+  {
+    command: "/transferFET",
+    label: "Transfer FET",
+    icon: sendTokenIcon,
+    enabled: true,
+  },
+  {
+    command: "/sendToken",
+    label: "Send Token",
+    icon: sendTokenIcon,
+    enabled: true,
+  },
+  {
+    command: "/autoCompound",
+    label: "Auto-Compound Rewards",
+    icon: autoCompoundIcon,
+    enabled: false,
+  },
+  {
+    command: "/claimToken",
+    label: "Claim Token",
+    icon: claimTokenIcon,
+    enabled: true,
+  },
+];

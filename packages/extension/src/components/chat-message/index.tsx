@@ -71,22 +71,31 @@ export const ChatMessage = ({
       return (
         <div className={style.message}>{decryptedMessage.content.text}</div>
       );
+    } else {
+      if (isSender)
+        return (
+          <div className={style.message}>
+            {JSON.parse(decryptedMessage.content.text).message ||
+              "Cant Parse sent Message"}
+          </div>
+        );
+      else
+        return (
+          <div className={style.message}>
+            Please sign your transaction.
+            <button
+              type="button"
+              className={style.buttonContainer}
+              onClick={() => {
+                if (onClickSignTxn)
+                  onClickSignTxn(decryptedMessage.content.text);
+              }}
+            >
+              Sign transaction
+            </button>
+          </div>
+        );
     }
-
-    return (
-      <div className={style.message}>
-        Please sign your transaction.
-        <button
-          type="button"
-          className={style.buttonContainer}
-          onClick={() => {
-            if (onClickSignTxn) onClickSignTxn(decryptedMessage.content.text);
-          }}
-        >
-          Sign transaction
-        </button>
-      </div>
-    );
   }
 
   return (

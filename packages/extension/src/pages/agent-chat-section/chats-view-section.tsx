@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import agentCommandIcon from "@assets/icon/agent-command.png";
+import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
+import { store } from "@chatStore/index";
 import {
   setMessageError,
   userChatAgents,
@@ -8,11 +9,14 @@ import {
 } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
+import { AgentActionsDropdown } from "@components/agent-actions-dropdown";
 import { ChatMessage } from "@components/chat-message";
+import { AgentInitPopup } from "@components/chat/agent-init-popup";
 import { ToolTip } from "@components/tooltip";
 import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
+import { checkAndValidateADR36AminoSignDoc } from "@keplr-wallet/cosmos";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import React, {
   createRef,
@@ -26,14 +30,9 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
-import { CHAT_PAGE_COUNT } from "../../config.ui.var";
+import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-import { AgentActionsDropdown } from "@components/agent-actions-dropdown";
-import { store } from "@chatStore/index";
-import { AgentInitPopup } from "@components/chat/agent-init-popup";
-
-const COMMANDS = ["/sendToken", "/autoCompound", "/claimToken", "/transferFET"];
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -267,7 +266,12 @@ export const ChatsViewSection = ({
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    if (isCommand && !COMMANDS.includes(newMessage)) {
+    if (
+      isCommand &&
+      !AGENT_COMMANDS.find(
+        (command) => command.command == newMessage && command.enabled
+      )
+    ) {
       store.dispatch(
         setMessageError({
           type: "manual",
@@ -324,9 +328,9 @@ export const ChatsViewSection = ({
 
     const msg = {
       chain_id: current.chainId,
-      account_number: "0",
+      account_number: payload.account_number,
       msgs: payload.body.messages,
-      sequence: payload.authInfo.signerInfos[0].sequence,
+      sequence: payload.sequence,
       fee: {
         ...payload.authInfo.fee,
         gas: payload.authInfo.fee.gasLimit,
@@ -341,9 +345,27 @@ export const ChatsViewSection = ({
         accountInfo.bech32Address,
         msg
       );
-
+      const verify = checkAndValidateADR36AminoSignDoc(
+        msg,
+        accountInfo.bech32Address
+      );
+      const message = { ...data, message: "Transaction Signed" };
+      await deliverMessages(
+        user.accessToken,
+        current.chainId,
+        message,
+        accountInfo.bech32Address,
+        targetAddress
+      );
       console.log("Signed Data", data);
     } catch (_) {
+      await deliverMessages(
+        user.accessToken,
+        current.chainId,
+        "/cancel",
+        accountInfo.bech32Address,
+        targetAddress
+      );
     } finally {
       history.goBack();
     }
@@ -418,8 +440,8 @@ export const ChatsViewSection = ({
             onChange={(event) => {
               if (
                 event.target.value.length &&
-                COMMANDS.find((command: string) =>
-                  command.includes(event.target.value)
+                AGENT_COMMANDS.find((command: any) =>
+                  command.command.includes(event.target.value)
                 )
               ) {
                 setIsCommand(true);
@@ -428,7 +450,7 @@ export const ChatsViewSection = ({
                 setIsCommand(false);
                 setShowCommandDropdown(false);
               }
-              setNewMessage(event.target.value.substring(0, 499));
+              setNewMessage(event.target.value.substring(0, 100));
             }}
             onKeyDown={handleKeydown}
           />

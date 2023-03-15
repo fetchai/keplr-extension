@@ -1,8 +1,7 @@
 import React from "react";
+import { AGENT_COMMANDS } from "../../config.ui.var";
 import style from "./style.module.scss";
-import sendTokenIcon from "@assets/icon/send-token.png";
-import claimTokenIcon from "@assets/icon/claim-token.png";
-import autoCompoundIcon from "@assets/icon/auto-compound.png";
+
 export const AgentActionsDropdown = ({
   showDropdown,
   handleClick,
@@ -14,26 +13,16 @@ export const AgentActionsDropdown = ({
     <>
       {showDropdown && (
         <div className={style.dropdown}>
-          <CommandOption
-            title={"Transfer FET"}
-            icon={sendTokenIcon}
-            handleClick={() => handleClick("/transferFET")}
-          />
-          <CommandOption
-            title={"Send Token"}
-            icon={sendTokenIcon}
-            handleClick={() => handleClick("/sendToken")}
-          />
-          <CommandOption
-            title={"Auto-Compound Rewards"}
-            icon={autoCompoundIcon}
-            handleClick={() => handleClick("/autoCompound")}
-          />
-          <CommandOption
-            title={"Claim Token"}
-            icon={claimTokenIcon}
-            handleClick={() => handleClick("/claimToken")}
-          />
+          {AGENT_COMMANDS.filter((command) => command.enabled).map(
+            (command) => (
+              <CommandOption
+                key={command.command}
+                title={command.label}
+                icon={command.icon}
+                handleClick={() => handleClick(command.command)}
+              />
+            )
+          )}
         </div>
       )}
     </>
