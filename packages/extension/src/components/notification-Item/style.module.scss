@@ -2,6 +2,10 @@
   border-top: 1px solid #f2f3f6;
   padding: 16px;
   cursor: pointer;
+
+  &:hover {
+    background: #f2f6fd;
+  }
   .notificationLink {
     text-decoration: none;
     color: inherit;
@@ -50,6 +54,11 @@
           saturate(3602%) hue-rotate(135deg) brightness(96%) contrast(88%);
       }
     }
+  }
+
+  .notificationTitle {
+    font-weight: 600;
+    margin: 8px 0 0;
   }
 
   .notificationMsg {

@@ -12,20 +12,24 @@ import {
 } from "@utils/fetch-notification";
 import { useStore } from "../../stores";
 import {
+  NotificationSetup,
   NotyphiNotification,
   NotyphiNotifications,
   NotyphiOrganisation,
 } from "@notificationTypes";
 import { store } from "@chatStore/index";
-import { setNotifications } from "@chatStore/user-slice";
+import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
+import { useSelector } from "react-redux";
 interface NotificationPayload {
   modalType: NotificationModalType;
   notificationList?: NotyphiNotification[];
-  heading: string;
+  heading?: string;
   paragraph?: string;
   showSetting?: boolean;
   buttonLabel?: string;
   headingColor?: string;
+  image?: string;
+  subHeading?: string;
 }
 
 export enum NotificationModalType {
@@ -43,6 +47,8 @@ export const NotificationModal = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const [isLoading, setIsLoading] = useState(true);
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+
   const [
     notificationPayload,
     setNotificationPayload,
@@ -55,6 +61,15 @@ export const NotificationModal = () => {
   const handleClick = () => {
     if (notificationPayload?.modalType === NotificationModalType.initial) {
       history.push("notification/organizations/add");
+    } else if (
+      notificationPayload?.modalType === NotificationModalType.notificationOff
+    ) {
+      /// Upadating the notification feature flag in db
+      localStorage.setItem("turnNotifications", "true");
+      setIsLoading(true);
+      // setNotificationPayloadHelper([])
+      /// Turning on the notification feature
+      store.dispatch(setNotifications({ isNotificationOn: true }));
     }
   };
 
@@ -64,9 +79,10 @@ export const NotificationModal = () => {
     if (notifications.length === 0) {
       setNotificationPayload({
         modalType: NotificationModalType.empty,
-        heading: "No new notifications.",
+        subHeading: "No new notifications.",
         paragraph: "Add more topics or organisations in Settings",
         showSetting: true,
+        image: "no-notification-icon.svg",
       });
     } else {
       setNotificationPayload({
@@ -74,6 +90,24 @@ export const NotificationModal = () => {
         notificationList: Object.values(notifications),
         heading: "",
       });
+    }
+
+    /// Updating the notification dot status in redux
+    if (notificationInfo.unreadNotification && notifications.length === 0) {
+      store.dispatch(
+        setNotifications({
+          unreadNotification: false,
+        })
+      );
+    } else if (
+      !notificationInfo.unreadNotification &&
+      notifications.length > 0
+    ) {
+      store.dispatch(
+        setNotifications({
+          unreadNotification: true,
+        })
+      );
     }
   };
 
@@ -107,6 +141,19 @@ export const NotificationModal = () => {
   };
 
   useEffect(() => {
+    /// Notification feature is turn on/off
+    if (!notificationInfo.isNotificationOn) {
+      setIsLoading(false);
+      setNotificationPayload({
+        modalType: NotificationModalType.notificationOff,
+        heading: "",
+        subHeading: "Notifications turned off",
+        buttonLabel: "Turn on Notifications",
+        image: "turn-off-notification-icon.svg",
+      });
+      return;
+    }
+
     fetchFollowedOrganisations(accountInfo.bech32Address).then(
       (followOrganisationList: NotyphiOrganisation[]) => {
         store.dispatch(
@@ -119,18 +166,19 @@ export const NotificationModal = () => {
           setIsLoading(false);
           setNotificationPayload({
             modalType: NotificationModalType.initial,
-            heading: "We've just added Notificatsions!",
+            heading: "We’ve just added Notifications!",
             paragraph:
               "Now you can get the latest news from your favourite organisations.",
             buttonLabel: "Get started",
             headingColor: "#3b82f6",
+            image: "initial-bell-icon.svg",
           });
         } else {
           fetchNotifications();
         }
       }
     );
-  }, [accountInfo.bech32Address]);
+  }, [accountInfo.bech32Address, notificationInfo.isNotificationOn]);
 
   const onCrossClick = (deliveryId: string) => {
     markDeliveryAsRead(deliveryId, accountInfo.bech32Address).finally(() => {
@@ -230,13 +278,24 @@ export const NotificationModal = () => {
           )}
 
           <div className={style.notifyContainer}>
-            <div className={style.greyCircle} />
+            <div className={style.greyCircle}>
+              {notificationPayload.image && (
+                <img
+                  src={require("@assets/svg/" + notificationPayload.image)}
+                />
+              )}
+            </div>
             <p
               className={style.notifyHeading}
               style={{ color: notificationPayload.headingColor }}
             >
               {notificationPayload.heading}
             </p>
+            {notificationPayload.subHeading && (
+              <p className={style.notifySubHeading}>
+                {notificationPayload.subHeading}
+              </p>
+            )}
             {notificationPayload.paragraph && (
               <p className={style.notifyDescription}>
                 {notificationPayload.paragraph}

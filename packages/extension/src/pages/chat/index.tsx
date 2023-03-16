@@ -238,7 +238,6 @@ const ChatView = () => {
           showNotifications={showNotifications}
         />
       }
-      setShowNotifications={setShowNotifications}
       showNotifications={showNotifications}
     >
       <ChatErrorPopup />

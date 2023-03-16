@@ -9,6 +9,7 @@ export interface WalletConfig {
 
 const initialState = {
   notifications: {
+    unreadNotification: false,
     isNotificationOn: true,
     organisations: {},
   } as NotificationSetup,
@@ -32,7 +33,7 @@ export const userSlice = createSlice({
   reducers: {
     resetUser: (_state, _action) => initialState,
     setNotifications: (state, action) => {
-      state.notifications = action.payload;
+      state.notifications = { ...state.notifications, ...action.payload };
     },
     setMessagingPubKey: (state, action) => {
       state.messagingPubKey = action.payload;

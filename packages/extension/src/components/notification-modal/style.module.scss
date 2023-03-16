@@ -82,7 +82,7 @@
         margin-bottom: 0;
         height: 179px;
         width: 179px;
-        background: #d9d9d9;
+
         border-radius: 50%;
       }
 
@@ -103,6 +103,14 @@
         margin: 0 auto 16px;
         width: 296px;
         text-align: center;
+        color: #525f7f;
+      }
+      .notifySubHeading {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+        text-align: center;
+        margin-top: 16px;
         color: #525f7f;
       }
 

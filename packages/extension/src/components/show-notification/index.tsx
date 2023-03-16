@@ -1,6 +1,11 @@
-import React from "react";
+import { store } from "@chatStore/index";
+import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
+import { NotificationSetup } from "@notificationTypes";
+import React, { useEffect } from "react";
+import style from "./style.module.scss";
 import { FunctionComponent } from "react";
-import { useStore } from "../../stores/index";
+import { useSelector } from "react-redux";
+import { useStore } from "../../stores";
 
 interface Props {
   setShowNotifications: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,31 +27,45 @@ export const ShowNotification: FunctionComponent<Props> = (props) => {
   const current = chainStore.current;
 
   const accountInfo = accountStore.getAccount(current.chainId);
-  const walletAddress = accountInfo.bech32Address;
-  const showIcon = whiteListedUsers.indexOf(walletAddress) !== -1;
+  const showIcon = whiteListedUsers.indexOf(accountInfo.bech32Address) !== -1;
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+
+  useEffect(() => {
+    const notificationFlag =
+      localStorage.getItem("turnNotifications") || "true";
+    const localNotifications = JSON.parse(
+      localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
+        JSON.stringify([])
+    );
+    /// Updating the notification status in redux
+    store.dispatch(
+      setNotifications({
+        unreadNotification: localNotifications.length > 0,
+        isNotificationOn: notificationFlag == "true",
+      })
+    );
+  }, [accountInfo.bech32Address]);
 
   return showIcon ? (
-    <div
-      style={{
-        height: "64px",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
+    <div className={style.main}>
       <div
-        style={{ width: "16px", cursor: "pointer", margin: "0 2.5vw" }}
+        className={style.imgDiv}
         onClick={(e) => {
           e.preventDefault();
 
           props.setShowNotifications(!props.showNotifications);
         }}
       >
-        <img
-          draggable={false}
-          src={require("@assets/svg/bell-icon.svg")}
-          style={{ width: "100%" }}
-        />
+        {notificationInfo.isNotificationOn ? (
+          <div>
+            {notificationInfo.unreadNotification && (
+              <span className={style.bellDot} />
+            )}
+            <i className="fa fa-bell" />
+          </div>
+        ) : (
+          <i className="fa fa-bell-slash" />
+        )}
       </div>
     </div>
   ) : (

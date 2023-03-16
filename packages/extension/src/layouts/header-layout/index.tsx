@@ -12,7 +12,6 @@ import { NotificationModal } from "@components/notification-modal/index";
 export interface Props extends HeaderProps {
   style?: CSSProperties;
   showBottomMenu?: boolean;
-  setShowNotifications?: React.Dispatch<React.SetStateAction<boolean>>;
   showNotifications?: boolean;
 }
 

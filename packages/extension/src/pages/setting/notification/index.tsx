@@ -4,10 +4,11 @@ import { useHistory } from "react-router";
 import style from "./style.module.scss";
 import { NotificationOption } from "../../../components/notification-option/notification-option";
 import { PageButton } from "../page-button";
-import { notificationsDetails } from "@chatStore/user-slice";
+import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { NotificationSetup } from "@notificationTypes";
 import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
+import { store } from "@chatStore/index";
 
 export const SettingNotifications: FunctionComponent = () => {
   const history = useHistory();
@@ -16,11 +17,28 @@ export const SettingNotifications: FunctionComponent = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+
   const topicInfo = JSON.parse(
     localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
       JSON.stringify([])
   );
 
+  const handleOnChange = () => {
+    localStorage.setItem(
+      "turnNotifications",
+      notificationInfo.isNotificationOn ? "false" : "true"
+    );
+    /// Updating the notification status in redux
+    store.dispatch(
+      setNotifications({
+        isNotificationOn: !notificationInfo.isNotificationOn,
+      })
+    );
+  };
+  const icon = useMemo(
+    () => [<i key="next" className="fas fa-chevron-right" />],
+    []
+  );
   return (
     <HeaderLayout
       showChainName={false}
@@ -33,39 +51,48 @@ export const SettingNotifications: FunctionComponent = () => {
     >
       <div className={style.notificationSettingContainer}>
         <div className={style.notificationOptionMainContainer}>
-          <NotificationOption name="Receive notifications" />
+          <NotificationOption
+            name="Receive notifications"
+            isChecked={notificationInfo.isNotificationOn}
+            handleOnChange={handleOnChange}
+          />
+          {!notificationInfo.isNotificationOn && (
+            <p className={style.notificationOffMsg}>
+              You are not receiving notifications
+            </p>
+          )}
         </div>
 
-        <PageButton
-          title="Organisations"
-          paragraph={`Following ${
-            Object.values(notificationInfo.organisations).length
-          } organisation`}
-          icons={useMemo(
-            () => [<i key="next" className="fas fa-chevron-right" />],
-            []
-          )}
-          onClick={() => {
-            history.push("/notification/organizations/edit");
-          }}
-        />
+        {notificationInfo.isNotificationOn ? (
+          <>
+            <PageButton
+              title="Organisations"
+              paragraph={`Following ${
+                Object.values(notificationInfo.organisations).length
+              } organisation`}
+              icons={icon}
+              onClick={() => {
+                history.push("/notification/organizations/edit");
+              }}
+            />
 
-        <PageButton
-          title="Topics"
-          paragraph={`${topicInfo.length} topics followed`}
-          icons={useMemo(
-            () => [<i key="next" className="fas fa-chevron-right" />],
-            []
-          )}
-          onClick={() => {
-            history.push({
-              pathname: "/notification/topics/edit",
-              state: {
-                isUpdating: true,
-              },
-            });
-          }}
-        />
+            <PageButton
+              title="Topics"
+              paragraph={`${topicInfo.length} topics followed`}
+              icons={icon}
+              onClick={() => {
+                history.push({
+                  pathname: "/notification/topics/edit",
+                  state: {
+                    isUpdating: true,
+                  },
+                });
+              }}
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </HeaderLayout>
   );

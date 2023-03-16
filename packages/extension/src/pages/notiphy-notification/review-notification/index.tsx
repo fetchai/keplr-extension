@@ -48,7 +48,9 @@ export const ReviewNotification: FunctionComponent = () => {
         <p className={style.reviewHeading}>
           You just set up your Notifications!
         </p>
-        <div className={style.greyCircle} />
+        <div className={style.greyCircle}>
+          <img src={require("@assets/svg/initial-bell-icon.svg")} />
+        </div>
 
         <p className={style.reviewChoice}>Organisations</p>
         <p className={style.reviewOptions}>

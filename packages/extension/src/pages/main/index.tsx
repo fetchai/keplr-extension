@@ -104,7 +104,6 @@ export const MainPage: FunctionComponent = observer(() => {
           showNotifications={showNotifications}
         />
       }
-      setShowNotifications={setShowNotifications}
       showNotifications={showNotifications}
     >
       <BIP44SelectModal />

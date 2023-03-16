@@ -130,7 +130,7 @@ export const NotificationTopics: FunctionComponent = () => {
         )}
 
         <p className={style.selectedTopics}>
-          {selectedTopics.length} topics selected
+          {selectedTopics.length} notification types selected
         </p>
 
         <div className={style.topicButton}>

@@ -77,7 +77,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
             )}
           </div>
 
-          <p className={style.headName}>{elem.title}</p>
+          <p className={style.headName}>{elem.organisation_name}</p>
           <div className={style.notificationIcons}>
             <img
               draggable={false}
@@ -94,6 +94,8 @@ export const NotificationItem: FunctionComponent<Props> = ({
             />
           </div>
         </div>
+
+        <p className={style.notificationTitle}>{elem.title}</p>
 
         <div className={style.notificationMsg}>
           <p>{elem.content}</p>
