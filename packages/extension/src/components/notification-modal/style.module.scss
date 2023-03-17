@@ -1,17 +1,24 @@
+.modalOutsideContainer {
+  z-index: 1000;
+  position: fixed;
+  inset: 0px;
+}
+
 .notificationModal {
   display: flex;
   flex-direction: column;
   padding: 8px 0 0;
-
+  inset: 50% auto auto 50%;
   position: absolute;
   width: 328px;
   min-height: 244px;
   max-height: 80%;
   overflow: visible;
 
-  left: 16px;
+  // left: 16px;
+  left: 13px;
   top: 66px;
-  z-index: 1000;
+
   background: #ffffff;
   border-radius: 4px;
   border: 1px solid #e5e7e6;
@@ -33,7 +40,7 @@
     &::before {
       content: " ";
       position: absolute;
-      right: 25px;
+      right: 22px;
       top: -13px;
       border-top: none;
       border-right: 12px solid transparent;
@@ -62,6 +69,14 @@
           display: inline;
           font-weight: 400;
         }
+
+        &:hover {
+          color: #3b82f6;
+          img {
+            filter: invert(44%) sepia(82%) saturate(2717%) hue-rotate(202deg)
+              brightness(100%) contrast(94%);
+          }
+        }
       }
     }
 
@@ -70,8 +85,12 @@
       display: flex;
       justify-content: flex-end;
       padding: 0;
+      margin-left: auto;
       margin-right: 16px;
       font-weight: 400;
+      &:hover {
+        color: #3b82f6;
+      }
     }
 
     .notifyContainer {

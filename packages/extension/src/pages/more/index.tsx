@@ -23,6 +23,7 @@ export const MorePage: FunctionComponent = () => {
         />
       }
       showNotifications={showNotifications}
+      setShowNotifications={setShowNotifications}
     >
       <Card className={classnames(style.card, "shadow")}>
         <CardBody>

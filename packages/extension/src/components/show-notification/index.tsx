@@ -32,7 +32,8 @@ export const ShowNotification: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     const notificationFlag =
-      localStorage.getItem("turnNotifications") || "true";
+      localStorage.getItem(`turnNotifications-${accountInfo.bech32Address}`) ||
+      "true";
     const localNotifications = JSON.parse(
       localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
         JSON.stringify([])

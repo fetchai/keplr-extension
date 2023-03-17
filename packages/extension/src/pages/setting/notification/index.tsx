@@ -23,9 +23,13 @@ export const SettingNotifications: FunctionComponent = () => {
       JSON.stringify([])
   );
 
+  const topicSuffix = topicInfo.length > 1 ? "s" : "";
+  const orgInfo = Object.values(notificationInfo.organisations);
+  const orgSuffix = orgInfo.length > 1 ? "s" : "";
+
   const handleOnChange = () => {
     localStorage.setItem(
-      "turnNotifications",
+      `turnNotifications-${accountInfo.bech32Address}`,
       notificationInfo.isNotificationOn ? "false" : "true"
     );
     /// Updating the notification status in redux
@@ -35,6 +39,7 @@ export const SettingNotifications: FunctionComponent = () => {
       })
     );
   };
+
   const icon = useMemo(
     () => [<i key="next" className="fas fa-chevron-right" />],
     []
@@ -67,9 +72,7 @@ export const SettingNotifications: FunctionComponent = () => {
           <>
             <PageButton
               title="Organisations"
-              paragraph={`Following ${
-                Object.values(notificationInfo.organisations).length
-              } organisation`}
+              paragraph={`${orgInfo.length} organisation${orgSuffix} followed`}
               icons={icon}
               onClick={() => {
                 history.push("/notification/organizations/edit");
@@ -78,7 +81,7 @@ export const SettingNotifications: FunctionComponent = () => {
 
             <PageButton
               title="Topics"
-              paragraph={`${topicInfo.length} topics followed`}
+              paragraph={`${topicInfo.length} topic${topicSuffix} followed`}
               icons={icon}
               onClick={() => {
                 history.push({

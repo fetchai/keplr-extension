@@ -105,6 +105,7 @@ export const MainPage: FunctionComponent = observer(() => {
         />
       }
       showNotifications={showNotifications}
+      setShowNotifications={setShowNotifications}
     >
       <BIP44SelectModal />
       <Card className={classnames(style.card, "shadow")}>

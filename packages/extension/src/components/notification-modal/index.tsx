@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
-import { NotificationItem } from "@components/notification-Item/index";
+import { NotificationItem } from "@components/notification-messages/notification-item/index";
 import { PoweredByNote } from "./powered-by-note/powered-by-note";
 import {
   fetchAllNotifications,
@@ -39,7 +39,11 @@ export enum NotificationModalType {
   notifications,
 }
 
-export const NotificationModal = () => {
+interface Props {
+  setShowNotifications?: any;
+}
+
+export const NotificationModal: FunctionComponent<Props> = (props) => {
   const history = useHistory();
 
   const { chainStore, accountStore } = useStore();
@@ -65,7 +69,10 @@ export const NotificationModal = () => {
       notificationPayload?.modalType === NotificationModalType.notificationOff
     ) {
       /// Upadating the notification feature flag in db
-      localStorage.setItem("turnNotifications", "true");
+      localStorage.setItem(
+        `turnNotifications-${accountInfo.bech32Address}`,
+        "true"
+      );
       setIsLoading(true);
       // setNotificationPayloadHelper([])
       /// Turning on the notification feature
@@ -79,8 +86,8 @@ export const NotificationModal = () => {
     if (notifications.length === 0) {
       setNotificationPayload({
         modalType: NotificationModalType.empty,
-        subHeading: "No new notifications.",
-        paragraph: "Add more topics or organisations in Settings",
+        subHeading: "No new notifications",
+        paragraph: "Add more topics or organisations in Settings.",
         showSetting: true,
         image: "no-notification-icon.svg",
       });
@@ -281,6 +288,7 @@ export const NotificationModal = () => {
             <div className={style.greyCircle}>
               {notificationPayload.image && (
                 <img
+                  draggable={false}
                   src={require("@assets/svg/" + notificationPayload.image)}
                 />
               )}
@@ -321,8 +329,18 @@ export const NotificationModal = () => {
   }
 
   return (
-    <div className={style.notificationModal}>
-      <div className={style.scrollView}>{decideNotificationView()}</div>
+    <div
+      className={style.modalOutsideContainer}
+      onClick={() => {
+        if (props.setShowNotifications) props.setShowNotifications(false);
+      }}
+    >
+      <div
+        className={style.notificationModal}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={style.scrollView}>{decideNotificationView()}</div>
+      </div>
     </div>
   );
 };

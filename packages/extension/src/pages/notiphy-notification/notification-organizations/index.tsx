@@ -21,6 +21,7 @@ import { NotificationSearchInput } from "@components/notification-search-input";
 import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { store } from "@chatStore/index";
 import { useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 
 const pageOptions = {
   edit: "edit",
@@ -60,6 +61,13 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
           fetchFollowedOrganisations(accountInfo.bech32Address).then(
             (followOrganisationList: NotyphiOrganisation[]) => {
               setSelectedOrg(followOrganisationList);
+
+              /// Updating followed orgs in redux
+              store.dispatch(
+                setNotifications({
+                  organisations: followOrganisationList,
+                })
+              );
             }
           );
         } else {
@@ -146,7 +154,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       }}
     >
       <div className={style.heading}>
-        Select atleast one organization you want notifications from:
+        <FormattedMessage id="notification.organisation.header-message" />
       </div>
       <NotificationSearchInput
         handleSearch={handleSearch}
@@ -186,7 +194,12 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         <Button
           className={style.button}
           color="primary"
-          disabled={selectedOrg.length == 0}
+          disabled={
+            selectedOrg.length == 0 ||
+            Object.values(notificationInfo.organisations).length ===
+              selectedOrg.length
+            /// Followed === selected
+          }
           onClick={handleNextPage}
         >
           {isBtnLoading ? (

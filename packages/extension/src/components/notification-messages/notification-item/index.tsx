@@ -5,7 +5,8 @@ import style from "./style.module.scss";
 import ReactHtmlParser from "react-html-parser";
 import jazzicon from "@metamask/jazzicon";
 import { markDeliveryAsClicked } from "@utils/fetch-notification";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
+import { FormattedMessage } from "react-intl";
 interface Props {
   elem: NotyphiNotification;
   onCrossClick: (deliveryId: string) => void;
@@ -108,7 +109,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
       {flag && (
         <div className={style.flagged}>
           <p className={style.flaggedText}>
-            Thanks for flagging this. We&apos;ll take a look at it
+            <FormattedMessage id="notification.item.flag-message" />
           </p>
         </div>
       )}

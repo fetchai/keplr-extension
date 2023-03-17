@@ -13,6 +13,7 @@ export interface Props extends HeaderProps {
   style?: CSSProperties;
   showBottomMenu?: boolean;
   showNotifications?: boolean;
+  setShowNotifications?: any;
 }
 
 export const HeaderLayout: FunctionComponent<Props> = (props) => {
@@ -39,7 +40,11 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
 
         {(props.showBottomMenu ?? true) && <BottomNav />}
 
-        {props.showNotifications && <NotificationModal />}
+        {props.showNotifications && props.setShowNotifications && (
+          <NotificationModal
+            setShowNotifications={props.setShowNotifications}
+          />
+        )}
       </div>
     </MenuProvider>
   );

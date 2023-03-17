@@ -7,12 +7,14 @@ import {
 } from "@notificationTypes";
 
 import { useStore } from "../../../stores";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { useHistory } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
+import { FormattedMessage } from "react-intl";
+import { ToolTip } from "@components/tooltip";
 export const ReviewNotification: FunctionComponent = () => {
   const history = useHistory();
   const { chainStore, accountStore } = useStore();
@@ -25,6 +27,9 @@ export const ReviewNotification: FunctionComponent = () => {
     localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
       JSON.stringify([])
   );
+  const topicStr = useRef<string>(
+    topics.map((item: NotyphiTopic) => item.name).join(", ")
+  );
 
   useEffect(() => {
     const data = Object.values(notificationInfo.organisations)
@@ -34,34 +39,53 @@ export const ReviewNotification: FunctionComponent = () => {
     setOriganisations(data);
   }, [notificationInfo.organisations]);
 
+  const onBackClick = () => {
+    history.go(-3);
+  };
+
   return (
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle={"Notifications"}
       showBottomMenu={false}
-      onBackButton={() => {
-        history.goBack();
-      }}
+      onBackButton={onBackClick}
     >
       <div className={style.reviewContainer}>
         <p className={style.reviewHeading}>
-          You just set up your Notifications!
+          <FormattedMessage id="notification.review.header-message" />
         </p>
         <div className={style.greyCircle}>
           <img src={require("@assets/svg/initial-bell-icon.svg")} />
         </div>
 
         <p className={style.reviewChoice}>Organisations</p>
-        <p className={style.reviewOptions}>
-          <span>{organisations}</span>
-        </p>
+        <ToolTip
+          tooltip={organisations}
+          theme="dark"
+          trigger="hover"
+          options={{
+            placement: "top-end",
+          }}
+        >
+          <p className={style.reviewOptions}>
+            <span>{organisations}</span>
+          </p>
+        </ToolTip>
         {Object.values(topics).length > 0 && (
           <p className={style.reviewChoice}>Topics</p>
         )}
-        <p className={style.reviewOptions}>
-          {topics.map((item: NotyphiTopic) => item.name).join(", ")}
-        </p>
+
+        <ToolTip
+          tooltip={topicStr.current}
+          theme="dark"
+          trigger="hover"
+          options={{
+            placement: "top-end",
+          }}
+        >
+          <p className={style.reviewOptions}>{topicStr.current}</p>
+        </ToolTip>
         <p className={style.reviewNote}>
           These can be changed at any time from the settings menu.
         </p>
@@ -76,7 +100,7 @@ export const ReviewNotification: FunctionComponent = () => {
           <Button
             className={style.button}
             color="primary"
-            onClick={() => history.go(-3)}
+            onClick={onBackClick}
           >
             Back Home
           </Button>

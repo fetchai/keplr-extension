@@ -239,6 +239,7 @@ const ChatView = () => {
         />
       }
       showNotifications={showNotifications}
+      setShowNotifications={setShowNotifications}
     >
       <ChatErrorPopup />
       <div className={style.chatContainer}>

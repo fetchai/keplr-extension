@@ -2,13 +2,14 @@ import { NotificationSearchInput } from "@components/notification-search-input";
 import { Chip } from "@components/select-notifications/topic-chip";
 import { HeaderLayout } from "@layouts/header-layout";
 import { fetchTopics } from "@utils/fetch-notification";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { NotyphiTopic } from "@notificationTypes";
 import { useStore } from "../../../stores";
 
 import { useHistory, useParams } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
+import { FormattedMessage } from "react-intl";
 
 const pageOptions = {
   edit: "edit",
@@ -24,11 +25,15 @@ export const NotificationTopics: FunctionComponent = () => {
 
   const [topicsList, setTopicsList] = useState<NotyphiTopic[]>([]);
   const [mainTopicsList, setMainTopicsList] = useState<NotyphiTopic[]>([]);
-  const [selectedTopics, setSelectedTopics] = useState<NotyphiTopic[]>(
+  const followUnfollowTopicsObj = useRef<NotyphiTopic[]>(
     JSON.parse(
       localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
         JSON.stringify([])
     )
+  );
+
+  const [selectedTopics, setSelectedTopics] = useState<NotyphiTopic[]>(
+    followUnfollowTopicsObj.current
   );
 
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +98,7 @@ export const NotificationTopics: FunctionComponent = () => {
     >
       <div className={style.topicsContainer}>
         <div className={style.heading}>
-          Select the topics you are interested in receiving notifications for
+          <FormattedMessage id="notification.topic.header-message" />
         </div>
         <NotificationSearchInput
           inputVal={inputVal}
@@ -139,9 +144,8 @@ export const NotificationTopics: FunctionComponent = () => {
             color="primary"
             onClick={handleNextPage}
             disabled={
-              !selectedTopics.length && !topicsList.length && inputVal.length
-                ? true
-                : false
+              type === pageOptions.edit &&
+              followUnfollowTopicsObj.current.length === selectedTopics.length
             }
           >
             {type === pageOptions.add
