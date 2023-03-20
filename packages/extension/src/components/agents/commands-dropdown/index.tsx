@@ -1,8 +1,8 @@
 import React from "react";
-import { AGENT_COMMANDS } from "../../config.ui.var";
+import { AGENT_COMMANDS } from "../../../config.ui.var";
 import style from "./style.module.scss";
 
-export const AgentActionsDropdown = ({
+export const CommandsDropdown = ({
   showDropdown,
   handleClick,
 }: {
