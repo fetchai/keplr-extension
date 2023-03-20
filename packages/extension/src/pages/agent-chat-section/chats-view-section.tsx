@@ -16,8 +16,8 @@ import { ToolTip } from "@components/tooltip";
 import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
-import { checkAndValidateADR36AminoSignDoc } from "@keplr-wallet/cosmos";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
+import { signTransaction } from "@utils/sign-transaction";
 import React, {
   createRef,
   useCallback,
@@ -150,7 +150,7 @@ export const ChatsViewSection = ({
     /// Shallow copy
     /// Decrypting sender data
     const senderAddress = {
-      ...group.addresses.find((val) => val.address !== targetAddress),
+      ...group.addresses?.find((val) => val.address !== targetAddress),
     };
     if (senderAddress)
       tempSenderAddress = await decryptGrpAddresses(
@@ -160,7 +160,7 @@ export const ChatsViewSection = ({
 
     /// Decrypting receiver data
     const receiverAddress = {
-      ...group.addresses.find((val) => val.address === targetAddress),
+      ...group.addresses?.find((val) => val.address === targetAddress),
     };
     if (receiverAddress)
       tempReceiverAddress = await decryptGrpAddresses(
@@ -183,7 +183,7 @@ export const ChatsViewSection = ({
         group.id.includes(targetAddress)
       ),
     };
-    decryptGrp(tempGroup as Group);
+    if (tempGroup) decryptGrp(tempGroup as Group);
   }, [userAgents]);
 
   const messagesEndRef: any = useCallback(
@@ -322,43 +322,22 @@ export const ChatsViewSection = ({
   };
 
   const signTxn = async (data: string) => {
-    const payload = JSON.parse(data);
-    const current = chainStore.current;
-    const accountInfo = accountStore.getAccount(current.chainId);
-
-    const msg = {
-      chain_id: current.chainId,
-      account_number: payload.account_number,
-      msgs: payload.body.messages,
-      sequence: payload.sequence,
-      fee: {
-        ...payload.authInfo.fee,
-        gas: payload.authInfo.fee.gasLimit,
-      },
-      memo: "",
-    };
-
     try {
-      //sendTx
-      const data = await window?.keplr?.signAmino(
+      const signedMessage = await signTransaction(
+        data,
         current.chainId,
-        accountInfo.bech32Address,
-        msg
-      );
-      const verify = checkAndValidateADR36AminoSignDoc(
-        msg,
         accountInfo.bech32Address
       );
-      const message = { ...data, message: "Transaction Signed" };
+
       await deliverMessages(
         user.accessToken,
         current.chainId,
-        message,
+        signedMessage,
         accountInfo.bech32Address,
         targetAddress
       );
-      console.log("Signed Data", data);
-    } catch (_) {
+    } catch (e) {
+      console.log(e);
       await deliverMessages(
         user.accessToken,
         current.chainId,
