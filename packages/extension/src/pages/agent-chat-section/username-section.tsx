@@ -43,6 +43,7 @@ export const UserNameSection = () => {
             history.goBack();
           }}
         />
+        <img src={require("@assets/svg/fetchbot.svg")} width="25px" />
         <span className={style.recieverName}>
           <ToolTip
             tooltip={

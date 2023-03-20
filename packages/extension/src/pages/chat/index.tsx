@@ -43,6 +43,7 @@ import { Menu } from "../main/menu";
 import { AgentsHistory } from "./agent-history";
 import { GroupsHistory } from "./group-history";
 import style from "./style.module.scss";
+import { ToolTip } from "@components/tooltip";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -259,15 +260,27 @@ const ChatView = () => {
           >
             People
           </div>
+
           <div
             className={style.chatTab}
             style={{
               borderBottom: selectedTab == 2 ? "2px solid #3B82F6" : "",
               color: selectedTab == 2 ? "#3B82F6" : "#000000",
             }}
-            onClick={() => setSelectedTab(2)}
+            onClick={() => (userState?.isAgentActive ? setSelectedTab(2) : {})}
           >
-            Agent
+            {userState?.isAgentActive ? (
+              "Agent"
+            ) : (
+              <ToolTip
+                trigger="hover"
+                show={userState?.isAgentActive}
+                options={{ placement: "bottom" }}
+                tooltip={<div>Agent Chats are currently Deactivated</div>}
+              >
+                Agent
+              </ToolTip>
+            )}
           </div>
         </div>
         {loadingChats ? (

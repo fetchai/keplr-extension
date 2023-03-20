@@ -1,4 +1,3 @@
-import agentIcon from "@assets/icon/agent-icon.png";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { Group, GroupAddress } from "@chatTypes";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
@@ -148,7 +147,7 @@ export const ChatAgent: React.FC<{
           />
         )}
 
-      <img src={agentIcon} width="40px" />
+      <img src={require("@assets/svg/fetchbot.svg")} width="40px" />
 
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>

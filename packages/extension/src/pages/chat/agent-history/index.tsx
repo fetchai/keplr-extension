@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { ChatAgent } from "./chat-agent";
 import style from "../style.module.scss";
-import { AgentInit } from "@components/chat/agent-init";
+import { AgentInit } from "@components/agents/agent-init";
 
 export const AgentsHistory: React.FC<{
   chainId: string;

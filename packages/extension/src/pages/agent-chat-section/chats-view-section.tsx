@@ -9,9 +9,8 @@ import {
 } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
-import { AgentActionsDropdown } from "@components/agent-actions-dropdown";
+import { CommandsDropdown } from "@components/agents/commands-dropdown";
 import { ChatMessage } from "@components/chat-message";
-import { AgentInitPopup } from "@components/chat/agent-init-popup";
 import { ToolTip } from "@components/tooltip";
 import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
@@ -33,6 +32,7 @@ import { InputGroup } from "reactstrap";
 import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -352,7 +352,8 @@ export const ChatsViewSection = ({
 
   return (
     <div className={style.chatArea}>
-      {!loadingMessages && !messages.length && <AgentInitPopup />}
+      <AgentDisclaimer />
+      {/* {!loadingMessages && !messages.length && <AgentDisclaimer />} */}
       <div className={style.messages}>
         {pagination?.lastPage <= pagination?.page && (
           <p>
@@ -368,7 +369,7 @@ export const ChatsViewSection = ({
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}
-        <AgentActionsDropdown
+        <CommandsDropdown
           showDropdown={showCommandDropdown}
           handleClick={handleCommand}
         />
