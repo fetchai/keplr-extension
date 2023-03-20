@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { userChatActive } from "@chatStore/user-slice";
+import { userDetails } from "@chatStore/user-slice";
 import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 import chatTabBlueIcon from "@assets/icon/chat-blue.png";
 import chatTabGreyIcon from "@assets/icon/chat-grey.png";
@@ -55,21 +55,32 @@ const HomeTab = () => <Tab {...bottomNav[0]} />;
 const ActivityTab = () => <Tab {...bottomNav[1]} />;
 const ChatTab = () => {
   const { chainStore } = useStore();
-  const isChatActive = useSelector(userChatActive);
+  const {
+    isChatActive,
+    requiredFET,
+    currentFET,
+    enabledChainIds,
+  } = useSelector(userDetails);
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
   const current = chainStore.current;
 
   useEffect(() => {
-    if (!isChatActive)
+    if (!isChatActive) {
+      setChatTooltip("Chat Feature is currently Disabled");
+      return;
+    }
+    if (!requiredFET > currentFET) {
       setChatTooltip("You need to have FET balance to use this feature");
-
-    if (current?.chainId !== CHAIN_ID_FETCHHUB)
+      return;
+    }
+    if (!enabledChainIds.include(current?.chainId))
       setChatTooltip("Feature not available on this network");
 
     if (process.env.NODE_ENV === "production")
       setChatDisabled(current?.chainId !== CHAIN_ID_FETCHHUB || !isChatActive);
-  }, [current.chainId, isChatActive]);
+  }, [current.chainId, currentFET, enabledChainIds, isChatActive, requiredFET]);
+
   return (
     <Tab
       title={"Chat"}
