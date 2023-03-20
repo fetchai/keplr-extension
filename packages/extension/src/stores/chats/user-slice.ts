@@ -2,7 +2,7 @@ import { NotificationSetup } from "@notificationTypes";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface WalletConfig {
-  notiphyWhitelist: string[];
+  notiphyWhitelist: string[] | undefined;
   fetchbotActive: boolean;
   requiredNative: boolean;
 }
@@ -15,7 +15,7 @@ const initialState = {
   } as NotificationSetup,
   accessToken: "",
   walletConfig: {
-    notiphyWhitelist: [],
+    notiphyWhitelist: undefined,
     fetchbotActive: false,
     requiredNative: true,
   } as WalletConfig,
