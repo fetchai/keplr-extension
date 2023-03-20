@@ -1,18 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
+export interface WalletConfig {
+  notiphyWhitelist: string[];
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
+
 const initialState = {
   notifications: [],
   accessToken: "",
+  walletConfig: {
+    notiphyWhitelist: [],
+    fetchbotActive: false,
+    requiredNative: true,
+  } as WalletConfig,
   messagingPubKey: {
     publicKey: null,
     privacySetting: null,
     chatReadReceiptSetting: true,
   },
   isChatActive: true,
-  isAgentActive: true,
   showAgentDisclaimer: true,
-  requiredFET: 0,
   currentFET: 0,
   enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
 };
@@ -34,17 +43,11 @@ export const userSlice = createSlice({
     setIsChatActive: (state, action) => {
       state.isChatActive = action.payload;
     },
-    setIsAgentActive: (state, action) => {
-      state.isAgentActive = action.payload;
-    },
-    setRequiredFET: (state, action) => {
-      state.requiredFET = action.payload;
-    },
-    setCurrentFET: (state, action) => {
-      state.currentFET = action.payload;
-    },
     setShowAgentDisclaimer: (state, action) => {
       state.showAgentDisclaimer = action.payload;
+    },
+    setWalletConfig: (state, action) => {
+      state.walletConfig = action.payload;
     },
   },
 });
@@ -56,11 +59,12 @@ export const {
   setAccessToken,
   setNotifications,
   setIsChatActive,
-  setCurrentFET,
   setShowAgentDisclaimer,
+  setWalletConfig,
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
 export const userChatActive = (state: { user: any }) => state.user.isChatActive;
+export const walletConfig = (state: { user: any }) => state.user.walletConfig;
 
 export const userStore = userSlice.reducer;
