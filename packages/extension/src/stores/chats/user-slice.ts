@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 const initialState = {
   notifications: [],
@@ -8,7 +9,11 @@ const initialState = {
     privacySetting: null,
     chatReadReceiptSetting: true,
   },
-  isChatActive: false,
+  isChatActive: true,
+  isAgentActive: true,
+  requiredFET: 0,
+  currentFET: 0,
+  enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
 };
 
 export const userSlice = createSlice({
@@ -28,6 +33,15 @@ export const userSlice = createSlice({
     setIsChatActive: (state, action) => {
       state.isChatActive = action.payload;
     },
+    setIsAgentActive: (state, action) => {
+      state.isAgentActive = action.payload;
+    },
+    setRequiredFET: (state, action) => {
+      state.requiredFET = action.payload;
+    },
+    setCurrentFET: (state, action) => {
+      state.currentFET = action.payload;
+    },
   },
 });
 
@@ -38,6 +52,7 @@ export const {
   setAccessToken,
   setNotifications,
   setIsChatActive,
+  setCurrentFET,
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
