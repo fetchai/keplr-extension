@@ -1,7 +1,6 @@
-import privacyIcon from "@assets/hello.png";
 import React from "react";
 import { useHistory } from "react-router";
-import { AGENT_ADDRESS } from "../../config.ui.var";
+import { AGENT_ADDRESS } from "../../../config.ui.var";
 import style from "./style.module.scss";
 
 export const AgentInit = () => {
@@ -10,7 +9,7 @@ export const AgentInit = () => {
 
   return (
     <div className={style.agentContainer}>
-      <img src={privacyIcon} />
+      <img src={require("@assets/svg/fetchbot.svg")} />
       <br />
       <div className={style.infoContainer}>
         <h3>We have just added Agents!</h3>
