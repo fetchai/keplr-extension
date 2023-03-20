@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import style from "./style.module.scss";
+import { useSelector } from "react-redux";
+import { userDetails, setShowAgentDisclaimer } from "@chatStore/user-slice";
+import { store } from "@chatStore/index";
 
 export const AgentDisclaimer = () => {
   // address book values
-  const [openDialog, setIsOpendialog] = useState(true);
+  const userState = useSelector(userDetails);
+  const [openDialog, setIsOpendialog] = useState(userState.showAgentDisclaimer);
 
   return openDialog ? (
     <>
-      <div className={style.overlay} onClick={() => setIsOpendialog(false)} />
+      <div
+        className={style.overlay}
+        onClick={() => {
+          setIsOpendialog(false);
+          store.dispatch(setShowAgentDisclaimer(false));
+        }}
+      />
       <div className={style.popupContainer}>
         <i
           className={"fa fa-times"}
@@ -21,7 +31,10 @@ export const AgentDisclaimer = () => {
             top: "10px",
           }}
           aria-hidden="true"
-          onClick={() => setIsOpendialog(false)}
+          onClick={() => {
+            setIsOpendialog(false);
+            store.dispatch(setShowAgentDisclaimer(false));
+          }}
         />
         <div className={style.infoContainer}>
           <h2 style={{ color: "#3B82F6", margin: "15px", textAlign: "center" }}>
@@ -40,7 +53,13 @@ export const AgentDisclaimer = () => {
             from Fetchbot are still e2e encrypted that even we can read.
           </p>
         </div>
-        <button type="button" onClick={() => setIsOpendialog(false)}>
+        <button
+          type="button"
+          onClick={() => {
+            setIsOpendialog(false);
+            store.dispatch(setShowAgentDisclaimer(false));
+          }}
+        >
           Continue
         </button>
       </div>

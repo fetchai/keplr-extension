@@ -11,6 +11,7 @@ const initialState = {
   },
   isChatActive: true,
   isAgentActive: true,
+  showAgentDisclaimer: true,
   requiredFET: 0,
   currentFET: 0,
   enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
@@ -42,6 +43,9 @@ export const userSlice = createSlice({
     setCurrentFET: (state, action) => {
       state.currentFET = action.payload;
     },
+    setShowAgentDisclaimer: (state, action) => {
+      state.showAgentDisclaimer = action.payload;
+    },
   },
 });
 
@@ -53,6 +57,7 @@ export const {
   setNotifications,
   setIsChatActive,
   setCurrentFET,
+  setShowAgentDisclaimer,
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
