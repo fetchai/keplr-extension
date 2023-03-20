@@ -17,6 +17,7 @@ import { BIP44SelectModal } from "./bip44-select-modal";
 import { Menu } from "./menu";
 import style from "./style.module.scss";
 import { TokensView } from "./token";
+import { ChatDisclaimer } from "@components/chat/chat-disclaimer";
 
 export const MainPage: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -84,6 +85,7 @@ export const MainPage: FunctionComponent = observer(() => {
       rightRenderer={<SwitchUser />}
     >
       <BIP44SelectModal />
+      <ChatDisclaimer />
       <Card className={classnames(style.card, "shadow")}>
         <CardBody>
           <div className={style.containerAccountInner}>
