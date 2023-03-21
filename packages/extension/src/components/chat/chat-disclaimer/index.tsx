@@ -1,22 +1,34 @@
 import privacyIcon from "@assets/hello.png";
-import { userDetails } from "@chatStore/user-slice";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 
 export const ChatDisclaimer = () => {
-  const userState = useSelector(userDetails);
-  const [openDialog, setIsOpendialog] = useState(!userState.accessToken.length);
+  const { chainStore, accountStore } = useStore();
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
+  const [openDialog, setIsOpendialog] = useState(false);
+
+  useEffect(() => {
+    const addresses = localStorage.getItem("fetchChatAnnouncementSeen") || "";
+    if (walletAddress) setIsOpendialog(!addresses.includes(walletAddress));
+  }, [walletAddress]);
+
   const history = useHistory();
-  const handleClick = async () => {
+  const handleClick = async (redirectFlag: boolean) => {
+    const addresses = localStorage.getItem("fetchChatAnnouncementSeen") || "";
+    localStorage.setItem(
+      "fetchChatAnnouncementSeen",
+      addresses + `[${walletAddress}]`
+    );
     setIsOpendialog(false);
-    history.push("/chat");
+    if (redirectFlag) history.push("/chat");
   };
 
   return openDialog ? (
     <>
-      <div className={style.overlay} onClick={() => setIsOpendialog(false)} />
+      <div className={style.overlay} onClick={() => handleClick(false)} />
       <div className={style.popupContainer}>
         <i
           className={"fa fa-times"}
@@ -30,7 +42,7 @@ export const ChatDisclaimer = () => {
             top: "10px",
           }}
           aria-hidden="true"
-          onClick={() => setIsOpendialog(false)}
+          onClick={() => handleClick(false)}
         />
 
         <img draggable={false} src={privacyIcon} />
@@ -42,7 +54,7 @@ export const ChatDisclaimer = () => {
             feature but we have made it free specially for you to play around.
           </p>
         </div>
-        <button type="button" onClick={handleClick}>
+        <button type="button" onClick={() => handleClick(true)}>
           Got To Chat
         </button>
       </div>

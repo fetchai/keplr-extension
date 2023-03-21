@@ -179,7 +179,6 @@ const ChatView = () => {
     if (
       !userState?.messagingPubKey.publicKey &&
       !userState?.messagingPubKey.privacySetting &&
-      !userState?.accessToken.length &&
       !loadingChats &&
       !authFail
     ) {
@@ -267,14 +266,15 @@ const ChatView = () => {
               borderBottom: selectedTab == 2 ? "2px solid #3B82F6" : "",
               color: selectedTab == 2 ? "#3B82F6" : "#000000",
             }}
-            onClick={() => (userState?.isAgentActive ? setSelectedTab(2) : {})}
+            onClick={() =>
+              userState?.walletConfig?.fetchbotActive ? setSelectedTab(2) : {}
+            }
           >
-            {userState?.isAgentActive ? (
+            {userState?.walletConfig?.fetchbotActive ? (
               "Agent"
             ) : (
               <ToolTip
                 trigger="hover"
-                show={userState?.isAgentActive}
                 options={{ placement: "bottom" }}
                 tooltip={<div>Agent Chats are currently Deactivated</div>}
               >

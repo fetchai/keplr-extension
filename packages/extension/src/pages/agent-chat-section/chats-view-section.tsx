@@ -33,6 +33,7 @@ import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
+import loadingChatGif from "@assets/chat-loading.gif";
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -74,7 +75,7 @@ export const ChatsViewSection = ({
   const [isCommand, setIsCommand] = useState(false);
   const [showCommandDropdown, setShowCommandDropdown] = useState(false);
   const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
-
+  const [processingLastMessage, setProcessingLastMessage] = useState(false);
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
@@ -264,6 +265,14 @@ export const ChatsViewSection = ({
     }
   }, [messages, group]);
 
+  useEffect(() => {
+    if (
+      messages.length &&
+      messages[messages.length - 1].sender !== accountInfo.bech32Address
+    )
+      setProcessingLastMessage(false);
+  }, [messages]);
+
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     if (
@@ -296,6 +305,8 @@ export const ChatsViewSection = ({
           setMessages(updatedMessagesList);
           setLastUnreadMesageId("");
           setNewMessage("");
+          setProcessingLastMessage(true);
+          setTimeout(() => setProcessingLastMessage(false), 60000);
         }
         // scrollToBottom();
         recieveGroups(0, accountInfo.bech32Address);
@@ -353,7 +364,6 @@ export const ChatsViewSection = ({
   return (
     <div className={style.chatArea}>
       <AgentDisclaimer />
-      {/* {!loadingMessages && !messages.length && <AgentDisclaimer />} */}
       <div className={style.messages}>
         {pagination?.lastPage <= pagination?.page && (
           <p>
@@ -389,7 +399,9 @@ export const ChatsViewSection = ({
                       ? new Date(receiver.groupLastSeenTimestamp).getTime()
                       : 0
                   }
-                  onClickSignTxn={signTxn}
+                  onClickSignTxn={
+                    messages.length - 1 > index ? undefined : signTxn
+                  }
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
@@ -412,28 +424,37 @@ export const ChatsViewSection = ({
 
       <InputGroup className={style.inputText}>
         {targetPubKey.length ? (
-          <ReactTextareaAutosize
-            maxRows={3}
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            placeholder={"Ask a question or type / for commands"}
-            value={newMessage}
-            onChange={(event) => {
-              if (
-                event.target.value.length &&
-                AGENT_COMMANDS.find((command: any) =>
-                  command.command.includes(event.target.value)
-                )
-              ) {
-                setIsCommand(true);
-                setShowCommandDropdown(true);
-              } else {
-                setIsCommand(false);
-                setShowCommandDropdown(false);
-              }
-              setNewMessage(event.target.value.substring(0, 100));
-            }}
-            onKeyDown={handleKeydown}
-          />
+          processingLastMessage ? (
+            <div
+              style={{ textAlign: "center" }}
+              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+            >
+              Generating Response, Please Wait
+            </div>
+          ) : (
+            <ReactTextareaAutosize
+              maxRows={3}
+              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+              placeholder={"Ask a question or type / for commands"}
+              value={newMessage}
+              onChange={(event) => {
+                if (
+                  event.target.value.length &&
+                  AGENT_COMMANDS.find((command: any) =>
+                    command.command.includes(event.target.value)
+                  )
+                ) {
+                  setIsCommand(true);
+                  setShowCommandDropdown(true);
+                } else {
+                  setIsCommand(false);
+                  setShowCommandDropdown(false);
+                }
+                setNewMessage(event.target.value.substring(0, 100));
+              }}
+              onKeyDown={handleKeydown}
+            />
+          )
         ) : (
           <ToolTip
             trigger="hover"
@@ -456,13 +477,15 @@ export const ChatsViewSection = ({
               draggable="false"
               onClick={handleSendMessage}
             />
-          ) : (
+          ) : !processingLastMessage ? (
             <img
               src={agentCommandIcon}
               alt=""
               draggable="false"
               onClick={() => setShowCommandDropdown(!showCommandDropdown)}
             />
+          ) : (
+            <img src={loadingChatGif} width={20} />
           )}
         </div>
       </InputGroup>

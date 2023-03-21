@@ -12,15 +12,14 @@ const initialState = {
   accessToken: "",
   walletConfig: {
     notiphyWhitelist: [],
-    fetchbotActive: false,
-    requiredNative: true,
+    fetchbotActive: process.env.NODE_ENV !== "production",
+    requiredNative: process.env.NODE_ENV !== "production",
   } as WalletConfig,
   messagingPubKey: {
     publicKey: null,
     privacySetting: null,
     chatReadReceiptSetting: true,
   },
-  isChatActive: true,
   showAgentDisclaimer: true,
   currentFET: 0,
   enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
@@ -40,14 +39,15 @@ export const userSlice = createSlice({
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
-    setIsChatActive: (state, action) => {
-      state.isChatActive = action.payload;
+    setCurrentFET: (state, action) => {
+      state.currentFET = action.payload;
     },
     setShowAgentDisclaimer: (state, action) => {
       state.showAgentDisclaimer = action.payload;
     },
     setWalletConfig: (state, action) => {
-      state.walletConfig = action.payload;
+      if (process.env.NODE_ENV == "production")
+        state.walletConfig = action.payload;
     },
   },
 });
@@ -58,9 +58,9 @@ export const {
   setMessagingPubKey,
   setAccessToken,
   setNotifications,
-  setIsChatActive,
   setShowAgentDisclaimer,
   setWalletConfig,
+  setCurrentFET,
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
