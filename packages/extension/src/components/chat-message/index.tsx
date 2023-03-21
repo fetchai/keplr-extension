@@ -85,7 +85,9 @@ export const ChatMessage = ({
             Please sign your transaction.
             <button
               type="button"
+              disabled={!onClickSignTxn}
               className={style.buttonContainer}
+              style={{ cursor: !onClickSignTxn ? "not-allowed" : "pointer" }}
               onClick={() => {
                 if (onClickSignTxn)
                   onClickSignTxn(decryptedMessage.content.text);

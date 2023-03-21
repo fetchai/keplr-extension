@@ -85,10 +85,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
       fetchBlockList();
       setLoadingChatSettings(false);
     };
-    if (
-      (!userState.accessToken.length || !userState.messagingPubKey.length) &&
-      !loadingChatSettings
-    )
+    if (!userState.messagingPubKey.length && !loadingChatSettings)
       setJWTAndFetchMsgPubKey();
   }, [current.chainId, walletAddress]);
 

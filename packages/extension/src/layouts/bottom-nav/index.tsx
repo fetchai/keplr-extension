@@ -54,23 +54,15 @@ const HomeTab = () => <Tab {...bottomNav[0]} />;
 const ActivityTab = () => <Tab {...bottomNav[1]} />;
 const ChatTab = () => {
   const { chainStore } = useStore();
-  const {
-    isChatActive,
-    requiredFET,
-    currentFET,
-    enabledChainIds,
-  } = useSelector(userDetails);
+  const { walletConfig, currentFET, enabledChainIds } = useSelector(
+    userDetails
+  );
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
   const current = chainStore.current;
 
   useEffect(() => {
-    if (!isChatActive) {
-      setChatTooltip("Chat Feature is currently Disabled");
-      setChatDisabled(true);
-      return;
-    }
-    if (requiredFET && currentFET < 0) {
+    if (walletConfig.requiredNative && currentFET < 0) {
       setChatTooltip("You need to have FET balance to use this feature");
       setChatDisabled(true);
       return;
@@ -80,7 +72,12 @@ const ChatTab = () => {
       setChatDisabled(true);
       return;
     }
-  }, [current.chainId, currentFET, enabledChainIds, isChatActive, requiredFET]);
+  }, [
+    current.chainId,
+    currentFET,
+    enabledChainIds,
+    walletConfig.requiredNative,
+  ]);
 
   return (
     <Tab
