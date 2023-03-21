@@ -1,7 +1,8 @@
 import { cosmos } from "@keplr-wallet/cosmos";
-import { getKeplrFromWindow } from "@keplr-wallet/stores";
+import { AccountWithAll, getKeplrFromWindow } from "@keplr-wallet/stores";
 import ICoin = cosmos.base.v1beta1.ICoin;
 
+//currently not in use
 export const signTransaction = async (
   data: string,
   chainId: string,
@@ -70,4 +71,85 @@ export const signTransaction = async (
     signedTx,
     message: "Transaction Signed",
   };
+};
+
+//currently in use
+export const executeTxn = async (accountInfo: AccountWithAll, payload: any) => {
+  let txnResponse = null;
+  switch (payload.method) {
+    case "sendToken":
+      txnResponse = await sendToken(accountInfo, payload);
+      break;
+    case "claimRewards":
+      txnResponse = await claimRewards(accountInfo, payload);
+      break;
+  }
+  return txnResponse;
+};
+
+export const claimRewards = async (accountInfo: AccountWithAll, data: any) => {
+  const txnResponse = await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
+    data.validatorAddresses,
+    "",
+    {
+      gas: "190000",
+      amount: [
+        {
+          denom: "atestfet",
+          amount: "950000000000000",
+        },
+      ],
+    }
+  );
+  return txnResponse;
+};
+
+export const sendToken = async (accountInfo: AccountWithAll, data: any) => {
+  const txnResponse = await accountInfo.sendToken(
+    data.amount,
+    data.currency,
+    data.recipientAddress,
+    "",
+    {
+      gas: "96000",
+      amount: [
+        {
+          denom: "atestfet",
+          amount: "480000000000000",
+        },
+      ],
+    }
+  );
+  return txnResponse;
+};
+
+//example JSONS
+//transferFET
+export const data1 = {
+  amount: "0.1",
+  method: "sendToken",
+  currency: {
+    coinDenom: "TESTFET",
+    coinMinimalDenom: "atestfet",
+    coinDecimals: 18,
+  },
+  reciepientAddress: "asdfd",
+};
+
+//sendToken
+export const data2 = {
+  amount: "0.1",
+  method: "sendToken",
+  currency: {
+    type: "cw20",
+    contractAddress: "dsfdfgb",
+  },
+  reciepientAddress: "asdfd",
+};
+
+// claimRewards
+export const data3 = {
+  method: "claimRewards",
+  validatorAddresses: [""],
+  memo: "",
 };

@@ -16,7 +16,6 @@ import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
-import { signTransaction } from "@utils/sign-transaction";
 import React, {
   createRef,
   useCallback,
@@ -29,11 +28,17 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { InputGroup } from "reactstrap";
-import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
+import {
+  AGENT_COMMANDS,
+  CHAT_PAGE_COUNT,
+  TRANSACTION_FAILED,
+  TRANSACTION_SUCCEEDED,
+} from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
 import loadingChatGif from "@assets/chat-loading.gif";
+import { executeTxn } from "@utils/sign-transaction";
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -274,6 +279,7 @@ export const ChatsViewSection = ({
   }, [messages]);
 
   const handleSendMessage = async (e: any) => {
+    setShowCommandDropdown(false);
     e.preventDefault();
     if (
       isCommand &&
@@ -324,6 +330,7 @@ export const ChatsViewSection = ({
       enterKeyCount = 1;
       handleSendMessage(e);
     }
+    console.log(newMessage);
   };
 
   const handleCommand = (command: string) => {
@@ -333,17 +340,14 @@ export const ChatsViewSection = ({
   };
 
   const signTxn = async (data: string) => {
+    console.log(JSON.parse(data));
+    const payload = JSON.parse(data);
     try {
-      const signedMessage = await signTransaction(
-        data,
-        current.chainId,
-        accountInfo.bech32Address
-      );
-
+      await executeTxn(accountInfo, payload);
       await deliverMessages(
         user.accessToken,
         current.chainId,
-        signedMessage,
+        { message: TRANSACTION_SUCCEEDED },
         accountInfo.bech32Address,
         targetAddress
       );
@@ -352,7 +356,7 @@ export const ChatsViewSection = ({
       await deliverMessages(
         user.accessToken,
         current.chainId,
-        "/cancel",
+        { message: TRANSACTION_FAILED },
         accountInfo.bech32Address,
         targetAddress
       );

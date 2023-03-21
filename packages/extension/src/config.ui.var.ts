@@ -3,6 +3,7 @@ import { RegisterOption } from "@keplr-wallet/hooks";
 import sendTokenIcon from "@assets/icon/send-token.png";
 import claimTokenIcon from "@assets/icon/claim-token.png";
 import autoCompoundIcon from "@assets/icon/auto-compound.png";
+import closeIcon from "@assets/icon/close-grey.png";
 
 export const PROD_AMPLITUDE_API_KEY =
   process.env["PROD_AMPLITUDE_API_KEY"] || "";
@@ -43,6 +44,8 @@ export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
 
 export const AGENT_ADDRESS =
   "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf";
+// export const AGENT_ADDRESS =
+//   "agent1qdh7x8k7se255j44dmt2yrpnxqdyn9qqt3dvcn4zy3dwq5qthl577v7njct";
 
 export const AGENT_COMMANDS = [
   {
@@ -64,9 +67,18 @@ export const AGENT_COMMANDS = [
     enabled: false,
   },
   {
-    command: "/claimToken",
+    command: "/redeemFET",
     label: "Claim Token",
     icon: claimTokenIcon,
     enabled: true,
   },
+  {
+    command: "/cancel",
+    label: "Cancel Automation",
+    icon: closeIcon,
+    enabled: true,
+  },
 ];
+
+export const TRANSACTION_SUCCEEDED = "Transaction succeeded";
+export const TRANSACTION_FAILED = "Transaction failed";
