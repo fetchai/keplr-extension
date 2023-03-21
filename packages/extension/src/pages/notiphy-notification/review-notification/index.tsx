@@ -22,7 +22,7 @@ export const ReviewNotification: FunctionComponent = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
-  const [organisations, setOriganisations] = useState("");
+  const [organisations, setOrganisations] = useState("");
   const topics: NotyphiTopic[] = JSON.parse(
     localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
       JSON.stringify([])
@@ -36,7 +36,7 @@ export const ReviewNotification: FunctionComponent = () => {
       .map((item: NotyphiOrganisation) => item.name)
       .join(", ");
 
-    setOriganisations(data);
+    setOrganisations(data);
   }, [notificationInfo.organisations]);
 
   const onBackClick = () => {
@@ -60,32 +60,43 @@ export const ReviewNotification: FunctionComponent = () => {
         </div>
 
         <p className={style.reviewChoice}>Organisations</p>
-        <ToolTip
-          tooltip={organisations}
-          theme="dark"
-          trigger="hover"
-          options={{
-            placement: "top-end",
-          }}
-        >
+        {organisations.length > 40 ? (
+          <ToolTip
+            tooltip={organisations}
+            theme="dark"
+            trigger="hover"
+            options={{
+              placement: "top-end",
+            }}
+          >
+            <p className={style.reviewOptions}>
+              <span>{organisations}</span>
+            </p>
+          </ToolTip>
+        ) : (
           <p className={style.reviewOptions}>
             <span>{organisations}</span>
           </p>
-        </ToolTip>
+        )}
+
         {Object.values(topics).length > 0 && (
           <p className={style.reviewChoice}>Topics</p>
         )}
 
-        <ToolTip
-          tooltip={topicStr.current}
-          theme="dark"
-          trigger="hover"
-          options={{
-            placement: "top-end",
-          }}
-        >
+        {topicStr.current.length > 40 ? (
+          <ToolTip
+            tooltip={topicStr.current}
+            theme="dark"
+            trigger="hover"
+            options={{
+              placement: "top-end",
+            }}
+          >
+            <p className={style.reviewOptions}>{topicStr.current}</p>
+          </ToolTip>
+        ) : (
           <p className={style.reviewOptions}>{topicStr.current}</p>
-        </ToolTip>
+        )}
         <p className={style.reviewNote}>
           These can be changed at any time from the settings menu.
         </p>

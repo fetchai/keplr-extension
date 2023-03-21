@@ -35,9 +35,15 @@
     margin-left: 4px;
     font-family: "Nunito Sans";
     font-style: normal;
-    font-weight: 400;
     font-size: 16px;
     line-height: 16px;
     color: #525f7f;
+  }
+  .unselectedName {
+    font-weight: 400;
+  }
+
+  .selectedName {
+    font-weight: 700;
   }
 }

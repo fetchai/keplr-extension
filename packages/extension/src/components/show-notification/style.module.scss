@@ -5,12 +5,19 @@
   align-items: center;
 
   .img-div {
-    width: 16px;
     cursor: pointer;
     margin: 0 2.5vw;
 
     img {
       width: 100%;
+    }
+
+    .bellOn {
+      width: 16px;
+    }
+
+    .bellOff {
+      width: 19px;
     }
   }
 

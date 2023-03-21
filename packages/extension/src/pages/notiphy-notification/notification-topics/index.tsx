@@ -29,7 +29,7 @@ export const NotificationTopics: FunctionComponent = () => {
     JSON.parse(
       localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
         JSON.stringify([])
-    )
+    ).sort((a: any, b: any) => (a.name > b.name ? 1 : -1))
   );
 
   const [selectedTopics, setSelectedTopics] = useState<NotyphiTopic[]>(
@@ -85,6 +85,11 @@ export const NotificationTopics: FunctionComponent = () => {
       );
     }
   };
+
+  selectedTopics.sort((a, b) => (a.name > b.name ? 1 : -1));
+  const disabled =
+    JSON.stringify(selectedTopics) ==
+    JSON.stringify(followUnfollowTopicsObj.current);
 
   return (
     <HeaderLayout
@@ -143,10 +148,7 @@ export const NotificationTopics: FunctionComponent = () => {
             className={style.button}
             color="primary"
             onClick={handleNextPage}
-            disabled={
-              type === pageOptions.edit &&
-              followUnfollowTopicsObj.current.length === selectedTopics.length
-            }
+            disabled={type === pageOptions.edit && disabled}
           >
             {type === pageOptions.add
               ? "Finish"

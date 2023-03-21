@@ -194,12 +194,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         <Button
           className={style.button}
           color="primary"
-          disabled={
-            selectedOrg.length == 0 ||
-            Object.values(notificationInfo.organisations).length ===
-              selectedOrg.length
-            /// Followed === selected
-          }
+          disabled={Object.keys(followUnfollowObj.current).length === 0}
           onClick={handleNextPage}
         >
           {isBtnLoading ? (

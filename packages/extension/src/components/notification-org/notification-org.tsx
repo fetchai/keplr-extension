@@ -3,6 +3,7 @@ import style from "./style.module.scss";
 import ReactHtmlParser from "react-html-parser";
 import jazzicon from "@metamask/jazzicon";
 import { NotyphiOrganisation } from "@notificationTypes";
+import classnames from "classnames";
 
 interface Props {
   elem: NotyphiOrganisation;
@@ -30,7 +31,14 @@ export const NotificationOrg: FunctionComponent<Props> = (props) => {
           ReactHtmlParser(jazzicon(28, elem.id).outerHTML)
         )}
       </div>
-      <p className={style.name}>{elem.name}</p>
+      <p
+        className={classnames(
+          isChecked ? style.selectedName : style.unselectedName,
+          style.name
+        )}
+      >
+        {elem.name}
+      </p>
     </div>
   );
 };

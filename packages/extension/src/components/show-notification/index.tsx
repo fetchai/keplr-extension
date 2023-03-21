@@ -56,14 +56,16 @@ export const ShowNotification: FunctionComponent<Props> = (props) => {
         }}
       >
         {notificationInfo.isNotificationOn ? (
-          <div>
+          <div className={style.bellOn}>
             {notificationInfo.unreadNotification && (
               <span className={style.bellDot} />
             )}
             <i className="fa fa-bell" />
           </div>
         ) : (
-          <i className="fa fa-bell-slash" />
+          <div className={style.bellOff}>
+            <i className="fa fa-bell-slash" />
+          </div>
         )}
       </div>
     </div>

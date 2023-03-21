@@ -12,6 +12,7 @@ const initialState = {
     unreadNotification: false,
     isNotificationOn: true,
     organisations: {},
+    allNotifications: {},
   } as NotificationSetup,
   accessToken: "",
   walletConfig: {

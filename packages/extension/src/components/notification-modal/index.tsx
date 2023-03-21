@@ -5,18 +5,11 @@ import { Button } from "reactstrap";
 import { NotificationItem } from "@components/notification-messages/notification-item/index";
 import { PoweredByNote } from "./powered-by-note/powered-by-note";
 import {
-  fetchAllNotifications,
-  fetchFollowedOrganisations,
   markDeliveryAsRead,
   markDeliveryAsRejected,
 } from "@utils/fetch-notification";
 import { useStore } from "../../stores";
-import {
-  NotificationSetup,
-  NotyphiNotification,
-  NotyphiNotifications,
-  NotyphiOrganisation,
-} from "@notificationTypes";
+import { NotificationSetup, NotyphiNotification } from "@notificationTypes";
 import { store } from "@chatStore/index";
 import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { useSelector } from "react-redux";
@@ -118,35 +111,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
     }
   };
 
-  const fetchNotifications = async () => {
-    const notificationData = await fetchAllNotifications(
-      accountInfo.bech32Address
-    ).finally(() => setIsLoading(false));
-
-    const notifications: NotyphiNotifications = {};
-
-    /// fetch notification from local db
-    const localNotifications: NotyphiNotification[] = JSON.parse(
-      localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ??
-        JSON.stringify([])
-    );
-
-    /// Combining the server and local notifications data
-    notificationData.map((element: NotyphiNotification) => {
-      notifications[element.delivery_id] = element;
-    });
-    localNotifications.map((element) => {
-      notifications[element.delivery_id] = element;
-    });
-
-    localStorage.setItem(
-      `notifications-${accountInfo.bech32Address}`,
-      JSON.stringify(Object.values(notifications))
-    );
-
-    setNotificationPayloadHelper(Object.values(notifications));
-  };
-
   useEffect(() => {
     /// Notification feature is turn on/off
     if (!notificationInfo.isNotificationOn) {
@@ -161,31 +125,28 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
       return;
     }
 
-    fetchFollowedOrganisations(accountInfo.bech32Address).then(
-      (followOrganisationList: NotyphiOrganisation[]) => {
-        store.dispatch(
-          setNotifications({
-            organisations: followOrganisationList,
-          })
-        );
-
-        if (followOrganisationList.length === 0) {
-          setIsLoading(false);
-          setNotificationPayload({
-            modalType: NotificationModalType.initial,
-            heading: "We’ve just added Notifications!",
-            paragraph:
-              "Now you can get the latest news from your favourite organisations.",
-            buttonLabel: "Get started",
-            headingColor: "#3b82f6",
-            image: "initial-bell-icon.svg",
-          });
-        } else {
-          fetchNotifications();
-        }
-      }
-    );
-  }, [accountInfo.bech32Address, notificationInfo.isNotificationOn]);
+    if (notificationInfo.organisations.length === 0) {
+      setIsLoading(false);
+      setNotificationPayload({
+        modalType: NotificationModalType.initial,
+        heading: "We’ve just added Notifications!",
+        paragraph:
+          "Now you can get the latest news from your favourite organisations.",
+        buttonLabel: "Get started",
+        headingColor: "#3b82f6",
+        image: "initial-bell-icon.svg",
+      });
+    } else {
+      setNotificationPayloadHelper(
+        Object.values(notificationInfo.allNotifications)
+      );
+      setIsLoading(false);
+    }
+  }, [
+    accountInfo.bech32Address,
+    notificationInfo.isNotificationOn,
+    notificationInfo.allNotifications,
+  ]);
 
   const onCrossClick = (deliveryId: string) => {
     markDeliveryAsRead(deliveryId, accountInfo.bech32Address).finally(() => {
