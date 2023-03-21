@@ -1,0 +1,165 @@
+@startuml
+
+package router {
+    interface MessageRequester {
+        sendMessage()
+    }
+
+    abstract Router {
+        #msgRegistry
+        #registeredHandler
+        #guards
+        #port
+        +registerMessage()
+        +addHandler()
+        +addGuard()
+        +handleMessage()
+
+        ---
+        Abstract members
+        --
+        +listen()
+        +unlisten()
+    }
+
+    class MessageRegistry {
+        -registeredMsgType
+        +registerMessage()
+        +parseMessage()
+    }
+    Router --o MessageRegistry
+}
+package common {
+    interface KVStore {
+        get<T>()
+        set<T>()
+        prefix()
+    }
+}
+
+package store {
+    class KeyRingStore {
+        +status: KeyRingStatus
+        +multiKeyStoreInfo
+        #requester: MessageRequester
+        +createMnemonicKey()
+        +createPrivateKey()
+        +createLedgerKey()
+        +addMnemonicKey()
+        +addPrivateKey()
+        +addLedgerKey()
+        +changeKeyRing()
+        +lock()
+        +unlock()
+        +deleteKeyRing()
+        +updateNameKeyRing()
+        #restore()
+    }
+}
+
+package router-extension {
+    class InExtensionMessageRequester {
+        +sendMessage()
+    }
+    InExtensionMessageRequester --|> MessageRequester
+    KeyRingStore --o InExtensionMessageRequester
+
+    class ExtensionRouter {
+        +listen()
+        +unlisten()
+        #onMessage()
+        #onMessageHandler()
+    }
+    ExtensionRouter -|> Router
+}
+
+package crypto {
+    interface KeyStore {
+        version: string
+        coinTypeForChain: CoinTypeForChain
+        type
+        bip44HDPath
+        meta
+        crypto
+    }
+
+    interface "KeyStoreCrypto (embedded)" as KeyStoreCrypto {
+        cipher
+        ciphertext
+        kdf
+        mac
+    }
+    KeyStore --* KeyStoreCrypto
+}
+
+package background {
+    class KeyRing {
+        -keystore
+        -multiKeyStore
+    }
+    KeyRing --o "\nkeyStore[]\n\n" KeyStore
+    KeyRing --o KVStore
+
+    class KeyRingService {
+        -keyRing: KeyRing
+
+        +restore()
+        +enable()
+        +deleteKeyRing()
+        +updateNameKeyRing()
+        +showKeyRing()
+        +createMnemonicKey()
+        +createPrivateKey()
+        +createLedgerKey()
+        +lock()
+        +unlock()
+        +getKey()
+        +getKeyStoreMeta()
+        +getKeyRingType()
+        +requestSignAmino()
+        +requestSignDirect()
+        +sign()
+        +addMnemonicKey()
+        +addPrivateKey()
+        +addLedgerKey()
+        +changeKeyStoreFromMultiKeyStore()
+    }
+    KeyRingService "keyRing" --o KeyRing
+
+    interface MultiKeyStoreInfoElem {
+        version
+        coinTypeForChain
+        type
+        bip44HDPath
+        meta
+    }
+    MultiKeyStoreInfoElem --* KeyStore : "Pick<KeyStore, K>\n(where K = members of\nMultiKeyStoreInfoElem)"
+    KeyRingStore -o "many" MultiKeyStoreInfoElem
+}
+
+package extension {
+    class RootStore {
+        +keyRingStore
+    }
+    RootStore --o KeyRingStore
+}
+
+node legend {
+    package "package" {
+        interface "interface" {}
+        abstract "abstract interface" {}
+        class "class" {
+            -private_attribute
+            #protected_attribute
+            +public_attribute
+            -private_method()
+            #protected_method()
+            +public_method()
+
+        }
+        "class" -* "interface" : composition
+        "class" -o "arity" "interface" : aggregation
+        "class" -|> "interface" : interface realization
+    }
+}
+@enduml
