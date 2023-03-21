@@ -1,3 +1,4 @@
+import { ContextProps } from "@components/notification";
 import { cosmos } from "@keplr-wallet/cosmos";
 import { AccountWithAll, getKeplrFromWindow } from "@keplr-wallet/stores";
 import ICoin = cosmos.base.v1beta1.ICoin;
@@ -74,20 +75,28 @@ export const signTransaction = async (
 };
 
 //currently in use
-export const executeTxn = async (accountInfo: AccountWithAll, payload: any) => {
+export const executeTxn = async (
+  accountInfo: AccountWithAll,
+  payload: any,
+  notification: ContextProps
+) => {
   let txnResponse = null;
   switch (payload.method) {
     case "sendToken":
-      txnResponse = await sendToken(accountInfo, payload);
+      txnResponse = await sendToken(accountInfo, payload, notification);
       break;
     case "claimRewards":
-      txnResponse = await claimRewards(accountInfo, payload);
+      txnResponse = await claimRewards(accountInfo, payload, notification);
       break;
   }
   return txnResponse;
 };
 
-export const claimRewards = async (accountInfo: AccountWithAll, data: any) => {
+export const claimRewards = async (
+  accountInfo: AccountWithAll,
+  data: any,
+  notification: ContextProps
+) => {
   const txnResponse = await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
     data.validatorAddresses,
     "",
@@ -99,12 +108,31 @@ export const claimRewards = async (accountInfo: AccountWithAll, data: any) => {
           amount: "950000000000000",
         },
       ],
+    },
+    undefined,
+    {
+      onBroadcasted: (_txHash: Uint8Array) => {
+        notification.push({
+          type: "success",
+          placement: "top-center",
+          duration: 5,
+          content: `Transaction broadcasted`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      },
     }
   );
   return txnResponse;
 };
 
-export const sendToken = async (accountInfo: AccountWithAll, data: any) => {
+export const sendToken = async (
+  accountInfo: AccountWithAll,
+  data: any,
+  notification: ContextProps
+) => {
   const txnResponse = await accountInfo.sendToken(
     data.amount,
     data.currency,
@@ -118,6 +146,21 @@ export const sendToken = async (accountInfo: AccountWithAll, data: any) => {
           amount: "480000000000000",
         },
       ],
+    },
+    undefined,
+    {
+      onBroadcasted: (_txHash: Uint8Array) => {
+        notification.push({
+          type: "success",
+          placement: "top-center",
+          duration: 5,
+          content: `Transaction broadcasted`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      },
     }
   );
   return txnResponse;

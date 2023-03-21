@@ -80,5 +80,6 @@ export const AGENT_COMMANDS = [
   },
 ];
 
-export const TRANSACTION_SUCCEEDED = "Transaction succeeded";
+export const TRANSACTION_APPROVED = "Transaction approved";
+export const TRANSACTION_SENT = "Transaction sent";
 export const TRANSACTION_FAILED = "Transaction failed";

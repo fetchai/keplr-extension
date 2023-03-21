@@ -32,13 +32,14 @@ import {
   AGENT_COMMANDS,
   CHAT_PAGE_COUNT,
   TRANSACTION_FAILED,
-  TRANSACTION_SUCCEEDED,
+  TRANSACTION_APPROVED,
 } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
 import loadingChatGif from "@assets/chat-loading.gif";
 import { executeTxn } from "@utils/sign-transaction";
+import { useNotification } from "@components/notification";
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -84,7 +85,7 @@ export const ChatsViewSection = ({
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
-
+  const notification = useNotification();
   useEffect(() => {
     const updatedMessages = Object.values(preLoadedChats?.messages).sort(
       (a, b) => {
@@ -330,7 +331,6 @@ export const ChatsViewSection = ({
       enterKeyCount = 1;
       handleSendMessage(e);
     }
-    console.log(newMessage);
   };
 
   const handleCommand = (command: string) => {
@@ -343,20 +343,30 @@ export const ChatsViewSection = ({
     console.log(JSON.parse(data));
     const payload = JSON.parse(data);
     try {
-      await executeTxn(accountInfo, payload);
+      await executeTxn(accountInfo, payload, notification);
       await deliverMessages(
         user.accessToken,
         current.chainId,
-        { message: TRANSACTION_SUCCEEDED },
+        TRANSACTION_APPROVED,
         accountInfo.bech32Address,
         targetAddress
       );
     } catch (e) {
       console.log(e);
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: `Fail to withdraw rewards: ${e.message}`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
       await deliverMessages(
         user.accessToken,
         current.chainId,
-        { message: TRANSACTION_FAILED },
+        TRANSACTION_FAILED,
         accountInfo.bech32Address,
         targetAddress
       );
