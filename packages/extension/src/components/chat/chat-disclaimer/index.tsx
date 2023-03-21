@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
+import closeIcon from "@assets/icon/close-grey.png";
 
 export const ChatDisclaimer = () => {
   const { chainStore, accountStore } = useStore();
@@ -30,16 +31,17 @@ export const ChatDisclaimer = () => {
     <>
       <div className={style.overlay} onClick={() => handleClick(false)} />
       <div className={style.popupContainer}>
-        <i
-          className={"fa fa-times"}
+        <img
+          draggable={false}
+          src={closeIcon}
           style={{
-            width: "24px",
-            height: "24px",
+            width: "12px",
+            height: "12px",
             cursor: "pointer",
             position: "absolute",
             float: "right",
-            right: "0px",
-            top: "10px",
+            right: "14px",
+            top: "14px",
           }}
           aria-hidden="true"
           onClick={() => handleClick(false)}

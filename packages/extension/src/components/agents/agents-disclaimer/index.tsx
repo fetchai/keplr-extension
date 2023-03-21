@@ -3,6 +3,7 @@ import style from "./style.module.scss";
 import { useSelector } from "react-redux";
 import { userDetails, setShowAgentDisclaimer } from "@chatStore/user-slice";
 import { store } from "@chatStore/index";
+import closeIcon from "@assets/icon/close-grey.png";
 
 export const AgentDisclaimer = () => {
   // address book values
@@ -19,27 +20,25 @@ export const AgentDisclaimer = () => {
         }}
       />
       <div className={style.popupContainer}>
-        <i
-          className={"fa fa-times"}
+        <img
+          draggable={false}
+          src={closeIcon}
           style={{
-            width: "24px",
-            height: "24px",
+            width: "12px",
+            height: "12px",
             cursor: "pointer",
             position: "absolute",
             float: "right",
-            right: "0px",
-            top: "10px",
+            right: "14px",
+            top: "14px",
           }}
-          aria-hidden="true"
           onClick={() => {
             setIsOpendialog(false);
             store.dispatch(setShowAgentDisclaimer(false));
           }}
         />
         <div className={style.infoContainer}>
-          <h2 style={{ color: "#3B82F6", margin: "15px", textAlign: "center" }}>
-            Fetchbot disclaimer
-          </h2>
+          <h3>Fetchbot disclaimer</h3>
           <p>
             Fetchbot may be powered by GPT3.5 (same model that powers chatGPT)
             but it has its limitations. Some information might be incorrect but

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import style from "./style.module.scss";
 
-export const AgentInitPopup = () => {
+export const AgentInitPopup = ({
+  setIsOpendialog,
+}: {
+  setIsOpendialog: any;
+}) => {
   // address book values
-  const [openDialog, setIsOpendialog] = useState(true);
-
-  return openDialog ? (
+  return (
     <>
       <div className={style.overlay} />
       <div className={style.popupContainer}>
@@ -37,7 +39,5 @@ export const AgentInitPopup = () => {
         </button>
       </div>
     </>
-  ) : (
-    <></>
   );
 };
