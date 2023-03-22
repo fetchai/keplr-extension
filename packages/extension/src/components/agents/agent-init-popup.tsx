@@ -18,7 +18,7 @@ export const AgentInitPopup = ({ handleClose }: { handleClose: any }) => {
               marginBottom: "10px",
             }}
           />
-          <p>You can also...</p>
+          <p>You can also ask me anything about FetchAI</p>
           <img
             src={require("@assets/agent-gpt.svg")}
             style={{

@@ -85,6 +85,7 @@ export const ChatsViewSection = ({
   const [showCommandDropdown, setShowCommandDropdown] = useState(false);
   const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
   const [processingLastMessage, setProcessingLastMessage] = useState(false);
+  const messageInput = useRef<HTMLTextAreaElement>(null);
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
@@ -341,6 +342,7 @@ export const ChatsViewSection = ({
     setIsCommand(true);
     setShowCommandDropdown(false);
     setNewMessage(command);
+    if (messageInput.current) messageInput.current.focus();
   };
 
   const signTxn = async (data: string) => {
@@ -398,6 +400,7 @@ export const ChatsViewSection = ({
             </div>
           )}
         <CommandsDropdown
+          newMessage={newMessage}
           showDropdown={showCommandDropdown}
           handleClick={handleCommand}
         />
@@ -444,13 +447,14 @@ export const ChatsViewSection = ({
         {targetPubKey.length ? (
           processingLastMessage ? (
             <div
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center", color: "grey" }}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
             >
               Generating Response, Please Wait
             </div>
           ) : (
             <ReactTextareaAutosize
+              ref={messageInput}
               maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
               placeholder={"Ask a question or type / for commands"}
@@ -480,6 +484,7 @@ export const ChatsViewSection = ({
             tooltip={<div>The Agent is inactive</div>}
           >
             <ReactTextareaAutosize
+              ref={messageInput}
               maxRows={3}
               className={`${style.inputArea} ${style["send-message-inputArea"]}`}
               placeholder={"Type a new message..."}

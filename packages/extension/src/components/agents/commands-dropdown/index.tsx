@@ -3,9 +3,11 @@ import { AGENT_COMMANDS } from "../../../config.ui.var";
 import style from "./style.module.scss";
 
 export const CommandsDropdown = ({
+  newMessage,
   showDropdown,
   handleClick,
 }: {
+  newMessage: string;
   showDropdown: boolean;
   handleClick: (data: string) => void;
 }) => {
@@ -13,16 +15,16 @@ export const CommandsDropdown = ({
     <>
       {showDropdown && (
         <div className={style.dropdown}>
-          {AGENT_COMMANDS.filter((command) => command.enabled).map(
-            (command) => (
-              <CommandOption
-                key={command.command}
-                title={command.label}
-                icon={command.icon}
-                handleClick={() => handleClick(command.command)}
-              />
-            )
-          )}
+          {AGENT_COMMANDS.filter(
+            (command) => command.enabled && command.command.includes(newMessage)
+          ).map((command) => (
+            <CommandOption
+              key={command.command}
+              title={command.label}
+              icon={command.icon}
+              handleClick={() => handleClick(command.command)}
+            />
+          ))}
         </div>
       )}
     </>
