@@ -1,24 +1,31 @@
-import React, { useState } from "react";
-import style from "./style.module.scss";
-import { useSelector } from "react-redux";
-import { userDetails, setShowAgentDisclaimer } from "@chatStore/user-slice";
-import { store } from "@chatStore/index";
 import closeIcon from "@assets/icon/close-grey.png";
+import React, { useEffect, useState } from "react";
+import { useStore } from "../../../stores";
+import style from "./style.module.scss";
 
 export const AgentDisclaimer = () => {
-  // address book values
-  const userState = useSelector(userDetails);
-  const [openDialog, setIsOpendialog] = useState(userState.showAgentDisclaimer);
+  const { chainStore, accountStore } = useStore();
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
+  const [openDialog, setIsOpendialog] = useState(false);
+
+  useEffect(() => {
+    const addresses = localStorage.getItem("fetchAgentDisclaimerSeen") || "";
+    if (walletAddress) setIsOpendialog(!addresses.includes(walletAddress));
+  }, [walletAddress]);
+
+  const handleClose = () => {
+    const addresses = localStorage.getItem("fetchAgentDisclaimerSeen") || "";
+    localStorage.setItem(
+      "fetchAgentDisclaimerSeen",
+      addresses + `[${walletAddress}]`
+    );
+    setIsOpendialog(false);
+  };
 
   return openDialog ? (
     <>
-      <div
-        className={style.overlay}
-        onClick={() => {
-          setIsOpendialog(false);
-          store.dispatch(setShowAgentDisclaimer(false));
-        }}
-      />
+      <div className={style.overlay} onClick={() => handleClose()} />
       <div className={style.popupContainer}>
         <img
           draggable={false}
@@ -32,10 +39,7 @@ export const AgentDisclaimer = () => {
             right: "14px",
             top: "14px",
           }}
-          onClick={() => {
-            setIsOpendialog(false);
-            store.dispatch(setShowAgentDisclaimer(false));
-          }}
+          onClick={() => handleClose()}
         />
         <div className={style.infoContainer}>
           <h3>Fetchbot disclaimer</h3>
@@ -49,16 +53,10 @@ export const AgentDisclaimer = () => {
             Also, we will be retaining your interaction data with Fetchbot for a
             limited time period for training purposes. Thanks for helping us
             improve Fetchbot. Don&apos;t worry, chat with other addresses apart
-            from Fetchbot are still e2e encrypted that even we can read.
+            from Fetchbot are still e2e encrypted that even we can&apos;t read.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setIsOpendialog(false);
-            store.dispatch(setShowAgentDisclaimer(false));
-          }}
-        >
+        <button type="button" onClick={() => handleClose()}>
           Continue
         </button>
       </div>

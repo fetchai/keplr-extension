@@ -65,7 +65,10 @@ export const ChatsViewSection = ({
         pagination: { lastPage: 0, page: -1, pageCount: CHAT_PAGE_COUNT },
       }
     );
-  }, [Object.values(userChats[targetAddress]?.messages || []).length]);
+  }, [
+    Object.values(userChats[targetAddress]?.messages || []).length,
+    userChats[targetAddress]?.pagination,
+  ]);
   const [messages, setMessages] = useState<any[]>(
     Object.values(preLoadedChats?.messages) || []
   );
@@ -86,39 +89,6 @@ export const ChatsViewSection = ({
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
   const notification = useNotification();
-  useEffect(() => {
-    const updatedMessages = Object.values(preLoadedChats?.messages).sort(
-      (a, b) => {
-        return parseInt(a.commitTimestamp) - parseInt(b.commitTimestamp);
-      }
-    );
-
-    setMessages(updatedMessages);
-    setPagination(preLoadedChats.pagination);
-
-    const lastMessage =
-      updatedMessages && updatedMessages.length > 0
-        ? updatedMessages[updatedMessages.length - 1]
-        : null;
-
-    if (
-      group?.id &&
-      lastMessage &&
-      lastMessage.sender !== accountInfo.bech32Address
-    ) {
-      setTimeout(() => {
-        updateGroupTimestamp(
-          group?.id,
-          user.accessToken,
-          current.chainId,
-          accountInfo.bech32Address,
-          targetAddress,
-          new Date(lastMessage.commitTimestamp),
-          new Date(lastMessage.commitTimestamp)
-        );
-      }, 500);
-    }
-  }, [preLoadedChats]);
 
   const decryptGrpAddresses = async (
     groupAddress: GroupAddress,
@@ -182,6 +152,40 @@ export const ChatsViewSection = ({
       setGroup(tempGroup);
     }
   };
+
+  useEffect(() => {
+    const updatedMessages = Object.values(preLoadedChats?.messages).sort(
+      (a, b) => {
+        return parseInt(a.commitTimestamp) - parseInt(b.commitTimestamp);
+      }
+    );
+
+    setMessages(updatedMessages);
+    setPagination(preLoadedChats.pagination);
+
+    const lastMessage =
+      updatedMessages && updatedMessages.length > 0
+        ? updatedMessages[updatedMessages.length - 1]
+        : null;
+
+    if (
+      group?.id &&
+      lastMessage &&
+      lastMessage.sender !== accountInfo.bech32Address
+    ) {
+      setTimeout(() => {
+        updateGroupTimestamp(
+          group?.id,
+          user.accessToken,
+          current.chainId,
+          accountInfo.bech32Address,
+          targetAddress,
+          new Date(lastMessage.commitTimestamp),
+          new Date(lastMessage.commitTimestamp)
+        );
+      }, 500);
+    }
+  }, [preLoadedChats]);
 
   useEffect(() => {
     /// Shallow copy
