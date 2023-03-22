@@ -1,12 +1,14 @@
 import React from "react";
 import { useHistory } from "react-router";
+import { useStore } from "../../../stores";
 import { AGENT_ADDRESS } from "../../../config.ui.var";
 import style from "./style.module.scss";
 
 export const AgentInit = () => {
   const history = useHistory();
   // address book values
-
+  const { chainStore } = useStore();
+  const current = chainStore.current;
   return (
     <div className={style.agentContainer}>
       <img src={require("@assets/svg/fetchbot.svg")} />
@@ -20,7 +22,9 @@ export const AgentInit = () => {
       </div>
       <button
         type="button"
-        onClick={() => history.replace("/agent/" + AGENT_ADDRESS)}
+        onClick={() =>
+          history.replace("/agent/" + AGENT_ADDRESS[current.chainId])
+        }
       >
         Talk to an Agent
       </button>

@@ -42,8 +42,12 @@ if (process.env.NODE_ENV === "production") {
 
 export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
 
-export const AGENT_ADDRESS =
-  "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf";
+export const AGENT_ADDRESS: { [key: string]: string } = {
+  [CHAIN_ID_FETCHHUB]:
+    "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf",
+  [CHAIN_ID_DORADO]:
+    "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf",
+};
 // export const AGENT_ADDRESS =
 //   "agent1qdh7x8k7se255j44dmt2yrpnxqdyn9qqt3dvcn4zy3dwq5qthl577v7njct";
 

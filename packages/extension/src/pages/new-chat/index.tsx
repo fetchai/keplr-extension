@@ -258,7 +258,7 @@ export const NewChat: FunctionComponent = observer(() => {
               className={style.button}
               onClick={() => {
                 history.push({
-                  pathname: "/agent/" + AGENT_ADDRESS,
+                  pathname: "/agent/" + AGENT_ADDRESS[current.chainId],
                 });
               }}
             >

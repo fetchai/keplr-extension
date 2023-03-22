@@ -4,17 +4,22 @@ import { useHistory } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import closeIcon from "@assets/icon/close-grey.png";
+import { userDetails } from "@chatStore/user-slice";
+import { useSelector } from "react-redux";
 
 export const ChatDisclaimer = () => {
+  const userState = useSelector(userDetails);
   const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {
     const addresses = localStorage.getItem("fetchChatAnnouncementSeen") || "";
-    if (walletAddress) setIsOpendialog(!addresses.includes(walletAddress));
-  }, [walletAddress]);
+    if (walletAddress && userState?.enabledChainIds.includes(current.chainId))
+      setIsOpendialog(!addresses.includes(walletAddress));
+  }, [current.chainId, userState.enabledChainIds, walletAddress]);
 
   const history = useHistory();
   const handleClick = async (redirectFlag: boolean) => {

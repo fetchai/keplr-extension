@@ -1,7 +1,7 @@
 import { AGENT_ADDRESS } from "../config.ui.var";
 
 export const formatAddress = (address: string) => {
-  if (address == AGENT_ADDRESS) return "Fetchbot";
+  if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
   if (address?.length > 15)
     return (
       address.substring(0, 8).toLowerCase() +

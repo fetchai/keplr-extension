@@ -59,7 +59,6 @@ const ChatTab = () => {
   );
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
-  const current = chainStore.current;
 
   useEffect(() => {
     if (walletConfig.requiredNative && currentFET < 0) {
@@ -67,17 +66,12 @@ const ChatTab = () => {
       setChatDisabled(true);
       return;
     }
-    if (!enabledChainIds.includes(current?.chainId)) {
+    if (!enabledChainIds.includes(chainStore.current?.chainId)) {
       setChatTooltip("Feature not available on this network");
       setChatDisabled(true);
       return;
     }
-  }, [
-    current.chainId,
-    currentFET,
-    enabledChainIds,
-    walletConfig.requiredNative,
-  ]);
+  }, [chainStore, currentFET, enabledChainIds, walletConfig.requiredNative]);
 
   return (
     <Tab

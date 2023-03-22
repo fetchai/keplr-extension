@@ -270,7 +270,8 @@ const ChatView = () => {
               userState?.walletConfig?.fetchbotActive ? setSelectedTab(2) : {}
             }
           >
-            {userState?.walletConfig?.fetchbotActive ? (
+            {userState?.walletConfig?.fetchbotActive &&
+            userState?.enabledChainIds.includes(current.chainId) ? (
               "Agent"
             ) : (
               <ToolTip
