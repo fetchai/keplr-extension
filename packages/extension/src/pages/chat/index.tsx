@@ -276,7 +276,7 @@ const ChatView = () => {
               <ToolTip
                 trigger="hover"
                 options={{ placement: "bottom" }}
-                tooltip={<div>Agent Chats are currently Deactivated</div>}
+                tooltip={<div>Coming Soon</div>}
               >
                 Agent
               </ToolTip>

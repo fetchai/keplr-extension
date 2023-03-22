@@ -1,5 +1,7 @@
 import React from "react";
 import style from "./style.module.scss";
+import commandIcon from "@assets/agent-commands.png";
+import gptIcon from "@assets/agent-gpt.png";
 
 export const AgentInitPopup = ({
   setIsOpendialog,
@@ -12,24 +14,20 @@ export const AgentInitPopup = ({
       <div className={style.overlay} />
       <div className={style.popupContainer}>
         <div className={style.infoContainer}>
-          <h2 style={{ color: "#3B82F6", margin: "15px", textAlign: "center" }}>
-            Agents can do more!!
-          </h2>
-          <p>Type / to access a list of commands such as .....</p>
-          <div
+          <h3 style={{ textAlign: "center" }}>Agents can do more!!</h3>
+          <p>Type / to access a list of commands such as</p>
+          <img
+            src={commandIcon}
             style={{
               height: "120px",
-              borderRadius: "10px",
-              background: "#D9D9D9",
               marginBottom: "10px",
             }}
           />
           <p>You can also...</p>
-          <div
+          <img
+            src={gptIcon}
             style={{
               height: "120px",
-              borderRadius: "10px",
-              background: "#D9D9D9",
               marginBottom: "10px",
             }}
           />
