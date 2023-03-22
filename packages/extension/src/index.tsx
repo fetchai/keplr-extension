@@ -7,7 +7,7 @@ import "./styles/global.scss";
 import { HashRouter, Route } from "react-router-dom";
 
 import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
-import { ActivityPage } from "./pages/activity";
+import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages/lock";
 import { MainPage } from "./pages/main";
@@ -162,7 +162,11 @@ const Application: FunctionComponent = () => {
                       <Route exact path="/" component={StateRenderer} />
                       <Route exact path="/unlock" component={LockPage} />
                       <Route exact path="/access" component={AccessPage} />
-                      <Route exact path="/activity" component={ActivityPage} />
+                      <Route
+                        exact
+                        path="/notification"
+                        component={NotificationPage}
+                      />
                       <Route
                         exact
                         path="/notification/organizations/:type"

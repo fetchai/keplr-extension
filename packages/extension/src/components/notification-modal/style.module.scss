@@ -1,53 +1,30 @@
-.modalOutsideContainer {
-  z-index: 1000;
-  position: fixed;
-  inset: 0px;
+.preventCenter {
+  margin: 0 8px;
 }
 
+.enableCenter {
+  margin: auto 8px;
+}
 .notificationModal {
   display: flex;
   flex-direction: column;
-  padding: 8px 0 0;
-  inset: 50% auto auto 50%;
-  position: absolute;
-  width: 328px;
-  min-height: 244px;
-  max-height: 80%;
-  overflow: visible;
+  max-height: 85%;
 
-  // left: 16px;
-  left: 13px;
-  top: 66px;
-
-  background: #ffffff;
-  border-radius: 4px;
-  border: 1px solid #e5e7e6;
-  filter: drop-shadow(4px 4px 16px rgba(0, 0, 0, 0.25));
+  background: #fff;
 
   font-family: "Nunito Sans";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 16px;
-
   color: #525f7f;
   .scrollView {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     min-height: 244px;
-
-    &::before {
-      content: " ";
-      position: absolute;
-      right: 22px;
-      top: -13px;
-      border-top: none;
-      border-right: 12px solid transparent;
-      border-left: 12px solid transparent;
-      border-bottom: 18px solid #ffffff;
-      z-index: 2000;
-    }
+    width: 100%;
+    overflow-x: hidden;
 
     .heading {
       padding: 8px 16px;

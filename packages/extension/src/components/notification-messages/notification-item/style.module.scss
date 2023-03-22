@@ -1,5 +1,5 @@
 .notification {
-  border-top: 1px solid #f2f3f6;
+  border-bottom: 1px solid #f2f3f6;
   padding: 16px;
   cursor: pointer;
 
@@ -96,4 +96,10 @@
     margin-top: 8px;
     line-height: 1;
   }
+}
+
+.remove {
+  transform: translateX(328px);
+  opacity: 0.5;
+  transition: all 0.6s ease-out;
 }

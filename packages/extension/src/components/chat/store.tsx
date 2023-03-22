@@ -15,6 +15,10 @@ export const ChatStoreProvider: FunctionComponent = observer((props) => {
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
   useEffect(() => {
+    if (!accountInfo.bech32Address) {
+      return;
+    }
+
     fetchFollowedOrganisations(accountInfo.bech32Address).then(
       (followOrganisationList: NotyphiOrganisation[]) => {
         store.dispatch(

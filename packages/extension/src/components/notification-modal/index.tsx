@@ -3,7 +3,6 @@ import { useHistory } from "react-router";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
 import { NotificationItem } from "@components/notification-messages/notification-item/index";
-import { PoweredByNote } from "./powered-by-note/powered-by-note";
 import {
   markDeliveryAsRead,
   markDeliveryAsRejected,
@@ -32,11 +31,7 @@ export enum NotificationModalType {
   notifications,
 }
 
-interface Props {
-  setShowNotifications?: any;
-}
-
-export const NotificationModal: FunctionComponent<Props> = (props) => {
+export const NotificationModal: FunctionComponent = () => {
   const history = useHistory();
 
   const { chainStore, accountStore } = useStore();
@@ -51,24 +46,17 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
     setNotificationPayload,
   ] = useState<NotificationPayload>();
 
-  const navigateToSettingsHandler = () => {
-    history.push("/setting/notifications");
-  };
-
   const handleClick = () => {
     if (notificationPayload?.modalType === NotificationModalType.initial) {
       history.push("notification/organizations/add");
     } else if (
       notificationPayload?.modalType === NotificationModalType.notificationOff
     ) {
-      /// Upadating the notification feature flag in db
       localStorage.setItem(
         `turnNotifications-${accountInfo.bech32Address}`,
         "true"
       );
       setIsLoading(true);
-      // setNotificationPayloadHelper([])
-      /// Turning on the notification feature
       store.dispatch(setNotifications({ isNotificationOn: true }));
     }
   };
@@ -92,7 +80,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
       });
     }
 
-    /// Updating the notification dot status in redux
     if (notificationInfo.unreadNotification && notifications.length === 0) {
       store.dispatch(
         setNotifications({
@@ -112,7 +99,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
   };
 
   useEffect(() => {
-    /// Notification feature is turn on/off
     if (!notificationInfo.isNotificationOn) {
       setIsLoading(false);
       setNotificationPayload({
@@ -125,7 +111,7 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
       return;
     }
 
-    if (notificationInfo.organisations.length === 0) {
+    if (Object.values(notificationInfo.organisations).length === 0) {
       setIsLoading(false);
       setNotificationPayload({
         modalType: NotificationModalType.initial,
@@ -137,9 +123,7 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
         image: "initial-bell-icon.svg",
       });
     } else {
-      setNotificationPayloadHelper(
-        Object.values(notificationInfo.allNotifications)
-      );
+      setNotificationPayloadHelper(notificationInfo.allNotifications);
       setIsLoading(false);
     }
   }, [
@@ -156,7 +140,9 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
             notification.delivery_id !== deliveryId
         );
 
-        setNotificationPayloadHelper(unreadNotifications);
+        store.dispatch(
+          setNotifications({ allNotifications: unreadNotifications })
+        );
         localStorage.setItem(
           `notifications-${accountInfo.bech32Address}`,
           JSON.stringify(unreadNotifications)
@@ -178,24 +164,16 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
           (notification: NotyphiNotification) =>
             notification.delivery_id !== deliveryId
         );
+
+        store.dispatch(
+          setNotifications({ allNotifications: newLocalNotifications })
+        );
         localStorage.setItem(
           `notifications-${accountInfo.bech32Address}`,
           JSON.stringify(newLocalNotifications)
         );
-
-        /// Removing flag notification from list after 2 sec
-        setTimeout(() => {
-          setNotificationPayloadHelper(newLocalNotifications);
-        }, 2000);
       }
     );
-  };
-
-  const handleClearAll = () => {
-    /// Clearing local db notifications data
-    localStorage.removeItem(`notifications-${accountInfo.bech32Address}`);
-
-    setNotificationPayloadHelper([]);
   };
 
   function decideNotificationView(): React.ReactNode {
@@ -210,19 +188,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
     if (notificationPayload && notificationPayload.notificationList) {
       return (
         <>
-          <div className={style.heading}>
-            <div className={style.deleteIcon} onClick={handleClearAll}>
-              <img
-                src={require("@assets/svg/delete-icon.svg")}
-                draggable={false}
-              />
-              <p className={style.clearAll}>Clear all</p>
-            </div>
-            <p className={style.settings} onClick={navigateToSettingsHandler}>
-              Settings
-            </p>
-          </div>
-
           {notificationPayload.notificationList.map((elem) => (
             <NotificationItem
               key={elem.delivery_id}
@@ -231,7 +196,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
               onFlagClick={onFlagClick}
             />
           ))}
-          <PoweredByNote />
         </>
       );
     }
@@ -239,12 +203,6 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
     if (notificationPayload) {
       return (
         <>
-          {notificationPayload.showSetting && (
-            <p className={style.settings} onClick={navigateToSettingsHandler}>
-              Settings
-            </p>
-          )}
-
           <div className={style.notifyContainer}>
             <div className={style.greyCircle}>
               {notificationPayload.image && (
@@ -279,29 +237,22 @@ export const NotificationModal: FunctionComponent<Props> = (props) => {
                 {notificationPayload.buttonLabel}
               </Button>
             )}
-
-            <PoweredByNote />
           </div>
         </>
       );
     }
-
-    return <></>;
   }
 
   return (
     <div
-      className={style.modalOutsideContainer}
-      onClick={() => {
-        if (props.setShowNotifications) props.setShowNotifications(false);
-      }}
+      className={
+        notificationInfo.allNotifications.length > 0 &&
+        notificationInfo.isNotificationOn
+          ? `${style.notificationModal} ${style.preventCenter}`
+          : `${style.notificationModal} ${style.enableCenter}`
+      }
     >
-      <div
-        className={style.notificationModal}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className={style.scrollView}>{decideNotificationView()}</div>
-      </div>
+      <div className={style.scrollView}>{decideNotificationView()}</div>
     </div>
   );
 };

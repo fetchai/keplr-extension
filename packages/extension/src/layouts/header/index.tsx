@@ -20,7 +20,6 @@ export interface Props {
   alternativeTitle?: string;
   menuRenderer?: ReactNode;
   rightRenderer?: ReactNode;
-  notificationRenderer?: ReactNode;
   onBackButton?: () => void;
 }
 
@@ -35,7 +34,6 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
     alternativeTitle,
     menuRenderer,
     rightRenderer,
-    notificationRenderer,
     isMenuOpen,
     onBackButton,
   }) => {
@@ -87,7 +85,6 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
           </div>
         }
         right={rightRenderer}
-        notification={notificationRenderer}
         fixed
       >
         {showChainName || alternativeTitle ? (

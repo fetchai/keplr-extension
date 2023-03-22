@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef } from "react";
 
 import { HeaderLayout } from "@layouts/index";
 
@@ -22,12 +22,11 @@ import { getJWT } from "@utils/auth";
 import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
 import { getWalletConfig } from "@graphQL/config-api";
-import { ShowNotification } from "@components/show-notification";
+
 export const MainPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
   const { chainStore, accountStore, queriesStore } = useStore();
-  const [showNotifications, setShowNotifications] = useState(false);
 
   const confirm = useConfirm();
 
@@ -98,14 +97,6 @@ export const MainPage: FunctionComponent = observer(() => {
       canChangeChainInfo
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
-      notificationRenderer={
-        <ShowNotification
-          setShowNotifications={setShowNotifications}
-          showNotifications={showNotifications}
-        />
-      }
-      showNotifications={showNotifications}
-      setShowNotifications={setShowNotifications}
     >
       <BIP44SelectModal />
       <Card className={classnames(style.card, "shadow")}>

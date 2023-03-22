@@ -8,12 +8,10 @@ export const fetchAndPopulateNotifications = async (walletAddress: string) => {
 
   const notifications: NotyphiNotifications = {};
 
-  /// fetch notification from local db
   const localNotifications: NotyphiNotification[] = JSON.parse(
     localStorage.getItem(`notifications-${walletAddress}`) ?? JSON.stringify([])
   );
 
-  /// Combining the server and local notifications data
   notificationData.map((element: NotyphiNotification) => {
     notifications[element.delivery_id] = element;
   });
@@ -26,5 +24,7 @@ export const fetchAndPopulateNotifications = async (walletAddress: string) => {
     JSON.stringify(Object.values(notifications))
   );
 
-  store.dispatch(setNotifications({ allNotifications: notifications }));
+  store.dispatch(
+    setNotifications({ allNotifications: Object.values(notifications) })
+  );
 };

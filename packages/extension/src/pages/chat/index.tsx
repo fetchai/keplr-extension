@@ -42,7 +42,6 @@ import { fetchPublicKey } from "@utils/fetch-public-key";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { ChatsGroupHistory } from "./chat-group-history";
-import { ShowNotification } from "@components/show-notification";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -75,7 +74,6 @@ const ChatView = () => {
   const [inputVal, setInputVal] = useState("");
   const [openDialog, setIsOpendialog] = useState(false);
   const [authFail, setAuthFail] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const requester = new InExtensionMessageRequester();
 
   function debounce(func: any, timeout = 500) {
@@ -232,14 +230,6 @@ const ChatView = () => {
       canChangeChainInfo={true}
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
-      notificationRenderer={
-        <ShowNotification
-          setShowNotifications={setShowNotifications}
-          showNotifications={showNotifications}
-        />
-      }
-      showNotifications={showNotifications}
-      setShowNotifications={setShowNotifications}
     >
       <ChatErrorPopup />
       <div className={style.chatContainer}>

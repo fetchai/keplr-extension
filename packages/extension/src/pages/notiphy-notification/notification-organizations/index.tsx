@@ -90,11 +90,18 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       setSelectedOrg(selectedOrg.filter((element) => element.id != item.id));
 
       /// Unfollow is available in edit section only
-      if (type === pageOptions.edit) {
+      if (
+        type === pageOptions.edit &&
+        Object.values(notificationInfo.organisations).find(
+          (element) => element.id === item.id
+        )
+      ) {
         followUnfollowObj.current[item.id] = {
           ...item,
           follow: isChecked,
         };
+      } else {
+        delete followUnfollowObj.current[item.id];
       }
     }
   };
@@ -194,7 +201,10 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         <Button
           className={style.button}
           color="primary"
-          disabled={Object.keys(followUnfollowObj.current).length === 0}
+          disabled={
+            selectedOrg.length === 0 ||
+            Object.keys(followUnfollowObj.current).length === 0
+          }
           onClick={handleNextPage}
         >
           {isBtnLoading ? (

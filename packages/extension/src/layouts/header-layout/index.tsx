@@ -6,14 +6,11 @@ import { Header, Props as HeaderProps } from "../header";
 import { BottomNav } from "../bottom-nav";
 
 import style from "./style.module.scss";
-import { NotificationModal } from "@components/notification-modal/index";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Props extends HeaderProps {
   style?: CSSProperties;
   showBottomMenu?: boolean;
-  showNotifications?: boolean;
-  setShowNotifications?: any;
 }
 
 export const HeaderLayout: FunctionComponent<Props> = (props) => {
@@ -39,12 +36,6 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
         <div className={style.innerContainer}>{children}</div>
 
         {(props.showBottomMenu ?? true) && <BottomNav />}
-
-        {props.showNotifications && props.setShowNotifications && (
-          <NotificationModal
-            setShowNotifications={props.setShowNotifications}
-          />
-        )}
       </div>
     </MenuProvider>
   );

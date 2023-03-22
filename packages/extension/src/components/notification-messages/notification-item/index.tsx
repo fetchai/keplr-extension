@@ -10,7 +10,7 @@ import { FormattedMessage } from "react-intl";
 interface Props {
   elem: NotyphiNotification;
   onCrossClick: (deliveryId: string) => void;
-  onFlagClick: (deliveryId: string, flag: boolean) => void;
+  onFlagClick: (deliveryId: string) => void;
 }
 export const NotificationItem: FunctionComponent<Props> = ({
   elem,
@@ -29,7 +29,13 @@ export const NotificationItem: FunctionComponent<Props> = ({
     e.stopPropagation();
     if (!flag) {
       setFlag(true);
-      onFlagClick(delivery_id, flag);
+      const item = document.getElementById(delivery_id);
+
+      setTimeout(() => {
+        setFlag(false);
+        item?.classList.add(style.remove);
+        onFlagClick(delivery_id);
+      }, 1500);
     }
   };
 
@@ -63,12 +69,18 @@ export const NotificationItem: FunctionComponent<Props> = ({
 
   const handleRead = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
+    const item = document.getElementById(delivery_id);
+    item?.classList.add(style.remove);
     onCrossClick(delivery_id);
   };
 
   return (
     <>
-      <div className={style.notification} onClick={handleNavigateToUrl}>
+      <div
+        className={style.notification}
+        onClick={handleNavigateToUrl}
+        id={delivery_id}
+      >
         <div className={style.notificationHead}>
           <div className={style.notificationImage}>
             {elem.image_url ? (

@@ -35,6 +35,6 @@ export interface NotyphiNotification {
 export interface NotificationSetup {
   unreadNotification: boolean;
   isNotificationOn: boolean;
-  organisations: NotyphiOrganisation[];
-  allNotifications: NotyphiNotifications;
+  organisations: NotyphiOrganisations;
+  allNotifications: NotyphiNotification[];
 }

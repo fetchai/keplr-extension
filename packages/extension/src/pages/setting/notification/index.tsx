@@ -68,7 +68,8 @@ export const SettingNotifications: FunctionComponent = () => {
           )}
         </div>
 
-        {notificationInfo.isNotificationOn ? (
+        {Object.values(notificationInfo.organisations).length !== 0 &&
+        notificationInfo.isNotificationOn ? (
           <>
             <PageButton
               title="Organisations"
