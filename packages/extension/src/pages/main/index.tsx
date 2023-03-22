@@ -86,9 +86,11 @@ export const MainPage: FunctionComponent = observer(() => {
   useEffect(() => {
     getJWT(chainStore.current.chainId, AUTH_SERVER).then((res) => {
       store.dispatch(setAccessToken(res));
-      getWalletConfig().then((config) =>
-        store.dispatch(setWalletConfig(config))
-      );
+      getWalletConfig()
+        .then((config) => store.dispatch(setWalletConfig(config)))
+        .catch((error) => {
+          console.log(error);
+        });
     });
   }, [chainStore.current.chainId]);
 

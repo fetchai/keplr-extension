@@ -50,31 +50,31 @@ export const AGENT_ADDRESS =
 export const AGENT_COMMANDS = [
   {
     command: "/transferFET",
-    label: "Transfer FET",
+    label: "transferFET (Transfer FET)",
     icon: sendTokenIcon,
     enabled: true,
   },
   {
     command: "/sendToken",
-    label: "Send Token",
+    label: "sendToken (Send Token)",
     icon: sendTokenIcon,
     enabled: true,
   },
   {
     command: "/autoCompound",
-    label: "Auto-Compound Rewards",
+    label: "autoCompound (Auto-Compound Rewards)",
     icon: autoCompoundIcon,
     enabled: false,
   },
   {
     command: "/redeemFET",
-    label: "Claim Token",
+    label: "redeemFET (Redeem Stake Rewards)",
     icon: claimTokenIcon,
     enabled: true,
   },
   {
     command: "/cancel",
-    label: "Cancel Automation",
+    label: "cancel (Cancel Automation)",
     icon: closeIcon,
     enabled: true,
   },
