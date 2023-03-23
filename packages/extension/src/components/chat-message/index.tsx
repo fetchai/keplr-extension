@@ -82,7 +82,8 @@ export const ChatMessage = ({
       else
         return (
           <div className={style.message}>
-            Please sign your transaction.
+            Please recheck parameters of the transaction in Data Tab before
+            approving the transaction.
             <button
               type="button"
               disabled={!onClickSignTxn}

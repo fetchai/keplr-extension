@@ -241,7 +241,6 @@ export const NewChat: FunctionComponent = observer(() => {
           <div className={style.searchHelp}>
             You can search your contacts or paste any valid {current.chainName}{" "}
             address to start a conversation.
-            <br /> or <br />
             <button
               className={style.button}
               onClick={() => {
@@ -253,12 +252,12 @@ export const NewChat: FunctionComponent = observer(() => {
             >
               Create new group chat
             </button>
-            <br />
+            <br /> or <br />
             <button
               className={style.button}
               onClick={() => {
                 history.push({
-                  pathname: "/agent/" + AGENT_ADDRESS[current.chainId],
+                  pathname: "/chat/agent/" + AGENT_ADDRESS[current.chainId],
                 });
               }}
             >
@@ -288,7 +287,7 @@ export const NewChat: FunctionComponent = observer(() => {
           </div>
           {addresses.length === 0 && (
             <div>
-              <div className={style.resultText}>
+              <div className={style.resultText} style={{ fontSize: "12px" }}>
                 No results in your contacts.
               </div>
               {user?.messagingPubKey.privacySetting ===

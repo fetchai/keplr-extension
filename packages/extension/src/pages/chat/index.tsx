@@ -272,14 +272,14 @@ const ChatView = () => {
           >
             {userState?.walletConfig?.fetchbotActive &&
             userState?.enabledChainIds.includes(current.chainId) ? (
-              "Agent"
+              "Agents"
             ) : (
               <ToolTip
                 trigger="hover"
                 options={{ placement: "bottom" }}
                 tooltip={<div>Coming Soon</div>}
               >
-                Agent
+                Agents
               </ToolTip>
             )}
           </div>
