@@ -1,10 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { store } from "@chatStore/index";
-import {
-  setMessageError,
-  userChatAgents,
-  userMessages,
-} from "@chatStore/messages-slice";
+import { userChatAgents, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
 import { ChatMessage } from "@components/chat-message";
@@ -27,6 +22,7 @@ import {
   CHAT_PAGE_COUNT,
   TRANSACTION_FAILED,
   TRANSACTION_APPROVED,
+  AGENT_ADDRESS,
 } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
@@ -287,13 +283,30 @@ export const ChatsViewSection = ({
         (command) => command.command == newMessage && command.enabled
       )
     ) {
-      store.dispatch(
-        setMessageError({
-          type: "manual",
-          message: "Following Command is not Recognised by Fetchbot",
-          level: 1,
-        })
-      );
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: "Following Command is not Recognised by Fetchbot",
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+      return;
+    }
+
+    if (isCommand && user.currentFET <= 0) {
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: "Not Enough balance to execute automation",
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
       return;
     }
     if (newMessage.trim().length)
@@ -312,7 +325,6 @@ export const ChatsViewSection = ({
           setLastUnreadMesageId("");
           setNewMessage("");
           setProcessingLastMessage(true);
-          setTimeout(() => setProcessingLastMessage(false), 60000);
         }
         // scrollToBottom();
         recieveGroups(0, accountInfo.bech32Address);
@@ -320,6 +332,25 @@ export const ChatsViewSection = ({
         console.log("failed to send : ", error);
       }
   };
+
+  useEffect(() => {
+    if (processingLastMessage) {
+      const timer = setTimeout(() => {
+        notification.push({
+          type: "warning",
+          placement: "top-center",
+          duration: 5,
+          content: `Taking more time than expected to process your request, Please try Later`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+        setProcessingLastMessage(false);
+      }, 60000);
+      return () => clearTimeout(timer);
+    }
+  }, [processingLastMessage]);
 
   const signTxn = async (data: string) => {
     console.log(JSON.parse(data));
@@ -339,7 +370,7 @@ export const ChatsViewSection = ({
         type: "warning",
         placement: "top-center",
         duration: 5,
-        content: `Fail to withdraw rewards: ${e.message}`,
+        content: `Failed to execute Transaction`,
         canDelete: true,
         transition: {
           duration: 0.25,
@@ -353,7 +384,7 @@ export const ChatsViewSection = ({
         targetAddress
       );
     } finally {
-      history.goBack();
+      history.push(`/chat/agent/${AGENT_ADDRESS[current.chainId]}`);
     }
   };
 

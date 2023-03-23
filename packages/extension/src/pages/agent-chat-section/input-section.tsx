@@ -54,9 +54,10 @@ export const InputField = ({
   const messageInput = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (event: any) => {
-    const isNotCommand = !AGENT_COMMANDS.find((command: any) =>
-      command.command.includes(event.target.value)
-    );
+    const isNotCommand =
+      !AGENT_COMMANDS.find((command: any) =>
+        command.command.includes(event.target.value)
+      ) || !event.target.value;
 
     setIsCommand(!isNotCommand);
     setShowCommandDropdown(!isNotCommand);

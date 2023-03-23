@@ -213,7 +213,7 @@ export const AssetView: FunctionComponent = observer(() => {
     ? !totalPrice.toDec().isZero()
     : !total.toDec().isZero();
 
-  store.dispatch(setCurrentFET(total));
+  store.dispatch(setCurrentFET(parseFloat(stakable.toDec().toString())));
   if (!hasBalance) {
     return (
       <EmptyState
