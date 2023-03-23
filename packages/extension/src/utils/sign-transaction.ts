@@ -109,7 +109,7 @@ export const claimRewards = async (
         },
       ],
     },
-    undefined,
+    { disableBalanceCheck: false },
     {
       onBroadcasted: (_txHash: Uint8Array) => {
         notification.push({
@@ -147,7 +147,7 @@ export const sendToken = async (
         },
       ],
     },
-    undefined,
+    { disableBalanceCheck: false },
     {
       onBroadcasted: (_txHash: Uint8Array) => {
         notification.push({
