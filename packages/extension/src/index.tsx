@@ -189,7 +189,7 @@ const Application: FunctionComponent = () => {
                       />
                       <Route
                         exact
-                        path="/agent/:name"
+                        path="/chat/agent/:name"
                         component={AgentChatSection}
                       />
                       <Route exact path="/more" component={MorePage} />

@@ -15,7 +15,7 @@ import { UserNameSection } from "./username-section";
 
 export const AgentChatSection: FunctionComponent = () => {
   const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[2];
+  const targetAddress = history.location.pathname.split("/")[3];
   const user = useSelector(userDetails);
 
   const [targetPubKey, setTargetPubKey] = useState("");

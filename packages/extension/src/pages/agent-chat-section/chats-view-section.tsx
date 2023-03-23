@@ -46,7 +46,7 @@ export const ChatsViewSection = ({
   setLoadingChats: any;
 }) => {
   const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[2];
+  const targetAddress = history.location.pathname.split("/")[3];
 
   const user = useSelector(userDetails);
   const userAgents: Groups = useSelector(userChatAgents);

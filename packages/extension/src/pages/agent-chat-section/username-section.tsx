@@ -11,7 +11,7 @@ import style from "./style.module.scss";
 export const UserNameSection = () => {
   const history = useHistory();
 
-  const userName = history.location.pathname.split("/")[2];
+  const userName = history.location.pathname.split("/")[3];
   const { chainStore, accountStore } = useStore();
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;

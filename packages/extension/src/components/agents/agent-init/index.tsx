@@ -23,7 +23,7 @@ export const AgentInit = () => {
       <button
         type="button"
         onClick={() =>
-          history.replace("/agent/" + AGENT_ADDRESS[current.chainId])
+          history.replace("/chat/agent/" + AGENT_ADDRESS[current.chainId])
         }
       >
         Talk to an Agent

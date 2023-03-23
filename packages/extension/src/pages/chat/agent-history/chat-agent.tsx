@@ -22,7 +22,7 @@ export const ChatAgent: React.FC<{
     amplitude.getInstance().logEvent("Open Agent click", {
       from: "Chat history",
     });
-    history.push(`/agent/${targetAddress}`);
+    history.push(`/chat/agent/${targetAddress}`);
   };
 
   /// Current wallet user
@@ -108,7 +108,9 @@ export const ChatAgent: React.FC<{
       return;
     }
 
-    setMessage("Please sign your transaction.");
+    setMessage(
+      "Please recheck parameters of the transaction in Data Tab before approving the transaction."
+    );
   };
 
   useEffect(() => {
