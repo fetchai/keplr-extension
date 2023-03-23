@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./style.module.scss";
 
-export const AgentInitPopup = ({ handleClose }: { handleClose: any }) => {
+export const AgentInfo = ({ handleClose }: { handleClose: any }) => {
   // address book values
   return (
     <>

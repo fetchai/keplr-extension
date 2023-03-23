@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import chevronLeft from "@assets/icon/chevron-left.png";
-import { AgentInitPopup } from "@components/agents/agent-init-popup";
+import { AgentInfo } from "@components/agents/agent-info";
 import { ToolTip } from "@components/tooltip";
 import { formatAddress } from "@utils/format";
 import React, { useEffect, useState } from "react";
@@ -33,7 +33,7 @@ export const UserNameSection = () => {
 
   return (
     <div className={style.username}>
-      {openDialog && <AgentInitPopup handleClose={handleClose} />}
+      {openDialog && <AgentInfo handleClose={handleClose} />}
       <div className={style.leftBox}>
         <img
           alt=""
