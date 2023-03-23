@@ -62,7 +62,7 @@ export const ChatDisclaimer = () => {
           </p>
         </div>
         <button type="button" onClick={() => handleClick(true)}>
-          Got To Chat
+          Go To Chat
         </button>
       </div>
     </>

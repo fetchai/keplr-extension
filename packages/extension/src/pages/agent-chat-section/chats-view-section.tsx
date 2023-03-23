@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import agentCommandIcon from "@assets/icon/agent-command.png";
-import paperAirplaneIcon from "@assets/icon/paper-airplane.png";
 import { store } from "@chatStore/index";
 import {
   setMessageError,
@@ -9,9 +7,7 @@ import {
 } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
-import { CommandsDropdown } from "@components/agents/commands-dropdown";
 import { ChatMessage } from "@components/chat-message";
-import { ToolTip } from "@components/tooltip";
 import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
@@ -26,8 +22,6 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import ReactTextareaAutosize from "react-textarea-autosize";
-import { InputGroup } from "reactstrap";
 import {
   AGENT_COMMANDS,
   CHAT_PAGE_COUNT,
@@ -37,9 +31,13 @@ import {
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
-import loadingChatGif from "@assets/chat-loading.gif";
 import { executeTxn } from "@utils/sign-transaction";
 import { useNotification } from "@components/notification";
+import {
+  InactiveAgentMessage,
+  InputField,
+  ProcessingLastMessage,
+} from "./input-section";
 
 export const ChatsViewSection = ({
   targetPubKey,
@@ -50,7 +48,6 @@ export const ChatsViewSection = ({
   const history = useHistory();
   const targetAddress = history.location.pathname.split("/")[2];
 
-  let enterKeyCount = 0;
   const user = useSelector(userDetails);
   const userAgents: Groups = useSelector(userChatAgents);
   const userChats: Chats = useSelector(userMessages);
@@ -82,10 +79,8 @@ export const ChatsViewSection = ({
 
   const [newMessage, setNewMessage] = useState("");
   const [isCommand, setIsCommand] = useState(false);
-  const [showCommandDropdown, setShowCommandDropdown] = useState(false);
   const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
   const [processingLastMessage, setProcessingLastMessage] = useState(false);
-  const messageInput = useRef<HTMLTextAreaElement>(null);
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
@@ -285,7 +280,6 @@ export const ChatsViewSection = ({
   }, [messages]);
 
   const handleSendMessage = async (e: any) => {
-    setShowCommandDropdown(false);
     e.preventDefault();
     if (
       isCommand &&
@@ -324,25 +318,7 @@ export const ChatsViewSection = ({
         recieveGroups(0, accountInfo.bech32Address);
       } catch (error) {
         console.log("failed to send : ", error);
-      } finally {
-        enterKeyCount = 0;
       }
-  };
-
-  const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    //it triggers by pressing the enter key
-    const { key } = e as React.KeyboardEvent<HTMLTextAreaElement>;
-    if (key === "Enter" && !e.shiftKey && enterKeyCount == 0) {
-      enterKeyCount = 1;
-      handleSendMessage(e);
-    }
-  };
-
-  const handleCommand = (command: string) => {
-    setIsCommand(true);
-    setShowCommandDropdown(false);
-    setNewMessage(command);
-    if (messageInput.current) messageInput.current.focus();
   };
 
   const signTxn = async (data: string) => {
@@ -399,11 +375,6 @@ export const ChatsViewSection = ({
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}
-        <CommandsDropdown
-          newMessage={newMessage}
-          showDropdown={showCommandDropdown}
-          handleClick={handleCommand}
-        />
         {messages?.map((message: any, index) => {
           const check = showDateFunction(message?.commitTimestamp);
           return (
@@ -442,76 +413,18 @@ export const ChatsViewSection = ({
 
         {lastUnreadMesageId === "" && <div ref={messagesEndRef} />}
       </div>
-
-      <InputGroup className={style.inputText}>
-        {targetPubKey.length ? (
-          processingLastMessage ? (
-            <div
-              style={{ textAlign: "center", color: "grey" }}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-            >
-              Generating Response, Please Wait
-            </div>
-          ) : (
-            <ReactTextareaAutosize
-              ref={messageInput}
-              maxRows={3}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder={"Ask a question or type / for commands"}
-              value={newMessage}
-              onChange={(event) => {
-                if (
-                  event.target.value.length &&
-                  AGENT_COMMANDS.find((command: any) =>
-                    command.command.includes(event.target.value)
-                  )
-                ) {
-                  setIsCommand(true);
-                  setShowCommandDropdown(true);
-                } else {
-                  setIsCommand(false);
-                  setShowCommandDropdown(false);
-                }
-                setNewMessage(event.target.value.substring(0, 100));
-              }}
-              onKeyDown={handleKeydown}
-            />
-          )
-        ) : (
-          <ToolTip
-            trigger="hover"
-            options={{ placement: "top" }}
-            tooltip={<div>The Agent is inactive</div>}
-          >
-            <ReactTextareaAutosize
-              ref={messageInput}
-              maxRows={3}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
-              placeholder={"Type a new message..."}
-              disabled={true}
-            />
-          </ToolTip>
-        )}
-        <div className={style["send-message-icon"]}>
-          {newMessage?.length && newMessage.trim() !== "" ? (
-            <img
-              src={paperAirplaneIcon}
-              alt=""
-              draggable="false"
-              onClick={handleSendMessage}
-            />
-          ) : !processingLastMessage ? (
-            <img
-              src={agentCommandIcon}
-              alt=""
-              draggable="false"
-              onClick={() => setShowCommandDropdown(!showCommandDropdown)}
-            />
-          ) : (
-            <img src={loadingChatGif} width={20} />
-          )}
-        </div>
-      </InputGroup>
+      {!targetPubKey.length ? (
+        <InactiveAgentMessage />
+      ) : processingLastMessage ? (
+        <ProcessingLastMessage />
+      ) : (
+        <InputField
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          setIsCommand={setIsCommand}
+          handleSendMessage={handleSendMessage}
+        />
+      )}
     </div>
   );
 };
