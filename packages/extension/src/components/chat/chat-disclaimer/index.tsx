@@ -17,9 +17,18 @@ export const ChatDisclaimer = () => {
 
   useEffect(() => {
     const addresses = localStorage.getItem("fetchChatAnnouncementSeen") || "";
-    if (walletAddress && userState?.enabledChainIds.includes(current.chainId))
+    if (
+      walletAddress &&
+      userState?.enabledChainIds.includes(current.chainId) &&
+      !userState.walletConfig.requiredNative
+    )
       setIsOpendialog(!addresses.includes(walletAddress));
-  }, [current.chainId, userState.enabledChainIds, walletAddress]);
+  }, [
+    current.chainId,
+    userState.enabledChainIds,
+    userState.walletConfig.requiredNative,
+    walletAddress,
+  ]);
 
   const history = useHistory();
   const handleClick = async (redirectFlag: boolean) => {
