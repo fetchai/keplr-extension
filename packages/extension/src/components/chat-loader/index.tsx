@@ -9,7 +9,7 @@ export const ChatLoader = ({ message }: { message: string }) => {
         padding: "110px 0px",
       }}
     >
-      <img src={loadingChatGif} width={100} />
+      <img draggable={false} src={loadingChatGif} width={100} />
       <br />
       {message}
     </div>

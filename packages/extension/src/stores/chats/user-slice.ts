@@ -1,19 +1,25 @@
+import { NotificationSetup } from "@notificationTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 export interface WalletConfig {
-  notiphyWhitelist: string[];
+  notiphyWhitelist: string[] | undefined;
   fetchbotActive: boolean;
   requiredNative: boolean;
 }
 
 const initialState = {
-  notifications: [],
+  notifications: {
+    unreadNotification: false,
+    isNotificationOn: true,
+    organisations: {},
+    allNotifications: [],
+  } as NotificationSetup,
   accessToken: "",
   walletConfig: {
-    notiphyWhitelist: [],
+    notiphyWhitelist: undefined,
     fetchbotActive: process.env.NODE_ENV !== "production",
-    requiredNative: process.env.NODE_ENV !== "production",
+    requiredNative: process.env.NODE_ENV == "production",
   } as WalletConfig,
   messagingPubKey: {
     publicKey: null,
@@ -31,7 +37,7 @@ export const userSlice = createSlice({
   reducers: {
     resetUser: (_state, _action) => initialState,
     setNotifications: (state, action) => {
-      state.notifications = action.payload;
+      state.notifications = { ...state.notifications, ...action.payload };
     },
     setMessagingPubKey: (state, action) => {
       state.messagingPubKey = action.payload;
@@ -66,5 +72,7 @@ export const {
 export const userDetails = (state: { user: any }) => state.user;
 export const userChatActive = (state: { user: any }) => state.user.isChatActive;
 export const walletConfig = (state: { user: any }) => state.user.walletConfig;
+export const notificationsDetails = (state: { user: any }) =>
+  state.user.notifications;
 
 export const userStore = userSlice.reducer;

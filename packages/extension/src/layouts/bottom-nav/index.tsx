@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
+import {
+  notificationsDetails,
+  setNotifications,
+  walletConfig,
+  WalletConfig,
+} from "@chatStore/user-slice";
 import chatTabBlueIcon from "@assets/icon/chat-blue.png";
 import chatTabGreyIcon from "@assets/icon/chat-grey.png";
-import clockTabBlueIcon from "@assets/icon/clock-blue.png";
-import clockTabGreyIcon from "@assets/icon/clock-grey.png";
 import homeTabBlueIcon from "@assets/icon/home-blue.png";
 import homeTabGreyIcon from "@assets/icon/home-grey.png";
 import moreTabBlueIcon from "@assets/icon/more-blue.png";
 import moreTabGreyIcon from "@assets/icon/more-grey.png";
+import bellOnGreyIcon from "@assets/icon/bell-on.png";
+import bellOnBlueIcon from "@assets/icon/bell-off.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
+import { NotificationSetup } from "@notificationTypes";
+import { store } from "@chatStore/index";
 
 const bottomNav = [
   {
@@ -21,14 +29,6 @@ const bottomNav = [
     path: "/",
     disabled: false,
     tooltip: "Home",
-  },
-  {
-    title: "Activity",
-    icon: clockTabGreyIcon,
-    activeTabIcon: clockTabBlueIcon,
-    path: "/activity",
-    disabled: true,
-    tooltip: "Coming Soon",
   },
   {
     title: "More",
@@ -43,7 +43,7 @@ export const BottomNav = () => {
   return (
     <div className={style.bottomNavContainer}>
       <HomeTab />
-      <ActivityTab />
+      <NotificationTab />
       <ChatTab />
       <MoreTab />
     </div>
@@ -51,17 +51,64 @@ export const BottomNav = () => {
 };
 
 const HomeTab = () => <Tab {...bottomNav[0]} />;
-const ActivityTab = () => <Tab {...bottomNav[1]} />;
+const NotificationTab = () => {
+  const { accountStore, chainStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const config: WalletConfig = useSelector(walletConfig);
+  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+
+  useEffect(() => {
+    const notificationFlag =
+      localStorage.getItem(`turnNotifications-${accountInfo.bech32Address}`) ||
+      "true";
+    const localNotifications = JSON.parse(
+      localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
+        JSON.stringify([])
+    );
+
+    store.dispatch(
+      setNotifications({
+        allNotifications: localNotifications,
+        unreadNotification: localNotifications.length > 0,
+        isNotificationOn: notificationFlag == "true",
+      })
+    );
+  }, [accountInfo.bech32Address]);
+
+  const isComingSoon = () => {
+    return (
+      config.notiphyWhitelist !== undefined &&
+      config.notiphyWhitelist.length !== 0 &&
+      config.notiphyWhitelist.indexOf(accountInfo.bech32Address) === -1
+    );
+  };
+
+  return (
+    <>
+      {!isComingSoon() &&
+        notificationInfo.unreadNotification &&
+        notificationInfo.isNotificationOn && <span className={style.bellDot} />}
+      <Tab
+        title={"Notification"}
+        icon={bellOnGreyIcon}
+        activeTabIcon={bellOnBlueIcon}
+        path={"/notification"}
+        disabled={isComingSoon()}
+        tooltip={"Coming Soon"}
+      />
+    </>
+  );
+};
 const ChatTab = () => {
   const { chainStore } = useStore();
-  const { walletConfig, currentFET, enabledChainIds } = useSelector(
-    userDetails
-  );
+  const { currentFET, enabledChainIds } = useSelector(userDetails);
+  const config: WalletConfig = useSelector(walletConfig);
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
 
   useEffect(() => {
-    if (walletConfig.requiredNative && currentFET < 0) {
+    if (config.requiredNative && currentFET < 0) {
       setChatTooltip("You need to have FET balance to use this feature");
       setChatDisabled(true);
       return;
@@ -71,7 +118,7 @@ const ChatTab = () => {
       setChatDisabled(true);
       return;
     }
-  }, [chainStore, currentFET, enabledChainIds, walletConfig.requiredNative]);
+  }, [chainStore, currentFET, enabledChainIds, config.requiredNative]);
 
   return (
     <Tab
@@ -84,4 +131,4 @@ const ChatTab = () => {
     />
   );
 };
-const MoreTab = () => <Tab {...bottomNav[2]} />;
+const MoreTab = () => <Tab {...bottomNav[1]} />;
