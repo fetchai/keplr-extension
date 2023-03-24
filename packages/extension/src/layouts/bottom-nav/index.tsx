@@ -108,7 +108,7 @@ const ChatTab = () => {
   const [chatDisabled, setChatDisabled] = useState(false);
 
   useEffect(() => {
-    if (config.requiredNative && currentFET < 0) {
+    if (config.requiredNative && currentFET <= 0) {
       setChatTooltip("You need to have FET balance to use this feature");
       setChatDisabled(true);
       return;

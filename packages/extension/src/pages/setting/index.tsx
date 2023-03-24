@@ -48,9 +48,9 @@ export const SettingPage: FunctionComponent = observer(() => {
           fiat: language.fiatCurrency.toUpperCase(),
         }
       );
-
-  const isChatActive = useSelector(userChatActive);
-
+  const user = useSelector(userDetails);
+  const requiredNative = useSelector(userChatActive);
+  const isChatActive = !requiredNative || user.currentFET > 0;
   return (
     <HeaderLayout
       showChainName={false}
