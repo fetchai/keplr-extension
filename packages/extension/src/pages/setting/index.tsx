@@ -50,7 +50,7 @@ export const SettingPage: FunctionComponent = observer(() => {
       );
   const user = useSelector(userDetails);
   const requiredNative = useSelector(userChatActive);
-  const isChatActive = !requiredNative || user.currentFET > 0;
+  const isChatActive = !requiredNative || user.hasFET;
   return (
     <HeaderLayout
       showChainName={false}

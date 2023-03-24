@@ -13,17 +13,17 @@ export const CommandsDropdown = ({
   showDropdown: boolean;
   handleClick: (data: string) => void;
 }) => {
-  const { currentFET } = useSelector(userDetails);
+  const { hasFET } = useSelector(userDetails);
 
   return (
     <>
       {showDropdown && (
         <div
           className={`${style.dropdown} ${
-            currentFET > 0 ? style.enabled : style.disabled
+            hasFET ? style.enabled : style.disabled
           }`}
         >
-          {currentFET <= 0 && (
+          {!hasFET && (
             <div
               style={{ fontSize: "10px", color: "red", textAlign: "center" }}
             >
@@ -37,9 +37,7 @@ export const CommandsDropdown = ({
               key={command.command}
               title={command.label}
               icon={command.icon}
-              handleClick={() =>
-                currentFET > 0 ? handleClick(command.command) : null
-              }
+              handleClick={() => (hasFET ? handleClick(command.command) : null)}
             />
           ))}
         </div>

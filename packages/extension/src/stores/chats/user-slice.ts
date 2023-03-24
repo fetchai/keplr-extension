@@ -27,7 +27,7 @@ const initialState = {
     chatReadReceiptSetting: true,
   },
   showAgentDisclaimer: true,
-  currentFET: 0,
+  hasFET: false,
   enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
 };
 
@@ -45,8 +45,8 @@ export const userSlice = createSlice({
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
-    setCurrentFET: (state, action) => {
-      state.currentFET = action.payload;
+    setHasFET: (state, action) => {
+      state.hasFET = action.payload;
     },
     setShowAgentDisclaimer: (state, action) => {
       state.showAgentDisclaimer = action.payload;
@@ -66,7 +66,7 @@ export const {
   setNotifications,
   setShowAgentDisclaimer,
   setWalletConfig,
-  setCurrentFET,
+  setHasFET,
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;

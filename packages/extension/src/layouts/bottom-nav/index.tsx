@@ -102,13 +102,13 @@ const NotificationTab = () => {
 };
 const ChatTab = () => {
   const { chainStore } = useStore();
-  const { currentFET, enabledChainIds } = useSelector(userDetails);
+  const { hasFET, enabledChainIds } = useSelector(userDetails);
   const config: WalletConfig = useSelector(walletConfig);
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
 
   useEffect(() => {
-    if (config.requiredNative && currentFET <= 0) {
+    if (config.requiredNative && !hasFET) {
       setChatTooltip("You need to have FET balance to use this feature");
       setChatDisabled(true);
       return;
@@ -118,7 +118,7 @@ const ChatTab = () => {
       setChatDisabled(true);
       return;
     }
-  }, [chainStore, currentFET, enabledChainIds, config.requiredNative]);
+  }, [chainStore, hasFET, enabledChainIds, config.requiredNative]);
 
   return (
     <Tab

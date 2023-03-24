@@ -175,7 +175,7 @@ export const ChatsViewSection = ({
       return;
     }
 
-    if (isCommand && user.currentFET <= 0) {
+    if (isCommand && !user.hasFET) {
       notification.push({
         type: "warning",
         placement: "top-center",

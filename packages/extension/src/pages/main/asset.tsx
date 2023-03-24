@@ -19,7 +19,7 @@ import { useNotification } from "@components/notification";
 import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { store } from "@chatStore/index";
-import { setCurrentFET } from "@chatStore/user-slice";
+import { setHasFET } from "@chatStore/user-slice";
 
 export const ProgressBar = ({
   width,
@@ -213,7 +213,7 @@ export const AssetView: FunctionComponent = observer(() => {
     ? !totalPrice.toDec().isZero()
     : !total.toDec().isZero();
 
-  store.dispatch(setCurrentFET(parseFloat(stakable.toDec().toString())));
+  store.dispatch(setHasFET(hasBalance));
   if (!hasBalance) {
     return (
       <EmptyState
