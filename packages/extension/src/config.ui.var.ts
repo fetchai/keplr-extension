@@ -48,7 +48,7 @@ export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
 
 export const AGENT_ADDRESS: { [key: string]: string } = {
   [CHAIN_ID_FETCHHUB]:
-    "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf",
+    "agent1qvmfez9k6fycllzqc6p7telhwyzzj709n32sc5x2q0ss62ehqc3e52qgna7",
   [CHAIN_ID_DORADO]:
     "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf",
 };
