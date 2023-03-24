@@ -44,16 +44,20 @@ export const AgentDisclaimer = () => {
         <div className={style.infoContainer}>
           <h3>Fetchbot disclaimer</h3>
           <p>
-            Fetchbot may be powered by GPT3.5 (same model that powers chatGPT)
-            but it has its limitations. Some information might be incorrect but
-            Fetchbot is still getting trained to give more accurate responses.
+            Fetchbot is powered by an AI language model. As such it has similar
+            limitations to existing language models. It might respond with
+            incorrect or confusing information and as such users of Fetchbot
+            should be aware of it.
           </p>
-
           <p>
-            Also, we will be retaining your interaction data with Fetchbot for a
-            limited time period for training purposes. Thanks for helping us
-            improve Fetchbot. Don&apos;t worry, chat with other addresses apart
-            from Fetchbot are still e2e encrypted that even we can&apos;t read.
+            In order to improve Fetchbot, we will retain your interaction data
+            with Fetchbot for a limited time for training purposes. By
+            interacting with Fetchbot you will be helping us provide a more
+            improved service for the whole community - thanks in advance.
+          </p>
+          <p>
+            All other chat interactions are still end to end encrypted and are
+            kept totally private between you and your recipient.
           </p>
         </div>
         <button type="button" onClick={() => handleClose()}>
