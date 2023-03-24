@@ -70,9 +70,10 @@ export const {
 } = userSlice.actions;
 
 export const userDetails = (state: { user: any }) => state.user;
-export const userChatActive = (state: { user: any }) => state.user.isChatActive;
 export const walletConfig = (state: { user: any }) => state.user.walletConfig;
 export const notificationsDetails = (state: { user: any }) =>
   state.user.notifications;
+export const userChatActive = (state: { user: any }) =>
+  state.user.walletConfig.requiredNative;
 
 export const userStore = userSlice.reducer;

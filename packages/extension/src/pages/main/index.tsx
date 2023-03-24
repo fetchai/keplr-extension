@@ -92,7 +92,7 @@ export const MainPage: FunctionComponent = observer(() => {
           console.log(error);
         });
     });
-  }, [chainStore.current.chainId]);
+  }, [chainStore.current.chainId, accountInfo.bech32Address]);
 
   return (
     <HeaderLayout
