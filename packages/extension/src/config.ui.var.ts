@@ -66,7 +66,7 @@ export const AGENT_COMMANDS = [
     command: "/sendToken",
     label: "sendToken (Send Token)",
     icon: sendTokenIcon,
-    enabled: true,
+    enabled: false,
   },
   {
     command: "/autoCompound",

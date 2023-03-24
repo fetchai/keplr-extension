@@ -11,20 +11,22 @@ export const AgentInfo = ({ handleClose }: { handleClose: any }) => {
           <h3 style={{ textAlign: "center" }}>Agents can do more!!</h3>
           <p>Type / to access a list of commands such as</p>
           <img
-            src={require("@assets/agent-commands.svg")}
+            src={require("@assets/agent-commands.png")}
             style={{
               height: "120px",
               border: "1px solid grey",
               marginBottom: "10px",
+              width: "100%",
             }}
           />
           <p>You can also ask me anything about FetchAI</p>
           <img
-            src={require("@assets/agent-gpt.svg")}
+            src={require("@assets/agent-gpt.png")}
             style={{
               height: "120px",
               border: "1px solid grey",
               marginBottom: "10px",
+              width: "100%",
             }}
           />
         </div>
