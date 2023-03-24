@@ -260,6 +260,7 @@ export const NewChat: FunctionComponent = observer(() => {
                   pathname: "/chat/agent/" + AGENT_ADDRESS[current.chainId],
                 });
               }}
+              disabled={user.walletConfig.fetchbotActive}
             >
               Talk to Fetchbot
             </button>
