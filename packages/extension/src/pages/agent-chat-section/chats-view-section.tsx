@@ -21,7 +21,6 @@ import {
   AGENT_COMMANDS,
   CHAT_PAGE_COUNT,
   TRANSACTION_FAILED,
-  TRANSACTION_APPROVED,
   AGENT_ADDRESS,
 } from "../../config.ui.var";
 import { useStore } from "../../stores";
@@ -353,17 +352,16 @@ export const ChatsViewSection = ({
   }, [processingLastMessage]);
 
   const signTxn = async (data: string) => {
-    console.log(JSON.parse(data));
     const payload = JSON.parse(data);
+    console.log(payload);
+    const messagePayload = {
+      chainId: current.chainId,
+      accessToken: user.accessToken,
+      targetAddress,
+    };
     try {
-      await executeTxn(accountInfo, payload, notification);
-      await deliverMessages(
-        user.accessToken,
-        current.chainId,
-        TRANSACTION_APPROVED,
-        accountInfo.bech32Address,
-        targetAddress
-      );
+      await executeTxn(accountInfo, notification, payload, messagePayload);
+      history.goBack();
     } catch (e) {
       console.log(e);
       notification.push({
@@ -383,7 +381,6 @@ export const ChatsViewSection = ({
         accountInfo.bech32Address,
         targetAddress
       );
-    } finally {
       history.push(`/chat/agent/${AGENT_ADDRESS[current.chainId]}`);
     }
   };

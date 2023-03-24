@@ -1,6 +1,8 @@
 import { ContextProps } from "@components/notification";
+import { deliverMessages } from "@graphQL/messages-api";
 import { cosmos } from "@keplr-wallet/cosmos";
 import { AccountWithAll, getKeplrFromWindow } from "@keplr-wallet/stores";
+import { TRANSACTION_APPROVED } from "../config.ui.var";
 import ICoin = cosmos.base.v1beta1.ICoin;
 
 //currently not in use
@@ -77,16 +79,27 @@ export const signTransaction = async (
 //currently in use
 export const executeTxn = async (
   accountInfo: AccountWithAll,
+  notification: ContextProps,
   payload: any,
-  notification: ContextProps
+  messagePayload: any
 ) => {
   let txnResponse = null;
   switch (payload.method) {
     case "sendToken":
-      txnResponse = await sendToken(accountInfo, payload, notification);
+      txnResponse = await sendToken(
+        accountInfo,
+        notification,
+        payload,
+        messagePayload
+      );
       break;
     case "claimRewards":
-      txnResponse = await claimRewards(accountInfo, payload, notification);
+      txnResponse = await claimRewards(
+        accountInfo,
+        notification,
+        payload,
+        messagePayload
+      );
       break;
   }
   return txnResponse;
@@ -94,11 +107,12 @@ export const executeTxn = async (
 
 export const claimRewards = async (
   accountInfo: AccountWithAll,
-  data: any,
-  notification: ContextProps
+  notification: ContextProps,
+  payload: any,
+  messagePayload: any
 ) => {
   const txnResponse = await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
-    data.validatorAddresses,
+    payload.validatorAddresses,
     "",
     {
       gas: "190000",
@@ -111,7 +125,7 @@ export const claimRewards = async (
     },
     { disableBalanceCheck: false },
     {
-      onBroadcasted: (_txHash: Uint8Array) => {
+      onBroadcasted: (txHash: Uint8Array) => {
         notification.push({
           type: "success",
           placement: "top-center",
@@ -122,6 +136,16 @@ export const claimRewards = async (
             duration: 0.25,
           },
         });
+        deliverMessages(
+          messagePayload.accessToken,
+          messagePayload.chainId,
+          {
+            message: TRANSACTION_APPROVED,
+            hash: Buffer.from(txHash).toString("hex"),
+          },
+          accountInfo.bech32Address,
+          messagePayload.targetAddress
+        );
       },
     }
   );
@@ -130,13 +154,14 @@ export const claimRewards = async (
 
 export const sendToken = async (
   accountInfo: AccountWithAll,
-  data: any,
-  notification: ContextProps
+  notification: ContextProps,
+  payload: any,
+  messagePayload: any
 ) => {
   const txnResponse = await accountInfo.sendToken(
-    data.amount,
-    data.currency,
-    data.recipientAddress,
+    payload.amount,
+    payload.currency,
+    payload.recipientAddress,
     "",
     {
       gas: "96000",
@@ -149,7 +174,7 @@ export const sendToken = async (
     },
     { disableBalanceCheck: false },
     {
-      onBroadcasted: (_txHash: Uint8Array) => {
+      onBroadcasted: (txHash: Uint8Array) => {
         notification.push({
           type: "success",
           placement: "top-center",
@@ -160,6 +185,16 @@ export const sendToken = async (
             duration: 0.25,
           },
         });
+        deliverMessages(
+          messagePayload.accessToken,
+          messagePayload.chainId,
+          {
+            message: TRANSACTION_APPROVED,
+            hash: Buffer.from(txHash).toString("hex"),
+          },
+          accountInfo.bech32Address,
+          messagePayload.targetAddress
+        );
       },
     }
   );
