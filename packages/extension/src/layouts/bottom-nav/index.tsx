@@ -57,8 +57,16 @@ const NotificationTab = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
   const config: WalletConfig = useSelector(walletConfig);
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const [isComingSoon, setIsComingSoon] = useState<boolean>(true);
 
   useEffect(() => {
+    setIsComingSoon(
+      config.notiphyWhitelist === undefined
+        ? true
+        : config.notiphyWhitelist.length !== 0 &&
+            config.notiphyWhitelist.indexOf(accountInfo.bech32Address) === -1
+    );
+
     const notificationFlag =
       localStorage.getItem(`turnNotifications-${accountInfo.bech32Address}`) ||
       "true";
@@ -74,19 +82,11 @@ const NotificationTab = () => {
         isNotificationOn: notificationFlag == "true",
       })
     );
-  }, [accountInfo.bech32Address]);
-
-  const isComingSoon = () => {
-    return (
-      config.notiphyWhitelist !== undefined &&
-      config.notiphyWhitelist.length !== 0 &&
-      config.notiphyWhitelist.indexOf(accountInfo.bech32Address) === -1
-    );
-  };
+  }, [accountInfo.bech32Address, config.notiphyWhitelist]);
 
   return (
     <>
-      {!isComingSoon() &&
+      {!isComingSoon &&
         notificationInfo.unreadNotification &&
         notificationInfo.isNotificationOn && <span className={style.bellDot} />}
       <Tab
@@ -94,7 +94,7 @@ const NotificationTab = () => {
         icon={bellOnGreyIcon}
         activeTabIcon={bellOnBlueIcon}
         path={"/notification"}
-        disabled={isComingSoon()}
+        disabled={isComingSoon}
         tooltip={"Coming Soon"}
       />
     </>
