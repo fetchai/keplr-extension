@@ -252,7 +252,7 @@ export const NewChat: FunctionComponent = observer(() => {
             >
               Create new group chat
             </button>
-            <br /> or <br />
+            or <br />
             <button
               className={style.button}
               onClick={() => {
