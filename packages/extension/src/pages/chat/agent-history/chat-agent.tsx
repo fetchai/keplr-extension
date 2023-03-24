@@ -14,7 +14,7 @@ export const ChatAgent: React.FC<{
   targetAddress: string;
 }> = ({ chainId, group, contactName, targetAddress }) => {
   const [message, setMessage] = useState("");
-  const [groupData, setGroupData] = useState(group);
+  // const [groupData, setGroupData] = useState(group);
 
   const history = useHistory();
 
@@ -26,13 +26,13 @@ export const ChatAgent: React.FC<{
   };
 
   /// Current wallet user
-  const sender = groupData?.addresses.find(
-    (val) => val?.address !== targetAddress
-  );
-  /// Target user
-  const receiver = groupData?.addresses.find(
-    (val) => val?.address === targetAddress
-  );
+  // const sender = groupData?.addresses.find(
+  //   (val) => val?.address !== targetAddress
+  // );
+  // /// Target user
+  // const receiver = groupData?.addresses.find(
+  //   (val) => val?.address === targetAddress
+  // );
 
   const decryptGrpAddresses = async (
     groupAddress: GroupAddress,
@@ -93,7 +93,7 @@ export const ChatAgent: React.FC<{
     if (tempSenderAddress && tempReceiverAddress) {
       const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
       tempGroup.addresses = tempGroupAddress;
-      setGroupData(tempGroup);
+      // setGroupData(tempGroup);
     }
   };
 
@@ -130,7 +130,8 @@ export const ChatAgent: React.FC<{
       style={{ position: "relative" }}
       onClick={handleClick}
     >
-      {Number(sender?.lastSeenTimestamp) <
+      {/* Disable unread dot for agents */}
+      {/* {Number(sender?.lastSeenTimestamp) <
         Number(receiver?.lastSeenTimestamp) &&
         group.lastMessageSender === targetAddress &&
         Number(group.lastMessageTimestamp) >
@@ -147,7 +148,7 @@ export const ChatAgent: React.FC<{
               zIndex: 1,
             }}
           />
-        )}
+        )} */}
 
       <img src={require("@assets/svg/fetchbot.svg")} width="40px" />
 

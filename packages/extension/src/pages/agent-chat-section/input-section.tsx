@@ -57,7 +57,9 @@ export const InputField = ({
     const isNotCommand =
       !AGENT_COMMANDS.find((command: any) =>
         command.command.includes(event.target.value)
-      ) || !event.target.value;
+      ) ||
+      !event.target.value ||
+      !event.target.value.includes("/");
 
     setIsCommand(!isNotCommand);
     setShowCommandDropdown(!isNotCommand);

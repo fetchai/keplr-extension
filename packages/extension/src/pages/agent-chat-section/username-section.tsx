@@ -44,7 +44,11 @@ export const UserNameSection = () => {
             history.goBack();
           }}
         />
-        <img src={require("@assets/svg/fetchbot.svg")} width="25px" />
+        <img
+          src={require("@assets/svg/fetchbot.svg")}
+          width="25px"
+          draggable={false}
+        />
         <span className={style.recieverName}>
           <ToolTip
             tooltip={
@@ -62,7 +66,7 @@ export const UserNameSection = () => {
           </ToolTip>
         </span>
         <span className={style.copyIcon} onClick={() => setIsOpendialog(true)}>
-          <i className="fa fa-info-circle" />
+          <i className="fa fa-info-circle" draggable={false} />
         </span>
       </div>
       <div className={style.rightBox} />
