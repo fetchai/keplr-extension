@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { userChatAgents, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
-import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
+import { Chats, Groups } from "@chatTypes";
 import { ChatMessage } from "@components/chat-message";
-import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
+import { deliverMessages } from "@graphQL/messages-api";
 import { recieveGroups, recieveMessages } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
-import { decryptGroupTimestamp } from "@utils/decrypt-group";
+
 import React, {
   createRef,
   useCallback,
@@ -66,83 +66,19 @@ export const ChatsViewSection = ({
   );
 
   const [pagination, setPagination] = useState(preLoadedChats?.pagination);
-  const [group, setGroup] = useState<Group | undefined>(
-    Object.values(userAgents).find((group) => group.id.includes(targetAddress))
+  const group = Object.values(userAgents).find((group) =>
+    group.id.includes(targetAddress)
   );
 
   const [loadingMessages, setLoadingMessages] = useState(false);
 
   const [newMessage, setNewMessage] = useState("");
   const [isCommand, setIsCommand] = useState(false);
-  const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
   const [processingLastMessage, setProcessingLastMessage] = useState(false);
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
   const notification = useNotification();
-
-  const decryptGrpAddresses = async (
-    groupAddress: GroupAddress,
-    isSender: boolean
-  ) => {
-    if (groupAddress && groupAddress.groupLastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        current.chainId,
-        groupAddress.groupLastSeenTimestamp,
-        isSender
-      );
-
-      Object.assign(groupAddress, {
-        groupLastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-    if (groupAddress && groupAddress.lastSeenTimestamp) {
-      const data = await decryptGroupTimestamp(
-        current.chainId,
-        groupAddress.lastSeenTimestamp,
-        isSender
-      );
-      Object.assign(groupAddress, {
-        lastSeenTimestamp: new Date(data).getTime(),
-      });
-    }
-
-    return groupAddress;
-  };
-
-  const decryptGrp = async (group: Group) => {
-    const tempGroup = { ...group };
-    let tempSenderAddress: GroupAddress | undefined;
-    let tempReceiverAddress: GroupAddress | undefined;
-
-    /// Shallow copy
-    /// Decrypting sender data
-    const senderAddress = {
-      ...group.addresses?.find((val) => val.address !== targetAddress),
-    };
-    if (senderAddress)
-      tempSenderAddress = await decryptGrpAddresses(
-        senderAddress as GroupAddress,
-        true
-      );
-
-    /// Decrypting receiver data
-    const receiverAddress = {
-      ...group.addresses?.find((val) => val.address === targetAddress),
-    };
-    if (receiverAddress)
-      tempReceiverAddress = await decryptGrpAddresses(
-        receiverAddress as GroupAddress,
-        false
-      );
-
-    /// Storing decryptin address into the group object and updating the UI
-    if (tempSenderAddress && tempReceiverAddress) {
-      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
-      tempGroup.addresses = tempGroupAddress;
-      setGroup(tempGroup);
-    }
-  };
 
   useEffect(() => {
     const updatedMessages = Object.values(preLoadedChats?.messages).sort(
@@ -153,58 +89,29 @@ export const ChatsViewSection = ({
 
     setMessages(updatedMessages);
     setPagination(preLoadedChats.pagination);
-
-    const lastMessage =
-      updatedMessages && updatedMessages.length > 0
-        ? updatedMessages[updatedMessages.length - 1]
-        : null;
-
-    if (
-      group?.id &&
-      lastMessage &&
-      lastMessage.sender !== accountInfo.bech32Address
-    ) {
-      setTimeout(() => {
-        updateGroupTimestamp(
-          group?.id,
-          user.accessToken,
-          current.chainId,
-          accountInfo.bech32Address,
-          targetAddress,
-          new Date(lastMessage.commitTimestamp),
-          new Date(lastMessage.commitTimestamp)
-        );
-      }, 500);
-    }
   }, [preLoadedChats]);
-
-  useEffect(() => {
-    /// Shallow copy
-    const tempGroup = {
-      ...Object.values(userAgents).find((group) =>
-        group.id.includes(targetAddress)
-      ),
-    };
-    if (tempGroup) decryptGrp(tempGroup as Group);
-  }, [userAgents]);
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
-      if (node) node.scrollIntoView({ block: "end" });
+      /// Wait 1 sec for design Rendering and then scroll
+      if (node)
+        setTimeout(() => {
+          node.scrollIntoView({ block: "end" });
+        }, 1000);
     },
     [messages]
   );
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView(true);
+      messagesEndRef.current?.scrollIntoView(true);
     }
   }, [messagesEndRef.current]);
 
   useEffect(() => {
     const getChats = async () => {
       await loadUserList();
-      if (pagination.page >= 0) messagesScrollRef.current.scrollIntoView(true);
+      if (pagination.page >= 0) messagesScrollRef.current?.scrollIntoView(true);
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
@@ -214,18 +121,7 @@ export const ChatsViewSection = ({
     if (group) {
       const page = pagination?.page + 1 || 0;
       setLoadingMessages(true);
-      await recieveMessages(
-        targetAddress,
-        receiver?.lastSeenTimestamp &&
-          Number(group.lastMessageTimestamp) >
-            Number(receiver.lastSeenTimestamp) &&
-          page == 0
-          ? receiver?.lastSeenTimestamp
-          : null,
-        page,
-        group.isDm,
-        group.id
-      );
+      await recieveMessages(targetAddress, null, page, group.isDm, group.id);
       setLoadingMessages(false);
     } else {
       const newPagination = pagination;
@@ -249,22 +145,6 @@ export const ChatsViewSection = ({
     }
     return false;
   };
-
-  const receiver = group?.addresses.find(
-    (val) => val.address === targetAddress
-  );
-  useEffect(() => {
-    const time = group?.addresses.find((val) => val.address !== targetAddress)
-      ?.lastSeenTimestamp;
-    if (lastUnreadMesageId === "") {
-      const firstMessageUnseen = messages
-        .filter((message) => message.commitTimestamp > Number(time))
-        .sort();
-      if (firstMessageUnseen.length > 0) {
-        setLastUnreadMesageId(firstMessageUnseen[0].id);
-      }
-    }
-  }, [messages, group]);
 
   useEffect(() => {
     if (
@@ -321,7 +201,6 @@ export const ChatsViewSection = ({
         if (message) {
           const updatedMessagesList = [...messages, message];
           setMessages(updatedMessagesList);
-          setLastUnreadMesageId("");
           setNewMessage("");
           setProcessingLastMessage(true);
         }
@@ -407,39 +286,24 @@ export const ChatsViewSection = ({
           const check = showDateFunction(message?.commitTimestamp);
           return (
             <div key={message.id}>
-              {group !== undefined && (
+              {
                 <ChatMessage
                   chainId={current.chainId}
                   showDate={check}
                   message={message?.contents}
                   isSender={message?.sender === accountInfo.bech32Address} // if I am the sender of this message
                   timestamp={message?.commitTimestamp || 1549312452}
-                  groupLastSeenTimestamp={
-                    receiver && receiver.groupLastSeenTimestamp
-                      ? new Date(receiver.groupLastSeenTimestamp).getTime()
-                      : 0
-                  }
+                  groupLastSeenTimestamp={0}
                   onClickSignTxn={
                     messages.length - 1 > index ? undefined : signTxn
                   }
                 />
-              )}
+              }
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
-              {message?.commitTimestamp &&
-                receiver?.lastSeenTimestamp &&
-                Number(message?.commitTimestamp) >
-                  Number(receiver?.lastSeenTimestamp) &&
-                message?.sender === targetAddress && (
-                  <div className={messagesEndRef} /> //ref={messagesEndRef}
-                )}
-              {lastUnreadMesageId === message.id && (
-                <div ref={messagesEndRef} />
-              )}
+              <div ref={messagesEndRef} />
             </div>
           );
         })}
-
-        {lastUnreadMesageId === "" && <div ref={messagesEndRef} />}
       </div>
       {!targetPubKey.length ? (
         <InactiveAgentMessage />
