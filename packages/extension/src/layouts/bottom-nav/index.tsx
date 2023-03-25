@@ -112,7 +112,11 @@ const ChatTab = () => {
       setChatTooltip("You need to have FET balance to use this feature");
       setChatDisabled(true);
       return;
+    } else {
+      setChatTooltip("");
+      setChatDisabled(false);
     }
+
     if (!enabledChainIds.includes(chainStore.current?.chainId)) {
       setChatTooltip("Feature not available on this network");
       setChatDisabled(true);

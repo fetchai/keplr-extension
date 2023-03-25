@@ -241,6 +241,7 @@ export const NewChat: FunctionComponent = observer(() => {
           <div className={style.searchHelp}>
             You can search your contacts or paste any valid {current.chainName}{" "}
             address to start a conversation.
+            <br /> or <br />
             <button
               className={style.button}
               onClick={() => {
@@ -252,7 +253,7 @@ export const NewChat: FunctionComponent = observer(() => {
             >
               Create new group chat
             </button>
-            or <br />
+            <br />
             <button
               className={style.button}
               onClick={() => {
@@ -261,6 +262,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 });
               }}
               disabled={!user.walletConfig.fetchbotActive}
+              hidden={!user.walletConfig.fetchbotActive}
             >
               Talk to Fetchbot
             </button>
