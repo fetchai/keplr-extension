@@ -99,12 +99,12 @@ export const GroupChatSection: FunctionComponent = () => {
     switch (option) {
       case GroupChatOptions.groupInfo:
         amplitude.getInstance().logEvent("Group info click", {});
-        navigateToPage("/group-chat/review-details");
+        navigateToPage("/chat/group-chat/review-details");
         break;
 
       case GroupChatOptions.chatSettings:
         amplitude.getInstance().logEvent("Group Chat setting click", {});
-        navigateToPage("/group-chat/create");
+        navigateToPage("/chat/group-chat/create");
         break;
 
       case GroupChatOptions.deleteGroup:

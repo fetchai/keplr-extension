@@ -297,7 +297,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
             className={style.button}
             size="large"
             onClick={async () => {
-              history.push("/group-chat/edit-member");
+              history.push("/chat/group-chat/edit-member");
             }}
           >
             Edit Chat Settings
