@@ -90,7 +90,7 @@ const NotificationTab = () => {
         notificationInfo.unreadNotification &&
         notificationInfo.isNotificationOn && <span className={style.bellDot} />}
       <Tab
-        title={"Notification"}
+        title={"Notifications"}
         icon={bellOnGreyIcon}
         activeTabIcon={bellOnBlueIcon}
         path={"/notification"}
