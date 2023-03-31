@@ -124,11 +124,11 @@ export const GroupChatsViewSection = ({
 
   const messagesEndRef: any = useCallback(
     (node: any) => {
-      /// Wait 1 sec for design Rendering and then scroll
+      /// Wait 300 m/s for design Rendering and then scroll
       if (node)
         setTimeout(() => {
           node.scrollIntoView({ block: "end" });
-        }, 1000);
+        }, 300);
     },
     [messages]
   );
@@ -148,7 +148,11 @@ export const GroupChatsViewSection = ({
   useEffect(() => {
     const getChats = async () => {
       await loadUserList();
-      if (pagination.page >= 0) messagesScrollRef.current.scrollIntoView(true);
+      if (pagination.page >= 0) {
+        setTimeout(() => {
+          messagesScrollRef.current?.scrollIntoView(true);
+        }, 200);
+      }
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
