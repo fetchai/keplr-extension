@@ -4,7 +4,6 @@ import React, { FunctionComponent, useState } from "react";
 import style from "./style.module.scss";
 import ReactHtmlParser from "react-html-parser";
 import jazzicon from "@metamask/jazzicon";
-import { markDeliveryAsClicked } from "@utils/fetch-notification";
 import { useStore } from "../../../stores";
 import { FormattedMessage } from "react-intl";
 import amplitude from "amplitude-js";
@@ -55,18 +54,12 @@ export const NotificationItem: FunctionComponent<Props> = ({
           notification.delivery_id !== delivery_id
       );
 
-      markDeliveryAsClicked(elem.delivery_id, accountInfo.bech32Address).then(
-        () => {
-          localStorage.setItem(
-            `notifications-${accountInfo.bech32Address}`,
-            JSON.stringify(unclickedNotifications)
-          );
-          window.open(
-            elem.cta_url.startsWith("http")
-              ? elem.cta_url
-              : `https:${elem.cta_url}`
-          );
-        }
+      localStorage.setItem(
+        `notifications-${accountInfo.bech32Address}`,
+        JSON.stringify(unclickedNotifications)
+      );
+      window.open(
+        elem.cta_url.startsWith("http") ? elem.cta_url : `https:${elem.cta_url}`
       );
     }
   };

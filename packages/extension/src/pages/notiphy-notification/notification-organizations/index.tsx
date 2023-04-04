@@ -178,9 +178,13 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
           <>
             {!orgList.length && (
               <div className={style.resultText}>
-                <p>
-                  No results found. <br /> Please refine your search.
-                </p>
+                {inputVal === "" ? (
+                  <p>No results found.</p>
+                ) : (
+                  <p>
+                    No results found. <br /> Please refine your search.
+                  </p>
+                )}
               </div>
             )}
             {orgList.map((elem: NotyphiOrganisation, index: number) => (
