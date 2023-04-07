@@ -46,7 +46,7 @@ export const NotificationModal: FunctionComponent = () => {
 
   const handleClick = () => {
     if (notificationPayload?.modalType === NotificationModalType.initial) {
-      history.push("notification/organizations/add");
+      history.push("notification/organisations/add");
     } else if (
       notificationPayload?.modalType === NotificationModalType.notificationOff
     ) {
@@ -163,13 +163,15 @@ export const NotificationModal: FunctionComponent = () => {
             notification.delivery_id !== deliveryId
         );
 
-        store.dispatch(
-          setNotifications({ allNotifications: newLocalNotifications })
-        );
-        localStorage.setItem(
-          `notifications-${accountInfo.bech32Address}`,
-          JSON.stringify(newLocalNotifications)
-        );
+        setTimeout(() => {
+          store.dispatch(
+            setNotifications({ allNotifications: newLocalNotifications })
+          );
+          localStorage.setItem(
+            `notifications-${accountInfo.bech32Address}`,
+            JSON.stringify(newLocalNotifications)
+          );
+        }, 300);
       }
     );
   };

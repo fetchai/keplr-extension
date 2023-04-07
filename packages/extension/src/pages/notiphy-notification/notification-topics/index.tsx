@@ -118,13 +118,15 @@ export const NotificationTopics: FunctionComponent = () => {
           <div className={style.topicChipsContainer}>
             {!topicsList.length && (
               <div className={style.resultText}>
-                {inputVal === "" ? (
-                  <p>No results found.</p>
-                ) : (
-                  <p>
-                    No results found. <br /> Please refine your search.
-                  </p>
-                )}
+                <p>
+                  No results found.
+                  {inputVal !== "" && (
+                    <>
+                      <br />
+                      Please refine your search.
+                    </>
+                  )}
+                </p>
               </div>
             )}
             {topicsList.map((topic: NotyphiTopic, index: number) => (
