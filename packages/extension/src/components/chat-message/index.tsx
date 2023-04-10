@@ -9,6 +9,7 @@ import { isToday, isYesterday, format } from "date-fns";
 import { store } from "@chatStore/index";
 import { setMessageError } from "@chatStore/messages-slice";
 import { MessagePrimitive } from "@utils/encrypt-message";
+import { TokenDropdown } from "@components/agents/tokens-dropdown";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -96,6 +97,7 @@ export const ChatMessage = ({
             >
               Sign transaction
             </button>
+            <TokenDropdown />
           </div>
         );
     }
