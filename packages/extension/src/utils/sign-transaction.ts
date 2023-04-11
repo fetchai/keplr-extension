@@ -9,7 +9,7 @@ import { TRANSACTION_APPROVED } from "../config.ui.var";
 export const signTransaction = async (
   data: string,
   chainId: string,
-  signer: string,
+  signer: string
 ) => {
   const payload = JSON.parse(data);
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -29,17 +29,19 @@ export const signTransaction = async (
           modeInfo: {
             single: {
               mode: cosmos.tx.signing.v1beta1.SignMode.SIGN_MODE_DIRECT,
-            }
+            },
           },
           sequence: payload.sequence,
         },
       ],
       fee: {
-        amount: [{
-          denom: "atestfet",
-          amount: "480000000000000",
-        }],
-        gasLimit: Long.fromString("96000"),
+        amount: [
+          {
+            denom: "atestfet",
+            amount: "480000000000000",
+          },
+        ],
+        gasLimit: Long.fromString(payload.gasLimit),
       },
     }).finish()
   });
@@ -48,7 +50,7 @@ export const signTransaction = async (
     authInfoBytes: unsignedTx.authInfoBytes,
     chainId: payload.chainId,
     accountNumber: payload.accountNumber,
-  }
+  };
   const signResponse = await keplr.signDirect(chainId, signer, signDoc, {
     preferNoSetFee: false,
     preferNoSetMemo: true,
