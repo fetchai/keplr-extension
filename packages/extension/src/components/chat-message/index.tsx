@@ -10,6 +10,7 @@ import { store } from "@chatStore/index";
 import { setMessageError } from "@chatStore/messages-slice";
 import { MessagePrimitive } from "@utils/encrypt-message";
 import { TokenDropdown } from "@components/agents/tokens-dropdown";
+import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -98,6 +99,7 @@ export const ChatMessage = ({
               Sign transaction
             </button>
             <TokenDropdown />
+            <IBCChainSelector />
           </div>
         );
     }
