@@ -240,8 +240,11 @@ export const ChatsViewSection = ({
       targetAddress,
     };
     try {
-      const signResult = await signTransaction(data, messagePayload.chainId, accountInfo.bech32Address);
-      // await executeTxn(accountInfo, notification, payload, messagePayload);
+      const signResult = await signTransaction(
+        data,
+        messagePayload.chainId,
+        accountInfo.bech32Address
+      );
       deliverMessages(
         messagePayload.accessToken,
         messagePayload.chainId,

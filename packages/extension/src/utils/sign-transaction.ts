@@ -1,3 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { ContextProps } from "@components/notification";
 import { deliverMessages } from "@graphQL/messages-api";
 import { cosmos } from "@keplr-wallet/cosmos";
@@ -5,14 +8,13 @@ import { AccountWithAll, getKeplrFromWindow } from "@keplr-wallet/stores";
 import Long from "long";
 import { TRANSACTION_APPROVED } from "../config.ui.var";
 
-//currently not in use
 export const signTransaction = async (
   data: string,
   chainId: string,
   signer: string
 ) => {
   const payload = JSON.parse(data);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const keplr = (await getKeplrFromWindow())!;
   const pubKey = (await keplr.getKey(payload.chainId)).pubKey;
   const unsignedTx = cosmos.tx.v1beta1.TxRaw.create({
@@ -43,7 +45,7 @@ export const signTransaction = async (
         ],
         gasLimit: Long.fromString(payload.gasLimit),
       },
-    }).finish()
+    }).finish(),
   });
   const signDoc = {
     bodyBytes: unsignedTx.bodyBytes,
@@ -68,7 +70,7 @@ export const signTransaction = async (
   };
 };
 
-//currently in use
+//currently not in use
 export const executeTxn = async (
   accountInfo: AccountWithAll,
   notification: ContextProps,
