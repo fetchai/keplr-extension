@@ -7,6 +7,7 @@ import { useSendTxConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { FormattedMessage } from "react-intl";
 import {
+  Button,
   ButtonDropdown,
   DropdownItem,
   DropdownMenu,
@@ -16,12 +17,23 @@ import {
 } from "reactstrap";
 import { useStore } from "../../../stores";
 import { EthereumEndpoint } from "../../../config.ui";
+import { deliverMessages } from "@graphQL/messages-api";
+import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
+import { userDetails } from "@chatStore/user-slice";
+import { useNotification } from "@components/notification";
 
-export const TokenDropdown: FunctionComponent = observer(() => {
+export const TokenDropdown: FunctionComponent<{
+  label: string;
+  disabled: boolean;
+}> = observer(({ label, disabled }) => {
   const { accountStore, chainStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-
+  const history = useHistory();
+  const targetAddress = history.location.pathname.split("/")[3];
+  const notification = useNotification();
+  const user = useSelector(userDetails);
   const sendConfigs = useSendTxConfig(
     chainStore,
     current.chainId,
@@ -52,6 +64,33 @@ export const TokenDropdown: FunctionComponent = observer(() => {
       return a.coinDenom < b.coinDenom ? -1 : 1;
     });
 
+  const sendTokenDetails = async () => {
+    const messagePayload = {
+      token: amountConfig.sendCurrency,
+      message: `Selected Token: ${amountConfig.sendCurrency.coinDenom}`,
+    };
+    try {
+      await deliverMessages(
+        user.accessToken,
+        current.chainId,
+        messagePayload,
+        accountInfo.bech32Address,
+        targetAddress
+      );
+    } catch (e) {
+      console.log(e);
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: `Failed to send selected Token`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    }
+  };
   return (
     <React.Fragment>
       <FormGroup>
@@ -60,16 +99,18 @@ export const TokenDropdown: FunctionComponent = observer(() => {
           className="form-control-label"
           style={{ width: "100%" }}
         >
-          <FormattedMessage id="component.form.coin-input.token.label" />
+          {label || (
+            <FormattedMessage id="component.form.coin-input.token.label" />
+          )}
         </Label>
         <ButtonDropdown
           id={`selector-${randomId}`}
           className={classnames(styleCoinInput.tokenSelector, {
-            disabled: amountConfig.isMax,
+            disabled: amountConfig.isMax || disabled,
           })}
           isOpen={isOpenTokenSelector}
           toggle={() => setIsOpenTokenSelector((value) => !value)}
-          disabled={amountConfig.isMax}
+          disabled={amountConfig.isMax || disabled}
         >
           <DropdownToggle caret>
             {amountConfig.sendCurrency.coinDenom}
@@ -95,6 +136,16 @@ export const TokenDropdown: FunctionComponent = observer(() => {
             })}
           </DropdownMenu>
         </ButtonDropdown>
+        <Button
+          type="button"
+          color="primary"
+          size="small"
+          style={{ marginTop: "15px" }}
+          disabled={disabled}
+          onClick={() => sendTokenDetails()}
+        >
+          Proceed
+        </Button>
       </FormGroup>
     </React.Fragment>
   );
