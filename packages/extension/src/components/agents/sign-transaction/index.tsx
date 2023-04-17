@@ -1,7 +1,7 @@
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { deliverMessages } from "@graphQL/messages-api";
-import { executeTxn } from "@utils/sign-transaction";
+import { signTransaction } from "@utils/sign-transaction";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -27,14 +27,8 @@ export const SignTransaction = ({
   const user = useSelector(userDetails);
   const notification = useNotification();
   const signTxn = async (data: string) => {
-    const payload = JSON.parse(data);
-    const messagePayload = {
-      chainId,
-      accessToken: user.accessToken,
-      targetAddress,
-    };
     try {
-      await executeTxn(accountInfo, notification, payload, messagePayload);
+      await signTransaction(data, chainId, targetAddress);
       history.goBack();
     } catch (e) {
       console.log(e);
