@@ -66,10 +66,10 @@ export const AGENT_COMMANDS = [
     enabled: true,
   },
   {
-    command: "/sendToken",
+    command: "/sendAssets",
     label: "sendToken (Send Token)",
     icon: sendTokenIcon,
-    enabled: false,
+    enabled: true,
   },
   {
     command: "/autoCompound",
