@@ -72,10 +72,10 @@ export const AGENT_COMMANDS = [
     enabled: true,
   },
   {
-    command: "/autoCompound",
-    label: "autoCompound (Auto-Compound Rewards)",
+    command: "/autocompound",
+    label: "autocompound (Auto-Compound Rewards)",
     icon: autoCompoundIcon,
-    enabled: false,
+    enabled: true,
   },
   {
     command: "/redeemFET",
@@ -99,4 +99,5 @@ export const AGENT_COMMANDS = [
 
 export const TRANSACTION_APPROVED = "Transaction approved";
 export const TRANSACTION_SENT = "Transaction sent";
+export const TRANSACTION_SIGNED = "Transaction signed";
 export const TRANSACTION_FAILED = "Transaction failed";

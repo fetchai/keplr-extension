@@ -20,12 +20,12 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
+import style from "./style.module.scss";
 import {
   InactiveAgentMessage,
   InputField,
   ProcessingLastMessage,
 } from "./input-section";
-import style from "./style.module.scss";
 
 export const ChatsViewSection = ({
   targetPubKey,
