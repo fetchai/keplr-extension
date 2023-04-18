@@ -66,8 +66,8 @@ export const AGENT_COMMANDS = [
     enabled: true,
   },
   {
-    command: "/sendAssets",
-    label: "sendToken (Send Token)",
+    command: "/sendAsset",
+    label: "sendAsset (Send Asset)",
     icon: sendTokenIcon,
     enabled: true,
   },

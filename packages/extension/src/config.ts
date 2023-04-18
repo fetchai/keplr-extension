@@ -593,6 +593,14 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "nanomobx",
         coinDecimals: 9,
       },
+      {
+        type: "cw20",
+        contractAddress:
+          "fetch1k54fmdpdqetmk399rgdtlnekg42x4w93kwggng6gjdd2mj36ccxsgky2nv",
+        coinDenom: "SQD",
+        coinMinimalDenom: "SQD",
+        coinDecimals: 18,
+      },
     ],
     feeCurrencies: [
       {

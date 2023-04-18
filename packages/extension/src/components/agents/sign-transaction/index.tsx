@@ -5,7 +5,11 @@ import { signTransaction } from "@utils/sign-transaction";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { AGENT_ADDRESS, TRANSACTION_FAILED } from "../../../config.ui.var";
+import {
+  AGENT_ADDRESS,
+  TRANSACTION_FAILED,
+  TRANSACTION_SIGNED,
+} from "../../../config.ui.var";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 
@@ -28,8 +32,23 @@ export const SignTransaction = ({
   const notification = useNotification();
   const signTxn = async (data: string) => {
     try {
-      await signTransaction(data, chainId, targetAddress);
+      const signResult = await signTransaction(
+        data,
+        chainId,
+        accountInfo.bech32Address
+      );
       history.goBack();
+      deliverMessages(
+        user.accessToken,
+        chainId,
+        {
+          message: TRANSACTION_SIGNED,
+          signedTx: Buffer.from(signResult.signedTx).toString("base64"),
+          signature: signResult.signature.signature,
+        },
+        accountInfo.bech32Address,
+        targetAddress
+      );
     } catch (e) {
       console.log(e);
       notification.push({

@@ -79,10 +79,9 @@ export const ChatMessage = ({
 
       switch (messageObj.method) {
         case "signTransaction":
-          const rawText = JSON.parse(messageObj.message);
           messageView = (
             <SignTransaction
-              rawText={rawText}
+              rawText={messageObj.message}
               chainId={chainId}
               disabled={disabled}
             />
