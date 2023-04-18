@@ -58,7 +58,7 @@ export const TokenDropdown: FunctionComponent<{
   const selectableCurrencies = amountConfig.sendableCurrencies
     .filter((cur) => {
       const bal = queryBalances.getBalanceFromCurrency(cur);
-      return true || !bal.toDec().isZero();
+      return !bal.toDec().isZero();
     })
     .sort((a, b) => {
       return a.coinDenom < b.coinDenom ? -1 : 1;
