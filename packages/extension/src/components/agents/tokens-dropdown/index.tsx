@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from "react";
 import classnames from "classnames";
 import styleCoinInput from "./coin-input.module.scss";
 
-import { useSendTxConfig } from "@keplr-wallet/hooks";
+import { useIBCTransferConfig, useSendTxConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { FormattedMessage } from "react-intl";
 import {
@@ -26,7 +26,8 @@ import { useNotification } from "@components/notification";
 export const TokenDropdown: FunctionComponent<{
   label: string;
   disabled: boolean;
-}> = observer(({ label, disabled }) => {
+  ibc?: boolean;
+}> = observer(({ label, disabled, ibc }) => {
   const { accountStore, chainStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -42,7 +43,17 @@ export const TokenDropdown: FunctionComponent<{
     queriesStore.get(current.chainId).queryBalances,
     EthereumEndpoint
   );
-  const { amountConfig } = sendConfigs;
+
+  const ibcTransferConfigs = useIBCTransferConfig(
+    chainStore,
+    current.chainId,
+    accountInfo.msgOpts.ibcTransfer,
+    accountInfo.bech32Address,
+    queriesStore.get(current.chainId).queryBalances,
+    EthereumEndpoint
+  );
+
+  const { amountConfig } = ibc ? ibcTransferConfigs : sendConfigs;
   const queryBalances = queriesStore
     .get(amountConfig.chainId)
     .queryBalances.getQueryBech32Address(amountConfig.sender);
@@ -134,6 +145,18 @@ export const TokenDropdown: FunctionComponent<{
                 </DropdownItem>
               );
             })}
+            {!ibc && (
+              <DropdownItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: "/setting/token/add",
+                  });
+                }}
+              >
+                <i className="fas fa-plus-circle my-1 mr-1" /> Add a token
+              </DropdownItem>
+            )}
           </DropdownMenu>
         </ButtonDropdown>
         <Button

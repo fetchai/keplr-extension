@@ -20,12 +20,30 @@ import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { useHistory } from "react-router";
+import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { ChainInfoInner } from "@keplr-wallet/stores";
+import { ChainInfoWithEmbed } from "@keplr-wallet/background";
+import { Int } from "@keplr-wallet/unit";
+import { useLoadingIndicator } from "@components/loading-indicator";
+
+interface ChannelDetails extends Channel {
+  counterPartyBech32Prefix: string;
+  revisionNumber: string;
+  revisionHeight: string;
+}
 
 export const IBCChainSelector: FunctionComponent<{
   label: string;
   disabled: boolean;
 }> = observer(({ label, disabled }) => {
-  const { accountStore, chainStore, ibcChannelStore } = useStore();
+  const {
+    accountStore,
+    chainStore,
+    ibcChannelStore,
+    queriesStore,
+  } = useStore();
+  const loadingIndicator = useLoadingIndicator();
+
   const current = chainStore.current;
   const ibcChannelInfo = ibcChannelStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -35,7 +53,7 @@ export const IBCChainSelector: FunctionComponent<{
   const user = useSelector(userDetails);
 
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState<Channel>();
+  const [selectedChannel, setSelectedChannel] = useState<ChannelDetails>();
   const [isIBCRegisterModalOpen, setIsIBCregisterModalOpen] = useState(false);
 
   const [selectorId] = useState(() => {
@@ -77,6 +95,37 @@ export const IBCChainSelector: FunctionComponent<{
       }
     }
   };
+
+  const setChannel = async (
+    channel: Channel,
+    chainInfo: ChainInfoInner<ChainInfoWithEmbed>
+  ) => {
+    loadingIndicator.setIsLoading("set-channel", true);
+    const destinationBlockHeight = queriesStore
+      .get(channel.counterpartyChainId)
+      .cosmos.queryBlock.getBlock("latest");
+
+    // Wait until fetching complete.
+    await destinationBlockHeight.waitFreshResponse();
+
+    if (destinationBlockHeight.height.equals(new Int("0"))) {
+      throw new Error(
+        `Failed to fetch the latest block of ${channel.counterpartyChainId}`
+      );
+    }
+
+    setSelectedChannel({
+      ...channel,
+      counterPartyBech32Prefix: chainInfo.bech32Config.bech32PrefixAccAddr,
+      revisionHeight: ChainIdHelper.parse(
+        channel.counterpartyChainId
+      ).version.toString(),
+      revisionNumber: destinationBlockHeight.height
+        .add(new Int("150"))
+        .toString(),
+    });
+    loadingIndicator.setIsLoading("set-channel", false);
+  };
   return (
     <React.Fragment>
       <IBCChannelRegistrarModal
@@ -98,7 +147,11 @@ export const IBCChainSelector: FunctionComponent<{
           toggle={() => setIsSelectorOpen((value) => !value)}
         >
           <DropdownToggle caret>
-            <FormattedMessage id="component.ibc.channel-registrar.chain-selector.placeholder" />
+            {selectedChannel ? (
+              chainStore.getChain(selectedChannel.counterpartyChainId).chainName
+            ) : (
+              <FormattedMessage id="component.ibc.channel-registrar.chain-selector.placeholder" />
+            )}
           </DropdownToggle>
           <DropdownMenu>
             {ibcChannelInfo.getTransferChannels().map((channel) => {
@@ -114,9 +167,9 @@ export const IBCChainSelector: FunctionComponent<{
                 return (
                   <DropdownItem
                     key={chainInfo.chainId}
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       e.preventDefault();
-                      setSelectedChannel(channel);
+                      await setChannel(channel, chainInfo);
                     }}
                   >
                     {chainInfo.chainName}

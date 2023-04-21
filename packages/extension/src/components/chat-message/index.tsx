@@ -92,6 +92,11 @@ export const ChatMessage = ({
             <TokenDropdown label={messageObj.message} disabled={disabled} />
           );
           break;
+        case "inputIBCToken":
+          messageView = (
+            <TokenDropdown label={messageObj.message} ibc disabled={disabled} />
+          );
+          break;
         case "inputChannel":
           messageView = (
             <IBCChainSelector label={messageObj.message} disabled={disabled} />
