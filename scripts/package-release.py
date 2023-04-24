@@ -38,6 +38,7 @@ def main():
     # collect information
     version = _current_version()
     output_filename = os.path.join(RELEASES_ROOT, f'wallet-{version[1:]}.zip')
+    firefox_output_filename = os.path.join(RELEASES_ROOT, f'firefox-wallet-{version[1:]}.zip')
 
     # user feedback
     print(HEADING)
@@ -59,6 +60,9 @@ def main():
     cmd = ['zip', '-r', output_filename, 'prod/']
     subprocess.check_call(cmd, cwd=EXTENSION_ROOT)
 
+    # package up firefox extenson
+    cmd = ['zip', '-r', firefox_output_filename, '.']
+    subprocess.check_call(cmd, cwd= os.path.join(EXTENSION_ROOT, 'prod'))
 
 if __name__ == '__main__':
     main()
