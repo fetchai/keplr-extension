@@ -51,7 +51,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     coinType: 118,
-    features: [],
+    features: ["cosmwasm"],
     gasPriceStep: {
       low: 0,
       average: 5000000000,
