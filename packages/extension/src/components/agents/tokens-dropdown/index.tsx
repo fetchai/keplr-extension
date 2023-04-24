@@ -151,6 +151,7 @@ export const TokenDropdown: FunctionComponent<{
                   e.preventDefault();
                   history.push({
                     pathname: "/setting/token/add",
+                    hash: "agent",
                   });
                 }}
               >
