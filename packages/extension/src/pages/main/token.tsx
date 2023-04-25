@@ -12,6 +12,7 @@ import { useNotification } from "@components/notification";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import sendIcon from "@assets/icon/send.png";
 import { Dec } from "@keplr-wallet/unit";
+import { ToolTip } from "@components/tooltip";
 
 const TokenView: FunctionComponent<{
   balance: ObservableQueryBalanceInner;
@@ -107,11 +108,10 @@ const TokenView: FunctionComponent<{
           {name.length > 0 ? name[0] : "?"}
         </div>
       </div>
-      <div
-        className={styleToken.tokenName}
-        style={{ fontSize: name.length > 13 ? "12px" : "15px" }}
-      >
-        {name}
+      <div className={styleToken.tokenName}>
+        <ToolTip trigger="hover" tooltip={name}>
+          {name}
+        </ToolTip>
       </div>
       <div className={styleToken.tokenBalance}>
         {balance.isFetching ? (
