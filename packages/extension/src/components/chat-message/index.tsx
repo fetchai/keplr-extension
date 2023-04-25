@@ -12,6 +12,7 @@ import { MessagePrimitive } from "@utils/encrypt-message";
 import { TokenDropdown } from "@components/agents/tokens-dropdown";
 import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
+import { MessageFeedBack } from "@components/chat-message-feedback";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -20,6 +21,7 @@ const formatTime = (timestamp: number): string => {
 
 export const ChatMessage = ({
   chainId,
+  messageId,
   message,
   isSender,
   timestamp,
@@ -28,6 +30,7 @@ export const ChatMessage = ({
   disabled,
 }: {
   chainId: string;
+  messageId: string;
   isSender: boolean;
   message: string;
   timestamp: number;
@@ -36,7 +39,7 @@ export const ChatMessage = ({
   disabled: boolean;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState<MessagePrimitive>();
-
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   useEffect(() => {
     decryptMessage(chainId, message, isSender)
       .then((message) => {
@@ -128,16 +131,25 @@ export const ChatMessage = ({
           className={classnames(style.messageBox, {
             [style.senderBox]: isSender,
           })}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {decideMessageView()}
-          <div className={style.timestamp}>
-            {formatTime(timestamp)}
-            {isSender && groupLastSeenTimestamp < timestamp && (
-              <img draggable={false} alt="delivered" src={deliveredIcon} />
-            )}
-            {isSender && groupLastSeenTimestamp >= timestamp && (
-              <img draggable={false} alt="seen" src={chatSeenIcon} />
-            )}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className={style.timestamp}>
+              {!isSender && isHovered && (
+                <MessageFeedBack messageId={messageId} />
+              )}
+            </div>
+            <div className={style.timestamp}>
+              {formatTime(timestamp)}
+              {isSender && groupLastSeenTimestamp < timestamp && (
+                <img draggable={false} alt="delivered" src={deliveredIcon} />
+              )}
+              {isSender && groupLastSeenTimestamp >= timestamp && (
+                <img draggable={false} alt="seen" src={chatSeenIcon} />
+              )}
+            </div>
           </div>
         </Container>
       </div>
