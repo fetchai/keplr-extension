@@ -102,6 +102,31 @@ export const TokenDropdown: FunctionComponent<{
       });
     }
   };
+
+  const cancel = async () => {
+    try {
+      await deliverMessages(
+        user.accessToken,
+        current.chainId,
+        "/cancel",
+        accountInfo.bech32Address,
+        targetAddress
+      );
+    } catch (e) {
+      console.log(e);
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: `Failed to cancel Operation`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    }
+  };
+
   return (
     <React.Fragment>
       <FormGroup>
@@ -169,6 +194,16 @@ export const TokenDropdown: FunctionComponent<{
           onClick={() => sendTokenDetails()}
         >
           Proceed
+        </Button>
+        <Button
+          type="button"
+          color="secondary"
+          size="small"
+          style={{ marginTop: "15px" }}
+          disabled={disabled}
+          onClick={() => cancel()}
+        >
+          Cancel
         </Button>
       </FormGroup>
     </React.Fragment>
