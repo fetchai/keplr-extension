@@ -482,3 +482,28 @@ export const updateGroupTimestamp = async (
     console.error("err", err);
   }
 };
+
+export const updateMessageFeedback = async (
+  messageId: string,
+  feedback: string
+) => {
+  const state = store.getState();
+  try {
+    const { data } = await client.mutate({
+      mutation: gql(updateGroupLastSeen),
+      fetchPolicy: "no-cache",
+      context: {
+        headers: {
+          Authorization: `Bearer ${state.user.accessToken}`,
+        },
+      },
+      variables: {
+        messageId,
+        feedback,
+      },
+    });
+    console.log(data);
+  } catch (err) {
+    console.error("err", err);
+  }
+};
