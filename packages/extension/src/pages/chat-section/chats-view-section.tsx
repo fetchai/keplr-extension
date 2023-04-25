@@ -66,7 +66,8 @@ export const ChatsViewSection = ({
 
   const [newMessage, setNewMessage] = useState("");
   const [lastUnreadMesageId, setLastUnreadMesageId] = useState("");
-
+  const [firstTimeOpen, setFirstTimeOpen] = useState(true);
+  const [msgLen, setMsgLen] = useState(messages.length);
   const messagesStartRef: any = createRef();
   const messagesScrollRef: any = useRef(null);
   const isOnScreen = useOnScreen(messagesStartRef);
@@ -247,19 +248,32 @@ export const ChatsViewSection = ({
     (val) => val.address === targetAddress
   );
   useEffect(() => {
+    if (msgLen + 1 == messages.length) {
+      setFirstTimeOpen(false);
+    }
+
+    setMsgLen(messages.length);
     const time = group?.addresses.find((val) => val.address !== targetAddress)
       ?.lastSeenTimestamp;
 
-    const firstMessageUnseen = messages
-      .filter((message) => message.commitTimestamp > Number(time))
+    let idx = 0;
+
+    messages
+      .filter((message, index) => {
+        if (message.commitTimestamp > Number(time)) {
+          if (idx == 0) {
+            idx = index;
+          }
+          return true;
+        }
+        return false;
+      })
       .sort();
-    console.log("update fired", firstMessageUnseen);
-    if (firstMessageUnseen.length === 2) {
-      setLastUnreadMesageId(firstMessageUnseen[1].id);
-      return;
-    }
-    if (firstMessageUnseen.length > 0) {
-      setLastUnreadMesageId(firstMessageUnseen[0].id);
+
+    if (idx != 0 && messages[idx].sender === targetAddress) {
+      console.log("executed");
+      if (firstTimeOpen) setLastUnreadMesageId(messages[idx - 1].id);
+      else setLastUnreadMesageId(messages[idx].id);
     }
   }, [messages, group]);
 
@@ -297,6 +311,17 @@ export const ChatsViewSection = ({
       enterKeyCount = 1;
       handleSendMessage(e);
     }
+  };
+
+  const decideUnreadMsgView = () => {
+    if (firstTimeOpen)
+      return (
+        <div ref={messagesEndRef} className={style.separator}>
+          <span className={style.separatorTest}>Unread messages</span>
+        </div>
+      );
+
+    return <div ref={messagesEndRef} className={"AAAAA"} />;
   };
 
   const handleActionsClick = (data: string) => {
@@ -360,11 +385,7 @@ export const ChatsViewSection = ({
                 message?.sender === targetAddress && (
                   <div className={messagesEndRef} />
                 )}
-              {lastUnreadMesageId === message.id && (
-                <div ref={messagesEndRef} className={"AAAAA"} />
-              )}
-              {lastUnreadMesageId === message.id &&
-                console.log(lastUnreadMesageId)}
+              {lastUnreadMesageId === message.id && decideUnreadMsgView()}
             </div>
           );
         })}
