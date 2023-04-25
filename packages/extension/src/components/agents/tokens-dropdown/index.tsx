@@ -130,11 +130,7 @@ export const TokenDropdown: FunctionComponent<{
   return (
     <React.Fragment>
       <FormGroup>
-        <Label
-          for={`selector-${randomId}`}
-          className="form-control-label"
-          style={{ width: "100%" }}
-        >
+        <Label for={`selector-${randomId}`} style={{ width: "100%" }}>
           {label || (
             <FormattedMessage id="component.form.coin-input.token.label" />
           )}

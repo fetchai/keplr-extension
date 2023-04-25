@@ -158,7 +158,7 @@ export const IBCChainSelector: FunctionComponent<{
         toggle={() => setIsIBCregisterModalOpen((value) => !value)}
       />
       <FormGroup>
-        <Label for={selectorId} className="form-control-label">
+        <Label for={selectorId} style={{ width: "100%" }}>
           {label || (
             <FormattedMessage id="component.ibc.channel-registrar.chain-selector.label" />
           )}
