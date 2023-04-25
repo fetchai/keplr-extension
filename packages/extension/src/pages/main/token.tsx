@@ -107,7 +107,12 @@ const TokenView: FunctionComponent<{
           {name.length > 0 ? name[0] : "?"}
         </div>
       </div>
-      <div className={styleToken.tokenName}>{name}</div>
+      <div
+        className={styleToken.tokenName}
+        style={{ fontSize: name.length > 13 ? "12px" : "15px" }}
+      >
+        {name}
+      </div>
       <div className={styleToken.tokenBalance}>
         {balance.isFetching ? (
           <i className="fas fa-spinner fa-spin ml-1" />
