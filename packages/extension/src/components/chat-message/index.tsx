@@ -138,7 +138,11 @@ export const ChatMessage = ({
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div className={style.timestamp}>
               {!isSender && isHovered && (
-                <MessageFeedBack messageId={messageId} />
+                <MessageFeedBack
+                  messageId={messageId}
+                  chainId={chainId}
+                  targetAddress={decryptedMessage?.sender || ""}
+                />
               )}
             </div>
             <div className={style.timestamp}>

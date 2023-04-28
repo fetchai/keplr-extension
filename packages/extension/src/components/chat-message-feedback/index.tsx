@@ -1,7 +1,15 @@
-import { updateMessageFeedback } from "@graphQL/messages-api";
+import { updateMessageFeedback } from "@utils/auth";
 import React, { useEffect, useState } from "react";
 
-export const MessageFeedBack = ({ messageId }: { messageId: string }) => {
+export const MessageFeedBack = ({
+  messageId,
+  chainId,
+  targetAddress,
+}: {
+  messageId: string;
+  chainId: string;
+  targetAddress: string;
+}) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
 
@@ -12,7 +20,7 @@ export const MessageFeedBack = ({ messageId }: { messageId: string }) => {
       messageId,
       JSON.stringify({ isLiked: !isLiked, isDisliked: false })
     );
-    updateMessageFeedback(messageId, !isLiked ? "LIKED" : "");
+    updateMessageFeedback(messageId, chainId, !isLiked ? 0 : 1, targetAddress);
   };
 
   const handleDislike = () => {
@@ -22,7 +30,12 @@ export const MessageFeedBack = ({ messageId }: { messageId: string }) => {
       messageId,
       JSON.stringify({ isDisliked: !isDisliked, isLiked: false })
     );
-    updateMessageFeedback(messageId, !isDisliked ? "DISLIKED" : "");
+    updateMessageFeedback(
+      messageId,
+      chainId,
+      !isDisliked ? 1 : 0,
+      targetAddress
+    );
   };
 
   useEffect(() => {
