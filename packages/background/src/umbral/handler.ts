@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { UmbralService } from "./service";
 import {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getHandler } from "./handler";
 import { Router } from "@keplr-wallet/router";
 import { UmbralService } from "./service";

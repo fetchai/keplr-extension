@@ -102,8 +102,8 @@ export const AddAddressModal: FunctionComponent<{
             disabled={
               !name ||
               name.trim() === "" ||
-              recipientConfig.getError() != null ||
-              memoConfig.getError() != null
+              recipientConfig.error != null ||
+              memoConfig.error != null
             }
             onClick={async (e) => {
               e.preventDefault();

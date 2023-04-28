@@ -27,7 +27,6 @@ import {
   useMemoConfig,
   useRecipientConfig,
 } from "@keplr-wallet/hooks";
-import { EthereumEndpoint } from "../../../config.ui";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -42,12 +41,11 @@ export const AddressBookPage: FunctionComponent<{
   hideChainDropdown?: boolean;
   selectHandler?: AddressBookSelectHandler;
   ibcChannelConfig?: IIBCChannelConfig;
-  isInTransaction?: boolean;
 }> = observer(
   ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
     const intl = useIntl();
     const history = useHistory();
-    const { chainStore } = useStore();
+    const { chainStore, uiConfigStore } = useStore();
     const current = chainStore.current;
     const location = useLocation();
     const chatSectionParams =
@@ -58,12 +56,10 @@ export const AddressBookPage: FunctionComponent<{
         : current.chainId
     );
 
-    const recipientConfig = useRecipientConfig(
-      chainStore,
-      selectedChainId,
-      EthereumEndpoint
-    );
-
+    const recipientConfig = useRecipientConfig(chainStore, selectedChainId, {
+      allowHexAddressOnEthermint: true,
+      icns: uiConfigStore.icnsInfo,
+    });
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
 
     const addressBookConfig = useAddressBookConfig(

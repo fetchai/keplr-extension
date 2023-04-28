@@ -243,7 +243,7 @@ export const ChatsViewSection = ({
       const signResult = await signTransaction(
         data,
         messagePayload.chainId,
-        accountInfo.bech32Address
+        accountInfo
       );
       deliverMessages(
         messagePayload.accessToken,

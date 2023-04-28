@@ -20,6 +20,8 @@ import { useIntl } from "react-intl";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { store } from "@chatStore/index";
 import { setHasFET } from "@chatStore/user-slice";
+import { AppCurrency } from "@keplr-wallet/types";
+import { ChainIdHelper } from "@keplr-wallet/cosmos";
 
 export const ProgressBar = ({
   width,
@@ -162,11 +164,24 @@ export const AssetView: FunctionComponent = observer(() => {
 
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const balanceStakableQuery = queries.queryBalances.getQueryBech32Address(
+  const balanceQuery = queries.queryBalances.getQueryBech32Address(
     accountInfo.bech32Address
-  ).stakable;
+  );
+  const balanceStakableQuery = balanceQuery.stakable;
 
-  const stakable = balanceStakableQuery.balance;
+  const isNoble =
+    ChainIdHelper.parse(chainStore.current.chainId).identifier === "noble";
+  const hasUSDC = chainStore.current.currencies.find(
+    (currency: AppCurrency) => currency.coinMinimalDenom === "uusdc"
+  );
+
+  const stakable = (() => {
+    if (isNoble && hasUSDC) {
+      return balanceQuery.getBalanceFromCurrency(hasUSDC);
+    }
+
+    return balanceStakableQuery.balance;
+  })();
 
   const delegated = queries.cosmos.queryDelegations
     .getQueryBech32Address(accountInfo.bech32Address)
@@ -295,20 +310,22 @@ export const AssetView: FunctionComponent = observer(() => {
               {stakedSum.shrink(true).maxDecimals(6).toString()}
             </div>
           </div>
-          <div className={styleAsset.legend}>
-            <div className={styleAsset.label} style={{ color: "#D43BF6" }}>
-              <FormattedMessage id="main.account.chart.reward-balance" />
+          {isNoble && hasUSDC ? null : (
+            <div className={styleAsset.legend}>
+              <div className={styleAsset.label} style={{ color: "#D43BF6" }}>
+                <FormattedMessage id="main.account.chart.reward-balance" />
+              </div>
+              <div style={{ minWidth: "16px" }} />
+              <div
+                className={styleAsset.value}
+                style={{
+                  color: "#525f7f",
+                }}
+              >
+                {stakableReward.shrink(true).maxDecimals(6).toString()}
+              </div>
             </div>
-            <div style={{ minWidth: "16px" }} />
-            <div
-              className={styleAsset.value}
-              style={{
-                color: "#525f7f",
-              }}
-            >
-              {stakableReward.shrink(true).maxDecimals(6).toString()}
-            </div>
-          </div>
+          )}
         </div>
       </div>
       <TxButtonView />

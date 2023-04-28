@@ -1,10 +1,10 @@
-import { Message } from "@keplr-wallet/router";
-import { ChainInfoWithEmbed } from "./types";
-import { ChainInfo } from "@keplr-wallet/types";
+import { KeplrError, Message } from "@keplr-wallet/router";
+import { ChainInfoWithCoreTypes } from "./types";
+import { ChainInfo, ChainInfoWithoutEndpoints } from "@keplr-wallet/types";
 import { ROUTE } from "./constants";
 
 export class GetChainInfosMsg extends Message<{
-  chainInfos: ChainInfoWithEmbed[];
+  chainInfos: ChainInfoWithCoreTypes[];
 }> {
   public static type() {
     return "get-chain-infos";
@@ -23,6 +23,30 @@ export class GetChainInfosMsg extends Message<{
   }
 }
 
+export class GetChainInfosWithoutEndpointsMsg extends Message<{
+  chainInfos: ChainInfoWithoutEndpoints[];
+}> {
+  public static type() {
+    return "get-chain-infos-without-endpoints";
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  approveExternal(): boolean {
+    return true;
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return GetChainInfosWithoutEndpointsMsg.type();
+  }
+}
+
 export class SuggestChainInfoMsg extends Message<void> {
   public static type() {
     return "suggest-chain-info";
@@ -34,7 +58,7 @@ export class SuggestChainInfoMsg extends Message<void> {
 
   validateBasic(): void {
     if (!this.chainInfo) {
-      throw new Error("chain info not set");
+      throw new KeplrError("chains", 100, "Chain info not set");
     }
   }
 
@@ -51,7 +75,9 @@ export class SuggestChainInfoMsg extends Message<void> {
   }
 }
 
-export class RemoveSuggestedChainInfoMsg extends Message<ChainInfoWithEmbed[]> {
+export class RemoveSuggestedChainInfoMsg extends Message<
+  ChainInfoWithCoreTypes[]
+> {
   public static type() {
     return "remove-suggested-chain-info";
   }
@@ -62,7 +88,7 @@ export class RemoveSuggestedChainInfoMsg extends Message<ChainInfoWithEmbed[]> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new Error("Chain id not set");
+      throw new KeplrError("chains", 101, "Chain id not set");
     }
   }
 
