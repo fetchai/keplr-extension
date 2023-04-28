@@ -63,6 +63,13 @@ if (process.env.NODE_ENV === "production") {
     "agent1qtvyuq8gkywtymym00n83llwcj6dscwfaz9dgdhm2dw0e9tqmkzq7tesse9";
 }
 
+export const AGENT_FEEDBACK_URL: { [key: string]: string } = {
+  [CHAIN_ID_DORADO]:
+    "https://fetchbot-uagent-staging.sandbox-london-b.fetch-ai.com",
+  [CHAIN_ID_FETCHHUB]:
+    "https://fetchbot-uagent-staging-mainnet.sandbox-london-b.fetch-ai.com",
+};
+
 export const AGENT_ADDRESS: { [key: string]: string } = {
   [CHAIN_ID_FETCHHUB]: FETCHHUB_AGENT,
   [CHAIN_ID_DORADO]: DORADO_AGENT,
