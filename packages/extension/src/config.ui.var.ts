@@ -65,9 +65,9 @@ if (process.env.NODE_ENV === "production") {
 
 export const AGENT_FEEDBACK_URL: { [key: string]: string } = {
   [CHAIN_ID_DORADO]:
-    "https://fetchbot-uagent-staging.sandbox-london-b.fetch-ai.com",
+    "http://fetchbot-uagent-staging.sandbox-london-b.fetch-ai.com",
   [CHAIN_ID_FETCHHUB]:
-    "https://fetchbot-uagent-staging-mainnet.sandbox-london-b.fetch-ai.com",
+    "http://fetchbot-uagent-staging-mainnet.sandbox-london-b.fetch-ai.com",
 };
 
 export const AGENT_ADDRESS: { [key: string]: string } = {
