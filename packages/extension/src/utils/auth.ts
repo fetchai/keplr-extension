@@ -10,7 +10,7 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { rawSecp256k1PubkeyToRawAddress } from "@cosmjs/amino";
 import { toBase64, Bech32, fromHex } from "@cosmjs/encoding";
 import { serializeSignDoc } from "@cosmjs/launchpad";
-import { GRAPHQL_URL } from "../config.ui.var";
+import { AGENT_FEEDBACK_URL, GRAPHQL_URL } from "../config.ui.var";
 
 declare let window: Window;
 
@@ -130,4 +130,37 @@ export const getJWT = async (chainId: string, url: string) => {
   }
 
   return r2.data.token;
+};
+
+export const updateMessageFeedback = async (
+  messageId: string,
+  chainId: string,
+  rating: number,
+  target: string
+) => {
+  try {
+    const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
+    const payload = toBase64(
+      Buffer.from(JSON.stringify({ rating, msg_id: messageId }))
+    );
+    const session = new Date().getTime().toString();
+    console.log(session);
+    const request = {
+      version: 1,
+      sender: "user16n6nwpyg7glp2swpre6zmvcp9tm2qjnthq25wt72l5yxzrqq0ucq0nte05", // Hardcode this
+      protocol:
+        "model:f2c077f790a58566a495c3eb993c8265c3dfdb925876603127b0eb3b21a6eb31", // Hardcode this
+      target, // Fetchbot address
+      session, // Any random generated UUID
+      payload, // Base64 encoded string for payload.
+      expires, // Current time + 30 seconds
+    };
+    const r1 = await axios.post(
+      `${AGENT_FEEDBACK_URL[chainId]}/submit`,
+      request
+    );
+    console.log(r1);
+  } catch (err) {
+    console.error("err", err);
+  }
 };
