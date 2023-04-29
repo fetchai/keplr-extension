@@ -2,7 +2,6 @@ import { InteractionWaitingData } from "./types";
 import {
   Env,
   FnRequestInteractionOptions,
-  KeplrError,
   MessageRequester,
 } from "@keplr-wallet/router";
 import { PushEventDataMsg, PushInteractionDataMsg } from "./foreground";
@@ -28,7 +27,7 @@ export class InteractionService {
   // And, don't ensure that the event is delivered successfully, just ignore the any errors.
   dispatchEvent(port: string, type: string, data: unknown) {
     if (!type) {
-      throw new KeplrError("interaction", 101, "Type should not be empty");
+      throw new Error("Type should not be empty");
     }
 
     const msg = new PushEventDataMsg({
@@ -49,7 +48,7 @@ export class InteractionService {
     options?: FnRequestInteractionOptions
   ): Promise<unknown> {
     if (!type) {
-      throw new KeplrError("interaction", 101, "Type should not be empty");
+      throw new Error("Type should not be empty");
     }
 
     // TODO: Add timeout?
@@ -68,7 +67,7 @@ export class InteractionService {
 
   protected async wait(id: string, fn: () => void): Promise<unknown> {
     if (this.resolverMap.has(id)) {
-      throw new KeplrError("interaction", 100, "Id is aleady in use");
+      throw new Error("Id is aleady in use");
     }
 
     return new Promise<unknown>((resolve, reject) => {
@@ -125,7 +124,7 @@ export class InteractionService {
     };
 
     if (this.waitingMap.has(id)) {
-      throw new KeplrError("interaction", 100, "Id is aleady in use");
+      throw new Error("Id is aleady in use");
     }
 
     this.waitingMap.set(id, interactionWaitingData);

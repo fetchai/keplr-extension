@@ -1,6 +1,5 @@
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ChainInfo } from "@keplr-wallet/types";
-import { PRIVILEGED_ORIGINS } from "./config.var";
 
 export const EmbedChainInfos: ChainInfo[] = [
   {
@@ -54,7 +53,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
-    coinType: 118,
     features: [],
     walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
   },
@@ -68,7 +66,6 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinMinimalDenom: "uatom",
       coinDecimals: 6,
       coinGeckoId: "cosmos",
-      coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/atom.png",
     },
     walletUrl:
       process.env.NODE_ENV === "production"
@@ -88,7 +85,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "uatom",
         coinDecimals: 6,
         coinGeckoId: "cosmos",
-        coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/atom.png",
       },
     ],
     feeCurrencies: [
@@ -97,11 +93,9 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "uatom",
         coinDecimals: 6,
         coinGeckoId: "cosmos",
-        coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/atom.png",
       },
     ],
-    coinType: 118,
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go"],
   },
   {
     rpc: "https://rpc-osmosis.keplr.app",
@@ -113,7 +107,6 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinMinimalDenom: "uosmo",
       coinDecimals: 6,
       coinGeckoId: "osmosis",
-      coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/osmo.png",
     },
     walletUrl:
       process.env.NODE_ENV === "production"
@@ -131,15 +124,12 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "uosmo",
         coinDecimals: 6,
         coinGeckoId: "osmosis",
-        coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/osmo.png",
       },
       {
         coinDenom: "ION",
         coinMinimalDenom: "uion",
         coinDecimals: 6,
         coinGeckoId: "ion",
-        coinImageUrl:
-          "https://dhj8dql1kzq2v.cloudfront.net/white/osmosis-ion.png",
       },
     ],
     feeCurrencies: [
@@ -148,7 +138,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "uosmo",
         coinDecimals: 6,
         coinGeckoId: "osmosis",
-        coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/osmo.png",
         gasPriceStep: {
           low: 0,
           average: 0.025,
@@ -157,9 +146,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: [
-      "stargate",
       "ibc-transfer",
-      "no-legacy-stdTx",
       "ibc-go",
       "cosmwasm",
       "wasmd_0.24+",
@@ -2388,13 +2375,100 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: [],
   },
+  {
+    rpc: "https://rpc-kyve.keplr.app",
+    rest: "https://lcd-kyve.keplr.app",
+    chainId: "kyve-1",
+    chainName: "KYVE",
+    stakeCurrency: {
+      coinDenom: "KYVE",
+      coinMinimalDenom: "ukyve",
+      coinDecimals: 6,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "kyve",
+      bech32PrefixAccPub: "kyvepub",
+      bech32PrefixValAddr: "kyvevaloper",
+      bech32PrefixValPub: "kyvevaloperpub",
+      bech32PrefixConsAddr: "kyvevalcons",
+      bech32PrefixConsPub: "kyvevalconspub",
+    },
+    currencies: [
+      {
+        coinDenom: "KYVE",
+        coinMinimalDenom: "ukyve",
+        coinDecimals: 6,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "KYVE",
+        coinMinimalDenom: "ukyve",
+        coinDecimals: 6,
+        gasPriceStep: {
+          low: 0.02,
+          average: 0.03,
+          high: 0.06,
+        },
+      },
+    ],
+    features: [],
+  },
+  {
+    rpc: "https://rpc-dorado.fetch.ai",
+    rest: "https://rest-dorado.fetch.ai",
+    chainId: "dorado-1",
+    chainName: "Dorado",
+    stakeCurrency: {
+      coinDenom: "TESTFET",
+      coinMinimalDenom: "atestfet",
+      coinDecimals: 18,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("fetch"),
+    currencies: [
+      {
+        coinDenom: "TESTFET",
+        coinMinimalDenom: "atestfet",
+        coinDecimals: 18,
+      },
+      {
+        coinDenom: "MOBX",
+        coinMinimalDenom: "nanomobx",
+        coinDecimals: 9,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "TESTFET",
+        coinMinimalDenom: "atestfet",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 0,
+          average: 5000000000,
+          high: 6250000000,
+        },
+      },
+    ],
+    features: [],
+    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
+  },
 ];
 
 // The origins that are able to pass any permission that external webpages can have.
-export const PrivilegedOrigins: string[] = PRIVILEGED_ORIGINS;
+export const PrivilegedOrigins: string[] = [
+  "https://wallet.keplr.app",
+  "https://validator.keplr.app",
+  "https://chains.keplr.app",
+];
 
 export const CommunityChainInfoRepo = {
-  organizationName: "chainapsis",
-  repoName: "keplr-chain-registry",
-  branchName: "main",
+  organizationName: "fetchai",
+  repoName: "fetch-wallet",
+  branchName: "master",
 };

@@ -106,8 +106,8 @@ const extensionConfig = () => {
     entry: {
       popup: ["./src/bootstrap.tsx"],
       background: ["./src/background/bootstrap.ts"],
-      // blocklist: ["./src/pages/blocklist/bootstrap.tsx"],
-      // ledgerGrant: ["./src/pages/ledger-grant/bootstrap.tsx"],
+      blocklist: ["./src/pages/blocklist/bootstrap.tsx"],
+      ledgerGrant: ["./src/pages/ledger-grant/bootstrap.tsx"],
       contentScripts: ["./src/content-scripts/content-scripts.ts"],
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],
     },

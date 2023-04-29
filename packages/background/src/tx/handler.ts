@@ -1,10 +1,4 @@
-import {
-  Env,
-  Handler,
-  InternalHandler,
-  KeplrError,
-  Message,
-} from "@keplr-wallet/router";
+import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { SendTxMsg } from "./messages";
 import { BackgroundTxService } from "./service";
 
@@ -16,7 +10,7 @@ export const getHandler: (service: BackgroundTxService) => Handler = (
       case SendTxMsg:
         return handleSendTxMsg(service)(env, msg as SendTxMsg);
       default:
-        throw new KeplrError("tx", 110, "Unknown msg type");
+        throw new Error("Unknown msg type");
     }
   };
 };

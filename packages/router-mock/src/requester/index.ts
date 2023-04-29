@@ -3,7 +3,6 @@ import {
   Message,
   JSONUint8Array,
   Result,
-  KeplrError,
 } from "@keplr-wallet/router";
 import { MockRouter } from "../router";
 
@@ -45,12 +44,6 @@ export class MockMessageRequester implements MessageRequester {
     if (result.error) {
       if (typeof result.error === "string") {
         throw new Error(result.error);
-      } else {
-        throw new KeplrError(
-          result.error.module,
-          result.error.code,
-          result.error.message
-        );
       }
     }
 

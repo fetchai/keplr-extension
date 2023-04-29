@@ -1,10 +1,4 @@
-import {
-  Env,
-  Handler,
-  InternalHandler,
-  KeplrError,
-  Message,
-} from "@keplr-wallet/router";
+import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { ChainUpdaterService } from "./service";
 import {
   ResetChainEndpointsMsg,
@@ -30,7 +24,7 @@ export const getHandler: (service: ChainUpdaterService) => Handler = (
           msg as ResetChainEndpointsMsg
         );
       default:
-        throw new KeplrError("updater", 110, "Unknown msg type");
+        throw new Error("Unknown msg type");
     }
   };
 };

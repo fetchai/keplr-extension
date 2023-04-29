@@ -1,9 +1,4 @@
-import {
-  KeplrError,
-  Message,
-  MessageRequester,
-  Result,
-} from "@keplr-wallet/router";
+import { Message, MessageRequester, Result } from "@keplr-wallet/router";
 import { JSONUint8Array } from "@keplr-wallet/router";
 import EventEmitter from "eventemitter3";
 import { RNRouterBackground, RNRouterUI } from "./rn-router";
@@ -67,11 +62,7 @@ export class RNMessageRequesterBase implements MessageRequester {
       if (typeof result.error === "string") {
         throw new Error(result.error);
       } else {
-        throw new KeplrError(
-          result.error.module,
-          result.error.code,
-          result.error.message
-        );
+        throw new Error(result.error.message);
       }
     }
 

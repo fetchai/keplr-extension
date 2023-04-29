@@ -1,5 +1,5 @@
 import { InteractionService } from "../interaction";
-import { Env, KeplrError } from "@keplr-wallet/router";
+import { Env } from "@keplr-wallet/router";
 import {
   getBasicAccessPermissionType,
   GlobalPermissionData,
@@ -234,7 +234,7 @@ export class PermissionService {
     }
 
     if (!this.hasPermisson(chainId, type, origin)) {
-      throw new KeplrError("permission", 130, `${origin} is not permitted`);
+      throw new Error(`${origin} is not permitted`);
     }
   }
 
@@ -262,7 +262,7 @@ export class PermissionService {
     }
 
     if (!this.hasGlobalPermission(type, origin)) {
-      throw new KeplrError("permission", 130, `${origin} is not permitted`);
+      throw new Error(`${origin} is not permitted`);
     }
   }
 

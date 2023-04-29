@@ -1,4 +1,4 @@
-import { Env, KeplrError } from "@keplr-wallet/router";
+import { Env } from "@keplr-wallet/router";
 import { BIP44HDPath, Key, SignMode } from "../keyring";
 import { KVStore } from "@keplr-wallet/common";
 import { InteractionService } from "../interaction";
@@ -82,14 +82,10 @@ export class KeystoneService {
           }
         )) as StdPublicKeyDoc;
         if (res.abort) {
-          throw new KeplrError(
-            "keystone",
-            301,
-            "The process has been canceled."
-          );
+          throw new Error("The process has been canceled.");
         }
         if (!res.publicKey || !res.publicKey.cbor || !res.publicKey.type) {
-          throw new KeplrError("keystone", 302, "Public key is empty.");
+          throw new Error("Public key is empty.");
         }
         return res.publicKey;
       },
@@ -112,7 +108,7 @@ export class KeystoneService {
     const keyring = useKeystoneCosmosKeyring({
       keyringData,
       playUR: async (ur) => {
-        (async () => {
+        await (async () => {
           try {
             const res = (await this.interactionService.waitApprove(
               env,
@@ -126,14 +122,10 @@ export class KeystoneService {
               }
             )) as StdSignDoc;
             if (res.abort) {
-              throw new KeplrError(
-                "keystone",
-                301,
-                "The process has been canceled."
-              );
+              throw new Error("The process has been canceled.");
             }
             if (!res.signature) {
-              throw new KeplrError("keystone", 303, "Signature is empty.");
+              throw new Error("Signature is empty.");
             }
             signResolve(res.signature);
           } catch (err) {
@@ -176,7 +168,7 @@ export class KeystoneService {
     const keyring = useKeystoneEthereumKeyring({
       keyringData,
       playUR: async (ur) => {
-        (async () => {
+        await (async () => {
           try {
             const res = (await this.interactionService.waitApprove(
               env,
@@ -190,14 +182,10 @@ export class KeystoneService {
               }
             )) as StdSignDoc;
             if (res.abort) {
-              throw new KeplrError(
-                "keystone",
-                301,
-                "The process has been canceled."
-              );
+              throw new Error("The process has been canceled.");
             }
             if (!res.signature) {
-              throw new KeplrError("keystone", 303, "Signature is empty.");
+              throw new Error("Signature is empty.");
             }
             signResolve(res.signature);
           } catch (err) {
@@ -270,7 +258,7 @@ export class KeystoneService {
       })),
     });
     keyring.onPlayQR(async (ur) => {
-      (async () => {
+      await (async () => {
         try {
           const res = (await this.interactionService.waitApprove(
             env,
@@ -284,14 +272,10 @@ export class KeystoneService {
             }
           )) as StdSignDoc;
           if (res.abort) {
-            throw new KeplrError(
-              "keystone",
-              301,
-              "The process has been canceled."
-            );
+            throw new Error("The process has been canceled.");
           }
           if (!res.signature) {
-            throw new KeplrError("keystone", 303, "Signature is empty.");
+            throw new Error("Signature is empty.");
           }
           signResolve(res.signature);
         } catch (err) {

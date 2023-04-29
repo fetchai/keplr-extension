@@ -1,4 +1,4 @@
-import { KeplrError, Message } from "@keplr-wallet/router";
+import { Message } from "@keplr-wallet/router";
 import { ROUTE } from "./constants";
 
 export class EnableAccessMsg extends Message<void> {
@@ -12,7 +12,7 @@ export class EnableAccessMsg extends Message<void> {
 
   validateBasic(): void {
     if (!this.chainIds || this.chainIds.length === 0) {
-      throw new KeplrError("permission", 100, "chain id not set");
+      throw new Error("chain id not set");
     }
   }
 
@@ -40,7 +40,7 @@ export class DisableAccessMsg extends Message<void> {
 
   validateBasic(): void {
     if (!this.chainIds) {
-      throw new KeplrError("permission", 100, "chain id not set");
+      throw new Error("chain id not set");
     }
   }
 
@@ -71,11 +71,11 @@ export class GetPermissionOriginsMsg extends Message<string[]> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("permission", 100, "chain id not set");
+      throw new Error("chain id not set");
     }
 
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
   }
 
@@ -102,11 +102,11 @@ export class GetOriginPermittedChainsMsg extends Message<string[]> {
 
   validateBasic(): void {
     if (!this.permissionOrigin) {
-      throw new KeplrError("permission", 101, "origin not set");
+      throw new Error("origin not set");
     }
 
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
   }
 
@@ -130,7 +130,7 @@ export class GetGlobalPermissionOriginsMsg extends Message<string[]> {
 
   validateBasic(): void {
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
   }
 
@@ -158,15 +158,15 @@ export class AddPermissionOrigin extends Message<void> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("permission", 100, "chain id not set");
+      throw new Error("chain id not set");
     }
 
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
 
     if (!this.permissionOrigin) {
-      throw new KeplrError("permission", 111, "empty permission origin");
+      throw new Error("empty permission origin");
     }
   }
 
@@ -194,15 +194,15 @@ export class RemovePermissionOrigin extends Message<void> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("permission", 100, "chain id not set");
+      throw new Error("chain id not set");
     }
 
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
 
     if (!this.permissionOrigin) {
-      throw new KeplrError("permission", 111, "empty permission origin");
+      throw new Error("empty permission origin");
     }
   }
 
@@ -229,11 +229,11 @@ export class RemoveGlobalPermissionOriginMsg extends Message<void> {
 
   validateBasic(): void {
     if (!this.permissionType) {
-      throw new KeplrError("permission", 110, "empty permission type");
+      throw new Error("empty permission type");
     }
 
     if (!this.permissionOrigin) {
-      throw new KeplrError("permission", 111, "empty permission origin");
+      throw new Error("empty permission origin");
     }
   }
 

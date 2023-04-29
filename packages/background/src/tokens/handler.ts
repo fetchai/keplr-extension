@@ -1,10 +1,4 @@
-import {
-  Env,
-  Handler,
-  InternalHandler,
-  KeplrError,
-  Message,
-} from "@keplr-wallet/router";
+import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { TokensService } from "./service";
 import {
   AddTokenMsg,
@@ -31,7 +25,7 @@ export const getHandler: (service: TokensService) => Handler = (service) => {
           msg as GetSecret20ViewingKey
         );
       default:
-        throw new KeplrError("tokens", 120, "Unknown msg type");
+        throw new Error("Unknown msg type");
     }
   };
 };

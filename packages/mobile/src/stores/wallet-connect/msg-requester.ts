@@ -3,7 +3,6 @@ import {
   MessageRequester,
   Result,
   JSONUint8Array,
-  KeplrError,
 } from "@keplr-wallet/router";
 import EventEmitter from "eventemitter3";
 
@@ -73,11 +72,7 @@ export class WCMessageRequester implements MessageRequester {
       if (typeof result.error === "string") {
         throw new Error(result.error);
       } else {
-        throw new KeplrError(
-          result.error.module,
-          result.error.code,
-          result.error.message
-        );
+        throw new Error(result.error.message);
       }
     }
 

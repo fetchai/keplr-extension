@@ -1,4 +1,4 @@
-import { KeplrError, Message } from "@keplr-wallet/router";
+import { Message } from "@keplr-wallet/router";
 import { ROUTE } from "./constants";
 import { ChainInfoWithCoreTypes } from "../chains";
 
@@ -16,7 +16,7 @@ export class TryUpdateChainMsg extends Message<{
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("updater", 100, "Empty chain id");
+      throw new Error("Empty chain id");
     }
   }
 
@@ -44,7 +44,7 @@ export class SetChainEndpointsMsg extends Message<ChainInfoWithCoreTypes[]> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("updater", 100, "Empty chain id");
+      throw new Error("Empty chain id");
     }
 
     if (this.rpc) {
@@ -83,7 +83,7 @@ export class ResetChainEndpointsMsg extends Message<ChainInfoWithCoreTypes[]> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new KeplrError("updater", 100, "Empty chain id");
+      throw new Error("Empty chain id");
     }
   }
 

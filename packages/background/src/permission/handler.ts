@@ -8,13 +8,7 @@ import {
   RemoveGlobalPermissionOriginMsg,
   RemovePermissionOrigin,
 } from "./messages";
-import {
-  Env,
-  Handler,
-  InternalHandler,
-  KeplrError,
-  Message,
-} from "@keplr-wallet/router";
+import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { PermissionService } from "./service";
 
 export const getHandler: (service: PermissionService) => Handler = (
@@ -57,7 +51,7 @@ export const getHandler: (service: PermissionService) => Handler = (
           msg as RemoveGlobalPermissionOriginMsg
         );
       default:
-        throw new KeplrError("permission", 120, "Unknown msg type");
+        throw new Error("Unknown msg type");
     }
   };
 };
