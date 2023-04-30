@@ -9,6 +9,9 @@ import { isToday, isYesterday, format } from "date-fns";
 import { store } from "@chatStore/index";
 import { setMessageError } from "@chatStore/messages-slice";
 import { MessagePrimitive } from "@utils/encrypt-message";
+import { TokenDropdown } from "@components/agents/tokens-dropdown";
+import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
+import { SignTransaction } from "@components/agents/sign-transaction";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -22,7 +25,8 @@ export const ChatMessage = ({
   timestamp,
   showDate,
   groupLastSeenTimestamp,
-  onClickSignTxn,
+  disabled,
+  setIsInputType2,
 }: {
   chainId: string;
   isSender: boolean;
@@ -30,7 +34,8 @@ export const ChatMessage = ({
   timestamp: number;
   showDate: boolean;
   groupLastSeenTimestamp: number;
-  onClickSignTxn?: (jsonData: string) => void;
+  disabled: boolean;
+  setIsInputType2?: any;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState<MessagePrimitive>();
 
@@ -63,46 +68,58 @@ export const ChatMessage = ({
   };
 
   function decideMessageView(): ReactElement {
-    if (!decryptedMessage) {
-      return <i className="fas fa-spinner fa-spin ml-1" />;
-    }
+    let messageView = <i className="fas fa-spinner fa-spin ml-1" />;
+
+    if (!decryptedMessage) return messageView;
 
     if (decryptedMessage.type === 1) {
-      return (
+      messageView = (
         <div className={style.message}>{decryptedMessage.content.text}</div>
       );
+      if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
-      if (isSender)
-        return (
-          <div className={style.message}>
-            {JSON.parse(decryptedMessage.content.text).message ||
-              "Cant Parse sent Message"}
-          </div>
-        );
-      else
-        return (
-          <div className={style.message}>
-            Please recheck parameters of the transaction in Data Tab before
-            approving the transaction.
-            <button
-              type="button"
-              disabled={!onClickSignTxn}
-              className={style.buttonContainer}
-              style={{ cursor: !onClickSignTxn ? "not-allowed" : "pointer" }}
-              onClick={() => {
-                if (onClickSignTxn)
-                  onClickSignTxn(decryptedMessage.content.text);
-              }}
-            >
-              Sign transaction
-            </button>
-          </div>
-        );
+      const messageObj = JSON.parse(decryptedMessage.content.text);
+
+      switch (messageObj.method) {
+        case "signTransaction":
+          messageView = (
+            <SignTransaction
+              rawText={messageObj.message}
+              chainId={chainId}
+              disabled={disabled}
+            />
+          );
+          break;
+        case "inputToken":
+          messageView = (
+            <TokenDropdown label={messageObj.message} disabled={disabled} />
+          );
+          break;
+        case "inputIBCToken":
+          messageView = (
+            <TokenDropdown label={messageObj.message} ibc disabled={disabled} />
+          );
+          break;
+        case "inputChannel":
+          messageView = (
+            <IBCChainSelector label={messageObj.message} disabled={disabled} />
+          );
+          break;
+        default:
+          messageView = (
+            <div className={style.message}>
+              {messageObj?.message || "Cant Parse Message"}
+            </div>
+          );
+          break;
+      }
+      if (setIsInputType2 && !disabled) setIsInputType2(true);
     }
+    return messageView;
   }
 
   return (
-    <>
+    <React.Fragment>
       <div className={style.currentDateContainer}>
         {" "}
         {showDate ? (
@@ -128,6 +145,6 @@ export const ChatMessage = ({
           </div>
         </Container>
       </div>
-    </>
+    </React.Fragment>
   );
 };

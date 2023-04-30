@@ -15,6 +15,7 @@ import {
 import privacyIcon from "@assets/hello.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { GRAPHQL_URL } from "../../config.ui.var";
 
 export const ChatInitPopup = ({
   openDialog,
@@ -52,6 +53,7 @@ export const ChatInitPopup = ({
       const messagingPubKey = await requester.sendMessage(
         BACKGROUND_PORT,
         new RegisterPublicKey(
+          GRAPHQL_URL.MESSAGING_SERVER,
           current.chainId,
           userState.accessToken,
           walletAddress,
@@ -77,7 +79,7 @@ export const ChatInitPopup = ({
   };
 
   return openDialog && userState.accessToken.length > 0 ? (
-    <>
+    <React.Fragment>
       <div className={style.overlay} />
       <div className={style.popupContainer}>
         <img draggable={false} src={privacyIcon} />
@@ -132,8 +134,8 @@ export const ChatInitPopup = ({
           Continue
         </button>
       </div>
-    </>
+    </React.Fragment>
   ) : (
-    <></>
+    <React.Fragment />
   );
 };

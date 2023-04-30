@@ -66,6 +66,8 @@ export const NotificationItem: FunctionComponent<Props> = ({
           /// Handling a url and internal page navigation
           if (cta_url.startsWith("http")) {
             window.open(cta_url);
+          } else if (cta_url.startsWith("www")) {
+            window.open(`https:${cta_url}`);
           } else if (cta_url.startsWith("/")) {
             history.push(cta_url);
           }
@@ -86,7 +88,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
   };
 
   return (
-    <>
+    <React.Fragment>
       <div
         className={style.notification}
         onClick={handleNavigateToUrl}
@@ -136,6 +138,6 @@ export const NotificationItem: FunctionComponent<Props> = ({
           </p>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };
