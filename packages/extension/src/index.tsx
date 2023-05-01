@@ -132,7 +132,6 @@ const StateRenderer: FunctionComponent = observer(() => {
   const { keyRingStore } = useStore();
 
   useEffect(() => {
-    debugger;
     // Notify to auto lock service to start activation check whenever the keyring is unlocked.
     if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
       const msg = new StartAutoLockMonitoringMsg();
@@ -140,8 +139,6 @@ const StateRenderer: FunctionComponent = observer(() => {
       requester.sendMessage(BACKGROUND_PORT, msg);
     }
   }, [keyRingStore.status]);
-
-  console.log("What", keyRingStore.status);
 
   if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
     return <MainPage />;
@@ -157,6 +154,7 @@ const StateRenderer: FunctionComponent = observer(() => {
         <Banner
           icon={require("@assets/logo-256.svg")}
           logo={require("@assets/brand-text.png")}
+          subtitle="Wallet for the Interchain"
         />
       </div>
     );
@@ -166,6 +164,7 @@ const StateRenderer: FunctionComponent = observer(() => {
         <Banner
           icon={require("@assets/logo-256.svg")}
           logo={require("@assets/brand-text.png")}
+          subtitle="Wallet for the Interchain"
         />
       </div>
     );

@@ -206,7 +206,7 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
         };
 
         eventListener.postMessage(proxyResponse);
-      } catch (e) {
+      } catch (e: any) {
         const proxyResponse: ProxyRequestResponse = {
           type: "fetchai:proxy-request-response-v1",
           id: message.id,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { UmbralService } from "./service";
 import {
@@ -11,9 +10,7 @@ import {
   UmbralVerifyCapsuleFragMsg,
 } from "@fetchai/umbral-types";
 
-export const getHandler: (service: UmbralService) => Handler = (
-  service: UmbralService
-) => {
+export const getHandler: (service: UmbralService) => Handler = (service) => {
   return (env: Env, msg: Message<unknown>) => {
     switch (msg.constructor) {
       case UmbralGetPublicKeyMsg:

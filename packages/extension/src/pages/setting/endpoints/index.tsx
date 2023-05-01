@@ -12,12 +12,12 @@ import {
   DropdownToggle,
 } from "reactstrap";
 
-import { Input } from "../../../components/form";
+import { Input } from "@components/form";
 import style from "./style.module.scss";
 import useForm from "react-hook-form";
-import { useNotification } from "../../../components/notification";
-import { useConfirm } from "../../../components/confirm";
-import { AlertExperimentalFeature } from "../../../components/alert-experimental-feature";
+import { useNotification } from "@components/notification";
+import { useConfirm } from "@components/confirm";
+import { AlertExperimentalFeature } from "@components/alert-experimental-feature";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   checkRestConnectivity,
@@ -79,20 +79,22 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
               {chainStore.getChain(selectedChainId).chainName}
             </DropdownToggle>
             <DropdownMenu>
-              {chainStore.chainInfos.map((chainInfo) => {
-                return (
-                  <DropdownItem
-                    key={chainInfo.chainId}
-                    onClick={(e) => {
-                      e.preventDefault();
+              <div className={style.dropdownWrapper}>
+                {chainStore.chainInfos.map((chainInfo) => {
+                  return (
+                    <DropdownItem
+                      key={chainInfo.chainId}
+                      onClick={(e) => {
+                        e.preventDefault();
 
-                      setSelectedChainId(chainInfo.chainId);
-                    }}
-                  >
-                    {chainInfo.chainName}
-                  </DropdownItem>
-                );
-              })}
+                        setSelectedChainId(chainInfo.chainId);
+                      }}
+                    >
+                      {chainInfo.chainName}
+                    </DropdownItem>
+                  );
+                })}
+              </div>
             </DropdownMenu>
           </ButtonDropdown>
           <div style={{ flex: 1 }} />

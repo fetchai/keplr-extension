@@ -219,7 +219,7 @@ export const SendPage: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName
       canChangeChainInfo={false}
-      style={{ height: "auto", minHeight: "100%" }}
+      // style={{ height: "auto", minHeight: "100%" }}
       onBackButton={
         isDetachedPage
           ? undefined

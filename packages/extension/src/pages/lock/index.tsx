@@ -101,6 +101,7 @@ export const LockPage: FunctionComponent = observer(() => {
               : require("@assets/logo-256.svg")
           }
           logo={require("../../public/assets/brand-text.png")}
+          subtitle="Wallet for the Interchain"
         />
         <PasswordInput
           label={intl.formatMessage({

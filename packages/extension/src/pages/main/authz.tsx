@@ -3,12 +3,12 @@ import styleAuthZ from "./authz.module.scss";
 import classnames from "classnames";
 import { FormattedDate, FormattedMessage } from "react-intl";
 import styleStake from "./stake.module.scss";
-import { Collapse } from "../../components/collapse";
+import { Collapse } from "@components/collapse";
 import { AuthZ } from "@keplr-wallet/stores";
 import { useHistory } from "react-router";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Buffer } from "buffer/";
-import { ToolTip } from "../../components/tooltip";
+import { ToolTip } from "@components/tooltip";
 
 interface Props {
   grants: AuthZ.Grant[];

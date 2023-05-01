@@ -6,7 +6,7 @@ import styleAccount from "./account.module.scss";
 
 import { WalletStatus } from "@keplr-wallet/stores";
 import { observer } from "mobx-react-lite";
-import { ToolTip } from "../../components/tooltip";
+import { ToolTip } from "@components/tooltip";
 import { useIntl } from "react-intl";
 import { useNotification } from "@components/notification";
 import { useStore } from "../../stores";

@@ -5,7 +5,7 @@ import { AuthZ } from "@keplr-wallet/stores";
 import style from "./style.module.scss";
 import classNames from "classnames";
 import { FormattedDate, FormattedMessage, useIntl } from "react-intl";
-import { useNotification } from "../../components/notification";
+import { useNotification } from "@components/notification";
 import { useStore } from "../../stores";
 import { Buffer } from "buffer/";
 

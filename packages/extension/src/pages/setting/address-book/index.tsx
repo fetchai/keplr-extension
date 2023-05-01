@@ -196,19 +196,22 @@ export const AddressBookPage: FunctionComponent<{
                   <DropdownToggle caret style={{ boxShadow: "none" }}>
                     {chainStore.getChain(selectedChainId).chainName}
                   </DropdownToggle>
+
                   <DropdownMenu>
-                    {chainStore.chainInfos.map((chainInfo) => {
-                      return (
-                        <DropdownItem
-                          key={chainInfo.chainId}
-                          onClick={() => {
-                            setSelectedChainId(chainInfo.chainId);
-                          }}
-                        >
-                          {chainInfo.chainName}
-                        </DropdownItem>
-                      );
-                    })}
+                    <div className={styleAddressBook.dropdownWrapper}>
+                      {chainStore.chainInfos.map((chainInfo) => {
+                        return (
+                          <DropdownItem
+                            key={chainInfo.chainId}
+                            onClick={() => {
+                              setSelectedChainId(chainInfo.chainId);
+                            }}
+                          >
+                            {chainInfo.chainName}
+                          </DropdownItem>
+                        );
+                      })}
+                    </div>
                   </DropdownMenu>
                 </ButtonDropdown>
               )}

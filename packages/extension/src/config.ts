@@ -2500,7 +2500,7 @@ export const PrivilegedOrigins: string[] = [
 ];
 
 export const CommunityChainInfoRepo = {
-  organizationName: "fetchai",
-  repoName: "fetch-wallet",
-  branchName: "master",
+  organizationName: "chainapsis",
+  repoName: "keplr-chain-registry",
+  branchName: "main",
 };

@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { Button, Form } from "reactstrap";
 import { DescriptionView } from "./description-view";
 
-import { Input } from "../../../components/form";
+import { Input } from "@components/form";
 import style from "./style.module.scss";
 import useForm from "react-hook-form";
 import { FormattedMessage, useIntl } from "react-intl";

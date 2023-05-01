@@ -11,7 +11,7 @@ import { useNotification } from "@components/notification";
 import { useConfirm } from "@components/confirm";
 import { CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { useIntl } from "react-intl";
-import { ToolTip } from "../../../../components/tooltip";
+import { ToolTip } from "@components/tooltip";
 
 export const ManageTokenPage: FunctionComponent = observer(() => {
   const history = useHistory();

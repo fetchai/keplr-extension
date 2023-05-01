@@ -4,7 +4,7 @@ import style from "../../../style.module.scss";
 import { PageButton } from "../../../page-button";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
-import { useConfirm } from "../../../../../components/confirm";
+import { useConfirm } from "@components/confirm";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import {
   GetGlobalPermissionOriginsMsg,

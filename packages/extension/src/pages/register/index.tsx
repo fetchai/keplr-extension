@@ -128,7 +128,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
             alt="logo"
           />
           <img
-            className={style.brandText}
+            className={style.logo}
             src={require("@assets/brand-text.png")}
             alt="logo"
           />

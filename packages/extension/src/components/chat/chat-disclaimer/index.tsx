@@ -42,7 +42,7 @@ export const ChatDisclaimer = () => {
   };
 
   return openDialog ? (
-    <>
+    <React.Fragment>
       <div className={style.overlay} onClick={() => handleClick(false)} />
       <div className={style.popupContainer}>
         <img
@@ -74,8 +74,8 @@ export const ChatDisclaimer = () => {
           Go To Chat
         </button>
       </div>
-    </>
+    </React.Fragment>
   ) : (
-    <></>
+    <React.Fragment />
   );
 };

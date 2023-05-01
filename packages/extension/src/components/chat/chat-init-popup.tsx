@@ -60,7 +60,6 @@ export const ChatInitPopup = ({
           selectedPrivacySetting
         )
       );
-
       store.dispatch(setMessagingPubKey(messagingPubKey));
       history.replace("/chat");
     } catch (e) {

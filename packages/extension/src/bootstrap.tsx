@@ -9,6 +9,7 @@ const LoadingScreen: React.FC = () => {
     <Banner
       icon={require("@assets/logo-256.svg")}
       logo={require("@assets/brand-text.png")}
+      subtitle="Wallet for the Interchain"
     />
   );
 };

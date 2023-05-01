@@ -1,10 +1,4 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  useRef,
-  useMemo,
-  useState,
-} from "react";
+import React, { FunctionComponent, useCallback, useRef, useState } from "react";
 
 import styleTxButton from "./tx-button.module.scss";
 
@@ -18,29 +12,21 @@ import Modal from "react-modal";
 
 import { useNotification } from "@components/notification";
 
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router";
 
 import classnames from "classnames";
 import { Dec } from "@keplr-wallet/unit";
-import { BuySupportServiceInfo, useBuy } from "../../hooks";
-import classNames from "classnames";
-import reward from "@assets/icon/reward.png";
 import send from "@assets/icon/send.png";
-import stake from "@assets/icon/stake.png";
 
-import activeReward from "@assets/icon/activeReward.png";
 import activeSend from "@assets/icon/activeSend.png";
-import activeStake from "@assets/icon/activeStake.png";
+import { DepositModal } from "./qr-code";
+import { WalletStatus } from "@keplr-wallet/stores";
 
 export const TxButtonView: FunctionComponent = observer(() => {
-  const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
-
-  const notification = useNotification();
+  const { accountStore, chainStore, queriesStore } = useStore();
 
   const [isActiveSend, setIsActiveSend] = useState(false);
-  const [isActiveStake, setIsActiveStake] = useState(false);
-  const [isActiveReward, setIsActiveReward] = useState(false);
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -49,7 +35,6 @@ export const TxButtonView: FunctionComponent = observer(() => {
   );
 
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
-  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
   const [sendTooltipOpen, setSendTooltipOpen] = useState(false);
   const [buyTooltipOpen, setBuyTooltipOpen] = useState(false);
@@ -60,89 +45,60 @@ export const TxButtonView: FunctionComponent = observer(() => {
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
     undefined;
 
+  const intl = useIntl();
+
   const sendBtnRef = useRef<HTMLButtonElement>(null);
   const buyBtnRef = useRef<HTMLButtonElement>(null);
+  const notification = useNotification();
 
-  const { isBuySupportChain, buySupportServiceInfos } = useBuy();
-
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
-
-  const stakable = queries.queryBalances.getQueryBech32Address(
-    accountInfo.bech32Address
-  ).stakable;
-
-  const isRewardExist = rewards.stakableReward.toDec().gt(new Dec(0));
-
-  const isStakableExist = useMemo(() => {
-    return stakable.balance.toDec().gt(new Dec(0));
-  }, [stakable.balance]);
-
-  const withdrawAllRewards = async () => {
-    if (
-      accountInfo.isReadyToSendMsgs &&
-      chainStore.current.walletUrlForStaking
-    ) {
-      try {
-        // When the user delegated too many validators,
-        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
-        // So, to prevent this problem, just send the msgs up to 8.
-        await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
-          rewards.getDescendingPendingRewardValidatorAddresses(8),
-          "",
-          undefined,
-          undefined,
-          {
-            onBroadcasted: () => {
-              analyticsStore.logEvent("Claim reward tx broadcasted", {
-                chainId: chainStore.current.chainId,
-                chainName: chainStore.current.chainName,
-              });
-            },
-          }
-        );
-
-        history.replace("/");
-      } catch (e: any) {
-        history.replace("/");
+  const copyAddress = useCallback(
+    async (address: string) => {
+      if (accountInfo.walletStatus === WalletStatus.Loaded) {
+        await navigator.clipboard.writeText(address);
         notification.push({
-          type: "warning",
           placement: "top-center",
-          duration: 5,
-          content: `Fail to withdraw rewards: ${e.message}`,
+          type: "success",
+          duration: 2,
+          content: intl.formatMessage({
+            id: "main.address.copied",
+          }),
           canDelete: true,
           transition: {
             duration: 0.25,
           },
         });
       }
-    }
-  };
+    },
+    [accountInfo.walletStatus, notification, intl]
+  );
 
   return (
     <div
       className={styleTxButton.containerTxButton}
       style={{ margin: "0px -2px" }}
     >
-      <Button
-        innerRef={buyBtnRef}
-        className={classnames(styleTxButton.button, {
-          disabled: !isBuySupportChain,
-        })}
-        color="primary"
-        outline
+      <a
+        href={"https://fetch.ai/get-fet/"}
+        target="_blank"
+        rel="noopener noreferrer"
         onClick={(e) => {
-          e.preventDefault();
-
-          if (isBuySupportChain) {
-            setIsBuyModalOpen(true);
+          if (chainStore.current.chainId != "fetchhub-4") {
+            e.preventDefault();
           }
         }}
       >
-        <FormattedMessage id="main.account.button.buy" />
-      </Button>
-      {!isBuySupportChain ? (
+        <Button
+          innerRef={buyBtnRef}
+          color="primary"
+          outline
+          className={classnames(styleTxButton.button, {
+            disabled: chainStore.current.chainId != "fetchhub-4",
+          })}
+        >
+          <FormattedMessage id="main.account.button.buy" />
+        </Button>
+      </a>
+      {chainStore.current.chainId != "fetchhub-4" ? (
         <Tooltip
           placement="bottom"
           isOpen={buyTooltipOpen}
@@ -154,11 +110,12 @@ export const TxButtonView: FunctionComponent = observer(() => {
         </Tooltip>
       ) : null}
       <Button
-        className={styleTxButton.button}
+        className={classnames(styleTxButton.button)}
         color="primary"
         outline
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault();
+          await copyAddress(accountInfo.bech32Address);
 
           setIsDepositModalOpen(true);
         }}
@@ -233,158 +190,15 @@ export const TxButtonView: FunctionComponent = observer(() => {
           setIsDepositModalOpen(false);
         }}
       >
-        <DepositModalContent bech32Address={accountInfo.bech32Address} />
-      </Modal>
-      <Modal
-        style={{
-          content: {
-            width: "330px",
-            minWidth: "330px",
-            minHeight: "unset",
-            maxHeight: "unset",
-            padding: "24px 12px",
-          },
-        }}
-        isOpen={isBuyModalOpen}
-        onRequestClose={() => {
-          setIsBuyModalOpen(false);
-        }}
-      >
-        <BuyModalContent buySupportServiceInfos={buySupportServiceInfos} />
-      </Modal>
-      <Button
-        className={styleTxButton.button}
-        style={
-          !accountInfo.isReadyToSendMsgs ||
-          !isRewardExist ||
-          !chainStore.current.walletUrlForStaking
-            ? {
-                opacity: 0.5,
-                pointerEvents: "none",
-              }
-            : { opacity: 1, pointerEvents: "auto" }
-        }
-        outline
-        color="primary"
-        onClick={withdrawAllRewards}
-        data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
-        onMouseEnter={() => {
-          setIsActiveReward(true);
-        }}
-        onMouseLeave={() => {
-          setIsActiveReward(false);
-        }}
-      >
-        <img
-          src={isActiveReward ? activeReward : reward}
-          alt=""
-          style={{
-            marginRight: "5px",
-            height: "18px",
-          }}
+        <DepositModal
+          chainName={chainStore.current.chainName}
+          bech32Address={accountInfo.bech32Address}
+          isDepositOpen={isDepositModalOpen}
+          setIsDepositOpen={setIsDepositModalOpen}
         />
-        <FormattedMessage id="main.stake.button.claim-rewards" />
-      </Button>
-      <a
-        href={chainStore.current.walletUrlForStaking}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={
-          !isStakableExist || !chainStore.current.walletUrlForStaking
-            ? {
-                opacity: 0.5,
-                pointerEvents: "none",
-              }
-            : { opacity: 1, pointerEvents: "auto" }
-        }
-        onClick={(e) => {
-          if (!isStakableExist || !chainStore.current.walletUrlForStaking) {
-            e.preventDefault();
-          } else {
-            analyticsStore.logEvent("Stake button clicked", {
-              chainId: chainStore.current.chainId,
-              chainName: chainStore.current.chainName,
-            });
-          }
-        }}
-      >
-        <Button
-          className={styleTxButton.button}
-          color="primary"
-          outline
-          onMouseEnter={() => {
-            setIsActiveStake(true);
-          }}
-          onMouseLeave={() => {
-            setIsActiveStake(false);
-          }}
-        >
-          <img
-            src={isActiveStake ? activeStake : stake}
-            alt=""
-            style={{
-              marginRight: "5px",
-              height: "15px",
-            }}
-          />
-          <FormattedMessage id="main.stake.button.stake" />
-        </Button>
-      </a>
+      </Modal>
     </div>
   );
 });
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const QrCode = require("qrcode");
-
-const DepositModalContent: FunctionComponent<{
-  bech32Address: string;
-}> = ({ bech32Address }) => {
-  const qrCodeRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (qrCodeRef.current && bech32Address) {
-      QrCode.toCanvas(qrCodeRef.current, bech32Address);
-    }
-  }, [bech32Address]);
-
-  return (
-    <div className={styleTxButton.modalContent}>
-      <h1 style={{ marginBottom: 0 }}>Scan QR code</h1>
-      <canvas className={styleTxButton.qrcode} id="qrcode" ref={qrCodeRef} />
-    </div>
-  );
-};
-
-const BuyModalContent: FunctionComponent<{
-  buySupportServiceInfos: BuySupportServiceInfo[];
-}> = ({ buySupportServiceInfos }) => {
-  return (
-    <div className={styleTxButton.modalContent}>
-      <h1 style={{ marginBottom: 0 }}>Buy Crypto</h1>
-      <div className={styleTxButton.buySupportServices}>
-        {buySupportServiceInfos.map((serviceInfo) => (
-          <a
-            key={serviceInfo.serviceId}
-            href={serviceInfo.buyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classNames(styleTxButton.service, {
-              [styleTxButton.disabled]: !serviceInfo.buyUrl,
-            })}
-            onClick={(e) => !serviceInfo.buyUrl && e.preventDefault()}
-          >
-            <div className={styleTxButton.serviceLogoContainer}>
-              <img
-                src={require(`../../public/assets/img/fiat-on-ramp/${serviceInfo.serviceId}.svg`)}
-              />
-            </div>
-            <div className={styleTxButton.serviceName}>
-              {serviceInfo.serviceName}
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  );
-};

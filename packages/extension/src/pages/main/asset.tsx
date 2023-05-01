@@ -1,28 +1,18 @@
 import { observer } from "mobx-react-lite";
-import React, {
-  FunctionComponent,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
+import React, { Fragment, FunctionComponent, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { ToolTip } from "@components/tooltip";
 import { useLanguage } from "../../languages";
 import { useStore } from "../../stores";
 import styleAsset from "./asset.module.scss";
 import { TxButtonView } from "./tx-button";
-import walletIcon from "@assets/icon/wallet.png";
-import buyIcon from "@assets/icon/buy.png";
-import { DepositView } from "./deposit";
-import { DepositModal } from "./qr-code";
-import { useNotification } from "@components/notification";
-import { useIntl } from "react-intl";
-import { WalletStatus } from "@keplr-wallet/stores";
+
 import { store } from "@chatStore/index";
 import { setHasFET } from "@chatStore/user-slice";
 import { AppCurrency } from "@keplr-wallet/types";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
-
+import walletIcon from "@assets/icon/wallet.png";
+import { DepositModal } from "./qr-code";
 export const ProgressBar = ({
   width,
   data,
@@ -57,7 +47,6 @@ export const ProgressBar = ({
 
 const EmptyState = ({
   chainName,
-  denom,
   chainId,
 }: {
   chainName: string;
@@ -68,11 +57,9 @@ const EmptyState = ({
   // const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [bech32Address, setBech32Address] = useState("");
-  const [walletStatus, setWalletStatus] = useState<WalletStatus>();
   // const [loading, setLoading] = useState(true);
   useEffect(() => {
     const accountInfo = accountStore.getAccount(chainId);
-    setWalletStatus(accountInfo.walletStatus);
     setBech32Address(accountInfo.bech32Address);
   }, [chainId, accountStore, chainStore]);
 
@@ -88,30 +75,6 @@ const EmptyState = ({
   //   getPubKey();
   // }, [bech32Address]);
 
-  const intl = useIntl();
-
-  const notification = useNotification();
-
-  const copyAddress = useCallback(
-    async (address: string) => {
-      if (walletStatus === WalletStatus.Loaded) {
-        await navigator.clipboard.writeText(address);
-        notification.push({
-          placement: "top-center",
-          type: "success",
-          duration: 2,
-          content: intl.formatMessage({
-            id: "main.address.copied",
-          }),
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
-      }
-    },
-    [walletStatus, notification, intl]
-  );
   return (
     <div className={styleAsset.emptyState}>
       <DepositModal
@@ -126,27 +89,6 @@ const EmptyState = ({
       <p className={styleAsset.desc}>
         That’s okay, you can deposit tokens to your address or buy some.
       </p>
-      <button
-        onClick={async (e) => {
-          e.preventDefault();
-          await copyAddress(bech32Address);
-          setIsDepositOpen(true);
-        }}
-      >
-        Deposit {denom}
-      </button>
-      {chainId == "fetchhub-4" && (
-        <a
-          href={"https://fetch.ai/get-fet/"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styleAsset.buyButton}
-        >
-          <button>
-            <img draggable={false} src={buyIcon} alt="buy tokens" /> Buy Tokens
-          </button>
-        </a>
-      )}
     </div>
   );
 };
@@ -229,18 +171,22 @@ export const AssetView: FunctionComponent = observer(() => {
     : !total.toDec().isZero();
 
   store.dispatch(setHasFET(hasBalance));
+
   if (!hasBalance) {
     return (
-      <EmptyState
-        chainName={current.chainName}
-        denom={chainStore.current.stakeCurrency.coinDenom}
-        chainId={chainStore.current.chainId}
-      />
+      <Fragment>
+        <EmptyState
+          chainName={current.chainName}
+          denom={chainStore.current.stakeCurrency.coinDenom}
+          chainId={chainStore.current.chainId}
+        />
+        <TxButtonView />
+      </Fragment>
     );
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div className={styleAsset.containerAsset}>
         <div className={styleAsset.containerChart}>
           <div className={styleAsset.centerText}>
@@ -258,7 +204,7 @@ export const AssetView: FunctionComponent = observer(() => {
                 : total.shrink(true).trim(true).maxDecimals(6).toString()}
             </div>
             <div className={styleAsset.indicatorIcon}>
-              <React.Fragment>
+              <Fragment>
                 {balanceStakableQuery.isFetching ? (
                   <i className="fas fa-spinner fa-spin" />
                 ) : balanceStakableQuery.error ? (
@@ -276,7 +222,7 @@ export const AssetView: FunctionComponent = observer(() => {
                     <i className="fas fa-exclamation-triangle text-danger" />
                   </ToolTip>
                 ) : null}
-              </React.Fragment>
+              </Fragment>
             </div>
           </div>
           <ProgressBar width={300} data={data} />
@@ -329,8 +275,6 @@ export const AssetView: FunctionComponent = observer(() => {
         </div>
       </div>
       <TxButtonView />
-      <hr className={styleAsset.hr} />
-      <DepositView />
-    </React.Fragment>
+    </Fragment>
   );
 });
