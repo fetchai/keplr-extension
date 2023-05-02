@@ -13,6 +13,7 @@ import { TokenDropdown } from "@components/agents/tokens-dropdown";
 import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
 import { MessageFeedBack } from "@components/chat-message-feedback";
+import { useHistory } from "react-router";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -40,6 +41,8 @@ export const ChatMessage = ({
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState<MessagePrimitive>();
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const history = useHistory();
+  const targetAddress = history.location.pathname.split("/")[3];
   useEffect(() => {
     decryptMessage(chainId, message, isSender)
       .then((message) => {
@@ -141,7 +144,7 @@ export const ChatMessage = ({
                 <MessageFeedBack
                   messageId={messageId}
                   chainId={chainId}
-                  targetAddress={decryptedMessage?.sender || ""}
+                  targetAddress={targetAddress}
                 />
               )}
             </div>
