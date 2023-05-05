@@ -743,7 +743,7 @@ export const WasmExecutionMsgView: FunctionComponent<{
         }
       })();
     }
-  }, [accountStore, chainStore, chainStore.current.chainId, intl, msg]);
+  }, [chainStore, chainStore.current.chainId, intl, msg]);
 
   return (
     <div>

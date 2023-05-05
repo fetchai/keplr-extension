@@ -185,10 +185,7 @@ export class KeplrWalletConnectV1 implements Keplr {
   };
 
   protected async clearSaved(): Promise<void> {
-    const kvStore = this.options.kvStore;
-    if (kvStore === undefined) {
-      throw new Error("KVStore is undefined");
-    }
+    const kvStore = this.options.kvStore!;
 
     await Promise.all([
       kvStore.set(this.getKeyHasEnabled(), null),
@@ -247,7 +244,7 @@ export class KeplrWalletConnectV1 implements Keplr {
 
   protected async getHasEnabledChainIds(): Promise<string[]> {
     return (
-      (await this.options.kvStore?.get<string[]>(this.getKeyHasEnabled())) ?? []
+      (await this.options.kvStore!.get<string[]>(this.getKeyHasEnabled())) ?? []
     );
   }
 
@@ -258,7 +255,7 @@ export class KeplrWalletConnectV1 implements Keplr {
         hasEnabledChainIds.push(chainId);
       }
     }
-    await this.options.kvStore?.set(
+    await this.options.kvStore!.set(
       this.getKeyHasEnabled(),
       hasEnabledChainIds
     );
@@ -353,7 +350,7 @@ export class KeplrWalletConnectV1 implements Keplr {
   }
 
   protected async getAllLastSeenKey() {
-    return this.options.kvStore?.get<{
+    return await this.options.kvStore!.get<{
       [chainId: string]: KeplrGetKeyWalletCoonectV1Response | undefined;
     }>(this.getKeyLastSeenKey());
   }
@@ -361,7 +358,7 @@ export class KeplrWalletConnectV1 implements Keplr {
   protected async saveAllLastSeenKey(data: {
     [chainId: string]: KeplrGetKeyWalletCoonectV1Response | undefined;
   }) {
-    await this.options.kvStore?.set(this.getKeyLastSeenKey(), data);
+    await this.options.kvStore!.set(this.getKeyLastSeenKey(), data);
   }
 
   protected async saveLastSeenKey(

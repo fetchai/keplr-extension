@@ -126,7 +126,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
               color: "#32325D",
             }}
           >
-            Only scan on Keplr Mobile
+            Only scan on Fetch Mobile
           </h3>
           <div
             style={{
@@ -135,7 +135,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
               color: "#32325D",
             }}
           >
-            Scanning the QR code outside of Keplr Mobile can lead to loss of
+            Scanning the QR code outside of Fetch Mobile can lead to loss of
             funds
           </div>
         </div>
@@ -158,7 +158,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
           lineHeight: "22px",
         }}
       >
-        Scan QR code to export accounts to Keplr Mobile
+        Scan QR code to export accounts to Fetch Mobile
       </div>
       {keyRingStore.multiKeyStoreInfo.length > 2 ? (
         <div
@@ -380,7 +380,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
             color: "#172B4D",
           }}
         >
-          Scan this QR code on Keplr Mobile to export your accounts.
+          Scan this QR code on Fetch Mobile to export your accounts.
         </div>
       </div>
       <div style={{ flex: 1 }} />

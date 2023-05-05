@@ -61,7 +61,7 @@ export class ObservableCosmwasmContractChainQuery<
     const msg = JSON.stringify(obj);
     const query = Buffer.from(msg).toString("base64");
 
-    return `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${query}`;
+    return `/wasm/v1/contract/${contractAddress}/smart/${query}`;
   }
 
   protected canFetch(): boolean {

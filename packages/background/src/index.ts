@@ -111,6 +111,10 @@ export function init(
     storeCreator("secretwasm")
   );
 
+  const backgroundTxService = new BackgroundTx.BackgroundTxService(
+    notification
+  );
+
   const phishingListService = new PhishingList.PhishingListService({
     blockListUrl:
       "https://raw.githubusercontent.com/chainapsis/phishing-block-list/main/block-list.txt",
@@ -154,6 +158,7 @@ export function init(
     analyticsService
   );
   secretWasmService.init(chainsService, keyRingService, permissionService);
+  backgroundTxService.init(chainsService, permissionService);
   phishingListService.init();
   // No need to wait because user can't interact with app right after launch.
   autoLockAccountService.init(keyRingService);
@@ -169,6 +174,7 @@ export function init(
   Ledger.init(router, ledgerService);
   KeyRing.init(router, keyRingService);
   SecretWasm.init(router, secretWasmService);
+  BackgroundTx.init(router, backgroundTxService);
   PhishingList.init(router, phishingListService);
   AutoLocker.init(router, autoLockAccountService);
   Analytics.init(router, analyticsService);
@@ -180,10 +186,4 @@ export function init(
   const messagingService = new Messaging.MessagingService();
   messagingService.init(keyRingService);
   Messaging.init(router, messagingService);
-
-  const backgroundTxService = new BackgroundTx.BackgroundTxService(
-    notification
-  );
-  backgroundTxService.init(chainsService, permissionService);
-  BackgroundTx.init(router, backgroundTxService);
 }
