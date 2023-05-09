@@ -29,6 +29,7 @@ export const ChatMessage = ({
   showDate,
   groupLastSeenTimestamp,
   disabled,
+  setIsInputType2,
 }: {
   chainId: string;
   messageId: string;
@@ -38,6 +39,7 @@ export const ChatMessage = ({
   showDate: boolean;
   groupLastSeenTimestamp: number;
   disabled: boolean;
+  setIsInputType2?: any;
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState<MessagePrimitive>();
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -80,6 +82,7 @@ export const ChatMessage = ({
       messageView = (
         <div className={style.message}>{decryptedMessage.content.text}</div>
       );
+      if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
       const messageObj = JSON.parse(decryptedMessage.content.text);
 
@@ -116,6 +119,7 @@ export const ChatMessage = ({
           );
           break;
       }
+      if (setIsInputType2 && !disabled) setIsInputType2(true);
     }
     return messageView;
   }
