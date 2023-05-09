@@ -140,7 +140,7 @@ export const ChatMessage = ({
           {decideMessageView()}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div className={style.timestamp}>
-              {!isSender && isHovered && (
+              {!isSender && isHovered && targetAddress?.includes("agent") && (
                 <MessageFeedBack
                   messageId={messageId}
                   chainId={chainId}
