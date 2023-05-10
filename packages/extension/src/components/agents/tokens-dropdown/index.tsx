@@ -189,7 +189,7 @@ export const TokenDropdown: FunctionComponent<{
         <Button
           type="button"
           color="primary"
-          size="small"
+          size="sm"
           style={{ marginTop: "15px" }}
           disabled={disabled}
           onClick={() => sendTokenDetails()}
@@ -199,7 +199,7 @@ export const TokenDropdown: FunctionComponent<{
         <Button
           type="button"
           color="secondary"
-          size="small"
+          size="sm"
           style={{ marginTop: "15px" }}
           disabled={disabled}
           onClick={() => cancel()}

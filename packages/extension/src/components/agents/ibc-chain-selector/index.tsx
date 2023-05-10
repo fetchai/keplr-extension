@@ -218,7 +218,7 @@ export const IBCChainSelector: FunctionComponent<{
         <Button
           type="button"
           color="primary"
-          size="small"
+          size="sm"
           style={{ marginTop: "15px" }}
           disabled={disabled || !selectedChannel}
           onClick={() => sendChannelDetails()}
@@ -228,9 +228,9 @@ export const IBCChainSelector: FunctionComponent<{
         <Button
           type="button"
           color="secondary"
-          size="small"
+          size="sm"
           style={{ marginTop: "15px" }}
-          disabled={disabled || !selectedChannel}
+          disabled={disabled}
           onClick={() => cancel()}
         >
           Cancel
