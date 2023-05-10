@@ -3,6 +3,11 @@ import { userDetails } from "@chatStore/user-slice";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { SwitchUser } from "@components/switch-user";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import {
+  useAddressBookConfig,
+  useIBCTransferConfig,
+} from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/index";
 import { fetchPublicKey } from "@utils/fetch-public-key";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -20,9 +25,10 @@ export const AgentChatSection: FunctionComponent = () => {
 
   const [targetPubKey, setTargetPubKey] = useState("");
   const [loadingChats, setLoadingChats] = useState(false);
-  const { chainStore } = useStore();
-  const current = chainStore.current;
+  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
 
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
   useEffect(() => {
     const setPublicAddress = async () => {
       const pubAddr = await fetchPublicKey(
@@ -35,6 +41,38 @@ export const AgentChatSection: FunctionComponent = () => {
     setPublicAddress();
   }, [user.accessToken, current.chainId, targetAddress]);
 
+  const ibcTransferConfigs = useIBCTransferConfig(
+    chainStore,
+    queriesStore,
+    accountStore,
+    chainStore.current.chainId,
+    accountInfo.bech32Address,
+    {
+      allowHexAddressOnEthermint: true,
+      icns: uiConfigStore.icnsInfo,
+    }
+  );
+  const [selectedChainId] = useState(
+    ibcTransferConfigs.channelConfig?.channel
+      ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
+      : current.chainId
+  );
+
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+  const addresses = addressBookConfig.addressBookDatas;
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -42,7 +80,7 @@ export const AgentChatSection: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <UserNameSection />
+      <UserNameSection addresses={addresses} />
       <ChatErrorPopup />
       {loadingChats ? (
         <ChatLoader message="Arranging messages, please wait..." />

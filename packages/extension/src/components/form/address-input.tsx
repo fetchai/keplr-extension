@@ -26,6 +26,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
+import { validateAgentAddress } from "@utils/validate-agent";
 
 export interface AddressInputProps {
   recipientConfig: IRecipientConfig | IRecipientConfigWithICNS;
@@ -193,9 +194,16 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
           {!isICNSfetching && isICNSName && !error ? (
             <FormText>{recipientConfig.recipient}</FormText>
           ) : null}
-          {errorText != null ? (
+          {errorText != null &&
+          !recipientConfig.rawRecipient.startsWith("agent") ? (
             <div className={styleAddressInput.errorText}>{errorText}</div>
           ) : null}
+          {recipientConfig.rawRecipient.startsWith("agent") &&
+            validateAgentAddress(recipientConfig.rawRecipient) && (
+              <div className={styleAddressInput.errorText}>
+                Invalid agent address
+              </div>
+            )}
         </FormGroup>
       </React.Fragment>
     );

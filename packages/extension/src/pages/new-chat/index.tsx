@@ -148,6 +148,7 @@ export const NewChat: FunctionComponent = observer(() => {
   );
 
   const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas
+    .filter((data) => !data.address.startsWith("agent"))
     .map((data) => {
       return { name: data.name, address: data.address };
     })
