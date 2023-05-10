@@ -367,7 +367,7 @@ export const FeeButtonsInner: FunctionComponent<
     }
 
     return (
-      <FormGroup style={{ position: "relative" }}>
+      <FormGroup>
         {label ? (
           <Label for={inputId} className="form-control-label">
             {label}
@@ -468,9 +468,12 @@ export const FeeButtonsInner: FunctionComponent<
           </FormText>
         ) : null}
         {errorText != null ? (
-          <FormFeedback style={{ display: "block" }}>{errorText}</FormFeedback>
+          <FormFeedback style={{ display: "block", position: "relative" }}>
+            {errorText}
+          </FormFeedback>
         ) : null}
-        <div style={{ right: 0 }}>
+
+        <div>
           <Button
             className={styleFeeButtons.setGasButton}
             size="sm"

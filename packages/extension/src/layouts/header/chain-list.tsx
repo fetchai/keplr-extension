@@ -137,7 +137,7 @@ export const ChainList: FunctionComponent = observer(() => {
         <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.raw} />
       ))}
 
-      <Divider />
+      {/* <Divider /> */}
       <a
         href="https://chains.keplr.app/"
         target="_blank"

@@ -238,7 +238,7 @@ export const SignPage: FunctionComponent = observer(() => {
             }
           : undefined
       }
-      style={{ background: "white", height: "auto", minHeight: "100%" }}
+      style={{ background: "white", minHeight: "100%" }}
       innerStyle={{ display: "flex", flexDirection: "column" }}
     >
       {
