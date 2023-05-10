@@ -20,3 +20,11 @@ export const formatGroupName = (address: string) => {
     );
   else return address;
 };
+
+export const formatTokenName = (name: string) => {
+  if (name.length > 18) {
+    return name.substring(0, 17) + "...";
+  }
+
+  return name;
+};

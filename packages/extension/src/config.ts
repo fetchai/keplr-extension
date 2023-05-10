@@ -2418,6 +2418,38 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: [],
   },
   {
+    rpc: "https://axelartest-rpc.quickapi.com:443",
+    rest: "https://axelartest-lcd.quickapi.com:443",
+    chainId: "axelar-testnet-lisbon-3",
+    chainName: "Axelar Testnet",
+    stakeCurrency: {
+      coinDenom: "AXL",
+      coinMinimalDenom: "uaxl",
+      coinDecimals: 6,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "axelar",
+      bech32PrefixAccPub: "axelarpub",
+      bech32PrefixValAddr: "axelarvaloper",
+      bech32PrefixValPub: "axelarvaloperpub",
+      bech32PrefixConsAddr: "axelarvalcons",
+      bech32PrefixConsPub: "axelarvalconspub",
+    },
+    bip44: { coinType: 118 },
+    currencies: [
+      { coinDenom: "AXL", coinMinimalDenom: "uaxl", coinDecimals: 6 },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "AXL",
+        coinMinimalDenom: "uaxl",
+        coinDecimals: 6,
+        gasPriceStep: { low: 0.05, average: 0.125, high: 0.2 },
+      },
+    ],
+    features: ["stargate", "no-legacy-stdTx", "ibc-transfer"],
+  },
+  {
     rpc: "https://rpc-dorado.fetch.ai",
     rest: "https://rest-dorado.fetch.ai",
     chainId: "dorado-1",
@@ -2457,38 +2489,6 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
-  },
-  {
-    rpc: "https://axelartest-rpc.quickapi.com:443",
-    rest: "https://axelartest-lcd.quickapi.com:443",
-    chainId: "axelar-testnet-lisbon-3",
-    chainName: "Axelar Testnet",
-    stakeCurrency: {
-      coinDenom: "AXL",
-      coinMinimalDenom: "uaxl",
-      coinDecimals: 6,
-    },
-    bech32Config: {
-      bech32PrefixAccAddr: "axelar",
-      bech32PrefixAccPub: "axelarpub",
-      bech32PrefixValAddr: "axelarvaloper",
-      bech32PrefixValPub: "axelarvaloperpub",
-      bech32PrefixConsAddr: "axelarvalcons",
-      bech32PrefixConsPub: "axelarvalconspub",
-    },
-    bip44: { coinType: 118 },
-    currencies: [
-      { coinDenom: "AXL", coinMinimalDenom: "uaxl", coinDecimals: 6 },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "AXL",
-        coinMinimalDenom: "uaxl",
-        coinDecimals: 6,
-        gasPriceStep: { low: 0.05, average: 0.125, high: 0.2 },
-      },
-    ],
-    features: ["stargate", "no-legacy-stdTx", "ibc-transfer"],
   },
 ];
 

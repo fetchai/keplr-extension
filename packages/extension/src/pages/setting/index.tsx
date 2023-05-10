@@ -152,6 +152,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           title={intl.formatMessage({
             id: "setting.export-to-mobile",
           })}
+          style={{ display: "none" }}
           onClick={() => {
             history.push({
               pathname: "/setting/export-to-mobile",

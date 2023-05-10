@@ -215,9 +215,8 @@ export const BIP44SelectModal: FunctionComponent = observer(() => {
             chainStore.current.chainId,
             selectables.selectables[0].path.coinType
           );
-        } else {
-          setIsModalOpen(true);
         }
+        setIsModalOpen(true);
       });
     }
   }, [

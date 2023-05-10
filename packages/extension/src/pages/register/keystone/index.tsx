@@ -29,6 +29,7 @@ export const ImportKeystoneIntro: FunctionComponent<{
       outline
       block
       size="lg"
+      style={{ display: "none" }}
       onClick={(e) => {
         e.preventDefault();
 

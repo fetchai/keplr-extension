@@ -468,9 +468,7 @@ export const FeeButtonsInner: FunctionComponent<
           </FormText>
         ) : null}
         {errorText != null ? (
-          <FormFeedback style={{ display: "block", width: "80%" }}>
-            {errorText}
-          </FormFeedback>
+          <FormFeedback style={{ display: "block" }}>{errorText}</FormFeedback>
         ) : null}
         <div style={{ right: 0 }}>
           <Button

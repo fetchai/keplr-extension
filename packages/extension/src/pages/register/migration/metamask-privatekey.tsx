@@ -101,7 +101,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
               id: "register.eth-migrate.eth-address.error.required",
             }),
           })}
-          error={errors.name && errors.name.message}
+          error={errors.ethAddress && errors.ethAddress.message}
         />
         <TextArea
           label="Private Key"

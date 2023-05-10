@@ -142,6 +142,7 @@ export const ChainList: FunctionComponent = observer(() => {
         href="https://chains.keplr.app/"
         target="_blank"
         rel="noopener noreferrer"
+        style={{ display: "none" }}
       >
         <div className={classnames(style.chainName, style.addChain)}>
           <div>{intl.formatMessage({ id: "main.suggest.chain.link" })}</div>

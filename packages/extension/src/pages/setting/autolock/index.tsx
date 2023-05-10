@@ -80,6 +80,7 @@ export const SettingAutoLockPage: FunctionComponent = () => {
             label={intl.formatMessage({
               id: "setting.autolock.duration",
             })}
+            min="0"
             name="duration"
             ref={register({
               required: intl.formatMessage({

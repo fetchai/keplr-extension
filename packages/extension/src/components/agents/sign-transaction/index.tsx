@@ -106,7 +106,10 @@ export const SignTransaction = ({
         color="primary"
         size="sm"
         disabled={disabled}
-        style={{ cursor: disabled ? "not-allowed" : "pointer", marginTop: "10px" }}
+        style={{
+          cursor: disabled ? "not-allowed" : "pointer",
+          marginTop: "10px",
+        }}
         onClick={() => signTxn(rawText)}
       >
         Sign transaction
@@ -115,7 +118,10 @@ export const SignTransaction = ({
         type="button"
         color="secondary"
         size="sm"
-        style={{ cursor: disabled ? "not-allowed" : "pointer", marginTop: "10px" }}
+        style={{
+          cursor: disabled ? "not-allowed" : "pointer",
+          marginTop: "10px",
+        }}
         disabled={disabled}
         onClick={() => cancel()}
       >

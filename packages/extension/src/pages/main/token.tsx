@@ -16,6 +16,7 @@ import sendIcon from "@assets/icon/send.png";
 import { Dec } from "@keplr-wallet/unit";
 import { DenomHelper } from "@keplr-wallet/common";
 import { ToolTip } from "@components/tooltip";
+import { formatTokenName } from "@utils/format";
 
 const TokenView: FunctionComponent<{
   balance: ObservableQueryBalanceInner;
@@ -113,7 +114,7 @@ const TokenView: FunctionComponent<{
       </div>
       <div className={styleToken.tokenName}>
         <ToolTip trigger="hover" tooltip={name}>
-          {name}
+          {formatTokenName(name)}
         </ToolTip>
       </div>
       <div className={styleToken.tokenBalance}>
