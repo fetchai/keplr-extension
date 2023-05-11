@@ -1,18 +1,34 @@
 import { observer } from "mobx-react-lite";
-import React, { Fragment, FunctionComponent, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { ToolTip } from "@components/tooltip";
 import { useLanguage } from "../../languages";
 import { useStore } from "../../stores";
 import styleAsset from "./asset.module.scss";
 import { TxButtonView } from "./tx-button";
-
+import walletIcon from "@assets/icon/wallet.png";
+import buyIcon from "@assets/icon/buy.png";
+import { DepositView } from "./deposit";
+import { DepositModal } from "./qr-code";
+import { useNotification } from "@components/notification";
+import { useIntl } from "react-intl";
+import { WalletStatus } from "@keplr-wallet/stores";
 import { store } from "@chatStore/index";
 import { setHasFET } from "@chatStore/user-slice";
 import { AppCurrency } from "@keplr-wallet/types";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
-import walletIcon from "@assets/icon/wallet.png";
-import { DepositModal } from "./qr-code";
+import { BuySupportServiceInfo, useBuy } from "@hooks/use-buy";
+import Modal from "react-modal";
+
+import styleTxButton from "./tx-button.module.scss";
+import classNames from "classnames";
+
 export const ProgressBar = ({
   width,
   data,
@@ -48,6 +64,7 @@ export const ProgressBar = ({
 const EmptyState = ({
   chainName,
   chainId,
+  denom,
 }: {
   chainName: string;
   denom: string;
@@ -57,9 +74,11 @@ const EmptyState = ({
   // const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [bech32Address, setBech32Address] = useState("");
+  const [walletStatus, setWalletStatus] = useState<WalletStatus>();
   // const [loading, setLoading] = useState(true);
   useEffect(() => {
     const accountInfo = accountStore.getAccount(chainId);
+    setWalletStatus(accountInfo.walletStatus);
     setBech32Address(accountInfo.bech32Address);
   }, [chainId, accountStore, chainStore]);
 
@@ -75,6 +94,33 @@ const EmptyState = ({
   //   getPubKey();
   // }, [bech32Address]);
 
+  const intl = useIntl();
+
+  const notification = useNotification();
+
+  const copyAddress = useCallback(
+    async (address: string) => {
+      if (walletStatus === WalletStatus.Loaded) {
+        await navigator.clipboard.writeText(address);
+        notification.push({
+          placement: "top-center",
+          type: "success",
+          duration: 2,
+          content: intl.formatMessage({
+            id: "main.address.copied",
+          }),
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      }
+    },
+    [walletStatus, notification, intl]
+  );
+
+  const { isBuySupportChain, buySupportServiceInfos } = useBuy();
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   return (
     <div className={styleAsset.emptyState}>
       <DepositModal
@@ -89,6 +135,49 @@ const EmptyState = ({
       <p className={styleAsset.desc}>
         That’s okay, you can deposit tokens to your address or buy some.
       </p>
+      <button
+        onClick={async (e) => {
+          e.preventDefault();
+          await copyAddress(bech32Address);
+          setIsDepositOpen(true);
+        }}
+      >
+        Deposit {denom}
+      </button>
+
+      {(isBuySupportChain || chainId == "fetchhub-4") && (
+        <button
+          className={styleAsset.buyButton}
+          onClick={(e) => {
+            e.preventDefault();
+            if (chainId == "fetchhub-4") {
+              window.open("https://fetch.ai/get-fet/", "_blank");
+            }
+            if (isBuySupportChain) {
+              setIsBuyModalOpen(true);
+            }
+          }}
+        >
+          <img draggable={false} src={buyIcon} alt="buy tokens" /> Buy Tokens
+        </button>
+      )}
+
+      <Modal
+        style={{
+          content: {
+            width: "330px",
+            minWidth: "330px",
+            minHeight: "unset",
+            maxHeight: "unset",
+          },
+        }}
+        isOpen={isBuyModalOpen}
+        onRequestClose={() => {
+          setIsBuyModalOpen(false);
+        }}
+      >
+        <BuyModalContent buySupportServiceInfos={buySupportServiceInfos} />
+      </Modal>
     </div>
   );
 };
@@ -174,14 +263,11 @@ export const AssetView: FunctionComponent = observer(() => {
 
   if (!hasBalance) {
     return (
-      <Fragment>
-        <EmptyState
-          chainName={current.chainName}
-          denom={chainStore.current.stakeCurrency.coinDenom}
-          chainId={chainStore.current.chainId}
-        />
-        <TxButtonView />
-      </Fragment>
+      <EmptyState
+        chainName={current.chainName}
+        denom={chainStore.current.stakeCurrency.coinDenom}
+        chainId={chainStore.current.chainId}
+      />
     );
   }
 
@@ -275,6 +361,41 @@ export const AssetView: FunctionComponent = observer(() => {
         </div>
       </div>
       <TxButtonView />
+      <hr className={styleAsset.hr} />
+      <DepositView />
     </Fragment>
   );
 });
+
+export const BuyModalContent: FunctionComponent<{
+  buySupportServiceInfos: BuySupportServiceInfo[];
+}> = ({ buySupportServiceInfos }) => {
+  return (
+    <div className={styleTxButton.modalContent}>
+      <h1 style={{ marginBottom: 0 }}>Buy Crypto</h1>
+      <div className={styleTxButton.buySupportServices}>
+        {buySupportServiceInfos.map((serviceInfo) => (
+          <a
+            key={serviceInfo.serviceId}
+            href={serviceInfo.buyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={classNames(styleTxButton.service, {
+              [styleTxButton.disabled]: !serviceInfo.buyUrl,
+            })}
+            onClick={(e) => !serviceInfo.buyUrl && e.preventDefault()}
+          >
+            <div className={styleTxButton.serviceLogoContainer}>
+              <img
+                src={require(`../../public/assets/img/fiat-on-ramp/${serviceInfo.serviceId}.svg`)}
+              />
+            </div>
+            <div className={styleTxButton.serviceName}>
+              {serviceInfo.serviceName}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};

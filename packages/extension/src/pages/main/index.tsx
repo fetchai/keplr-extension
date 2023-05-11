@@ -26,7 +26,6 @@ import { getJWT } from "@utils/auth";
 import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
 import { getWalletConfig } from "@graphQL/config-api";
-import { StakeView } from "./stake";
 
 export const MainPage: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -157,13 +156,7 @@ export const MainPage: FunctionComponent = observer(() => {
       </Card>
 
       {showVestingInfo ? <VestingInfo /> : null}
-      {chainStore.current.walletUrlForStaking ? (
-        <Card className={classnames(style.card, "shadow")}>
-          <CardBody>
-            <StakeView />
-          </CardBody>
-        </Card>
-      ) : null}
+
       {queryBalances.unstakables.length > 0 && (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>

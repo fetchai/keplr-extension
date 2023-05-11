@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useRef, useState } from "react";
+import React, { FunctionComponent, useMemo, useRef, useState } from "react";
 
 import styleTxButton from "./tx-button.module.scss";
 
@@ -12,22 +12,25 @@ import Modal from "react-modal";
 
 import { useNotification } from "@components/notification";
 
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
 
-import classnames from "classnames";
 import { Dec } from "@keplr-wallet/unit";
 import send from "@assets/icon/send.png";
+import reward from "@assets/icon/reward.png";
+import stake from "@assets/icon/stake.png";
 
+import activeReward from "@assets/icon/activeReward.png";
+import activeStake from "@assets/icon/activeStake.png";
 import activeSend from "@assets/icon/activeSend.png";
 import { DepositModal } from "./qr-code";
-import { WalletStatus } from "@keplr-wallet/stores";
 
 export const TxButtonView: FunctionComponent = observer(() => {
-  const { accountStore, chainStore, queriesStore } = useStore();
+  const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
 
   const [isActiveSend, setIsActiveSend] = useState(false);
-
+  const [isActiveStake, setIsActiveStake] = useState(false);
+  const [isActiveReward, setIsActiveReward] = useState(false);
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
   const queryBalances = queries.queryBalances.getQueryBech32Address(
@@ -37,7 +40,6 @@ export const TxButtonView: FunctionComponent = observer(() => {
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
 
   const [sendTooltipOpen, setSendTooltipOpen] = useState(false);
-  const [buyTooltipOpen, setBuyTooltipOpen] = useState(false);
 
   const history = useHistory();
 
@@ -45,83 +47,69 @@ export const TxButtonView: FunctionComponent = observer(() => {
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
     undefined;
 
-  const intl = useIntl();
-
   const sendBtnRef = useRef<HTMLButtonElement>(null);
-  const buyBtnRef = useRef<HTMLButtonElement>(null);
   const notification = useNotification();
 
-  const copyAddress = useCallback(
-    async (address: string) => {
-      if (accountInfo.walletStatus === WalletStatus.Loaded) {
-        await navigator.clipboard.writeText(address);
+  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+    accountInfo.bech32Address
+  );
+
+  const stakable = queries.queryBalances.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).stakable;
+
+  const isRewardExist = rewards.stakableReward.toDec().gt(new Dec(0));
+
+  const isStakableExist = useMemo(() => {
+    return stakable.balance.toDec().gt(new Dec(0));
+  }, [stakable.balance]);
+
+  const withdrawAllRewards = async () => {
+    if (
+      accountInfo.isReadyToSendMsgs &&
+      chainStore.current.walletUrlForStaking
+    ) {
+      try {
+        // When the user delegated too many validators,
+        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
+        // So, to prevent this problem, just send the msgs up to 8.
+        await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
+          rewards.getDescendingPendingRewardValidatorAddresses(8),
+          "",
+          undefined,
+          undefined,
+          {
+            onBroadcasted: () => {
+              analyticsStore.logEvent("Claim reward tx broadcasted", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+              });
+            },
+          }
+        );
+
+        history.replace("/");
+      } catch (e: any) {
+        history.replace("/");
         notification.push({
+          type: "warning",
           placement: "top-center",
-          type: "success",
-          duration: 2,
-          content: intl.formatMessage({
-            id: "main.address.copied",
-          }),
+          duration: 5,
+          content: `Fail to withdraw rewards: ${e.message}`,
           canDelete: true,
           transition: {
             duration: 0.25,
           },
         });
       }
-    },
-    [accountInfo.walletStatus, notification, intl]
-  );
+    }
+  };
 
   return (
     <div
       className={styleTxButton.containerTxButton}
       style={{ margin: "0px -2px" }}
     >
-      <a
-        href={"https://fetch.ai/get-fet/"}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => {
-          if (chainStore.current.chainId != "fetchhub-4") {
-            e.preventDefault();
-          }
-        }}
-      >
-        <Button
-          innerRef={buyBtnRef}
-          color="primary"
-          outline
-          className={classnames(styleTxButton.button, {
-            disabled: chainStore.current.chainId != "fetchhub-4",
-          })}
-        >
-          <FormattedMessage id="main.account.button.buy" />
-        </Button>
-      </a>
-      {chainStore.current.chainId != "fetchhub-4" ? (
-        <Tooltip
-          placement="bottom"
-          isOpen={buyTooltipOpen}
-          target={buyBtnRef}
-          toggle={() => setBuyTooltipOpen((value) => !value)}
-          fade
-        >
-          <FormattedMessage id="main.account.button.buy.not-support" />
-        </Tooltip>
-      ) : null}
-      <Button
-        className={classnames(styleTxButton.button)}
-        color="primary"
-        outline
-        onClick={async (e) => {
-          e.preventDefault();
-          await copyAddress(accountInfo.bech32Address);
-
-          setIsDepositModalOpen(true);
-        }}
-      >
-        <FormattedMessage id="main.account.button.deposit" />
-      </Button>
       {/*
         "Disabled" property in button tag will block the mouse enter/leave events.
         So, tooltip will not work as expected.
@@ -165,6 +153,84 @@ export const TxButtonView: FunctionComponent = observer(() => {
         />
         <FormattedMessage id="main.account.button.send" />
       </Button>
+      <Button
+        className={styleTxButton.button}
+        style={
+          !accountInfo.isReadyToSendMsgs ||
+          !isRewardExist ||
+          !chainStore.current.walletUrlForStaking
+            ? {
+                opacity: 0.5,
+                pointerEvents: "none",
+              }
+            : { opacity: 1, pointerEvents: "auto" }
+        }
+        outline
+        color="primary"
+        onClick={withdrawAllRewards}
+        data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
+        onMouseEnter={() => {
+          setIsActiveReward(true);
+        }}
+        onMouseLeave={() => {
+          setIsActiveReward(false);
+        }}
+      >
+        <img
+          src={isActiveReward ? activeReward : reward}
+          alt=""
+          style={{
+            marginRight: "5px",
+            height: "18px",
+          }}
+        />
+        <FormattedMessage id="main.stake.button.claim-rewards" />
+      </Button>
+      <a
+        href={chainStore.current.walletUrlForStaking}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={
+          !isStakableExist || !chainStore.current.walletUrlForStaking
+            ? {
+                opacity: 0.5,
+                pointerEvents: "none",
+              }
+            : { opacity: 1, pointerEvents: "auto" }
+        }
+        onClick={(e) => {
+          if (!isStakableExist || !chainStore.current.walletUrlForStaking) {
+            e.preventDefault();
+          } else {
+            analyticsStore.logEvent("Stake button clicked", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+            });
+          }
+        }}
+      >
+        <Button
+          className={styleTxButton.button}
+          color="primary"
+          outline
+          onMouseEnter={() => {
+            setIsActiveStake(true);
+          }}
+          onMouseLeave={() => {
+            setIsActiveStake(false);
+          }}
+        >
+          <img
+            src={isActiveStake ? activeStake : stake}
+            alt=""
+            style={{
+              marginRight: "5px",
+              height: "15px",
+            }}
+          />
+          <FormattedMessage id="main.stake.button.stake" />
+        </Button>
+      </a>
       {!hasAssets ? (
         <Tooltip
           placement="bottom"
