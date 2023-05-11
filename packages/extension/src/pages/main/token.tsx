@@ -224,11 +224,6 @@ export const TokensView: FunctionComponent = observer(() => {
         }
       }
 
-      // Temporary implementation for trimming the 0 balanced native tokens.
-      // TODO: Remove this part.
-      if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
-        return bal.balance.toDec().gt(new Dec("0"));
-      }
       return true;
     })
     .sort((a, b) => {

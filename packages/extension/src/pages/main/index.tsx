@@ -27,8 +27,6 @@ import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
 import { getWalletConfig } from "@graphQL/config-api";
 import { StakeView } from "./stake";
-import { DenomHelper } from "@keplr-wallet/common";
-import { Dec } from "@keplr-wallet/unit";
 
 export const MainPage: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -99,30 +97,30 @@ export const MainPage: FunctionComponent = observer(() => {
     .get(chainStore.current.chainId)
     .cosmos.queryAuthZGranter.getGranter(accountInfo.bech32Address);
 
-  const tokens = queryBalances.unstakables.filter((bal) => {
-    if (
-      chainStore.current.features &&
-      chainStore.current.features.includes("terra-classic-fee")
-    ) {
-      // At present, can't handle stability tax well if it is not registered native token.
-      // So, for terra classic, disable other tokens.
-      const denom = new DenomHelper(bal.currency.coinMinimalDenom);
-      if (denom.type !== "native" || denom.denom.startsWith("ibc/")) {
-        return false;
-      }
-
-      if (denom.type === "native") {
-        return bal.balance.toDec().gt(new Dec("0"));
-      }
-    }
-
-    // Temporary implementation for trimming the 0 balanced native tokens.
-    // TODO: Remove this part.
-    if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
-      return bal.balance.toDec().gt(new Dec("0"));
-    }
-    return true;
-  });
+  // const tokens = queryBalances.unstakables.filter((bal) => {
+  //   if (
+  //     chainStore.current.features &&
+  //     chainStore.current.features.includes("terra-classic-fee")
+  //   ) {
+  //     // At present, can't handle stability tax well if it is not registered native token.
+  //     // So, for terra classic, disable other tokens.
+  //     const denom = new DenomHelper(bal.currency.coinMinimalDenom);
+  //     if (denom.type !== "native" || denom.denom.startsWith("ibc/")) {
+  //       return false;
+  //     }
+  //
+  //     if (denom.type === "native") {
+  //       return bal.balance.toDec().gt(new Dec("0"));
+  //     }
+  //   }
+  //
+  //   // Temporary implementation for trimming the 0 balanced native tokens.
+  //   // TODO: Remove this part.
+  //   if (new DenomHelper(bal.currency.coinMinimalDenom).type === "native") {
+  //     return bal.balance.toDec().gt(new Dec("0"));
+  //   }
+  //   return true;
+  // });
 
   /// Fetching wallet config info
   useEffect(() => {
@@ -166,7 +164,7 @@ export const MainPage: FunctionComponent = observer(() => {
           </CardBody>
         </Card>
       ) : null}
-      {tokens.length > 0 && (
+      {queryBalances.unstakables.length > 0 && (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>
             <div className={style.containerAccountInner}>

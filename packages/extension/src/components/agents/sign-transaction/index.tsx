@@ -33,11 +33,7 @@ export const SignTransaction = ({
   const notification = useNotification();
   const signTxn = async (data: string) => {
     try {
-      const signResult = await signTransaction(
-        data,
-        chainId,
-        accountInfo.bech32Address
-      );
+      const signResult = await signTransaction(data, chainId, accountInfo);
       history.goBack();
       deliverMessages(
         user.accessToken,
