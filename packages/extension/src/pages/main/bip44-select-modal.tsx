@@ -116,7 +116,7 @@ export const BIP44SelectModal: FunctionComponent = observer(() => {
     } else {
       loadingIndicator.setIsLoading("bip44-selectables-init", false);
     }
-  }, [isModalOpen, loadingIndicator, selectables.needSelectCoinType]);
+  }, [isModalOpen, selectables.needSelectCoinType]);
 
   useEffect(() => {
     if (selectables.isInitializing) {
@@ -211,12 +211,14 @@ export const BIP44SelectModal: FunctionComponent = observer(() => {
         // If there is no other accounts that have the balances or have sent txs,
         // just select the first account without requesting the users to select the account they want.
         if (!hasBalancesOrError && !hasAccountOrError) {
+          loadingIndicator.setIsLoading("bip44-selectables-init", false);
           keyRingStore.setKeyStoreCoinType(
             chainStore.current.chainId,
             selectables.selectables[0].path.coinType
           );
+        } else {
+          setIsModalOpen(true);
         }
-        setIsModalOpen(true);
       });
     }
   }, [

@@ -119,7 +119,7 @@ const EmptyState = ({
     [walletStatus, notification, intl]
   );
 
-  const { isBuySupportChain, buySupportServiceInfos } = useBuy();
+  const { buySupportServiceInfos } = useBuy();
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   return (
     <div className={styleAsset.emptyState}>
@@ -145,7 +145,8 @@ const EmptyState = ({
         Deposit {denom}
       </button>
 
-      {(isBuySupportChain || chainId == "fetchhub-4") && (
+      {/* isBuySupportChain || */}
+      {chainId == "fetchhub-4" && (
         <button
           className={styleAsset.buyButton}
           onClick={(e) => {
@@ -153,9 +154,11 @@ const EmptyState = ({
             if (chainId == "fetchhub-4") {
               window.open("https://fetch.ai/get-fet/", "_blank");
             }
-            if (isBuySupportChain) {
-              setIsBuyModalOpen(true);
-            }
+            /// It will enable buy support for other network chains
+            /// Require necessary keys to support them
+            // if (isBuySupportChain) {
+            //   setIsBuyModalOpen(true);
+            // }
           }}
         >
           <img draggable={false} src={buyIcon} alt="buy tokens" /> Buy Tokens
