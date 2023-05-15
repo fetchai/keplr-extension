@@ -99,10 +99,6 @@ require("@assets/logo-256.svg");
 require("./public/assets/icon/icon-16.png");
 require("./public/assets/icon/icon-48.png");
 require("./public/assets/icon/icon-128.png");
-require("./public/assets/logo-beta-256.png");
-require("@assets/icon/icon-beta-16.png");
-require("@assets/icon/icon-beta-48.png");
-require("@assets/icon/icon-beta-128.png");
 
 configure({
   enforceActions: "always", // Make mobx to strict mode.

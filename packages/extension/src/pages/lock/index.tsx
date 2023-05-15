@@ -37,7 +37,7 @@ export const LockPage: FunctionComponent = observer(() => {
     },
   });
 
-  const { keyRingStore, uiConfigStore } = useStore();
+  const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);
 
   const interactionInfo = useInteractionInfo(() => {
@@ -95,12 +95,8 @@ export const LockPage: FunctionComponent = observer(() => {
         })}
       >
         <Banner
-          icon={
-            uiConfigStore.isBeta
-              ? require("@assets/logo-beta-256.png")
-              : require("@assets/logo-256.svg")
-          }
-          logo={require("../../public/assets/brand-text.png")}
+          icon={require("@assets/logo-256.svg")}
+          logo={require("@assets/brand-text.png")}
         />
         <PasswordInput
           label={intl.formatMessage({

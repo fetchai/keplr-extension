@@ -120,11 +120,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
         >
           <img
             className={style.icon}
-            src={
-              uiConfigStore.isBeta
-                ? require("@assets/logo-beta-256.png")
-                : require("../../public/assets/logo-256.svg")
-            }
+            src={require("@assets/logo-256.svg")}
             alt="logo"
           />
           <img
