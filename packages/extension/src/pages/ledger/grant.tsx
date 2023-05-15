@@ -359,17 +359,31 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
               />
             </div>
           ) : null}
-          <Button
-            color="primary"
-            block
-            onClick={async (e) => {
-              e.preventDefault();
-              await tryInit();
-            }}
-            data-loading={tryInitializing}
-          >
-            <FormattedMessage id="ledger.button.next" />
-          </Button>
+          <div className={style.buttons}>
+            <Button
+              color="primary"
+              className={style.button}
+              onClick={async (e) => {
+                e.preventDefault();
+                await tryInit();
+              }}
+              data-loading={tryInitializing}
+            >
+              <FormattedMessage id="ledger.button.next" />
+            </Button>
+            <Button
+              color="danger"
+              className={style.button}
+              onClick={async (e) => {
+                e.preventDefault();
+                ledgerInitStore.abortAll();
+              }}
+              data-loading={ledgerInitStore.isLoading}
+              outline
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       )}
     </EmptyLayout>

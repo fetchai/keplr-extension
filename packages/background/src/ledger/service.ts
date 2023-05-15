@@ -272,7 +272,7 @@ export class LedgerService {
                   cosmosLikeApp,
                 },
                 {
-                  forceOpenWindow: true,
+                  forceOpenWindow: false,
                   channel: "ledger",
                 }
               )) as
