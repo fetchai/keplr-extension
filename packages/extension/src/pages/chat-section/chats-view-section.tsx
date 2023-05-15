@@ -335,7 +335,6 @@ export const ChatsViewSection = ({
             <div key={message.id}>
               {group !== undefined && (
                 <ChatMessage
-                  messageId={message?.id}
                   chainId={current.chainId}
                   showDate={check}
                   message={message?.contents}
@@ -346,7 +345,6 @@ export const ChatsViewSection = ({
                       ? new Date(receiver.groupLastSeenTimestamp).getTime()
                       : 0
                   }
-                  disabled={true}
                 />
               )}
               {index === CHAT_PAGE_COUNT && <div ref={messagesScrollRef} />}
