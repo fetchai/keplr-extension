@@ -68,7 +68,7 @@ export const SettingNotifications: FunctionComponent = () => {
       <div className={style.notificationSettingContainer}>
         <div className={style.notificationOptionMainContainer}>
           <NotificationOption
-            name="Receive notifications"
+            name="Receive Notifications"
             isChecked={notificationInfo.isNotificationOn}
             handleOnChange={handleOnChange}
           />

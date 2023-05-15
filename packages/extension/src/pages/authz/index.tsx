@@ -123,9 +123,6 @@ export const AuthZPage: FunctionComponent = () => {
         if (history.location.pathname === "/authz") {
           return;
         }
-
-        history.goBack();
-        return;
       }
 
       history.replace("/");
@@ -166,8 +163,8 @@ export const AuthZPage: FunctionComponent = () => {
           >
             {grant.grantee}
             <svg
-              width="12"
-              height="12"
+              width="24"
+              height="24"
               viewBox="0 0 12 12"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +172,7 @@ export const AuthZPage: FunctionComponent = () => {
               <path
                 d="M8 2H4C2.89543 2 2 2.89543 2 4V8"
                 stroke="#95A1B4"
-                strokeWidth="1.5"
+                strokeWidth="1"
                 strokeLinecap="round"
               />
               <rect
@@ -185,7 +182,7 @@ export const AuthZPage: FunctionComponent = () => {
                 height="5.5"
                 rx="1.25"
                 stroke="#95A1B4"
-                strokeWidth="1.5"
+                strokeWidth="1"
               />
             </svg>
           </div>

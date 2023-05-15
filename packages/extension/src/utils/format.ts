@@ -22,8 +22,8 @@ export const formatGroupName = (address: string) => {
 };
 
 export const formatTokenName = (name: string) => {
-  if (name.length > 18) {
-    return name.substring(0, 17) + "...";
+  if (name.length > 16) {
+    return name.substring(0, 15) + "...";
   }
 
   return name;
