@@ -41,7 +41,6 @@ import {
   SettingConnectionsPage,
   SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages/setting/connections";
-import { CreditPage } from "./pages/setting/credit";
 import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
 import { ChangeNamePage } from "./pages/setting/keyring/change";
@@ -241,11 +240,6 @@ const Application: FunctionComponent = () => {
                         exact
                         path="/setting/export-to-mobile"
                         component={ExportToMobilePage}
-                      />
-                      <Route
-                        exact
-                        path="/setting/credit"
-                        component={CreditPage}
                       />
                       <Route
                         exact

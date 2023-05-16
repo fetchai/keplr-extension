@@ -111,8 +111,6 @@
   "setting.receipts.paragraph": "Off - You won't send or receive Read receipts",
   "setting.receipts.paragraph.on": "On - You send and receive Read Receipts",
 
-  "setting.credit": "Special thanks",
-
   "setting.keyring": "Select Account",
   "setting.keyring.button.add": "Add Account",
   "setting.keyring.unnamed-account": "Fetch Wallet Account",

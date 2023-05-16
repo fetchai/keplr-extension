@@ -2,7 +2,6 @@
   "main.account.chart.total-balance": "총 자산",
   "main.account.chart.available-balance": "전송 가능한 자산",
   "main.account.chart.staked-balance": "스테이킹된 자산",
-  "main.account.button.buy": "구입",
   "main.account.button.buy.not-support": "이 체인에서는 지원되지 않습니다.",
   "main.account.chart.reward-balance": "보상",
   "main.account.button.deposit": "입금",
@@ -81,8 +80,6 @@
   "setting.address-book.confirm.delete-address.title": "주소 삭제",
   "setting.address-book.confirm.delete-address.paragraph": "이 주소를 삭제하시겠습니까?",
   "setting.address-book.button.save": "저장",
-
-  "setting.credit": "도움을 주신 분들",
 
   "setting.keyring": "계정 선택",
   "setting.keyring.button.add": "계정 추가",
