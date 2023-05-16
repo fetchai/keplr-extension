@@ -16,7 +16,7 @@ export const SettingPage: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
 
-  const { accountStore, chainStore } = useStore();
+  const { accountStore, chainStore, keyRingStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const config: WalletConfig = useSelector(walletConfig);
@@ -130,7 +130,8 @@ export const SettingPage: FunctionComponent = observer(() => {
             )}
           />
         )}
-        {config.notiphyWhitelist &&
+        {keyRingStore.keyRingType !== "ledger" &&
+          config.notiphyWhitelist &&
           (config.notiphyWhitelist.length === 0 ||
             config.notiphyWhitelist.indexOf(accountInfo.bech32Address) !==
               -1) && (
