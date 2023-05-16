@@ -1,0 +1,96 @@
+.staked-amount-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15vh; 
+  }
+  
+  .staked-amount-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .label {
+    text-align: center;
+  }
+  
+  .fet-text {
+    font-weight: bold;
+    color: #3B82F6
+  }
+  
+  .input-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .input-container input {
+    padding-right: 40px; 
+  }
+  
+  .input-container::after {
+    content: "FET";
+    position: absolute;
+    top: 0; 
+    right: 10px; 
+    line-height: inherit;
+    color:  #3B82F6
+  }
+  
+  .stake-value-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stake-value-container label {
+    margin-bottom: 8px;
+text-align: left;  }
+  
+  .stake-value-input {
+    width: 350px;
+    padding: 8px;
+    border: none;
+    background-color: #f5f5f5;
+    color: #3B82F6
+  }
+  
+  .next-staked-amount {
+    text-align: center;
+  }
+  
+  .bold-text  {
+    text-align: center;
+    font-weight: bold;
+    color: #5090ff;
+  }
+  .next-staked-validator-name{
+    text-align: center;
+    
+    color: #5090ff;
+    margin-bottom: 10px;
+  }
+  .next-staked-info{
+    text-align: center;
+  }
+  .estimated-return-item{
+    display: flex;
+    justify-content: space-between;
+  }
+  .next-staked-amount-info {
+    text-align: center;
+  }
+  
+  .estimated-return {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .box-image{
+    display: flex;
+  align-items: center;
+  }
+.value{
+  font-weight: bold;
+}
