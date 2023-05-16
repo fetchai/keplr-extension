@@ -262,7 +262,11 @@ export const AssetView: FunctionComponent = observer(() => {
     ? !totalPrice.toDec().isZero()
     : !total.toDec().isZero();
 
-  store.dispatch(setHasFET(hasBalance));
+  const hasStakableFET = stakablePrice
+    ? !stakablePrice.toDec().isZero()
+    : !stakable.toDec().isZero();
+
+  store.dispatch(setHasFET(hasStakableFET));
 
   if (!hasBalance) {
     return (
