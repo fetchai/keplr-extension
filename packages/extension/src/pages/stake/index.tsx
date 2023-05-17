@@ -1,11 +1,10 @@
+import activeStake from "@assets/icon/activeStake.png";
+import { ValidatorDropdown } from "@components/form/validators-input";
 import { HeaderLayout } from "@layouts/header-layout";
 import React from "react";
 import { useHistory } from "react-router";
 import { Button, Input } from "reactstrap";
-import activeStake from "@assets/icon/activeStake.png";
 import "./stake.scss";
-// import { TokenDropdown } from "@components/agents/tokens-dropdown";
-import { ValidatorDropdown } from "@components/form/validators-input";
 
 export const Stake = () => {
   const history = useHistory();
@@ -17,7 +16,6 @@ export const Stake = () => {
 
   const goBack = () => {
     history.replace("/");
-    console.log("back clicked");
   };
   const validatorList: string[] = ["validator1", "validator2", "validator3"];
 

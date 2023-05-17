@@ -3,7 +3,6 @@ import React from "react";
 import { useHistory } from "react-router";
 import { Button } from "reactstrap";
 import activeStake from "@assets/icon/activeStake.png";
-// import Box from "@assets/svg/Box";
 
 export const StakeComplete = () => {
   const history = useHistory();
@@ -14,17 +13,15 @@ export const StakeComplete = () => {
       canChangeChainInfo={false}
       alternativeTitle="Stake"
     >
-      <div className="box-image">
+      <div className="next-staked-info">
         <img
-          // src={Box}
+          src={require("@assets/svg/Box.svg")}
           alt=""
           style={{
-            width: "277px",
-            height: "277px",
+            width: "265px",
+            height: "265px",
           }}
         />
-      </div>
-      <div className="next-staked-info">
         <div className="next-staked-amount">
           <span className="bold-text" style={{ color: "#5090FF" }}>
             432.11111 1111 1111 KFET
@@ -36,11 +33,16 @@ export const StakeComplete = () => {
         </div>
       </div>
 
-      <Button variant="outline-primary" block onClick={() => history.push("/")}>
+      <Button color="secondary" block onClick={() => history.push("/")}>
         Return Home
       </Button>
 
-      <Button color="primary" block onClick={() => history.push("/stake")}>
+      <Button
+        color="primary"
+        block
+        onClick={() => history.push("/stake")}
+        style={{ marginLeft: "0px" }}
+      >
         <img
           src={activeStake}
           alt=""
