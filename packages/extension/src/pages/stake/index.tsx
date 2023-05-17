@@ -1,91 +1,110 @@
 import activeStake from "@assets/icon/activeStake.png";
 import { ValidatorDropdown } from "@components/form/validators-input";
 import { HeaderLayout } from "@layouts/header-layout";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { Button, Input } from "reactstrap";
+import { Button, FormGroup, Input } from "reactstrap";
 import "./stake.scss";
 
 export const Stake = () => {
   const history = useHistory();
 
   const stakeClicked = () => {
-    console.log(history);
     history.push("/stake-complete");
   };
 
-  const goBack = () => {
-    history.replace("/");
-  };
   const validatorList: string[] = ["validator1", "validator2", "validator3"];
+
+  const [stakeInput, setStakeInput] = useState<string>();
 
   return (
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle="Stake"
-      onBackButton={goBack}
+      onBackButton={() => history.goBack()}
     >
-      <div>
-        <ValidatorDropdown label={"Validators"} validators={validatorList} />
-      </div>
+      <ValidatorDropdown label={"Validators"} validators={validatorList} />
       <div className="staked-amount-container">
         <div className="staked-amount-content">
-          <div className="label">Current Staked Amount</div>
-          <div className="fet-text">0 FET</div>
+          <div>Current Staked Amount</div>
+          <div
+            style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
+          >
+            0 FET
+          </div>
         </div>
       </div>
-      <label>Stake Value</label>
-      <div className="stake-value-container">
+      <FormGroup style={{ borderRadius: "0%", marginBottom: "16px" }}>
+        <b>Stake Value</b>
         <Input
           type="number"
-          value="0 FET"
+          value={stakeInput}
           placeholder="0 FET"
-          // onChange={handleChange}
+          onChange={(e) => setStakeInput(e.target.value)}
           style={{ borderRadius: "0%" }}
           className="stake-value-input"
         />
-      </div>
-      <div className="stake-form">
-        <div className="next-staked-amount-info">
-          Next Staked Amount
-          <div className="next-staked-amount" style={{ fontWeight: "bold" }}>
-            {"0 FET"}
+      </FormGroup>
+
+      <div className="next-staked-amount-info">
+        Next Staked Amount
+        <div
+          style={{
+            fontWeight: "bold",
+            color: parseFloat(stakeInput || "0") > 0 ? "#3b82f6" : "black",
+          }}
+        >
+          {stakeInput || "0"} FET
+        </div>
+        <div className="estimated-return">
+          Estimated Return
+          <div className="estimated-return-item">
+            <div className="duration">Daily</div>
+            <div
+              style={{
+                fontWeight: "bold",
+                color: parseFloat(stakeInput || "0") > 0 ? "#3b82f6" : "black",
+              }}
+            >
+              0 FET
+            </div>
           </div>
-          <div className="estimated-return">
-            Estimated Return
-            <div className="estimated-return-item">
-              <div className="duration">Daily</div>
-              <div className="value">0 FET</div>
+          <div className="estimated-return-item">
+            <div className="duration">Monthly</div>
+            <div
+              style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
+            >
+              0 FET
             </div>
-            <div className="estimated-return-item">
-              <div className="duration">Monthly</div>
-              <div className="value">0 FET</div>
-            </div>
-            <div className="estimated-return-item">
-              <div className="duration">Yearly</div>
-              <div className="value">0 FET</div>
+          </div>
+          <div className="estimated-return-item">
+            <div className="duration">Yearly</div>
+            <div
+              style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
+            >
+              0 FET
             </div>
           </div>
         </div>
-        <Button
-          type="submit"
-          color="primary"
-          block
-          style={{ alignItems: "end" }}
-          onClick={stakeClicked}
-        >
-          <img
-            src={activeStake}
-            alt=""
-            style={{
-              marginRight: "5px",
-              height: "15px",
-            }}
-          />
-          Stake
-        </Button>
       </div>
+      <Button
+        type="submit"
+        color="primary"
+        block
+        style={{ alignItems: "end" }}
+        onClick={stakeClicked}
+      >
+        <img
+          src={activeStake}
+          alt=""
+          style={{
+            marginRight: "5px",
+            height: "15px",
+          }}
+        />
+        Stake
+      </Button>
     </HeaderLayout>
   );
 };

@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownToggle,
   FormGroup,
-  Label,
 } from "reactstrap";
 import "./validators-input.scss";
 
@@ -30,8 +29,8 @@ export const ValidatorDropdown: FunctionComponent<ValidatorDropdownProps> = ({
   };
 
   return (
-    <FormGroup style={{ borderRadius: "0%" }}>
-      <Label>{label}</Label>
+    <FormGroup style={{ borderRadius: "0%", marginBottom: "16px" }}>
+      <b>{label}</b>
       <br />
       <ButtonDropdown
         className="validators-dropdown"

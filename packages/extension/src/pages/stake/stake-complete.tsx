@@ -23,7 +23,7 @@ export const StakeComplete = () => {
           }}
         />
         <div className="next-staked-amount">
-          <span className="bold-text" style={{ color: "#5090FF" }}>
+          <span style={{ fontWeight: "bold", color: "#5090FF" }}>
             432.11111 1111 1111 KFET
           </span>
         </div>
