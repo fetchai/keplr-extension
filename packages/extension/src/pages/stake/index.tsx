@@ -1,12 +1,13 @@
+import searchIcon from "@assets/icon/search.png";
 import { Staking } from "@keplr-wallet/stores";
 import { HeaderLayout } from "@layouts/header-layout";
 import classnames from "classnames";
+import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useStore } from "../../stores";
 import "./stake.scss";
 import { ValidatorCard } from "./validator-card";
-import { observer } from "mobx-react-lite";
 
 export const Validators: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -15,7 +16,7 @@ export const Validators: FunctionComponent = observer(() => {
     { [key in string]: Staking.Validator }
   >({});
   const [loading, setLoading] = useState(true);
-
+  const [searchInput, setSearchInput] = useState<string>();
   const { chainStore, queriesStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
 
@@ -56,6 +57,17 @@ export const Validators: FunctionComponent = observer(() => {
       <p className={classnames("h2", "my-0", "font-weight-normal")}>
         Validators
       </p>
+      <div className="searchContainer">
+        <div className="searchBox">
+          <img draggable={false} src={searchIcon} alt="search" />
+          <input
+            placeholder="Search by Validator name or address"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+      </div>
+
       {loading ? (
         <div
           style={{
@@ -72,12 +84,23 @@ export const Validators: FunctionComponent = observer(() => {
           Loading Validators
         </div>
       ) : (
-        Object.values(validators).map((validator: Staking.Validator) => (
-          <ValidatorCard
-            validator={validator}
-            key={validator.operator_address}
-          />
-        ))
+        Object.values(validators)
+          .filter((validator) =>
+            searchInput?.trim().length
+              ? validator.description.moniker
+                  ?.toLowerCase()
+                  .includes(searchInput.toLowerCase()) ||
+                validator.operator_address
+                  ?.toLowerCase()
+                  .includes(searchInput.toLowerCase())
+              : true
+          )
+          .map((validator: Staking.Validator) => (
+            <ValidatorCard
+              validator={validator}
+              key={validator.operator_address}
+            />
+          ))
       )}
     </HeaderLayout>
   );
