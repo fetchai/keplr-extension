@@ -17,6 +17,7 @@ import { useHistory } from "react-router";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
 import { RecipientAddressInput } from "@components/agents/address-input";
+import { AGENT_ADDRESS } from "../../config.ui.var";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -168,13 +169,15 @@ export const AgentChatMessage = ({
           {decideMessageView()}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div className={style.timestamp}>
-              {!isSender && isHovered && (
-                <MessageFeedBack
-                  messageId={messageId}
-                  chainId={chainId}
-                  targetAddress={targetAddress}
-                />
-              )}
+              {!isSender &&
+                isHovered &&
+                targetAddress == AGENT_ADDRESS[chainId] && (
+                  <MessageFeedBack
+                    messageId={messageId}
+                    chainId={chainId}
+                    targetAddress={targetAddress}
+                  />
+                )}
             </div>
             <div className={style.timestamp}>
               {formatTime(timestamp)}
