@@ -1,11 +1,43 @@
 import { HeaderLayout } from "@layouts/header-layout";
-import React from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import { useHistory } from "react-router";
 import { Button } from "reactstrap";
 import activeStake from "@assets/icon/activeStake.png";
+import { Staking } from "@keplr-wallet/stores";
+import { useStore } from "../../stores";
+import { observer } from "mobx-react-lite";
 
-export const StakeComplete = () => {
+export const StakeComplete: FunctionComponent = observer(() => {
   const history = useHistory();
+  const validatorAddress = history.location.pathname.split("/")[2];
+
+  const { chainStore, queriesStore } = useStore();
+  const queries = queriesStore.get(chainStore.current.chainId);
+
+  const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Bonded
+  );
+  const unbondingValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Unbonding
+  );
+  const unbondedValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Unbonded
+  );
+
+  const { validator } = useMemo(() => {
+    const validator =
+      bondedValidators.getValidator(validatorAddress) ||
+      unbondingValidators.getValidator(validatorAddress) ||
+      unbondedValidators.getValidator(validatorAddress);
+    return {
+      validator,
+    };
+  }, [
+    bondedValidators,
+    validatorAddress,
+    unbondingValidators,
+    unbondedValidators,
+  ]);
 
   return (
     <HeaderLayout
@@ -20,17 +52,21 @@ export const StakeComplete = () => {
           style={{
             width: "265px",
             height: "265px",
+            margin: "auto",
+            display: "flex",
           }}
         />
-        <div className="next-staked-amount">
-          <span style={{ fontWeight: "bold", color: "#5090FF" }}>
-            432.11111 1111 1111 KFET
-          </span>
-        </div>
-        staked with
-        <div className="next-staked-validator-name">
-          heresthevalidatornamehere
-        </div>
+        {validator && (
+          <React.Fragment>
+            Amount staked with
+            <div
+              className="next-staked-validator-name"
+              style={{ fontWeight: "bold", color: "#5090FF" }}
+            >
+              {validator.description.moniker}
+            </div>
+          </React.Fragment>
+        )}
       </div>
 
       <Button color="secondary" block onClick={() => history.push("/")}>
@@ -55,4 +91,4 @@ export const StakeComplete = () => {
       </Button>
     </HeaderLayout>
   );
-};
+});
