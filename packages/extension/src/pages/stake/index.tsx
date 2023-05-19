@@ -1,21 +1,50 @@
-import activeStake from "@assets/icon/activeStake.png";
-import { ValidatorDropdown } from "@components/form/validators-input";
+import { Staking } from "@keplr-wallet/stores";
 import { HeaderLayout } from "@layouts/header-layout";
-import React, { useState } from "react";
+import classnames from "classnames";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { Button, FormGroup, Input } from "reactstrap";
+import { useStore } from "../../stores";
 import "./stake.scss";
+import { ValidatorCard } from "./validator-card";
+import { observer } from "mobx-react-lite";
 
-export const Stake = () => {
+export const Validators: FunctionComponent = observer(() => {
   const history = useHistory();
 
-  const stakeClicked = () => {
-    history.push("/stake-complete");
-  };
+  const [validators, setValidators] = useState<
+    { [key in string]: Staking.Validator }
+  >({});
+  const [loading, setLoading] = useState(true);
 
-  const validatorList: string[] = ["validator1", "validator2", "validator3"];
+  const { chainStore, queriesStore } = useStore();
+  const queries = queriesStore.get(chainStore.current.chainId);
 
-  const [stakeInput, setStakeInput] = useState<string>();
+  useEffect(() => {
+    const fetchValidators = async () => {
+      setLoading(true);
+      const bondedValidators = await queries.cosmos.queryValidators
+        .getQueryStatus(Staking.BondStatus.Bonded)
+        .waitFreshResponse();
+      const unbondingValidators = await queries.cosmos.queryValidators
+        .getQueryStatus(Staking.BondStatus.Unbonding)
+        .waitFreshResponse();
+      const unbondedValidators = await queries.cosmos.queryValidators
+        .getQueryStatus(Staking.BondStatus.Unbonded)
+        .waitFreshResponse();
+
+      const map: { [key in string]: Staking.Validator } = {};
+      for (const val of [
+        ...(bondedValidators?.data.validators || []),
+        ...(unbondingValidators?.data.validators || []),
+        ...(unbondedValidators?.data.validators || []),
+      ]) {
+        map[val.operator_address] = val;
+      }
+      setValidators(map);
+      setLoading(false);
+    };
+    fetchValidators();
+  }, [queries.cosmos.queryValidators]);
 
   return (
     <HeaderLayout
@@ -24,87 +53,32 @@ export const Stake = () => {
       alternativeTitle="Stake"
       onBackButton={() => history.goBack()}
     >
-      <ValidatorDropdown label={"Validators"} validators={validatorList} />
-      <div className="staked-amount-container">
-        <div className="staked-amount-content">
-          <div>Current Staked Amount</div>
-          <div
-            style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
-          >
-            0 FET
-          </div>
-        </div>
-      </div>
-      <FormGroup style={{ borderRadius: "0%", marginBottom: "16px" }}>
-        <b>Stake Value</b>
-        <Input
-          type="number"
-          value={stakeInput}
-          placeholder="0 FET"
-          onChange={(e) => setStakeInput(e.target.value)}
-          style={{ borderRadius: "0%" }}
-          className="stake-value-input"
-        />
-      </FormGroup>
-
-      <div className="next-staked-amount-info">
-        Next Staked Amount
+      <p className={classnames("h2", "my-0", "font-weight-normal")}>
+        Validators
+      </p>
+      {loading ? (
         <div
           style={{
-            fontWeight: "bold",
-            color: parseFloat(stakeInput || "0") > 0 ? "#3b82f6" : "black",
+            textAlign: "center",
+            padding: "110px 0px",
           }}
         >
-          {stakeInput || "0"} FET
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <rect x="8" y="8" width="64" height="64" />
+            </svg>
+          </div>
+          <br />
+          Loading Validators
         </div>
-        <div className="estimated-return">
-          Estimated Return
-          <div className="estimated-return-item">
-            <div className="duration">Daily</div>
-            <div
-              style={{
-                fontWeight: "bold",
-                color: parseFloat(stakeInput || "0") > 0 ? "#3b82f6" : "black",
-              }}
-            >
-              0 FET
-            </div>
-          </div>
-          <div className="estimated-return-item">
-            <div className="duration">Monthly</div>
-            <div
-              style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
-            >
-              0 FET
-            </div>
-          </div>
-          <div className="estimated-return-item">
-            <div className="duration">Yearly</div>
-            <div
-              style={{ fontWeight: "bold", color: 0 > 0 ? "#3b82f6" : "black" }}
-            >
-              0 FET
-            </div>
-          </div>
-        </div>
-      </div>
-      <Button
-        type="submit"
-        color="primary"
-        block
-        style={{ alignItems: "end" }}
-        onClick={stakeClicked}
-      >
-        <img
-          src={activeStake}
-          alt=""
-          style={{
-            marginRight: "5px",
-            height: "15px",
-          }}
-        />
-        Stake
-      </Button>
+      ) : (
+        Object.values(validators).map((validator: Staking.Validator) => (
+          <ValidatorCard
+            validator={validator}
+            key={validator.operator_address}
+          />
+        ))
+      )}
     </HeaderLayout>
   );
-};
+});
