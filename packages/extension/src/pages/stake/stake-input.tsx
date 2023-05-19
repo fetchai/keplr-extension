@@ -105,40 +105,44 @@ export const StakeInput: FunctionComponent = observer(() => {
   }, [intl, error]);
   const notification = useNotification();
   const stakeClicked = async () => {
-    await account.cosmos.sendDelegateMsg(
-      amountConfig.amount,
-      validatorAddress,
-      memoConfig.memo,
-      feeConfig.toStdFee(),
-      undefined,
-      {
-        onBroadcasted: () => {
-          notification.push({
-            type: "info",
-            placement: "top-center",
-            duration: 5,
-            content: `Transaction broadcasted`,
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-        },
-        onFulfill: () => {
-          notification.push({
-            type: "success",
-            placement: "top-center",
-            duration: 5,
-            content: `Transaction Completed`,
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-          history.push("/stake-complete/" + validatorAddress);
-        },
-      }
-    );
+    try {
+      await account.cosmos.sendDelegateMsg(
+        amountConfig.amount,
+        validatorAddress,
+        memoConfig.memo,
+        feeConfig.toStdFee(),
+        undefined,
+        {
+          onBroadcasted: () => {
+            notification.push({
+              type: "info",
+              placement: "top-center",
+              duration: 2,
+              content: `Transaction broadcasted`,
+              canDelete: true,
+              transition: {
+                duration: 0.25,
+              },
+            });
+          },
+          onFulfill: () => {
+            notification.push({
+              type: "success",
+              placement: "top-center",
+              duration: 5,
+              content: `Transaction Completed`,
+              canDelete: true,
+              transition: {
+                duration: 0.25,
+              },
+            });
+            history.push("/stake-complete/" + validatorAddress);
+          },
+        }
+      );
+    } catch (e) {
+      history.goBack();
+    }
   };
 
   return (

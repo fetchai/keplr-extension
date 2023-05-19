@@ -1,3 +1,35 @@
+.searchContainer {
+  margin: 12px 0px;
+  display: flex;
+  align-items: center;
+  .searchBox {
+    display: flex;
+    padding: 5px;
+    flex: 1;
+    background-color: #f2f3f6;
+    border-radius: 4px;
+    align-items: center;
+    gap: 10px;
+    img {
+      width: 16px;
+      height: 16px;
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+    }
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      &::placeholder {
+        color: #525f7f;
+      }
+      flex-grow: 1;
+    }
+  }
+}
+
 .staked-amount-container {
   display: flex;
   justify-content: space-around;
