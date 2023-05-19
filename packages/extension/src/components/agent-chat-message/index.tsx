@@ -14,6 +14,7 @@ import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
 import { MessageFeedBack } from "@components/chat-message-feedback";
 import { useHistory } from "react-router";
+import { AGENT_ADDRESS } from "../../config.ui.var";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -143,13 +144,15 @@ export const AgentChatMessage = ({
           {decideMessageView()}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div className={style.timestamp}>
-              {!isSender && isHovered && (
-                <MessageFeedBack
-                  messageId={messageId}
-                  chainId={chainId}
-                  targetAddress={targetAddress}
-                />
-              )}
+              {!isSender &&
+                isHovered &&
+                targetAddress == AGENT_ADDRESS[chainId] && (
+                  <MessageFeedBack
+                    messageId={messageId}
+                    chainId={chainId}
+                    targetAddress={targetAddress}
+                  />
+                )}
             </div>
             <div className={style.timestamp}>
               {formatTime(timestamp)}
