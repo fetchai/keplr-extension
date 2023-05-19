@@ -6,8 +6,10 @@ import { HeaderLayout } from "@layouts/index";
 import { IBCTransferView } from "../main/ibc-transfer";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-
+import { ProposalView } from "@components/proposal/proposal-view";
+import { useStore } from "../../stores";
 export const MorePage: FunctionComponent = () => {
+  const { chainStore } = useStore();
   return (
     <HeaderLayout
       showChainName={true}
@@ -20,6 +22,15 @@ export const MorePage: FunctionComponent = () => {
           <IBCTransferView />
         </CardBody>
       </Card>
+
+      {(chainStore.current.chainId === "fetchhub-4" ||
+        chainStore.current.chainId === "dorado-1") && (
+        <Card className={classnames(style.card, "shadow")}>
+          <CardBody>
+            <ProposalView />
+          </CardBody>
+        </Card>
+      )}
     </HeaderLayout>
   );
 };

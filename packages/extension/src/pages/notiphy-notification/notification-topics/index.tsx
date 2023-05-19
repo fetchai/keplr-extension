@@ -1,5 +1,5 @@
-import { NotificationSearchInput } from "@components/notification-search-input";
-import { Chip } from "@components/select-notifications/topic-chip";
+import { SearchInput } from "@components/notification-search-input";
+import { Chip } from "@components/chips/topic-chip";
 import { HeaderLayout } from "@layouts/header-layout";
 import { fetchTopics } from "@utils/fetch-notification";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
@@ -105,7 +105,7 @@ export const NotificationTopics: FunctionComponent = () => {
         <div className={style.heading}>
           <FormattedMessage id="notification.topic.header-message" />
         </div>
-        <NotificationSearchInput
+        <SearchInput
           inputVal={inputVal}
           handleSearch={handleSearch}
           setInputVal={setInputVal}

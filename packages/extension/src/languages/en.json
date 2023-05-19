@@ -396,5 +396,9 @@
   "notification.organisation.header-message": "Select atleast one organisation you want notifications from:",
   "notification.topic.header-message": "Select the topics you are interested in receiving notifications for",
   "notification.review.header-message": "You just set up your Notifications!",
-  "notification.item.flag-message": "Thanks for flagging this. We'll take a look at it"
+  "notification.item.flag-message": "Thanks for flagging this. We'll take a look at it",
+
+  "main.proposals.title": "Proposals",
+  "main.proposals.paragraph": "View and vote on proposals",
+  "main.proposals.button": "View"
 }

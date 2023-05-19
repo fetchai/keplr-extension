@@ -32,6 +32,7 @@ export const SignTransaction = ({
   const user = useSelector(userDetails);
   const notification = useNotification();
   const signTxn = async (data: string) => {
+    console.log(data, chainId);
     try {
       const signResult = await signTransaction(data, chainId, accountInfo);
       history.goBack();
