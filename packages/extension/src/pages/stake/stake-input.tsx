@@ -176,7 +176,7 @@ export const StakeInput: FunctionComponent = observer(() => {
         type="submit"
         color="primary"
         block
-        disabled={errorText != null}
+        disabled={errorText != null || !amountConfig.amount}
         style={{ alignItems: "end" }}
         onClick={stakeClicked}
       >

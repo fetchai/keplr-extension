@@ -25,7 +25,7 @@ import activeStake from "@assets/icon/activeStake.png";
 import activeSend from "@assets/icon/activeSend.png";
 import { DepositModal } from "./qr-code";
 import { Link } from "react-router-dom";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "src/config.ui.var";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 export const TxButtonView: FunctionComponent = observer(() => {
   const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();

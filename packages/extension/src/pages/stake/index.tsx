@@ -15,6 +15,9 @@ export const Validators: FunctionComponent = observer(() => {
   const [validators, setValidators] = useState<
     { [key in string]: Staking.Validator }
   >({});
+  const [filteredValidators, setFilteredValidators] = useState<
+    Staking.Validator[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState<string>();
   const { chainStore, queriesStore } = useStore();
@@ -42,10 +45,26 @@ export const Validators: FunctionComponent = observer(() => {
         map[val.operator_address] = val;
       }
       setValidators(map);
+      setFilteredValidators(Object.values(map));
       setLoading(false);
     };
     fetchValidators();
   }, [queries.cosmos.queryValidators]);
+
+  const handleFilterValidators = (searchValue: string) => {
+    const filteredValidators = Object.values(validators).filter((validator) =>
+      searchValue?.trim().length
+        ? validator.description.moniker
+            ?.toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          validator.operator_address
+            ?.toLowerCase()
+            .includes(searchValue.toLowerCase())
+        : true
+    );
+    setFilteredValidators(filteredValidators);
+    setSearchInput(searchValue);
+  };
 
   return (
     <HeaderLayout
@@ -63,7 +82,8 @@ export const Validators: FunctionComponent = observer(() => {
           <input
             placeholder="Search by Validator name or address"
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            disabled={loading}
+            onChange={(e) => handleFilterValidators(e.target.value)}
           />
         </div>
       </div>
@@ -83,24 +103,15 @@ export const Validators: FunctionComponent = observer(() => {
           <br />
           Loading Validators
         </div>
+      ) : filteredValidators.length ? (
+        filteredValidators.map((validator: Staking.Validator) => (
+          <ValidatorCard
+            validator={validator}
+            key={validator.operator_address}
+          />
+        ))
       ) : (
-        Object.values(validators)
-          .filter((validator) =>
-            searchInput?.trim().length
-              ? validator.description.moniker
-                  ?.toLowerCase()
-                  .includes(searchInput.toLowerCase()) ||
-                validator.operator_address
-                  ?.toLowerCase()
-                  .includes(searchInput.toLowerCase())
-              : true
-          )
-          .map((validator: Staking.Validator) => (
-            <ValidatorCard
-              validator={validator}
-              key={validator.operator_address}
-            />
-          ))
+        <div style={{ textAlign: "center" }}>No Validators Found</div>
       )}
     </HeaderLayout>
   );
