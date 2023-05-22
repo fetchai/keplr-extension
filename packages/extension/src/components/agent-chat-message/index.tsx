@@ -14,6 +14,8 @@ import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
 import { MessageFeedBack } from "@components/chat-message-feedback";
 import { useHistory } from "react-router";
+import parse from "react-html-parser";
+import { processHyperlinks } from "@utils/process-hyperlinks";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -80,7 +82,7 @@ export const AgentChatMessage = ({
 
     if (decryptedMessage.type === 1) {
       messageView = (
-        <div className={style.message}>{decryptedMessage.content.text}</div>
+        <div className={style.message}>{parse(processHyperlinks((decryptedMessage.content.text)))}</div>
       );
       if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
