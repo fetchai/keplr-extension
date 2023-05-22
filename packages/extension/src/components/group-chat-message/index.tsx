@@ -10,6 +10,8 @@ import { GroupMessagePayload, NameAddress } from "@chatTypes";
 import { GroupMessageType } from "@utils/encrypt-group";
 import { getUserName, getEventMessage } from "@utils/index";
 import { useStore } from "../../stores";
+import parse from "react-html-parser";
+import { processHyperlinks } from "@utils/process-hyperlinks";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -78,15 +80,15 @@ export const GroupChatMessage = ({
         ) : null}
       </div>
       {decryptedMessage &&
-      (decryptedMessage.type == GroupMessageType.event.toString() ||
-        decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
+        (decryptedMessage.type == GroupMessageType.event.toString() ||
+          decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
         <div className={style.currentEventContainer}>
           <span className={style.currentEvent}>
-            {getEventMessage(
+            {parse(processHyperlinks(getEventMessage(
               accountInfo.bech32Address,
               addresses,
               decryptedMessage.message
-            )}
+            )))}
           </span>
         </div>
       ) : (
@@ -109,7 +111,7 @@ export const GroupChatMessage = ({
             {!decryptedMessage ? (
               <i className="fas fa-spinner fa-spin ml-1" />
             ) : (
-              <div className={style.message}>{decryptedMessage.message}</div>
+              <div className={style.message}>{parse(processHyperlinks((decryptedMessage.message)))}</div>
             )}
             <div className={style.timestamp}>
               {formatTime(timestamp)}
