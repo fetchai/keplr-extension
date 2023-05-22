@@ -3,6 +3,7 @@ import { FunctionComponent } from "react";
 import style from "./style.module.scss";
 import { GovStatusChip } from "@components/chips/gov-chip";
 import { useHistory } from "react-router";
+import { proposalOptions } from "../../../pages/proposals/index";
 
 interface Props {
   title: string;
@@ -10,15 +11,11 @@ interface Props {
   status: string;
 }
 
-const proposalOptions = {
-  ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
-  ProposalClosed: "PROPOSAL_STATUS_PASSED" || "PROPOSAL_STATUS_FAILED",
-};
 export const Proposal: FunctionComponent<Props> = (props) => {
   const { title, status, id } = props;
   const history = useHistory();
   let icon, color, background, name;
-  if (status === proposalOptions.ProposalClosed) {
+  if (status === proposalOptions.ProposalPassed) {
     icon = "gov-tick.svg";
     color = "#6AB77A";
     background = "#E3F4E7";

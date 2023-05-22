@@ -51,7 +51,7 @@ export const PropsalVoteStatus: FunctionComponent = () => {
   }, [id]);
 
   const handleReturnHome = async () => {
-    history.go(-3);
+    history.replace("/more");
   };
   return (
     <HeaderLayout

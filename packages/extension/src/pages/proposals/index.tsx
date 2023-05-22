@@ -12,21 +12,25 @@ import { useSelector } from "react-redux";
 import { store } from "@chatStore/index";
 import { useStore } from "../../stores";
 
-const proposalOptions = {
+export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
-  ProposalClosed: "PROPOSAL_STATUS_PASSED" || "PROPOSAL_STATUS_FAILED",
+  ProposalPassed: "PROPOSAL_STATUS_PASSED",
+  ProposalFailed: "PROPOSAL_STATUS_REJECTED",
 };
 
 export const Proposals: FunctionComponent = () => {
   const history = useHistory();
+  const selectedIdx = history.location.search.split("=")[1];
   const [inputVal, setInputVal] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState(
+    selectedIdx ? parseInt(selectedIdx) : 1
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const { chainStore } = useStore();
   const [proposals, setProposals] = useState<ProposalType[]>([]);
   const reduxProposals = useSelector(useProposals);
   useEffect(() => {
-    console.log(chainStore);
     if (reduxProposals.closedProposals.length > 0) {
       setProposals(reduxProposals.activeProposals);
     } else {
@@ -42,7 +46,10 @@ export const Proposals: FunctionComponent = () => {
       );
       const closedProposals = response.proposals.filter(
         (proposal: ProposalType) => {
-          return proposal.status === proposalOptions.ProposalClosed;
+          return (
+            proposal.status === proposalOptions.ProposalPassed ||
+            proposal.status === proposalOptions.ProposalFailed
+          );
         }
       );
       store.dispatch(
@@ -52,6 +59,11 @@ export const Proposals: FunctionComponent = () => {
           votedProposals: [],
         })
       );
+      if (selectedIdx === "2") {
+        setProposals(closedProposals);
+        return;
+      }
+
       setProposals(activeProposals);
     });
   }, []);
@@ -79,13 +91,8 @@ export const Proposals: FunctionComponent = () => {
 
     setProposals(newProposal);
   }, [selectedIndex, inputVal]);
-  const handleSearch = () => {};
   const handleCheck = (id: number) => {
     if (isLoading) return;
-    // if (selectedIndex === id) {
-    //   setSelectedIndex(0);
-    //   return;
-    // }
     setSelectedIndex(id);
   };
   return (
@@ -101,7 +108,7 @@ export const Proposals: FunctionComponent = () => {
       <SearchInput
         inputVal={inputVal}
         setInputVal={setInputVal}
-        handleSearch={handleSearch}
+        handleSearch={() => {}}
         searchTitle="Search by title or Proposal ID"
       />
       <GovStatusChip

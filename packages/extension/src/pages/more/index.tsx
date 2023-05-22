@@ -23,8 +23,7 @@ export const MorePage: FunctionComponent = () => {
         </CardBody>
       </Card>
 
-      {(chainStore.current.chainId === "fetchhub-4" ||
-        chainStore.current.chainId === "dorado-1") && (
+      {chainStore.current.govUrl && (
         <Card className={classnames(style.card, "shadow")}>
           <CardBody>
             <ProposalView />
