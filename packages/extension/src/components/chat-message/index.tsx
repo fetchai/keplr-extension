@@ -9,7 +9,7 @@ import { isToday, isYesterday, format } from "date-fns";
 import { store } from "@chatStore/index";
 import { setMessageError } from "@chatStore/messages-slice";
 import { MessagePrimitive } from "@utils/encrypt-message";
-import parse from "react-html-parser"
+import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
 
 const formatTime = (timestamp: number): string => {
@@ -68,8 +68,9 @@ export const ChatMessage = ({
 
     if (decryptedMessage.type === 1)
       messageView = (
-        <div className={style.message}>{parse(processHyperlinks(decryptedMessage.content.text))}</div>
-
+        <div className={style.message}>
+          {parse(processHyperlinks(decryptedMessage.content.text))}
+        </div>
       );
     else {
       const messageObj = JSON.parse(decryptedMessage.content.text);

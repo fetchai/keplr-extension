@@ -88,15 +88,22 @@ export const ChatGroupUser: React.FC<{
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{group.name}</div>
-        <div className={style.messageText} onClick={(e) => { e.preventDefault(); }}>
+        <div
+          className={style.messageText}
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
           {decryptedMessage &&
-            (decryptedMessage.type == GroupMessageType.event.toString() ||
-              decryptedMessage.type === GroupMessageType[GroupMessageType.event])
-            ? parse(getEventMessage(
-              accountInfo.bech32Address,
-              addresses,
-              processHyperlinks(decryptedMessage.message)
-            ))
+          (decryptedMessage.type == GroupMessageType.event.toString() ||
+            decryptedMessage.type === GroupMessageType[GroupMessageType.event])
+            ? parse(
+                getEventMessage(
+                  accountInfo.bech32Address,
+                  addresses,
+                  processHyperlinks(decryptedMessage.message)
+                )
+              )
             : parse(processHyperlinks(getLastMessage()))}
         </div>
       </div>

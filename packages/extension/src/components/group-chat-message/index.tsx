@@ -80,15 +80,19 @@ export const GroupChatMessage = ({
         ) : null}
       </div>
       {decryptedMessage &&
-        (decryptedMessage.type == GroupMessageType.event.toString() ||
-          decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
+      (decryptedMessage.type == GroupMessageType.event.toString() ||
+        decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
         <div className={style.currentEventContainer}>
           <span className={style.currentEvent}>
-            {parse(processHyperlinks(getEventMessage(
-              accountInfo.bech32Address,
-              addresses,
-              decryptedMessage.message
-            )))}
+            {parse(
+              processHyperlinks(
+                getEventMessage(
+                  accountInfo.bech32Address,
+                  addresses,
+                  decryptedMessage.message
+                )
+              )
+            )}
           </span>
         </div>
       ) : (
@@ -111,7 +115,9 @@ export const GroupChatMessage = ({
             {!decryptedMessage ? (
               <i className="fas fa-spinner fa-spin ml-1" />
             ) : (
-              <div className={style.message}>{parse(processHyperlinks((decryptedMessage.message)))}</div>
+              <div className={style.message}>
+                {parse(processHyperlinks(decryptedMessage.message))}
+              </div>
             )}
             <div className={style.timestamp}>
               {formatTime(timestamp)}

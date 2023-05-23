@@ -132,7 +132,7 @@ export const ChatUser: React.FC<{
         Number(receiver?.lastSeenTimestamp) &&
         group.lastMessageSender === targetAddress &&
         Number(group.lastMessageTimestamp) >
-        Number(sender?.lastSeenTimestamp) && (
+          Number(sender?.lastSeenTimestamp) && (
           <span
             style={{
               height: "12px",
@@ -154,9 +154,14 @@ export const ChatUser: React.FC<{
       </div>
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>
-        <div className={style.messageText} onClick={(e) => { e.preventDefault(); }}>
+        <div
+          className={style.messageText}
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
           {parse(processHyperlinks(message))}
-        </div> 
+        </div>
       </div>
       <div>
         <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
