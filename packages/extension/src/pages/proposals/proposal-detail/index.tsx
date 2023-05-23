@@ -50,10 +50,11 @@ export const ProposalDetail: FunctionComponent = () => {
     const cat =
       proposalItem?.status === proposalOptions.ProposalActive
         ? 1
-        : proposalItem?.status === proposalOptions.ProposalFailed ||
-          proposalItem?.status === proposalOptions.ProposalPassed
+        : proposalItem?.status === proposalOptions.ProposalRejected ||
+          proposalItem?.status === proposalOptions.ProposalPassed ||
+          proposalItem?.status === proposalOptions.ProposalFailed
         ? 2
-        : 1;
+        : 3;
     setCategory(cat);
   }, [id]);
 
@@ -147,6 +148,22 @@ export const ProposalDetail: FunctionComponent = () => {
     }
     setVotedOn(id);
   };
+
+  const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+
+  const renderDesc = (txt: string | undefined) => {
+    return txt?.split(" ").map((part: string) => {
+      console.log(part);
+      return URL_REGEX.test(part) ? (
+        <a href={part} target="_blank" rel="noreferrer">
+          {part}{" "}
+        </a>
+      ) : (
+        part + " "
+      );
+      // );
+    });
+  };
   return (
     <HeaderLayout
       showChainName={false}
@@ -192,7 +209,9 @@ export const ProposalDetail: FunctionComponent = () => {
                   </p>
                 </div>
               </div>
-              <p className={style.pDesc}>{proposal?.content.description}</p>
+              <p className={style.pDesc}>
+                {renderDesc(proposal?.content.description)}
+              </p>
             </div>
 
             <div className={style.pLinkContainer}>

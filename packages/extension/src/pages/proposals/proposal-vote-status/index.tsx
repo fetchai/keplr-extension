@@ -9,29 +9,33 @@ import { useSelector } from "react-redux";
 import { useProposals } from "@chatStore/proposal-slice";
 export const PropsalVoteStatus: FunctionComponent = () => {
   const history = useHistory();
-
   const { votedOn, id } = useParams<{ votedOn?: string; id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
   const reduxProposals: ProposalSetup = useSelector(useProposals);
   let icon = "";
   let color = "";
   let text = "";
-  if (votedOn == "1") {
-    icon = "gov-tick.svg";
-    text = "Yes";
-    color = "#6AB77A";
-  } else if (votedOn === "2") {
-    icon = "gov-abstain.svg";
-    text = "Abstain";
-    color = "#ECAA5D";
-  } else if (votedOn === "3") {
-    icon = "gov-cross-2.svg";
-    text = "No";
-    color = "#DC6461";
-  } else {
-    icon = "gov-no-veto.svg";
-    text = "No with veto";
-    color = "#3E64C4";
+
+  switch (votedOn) {
+    case "1":
+      icon = "gov-tick.svg";
+      text = "Yes";
+      color = "#6AB77A";
+      break;
+    case "2":
+      icon = "gov-abstain.svg";
+      text = "Abstain";
+      color = "#ECAA5D";
+      break;
+    case "3":
+      icon = "gov-cross-2.svg";
+      text = "No";
+      color = "#DC6461";
+      break;
+    default:
+      icon = "gov-no-veto.svg";
+      text = "No with veto";
+      color = "#3E64C4";
   }
   useEffect(() => {
     let proposalItem = reduxProposals.activeProposals.find(
@@ -50,8 +54,15 @@ export const PropsalVoteStatus: FunctionComponent = () => {
     setProposal(proposalItem);
   }, [id]);
 
-  const handleReturnHome = async () => {
+  const handleReturnHome = () => {
     history.replace("/more");
+  };
+  const handleChangeVote = () => {
+    if (history.location.search === "?true") {
+      history.replace(`/proposal-detail/${id}`);
+      return;
+    }
+    history.goBack();
   };
   return (
     <HeaderLayout
@@ -74,9 +85,7 @@ export const PropsalVoteStatus: FunctionComponent = () => {
         <div className={style.pButtonContainer}>
           <Button
             className={classNames(style.whiteButton, style.invertedButton)}
-            onClick={() => {
-              history.goBack();
-            }}
+            onClick={handleChangeVote}
           >
             Change Vote
           </Button>

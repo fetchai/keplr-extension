@@ -15,7 +15,8 @@ import { useStore } from "../../stores";
 export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
   ProposalPassed: "PROPOSAL_STATUS_PASSED",
-  ProposalFailed: "PROPOSAL_STATUS_REJECTED",
+  ProposalRejected: "PROPOSAL_STATUS_REJECTED",
+  ProposalFailed: "PROPOSAL_STATUS_FAILED",
 };
 
 export const Proposals: FunctionComponent = () => {
@@ -27,27 +28,39 @@ export const Proposals: FunctionComponent = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore } = useStore();
+  const { chainStore, queriesStore, accountStore } = useStore();
+  const queries = queriesStore.get(chainStore.current.chainId);
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [proposals, setProposals] = useState<ProposalType[]>([]);
   const reduxProposals = useSelector(useProposals);
   useEffect(() => {
-    if (reduxProposals.closedProposals.length > 0) {
-      setProposals(reduxProposals.activeProposals);
-    } else {
+    if (reduxProposals.closedProposals.length === 0) {
       setIsLoading(true);
     }
 
     fetchProposals(chainStore.current.chainId).then((response) => {
       setIsLoading(false);
+      const votedProposals: ProposalType[] = [];
       const activeProposals = response.proposals.filter(
         (proposal: ProposalType) => {
-          return proposal.status === proposalOptions.ProposalActive;
+          if (proposal.status === proposalOptions.ProposalActive) {
+            const voted = queries.cosmos.queryProposalVote.getVote(
+              proposal.proposal_id,
+              accountInfo.bech32Address
+            ).vote;
+            if (voted === "Unspecified") {
+              return true;
+            }
+            votedProposals.push(proposal);
+            return false;
+          }
         }
       );
       const closedProposals = response.proposals.filter(
         (proposal: ProposalType) => {
           return (
             proposal.status === proposalOptions.ProposalPassed ||
+            proposal.status === proposalOptions.ProposalRejected ||
             proposal.status === proposalOptions.ProposalFailed
           );
         }
@@ -56,11 +69,16 @@ export const Proposals: FunctionComponent = () => {
         setProposalsInStore({
           activeProposals,
           closedProposals,
-          votedProposals: [],
+          votedProposals,
         })
       );
       if (selectedIdx === "2") {
         setProposals(closedProposals);
+        return;
+      }
+
+      if (selectedIdx === "3") {
+        setProposals(votedProposals);
         return;
       }
 
