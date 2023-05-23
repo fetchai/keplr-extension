@@ -135,11 +135,20 @@ export const ChatAgent: React.FC<{
       <img src={require("@assets/svg/fetchbot.svg")} width="40px" />
       <div className={style.messageInner}>
         <div className={style.name}>{contactName}</div>
-        <div className={style.messageText} onClick={(e) => { e.preventDefault(); }}>{parse(processHyperlinks(message))}</div>
+        <div
+          className={style.messageText}
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
+          {typeof message == "string"
+            ? parse(processHyperlinks(message))
+            : message}
+        </div>
       </div>
       <div>
         <img src={rightArrowIcon} style={{ width: "80%" }} alt="message" />
       </div>
-    </div >
+    </div>
   );
 };
