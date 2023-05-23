@@ -115,7 +115,7 @@ export const StakeInput: FunctionComponent = observer(() => {
         {
           onBroadcasted: () => {
             notification.push({
-              type: "info",
+              type: "primary",
               placement: "top-center",
               duration: 2,
               content: `Transaction broadcasted`,
@@ -141,7 +141,17 @@ export const StakeInput: FunctionComponent = observer(() => {
         }
       );
     } catch (e) {
-      history.goBack();
+      notification.push({
+        type: "danger",
+        placement: "top-center",
+        duration: 5,
+        content: `Transaction Failed`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+      history.replace("/");
     }
   };
 
@@ -152,44 +162,46 @@ export const StakeInput: FunctionComponent = observer(() => {
       alternativeTitle="Stake"
       onBackButton={() => history.goBack()}
     >
-      {validator && (
-        <ValidatorDetails
-          chainID={chainStore.current.chainId}
-          validator={validator}
-        />
-      )}
-      <div className="staked-amount-container">
-        <div className="staked-amount-content">
-          <div>Current Staked Amount</div>
-          <div
-            style={{
-              fontWeight: "bold",
-              color: amount.toDec().isPositive() ? "#3b82f6" : "black",
-            }}
-          >
-            {amount.maxDecimals(4).trim(true).toString()}
+      <div className="stake-container">
+        {validator && (
+          <ValidatorDetails
+            chainID={chainStore.current.chainId}
+            validator={validator}
+          />
+        )}
+        <div>
+          <div className="staked-amount">
+            <div>Current Staked Amount</div>
+            <div
+              style={{
+                fontWeight: "bold",
+                color: amount.toDec().isPositive() ? "#3b82f6" : "black",
+              }}
+            >
+              {amount.maxDecimals(4).trim(true).toString()}
+            </div>
           </div>
+          <StakeInputField amountConfig={amountConfig} />
+          <Button
+            type="submit"
+            color="primary"
+            block
+            disabled={errorText != null || !amountConfig.amount}
+            style={{ alignItems: "end" }}
+            onClick={stakeClicked}
+          >
+            <img
+              src={activeStake}
+              alt=""
+              style={{
+                marginRight: "5px",
+                height: "15px",
+              }}
+            />
+            Stake
+          </Button>
         </div>
       </div>
-      <StakeInputField amountConfig={amountConfig} />
-      <Button
-        type="submit"
-        color="primary"
-        block
-        disabled={errorText != null || !amountConfig.amount}
-        style={{ alignItems: "end" }}
-        onClick={stakeClicked}
-      >
-        <img
-          src={activeStake}
-          alt=""
-          style={{
-            marginRight: "5px",
-            height: "15px",
-          }}
-        />
-        Stake
-      </Button>
     </HeaderLayout>
   );
 });

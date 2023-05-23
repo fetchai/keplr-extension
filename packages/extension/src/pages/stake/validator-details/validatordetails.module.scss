@@ -8,13 +8,15 @@
 
 .title {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   width: 100%;
   border-bottom: 1px solid lightgray;
-  font-size: 20px;
+  font-size: 14px;
 }
 
 .label {
+  font-size: 14px;
   font-weight: bold;
   text-transform: capitalize;
 }
@@ -25,6 +27,7 @@
 }
 
 .description {
+  font-size: 14px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -46,7 +49,6 @@
   padding: 10px;
   background: #ffffff;
   border-radius: 6px;
-  margin: 10px 0px;
 }
 
 .tooltip {

@@ -30,14 +30,14 @@
   }
 }
 
-.staked-amount-container {
+.stake-container {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
 }
 
-.staked-amount-content {
+.staked-amount {
   display: flex;
   flex-direction: column;
   align-items: center;

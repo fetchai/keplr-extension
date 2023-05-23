@@ -33,7 +33,7 @@ export const ValidatorDetails = ({
         </div>
         <ToolTip
           trigger="hover"
-          options={{ placement: "bottom" }}
+          options={{ placement: "bottom-start" }}
           tooltip={
             <div className={styleValidators.tooltip}>
               {validator.operator_address}
@@ -54,14 +54,14 @@ export const ValidatorDetails = ({
           <span>{validator.description.details}</span>
         </div>
       )}
-      {validator.description.website && (
-        <div className={styleValidators.details}>
-          <div className={styleValidators.col}>
-            <span className={styleValidators.label}>Identity</span>
-            <span>{validator.description.identity}</span>
-          </div>
-          <div className={styleValidators.col}>
-            <span className={styleValidators.label}>Website</span>
+      <div className={styleValidators.details}>
+        <div className={styleValidators.col}>
+          <span className={styleValidators.label}>Identity</span>
+          <span>{validator.description.identity || "Not Provided"}</span>
+        </div>
+        <div className={styleValidators.col}>
+          <span className={styleValidators.label}>Website</span>
+          {validator.description.website ? (
             <a
               target="_blank"
               rel="noreferrer"
@@ -69,9 +69,11 @@ export const ValidatorDetails = ({
             >
               {validator.description.website}
             </a>
-          </div>
+          ) : (
+            "Not Provided"
+          )}
         </div>
-      )}
+      </div>
       <div className={styleValidators.details}>
         <div className={styleValidators.col}>
           <span className={styleValidators.label}>Rate</span>
