@@ -4,6 +4,7 @@ import sendTokenIcon from "@assets/icon/send-token.png";
 import claimTokenIcon from "@assets/icon/claim-token.png";
 import autoCompoundIcon from "@assets/icon/auto-compound.png";
 import closeIcon from "@assets/icon/close-grey.png";
+import restartIcon from "@assets/icon/undo.png";
 
 export const PROD_AMPLITUDE_API_KEY =
   process.env["PROD_AMPLITUDE_API_KEY"] || "";
@@ -60,7 +61,7 @@ if (process.env.NODE_ENV === "production") {
   FETCHHUB_AGENT =
     "agent1qv5rmumv0xe0fqlmm3k4lxu4mhmz9aluy07tgp5lmzr2z0mccttcyjksf7r";
   DORADO_AGENT =
-    "agent1q09hr7df244gar97dnqk3unr3vangrwf7pmfssgme02ygkty8lh8uk98204";
+    "agent1qtvyuq8gkywtymym00n83llwcj6dscwfaz9dgdhm2dw0e9tqmkzq7tesse9";
   FETCHHUB_FEEDBACK =
     "https://fetchbot-uagent-staging-mainnet.sandbox-london-b.fetch-ai.com";
   DORADO_FEEDBACK =
@@ -80,12 +81,6 @@ export const AGENT_ADDRESS: { [key: string]: string } = {
 //   "agent1qdh7x8k7se255j44dmt2yrpnxqdyn9qqt3dvcn4zy3dwq5qthl577v7njct";
 
 export const AGENT_COMMANDS = [
-  {
-    command: "/rtFET",
-    label: "recurringtransferFET (recurring transfer FET)",
-    icon: sendTokenIcon,
-    enabled: true,
-  },
   {
     command: "/transferFET",
     label: "transferFET (Transfer FET)",
@@ -117,9 +112,39 @@ export const AGENT_COMMANDS = [
     enabled: true,
   },
   {
+    command: "/recurringPayments",
+    label: "recurringPayments (schedule payments)",
+    icon: restartIcon,
+    enabled: true,
+  },
+  {
+    command: "/recurringStakes",
+    label: "recurringStakes (schedule stakes)",
+    icon: restartIcon,
+    enabled: true,
+  },
+  {
     command: "/tweet",
     label: "tweet (Share your tweet)",
     icon: require("@assets/icon/agent-tweet.svg"),
+    enabled: false,
+  },
+  {
+    command: "/cancelRecurringTransfer",
+    label: "cancelRecurringTransfer (Cancel Automation)",
+    icon: closeIcon,
+    enabled: true,
+  },
+  {
+    command: "/cancelRecurringStake",
+    label: "cancelRecurringStake (Cancel Automation)",
+    icon: closeIcon,
+    enabled: true,
+  },
+  {
+    command: "/cancelAutocompound",
+    label: "cancelAutocompound (Cancel Automation)",
+    icon: closeIcon,
     enabled: true,
   },
   {
