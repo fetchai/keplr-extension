@@ -205,7 +205,7 @@ export const StakeView: FunctionComponent = observer(() => {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
             });
-            history.push("/stake");
+            history.push("/validators");
           }}
         >
           <FormattedMessage id="main.stake.button.stake" />

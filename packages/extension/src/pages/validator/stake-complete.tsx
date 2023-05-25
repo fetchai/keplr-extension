@@ -57,15 +57,12 @@ export const StakeComplete: FunctionComponent = observer(() => {
           }}
         />
         {validator && (
-          <React.Fragment>
-            Amount staked with
-            <div
-              className="next-staked-validator-name"
-              style={{ fontWeight: "bold", color: "#5090FF" }}
-            >
+          <div style={{ textAlign: "center", width: "100%" }}>
+            Amount processed with
+            <div style={{ fontWeight: "bold", color: "#5090FF" }}>
               {validator.description.moniker}
             </div>
-          </React.Fragment>
+          </div>
         )}
       </div>
 
@@ -76,7 +73,7 @@ export const StakeComplete: FunctionComponent = observer(() => {
       <Button
         color="primary"
         block
-        onClick={() => history.push("/stake")}
+        onClick={() => history.push("/validators")}
         style={{ marginLeft: "0px" }}
       >
         <img
@@ -87,7 +84,7 @@ export const StakeComplete: FunctionComponent = observer(() => {
             height: "15px",
           }}
         />
-        Stake Again
+        Go back to Validators List
       </Button>
     </HeaderLayout>
   );

@@ -30,60 +30,6 @@
   }
 }
 
-.stake-container {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  height: 100%;
-}
-
-.staked-amount {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-}
-
-.stake-value-input {
-  padding: 8px;
-  border: none;
-}
-
-.next-staked-validator-name {
-  text-align: center;
-  color: #5090ff;
-  margin-bottom: 10px;
-}
-
-.next-staked-info {
-  text-align: center;
-}
-
-.balance {
-  float: right;
-  font-weight: normal;
-  color: #555555;
-
-  &.clickable {
-    cursor: pointer;
-    text-decoration: underline;
-
-    &:hover {
-      color: black;
-    }
-
-    &.clicked {
-      color: black;
-    }
-  }
-}
-
-.error-text {
-  color: #fb8c72;
-  font: 10px;
-}
-
 .loader {
   display: inline-block;
   margin: 0 16px;
@@ -109,7 +55,8 @@
   top: 37px;
   left: 19px;
   transform: translate(-18px, -18px);
-  animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86)
+    infinite;
 }
 
 .loader svg {

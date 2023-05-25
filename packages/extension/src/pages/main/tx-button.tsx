@@ -194,7 +194,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
       <Link
         to={
           isStakableInApp
-            ? "/stake"
+            ? "/validators"
             : chainStore.current.walletUrlForStaking || ""
         }
         target={!isStakableInApp ? "_blank" : ""}

@@ -23,7 +23,9 @@ export const ValidatorCard = ({
   return (
     <div
       className={styleValidators.item}
-      onClick={() => history.push("/stake/" + validator.operator_address)}
+      onClick={() =>
+        history.push(`/validators/${validator.operator_address}/stake`)
+      }
     >
       <div
         className={styleValidators.row}

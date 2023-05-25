@@ -6,10 +6,10 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useStore } from "../../stores";
-import "./stake.scss";
+import style from "./style.module.scss";
 import { ValidatorCard } from "./validator-card";
 
-export const Validators: FunctionComponent = observer(() => {
+export const ValidatorList: FunctionComponent = observer(() => {
   const history = useHistory();
 
   const [validators, setValidators] = useState<
@@ -76,8 +76,8 @@ export const Validators: FunctionComponent = observer(() => {
       <p className={classnames("h2", "my-0", "font-weight-normal")}>
         Validators
       </p>
-      <div className="searchContainer">
-        <div className="searchBox">
+      <div className={style.searchContainer}>
+        <div className={style.searchBox}>
           <img draggable={false} src={searchIcon} alt="search" />
           <input
             placeholder="Search by Validator name or address"
@@ -95,7 +95,7 @@ export const Validators: FunctionComponent = observer(() => {
             padding: "110px 0px",
           }}
         >
-          <div className="loader">
+          <div className={style.loader}>
             <svg viewBox="0 0 80 80">
               <rect x="8" y="8" width="64" height="64" />
             </svg>
