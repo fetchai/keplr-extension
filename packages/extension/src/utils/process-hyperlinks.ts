@@ -9,7 +9,7 @@ export const processHyperlinks = (inputText: string) => {
           return anchorTag.replace("<a", '<a target="_blank"');
         }
       } else {
-        const href = url ? url : `https://${plainUrl}`;
+        const href = url ? url.startsWith('http') ? url : `https://${url}` : `https://${plainUrl}`;
         return `<a href="${href}" target="_blank">${url}</a>`;
       }
     }
