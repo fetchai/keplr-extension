@@ -109,19 +109,28 @@ export const AgentChatMessage = ({
           );
           break;
         case "inputToken":
-          messageView = (
-            <TokenDropdown label={messageLabel} disabled={disabled} />
-          );
+          if (!disabled)
+            messageView = (
+              <TokenDropdown label={messageLabel} disabled={disabled} />
+            );
+          else
+            messageView = <div className={style.message}>{messageLabel}</div>;
           break;
         case "inputIBCToken":
-          messageView = (
-            <TokenDropdown label={messageLabel} ibc disabled={disabled} />
-          );
+          if (!disabled)
+            messageView = (
+              <TokenDropdown label={messageLabel} ibc disabled={disabled} />
+            );
+          else
+            messageView = <div className={style.message}>{messageLabel}</div>;
           break;
         case "inputChannel":
-          messageView = (
-            <IBCChainSelector label={messageLabel} disabled={disabled} />
-          );
+          if (!disabled)
+            messageView = (
+              <IBCChainSelector label={messageLabel} disabled={disabled} />
+            );
+          else
+            messageView = <div className={style.message}>{messageLabel}</div>;
           break;
         case "inputAddress":
           if (!disabled)
