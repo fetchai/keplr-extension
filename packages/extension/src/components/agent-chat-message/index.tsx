@@ -129,13 +129,7 @@ export const AgentChatMessage = ({
               <RecipientAddressInput label={messageLabel} disabled={disabled} />
             );
           else
-            messageView = (
-              <div className={style.message}>
-                {typeof messageContent == "string"
-                  ? parse(processHyperlinks(messageContent))
-                  : messageContent}
-              </div>
-            );
+            messageView = <div className={style.message}>{messageLabel}</div>;
           break;
         default:
           messageView = (
@@ -149,6 +143,25 @@ export const AgentChatMessage = ({
     }
     return messageView;
   }
+
+  const decideFeedbackView = () => {
+    const feedbackView = (
+      <div className={style.timestamp}>
+        {isHovered && (
+          <MessageFeedBack
+            messageId={messageId}
+            chainId={chainId}
+            targetAddress={targetAddress}
+          />
+        )}
+      </div>
+    );
+    if (isSender) return null;
+    if (targetAddress !== AGENT_ADDRESS[chainId]) return null;
+    if (!decryptedMessage) return null;
+    if (decryptedMessage.type === 1) return feedbackView;
+    else if (disabled) return feedbackView;
+  };
 
   return (
     <React.Fragment>
@@ -168,17 +181,7 @@ export const AgentChatMessage = ({
         >
           {decideMessageView()}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div className={style.timestamp}>
-              {!isSender &&
-                isHovered &&
-                targetAddress == AGENT_ADDRESS[chainId] && (
-                  <MessageFeedBack
-                    messageId={messageId}
-                    chainId={chainId}
-                    targetAddress={targetAddress}
-                  />
-                )}
-            </div>
+            <div className={style.timestamp}>{decideFeedbackView()}</div>
             <div className={style.timestamp}>
               {formatTime(timestamp)}
               {isSender && groupLastSeenTimestamp < timestamp && (

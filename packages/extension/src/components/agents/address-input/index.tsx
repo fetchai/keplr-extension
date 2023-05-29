@@ -1,7 +1,7 @@
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { deliverMessages } from "@graphQL/messages-api";
-import React from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 
@@ -10,14 +10,12 @@ import style from "./style.module.scss";
 import { Button } from "reactstrap";
 import { AddressInput } from "@components/form";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
+import { observer } from "mobx-react-lite";
 
-export const RecipientAddressInput = ({
-  label,
-  disabled,
-}: {
+export const RecipientAddressInput: FunctionComponent<{
   label: string;
   disabled: boolean;
-}) => {
+}> = observer(({ label, disabled }) => {
   const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -38,6 +36,16 @@ export const RecipientAddressInput = ({
       computeTerraClassicTax: true,
     }
   );
+
+  const error = sendConfigs.recipientConfig.error;
+  const errorText: boolean | undefined = useMemo(() => {
+    if (error) {
+      if (error.constructor) {
+        return true;
+      }
+    }
+    return false;
+  }, [error]);
 
   const sendAddressDetails = async () => {
     try {
@@ -102,7 +110,7 @@ export const RecipientAddressInput = ({
         type="button"
         color="primary"
         size="sm"
-        disabled={disabled || !sendConfigs.recipientConfig.recipient.length}
+        disabled={disabled || !!errorText}
         onClick={() => sendAddressDetails()}
       >
         Proceed
@@ -118,4 +126,4 @@ export const RecipientAddressInput = ({
       </Button>
     </div>
   );
-};
+});
