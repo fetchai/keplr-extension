@@ -55,7 +55,7 @@ export const RecipientAddressInput = ({
         type: "warning",
         placement: "top-center",
         duration: 5,
-        content: `Failed to send selected Token`,
+        content: `Failed to send provided Address`,
         canDelete: true,
         transition: {
           duration: 0.25,
