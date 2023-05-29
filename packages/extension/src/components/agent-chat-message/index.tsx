@@ -14,6 +14,8 @@ import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
 import { MessageFeedBack } from "@components/chat-message-feedback";
 import { useHistory } from "react-router";
+import parse from "react-html-parser";
+import { processHyperlinks } from "@utils/process-hyperlinks";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -78,14 +80,22 @@ export const AgentChatMessage = ({
 
     if (!decryptedMessage) return messageView;
 
+    const messageContent = decryptedMessage.content.text;
     if (decryptedMessage.type === 1) {
       messageView = (
-        <div className={style.message}>{decryptedMessage.content.text}</div>
+        <div className={style.message}>
+          {typeof messageContent == "string"
+            ? parse(processHyperlinks(messageContent))
+            : messageContent}
+        </div>
       );
       if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
-      const messageObj = JSON.parse(decryptedMessage.content.text);
-
+      const messageObj = JSON.parse(messageContent);
+      const messageLabel =
+        typeof messageObj.message == "string"
+          ? parse(processHyperlinks(messageObj.message))
+          : messageObj.message;
       switch (messageObj.method) {
         case "signTransaction":
           messageView = (
@@ -98,17 +108,17 @@ export const AgentChatMessage = ({
           break;
         case "inputToken":
           messageView = (
-            <TokenDropdown label={messageObj.message} disabled={disabled} />
+            <TokenDropdown label={messageLabel} disabled={disabled} />
           );
           break;
         case "inputIBCToken":
           messageView = (
-            <TokenDropdown label={messageObj.message} ibc disabled={disabled} />
+            <TokenDropdown label={messageLabel} ibc disabled={disabled} />
           );
           break;
         case "inputChannel":
           messageView = (
-            <IBCChainSelector label={messageObj.message} disabled={disabled} />
+            <IBCChainSelector label={messageLabel} disabled={disabled} />
           );
           break;
         default:
