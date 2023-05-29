@@ -102,7 +102,7 @@ export const RecipientAddressInput = ({
         type="button"
         color="primary"
         size="sm"
-        disabled={disabled}
+        disabled={disabled || !sendConfigs.recipientConfig.recipient.length}
         onClick={() => sendAddressDetails()}
       >
         Proceed
@@ -111,7 +111,7 @@ export const RecipientAddressInput = ({
         type="button"
         color="secondary"
         size="sm"
-        disabled={disabled || !sendConfigs.recipientConfig.recipient}
+        disabled={disabled}
         onClick={() => cancel()}
       >
         Cancel

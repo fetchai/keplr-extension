@@ -90,10 +90,6 @@ export const AgentChatMessage = ({
             : messageContent}
         </div>
       );
-      if (messageContent.includes("Who would you like to send") && !disabled)
-        messageView = (
-          <RecipientAddressInput label={messageContent} disabled={disabled} />
-        );
       if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
       const messageObj = JSON.parse(messageContent);
@@ -127,9 +123,18 @@ export const AgentChatMessage = ({
           );
           break;
         case "inputAddress":
-          messageView = (
-            <RecipientAddressInput label={messageLabel} disabled={disabled} />
-          );
+          if (!disabled)
+            messageView = (
+              <RecipientAddressInput label={messageLabel} disabled={disabled} />
+            );
+          else
+            messageView = (
+              <div className={style.message}>
+                {typeof messageContent == "string"
+                  ? parse(processHyperlinks(messageContent))
+                  : messageContent}
+              </div>
+            );
           break;
         default:
           messageView = (
