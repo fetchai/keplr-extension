@@ -58,7 +58,7 @@ export const Validator: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle="Stake"
+      alternativeTitle={operation == "stake" ? "Stake" : "Unstake"}
       onBackButton={() => history.push("/validators")}
     >
       <div className={style["stake-container"]}>

@@ -15,6 +15,7 @@ import { useHistory } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 export const Unstake: FunctionComponent<{
   validatorAddress: string;
@@ -149,6 +150,11 @@ export const Unstake: FunctionComponent<{
         />
         {errorText != null ? (
           <div className={style["error-text"]}>{errorText}</div>
+        ) : null}
+        {chainStore.current.chainId == CHAIN_ID_FETCHHUB ? (
+          <Label className="form-control-label" style={{ fontSize: "12px" }}>
+            Your tokens will go through a 21-day unstaking process
+          </Label>
         ) : null}
         <Button
           type="submit"
