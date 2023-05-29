@@ -16,6 +16,7 @@ import { MessageFeedBack } from "@components/chat-message-feedback";
 import { useHistory } from "react-router";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
+import { RecipientAddressInput } from "@components/agents/address-input";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -89,6 +90,10 @@ export const AgentChatMessage = ({
             : messageContent}
         </div>
       );
+      if (messageContent.includes("Who would you like to send") && !disabled)
+        messageView = (
+          <RecipientAddressInput label={messageContent} disabled={disabled} />
+        );
       if (setIsInputType2 && !disabled) setIsInputType2(false);
     } else {
       const messageObj = JSON.parse(messageContent);
@@ -119,6 +124,11 @@ export const AgentChatMessage = ({
         case "inputChannel":
           messageView = (
             <IBCChainSelector label={messageLabel} disabled={disabled} />
+          );
+          break;
+        case "inputAddress":
+          messageView = (
+            <RecipientAddressInput label={messageLabel} disabled={disabled} />
           );
           break;
         default:
