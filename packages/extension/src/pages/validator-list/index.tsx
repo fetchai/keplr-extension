@@ -71,7 +71,7 @@ export const ValidatorList: FunctionComponent = observer(() => {
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle="Stake"
-      onBackButton={() => history.goBack()}
+      onBackButton={() => history.push("/")}
     >
       <p className={classnames("h2", "my-0", "font-weight-normal")}>
         Validators

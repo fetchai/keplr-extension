@@ -98,56 +98,54 @@ export const AgentChatMessage = ({
         typeof messageObj.message == "string"
           ? parse(processHyperlinks(messageObj.message))
           : messageObj.message;
-      switch (messageObj.method) {
-        case "signTransaction":
+      if (disabled) {
+        if (messageObj.method === "signTransaction")
           messageView = (
-            <SignTransaction
-              rawText={messageObj.message}
-              chainId={chainId}
-              disabled={disabled}
-            />
+            <div className={style.message}>
+              Please recheck parameters of the transaction in Data Tab before
+              approving the transaction.
+            </div>
           );
-          break;
-        case "inputToken":
-          if (!disabled)
+        else messageView = <div className={style.message}>{messageLabel}</div>;
+      } else
+        switch (messageObj.method) {
+          case "signTransaction":
+            messageView = (
+              <SignTransaction
+                rawText={messageObj.message}
+                chainId={chainId}
+                disabled={disabled}
+              />
+            );
+            break;
+          case "inputToken":
             messageView = (
               <TokenDropdown label={messageLabel} disabled={disabled} />
             );
-          else
-            messageView = <div className={style.message}>{messageLabel}</div>;
-          break;
-        case "inputIBCToken":
-          if (!disabled)
+            break;
+          case "inputIBCToken":
             messageView = (
               <TokenDropdown label={messageLabel} ibc disabled={disabled} />
             );
-          else
-            messageView = <div className={style.message}>{messageLabel}</div>;
-          break;
-        case "inputChannel":
-          if (!disabled)
+            break;
+          case "inputChannel":
             messageView = (
               <IBCChainSelector label={messageLabel} disabled={disabled} />
             );
-          else
-            messageView = <div className={style.message}>{messageLabel}</div>;
-          break;
-        case "inputAddress":
-          if (!disabled)
+            break;
+          case "inputAddress":
             messageView = (
               <RecipientAddressInput label={messageLabel} disabled={disabled} />
             );
-          else
-            messageView = <div className={style.message}>{messageLabel}</div>;
-          break;
-        default:
-          messageView = (
-            <div className={style.message}>
-              {messageObj?.message || "Cant Parse Message"}
-            </div>
-          );
-          break;
-      }
+            break;
+          default:
+            messageView = (
+              <div className={style.message}>
+                {messageObj?.message || "Cant Parse Message"}
+              </div>
+            );
+            break;
+        }
       if (setIsInputType2 && !disabled) setIsInputType2(true);
     }
     return messageView;
