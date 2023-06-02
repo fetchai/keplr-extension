@@ -104,10 +104,10 @@ const extensionConfig = () => {
     // In development environment, webpack watch the file changes, and recompile
     watch: isEnvDevelopment,
     entry: {
-      popup: ["./src/bootstrap.tsx"],
-      background: ["./src/background/bootstrap.ts"],
-      blocklist: ["./src/pages/blocklist/bootstrap.tsx"],
-      ledgerGrant: ["./src/pages/ledger-grant/bootstrap.tsx"],
+      background: ["./src/background/background.ts"],
+      popup: ["./src/index.tsx"],
+      blocklist: ["./src/pages/blocklist/index.tsx"],
+      ledgerGrant: ["./src/pages/ledger-grant/index.tsx"],
       contentScripts: ["./src/content-scripts/content-scripts.ts"],
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],
     },
