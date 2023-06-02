@@ -25,9 +25,13 @@
 
   .pDesc {
     font-size: 14px;
-    line-height: 16px;
+    line-height: 20px;
     margin-bottom: 8px;
     color: #525f7f;
+
+    .pAnchor {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -60,13 +64,13 @@
     color: #525f7f;
     line-height: 16px;
     font-size: 14px;
-    margin: 0 0 8px;
+    margin: 0 0 4px;
   }
 
   .pVotingEnd {
     font-weight: 400;
     color: #525f7f;
-    line-height: 0;
+    line-height: 16px;
     font-size: 14px;
   }
 }
@@ -103,6 +107,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding: 0 4px;
 
   .isLoading {
     display: flex;

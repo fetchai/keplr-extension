@@ -5,7 +5,7 @@ import { SearchInput } from "../../components/notification-search-input";
 import { GovStatusChip } from "@components/chips/gov-chip";
 import style from "./style.module.scss";
 import { Proposal } from "@components/proposal/proposal";
-import { fetchProposals } from "@utils/fetch-proposals";
+import { fetchProposals, fetchVote } from "@utils/fetch-proposals";
 import { ProposalType } from "src/@types/proposal-type";
 import { setProposalsInStore, useProposals } from "@chatStore/proposal-slice";
 import { useSelector } from "react-redux";
@@ -28,8 +28,7 @@ export const Proposals: FunctionComponent = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore, queriesStore, accountStore } = useStore();
-  const queries = queriesStore.get(chainStore.current.chainId);
+  const { chainStore, accountStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [proposals, setProposals] = useState<ProposalType[]>([]);
   const reduxProposals = useSelector(useProposals);
@@ -37,53 +36,67 @@ export const Proposals: FunctionComponent = () => {
     if (reduxProposals.closedProposals.length === 0) {
       setIsLoading(true);
     }
+    (async () => {
+      try {
+        const response = await fetchProposals(chainStore.current.chainId);
+        const votedProposals: ProposalType[] = [];
+        let activeProposals = response.proposals.filter(
+          (proposal: ProposalType) => {
+            return proposal.status === proposalOptions.ProposalActive;
+          }
+        );
 
-    fetchProposals(chainStore.current.chainId).then((response) => {
-      setIsLoading(false);
-      const votedProposals: ProposalType[] = [];
-      const activeProposals = response.proposals.filter(
-        (proposal: ProposalType) => {
-          if (proposal.status === proposalOptions.ProposalActive) {
-            const voted = queries.cosmos.queryProposalVote.getVote(
+        const promises = activeProposals.map(async (proposal: ProposalType) => {
+          try {
+            const vote = await fetchVote(
               proposal.proposal_id,
-              accountInfo.bech32Address
-            ).vote;
-            if (voted === "Unspecified") {
-              return true;
-            }
+              accountInfo.bech32Address,
+              chainStore.current.rest
+            );
+            if (vote.vote.option && vote.vote.option != "Unspecified")
+              return proposal.proposal_id;
+          } catch (e) {}
+        });
+        const voteArray = await Promise.all(promises);
+
+        activeProposals = activeProposals.filter((proposal: ProposalType) => {
+          if (voteArray.indexOf(proposal.proposal_id) != -1) {
             votedProposals.push(proposal);
             return false;
           }
-        }
-      );
-      const closedProposals = response.proposals.filter(
-        (proposal: ProposalType) => {
-          return (
-            proposal.status === proposalOptions.ProposalPassed ||
-            proposal.status === proposalOptions.ProposalRejected ||
-            proposal.status === proposalOptions.ProposalFailed
-          );
-        }
-      );
-      store.dispatch(
-        setProposalsInStore({
-          activeProposals,
-          closedProposals,
-          votedProposals,
-        })
-      );
-      if (selectedIdx === "2") {
-        setProposals(closedProposals);
-        return;
-      }
+          return true;
+        });
+        const closedProposals = response.proposals.filter(
+          (proposal: ProposalType) => {
+            return (
+              proposal.status === proposalOptions.ProposalPassed ||
+              proposal.status === proposalOptions.ProposalRejected ||
+              proposal.status === proposalOptions.ProposalFailed
+            );
+          }
+        );
+        setIsLoading(false);
 
-      if (selectedIdx === "3") {
-        setProposals(votedProposals);
-        return;
-      }
+        store.dispatch(
+          setProposalsInStore({
+            activeProposals,
+            closedProposals,
+            votedProposals,
+          })
+        );
+        if (selectedIdx === "2") {
+          setProposals(closedProposals);
+          return;
+        }
 
-      setProposals(activeProposals);
-    });
+        if (selectedIdx === "3") {
+          setProposals(votedProposals);
+          return;
+        }
+
+        setProposals(activeProposals);
+      } catch (e) {}
+    })();
   }, []);
 
   useEffect(() => {

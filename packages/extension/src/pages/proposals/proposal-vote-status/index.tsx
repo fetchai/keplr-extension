@@ -70,6 +70,9 @@ export const PropsalVoteStatus: FunctionComponent = () => {
       canChangeChainInfo={false}
       alternativeTitle="Proposals"
       onBackButton={() => {
+        if (history.location.search === "?true") {
+          history.replace(`/proposal?id=3`);
+        }
         history.goBack();
       }}
       showBottomMenu={false}

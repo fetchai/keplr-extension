@@ -92,8 +92,7 @@ export const ProposalDetail: FunctionComponent = () => {
           "",
           {},
           {
-            onBroadcasted: (txHash) => {
-              console.log("txHash", vote, proposal.proposal_id, txHash);
+            onBroadcasted: () => {
               analyticsStore.logEvent("Vote tx broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
@@ -149,19 +148,17 @@ export const ProposalDetail: FunctionComponent = () => {
     setVotedOn(id);
   };
 
-  const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+  const STRICT_URL_REGEX = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
   const renderDesc = (txt: string | undefined) => {
     return txt?.split(" ").map((part: string) => {
-      console.log(part);
-      return URL_REGEX.test(part) ? (
-        <a href={part} target="_blank" rel="noreferrer">
+      return STRICT_URL_REGEX.test(part) ? (
+        <a href={part} target="_blank" rel="noreferrer" key={part}>
           {part}{" "}
         </a>
       ) : (
         part + " "
       );
-      // );
     });
   };
   return (
@@ -193,19 +190,21 @@ export const ProposalDetail: FunctionComponent = () => {
               </div>
               <div className={style.pVotingDate}>
                 <div className={style.votingStart}>
-                  <p className={style.pVotingHead}>Voting Start</p>
+                  <p className={style.pVotingHead}>Voting Start Time</p>
                   <p className={style.pVotingEnd}>
                     {moment(proposal?.voting_start_time)
                       .utc()
-                      .format("MMM DD, hh:mm UTC")}
+                      .format("ddd, DD MMM YYYY hh:mm:ss ")}
+                    GMT
                   </p>
                 </div>
                 <div>
-                  <p className={style.pVotingHead}>Voting End</p>
+                  <p className={style.pVotingHead}>Voting End Time</p>
                   <p className={style.pVotingEnd}>
                     {moment(proposal?.voting_end_time)
                       .utc()
-                      .format("MMM DD, hh:mm UTC")}
+                      .format("ddd, DD MMM YYYY hh:mm:ss ")}
+                    GMT
                   </p>
                 </div>
               </div>

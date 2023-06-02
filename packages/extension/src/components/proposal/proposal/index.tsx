@@ -5,6 +5,10 @@ import { GovStatusChip } from "@components/chips/gov-chip";
 import { useHistory } from "react-router";
 import { proposalOptions } from "../../../pages/proposals/index";
 import { useStore } from "../../../stores";
+import { fetchVote } from "@utils/fetch-proposals";
+import { ProposalSetup } from "src/@types/proposal-type";
+import { useSelector } from "react-redux";
+import { useProposals } from "@chatStore/proposal-slice";
 
 interface Props {
   title: string;
@@ -16,16 +20,29 @@ export const Proposal: FunctionComponent<Props> = (props) => {
   const { title, status, id } = props;
   const history = useHistory();
   let icon, color, background, name;
-  const { chainStore, queriesStore, accountStore } = useStore();
-  const queries = queriesStore.get(chainStore.current.chainId);
+  const reduxProposals: ProposalSetup = useSelector(useProposals);
+
+  const { chainStore, accountStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [alreadyVoted, setAlreadyVoted] = useState("");
   useEffect(() => {
-    const voted = queries.cosmos.queryProposalVote.getVote(
-      id,
-      accountInfo.bech32Address
-    ).vote;
-    setAlreadyVoted(voted);
+    (async () => {
+      const proposalItem = reduxProposals.votedProposals.find(
+        (proposal) => proposal.proposal_id === id
+      );
+      if (!proposalItem) {
+        return;
+      }
+      try {
+        const vote = await fetchVote(
+          id,
+          accountInfo.bech32Address,
+          chainStore.current.rest
+        );
+        const voted = vote.vote.option;
+        setAlreadyVoted(voted);
+      } catch (e) {}
+    })();
   }, []);
 
   switch (status) {
@@ -55,7 +72,13 @@ export const Proposal: FunctionComponent<Props> = (props) => {
   }
   const handleClick = () => {
     if (alreadyVoted !== "" && alreadyVoted !== "Unspecified") {
-      const voteArr = ["Unspecified", "Yes", "Abstain", "No", "NoWithVeto"];
+      const voteArr = [
+        "VOTE_OPTION_UNSPECIFIED",
+        "VOTE_OPTION_YES",
+        "VOTE_OPTION_ABSTAIN",
+        "VOTE_OPTION_NO",
+        "VOTE_OPTION_NO_WITH_VETO",
+      ];
       history.push(
         `/proposal-vote-status/${voteArr.indexOf(alreadyVoted)}/${id}?true`
       );

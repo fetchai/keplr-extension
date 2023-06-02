@@ -18,3 +18,14 @@ export const fetchProposalWithId = async (id: string) => {
     .then((response) => response.data)
     .catch((e) => console.log(e));
 };
+
+export const fetchVote = async (
+  proposalId: string,
+  address: string,
+  url: string
+) => {
+  const response = await axios.get(
+    `${url}/cosmos/gov/v1beta1/proposals/${proposalId}/votes/${address}`
+  );
+  return response.data;
+};
