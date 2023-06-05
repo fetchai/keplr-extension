@@ -44,6 +44,10 @@
   margin: 10px 0px;
 }
 
+.item:hover {
+  box-shadow: 0 0 100px 30px #e0e0e0 inset;
+}
+
 .tooltip {
   font-weight: 400;
   font-size: 10px;

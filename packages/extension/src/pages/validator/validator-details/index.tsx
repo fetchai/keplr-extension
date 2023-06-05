@@ -1,9 +1,9 @@
 import { ToolTip } from "@components/tooltip";
 import { Staking } from "@keplr-wallet/stores";
-import { formatAddress } from "@utils/format";
+import { formatAddress, shortenNumber } from "@utils/format";
 import React from "react";
-import styleValidators from "./validatordetails.module.scss";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
+import styleValidators from "./validatordetails.module.scss";
 
 export const URL: { [key in string]: string } = {
   [CHAIN_ID_DORADO]: "https://fetchstation.azoyalabs.com/dorado/validators",
@@ -29,7 +29,17 @@ export const ValidatorDetails = ({
     <div className={styleValidators.item}>
       <div className={styleValidators.title}>
         <div className={styleValidators.label}>
-          {validator.description.moniker}
+          {validator.description.website ? (
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={validator.description.website}
+            >
+              {validator.description.moniker}
+            </a>
+          ) : (
+            <React.Fragment>{validator.description.moniker}</React.Fragment>
+          )}
         </div>
         <ToolTip
           trigger="hover"
@@ -56,32 +66,14 @@ export const ValidatorDetails = ({
       )}
       <div className={styleValidators.details}>
         <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Identity</span>
-          <span>{validator.description.identity || "Not Provided"}</span>
-        </div>
-        <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Website</span>
-          {validator.description.website ? (
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={validator.description.website}
-            >
-              {validator.description.website}
-            </a>
-          ) : (
-            "Not Provided"
-          )}
-        </div>
-      </div>
-      <div className={styleValidators.details}>
-        <div className={styleValidators.col}>
           <span className={styleValidators.label}>Rate</span>
-          <span>{commisionRate}%</span>
+          <span>
+            {commisionRate}% ({maxCommisionRate}% Max)
+          </span>
         </div>
         <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Max Rate</span>
-          <span>{maxCommisionRate}%</span>
+          <span className={styleValidators.label}>Delegated</span>
+          <span>{shortenNumber(validator.delegator_shares)}</span>
         </div>
         <div className={styleValidators.col}>
           <span className={styleValidators.label}>Status</span>
@@ -94,7 +86,7 @@ export const ValidatorDetails = ({
         rel="noreferrer"
         style={{ fontSize: "12px" }}
       >
-        View in Explorer
+        View in Explorer for more Details
       </a>
     </div>
   );
