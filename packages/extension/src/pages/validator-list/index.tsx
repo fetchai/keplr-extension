@@ -62,7 +62,7 @@ export const ValidatorList: FunctionComponent = observer(() => {
   }, [queries.cosmos.queryValidators, queryDelegations]);
 
   const sortValidators = (a: ValidatorData, b: ValidatorData) => {
-    return parseInt(b.amount.toDec().sub(a.amount.toDec()).toString());
+    return parseFloat(b.delegator_shares) - parseFloat(a.delegator_shares);
   };
 
   const handleFilterValidators = (searchValue: string) => {
