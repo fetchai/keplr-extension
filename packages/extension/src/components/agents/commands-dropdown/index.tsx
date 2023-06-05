@@ -16,12 +16,11 @@ export const CommandsDropdown = ({
   const { hasFET } = useSelector(userDetails);
 
   return (
-    <React.Fragment>
+    <>
       {showDropdown && (
         <div
-          className={`${style.dropdown} ${
-            hasFET ? style.enabled : style.disabled
-          }`}
+          className={`${style.dropdown} ${hasFET ? style.enabled : style.disabled
+            }`}
         >
           {!hasFET && (
             <div
@@ -38,11 +37,12 @@ export const CommandsDropdown = ({
               title={command.label}
               icon={command.icon}
               handleClick={() => (hasFET ? handleClick(command.command) : null)}
+              imageColor={!hasFET ? "#D3D3D3" : undefined}
             />
           ))}
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 };
 
@@ -50,14 +50,25 @@ const CommandOption = ({
   title,
   icon,
   handleClick,
+  imageColor,
 }: {
   title: string;
-  icon: any;
+  icon: string;
   handleClick: () => void;
+  imageColor?: string;
 }) => {
   return (
-    <div onClick={() => handleClick()}>
-      <img src={icon} alt="" draggable="false" /> {title}
+    <div onClick={handleClick}>
+      <img
+        src={icon}
+        alt=""
+        draggable="false"
+        style={{
+          filter: imageColor ? `brightness(70%)` : undefined,
+          opacity: imageColor ? 0.5 : undefined,
+        }}
+      />
+      {title}
     </div>
   );
 };
