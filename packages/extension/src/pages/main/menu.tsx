@@ -72,11 +72,17 @@ export const Menu: FunctionComponent = observer(() => {
           <FormattedMessage id="main.menu.token-list" />
         </div>
       ) : null}
+      <div className={styleMenu.item} onClick={(e) => {
+        e.preventDefault();
+        history.push('/chat/agent-history')
+      }}>
+        <FormattedMessage id="main.menu.agent" />
+      </div>
       {/* Empty div for separating last item */}
       <div style={{ flex: 1 }} />
       <div
         className={styleMenu.item}
-        onClick={() => {
+        onClick={(e) => {
           keyRingStore.lock();
           history.push("/");
         }}
