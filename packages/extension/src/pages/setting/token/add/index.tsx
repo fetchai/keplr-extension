@@ -231,6 +231,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
         <Input
           formGroupClassName={style.formGroup}
           type="text"
+          maxLength={64}
           label={intl.formatMessage({
             id: "setting.token.add.contract-address",
           })}
