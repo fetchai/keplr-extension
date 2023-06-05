@@ -190,8 +190,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             value={amountConfig.amount}
             onChange={(e) => {
               e.preventDefault();
-
-              amountConfig.setAmount(e.target.value);
+              amountConfig.setAmount(Number(e.target.value) > 0.000001 ? Number(e.target.value).toExponential() : e.target.value);
             }}
             step={new Dec(1)
               .quo(

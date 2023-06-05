@@ -35,7 +35,7 @@
     "@keplr-wallet/hooks": "0.11.59",
     "@keplr-wallet/ledger-cosmos": "0.11.59",
     "@keplr-wallet/popup": "0.11.59",
-    "@keplr-wallet/proto-types": "0.11.59",
+    "@keplr-wallet/proto-types": "^0.11.63",
     "@keplr-wallet/provider": "0.11.59",
     "@keplr-wallet/router": "0.11.59",
     "@keplr-wallet/router-extension": "0.11.59",
