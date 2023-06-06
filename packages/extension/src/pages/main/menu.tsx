@@ -7,10 +7,11 @@ import { useStore } from "../../stores";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
 import amplitude from "amplitude-js";
+import {  AGENT_ADDRESS } from "../../config.ui.var";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore } = useStore();
-
+console.log(AGENT_ADDRESS);
   const history = useHistory();
 
   return (
@@ -74,7 +75,7 @@ export const Menu: FunctionComponent = observer(() => {
       ) : null}
       <div className={styleMenu.item} onClick={(e) => {
         e.preventDefault();
-        history.push('/chat/agent-history')
+        history.push("/chat/agent/" + AGENT_ADDRESS[chainStore.current.chainId])
       }}>
         <FormattedMessage id="main.menu.agent" />
       </div>
