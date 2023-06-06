@@ -119,11 +119,11 @@ export const NotificationTopics: FunctionComponent = () => {
             {!topicsList.length && (
               <div className={style.resultText}>
                 <p>
-                  No results found.
+                  <FormattedMessage id="search.no-result-found" />
                   {inputVal !== "" && (
                     <React.Fragment>
                       <br />
-                      Please refine your search.
+                      <FormattedMessage id="search.refine.search" />
                     </React.Fragment>
                   )}
                 </p>

@@ -405,17 +405,17 @@ ReactDOM.render(
                       component={StakeComplete}
                     />
                     <Route exact path="/proposal" component={Proposals} />
-                      <Route
-                        exact
-                        path="/proposal-detail/:id"
-                        component={ProposalDetail}
-                      />
-                      <Route
-                        exact
-                        path="/proposal-vote-status/:votedOn/:id"
-                        component={PropsalVoteStatus}
-                      />
-                      <Route path="*" component={StateRenderer} />
+                    <Route
+                      exact
+                      path="/proposal-detail/:id"
+                      component={ProposalDetail}
+                    />
+                    <Route
+                      exact
+                      path="/proposal-vote-status/:votedOn/:id"
+                      component={PropsalVoteStatus}
+                    />
+                    <Route path="*" component={StateRenderer} />
                   </Switch>
                 </ChatStoreProvider>
               </HashRouter>

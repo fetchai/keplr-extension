@@ -50,6 +50,9 @@
       font-size: 20px;
       line-height: 100%;
       text-align: center;
+      &::first-letter {
+        text-transform: capitalize;
+      }
     }
     .voteText {
       text-align: center;

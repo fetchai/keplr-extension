@@ -11,6 +11,7 @@ import { setProposalsInStore, useProposals } from "@chatStore/proposal-slice";
 import { useSelector } from "react-redux";
 import { store } from "@chatStore/index";
 import { useStore } from "../../stores";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
@@ -21,6 +22,7 @@ export const proposalOptions = {
 
 export const Proposals: FunctionComponent = () => {
   const history = useHistory();
+  const intl = useIntl();
   const selectedIdx = history.location.search.split("=")[1];
   const [inputVal, setInputVal] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
@@ -130,7 +132,9 @@ export const Proposals: FunctionComponent = () => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={"Proposals"}
+      alternativeTitle={intl.formatMessage({
+        id: "main.proposals.title",
+      })}
       onBackButton={() => {
         history.goBack();
       }}
@@ -143,7 +147,7 @@ export const Proposals: FunctionComponent = () => {
         searchTitle="Search by title or Proposal ID"
       />
       <GovStatusChip
-        name="Active"
+        name={"Active"}
         id={1}
         selectedIndex={selectedIndex}
         handleCheck={handleCheck}
@@ -151,48 +155,47 @@ export const Proposals: FunctionComponent = () => {
       />
       <GovStatusChip
         id={2}
-        name="Closed"
+        name={"Closed"}
         selectedIndex={selectedIndex}
         handleCheck={handleCheck}
         filter={true}
       />
       <GovStatusChip
         id={3}
-        name="Voted"
+        name={"Voted"}
         selectedIndex={selectedIndex}
         handleCheck={handleCheck}
         filter={true}
       />
-      {isLoading ? (
-        <div className={style.isLoading}>
-          <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
-        </div>
-      ) : (
-        <div className={style.proposalContainer}>
-          {proposals.length === 0 ? (
-            <div className={style.resultText}>
-              <p>
-                No results found.
-                {inputVal !== "" && (
-                  <Fragment>
-                    <br />
-                    Please refine your search.
-                  </Fragment>
-                )}
-              </p>
-            </div>
-          ) : (
-            proposals.map((proposal: any) => (
-              <Proposal
-                title={proposal.content.title}
-                key={proposal.proposal_id}
-                id={proposal.proposal_id}
-                status={proposal.status}
-              />
-            ))
-          )}
-        </div>
-      )}
+
+      <div className={style.proposalContainer}>
+        {isLoading ? (
+          <div className={style.isLoading}>
+            <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
+          </div>
+        ) : proposals.length === 0 ? (
+          <div className={style.resultText}>
+            <p>
+              <FormattedMessage id="search.no-result-found" />
+              {inputVal !== "" && (
+                <Fragment>
+                  <br />
+                  <FormattedMessage id="search.refine.search" />
+                </Fragment>
+              )}
+            </p>
+          </div>
+        ) : (
+          proposals.map((proposal: any) => (
+            <Proposal
+              title={proposal.content.title}
+              key={proposal.proposal_id}
+              id={proposal.proposal_id}
+              status={proposal.status}
+            />
+          ))
+        )}
+      </div>
     </HeaderLayout>
   );
 };

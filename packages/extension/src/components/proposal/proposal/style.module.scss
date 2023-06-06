@@ -17,6 +17,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-right: 10px;
+      &::first-letter {
+        text-transform: capitalize;
+      }
     }
 
     .pDesc {

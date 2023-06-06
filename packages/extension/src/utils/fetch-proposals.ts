@@ -12,13 +12,6 @@ export const fetchProposals = async (chainId: string) => {
     .catch((e) => console.log(e));
 };
 
-export const fetchProposalWithId = async (id: string) => {
-  return await axios
-    .get(`https://rest-fetchhub.fetch.ai/cosmos/gov/v1beta1/proposals/${id}`)
-    .then((response) => response.data)
-    .catch((e) => console.log(e));
-};
-
 export const fetchVote = async (
   proposalId: string,
   address: string,

@@ -13,6 +13,9 @@
       line-height: 100%;
       margin-bottom: 8px;
       color: #525f7f;
+      &::first-letter {
+        text-transform: capitalize;
+      }
     }
 
     .pId {

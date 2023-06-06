@@ -9,17 +9,19 @@ import { VoteBlock } from "@components/proposal/vote-block";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useProposals } from "@chatStore/proposal-slice";
-
+import parse from "react-html-parser";
+import { processHyperlinks } from "@utils/process-hyperlinks";
 import { useStore } from "../../../stores";
 import { useNotification } from "@components/notification";
 import classNames from "classnames";
 import { proposalOptions } from "../index";
+import { FormattedMessage, useIntl } from "react-intl";
 const voteArr = ["Unspecified", "Yes", "Abstain", "No", "NoWithVeto"];
 
 export const ProposalDetail: FunctionComponent = () => {
   const history = useHistory();
   const notification = useNotification();
-
+  const intl = useIntl();
   const { id } = useParams<{ id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
   const [votedOn, setVotedOn] = useState(0);
@@ -47,14 +49,15 @@ export const ProposalDetail: FunctionComponent = () => {
     }
     setIsLoading(false);
     setProposal(proposalItem);
-    const cat =
-      proposalItem?.status === proposalOptions.ProposalActive
-        ? 1
-        : proposalItem?.status === proposalOptions.ProposalRejected ||
-          proposalItem?.status === proposalOptions.ProposalPassed ||
-          proposalItem?.status === proposalOptions.ProposalFailed
-        ? 2
-        : 3;
+    const cat = reduxProposals.votedProposals.find(
+      (proposal) => proposal.proposal_id === id
+    )
+      ? 3
+      : proposalItem?.status === proposalOptions.ProposalRejected ||
+        proposalItem?.status === proposalOptions.ProposalPassed ||
+        proposalItem?.status === proposalOptions.ProposalFailed
+      ? 2
+      : 1;
     setCategory(cat);
   }, [id]);
 
@@ -99,9 +102,6 @@ export const ProposalDetail: FunctionComponent = () => {
                 proposalId: proposal.proposal_id,
                 proposalTitle: proposal.content.title,
               });
-              // smartNavigation.pushSmart("TxPendingResult", {
-              //   txHash: Buffer.from(txHash).toString("hex"),
-              // });
             },
           }
         );
@@ -148,24 +148,13 @@ export const ProposalDetail: FunctionComponent = () => {
     setVotedOn(id);
   };
 
-  const STRICT_URL_REGEX = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-
-  const renderDesc = (txt: string | undefined) => {
-    return txt?.split(" ").map((part: string) => {
-      return STRICT_URL_REGEX.test(part) ? (
-        <a href={part} target="_blank" rel="noreferrer" key={part}>
-          {part}{" "}
-        </a>
-      ) : (
-        part + " "
-      );
-    });
-  };
   return (
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle="Proposals"
+      alternativeTitle={intl.formatMessage({
+        id: "main.proposals.title",
+      })}
       onBackButton={() => {
         history.replace(`/proposal?id=${category}`);
         history.goBack();
@@ -190,7 +179,9 @@ export const ProposalDetail: FunctionComponent = () => {
               </div>
               <div className={style.pVotingDate}>
                 <div className={style.votingStart}>
-                  <p className={style.pVotingHead}>Voting Start Time</p>
+                  <p className={style.pVotingHead}>
+                    <FormattedMessage id="proposal.vote.start.time" />
+                  </p>
                   <p className={style.pVotingEnd}>
                     {moment(proposal?.voting_start_time)
                       .utc()
@@ -199,7 +190,9 @@ export const ProposalDetail: FunctionComponent = () => {
                   </p>
                 </div>
                 <div>
-                  <p className={style.pVotingHead}>Voting End Time</p>
+                  <p className={style.pVotingHead}>
+                    <FormattedMessage id="proposal.vote.end.time" />
+                  </p>
                   <p className={style.pVotingEnd}>
                     {moment(proposal?.voting_end_time)
                       .utc()
@@ -209,7 +202,8 @@ export const ProposalDetail: FunctionComponent = () => {
                 </div>
               </div>
               <p className={style.pDesc}>
-                {renderDesc(proposal?.content.description)}
+                {proposal &&
+                  parse(processHyperlinks(proposal.content.description))}
               </p>
             </div>
 
@@ -222,7 +216,7 @@ export const ProposalDetail: FunctionComponent = () => {
                   }
                 }}
               >
-                View more in Block Explorer{" "}
+                <FormattedMessage id="proposal.view.more" />
                 <img src={require("@assets/svg/gov-share-blue.svg")} />
               </p>
             </div>
@@ -281,7 +275,7 @@ export const ProposalDetail: FunctionComponent = () => {
                   onClick={handleClick}
                   data-loading={isSendingTx}
                 >
-                  Vote
+                  {"Vote"}
                 </Button>
               </div>
             )}

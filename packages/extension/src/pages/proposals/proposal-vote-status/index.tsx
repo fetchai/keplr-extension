@@ -7,8 +7,10 @@ import style from "./style.module.scss";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
 import { useProposals } from "@chatStore/proposal-slice";
+import { FormattedMessage, useIntl } from "react-intl";
 export const PropsalVoteStatus: FunctionComponent = () => {
   const history = useHistory();
+  const intl = useIntl();
   const { votedOn, id } = useParams<{ votedOn?: string; id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
   const reduxProposals: ProposalSetup = useSelector(useProposals);
@@ -55,7 +57,7 @@ export const PropsalVoteStatus: FunctionComponent = () => {
   }, [id]);
 
   const handleReturnHome = () => {
-    history.replace("/more");
+    history.replace("/");
   };
   const handleChangeVote = () => {
     if (history.location.search === "?true") {
@@ -68,7 +70,9 @@ export const PropsalVoteStatus: FunctionComponent = () => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle="Proposals"
+      alternativeTitle={intl.formatMessage({
+        id: "main.proposals.title",
+      })}
       onBackButton={() => {
         if (history.location.search === "?true") {
           history.replace(`/proposal?id=3`);
@@ -82,7 +86,7 @@ export const PropsalVoteStatus: FunctionComponent = () => {
           <p className={style.pTitle}>{proposal?.content.title}</p>
           <img src={require(`@assets/svg/${icon}`)} className={style.pImage} />
           <p className={style.voteText} style={{ color: color }}>
-            Voted {text}
+            {`Voted ${text}`}
           </p>
         </div>
         <div className={style.pButtonContainer}>
@@ -90,14 +94,14 @@ export const PropsalVoteStatus: FunctionComponent = () => {
             className={classNames(style.whiteButton, style.invertedButton)}
             onClick={handleChangeVote}
           >
-            Change Vote
+            <FormattedMessage id="proposal.change.vote" />
           </Button>
           <Button
             className={style.button}
             color="primary"
             onClick={handleReturnHome}
           >
-            Return Home
+            <FormattedMessage id="proposal.return.home" />
           </Button>
         </div>
       </div>
