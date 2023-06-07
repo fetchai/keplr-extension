@@ -18,6 +18,17 @@ export const Menu: FunctionComponent = observer(() => {
       <div
         className={styleMenu.item}
         onClick={() => {
+          amplitude.getInstance().logEvent
+          history.push({
+            pathname: "/activity",
+          });
+        }}
+      >
+        <FormattedMessage id="main.menu.activity" />
+      </div>
+      <div
+        className={styleMenu.item}
+        onClick={() => {
           amplitude.getInstance().logEvent("Address book viewed", {});
           history.push({
             pathname: "/setting/address-book",

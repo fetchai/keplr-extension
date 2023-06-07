@@ -90,6 +90,7 @@ import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant
 import { ValidatorList } from "./pages/validator-list";
 import { Validator } from "./pages/validator";
 import { StakeComplete } from "./pages/validator/stake-complete";
+import { ActivityPage } from "./pages/activity";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -238,6 +239,11 @@ ReactDOM.render(
                       exact
                       path="/setting/address-book"
                       component={AddressBookPage}
+                    />
+                     <Route
+                      exact
+                      path="/activity"
+                      component={ActivityPage}
                     />
                     <Route
                       exact
