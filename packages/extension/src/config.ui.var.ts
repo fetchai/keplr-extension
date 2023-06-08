@@ -30,22 +30,28 @@ export const CHAIN_ID_FETCHHUB = "fetchhub-4";
 export const GROUP_PAGE_COUNT = 30;
 export const CHAT_PAGE_COUNT = 30;
 
-let SUBSCRIPTION_SERVER, MESSAGING_SERVER;
+let SUBSCRIPTION_SERVER, MESSAGING_SERVER, ACTIVITY_SERVER;
 export let NOTYPHI_BASE_URL: string;
 
 if (process.env.NODE_ENV === "production") {
   SUBSCRIPTION_SERVER = "wss://messaging.fetch-ai.network/subscription";
   MESSAGING_SERVER = "https://messaging.fetch-ai.network/graphql";
   NOTYPHI_BASE_URL = "https://api.notyphi.com/v1";
+  ACTIVITY_SERVER = "https://subquery.fetch.ai/";
 } else {
   SUBSCRIPTION_SERVER =
     "wss://messaging-server.sandbox-london-b.fetch-ai.com/subscription";
   MESSAGING_SERVER =
     "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql";
   NOTYPHI_BASE_URL = "https://api-staging.notyphi.com/v1";
+  ACTIVITY_SERVER = "https://subquery.fetch.ai/";
 }
 
-export const GRAPHQL_URL = { SUBSCRIPTION_SERVER, MESSAGING_SERVER };
+export const GRAPHQL_URL = {
+  SUBSCRIPTION_SERVER,
+  MESSAGING_SERVER,
+  ACTIVITY_SERVER,
+};
 
 let FETCHHUB_AGENT, DORADO_AGENT;
 let FETCHHUB_FEEDBACK, DORADO_FEEDBACK;

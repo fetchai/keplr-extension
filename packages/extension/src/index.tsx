@@ -240,11 +240,7 @@ ReactDOM.render(
                       path="/setting/address-book"
                       component={AddressBookPage}
                     />
-                     <Route
-                      exact
-                      path="/activity"
-                      component={ActivityPage}
-                    />
+                    <Route exact path="/activity" component={ActivityPage} />
                     <Route
                       exact
                       path="/setting/export-to-mobile"

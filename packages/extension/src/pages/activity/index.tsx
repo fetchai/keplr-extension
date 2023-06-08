@@ -1,85 +1,67 @@
-import React, { FunctionComponent, useState, useEffect, useRef } from "react";
+import { fetchLatestBlock, fetchTransactions } from "@graphQL/activity-api";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
-import { FormattedMessage, useIntl } from "react-intl";
+import { getActivityIcon, getStatusIcon } from "@utils/activity-utils";
+import { formatActivityHash } from "@utils/format";
 import { observer } from "mobx-react-lite";
-import { Col, Container, Row } from "reactstrap";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useHistory } from "react-router";
+import { useStore } from "../../stores";
 import style from "./style.module.scss";
-
-import activities from "./activities";
-import { formatAddress, formatTokenName } from "@utils/format";
-import {
-  getAmountClass,
-  getStatusImageSource,
-  getImageSource,
-} from "@utils/activity-utils";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
-  const [activityList, setActivityList] = useState<
-    {
-      type: string;
-      hash: string;
-      amount: string;
-      denom: string;
-      address: string;
-      status: string;
-    }[]
-  >([]);
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const [latestBlock, setLatestBlock] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
+  const [loadingRequest, setLoadingRequest] = useState(false);
+  const [blockIsLoading, setBlockIsLoading] = useState(true);
+  const [nodes, setNodes] = useState<any>();
+  const [pageInfo, setPageInfo] = useState<any>();
   useEffect(() => {
-    fetchActivities();
-
-    if (containerRef.current) {
-      containerRef.current.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener("scroll", handleScroll);
-      }
+    const initialize = async () => {
+      setBlockIsLoading(true);
+      const block = await fetchLatestBlock();
+      if (latestBlock != block) setLatestBlock(block);
+      setBlockIsLoading(false);
     };
+    setInterval(() => initialize(), 5000);
   }, []);
 
-  const fetchActivities = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      const initialActivityList = activities.slice(0, 12);
-      setActivityList(initialActivityList);
+  useEffect(() => {
+    const fetchActivities = async () => {
+      setIsLoading(true);
+      const newActivities = await fetchTransactions(
+        "",
+        accountInfo.bech32Address
+      );
+      if (!pageInfo) setPageInfo(newActivities.pageInfo);
+      const nodeMap: any = {};
+      newActivities.nodes.map((node: any) => {
+        nodeMap[node.id] = node;
+      });
+      setNodes({ ...nodes, ...nodeMap });
       setIsLoading(false);
-    }, 1000);
-  };
-  const remainingActivities = activities.length - activityList.length;
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
+    };
+    fetchActivities();
+  }, [accountInfo.bech32Address, latestBlock]);
 
-      if (
-        remainingActivities > 0 &&
-        scrollTop + clientHeight >= scrollHeight - 10 &&
-        !isLoading
-      ) {
-        setIsLoading(true);
-        setTimeout(() => {
-          const currentLength = activityList.length;
-          const nextActivityList = activities.slice(
-            currentLength - 10,
-            currentLength + 10
-          );
-          setActivityList((prevActivityList) => [
-            ...prevActivityList,
-            ...nextActivityList,
-          ]);
-          setIsLoading(false);
-        }, 1000);
-      } else if (remainingActivities === 0) {
-        setIsLoading(false);
-        containerRef.current.removeEventListener("scroll", handleScroll);
-      }
-    }
+  const handleClick = async () => {
+    setLoadingRequest(true);
+    const newActivities = await fetchTransactions(
+      pageInfo.endCursor,
+      accountInfo.bech32Address
+    );
+    setPageInfo(newActivities.pageInfo);
+    const nodeMap: any = {};
+    newActivities.nodes.map((node: any) => {
+      nodeMap[node.id] = node;
+    });
+    setNodes({ ...nodes, ...nodeMap });
+    setLoadingRequest(false);
   };
 
   return (
@@ -94,56 +76,50 @@ export const ActivityPage: FunctionComponent = observer(() => {
       }}
     >
       <div className={style.container}>
-        <FormattedMessage id="main.menu.activity" />{" "}
-        <a href="#">All activity</a>
-      </div>
-      <div
-        className={style.activityList}
-        ref={containerRef}
-        onScroll={handleScroll}
-        style={{ height: "400px", width: "100%", overflow: "auto" }}
-      >
-        <Container>
-        {activityList.map((activity, index) => (
-            <Row className={style.activityRow} key={index}>
-              <Col xs={3} className={style.activityCol}>
-                <img src={getImageSource(activity.type)} alt={activity.type} />
-                <span>
-                  {" " + activity.type === "contract"
-                    ? formatTokenName(activity.hash)
-                    : formatAddress(activity.address)}
-                </span>
-              </Col>
-              <Col xs={3} className={style.activityCol}>
-                {activity.type !== "contract" ? (
-                  <>
-                    <span className={getAmountClass(activity.amount)}>
-                      {activity.amount.charAt(0)}
-                    </span>
-                    {activity.amount.substring(1)}
-                    {activity.denom}
-                  </>
-                ) : (
-                  formatTokenName(activity.address)
-                )}
-              </Col>
-              <Col xs={1}>
-                <img
-                  src={getStatusImageSource(activity.status)}
-                  alt={activity.status}
-                />
-              </Col>
-            </Row>
-        ))}
-        </Container>
-        {remainingActivities !== 0 ? (
-          isLoading && <span style={{color:"#808DA0"}}>Loading more activities...</span>
-        ) : (
-          <span style={{color:"#808DA0"}}>done!</span>
-        )}
+        <div className={style.title}>
+          <FormattedMessage id="main.menu.activity" />
+          {/* <a href="#">All activity</a> */}
+        </div>
+        Latest Block: {latestBlock}
+        {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
+        <br />
+        {nodes
+          ? Object.values(nodes).map((node, index) => (
+              <ActivityRow node={node} key={index} />
+            ))
+          : isLoading
+          ? "Laoding Data "
+          : "No Data found"}
+        <button
+          disabled={!pageInfo?.hasNextPage || loadingRequest}
+          onClick={handleClick}
+        >
+          Load more Activities{" "}
+          {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
+        </button>
       </div>
     </HeaderLayout>
   );
 });
 
-export default ActivityPage;
+export const ActivityRow = ({ node }: { node: any }) => {
+  return (
+    <div className={style.activityRow}>
+      <div className={style.activityCol} style={{ width: "7%" }}>
+        <img
+          src={getActivityIcon(node.messages.nodes[0].typeUrl)}
+          alt={node.messages.nodes[0].typeUrl}
+        />
+      </div>
+      <div className={style.activityCol} style={{ width: "43%" }}>
+        {formatActivityHash(node.id)}
+      </div>
+      <div className={style.activityCol} style={{ width: "43%" }}>
+        {formatActivityHash(node.id)}
+      </div>
+      <div className={style.activityCol} style={{ width: "7%" }}>
+        <img src={getStatusIcon(node.status)} alt={node.status} />
+      </div>
+    </div>
+  );
+};

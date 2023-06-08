@@ -14,6 +14,11 @@ export const httpLink = new HttpLink({
   uri: GRAPHQL_URL.MESSAGING_SERVER,
 });
 
+export const activityClient = new ApolloClient({
+  uri: GRAPHQL_URL.ACTIVITY_SERVER,
+  cache: new InMemoryCache(),
+});
+
 export const createWSLink = (token: string) => {
   return new GraphQLWsLink(
     createClient({

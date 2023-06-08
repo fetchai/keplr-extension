@@ -3,7 +3,6 @@ import sendIcon from "@assets/icon/send-grey.png";
 import stakeIcon from "@assets/icon/stake-grey.png";
 import contractIcon from "@assets/icon/contract-grey.png";
 import claimIcon from "@assets/icon/claim-grey.png";
-import awaiting from "@assets/icon/awaiting.png";
 import success from "@assets/icon/success.png";
 import cancel from "@assets/icon/cancel.png";
 
@@ -15,30 +14,29 @@ export const getAmountClass = (amount: string): string => {
     : style.col;
 };
 
-export const getImageSource = (type: string): string => {
+export const getActivityIcon = (type: string): string => {
   switch (type) {
-    case "send":
+    case "/cosmos.bank.v1beta1.MsgSend":
       return sendIcon;
-    case "stake":
+    case "/cosmos.staking.v1beta1.MsgDelegate":
+    case "/cosmos.staking.v1beta1.MsgUndelegate":
       return stakeIcon;
     case "contract":
       return contractIcon;
-    case "claim":
+    case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
       return claimIcon;
     default:
-      return "";
+      return contractIcon;
   }
 };
 
-export const getStatusImageSource = (status: string): string => {
+export const getStatusIcon = (status: string): string => {
   switch (status) {
-    case "awaiting":
-      return awaiting;
-    case "success":
+    case "Success":
       return success;
-    case "cancel":
+    case "Error":
       return cancel;
     default:
-      return "";
+      return cancel;
   }
 };

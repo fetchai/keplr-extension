@@ -6,27 +6,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+  }
+  .activityRow:hover {
+    background: #f0f0f0;
   }
   a{
     font-weight: lighter;
   }
   .container {
-    padding: 5px;
+    padding: 16px;
     background-color: #ffffff;
-    font-weight: bold;
+    margin: 0px -12px;
+  }
+
+  .title {
     display: flex;
     justify-content: space-between;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    font-weight: 700;
+    font-size: 20px;
   }
   
   .activityCol {
     font-size: small;
     display: flex;
     align-items: center;
-    margin: 5px;
-    margin-right: 0px;
-    padding: 3px;
+    margin: 3px;
   }
   
   .negative {
