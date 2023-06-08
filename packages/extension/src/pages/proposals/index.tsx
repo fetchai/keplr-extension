@@ -42,11 +42,10 @@ export const Proposals: FunctionComponent = () => {
       try {
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
-        let activeProposals = response.proposals.filter(
-          (proposal: ProposalType) => {
-            return proposal.status === proposalOptions.ProposalActive;
-          }
-        );
+        const proposalArr = response.proposals.reverse();
+        let activeProposals = proposalArr.filter((proposal: ProposalType) => {
+          return proposal.status === proposalOptions.ProposalActive;
+        });
 
         const promises = activeProposals.map(async (proposal: ProposalType) => {
           try {
@@ -68,15 +67,13 @@ export const Proposals: FunctionComponent = () => {
           }
           return true;
         });
-        const closedProposals = response.proposals.filter(
-          (proposal: ProposalType) => {
-            return (
-              proposal.status === proposalOptions.ProposalPassed ||
-              proposal.status === proposalOptions.ProposalRejected ||
-              proposal.status === proposalOptions.ProposalFailed
-            );
-          }
-        );
+        const closedProposals = proposalArr.filter((proposal: ProposalType) => {
+          return (
+            proposal.status === proposalOptions.ProposalPassed ||
+            proposal.status === proposalOptions.ProposalRejected ||
+            proposal.status === proposalOptions.ProposalFailed
+          );
+        });
         setIsLoading(false);
 
         store.dispatch(
@@ -154,15 +151,15 @@ export const Proposals: FunctionComponent = () => {
         filter={true}
       />
       <GovStatusChip
-        id={2}
-        name={"Closed"}
+        id={3}
+        name={"Voted"}
         selectedIndex={selectedIndex}
         handleCheck={handleCheck}
         filter={true}
       />
       <GovStatusChip
-        id={3}
-        name={"Voted"}
+        id={2}
+        name={"Closed"}
         selectedIndex={selectedIndex}
         handleCheck={handleCheck}
         filter={true}
