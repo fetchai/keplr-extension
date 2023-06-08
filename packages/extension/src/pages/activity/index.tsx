@@ -82,7 +82,6 @@ export const ActivityPage: FunctionComponent = observer(() => {
     }
   };
 
-  console.log(activityList);
   return (
     <HeaderLayout
       showChainName={true}
@@ -104,8 +103,8 @@ export const ActivityPage: FunctionComponent = observer(() => {
         onScroll={handleScroll}
         style={{ height: "400px", width: "100%", overflow: "auto" }}
       >
+        <Container>
         {activityList.map((activity, index) => (
-          <Container>
             <Row className={style.activityRow} key={index}>
               <Col xs={3} className={style.activityCol}>
                 <img src={getImageSource(activity.type)} alt={activity.type} />
@@ -130,17 +129,18 @@ export const ActivityPage: FunctionComponent = observer(() => {
               </Col>
               <Col xs={1}>
                 <img
-                  
                   src={getStatusImageSource(activity.status)}
                   alt={activity.status}
                 />
               </Col>
             </Row>
-          </Container>
         ))}
-        {remainingActivities !== 0 ? isLoading  && (
-          <span>Loading more activities...</span>
-        ): <span>done!</span>}
+        </Container>
+        {remainingActivities !== 0 ? (
+          isLoading && <span style={{color:"#808DA0"}}>Loading more activities...</span>
+        ) : (
+          <span style={{color:"#808DA0"}}>done!</span>
+        )}
       </div>
     </HeaderLayout>
   );

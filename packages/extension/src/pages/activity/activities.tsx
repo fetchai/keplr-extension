@@ -10,7 +10,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.000",
+    amount: "-211.000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "cancel",
@@ -18,7 +18,7 @@ const activities = [
   {
     type: "contract",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+3000.0000",
     denom: "",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
@@ -26,7 +26,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-411.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
@@ -34,14 +34,15 @@ const activities = [
   {
     type: "claim",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-511.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
-  },  {
+  },  
+  {
     type: "stake",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+6000.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
@@ -49,7 +50,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.000",
+    amount: "-711.000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "cancel",
@@ -57,7 +58,7 @@ const activities = [
   {
     type: "contract",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+8000.0000",
     denom: "",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
@@ -65,7 +66,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-911.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
@@ -73,14 +74,14 @@ const activities = [
   {
     type: "claim",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-101.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
   },  {
     type: "stake",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+1200.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
@@ -88,7 +89,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.000",
+    amount: "-131.000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "cancel",
@@ -96,7 +97,7 @@ const activities = [
   {
     type: "contract",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+1400.0000",
     denom: "",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
@@ -104,7 +105,7 @@ const activities = [
   {
     type: "send",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-151.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
@@ -112,14 +113,14 @@ const activities = [
   {
     type: "claim",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "-111.0000",
+    amount: "-161.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "success",
   },  {
     type: "stake",
     hash: "6B408E7E6012C48A4ECDB59CE4065C32BE3C40EF710D38D1EC817A199A3901FB",
-    amount: "+1000.0000",
+    amount: "+1700.0000",
     denom: "FET",
     address: "fetch1f2qd4hw0vguhx8zftc9snw5acvt2uwcrwaapdu",
     status: "awaiting",
