@@ -1,8 +1,40 @@
-
-.activity-row{
-    background: #FFFFFF;
+.activityRow {
+    color: grey;
+    font-size: small;
+    background: #ffffff;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0px 0px 16px;
-}
+    justify-content: space-between;
+    align-items: center;
+  }
+  a{
+    font-weight: lighter;
+  }
+  .container {
+    background-color: #ffffff;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .activityCol {
+    flex-grow: 1;
+    font-size: small;
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    padding: 3px;
+  }
+  
+  .activityStatus {
+    display: flex;
+    align-items: center;
+  }
+  .negative {
+    color: red;
+  }
+  
+  .positive{
+    color: green;
+  }
