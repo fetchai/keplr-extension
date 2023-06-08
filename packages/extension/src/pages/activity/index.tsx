@@ -4,76 +4,59 @@ import { useHistory } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { observer } from "mobx-react-lite";
 import { Col, Row } from "reactstrap";
-import "./style.module.scss";
-import sendIcon from "@assets/icon/send-grey.png";
-import stakeIcon from "@assets/icon/stake-grey.png";
-import contractIcon from "@assets/icon/contract-grey.png";
-import claimIcon from "@assets/icon/claim-grey.png";
-import awaiting from "@assets/icon/awaiting.png";
-import success from "@assets/icon/success.png";
-import cancel from "@assets/icon/cancel.png";
+import style from "./style.module.scss";
+
 import activities from "./activities";
+import { formatAddress, formatTokenName } from "@utils/format";
+import {getAmountClass,getStatusImageSource,getImageSource } from "@utils/activity-utils";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const history = useHistory();
   const intl = useIntl();
-
-  const getImageSource = (type: string): string => {
-    switch (type) {
-      case "send":
-        return sendIcon;
-      case "stake":
-        return stakeIcon;
-      case "contract":
-        return contractIcon;
-      case "claim":
-        return claimIcon;
-      default:
-        return "";
-    }
-  };
-
-  const getStatusImageSource = (status: string): string => {
-    switch (status) {
-      case "awaiting":
-        return awaiting;
-      case "success":
-        return success;
-      case "cancel":
-        return cancel;
-      default:
-        return "";
-    }
-  };
+  
 
   return (
     <HeaderLayout
-      showChainName={false}
+      showChainName={true}
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
-        id: "main.menu.settings",
+        id: "main.menu.activity",
       })}
       onBackButton={() => {
         history.goBack();
       }}
     >
-      <div
-        className="activity-label"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
+      <div className={style.container}>
         <FormattedMessage id="main.menu.activity" />{" "}
         <a href="#">All activity</a>
       </div>
-      <div className="activity-table">
+      <div>
         {activities.map((activity, index) => (
-          <Row key={index} className="activity-row">
-            <Col className="activity-column">
+          <Row className={style.activityRow} key={index}>
+            <Col className={style.activityCol}>
               <img src={getImageSource(activity.type)} alt={activity.type} />
-              {activity.address}
+              <span>
+                {activity.type === "contract"
+                  ? formatTokenName(activity.hash)
+                  : formatAddress(activity.address)}
+              </span>
             </Col>
-            <Col className="activity-column">{`${activity.amount}${activity.denom}`}</Col>
-            <Col className="activity-column">
+            <Col className={style.activityCol}>
+              {activity.type !== "contract" ? (
+                <>
+                  <span className={getAmountClass(activity.amount)}>
+                    {activity.amount.charAt(0)}
+                  </span>
+                  {activity.amount.substring(1)}
+                  {activity.denom}
+                </>
+              ) : (
+                formatTokenName(activity.address)
+              )}
+            </Col>
+            <Col className={style.activityStatus}>
               <img
+                style={{ alignItems: "center" }}
                 src={getStatusImageSource(activity.status)}
                 alt={activity.status}
               />
