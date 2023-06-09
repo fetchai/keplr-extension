@@ -5,6 +5,7 @@ import claimIcon from "@assets/icon/claim-grey.png";
 import success from "@assets/icon/success.png";
 import cancel from "@assets/icon/cancel.png";
 import React from "react";
+import { formatActivityHash } from "@utils/format";
 
 export const getActivityIcon = (type: string): string => {
   switch (type) {
@@ -59,16 +60,14 @@ export const getDetails = (node: any): any => {
       case "/cosmwasm.wasm.v1.MsgExecuteContract":
       case "/cosmos.authz.v1beta1.MsgRevoke":
       case "/ibc.applications.transfer.v1.MsgTransfer":
+        if (json.token) {
+          return `${json.token.amount}${json.token.denom}`;
+        }
         if (json) {
           const parsedJson = JSON.parse(json);
+          console.log("aaaa", parsedJson);
           if (parsedJson.amount) {
             return parsedJson.amount.map((item: any) => (
-              <div>
-                {item.amount} {item.denom}
-              </div>
-            ));
-          } else if (parsedJson.funds) {
-            return parsedJson.funds.map((item: any) => (
               <div>
                 {item.amount} {item.denom}
               </div>
@@ -113,3 +112,23 @@ export const getDetails = (node: any): any => {
 
   return null;
 };
+
+export const getHash = (node: any): any => {
+  const { typeUrl, json } = node.messages.nodes[0];
+
+  switch (typeUrl) {
+    case "/cosmos.bank.v1beta1.MsgSend":
+    case "/cosmwasm.wasm.v1.MsgExecuteContract":
+    case "/cosmos.authz.v1beta1.MsgRevoke":
+    case "/ibc.applications.transfer.v1.MsgTransfer":
+      return formatActivityHash(node.id) || null;
+    case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
+      return formatActivityHash(JSON.parse(json).validatorAddress) || null;
+    case "/cosmos.staking.v1beta1.MsgDelegate":
+    case "/cosmos.staking.v1beta1.MsgUndelegate":
+      return formatActivityHash(JSON.parse(json).validatorAddress) || null;
+    default:
+      return null;
+  }
+};
+

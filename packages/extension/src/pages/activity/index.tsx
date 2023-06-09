@@ -3,9 +3,9 @@ import { HeaderLayout } from "@layouts/index";
 import {
   getActivityIcon,
   getDetails,
+  getHash,
   getStatusIcon,
 } from "@utils/activity-utils";
-import { formatActivityHash } from "@utils/format";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -69,7 +69,6 @@ export const ActivityPage: FunctionComponent = observer(() => {
     });
     setNodes({ ...nodes, ...nodeMap });
     setLoadingRequest(false);
-    console.log(nodes)
   };
 
   return (
@@ -118,20 +117,18 @@ export const ActivityPage: FunctionComponent = observer(() => {
     </HeaderLayout>
   );
 });
-
 export const ActivityRow = ({ node }: { node: any }) => {
   const details = getDetails(node);
-  const { typeUrl, json } = node.messages.nodes[0];
+  const hash = getHash(node);
+  const { typeUrl } = node.messages.nodes[0];
+  
   return (
     <div className={style.activityRow}>
       <div className={style.activityCol} style={{ width: "7%" }}>
-        <img
-          src={getActivityIcon(node.messages.nodes[0].typeUrl)}
-          alt={typeUrl}
-        />
+        <img src={getActivityIcon(typeUrl)} alt={typeUrl} />
       </div>
       <div className={style.activityCol} style={{ width: "33%" }}>
-        {formatActivityHash(node.id)}
+        {hash}
       </div>
       <div className={style.activityCol} style={{ width: "53%" }}>
         {details}
@@ -142,3 +139,4 @@ export const ActivityRow = ({ node }: { node: any }) => {
     </div>
   );
 };
+
