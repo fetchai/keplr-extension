@@ -1,12 +1,20 @@
 import { gql } from "@apollo/client";
 import { blocks, transactions } from "./activity-queries";
-import { activityClient } from "./client";
+import { doradoActivityClient, fetchhubActivityClient } from "./client";
+import { CHAIN_ID_DORADO } from "../config.ui.var";
 
-export const fetchTransactions = async (after: string, address: string) => {
+export const fetchTransactions = async (
+  chainId: string,
+  after: string,
+  address: string
+) => {
   const variables: any = {
     after,
     address,
   };
+
+  const activityClient =
+    chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
 
   const { data, errors } = await activityClient.query({
     query: gql(transactions),
@@ -19,7 +27,10 @@ export const fetchTransactions = async (after: string, address: string) => {
   return data.transactions;
 };
 
-export const fetchLatestBlock = async () => {
+export const fetchLatestBlock = async (chainId: string) => {
+  const activityClient =
+    chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
+
   const { data, errors } = await activityClient.query({
     query: gql(blocks),
     fetchPolicy: "no-cache",

@@ -8,6 +8,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { Button } from "reactstrap";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -24,7 +25,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       setBlockIsLoading(true);
-      const block = await fetchLatestBlock();
+      const block = await fetchLatestBlock(current.chainId);
       if (latestBlock != block) setLatestBlock(block);
       setBlockIsLoading(false);
     };
@@ -35,6 +36,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
     const fetchActivities = async () => {
       setIsLoading(true);
       const newActivities = await fetchTransactions(
+        current.chainId,
         "",
         accountInfo.bech32Address
       );
@@ -52,6 +54,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
   const handleClick = async () => {
     setLoadingRequest(true);
     const newActivities = await fetchTransactions(
+      current.chainId,
       pageInfo.endCursor,
       accountInfo.bech32Address
     );
@@ -80,23 +83,32 @@ export const ActivityPage: FunctionComponent = observer(() => {
           <FormattedMessage id="main.menu.activity" />
           {/* <a href="#">All activity</a> */}
         </div>
-        Latest Block: {latestBlock}
-        {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
-        <br />
-        {nodes
-          ? Object.values(nodes).map((node, index) => (
+        <div className={style.activityRow}>
+          Latest Block: {latestBlock}{" "}
+          {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
+        </div>
+
+        {nodes ? (
+          <React.Fragment>
+            {Object.values(nodes).map((node, index) => (
               <ActivityRow node={node} key={index} />
-            ))
-          : isLoading
-          ? "Laoding Data "
-          : "No Data found"}
-        <button
-          disabled={!pageInfo?.hasNextPage || loadingRequest}
-          onClick={handleClick}
-        >
-          Load more Activities{" "}
-          {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
-        </button>
+            ))}
+            <Button
+              outline
+              color="primary"
+              size="sm"
+              disabled={!pageInfo?.hasNextPage || loadingRequest}
+              onClick={handleClick}
+            >
+              Load more{" "}
+              {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
+            </Button>
+          </React.Fragment>
+        ) : isLoading ? (
+          "Loading Activities "
+        ) : (
+          "No Data found"
+        )}
       </div>
     </HeaderLayout>
   );
@@ -111,10 +123,10 @@ export const ActivityRow = ({ node }: { node: any }) => {
           alt={node.messages.nodes[0].typeUrl}
         />
       </div>
-      <div className={style.activityCol} style={{ width: "43%" }}>
+      <div className={style.activityCol} style={{ width: "33%" }}>
         {formatActivityHash(node.id)}
       </div>
-      <div className={style.activityCol} style={{ width: "43%" }}>
+      <div className={style.activityCol} style={{ width: "53%" }}>
         {formatActivityHash(node.id)}
       </div>
       <div className={style.activityCol} style={{ width: "7%" }}>
