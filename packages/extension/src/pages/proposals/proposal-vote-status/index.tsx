@@ -74,9 +74,6 @@ export const PropsalVoteStatus: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
-        if (history.location.search === "?true") {
-          history.replace(`/proposal?id=3`);
-        }
         history.goBack();
       }}
       showBottomMenu={false}

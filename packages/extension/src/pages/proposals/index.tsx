@@ -23,11 +23,8 @@ export const proposalOptions = {
 export const Proposals: FunctionComponent = () => {
   const history = useHistory();
   const intl = useIntl();
-  const selectedIdx = history.location.search.split("=")[1];
   const [inputVal, setInputVal] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(
-    selectedIdx ? parseInt(selectedIdx) : 1
-  );
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const { chainStore, accountStore } = useStore();
@@ -42,8 +39,8 @@ export const Proposals: FunctionComponent = () => {
       try {
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
-        const proposalArr = response.proposals.reverse();
-        let activeProposals = proposalArr.filter((proposal: ProposalType) => {
+        const allProposals = response.proposals.reverse();
+        let activeProposals = allProposals.filter((proposal: ProposalType) => {
           return proposal.status === proposalOptions.ProposalActive;
         });
 
@@ -67,13 +64,15 @@ export const Proposals: FunctionComponent = () => {
           }
           return true;
         });
-        const closedProposals = proposalArr.filter((proposal: ProposalType) => {
-          return (
-            proposal.status === proposalOptions.ProposalPassed ||
-            proposal.status === proposalOptions.ProposalRejected ||
-            proposal.status === proposalOptions.ProposalFailed
-          );
-        });
+        const closedProposals = allProposals.filter(
+          (proposal: ProposalType) => {
+            return (
+              proposal.status === proposalOptions.ProposalPassed ||
+              proposal.status === proposalOptions.ProposalRejected ||
+              proposal.status === proposalOptions.ProposalFailed
+            );
+          }
+        );
         setIsLoading(false);
 
         store.dispatch(
@@ -81,19 +80,24 @@ export const Proposals: FunctionComponent = () => {
             activeProposals,
             closedProposals,
             votedProposals,
+            allProposals,
           })
         );
-        if (selectedIdx === "2") {
+        if (selectedIndex === 1) {
+          setProposals(activeProposals);
+          return;
+        }
+        if (selectedIndex === 2) {
           setProposals(closedProposals);
           return;
         }
 
-        if (selectedIdx === "3") {
+        if (selectedIndex === 3) {
           setProposals(votedProposals);
           return;
         }
 
-        setProposals(activeProposals);
+        setProposals(allProposals);
       } catch (e) {}
     })();
   }, []);
@@ -107,6 +111,8 @@ export const Proposals: FunctionComponent = () => {
       newProposal = reduxProposals.closedProposals;
     } else if (selectedIndex === 3) {
       newProposal = reduxProposals.votedProposals;
+    } else {
+      newProposal = reduxProposals.allProposals;
     }
 
     newProposal = newProposal.filter((proposal: ProposalType) => {
@@ -123,6 +129,11 @@ export const Proposals: FunctionComponent = () => {
   }, [selectedIndex, inputVal]);
   const handleCheck = (id: number) => {
     if (isLoading) return;
+
+    if (selectedIndex === id) {
+      setSelectedIndex(0);
+      return;
+    }
     setSelectedIndex(id);
   };
   return (

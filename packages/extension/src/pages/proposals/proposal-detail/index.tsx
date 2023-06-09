@@ -156,7 +156,6 @@ export const ProposalDetail: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
-        history.replace(`/proposal?id=${category}`);
         history.goBack();
       }}
       showBottomMenu={false}
