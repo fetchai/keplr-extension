@@ -1,6 +1,10 @@
 import { fetchLatestBlock, fetchTransactions } from "@graphQL/activity-api";
 import { HeaderLayout } from "@layouts/index";
-import { getActivityIcon, getStatusIcon } from "@utils/activity-utils";
+import {
+  getActivityIcon,
+  getDetails,
+  getStatusIcon,
+} from "@utils/activity-utils";
 import { formatActivityHash } from "@utils/format";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -38,7 +42,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
       const newActivities = await fetchTransactions(
         current.chainId,
         "",
-        accountInfo.bech32Address
+        "fetch18633dvlutft49uc893tvt0e7qectpxsn09ks9k"
       );
       if (!pageInfo) setPageInfo(newActivities.pageInfo);
       const nodeMap: any = {};
@@ -65,6 +69,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
     });
     setNodes({ ...nodes, ...nodeMap });
     setLoadingRequest(false);
+    console.log(nodes)
   };
 
   return (
@@ -115,19 +120,21 @@ export const ActivityPage: FunctionComponent = observer(() => {
 });
 
 export const ActivityRow = ({ node }: { node: any }) => {
+  const details = getDetails(node);
+  const { typeUrl, json } = node.messages.nodes[0];
   return (
     <div className={style.activityRow}>
       <div className={style.activityCol} style={{ width: "7%" }}>
         <img
           src={getActivityIcon(node.messages.nodes[0].typeUrl)}
-          alt={node.messages.nodes[0].typeUrl}
+          alt={typeUrl}
         />
       </div>
       <div className={style.activityCol} style={{ width: "33%" }}>
         {formatActivityHash(node.id)}
       </div>
       <div className={style.activityCol} style={{ width: "53%" }}>
-        {formatActivityHash(node.id)}
+        {details}
       </div>
       <div className={style.activityCol} style={{ width: "7%" }}>
         <img src={getStatusIcon(node.status)} alt={node.status} />
