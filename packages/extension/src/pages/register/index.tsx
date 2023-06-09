@@ -36,6 +36,7 @@ import {
   MigrateEthereumAddressPage,
   TypeMigrateEth,
 } from "./migration";
+import AppLogin from "./auth";
 
 export enum NunWords {
   WORDS12,
@@ -139,6 +140,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
           </div>
         ) : null}
       </div>
+      <AppLogin />
       {registerConfig.render()}
       {registerConfig.isFinalized ? <WelcomePage /> : null}
       {registerConfig.isIntro ? (
