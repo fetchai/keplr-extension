@@ -1,11 +1,5 @@
 import { fetchLatestBlock, fetchTransactions } from "@graphQL/activity-api";
 import { HeaderLayout } from "@layouts/index";
-import {
-  getActivityIcon,
-  getDetails,
-  getHash,
-  getStatusIcon,
-} from "@utils/activity-utils";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -13,6 +7,7 @@ import { useHistory } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
+import { ActivityRow } from "./activity-row";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const history = useHistory();
@@ -42,7 +37,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
       const newActivities = await fetchTransactions(
         current.chainId,
         "",
-        "fetch18633dvlutft49uc893tvt0e7qectpxsn09ks9k"
+        accountInfo.bech32Address
       );
       if (!pageInfo) setPageInfo(newActivities.pageInfo);
       const nodeMap: any = {};
@@ -117,26 +112,3 @@ export const ActivityPage: FunctionComponent = observer(() => {
     </HeaderLayout>
   );
 });
-export const ActivityRow = ({ node }: { node: any }) => {
-  const details = getDetails(node);
-  const hash = getHash(node);
-  const { typeUrl } = node.messages.nodes[0];
-  
-  return (
-    <div className={style.activityRow}>
-      <div className={style.activityCol} style={{ width: "7%" }}>
-        <img src={getActivityIcon(typeUrl)} alt={typeUrl} />
-      </div>
-      <div className={style.activityCol} style={{ width: "33%" }}>
-        {hash}
-      </div>
-      <div className={style.activityCol} style={{ width: "53%" }}>
-        {details}
-      </div>
-      <div className={style.activityCol} style={{ width: "7%" }}>
-        <img src={getStatusIcon(node.status)} alt={node.status} />
-      </div>
-    </div>
-  );
-};
-
