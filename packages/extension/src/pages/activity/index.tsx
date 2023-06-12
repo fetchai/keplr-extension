@@ -92,16 +92,22 @@ export const ActivityPage: FunctionComponent = observer(() => {
             {Object.values(nodes).map((node, index) => (
               <ActivityRow node={node} key={index} />
             ))}
-            <Button
-              outline
-              color="primary"
-              size="sm"
-              disabled={!pageInfo?.hasNextPage || loadingRequest}
-              onClick={handleClick}
-            >
-              Load more{" "}
-              {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
-            </Button>
+            {pageInfo?.hasNextPage && (
+              <Button
+                outline
+                color="primary"
+                size="sm"
+                block
+                disabled={!pageInfo?.hasNextPage || loadingRequest}
+                onClick={handleClick}
+                className="mt-2"
+              >
+                Load more{" "}
+                {loadingRequest && (
+                  <i className="fas fa-spinner fa-spin ml-2" />
+                )}
+              </Button>
+            )}
           </React.Fragment>
         ) : isLoading ? (
           "Loading Activities "

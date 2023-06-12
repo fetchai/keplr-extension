@@ -112,6 +112,7 @@ const ChatTab = () => {
   const { keyRingStore, chainStore } = useStore();
   const { hasFET, enabledChainIds } = useSelector(userDetails);
   const config: WalletConfig = useSelector(walletConfig);
+  const current = chainStore.current;
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
 
@@ -131,12 +132,18 @@ const ChatTab = () => {
       setChatDisabled(false);
     }
 
-    if (!enabledChainIds.includes(chainStore.current?.chainId)) {
+    if (!enabledChainIds.includes(current.chainId)) {
       setChatTooltip("Feature not available on this network");
       setChatDisabled(true);
       return;
     }
-  }, [chainStore, hasFET, enabledChainIds, config.requiredNative]);
+  }, [
+    hasFET,
+    enabledChainIds,
+    config.requiredNative,
+    keyRingStore.keyRingType,
+    current.chainId,
+  ]);
 
   return (
     <Tab
@@ -152,6 +159,7 @@ const ChatTab = () => {
 
 const ActivityTab = () => {
   const { keyRingStore, chainStore } = useStore();
+  const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
   const [activityDisabled, setActivityDisabled] = useState(false);
 
@@ -161,12 +169,14 @@ const ActivityTab = () => {
       setActivityDisabled(true);
       return;
     }
-    if (![CHAIN_ID_FETCHHUB].includes(chainStore.current?.chainId)) {
+    if (![CHAIN_ID_FETCHHUB].includes(current.chainId)) {
       setActivityTooltip("Feature not available on this network");
       setActivityDisabled(true);
-      return;
+    } else {
+      setActivityTooltip("");
+      setActivityDisabled(false);
     }
-  }, [chainStore, keyRingStore.keyRingType]);
+  }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
     <Tab
