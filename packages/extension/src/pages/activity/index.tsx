@@ -19,7 +19,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingRequest, setLoadingRequest] = useState(false);
   const [blockIsLoading, setBlockIsLoading] = useState(true);
-  const [nodes, setNodes] = useState<any>();
+  const [nodes, setNodes] = useState<any>({});
   const [pageInfo, setPageInfo] = useState<any>();
   useEffect(() => {
     const initialize = async () => {
@@ -86,8 +86,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
           Latest Block: {latestBlock}{" "}
           {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
         </div>
-
-        {nodes ? (
+        {Object.keys(nodes).length > 0 ? (
           <React.Fragment>
             {Object.values(nodes).map((node, index) => (
               <ActivityRow node={node} key={index} />
@@ -112,7 +111,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
         ) : isLoading ? (
           "Loading Activities "
         ) : (
-          "No Data found"
+          "No activity available right now"
         )}
       </div>
     </HeaderLayout>

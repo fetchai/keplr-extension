@@ -127,12 +127,12 @@ export const ActivityRow = ({ node }: { node: any }) => {
           }
         case "/cosmos.staking.v1beta1.MsgDelegate":
           if (parsedJson.amount)
-            return <span>-{getAmount(parsedJson.amount)} Staked</span>;
+            return <span>{getAmount(parsedJson.amount)} Staked</span>;
           else return "Stake Operation";
 
         case "/cosmos.staking.v1beta1.MsgUndelegate":
           if (parsedJson.amount)
-            return <span>+{getAmount(parsedJson.amount)} Unstaked</span>;
+            return <span>{getAmount(parsedJson.amount)} Unstaked</span>;
           else return "Unstake Operation";
 
         default:
