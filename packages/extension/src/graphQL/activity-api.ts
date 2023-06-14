@@ -24,7 +24,7 @@ export const fetchTransactions = async (
 
   if (errors) console.log("errors", errors);
 
-  return data.transactions;
+  return data.account.nativeBalanceChanges;
 };
 
 export const fetchLatestBlock = async (chainId: string) => {

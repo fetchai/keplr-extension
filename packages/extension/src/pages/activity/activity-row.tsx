@@ -27,7 +27,7 @@ const getActivityIcon = (type: string): string => {
 };
 
 const getHash = (node: any): any => {
-  const { typeUrl, json } = node.messages.nodes[0];
+  const { typeUrl, json } = node.transaction.messages.nodes[0];
 
   switch (typeUrl) {
     case "/cosmos.bank.v1beta1.MsgSend":
@@ -97,7 +97,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
   };
 
   const getDetails = (node: any): any => {
-    const { nodes } = node.messages;
+    const { nodes } = node.transaction.messages;
     const { typeUrl, json } = nodes[0];
     if (typeUrl == "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward")
       return "Reward Claimed";
@@ -143,7 +143,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
   };
   const details = getDetails(node);
   const hash = getHash(node);
-  const { typeUrl } = node.messages.nodes[0];
+  const { typeUrl } = node.transaction.messages.nodes[0];
   return (
     <a
       href={"https://explore.fetch.ai/transactions/" + node.id}

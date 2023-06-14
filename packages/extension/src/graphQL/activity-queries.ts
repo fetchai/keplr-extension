@@ -1,25 +1,33 @@
-export const transactions = `query TransactionsFromAddress($after: Cursor, $address: String) {
-  transactions(
-    after: $after
-    first: 30
-    filter: {signerAddress: {equalTo:$address}}
-    orderBy: TRANSACTIONS_BY_BLOCK_HEIGHT_DESC
-  ) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-    nodes {
-      id
-      signerAddress
-      status
-      messages {
+export const transactions = `query TransactionsFromAddress($after: Cursor, $address: String!) {
+  account(
+   
+    id: $address) {
+    nativeBalanceChanges( after: $after
+      first: 30
+      orderBy: NATIVE_BALANCE_CHANGES_BY_BLOCK_HEIGHT_DESC) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
         nodes {
-          typeUrl
-          json
+        block {
+          timestamp
+        }
+        transaction{
+          blockId
+          fees
+          status
+          id
+          signerAddress
+          messages {
+            nodes {
+              json
+              typeUrl
+            }
+          }
         }
       }
     }

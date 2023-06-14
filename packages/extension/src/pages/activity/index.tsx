@@ -37,7 +37,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
       const newActivities = await fetchTransactions(
         current.chainId,
         "",
-        accountInfo.bech32Address
+        "fetch1sgjd58298xtgmyce2wva5kkjjrelmlcvu9pewt"
       );
       if (!pageInfo) setPageInfo(newActivities.pageInfo);
       const nodeMap: any = {};
@@ -55,7 +55,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
     const newActivities = await fetchTransactions(
       current.chainId,
       pageInfo.endCursor,
-      accountInfo.bech32Address
+      "fetch1sgjd58298xtgmyce2wva5kkjjrelmlcvu9pewt"
     );
     setPageInfo(newActivities.pageInfo);
     const nodeMap: any = {};
