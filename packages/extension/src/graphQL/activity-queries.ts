@@ -13,22 +13,19 @@ export const transactions = `query TransactionsFromAddress($after: Cursor, $addr
           endCursor
         }
         nodes {
-        block {
-          timestamp
-        }
-        transaction{
-          blockId
-          fees
-          status
           id
-          signerAddress
-          messages {
-            nodes {
-              json
-              typeUrl
+          balanceOffset
+          transaction{
+            status
+            id
+            signerAddress
+            messages {
+              nodes {
+                json
+                typeUrl
+              }
             }
           }
-        }
       }
     }
   }

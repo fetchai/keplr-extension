@@ -34,14 +34,14 @@ const getHash = (node: any): any => {
     case "/cosmwasm.wasm.v1.MsgExecuteContract":
     case "/cosmos.authz.v1beta1.MsgRevoke":
     case "/ibc.applications.transfer.v1.MsgTransfer":
-      return formatActivityHash(node.id) || null;
+      return formatActivityHash(node.transaction.id) || null;
     case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
       return formatActivityHash(JSON.parse(json).validatorAddress) || null;
     case "/cosmos.staking.v1beta1.MsgDelegate":
     case "/cosmos.staking.v1beta1.MsgUndelegate":
       return formatActivityHash(JSON.parse(json).validatorAddress) || null;
     default:
-      return formatActivityHash(node.id);
+      return formatActivityHash(node.transaction.id);
   }
 };
 
@@ -57,7 +57,7 @@ const getStatusIcon = (status: string): string => {
 };
 
 const shortenNumber = (value: string, decimal = 18) => {
-  const number = parseFloat(value) / 10 ** decimal;
+  const number = Math.abs(parseFloat(value)) / 10 ** decimal;
   let result = "";
   if (number >= 1000000) {
     result = (number / 1000000).toFixed(2) + " M";
@@ -82,71 +82,60 @@ const shortenNumber = (value: string, decimal = 18) => {
 export const ActivityRow = ({ node }: { node: any }) => {
   const { chainStore } = useStore();
 
-  const getAmount = (data: any) => {
+  const getAmount = (denom: string, amount: string) => {
     const amountCurrency = chainStore.current.currencies.find(
-      (currency: AppCurrency) => currency.coinMinimalDenom === data.denom
+      (currency: AppCurrency) => currency.coinMinimalDenom === denom
     );
     if (amountCurrency) {
-      const amountValue = shortenNumber(
-        data.amount,
-        amountCurrency?.coinDecimals
-      );
+      const amountValue = shortenNumber(amount, amountCurrency?.coinDecimals);
 
       return `${amountValue}${amountCurrency.coinDenom}`;
-    } else return `${data.amount} ${data.denom}`;
+    } else return `${amount} ${denom}`;
   };
 
   const getDetails = (node: any): any => {
     const { nodes } = node.transaction.messages;
     const { typeUrl, json } = nodes[0];
-    if (typeUrl == "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward")
-      return "Reward Claimed";
-    else if (json) {
-      console.log(json);
-      const parsedJson = JSON.parse(json);
-      console.log(parsedJson);
-      switch (typeUrl) {
-        case "/cosmos.bank.v1beta1.MsgSend":
-          return getAmount(parsedJson.amount[0]) + " Sent";
-        case "/cosmwasm.wasm.v1.MsgExecuteContract":
-        case "/cosmos.authz.v1beta1.MsgRevoke":
-          if (parsedJson.token) {
-            return getAmount(parsedJson.token) + " Spent";
-          } else if (parsedJson.amount && parsedJson.amount[0]) {
-            return getAmount(parsedJson.amount[0]) + " Spent";
-          } else {
-            return "Contract Interaction";
-          }
-        case "/ibc.applications.transfer.v1.MsgTransfer":
-          if (parsedJson.token) {
-            return getAmount(parsedJson.token) + " Transfered";
-          } else if (parsedJson.amount && parsedJson.amount[0]) {
-            return getAmount(parsedJson.amount[0]) + " Transfered";
-          } else {
-            return "Contract Interaction";
-          }
-        case "/cosmos.staking.v1beta1.MsgDelegate":
-          if (parsedJson.amount)
-            return <span>{getAmount(parsedJson.amount)} Staked</span>;
-          else return "Stake Operation";
+    const parsedJson = JSON.parse(json);
+    let currency = "afet";
+    const isAmountDeducted = parseFloat(node.balanceOffset) < 0;
 
-        case "/cosmos.staking.v1beta1.MsgUndelegate":
-          if (parsedJson.amount)
-            return <span>{getAmount(parsedJson.amount)} Unstaked</span>;
-          else return "Unstake Operation";
-
-        default:
-          return "Contract Interaction";
-      }
+    if (parsedJson.amount) {
+      currency = Array.isArray(parsedJson.amount)
+        ? parsedJson.amount[0].denom
+        : parsedJson.amount.denom;
+    } else if (parsedJson.token) {
+      currency = parsedJson.token.denom;
     }
-    return "Contract Interaction";
+
+    let verb = "Spent";
+
+    switch (typeUrl) {
+      case "/cosmos.bank.v1beta1.MsgSend":
+      case "/cosmwasm.wasm.v1.MsgExecuteContract":
+      case "/cosmos.authz.v1beta1.MsgRevoke":
+      case "/ibc.applications.transfer.v1.MsgTransfer":
+        verb = isAmountDeducted ? "Spent" : "Recieved";
+        break;
+      case "/cosmos.staking.v1beta1.MsgDelegate":
+      case "/cosmos.staking.v1beta1.MsgUndelegate":
+        verb = isAmountDeducted ? "Staked" : "Unstaked";
+        break;
+      case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
+        verb = "Claimed";
+        break;
+      default:
+        verb = "Spent";
+    }
+
+    return getAmount(currency, node.balanceOffset) + " " + verb;
   };
   const details = getDetails(node);
   const hash = getHash(node);
   const { typeUrl } = node.transaction.messages.nodes[0];
   return (
     <a
-      href={"https://explore.fetch.ai/transactions/" + node.id}
+      href={"https://explore.fetch.ai/transactions/" + node.transaction.id}
       target="_blank"
       rel="noreferrer"
     >
@@ -161,7 +150,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
           {details}
         </div>
         <div className={style.activityCol} style={{ width: "7%" }}>
-          <img src={getStatusIcon(node.status)} alt={node.status} />
+          <img src={getStatusIcon(node.transaction.status)} alt={node.status} />
         </div>
       </div>
     </a>
