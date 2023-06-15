@@ -57,18 +57,13 @@ export default class CosmosRpc {
     }
   }
 
-  async sendTransaction(): Promise<any> {
+  async sendTransaction(
+    fromAddress: string,
+    destination: string
+  ): Promise<any> {
     try {
       await StargateClient.connect(rpc);
       const privateKey = Buffer.from(await this.getPrivateKey(), "hex");
-      const walletPromise = await DirectSecp256k1Wallet.fromKey(
-        privateKey,
-        "cosmos"
-      );
-      const fromAddress = (await walletPromise.getAccounts())[0].address;
-
-      const destination = "cosmos15aptdqmm7ddgtcrjvc5hs988rlrkze40l4q0he";
-
       const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
         return DirectSecp256k1Wallet.fromKey(privateKey, "cosmos");
       };

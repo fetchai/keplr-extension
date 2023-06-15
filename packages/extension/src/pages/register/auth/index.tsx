@@ -1,32 +1,40 @@
-import { useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Web3AuthNoModal as Web3Auth } from "@web3auth/no-modal";
-import {
-  CHAIN_NAMESPACES,
-  SafeEventEmitterProvider,
-  WALLET_ADAPTERS,
-} from "@web3auth/base";
+import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import style from "./style.module.scss";
+import { Image } from "./image";
+import classNames from "classnames";
+import { RegisterConfig } from "@keplr-wallet/hooks";
+import { observer } from "mobx-react-lite";
 import CosmosRpc from "./cosmos-rpc";
-import React from "react";
+import { Button, Form } from "reactstrap";
+import { FormattedMessage, useIntl } from "react-intl";
+import { BackButton } from "..";
+import useForm from "react-hook-form";
+import { Input, PasswordInput } from "@components/form";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { OPENLOGIN_NETWORK } from "@toruslabs/openlogin/src/constants";
+import { AuthApiKey } from "../../../config.ui";
+// get from https://dashboard.web3auth.io
 
-const clientId =
-  "BEglQSgt4cUWcj6SKRdu5QkOXTsePmMcusG5EAoyjyOYKlVRjIF1iCNnMOTfpzCiunHRrMui8TIwQPXdkQ8Yxuk"; // get from https://dashboard.web3auth.io
-
-function AppLogin() {
+export const AuthIntro: FunctionComponent<{
+  registerConfig: RegisterConfig;
+}> = observer(({ registerConfig }) => {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
-  const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(
-    null
-  );
-
+  const isEnvDevelopment = process.env.NODE_ENV !== "production";
   useEffect(() => {
+    if (!AuthApiKey) return;
     const init = async () => {
       try {
         const web3auth = new Web3Auth({
-          clientId,
+          clientId: AuthApiKey,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.OTHER,
           },
-          web3AuthNetwork: "cyan",
+          web3AuthNetwork: isEnvDevelopment
+            ? OPENLOGIN_NETWORK.TESTNET
+            : OPENLOGIN_NETWORK.CYAN,
         });
 
         setWeb3auth(web3auth);
@@ -34,10 +42,6 @@ function AppLogin() {
         web3auth.configureAdapter(openloginAdapter);
 
         await web3auth.init();
-
-        if (web3auth.provider) {
-          setProvider(web3auth.provider);
-        }
       } catch (error) {
         console.error(error);
       }
@@ -48,7 +52,6 @@ function AppLogin() {
 
   const login = async () => {
     if (!web3auth) {
-      uiConsole("web3auth not initialized yet");
       return;
     }
     const web3authProvider = await web3auth.connectTo(
@@ -57,174 +60,200 @@ function AppLogin() {
         loginProvider: "google",
       }
     );
-    setProvider(web3authProvider);
-  };
-
-  const authenticateUser = async () => {
-    if (!web3auth) {
-      uiConsole("web3auth not initialized yet");
-      return;
-    }
-    const idToken = await web3auth.authenticateUser();
-    uiConsole(idToken);
-  };
-
-  const getUserInfo = async () => {
-    if (!web3auth) {
-      uiConsole("web3auth not initialized yet");
-      return;
-    }
-    const user = await web3auth.getUserInfo();
-    uiConsole(user);
+    return web3authProvider;
   };
 
   const logout = async () => {
     if (!web3auth) {
-      uiConsole("web3auth not initialized yet");
       return;
     }
     await web3auth.logout();
-    setProvider(null);
   };
-
-  const getChainId = async () => {
+  const getPrivateKey = async (provider: any) => {
     if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const rpc = new CosmosRpc(provider);
-    const chainId = await rpc.getChainId();
-    uiConsole(chainId);
-  };
-  const getAccounts = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const rpc = new CosmosRpc(provider);
-    const address = await rpc.getAccounts();
-    uiConsole(address);
-  };
-
-  const getBalance = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const rpc = new CosmosRpc(provider);
-    const balance = await rpc.getBalance();
-    uiConsole(balance);
-  };
-
-  const sendTransaction = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
-    }
-    const rpc = new CosmosRpc(provider);
-    const { transactionHash, height } = await rpc.sendTransaction();
-    const blockExplorerURL =
-      "https://explorer.theta-testnet.polypore.xyz/transactions/" +
-      transactionHash;
-    const txString = "Follow this transaction at " + blockExplorerURL;
-    uiConsole(
-      "TxHash: " + transactionHash,
-      "Block Height: " + height,
-      txString
-    );
-  };
-
-  function uiConsole(...args: any[]): void {
-    const el = document.querySelector("#console>p");
-    if (el) {
-      el.innerHTML = JSON.stringify(args || {}, null, 2);
-    }
-  }
-
-  const getPrivateKey = async () => {
-    if (!provider) {
-      uiConsole("provider not initialized yet");
-      return;
+      return "";
     }
     const rpc = new CosmosRpc(provider);
     const privateKey = await rpc.getPrivateKey();
-    uiConsole(privateKey);
+    return privateKey;
   };
 
-  const loggedInView = (
+  const getUserInfo = async () => {
+    if (!web3auth) {
+      return;
+    }
+    const user = await web3auth.getUserInfo();
+    return user.email;
+  };
+
+  const imageId = `login-google-light`;
+  const hoverImage = `login-google-active`;
+  const [image, setImage] = useState(`login-google-light`);
+  return (
     <React.Fragment>
-      <div className="flex-container">
-        <div>
-          <button onClick={getUserInfo} className="card">
-            Get User Info
+      {AuthApiKey && (
+        <div
+          className={style.container}
+          onMouseEnter={() => setImage("login-google-active")}
+          onMouseLeave={() => setImage("login-google-light")}
+          onClick={async (e) => {
+            e.preventDefault();
+            const target = e.target as HTMLElement;
+            if (target.tagName === "A") {
+              const url = target.getAttribute("href");
+              if (url) {
+                window.open(url, "_blank"); // Open the URL in a new window
+              }
+              return;
+            }
+            try {
+              const data = await login();
+              const privateKey = await getPrivateKey(data);
+              if (!privateKey) return;
+              registerConfig.setType("auth");
+              registerConfig.setPrivateKey(privateKey);
+              const email = await getUserInfo();
+              registerConfig.setEmail(email || "");
+              await logout();
+            } catch (e) {}
+          }}
+        >
+          <button
+            type="button"
+            className={classNames(
+              style.w3abutton,
+              style.wfull,
+              style.w3abuttonlogin
+            )}
+          >
+            <Image
+              width="20"
+              imageId={imageId}
+              hoverImageId={hoverImage}
+              isButton
+              image={`https://images.web3auth.io/${image}.svg`}
+            />
+            <span className={style.gTitle}>
+              <FormattedMessage id="sign.in.google" />
+            </span>
+            <a href="https://web3auth.io/" className={style.authPoweredBy}>
+              <FormattedMessage id="sign.in.auth-powered" />
+            </a>
           </button>
         </div>
-        <div>
-          <button onClick={authenticateUser} className="card">
-            Get ID Token
-          </button>
-        </div>
-        <div>
-          <button onClick={getChainId} className="card">
-            Get Chain ID
-          </button>
-        </div>
-        <div>
-          <button onClick={getAccounts} className="card">
-            Get Accounts
-          </button>
-        </div>
-        <div>
-          <button onClick={getBalance} className="card">
-            Get Balance
-          </button>
-        </div>
-        <div>
-          <button onClick={sendTransaction} className="card">
-            Send Transaction
-          </button>
-        </div>
-        <div>
-          <button onClick={getPrivateKey} className="card">
-            Get Private Key
-          </button>
-        </div>
-        <div>
-          <button onClick={logout} className="card">
-            Log Out
-          </button>
-        </div>
-      </div>
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}>Logged in Successfully!</p>
-      </div>
+      )}
     </React.Fragment>
   );
+});
 
-  const unloggedInView = (
-    <button onClick={login} className="card">
-      Login
-    </button>
-  );
-
-  return (
-    <div className="container">
-      <h1 className="title">Web3Auth PnP No Modal with Cosmos</h1>
-
-      <div className="grid">{provider ? loggedInView : unloggedInView}</div>
-
-      <footer className="footer">
-        <a
-          href="https://github.com/Web3Auth/examples/tree/main/web-no-modal-sdk/cosmos/react-cosmos-no-modal-example"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Source code
-        </a>
-      </footer>
-    </div>
-  );
+interface FormData {
+  name: string;
+  words: string;
+  password: string;
+  confirmPassword: string;
 }
+export const AuthPage: FunctionComponent<{
+  registerConfig: RegisterConfig;
+}> = observer(({ registerConfig }) => {
+  const intl = useIntl();
+  const { register, getValues, handleSubmit, errors } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+  const privateKey = Buffer.from(
+    registerConfig.privateKey.trim().replace("0x", ""),
+    "hex"
+  );
+  return (
+    <React.Fragment>
+      <Form
+        className={style.formContainer}
+        onSubmit={handleSubmit(async (data: FormData) => {
+          registerConfig.createPrivateKey(
+            data.name,
+            privateKey,
+            data.password,
+            { email: registerConfig.email }
+          );
+        })}
+      >
+        <Input
+          label={intl.formatMessage({
+            id: "register.name",
+          })}
+          type="text"
+          name="name"
+          ref={register({
+            required: intl.formatMessage({
+              id: "register.name.error.required",
+            }),
+          })}
+          error={errors.name && errors.name.message}
+          maxLength={20}
+        />
+        {registerConfig.mode === "create" ? (
+          <React.Fragment>
+            <PasswordInput
+              label={intl.formatMessage({
+                id: "register.create.input.password",
+              })}
+              name="password"
+              ref={register({
+                required: intl.formatMessage({
+                  id: "register.create.input.password.error.required",
+                }),
+                validate: (password: string): string | undefined => {
+                  if (password.length < 8) {
+                    return intl.formatMessage({
+                      id: "register.create.input.password.error.too-short",
+                    });
+                  }
+                },
+              })}
+              error={errors.password && errors.password.message}
+            />
+            <PasswordInput
+              label={intl.formatMessage({
+                id: "register.create.input.confirm-password",
+              })}
+              name="confirmPassword"
+              ref={register({
+                required: intl.formatMessage({
+                  id: "register.create.input.confirm-password.error.required",
+                }),
+                validate: (confirmPassword: string): string | undefined => {
+                  if (confirmPassword !== getValues()["password"]) {
+                    return intl.formatMessage({
+                      id:
+                        "register.create.input.confirm-password.error.unmatched",
+                    });
+                  }
+                },
+              })}
+              error={errors.confirmPassword && errors.confirmPassword.message}
+            />
+          </React.Fragment>
+        ) : null}
+        <Button
+          color="primary"
+          type="submit"
+          block
+          size="lg"
+          data-loading={registerConfig.isLoading}
+        >
+          <FormattedMessage id="register.create.button.next" />
+        </Button>
+      </Form>
+      <BackButton
+        onClick={() => {
+          registerConfig.clear();
+        }}
+      />
+    </React.Fragment>
+  );
+});
 
 // eslint-disable-next-line import/no-default-export
-export default AppLogin;

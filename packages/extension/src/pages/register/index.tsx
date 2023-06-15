@@ -36,7 +36,7 @@ import {
   MigrateEthereumAddressPage,
   TypeMigrateEth,
 } from "./migration";
-import AppLogin from "./auth";
+import { AuthIntro, AuthPage } from "./auth";
 
 export enum NunWords {
   WORDS12,
@@ -69,6 +69,11 @@ export const RegisterPage: FunctionComponent = observer(() => {
 
   const registerConfig = useRegisterConfig(keyRingStore, [
     ...(AdditionalSignInPrepend ?? []),
+    {
+      type: "auth",
+      intro: AuthIntro,
+      page: AuthPage,
+    },
     {
       type: TypeNewMnemonic,
       intro: NewMnemonicIntro,
@@ -130,17 +135,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
             alt="logo"
           />
         </div>
-        {registerConfig.isIntro ? (
-          <div className={style.introBrandSubTextContainer}>
-            <img
-              className={style.introBrandSubText}
-              src={require("../../public/assets/brand-sub-text.png")}
-              alt="The Interchain Wallet"
-            />
-          </div>
-        ) : null}
       </div>
-      <AppLogin />
       {registerConfig.render()}
       {registerConfig.isFinalized ? <WelcomePage /> : null}
       {registerConfig.isIntro ? (
