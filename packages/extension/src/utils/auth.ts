@@ -44,7 +44,7 @@ const signArbitrary = async (
   const encoded = encoder.encode(data);
 
   const signDoc = {
-    chain_id: "",
+    chain_id: chainId,
     account_number: "0",
     sequence: "0",
     fee: {

@@ -61,7 +61,7 @@ const NotificationTab = () => {
 
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
-      setIsComingSoon(true);
+      // setIsComingSoon(true);
     } else {
       setIsComingSoon(
         config.notiphyWhitelist === undefined
@@ -105,18 +105,18 @@ const NotificationTab = () => {
   );
 };
 const ChatTab = () => {
-  const { keyRingStore, chainStore } = useStore();
+  const { chainStore } = useStore();
   const { hasFET, enabledChainIds } = useSelector(userDetails);
   const config: WalletConfig = useSelector(walletConfig);
   const [chatTooltip, setChatTooltip] = useState("");
   const [chatDisabled, setChatDisabled] = useState(false);
 
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      setChatTooltip("Coming soon for ledger");
-      setChatDisabled(true);
-      return;
-    }
+    // if (keyRingStore.keyRingType === "ledger") {
+    //   setChatTooltip("Coming soon for ledger");
+    //   setChatDisabled(true);
+    //   return;
+    // }
 
     if (config.requiredNative && !hasFET) {
       setChatTooltip("You need to have FET balance to use this feature");

@@ -44,9 +44,11 @@ import { GroupsHistory } from "./group-history";
 import style from "./style.module.scss";
 import { ToolTip } from "@components/tooltip";
 import { useLocation } from "react-router";
+import { useHistory } from "react-router";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
+  const history = useHistory();
   const chatStorePopulated = useSelector(userChatStorePopulated);
   const chatSubscriptionActive = useSelector(userChatSubscriptionActive);
   const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
@@ -161,6 +163,9 @@ const ChatView = () => {
           current.chainId,
           walletAddress
         );
+        if (["/ledger-grant", "/sign"].includes(history.location.pathname))
+          history.goBack();
+
         if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
           return setIsOpendialog(true);
 
