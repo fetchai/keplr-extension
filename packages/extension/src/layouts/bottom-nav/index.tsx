@@ -22,7 +22,7 @@ import style from "./style.module.scss";
 import { Tab } from "./tab";
 import { NotificationSetup } from "@notificationTypes";
 import { store } from "@chatStore/index";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 const bottomNav = [
   {
@@ -169,7 +169,7 @@ const ActivityTab = () => {
       setActivityDisabled(true);
       return;
     }
-    if (![CHAIN_ID_FETCHHUB].includes(current.chainId)&&![CHAIN_ID_DORADO].includes(current.chainId)) {
+    if (![CHAIN_ID_FETCHHUB].includes(current.chainId)) {
       setActivityTooltip("Feature not available on this network");
       setActivityDisabled(true);
     } else {

@@ -5,6 +5,15 @@
   align-items: center;
   cursor: pointer;
 }
+
+.block {
+  font-weight: bold;
+  display: flex;
+  color: black;
+  align-items: center;
+  font-size: 15px;
+}
+
 .activityRow:hover {
   background: #f0f0f0;
 }
@@ -21,7 +30,6 @@
   font-weight: 700;
   font-size: 20px;
   padding-bottom: 16px;
-
 }
 
 .activityCol {
@@ -37,4 +45,27 @@
 
 .positive {
   color: green;
+}
+
+.tabContainer {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16px;
+}
+
+.tab {
+  padding-top: 8px;
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000000;
+}
+
+.tab.active {
+  border-bottom: 2px solid #d43bf6;
+  color: #d43bf6;
 }

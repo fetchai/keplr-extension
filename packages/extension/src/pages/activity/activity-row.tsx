@@ -73,9 +73,12 @@ const shortenNumber = (value: string, decimal = 18) => {
     result = (number * 10 ** 9).toFixed(2) + " n";
   } else if (number >= 10 ** -12) {
     result = (number * 10 ** 9).toFixed(3) + " n";
-  } else if (number >= 10 ** -15) {
-    result = (number * 10 ** 9).toFixed(6) + " n";
-  } else result = number.toFixed(2) + " ";
+  } else if (number >= 10 ** -18) {
+    result = (number * 10 ** 18).toFixed(0) + " a";
+  } else {
+    result = number.toFixed(2) + " ";
+  }
+
   return result;
 };
 
@@ -112,10 +115,10 @@ export const ActivityRow = ({ node }: { node: any }) => {
 
     switch (typeUrl) {
       case "/cosmos.bank.v1beta1.MsgSend":
-      case "/cosmwasm.wasm.v1.MsgExecuteContract":
-      case "/cosmos.authz.v1beta1.MsgRevoke":
+        verb = isAmountDeducted ? "Send" : "Received";
+        break;
       case "/ibc.applications.transfer.v1.MsgTransfer":
-        verb = isAmountDeducted ? "Spent" : "Recieved";
+        verb = "IBC transfer";
         break;
       case "/cosmos.staking.v1beta1.MsgDelegate":
       case "/cosmos.staking.v1beta1.MsgUndelegate":
@@ -124,18 +127,27 @@ export const ActivityRow = ({ node }: { node: any }) => {
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
         verb = "Claimed";
         break;
+      case "/cosmos.authz.v1beta1.MsgExec":
+      case "/cosmwasm.wasm.v1.MsgExecuteContract":
+      case "/cosmos.authz.v1beta1.MsgRevoke":
+        verb = isAmountDeducted ? "Transferred" : "Received";
+        break;
       default:
-        verb = "Spent";
+        verb = isAmountDeducted ? "Transferred" : "Received";
     }
 
     return getAmount(currency, node.balanceOffset) + " " + verb;
   };
+
   const details = getDetails(node);
   const hash = getHash(node);
   const { typeUrl } = node.transaction.messages.nodes[0];
   return (
     <a
-      href={"https://explore.fetch.ai/transactions/" + node.transaction.id}
+      href={
+        "https://fetchstation.azoyalabs.com/mainnet/explorer/transactions/" +
+        node.transaction.id
+      }
       target="_blank"
       rel="noreferrer"
     >

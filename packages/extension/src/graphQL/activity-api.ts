@@ -22,9 +22,11 @@ export const fetchTransactions = async (
     variables,
   });
 
-  if (errors) console.log("errors", errors);
-
-  return data.account.nativeBalanceChanges;
+  if (errors) {
+    console.log("errors", errors);
+    return null;
+  }
+  return data.account?.nativeBalanceChanges || null;
 };
 
 export const fetchLatestBlock = async (chainId: string) => {

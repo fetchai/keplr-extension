@@ -39,12 +39,15 @@ export const ActivityPage: FunctionComponent = observer(() => {
         "",
         accountInfo.bech32Address
       );
-      if (!pageInfo) setPageInfo(newActivities.pageInfo);
-      const nodeMap: any = {};
-      newActivities.nodes.map((node: any) => {
-        nodeMap[node.id] = node;
-      });
-      setNodes({ ...nodes, ...nodeMap });
+      if (newActivities) {
+        if (!pageInfo) setPageInfo(newActivities.pageInfo);
+        const nodeMap: any = {};
+        newActivities.nodes.map((node: any) => {
+          nodeMap[node.id] = node;
+        });
+        setNodes({ ...nodes, ...nodeMap });
+      }
+
       setIsLoading(false);
     };
     fetchActivities();
@@ -80,39 +83,41 @@ export const ActivityPage: FunctionComponent = observer(() => {
       <div className={style.container}>
         <div className={style.title}>
           <FormattedMessage id="main.menu.activity" />
-          {/* <a href="#">All activity</a> */}
+          <div className={style.block}>
+            Latest Block: {latestBlock}{" "}
+            {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
+          </div>
         </div>
-        <div className={style.activityRow}>
-          Latest Block: {latestBlock}{" "}
-          {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
-        </div>
-        {Object.keys(nodes).length > 0 ? (
-          <React.Fragment>
-            {Object.values(nodes).map((node, index) => (
-              <ActivityRow node={node} key={index} />
-            ))}
-            {pageInfo?.hasNextPage && (
-              <Button
-                outline
-                color="primary"
-                size="sm"
-                block
-                disabled={!pageInfo?.hasNextPage || loadingRequest}
-                onClick={handleClick}
-                className="mt-2"
-              >
-                Load more{" "}
-                {loadingRequest && (
-                  <i className="fas fa-spinner fa-spin ml-2" />
-                )}
-              </Button>
-            )}
-          </React.Fragment>
-        ) : isLoading ? (
-          "Loading Activities "
-        ) : (
-          "No activity available right now"
-        )}
+
+        <React.Fragment>
+          {Object.keys(nodes).length > 0 ? (
+            <React.Fragment>
+              {Object.values(nodes).map((node, index) => (
+                <ActivityRow node={node} key={index} />
+              ))}
+              {pageInfo?.hasNextPage && (
+                <Button
+                  outline
+                  color="primary"
+                  size="sm"
+                  block
+                  disabled={!pageInfo?.hasNextPage || loadingRequest}
+                  onClick={handleClick}
+                  className="mt-2"
+                >
+                  Load more{" "}
+                  {loadingRequest && (
+                    <i className="fas fa-spinner fa-spin ml-2" />
+                  )}
+                </Button>
+              )}
+            </React.Fragment>
+          ) : isLoading ? (
+            <span style={{ color: "#808da0" }}>Loading Activities...</span>
+          ) : (
+            "No activity available right now"
+          )}
+        </React.Fragment>
       </div>
     </HeaderLayout>
   );
