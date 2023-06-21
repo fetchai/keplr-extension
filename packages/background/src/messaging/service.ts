@@ -301,40 +301,62 @@ export class MessagingService {
     let privateKey = this._privateKeyCache.get(`${key.address}-${chainId}`);
 
     if (!privateKey) {
-      const encoder = new TextEncoder();
-      const encoded = encoder.encode(
-        "Create Messaging Signing Secret encryption key. Only approve requests by Keplr."
-      );
-      const signDoc = {
-        chain_id: chainId,
-        account_number: "0",
-        sequence: "0",
-        fee: {
-          gas: "0",
-          amount: [],
-        },
-        msgs: [
-          {
-            type: "sign/MsgSignData",
-            value: {
-              signer: toBech32("fetch", key.address),
-              data: toBase64(encoded),
-            },
+      if (this.keyRingService.getKeyRingType() === "ledger") {
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(
+          `Create Messaging Signing Secret encryption key for ${chainId}. Only approve requests by Keplr.`
+        );
+        const signDoc = {
+          chain_id: "",
+          account_number: "0",
+          sequence: "0",
+          fee: {
+            gas: "0",
+            amount: [],
           },
-        ],
-        memo: "",
-      };
+          msgs: [
+            {
+              type: "sign/MsgSignData",
+              value: {
+                signer: toBech32("fetch", key.address),
+                data: toBase64(encoded),
+              },
+            },
+          ],
+          memo: "",
+        };
 
-      const signData = await this.keyRingService.requestSignAmino(
-        env,
-        "",
-        chainId,
-        toBech32("fetch", key.address),
-        signDoc,
-        { isADR36WithString: true }
-      );
+        const signData = await this.keyRingService.requestSignAmino(
+          env,
+          "messaging",
+          chainId,
+          toBech32("fetch", key.address),
+          signDoc,
+          { isADR36WithString: true }
+        );
 
-      privateKey = Hash.sha256(Buffer.from(signData.signature.signature));
+        privateKey = Hash.sha256(Buffer.from(signData.signature.signature));
+      } else {
+        privateKey = Hash.sha256(
+          Buffer.from(
+            await this.keyRingService.sign(
+              env,
+              chainId,
+              Buffer.from(
+                JSON.stringify({
+                  account_number: 0,
+                  chain_id: chainId,
+                  fee: [],
+                  memo:
+                    "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
+                  msgs: [],
+                  sequence: 0,
+                })
+              )
+            )
+          )
+        );
+      }
       this._privateKeyCache.set(`${key.address}-${chainId}`, privateKey);
     }
 

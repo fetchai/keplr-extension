@@ -232,7 +232,8 @@ export const SignPage: FunctionComponent = observer(() => {
       alternativeTitle={alternativeTitle != null ? alternativeTitle : undefined}
       canChangeChainInfo={false}
       onBackButton={
-        interactionInfo.interactionInternal
+        // TODO: Workaround for buggy back button in Public key registration
+        interactionInfo.interactionInternal && origin !== "messaging"
           ? () => {
               history.goBack();
             }

@@ -26,6 +26,7 @@ import { ChatLoader } from "@components/chat-loader";
 import { ChatInitPopup } from "@components/chat/chat-init-popup";
 import { ChatSearchInput } from "@components/chat/chat-search-input";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
+import { useNotification } from "@components/notification";
 import { SwitchUser } from "@components/switch-user";
 import { AUTH_SERVER } from "../../config.ui.var";
 import {
@@ -56,6 +57,7 @@ const ChatView = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
+  const notification = useNotification();
 
   // address book values
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -163,22 +165,28 @@ const ChatView = () => {
           current.chainId,
           walletAddress
         );
-        if (["/ledger-grant", "/sign"].includes(history.location.pathname))
-          history.goBack();
+
+        if (["/ledger-grant", "/sign"].includes(history.location.pathname)) {
+          history.replace("/chat");
+        }
 
         if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
           return setIsOpendialog(true);
 
         store.dispatch(setMessagingPubKey(pubKey));
       } catch (e) {
-        store.dispatch(
-          setMessageError({
-            type: "authorization",
-            message: "Something went wrong, Message can't be delivered",
-            level: 3,
-          })
-        );
         setAuthFail(true);
+        history.replace("/");
+        notification.push({
+          type: "warning",
+          placement: "top-center",
+          duration: 5,
+          content: `Failed to create messaging keys: ${e.message}. Try again later.`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
       }
 
       setLoadingChats(false);
