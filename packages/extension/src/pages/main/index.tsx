@@ -121,9 +121,6 @@ export const MainPage: FunctionComponent = observer(() => {
 
   // Fetching wallet config info
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      return;
-    }
     getWalletConfig()
       .then((config) => store.dispatch(setWalletConfig(config)))
       .catch((error) => {
