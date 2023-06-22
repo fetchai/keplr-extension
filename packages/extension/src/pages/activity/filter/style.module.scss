@@ -8,10 +8,16 @@
   position: relative;
   color: #000000;
   cursor: pointer;
-  border-radius: 5px;
   width: 50%;
   margin-left: 50%;
   margin-bottom: 10px;
+  z-index: 1;
+}
+.dropdown-heading {
+  padding: 0px 10px;
+  height: 20px;
+  margin-left: -7%;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   border: 1px solid #f0f0f0;
@@ -22,7 +28,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 97%;
   background-color: #f0f0f0;
   border-radius: 0 0 4px 4px;
 }

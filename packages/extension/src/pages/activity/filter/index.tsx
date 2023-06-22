@@ -27,10 +27,11 @@ export const FilterActivities: React.FC<{
 
   return (
     <div className={styles.dropdown}>
-      <div className={styles["dropdown-toggle"]} onClick={toggleDropdown}>
-        <span>Filter</span>
-        <img src={arrowIcon} alt="Arrow Icon" className={styles.arrowIcon} />
-
+      <div className={styles["dropdown-toggle"]}>
+        <div className={styles["dropdown-heading"]} onClick={toggleDropdown}>
+          <span>Filter</span>
+          <img src={arrowIcon} alt="Arrow Icon" className={styles.arrowIcon} />
+        </div>
         {isOpen && (
           <div className={styles["dropdown-menu-popup"]}>
             <div className={styles["dropdown-menu"]}>

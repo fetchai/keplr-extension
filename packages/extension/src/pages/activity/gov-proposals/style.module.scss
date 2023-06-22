@@ -6,14 +6,6 @@
   cursor: pointer;
 }
 
-.block {
-  font-weight: bold;
-  display: flex;
-  color: black;
-  align-items: center;
-  font-size: 15px;
-}
-
 .activityRow:hover {
   background: #f0f0f0;
 }
@@ -39,41 +31,6 @@
   margin: 3px;
 }
 
-.negative {
-  color: red;
-}
-
-.positive {
-  color: green;
-}
-
-.tabContainer {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 16px;
-}
-
-.tab {
-  padding-top: 8px;
-  width: 50%;
-  text-align: center;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 8px;
-  font-weight: 500;
-  font-size: 16px;
-  color: #000000;
-}
-
-.tab.active {
-  border-bottom: 2px solid #d43bf6;
-  color: #d43bf6;
-}
-.tab.activeGov {
-  border-bottom: 2px solid rgb(59, 130, 246);
-  color: rgb(59, 130, 246);
-}
-
 .govActivityHeading {
   display: flex;
   justify-content: space-around;
@@ -81,43 +38,4 @@
 .govImage {
   width: 16px;
   height: 16px;
-}
-.dropdown {
-  width: 50%;
-  position: relative;
-  display: inline-block;
-  height: 10%;
-}
-
-.dropdown-toggle {
-  padding: 4px;
-  background-color: #f0f0f0;
-  color: #000000;
-  cursor: pointer;
-}
-
-.dropdown-menu {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: #ffffff;
-  border-radius: 0 0 4px 4px;
-  padding: 5px;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #808da0;
-}
-
-.arrowIcon {
-  transform: rotate(90deg);
-  width: 6px;
-  height: 12px;
-  margin-left: 10px;
 }
