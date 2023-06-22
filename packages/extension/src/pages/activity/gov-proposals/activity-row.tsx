@@ -23,7 +23,7 @@ const getVoteIcon = (vote: string): string => {
       return "gov-cross.svg";
     case "ABSTAIN":
       return "gov-abstain.svg";
-    case "NOWITHVETO":
+    case "NO_WITH_VETO":
       return "gov-no-veto.svg";
     default:
       return "gov-tick-white.svg";
@@ -60,19 +60,17 @@ export const ActivityRow = ({ node }: { node: any }) => {
         <div className={style.activityCol} style={{ width: "33%" }}>
           {hash}
         </div>
-        <div
-          className={style.activityCol}
-          style={{ width: "30%", justifyContent: "center" }}
-        >
+        <div className={style.activityCol} style={{ width: "53%" }}>
           <img
             draggable={false}
             src={require("@assets/svg/" + getVoteIcon(details))}
             className={style.govImage}
-          />
+          />{" "}
+          {details}
         </div>
         <div
           className={style.activityCol}
-          style={{ width: "30%", justifyContent: "center" }}
+          style={{ width: "7%", justifyContent: "center" }}
         >
           <img src={getStatusIcon(status)} alt={status} />
         </div>
