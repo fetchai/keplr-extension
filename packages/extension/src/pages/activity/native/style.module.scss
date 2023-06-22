@@ -50,7 +50,7 @@
 .tabContainer {
   display: flex;
   flex-direction: row;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .tab {
@@ -86,9 +86,7 @@
   width: 50%;
   position: relative;
   display: inline-block;
-  height: 20px;
-  margin-bottom: 10px;
-  font-size: 12px;
+  height: 10%;
 }
 
 .dropdown-toggle {
@@ -112,7 +110,6 @@
 
 .dropdown-item {
   display: flex;
-  text-align: left;
   align-items: center;
   cursor: pointer;
   color: #808da0;
