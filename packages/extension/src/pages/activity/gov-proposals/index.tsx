@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
-
+import style from "../style.module.scss";
 const options = [
   { value: "YES", label: "Voted Yes" },
   { value: "NO", label: "Voted No" },
@@ -133,15 +133,11 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
           )}
         </React.Fragment>
       ) : isLoading ? (
-        <React.Fragment>
-          <br />
-          <span style={{ color: "#808da0" }}>Loading Activities...</span>
-        </React.Fragment>
+        <div className={style.activityMessage}>Loading Activities...</div>
       ) : (
-        <React.Fragment>
-          <br />
+        <div className={style.activityMessage}>
           No activity available right now
-        </React.Fragment>
+        </div>
       )}
     </React.Fragment>
   );

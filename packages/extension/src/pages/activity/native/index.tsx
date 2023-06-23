@@ -4,6 +4,7 @@ import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
+import style from "../style.module.scss";
 
 const options = [
   { value: "/cosmos.bank.v1beta1.MsgSend", label: "Funds transfers" },
@@ -16,16 +17,9 @@ const options = [
     label: "Unstaked Funds",
   },
   {
-    value: "/cosmos.authz.v1beta1.MsgExec",
-    label: "Contract Interaction",
-  },
-  {
-    value: "/cosmwasm.wasm.v1.MsgExecuteContract",
-    label: "Contract Execution",
-  },
-  {
-    value: "/cosmos.authz.v1beta1.MsgRevoke",
-    label: "Contract Msg Revoke",
+    value:
+      "/cosmos.authz.v1beta1.MsgExec,/cosmwasm.wasm.v1.MsgExecuteContract,/cosmos.authz.v1beta1.MsgRevoke",
+    label: "Contract Interactions",
   },
   {
     value: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
@@ -128,6 +122,15 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     setPageInfo(undefined);
     setNodes({});
     setFilter(selectedFilter);
+    if (
+      selectedFilter.includes(
+        "/cosmos.authz.v1beta1.MsgExec,/cosmwasm.wasm.v1.MsgExecuteContract,/cosmos.authz.v1beta1.MsgRevoke"
+      )
+    ) {
+      selectedFilter.push("/cosmos.authz.v1beta1.MsgExec");
+      selectedFilter.push("/cosmwasm.wasm.v1.MsgExecuteContract");
+      selectedFilter.push("/cosmos.authz.v1beta1.MsgExec");
+    }
   };
 
   return (
@@ -158,15 +161,11 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
           )}
         </React.Fragment>
       ) : isLoading ? (
-        <React.Fragment>
-          <br />
-          <span style={{ color: "#808da0" }}>Loading Activities...</span>
-        </React.Fragment>
+        <div className={style.activityMessage}>Loading Activities...</div>
       ) : (
-        <React.Fragment>
-          <br />
+        <div className={style.activityMessage}>
           No activity available right now
-        </React.Fragment>
+        </div>
       )}
     </React.Fragment>
   );
