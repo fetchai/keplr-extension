@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./style.module.scss";
 import arrowIcon from "@assets/icon/right-arrow.png";
-import style from "./style.module.scss";
-import selectAll from "@assets/icon/chat-seen-status.png";
 
 export const FilterActivities: React.FC<{
   onFilterChange: (filter: string[]) => void;
@@ -26,12 +24,12 @@ export const FilterActivities: React.FC<{
   };
 
   const handleDeselectClicks = () => {
-    onFilterChange([]);
+    if (selectedFilter.length != 0) onFilterChange([]);
   };
 
   const handleSelectClicks = () => {
     const allFilters = options.map((option) => option.value);
-    onFilterChange(allFilters);
+    if (selectedFilter.length != allFilters.length) onFilterChange(allFilters);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -51,28 +49,17 @@ export const FilterActivities: React.FC<{
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={dropdownRef}>
-      <div className={styles["dropdown-toggle"]}>
+    <div className={styles.dropdown}>
+      <div className={styles["dropdown-toggle"]} ref={dropdownRef}>
         <div className={styles["dropdown-heading"]} onClick={toggleDropdown}>
           <span>Filter</span>
           <img src={arrowIcon} alt="Arrow Icon" className={styles.arrowIcon} />
         </div>
         {isOpen && (
           <div className={styles["dropdown-menu-popup"]}>
-            <div className={styles["select"]}>
-              <div onClick={handleSelectClicks}>
-                <img className={style.image} src={selectAll} alt="" />
-                Select all
-              </div>
-              <div onClick={handleDeselectClicks}>
-                <img
-                  style={{ width: "10%", paddingBottom: "2px" }}
-                  draggable={false}
-                  src={require("@assets/svg/gov-cross.svg")}
-                  className={style.image}
-                />
-                Deselect all
-              </div>
+            <div className={styles.select}>
+              <div onClick={handleSelectClicks}>Select all</div>
+              <div onClick={handleDeselectClicks}>Unselect all</div>
             </div>
             <div className={styles["dropdown-menu"]}>
               {options.map((option) => (
