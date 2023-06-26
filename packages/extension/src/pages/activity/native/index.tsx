@@ -63,53 +63,12 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
 
     setIsLoading(false);
   };
+  useEffect(() => {
+    fetchNodes("");
+  }, []);
 
   useEffect(() => {
-    const init = async () => {
-      setIsLoading(true);
-      const fetchedData = await fetchTransactions(
-        current.chainId,
-        "",
-        accountInfo.bech32Address,
-        options.map((option) => option.value)
-      );
-      if (fetchedData) {
-        const nodeMap: any = {};
-        fetchedData.nodes.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
-
-        setPageInfo(fetchedData.pageInfo);
-        setNodes({ ...nodeMap });
-      }
-
-      setIsLoading(false);
-    };
-    init();
-  }, [accountInfo.bech32Address, current.chainId]);
-
-  useEffect(() => {
-    const refreshNodes = async () => {
-      setIsLoading(true);
-      const fetchedData = await fetchTransactions(
-        current.chainId,
-        "",
-        accountInfo.bech32Address,
-        filter
-      );
-      if (fetchedData) {
-        const nodeMap: any = {};
-        fetchedData.nodes.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
-
-        setPageInfo(fetchedData.pageInfo);
-        setNodes({ ...nodes, ...nodeMap });
-      }
-
-      setIsLoading(false);
-    };
-    if (!isLoading) refreshNodes();
+    fetchNodes("");
   }, [filter, latestBlock]);
 
   const handleClick = async () => {
@@ -121,7 +80,6 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
   const handleFilterChange = (selectedFilter: string[]) => {
     setPageInfo(undefined);
     setNodes({});
-    setFilter(selectedFilter);
     if (
       selectedFilter.includes(
         "/cosmos.authz.v1beta1.MsgExec,/cosmwasm.wasm.v1.MsgExecuteContract,/cosmos.authz.v1beta1.MsgRevoke"
@@ -131,6 +89,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
       selectedFilter.push("/cosmwasm.wasm.v1.MsgExecuteContract");
       selectedFilter.push("/cosmos.authz.v1beta1.MsgExec");
     }
+    setFilter(selectedFilter);
   };
 
   return (
@@ -140,11 +99,17 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
         options={options}
         selectedFilter={filter}
       />
-      {Object.keys(nodes).length > 0 ? (
+      {Object.values(nodes).filter((node: any) =>
+        filter.includes(node.transaction.messages.nodes[0].typeUrl)
+      ).length > 0 ? (
         <React.Fragment>
-          {Object.values(nodes).map((node, index) => (
-            <ActivityRow node={node} key={index} />
-          ))}
+          {Object.values(nodes)
+            .filter((node: any) =>
+              filter.includes(node.transaction.messages.nodes[0].typeUrl)
+            )
+            .map((node, index) => (
+              <ActivityRow node={node} key={index} />
+            ))}
           {pageInfo?.hasNextPage && (
             <Button
               outline
@@ -160,7 +125,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
             </Button>
           )}
         </React.Fragment>
-      ) : isLoading ? (
+      ) : isLoading && filter.length ? (
         <div className={style.activityMessage}>Loading Activities...</div>
       ) : (
         <div className={style.activityMessage}>

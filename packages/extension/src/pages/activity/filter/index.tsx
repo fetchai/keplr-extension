@@ -16,8 +16,10 @@ export const FilterActivities: React.FC<{
 
   const handleCheckboxChange = (value: string) => {
     const newFilters = selectedFilter;
-    if (newFilters.includes(value)) {
-      onFilterChange(newFilters.filter((item) => item !== value));
+    if (newFilters.join(",").includes(value)) {
+      onFilterChange(
+        newFilters.filter((item) => item !== value && !value.includes(item))
+      );
     } else {
       onFilterChange([...newFilters, value]);
     }

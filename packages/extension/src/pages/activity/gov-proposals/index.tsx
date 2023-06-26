@@ -46,51 +46,11 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
   };
 
   useEffect(() => {
-    const init = async () => {
-      setIsLoading(true);
-      const fetchedData = await fetchGovProposalTransactions(
-        current.chainId,
-        "",
-        accountInfo.bech32Address,
-        options.map((option) => option.value)
-      );
-      if (fetchedData) {
-        const nodeMap: any = {};
-        fetchedData.nodes.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
-
-        setPageInfo(fetchedData.pageInfo);
-        setNodes({ ...nodeMap });
-      }
-
-      setIsLoading(false);
-    };
-    init();
-  }, [accountInfo.bech32Address, current.chainId]);
+    fetchNodes("");
+  }, []);
 
   useEffect(() => {
-    const refreshNodes = async () => {
-      setIsLoading(true);
-      const fetchedData = await fetchGovProposalTransactions(
-        current.chainId,
-        "",
-        accountInfo.bech32Address,
-        filter
-      );
-      if (fetchedData) {
-        const nodeMap: any = {};
-        fetchedData.nodes.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
-
-        setPageInfo(fetchedData.pageInfo);
-        setNodes({ ...nodes, ...nodeMap });
-      }
-
-      setIsLoading(false);
-    };
-    refreshNodes();
+    fetchNodes("");
   }, [filter, latestBlock]);
 
   const handleClick = async () => {
@@ -114,9 +74,11 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
       />
       {Object.keys(nodes).length > 0 ? (
         <React.Fragment>
-          {Object.values(nodes).map((node, index) => (
-            <ActivityRow node={node} key={index} />
-          ))}
+          {Object.values(nodes)
+            .filter((node: any) => filter.includes(node.option))
+            .map((node, index) => (
+              <ActivityRow node={node} key={index} />
+            ))}
           {pageInfo?.hasNextPage && (
             <Button
               outline
