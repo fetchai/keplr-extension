@@ -53,8 +53,11 @@
 
 .select {
   padding: 2px 5px 0px 2px;
-  color: #3b82f6;
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+
+.select div:hover {
+  color: #3b82f6;
 }

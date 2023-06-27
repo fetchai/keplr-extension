@@ -44,7 +44,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
             }`}
             onClick={() => handleTabClick("native")}
           >
-            Native Transfers
+            Transactions
           </div>
           <div
             className={`${style.tab} ${

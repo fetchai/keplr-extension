@@ -31,64 +31,74 @@ const options = [
   },
 ];
 
+const processFilters = (filters: string[]) => {
+  let result: string[] = [];
+  filters.map((value) => {
+    result = result.concat(value.split(","));
+  });
+  return result;
+};
+
+function debounce(func: any, timeout = 500) {
+  let timer: any;
+  return (...args: any) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func(args);
+    }, timeout);
+  };
+}
+
 export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingRequest, setLoadingRequest] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingRequest, setLoadingRequest] = useState(true);
+  const [fetchedData, setFetchedData] = useState<any>();
   const [nodes, setNodes] = useState<any>({});
   const [pageInfo, setPageInfo] = useState<any>();
   const [filter, setFilter] = useState<string[]>(
     options.map((option) => option.value)
   );
 
-  const fetchNodes = async (cursor: any) => {
+  const fetchNodes = debounce(async (cursor: any) => {
     setIsLoading(true);
-    const fetchedData = await fetchTransactions(
+    const data = await fetchTransactions(
       current.chainId,
       cursor,
       accountInfo.bech32Address,
-      filter
+      processFilters(filter)
     );
-    if (fetchedData) {
-      const nodeMap: any = {};
-      fetchedData.nodes.map((node: any) => {
-        nodeMap[node.id] = node;
-      });
-
-      setPageInfo(fetchedData.pageInfo);
-      setNodes({ ...nodes, ...nodeMap });
-    }
-
-    setIsLoading(false);
-  };
-  useEffect(() => {
-    fetchNodes("");
-  }, []);
+    setFetchedData(data?.nodes);
+    if (!pageInfo || cursor != "") setPageInfo(data.pageInfo);
+  }, 1000);
 
   useEffect(() => {
     fetchNodes("");
   }, [filter, latestBlock]);
 
-  const handleClick = async () => {
+  useEffect(() => {
+    if (fetchedData) {
+      const nodeMap: any = {};
+      fetchedData.map((node: any) => {
+        nodeMap[node.id] = node;
+      });
+      setNodes({ ...nodes, ...nodeMap });
+      setIsLoading(false);
+      setLoadingRequest(false);
+    }
+  }, [fetchedData]);
+
+  const handleClick = () => {
     setLoadingRequest(true);
-    await fetchNodes(pageInfo.endCursor);
-    setLoadingRequest(false);
+    fetchNodes(pageInfo.endCursor);
   };
 
   const handleFilterChange = (selectedFilter: string[]) => {
     setPageInfo(undefined);
     setNodes({});
-    if (
-      selectedFilter.includes(
-        "/cosmos.authz.v1beta1.MsgExec,/cosmwasm.wasm.v1.MsgExecuteContract,/cosmos.authz.v1beta1.MsgRevoke"
-      )
-    ) {
-      selectedFilter.push("/cosmos.authz.v1beta1.MsgExec");
-      selectedFilter.push("/cosmwasm.wasm.v1.MsgExecuteContract");
-      selectedFilter.push("/cosmos.authz.v1beta1.MsgExec");
-    }
     setFilter(selectedFilter);
   };
 
@@ -100,12 +110,16 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
         selectedFilter={filter}
       />
       {Object.values(nodes).filter((node: any) =>
-        filter.includes(node.transaction.messages.nodes[0].typeUrl)
+        processFilters(filter).includes(
+          node.transaction.messages.nodes[0].typeUrl
+        )
       ).length > 0 ? (
         <React.Fragment>
           {Object.values(nodes)
             .filter((node: any) =>
-              filter.includes(node.transaction.messages.nodes[0].typeUrl)
+              processFilters(filter).includes(
+                node.transaction.messages.nodes[0].typeUrl
+              )
             )
             .map((node, index) => (
               <ActivityRow node={node} key={index} />
@@ -125,7 +139,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
             </Button>
           )}
         </React.Fragment>
-      ) : isLoading && filter.length ? (
+      ) : isLoading && filter.length > 0 ? (
         <div className={style.activityMessage}>Loading Activities...</div>
       ) : (
         <div className={style.activityMessage}>
