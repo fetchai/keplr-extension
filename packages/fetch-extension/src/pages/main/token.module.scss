@@ -1,0 +1,43 @@
+.tokenTitle {
+  font-weight: 600;
+  font-size: 20px;
+  color: #525f7f;
+  margin-bottom: 18px;
+}
+
+.tokenContainnerInner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .tokenContainer {
+    display: flex;
+    align-items: center;
+    .tokenImg {
+      width: 24px;
+      height: 24px;
+      margin-right: 15px;
+    }
+    .tokenName {
+      font-size: 15px;
+      font-weight: 400;
+      margin-right: 6px;
+      color: #808da0;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tokenBalance {
+      font-size: 15px;
+      flex: 1;
+      color: #808da0;
+      text-align: right;
+      margin-right: 20px;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

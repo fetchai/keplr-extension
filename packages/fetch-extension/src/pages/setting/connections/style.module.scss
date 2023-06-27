@@ -1,0 +1,9 @@
+@import "../../../styles/var";
+
+.dropdown {
+  margin-left: $layout-padding;
+}
+.dropdownWrapper {
+  height: 400px;
+  overflow-y: scroll;
+}
