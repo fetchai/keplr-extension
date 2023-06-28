@@ -21,10 +21,8 @@ import { Menu } from "./menu";
 import style from "./style.module.scss";
 import { TokensView } from "./token";
 import { ChatDisclaimer } from "@components/chat/chat-disclaimer";
-import { AUTH_SERVER } from "../../config.ui.var";
-import { getJWT } from "@utils/auth";
 import { store } from "@chatStore/index";
-import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
+import { setWalletConfig } from "@chatStore/user-slice";
 import { getWalletConfig } from "@graphQL/config-api";
 
 export const MainPage: FunctionComponent = observer(() => {
@@ -121,19 +119,13 @@ export const MainPage: FunctionComponent = observer(() => {
   //   return true;
   // });
 
-  /// Fetching wallet config info
+  // Fetching wallet config info
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      return;
-    }
-    getJWT(chainStore.current.chainId, AUTH_SERVER).then((res) => {
-      store.dispatch(setAccessToken(res));
-      getWalletConfig()
-        .then((config) => store.dispatch(setWalletConfig(config)))
-        .catch((error) => {
-          console.log(error);
-        });
-    });
+    getWalletConfig()
+      .then((config) => store.dispatch(setWalletConfig(config)))
+      .catch((error) => {
+        console.log(error);
+      });
   }, [chainStore.current.chainId, accountInfo.bech32Address]);
 
   return (
