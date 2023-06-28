@@ -2,7 +2,6 @@ import { ChainsService } from "../chains";
 import { KeyRingService } from "../keyring";
 import { PermissionService } from "../permission";
 import { Env } from "@keplr-wallet/router";
-import { Hash } from "@keplr-wallet/crypto";
 import Umbral from "@nucypher/umbral-pre";
 import {
   UmbralEncryptionResult,
@@ -21,9 +20,13 @@ export class UmbralService {
     protected readonly chainsService: ChainsService
   ) {}
 
-  init(keyRingService: KeyRingService, permissionService: PermissionService) {
+  async init(
+    keyRingService: KeyRingService,
+    permissionService: PermissionService
+  ) {
     this.keyRingService = keyRingService;
     this.permissionService = permissionService;
+    await this.getUmbral();
   }
 
   async getPublicKey(env: Env, chainId: string): Promise<Uint8Array> {
@@ -102,9 +105,8 @@ export class UmbralService {
     const sk = await this.getPrivateKey(env, chainId);
     const pubKey = umbral.PublicKey.fromBytes(senderPublicKey);
 
-    const initialCapsule: Umbral.Capsule = umbral.Capsule.fromBytes(
-      capsuleBytes
-    );
+    const initialCapsule: Umbral.Capsule =
+      umbral.Capsule.fromBytes(capsuleBytes);
     let capsule: Umbral.CapsuleWithFrags | undefined;
     for (const capsuleFragment of capsuleFragments) {
       if (capsule !== undefined) {
@@ -150,63 +152,52 @@ export class UmbralService {
   }
 
   private async getPrivateKey(
-    env: Env,
+    _env: Env,
     chainId: string
   ): Promise<Umbral.SecretKey> {
-    const chainInfo = await this.chainsService.getChainInfo(chainId);
     const umbral = await this.getUmbral();
 
-    const seed = Hash.sha256(
+    const _sig = await this.keyRingService.sign(
+      chainId,
+      this.keyRingService.selectedVaultId,
       Buffer.from(
-        await this.keyRingService.sign(
-          env,
-          chainInfo.chainId,
-          Buffer.from(
-            JSON.stringify({
-              account_number: 0,
-              chain_id: chainInfo.chainId,
-              fee: [],
-              memo:
-                "Create Umbral Secret encryption key. Only approve requests by Keplr.",
-              msgs: [],
-              sequence: 0,
-            })
-          )
-        )
-      )
+        JSON.stringify({
+          account_number: 0,
+          chain_id: chainId,
+          fee: [],
+          memo: "Create Umbral Secret encryption key. Only approve requests by Keplr.",
+          msgs: [],
+          sequence: 0,
+        })
+      ),
+      "sha256"
     );
-
-    return umbral.SecretKey.fromBytes(seed);
+    return umbral.SecretKey.fromBytes(new Uint8Array([..._sig.r, ..._sig.s]));
   }
 
   private async getSigningPrivateKey(
-    env: Env,
+    _env: Env,
     chainId: string
   ): Promise<Umbral.SecretKey> {
-    const chainInfo = await this.chainsService.getChainInfo(chainId);
     const umbral = await this.getUmbral();
 
-    const seed = Hash.sha256(
+    const _sig = await this.keyRingService.sign(
+      chainId,
+      this.keyRingService.selectedVaultId,
       Buffer.from(
-        await this.keyRingService.sign(
-          env,
-          chainInfo.chainId,
-          Buffer.from(
-            JSON.stringify({
-              account_number: 0,
-              chain_id: chainInfo.chainId,
-              fee: [],
-              memo:
-                "Create Umbral Signing Secret encryption key. Only approve requests by Keplr.",
-              msgs: [],
-              sequence: 0,
-            })
-          )
-        )
-      )
+        JSON.stringify({
+          account_number: 0,
+          chain_id: chainId,
+          fee: [],
+          memo: "Create Umbral Signing Secret encryption key. Only approve requests by Keplr.",
+          msgs: [],
+          sequence: 0,
+        })
+      ),
+      "sha256"
     );
 
-    return umbral.SecretKey.fromBytes(seed);
+    return umbral.SecretKey.fromBytes(new Uint8Array([..._sig.r, ..._sig.s]));
   }
 
   protected async getUmbral(): Promise<typeof Umbral> {

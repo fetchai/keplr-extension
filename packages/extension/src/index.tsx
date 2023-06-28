@@ -1,99 +1,83 @@
-import React, { FunctionComponent, useEffect } from "react";
+// Shim ------------
+require("setimmediate");
+// Shim ------------
+
+// Make sure that icon file will be included in bundle
+require("./public/assets/logo-256.png");
+require("./public/assets/icon/icon-16.png");
+require("./public/assets/icon/icon-48.png");
+require("./public/assets/icon/icon-128.png");
+require("./public/assets/logo-beta-256.png");
+require("./public/assets/icon/icon-beta-16.png");
+require("./public/assets/icon/icon-beta-48.png");
+require("./public/assets/icon/icon-beta-128.png");
+
+import React, {
+  FunctionComponent,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ReactDOM from "react-dom";
-
-import { AppIntlProvider } from "./languages";
-
-import "./styles/global.scss";
-
-import { HashRouter, Route, Switch } from "react-router-dom";
-
-import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
-import { NotificationPage } from "./pages/notification";
-import { IBCTransferPage } from "./pages/ibc-transfer";
-import { LockPage } from "./pages/lock";
-import { MainPage } from "./pages/main";
-import { MorePage } from "./pages/more";
-import { RegisterPage } from "./pages/register";
-import { SendPage } from "./pages/send";
-import { SetKeyRingPage } from "./pages/setting/keyring";
-
-import { Banner } from "@components/banner";
-
-import { ConfirmProvider } from "@components/confirm";
-import { LoadingIndicatorProvider } from "@components/loading-indicator";
-import {
-  NotificationProvider,
-  NotificationStoreProvider,
-} from "@components/notification";
-
+import { HashRouter, Route, Routes } from "react-router-dom";
+import { StoreProvider, useStore } from "./stores";
+import { GlobalPopupStyle, GlobalStyle, ScrollBarStyle } from "./styles";
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
-
-import {
-  KeyRingStatus,
-  StartAutoLockMonitoringMsg,
-} from "@keplr-wallet/background";
-import Modal from "react-modal";
-import { LedgerGrantPage } from "./pages/ledger";
-import { SettingPage } from "./pages/setting";
-import { AddressBookPage } from "./pages/setting/address-book";
-import { ClearPage } from "./pages/setting/clear";
-import {
-  SettingConnectionsPage,
-  SettingSecret20ViewingKeyConnectionsPage,
-} from "./pages/setting/connections";
-import { ExportPage } from "./pages/setting/export";
-import { SettingFiatPage } from "./pages/setting/fiat";
-import { ChangeNamePage } from "./pages/setting/keyring/change";
-import { SettingLanguagePage } from "./pages/setting/language";
-import { AddTokenPage } from "./pages/setting/token/add";
-import { ManageTokenPage } from "./pages/setting/token/manage";
-import { StoreProvider, useStore } from "./stores";
-
-import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
-
 import { Keplr } from "@keplr-wallet/provider";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import manifest from "./manifest.json";
-import { ChatPage } from "./pages/chat";
-import { ChatSection } from "./pages/chat-section";
-import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { ChatStoreProvider } from "@components/chat/store";
-import { NewChat } from "./pages/new-chat";
-import { ChatSettings } from "./pages/setting/chat";
-import { BlockList } from "./pages/setting/chat/block";
-import { Privacy } from "./pages/setting/chat/privacy";
-import { ReadRecipt } from "./pages/setting/chat/readRecipt";
-import { CreateGroupChat } from "./pages/group-chat/create-group-chat";
-import { AddMember } from "./pages/group-chat/add-member";
-import { ReviewGroupChat } from "./pages/group-chat/review-details";
-import { GroupChatSection } from "./pages/group-chat/chat-section";
-import { EditMember } from "./pages/group-chat/edit-member";
-import { AgentChatSection } from "./pages/agent-chat-section";
-import { NotificationOrganizations } from "./pages/notiphy-notification/notification-organizations";
-import { NotificationTopics } from "./pages/notiphy-notification/notification-topics";
-import { SettingNotifications } from "./pages/setting/notification";
-import { ReviewNotification } from "./pages/notiphy-notification/review-notification";
-import { KeystoneImportPubkeyPage } from "./pages/keystone";
-import { KeystoneSignPage } from "./pages/keystone/sign";
-import { SettingEndpointsPage } from "./pages/setting/endpoints";
-import { SettingAutoLockPage } from "./pages/setting/autolock";
-import { SettingSecurityPrivacyPage } from "./pages/setting/security-privacy";
-import { ChainActivePage } from "./pages/setting/chain-active";
-import { SettingPermissionsGetChainInfosPage } from "./pages/setting/security-privacy/permissions/get-chain-infos";
-import { AuthZPage } from "./pages/authz";
-import { ICNSAdr36SignPage } from "./pages/icns/sign";
-import { SignPage } from "./pages/sign";
-import { ChainSuggestedPage } from "./pages/chain/suggest";
-import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant";
-import { ValidatorList } from "./pages/validator-list";
-import { Validator } from "./pages/validator";
-import { StakeComplete } from "./pages/validator/stake-complete";
-import { ActivityPage } from "./pages/activity";
-import { Proposals } from "./pages/proposals";
-import { ProposalDetail } from "./pages/proposals/proposal-detail";
-import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
+import manifest from "./manifest.v2.json";
+import { WalletStatus } from "@keplr-wallet/stores";
+import { UnlockPage } from "./pages/unlock";
+import { MainPage } from "./pages/main";
+import { SettingPage } from "./pages/setting";
+import { SettingGeneralPage } from "./pages/setting/general";
+import { SettingGeneralFiatPage } from "./pages/setting/general/fiat";
+import { SettingGeneralAuthZPage } from "./pages/setting/general/authz";
+import { SettingGeneralAuthZRevokePage } from "./pages/setting/general/authz/revoke";
+import { SettingGeneralDeleteSuggestChainPage } from "./pages/setting/general/delete-suggest-chain";
+import { SettingAdvancedPage } from "./pages/setting/advanced";
+import { SettingSecurityPage } from "./pages/setting/security";
+import { SettingSecurityPermissionPage } from "./pages/setting/security/permission";
+import { PermissionPage } from "./pages/permission";
+import { SignCosmosADR36Page, SignCosmosTxPage } from "./pages/sign/cosmos";
+import { SettingTokenListPage } from "./pages/setting/token/manage";
+import { SettingTokenAddPage } from "./pages/setting/token/add";
+import { SettingGeneralLanguagePage } from "./pages/setting/general/language";
+import { SettingAdvancedEndpointPage } from "./pages/setting/advanced/endpoint";
+import { SettingGeneralLinkKeplrMobilePage } from "./pages/setting/general/link-keplr-mobile";
+import { SettingContactsList } from "./pages/setting/contacts/list";
+import { SettingContactsAdd } from "./pages/setting/contacts/add";
+import { SendAmountPage } from "./pages/send/amount";
+import { SendSelectAssetPage } from "./pages/send/select-asset";
+import {
+  WalletChangeNamePage,
+  WalletDeletePage,
+  WalletSelectPage,
+  WalletShowSensitivePage,
+} from "./pages/wallet";
+import { SuggestChainPage } from "./pages/suggest-chain";
+import { ModalRootProvider } from "./components/modal";
+import { ConfirmProvider } from "./hooks/confirm";
+import { NotificationProvider } from "./hooks/notification";
+import { SettingSecurityChangePasswordPage } from "./pages/setting/security/change-password";
+import { AppIntlProvider } from "./languages";
+import { SettingSecurityAutoLockPage } from "./pages/setting/security/auto-lock";
+import { useLoadFonts } from "./use-load-fonts";
+import { useAutoLockMonitoring } from "./use-auto-lock-monitoring";
+import { Splash } from "./components/splash";
+import { IBCTransferPage } from "./pages/ibc-transfer";
+import { SignCosmosICNSPage } from "./pages/sign/cosmos/icns";
+import { ErrorBoundary } from "./error-boundary";
+import { useMatchPopupSize } from "./popup-size";
+import { SignEthereumTxPage } from "./pages/sign/ethereum";
+import "simplebar-react/dist/simplebar.min.css";
+import { GlobalSimpleBarProvider } from "./hooks/global-simplebar";
+
+configure({
+  enforceActions: "always", // Make mobx to strict mode.
+});
 
 window.keplr = new Keplr(
   manifest.version,
@@ -101,331 +85,298 @@ window.keplr = new Keplr(
   new InExtensionMessageRequester()
 );
 
-// Make sure that icon file will be included in bundle
-require("@assets/logo-256.svg");
-require("./public/assets/icon/icon-16.png");
-require("./public/assets/icon/icon-48.png");
-require("./public/assets/icon/icon-128.png");
+const useIsURLUnlockPage = () => {
+  const [value, setValue] = useState(() => {
+    return (
+      window.location.hash === "#/unlock" ||
+      window.location.hash.startsWith("#/unlock?")
+    );
+  });
 
-configure({
-  enforceActions: "always", // Make mobx to strict mode.
-});
+  useLayoutEffect(() => {
+    const handler = () => {
+      const v =
+        window.location.hash === "#/unlock" ||
+        window.location.hash.startsWith("#/unlock?");
 
-Modal.setAppElement("#app");
-Modal.defaultStyles = {
-  content: {
-    ...Modal.defaultStyles.content,
-    minWidth: "300px",
-    maxWidth: "600px",
-    minHeight: "250px",
-    maxHeight: "500px",
-    left: "50%",
-    right: "auto",
-    top: "50%",
-    bottom: "auto",
-    transform: "translate(-50%, -50%)",
-  },
-  overlay: {
-    zIndex: 1000,
-    ...Modal.defaultStyles.overlay,
-  },
+      setValue(v);
+    };
+
+    window.addEventListener("locationchange", handler);
+
+    return () => {
+      window.removeEventListener("locationchange", handler);
+    };
+  }, []);
+
+  return value;
 };
 
-const StateRenderer: FunctionComponent = observer(() => {
-  const { keyRingStore } = useStore();
+const RoutesAfterReady: FunctionComponent = observer(() => {
+  const {
+    chainStore,
+    accountStore,
+    keyRingStore,
+    ibcCurrencyRegistrar,
+    gravityBridgeCurrencyRegistrar,
+    axelarEVMBridgeCurrencyRegistrar,
+    priceStore,
+    uiConfigStore,
+  } = useStore();
 
-  useEffect(() => {
-    // Notify to auto lock service to start activation check whenever the keyring is unlocked.
-    if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
-      const msg = new StartAutoLockMonitoringMsg();
-      const requester = new InExtensionMessageRequester();
-      requester.sendMessage(BACKGROUND_PORT, msg);
+  const { isLoaded: isFontLoaded } = useLoadFonts();
+
+  useAutoLockMonitoring();
+
+  const isURLUnlockPage = useIsURLUnlockPage();
+  const openRegisterOnce = useRef(false);
+  const initAccountsOnce = useRef(false);
+
+  const _isReady: boolean = useMemo(() => {
+    if (keyRingStore.status === "not-loaded") {
+      return false;
     }
-  }, [keyRingStore.status]);
 
-  if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
-    return <MainPage />;
-  } else if (keyRingStore.status === KeyRingStatus.LOCKED) {
-    return <LockPage />;
-  } else if (keyRingStore.status === KeyRingStatus.EMPTY) {
-    browser.tabs.create({
-      url: "/popup.html#/register",
-    });
-    window.close();
-    return (
-      <div style={{ height: "100%" }}>
-        <Banner
-          icon={require("@assets/logo-256.svg")}
-          logo={require("@assets/brand-text.png")}
-        />
-      </div>
-    );
-  } else if (keyRingStore.status === KeyRingStatus.NOTLOADED) {
-    return (
-      <div style={{ height: "100%" }}>
-        <Banner
-          icon={require("@assets/logo-256.svg")}
-          logo={require("@assets/brand-text.png")}
-        />
-      </div>
-    );
-  } else {
-    return <div>Unknown status</div>;
-  }
+    if (keyRingStore.status === "empty") {
+      if (!openRegisterOnce.current) {
+        openRegisterOnce.current = true;
+        browser.tabs
+          .create({
+            url: "/register.html#",
+          })
+          .then(() => {
+            window.close();
+          });
+      }
+
+      return false;
+    }
+
+    if (!isFontLoaded) {
+      return false;
+    }
+
+    if (chainStore.isInitializing) {
+      return false;
+    }
+
+    if (isURLUnlockPage) {
+      return true;
+    }
+
+    if (keyRingStore.status === "unlocked") {
+      if (!initAccountsOnce.current) {
+        initAccountsOnce.current = true;
+        // XXX: Below logic not observe state changes on account store and it's inner state.
+        //      This is intended because this logic is only for the first time and avoid global re-rendering.
+        // Start init for registered chains so that users can see account address more quickly.
+        for (const chainInfo of chainStore.chainInfos) {
+          const account = accountStore.getAccount(chainInfo.chainId);
+          // Because {autoInit: true} is given as the option on account store,
+          // initialization for the account starts at this time just by using getAccount().
+          // However, run safe check on current status and init if status is not inited.
+          if (account.walletStatus === WalletStatus.NotInit) {
+            account.init();
+          }
+        }
+      }
+    }
+
+    if (!ibcCurrencyRegistrar.isInitialized) {
+      return false;
+    }
+
+    if (!priceStore.isInitialized) {
+      return false;
+    }
+
+    if (!uiConfigStore.isInitialized) {
+      return false;
+    }
+
+    if (!gravityBridgeCurrencyRegistrar.isInitialized) {
+      return false;
+    }
+
+    if (!axelarEVMBridgeCurrencyRegistrar.isInitialized) {
+      return false;
+    }
+
+    return true;
+  }, [
+    keyRingStore.status,
+    isFontLoaded,
+    chainStore.isInitializing,
+    chainStore.chainInfos,
+    isURLUnlockPage,
+    ibcCurrencyRegistrar.isInitialized,
+    priceStore.isInitialized,
+    uiConfigStore.isInitialized,
+    gravityBridgeCurrencyRegistrar.isInitialized,
+    axelarEVMBridgeCurrencyRegistrar.isInitialized,
+    accountStore,
+  ]);
+
+  const isReady: boolean = (() => {
+    if (!_isReady) {
+      return false;
+    }
+
+    if (isURLUnlockPage) {
+      return true;
+    }
+
+    if (keyRingStore.status === "unlocked") {
+      // mobx의 특성상 밑의 로직은 useMemo 안에서 처리할 수가 없어서 분리되었음.
+      const firstAccount = accountStore.getAccount(
+        chainStore.chainInfos[0].chainId
+      );
+      if (
+        firstAccount.walletStatus === WalletStatus.NotInit ||
+        firstAccount.walletStatus === WalletStatus.Loading
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  })();
+
+  return (
+    <AppIntlProvider>
+      <HashRouter>
+        {isReady ? (
+          keyRingStore.status === "locked" && !isURLUnlockPage ? (
+            <UnlockPage />
+          ) : (
+            <Routes>
+              <Route path="/unlock" element={<UnlockPage />} />
+              <Route path="/" element={<MainPage />} />
+              <Route path="/send" element={<SendAmountPage />} />
+              <Route
+                path="/send/select-asset"
+                element={<SendSelectAssetPage />}
+              />
+              <Route path="/setting" element={<SettingPage />} />
+              <Route path="/setting/general" element={<SettingGeneralPage />} />
+              <Route
+                path="/setting/general/language"
+                element={<SettingGeneralLanguagePage />}
+              />
+              <Route
+                path="/setting/general/fiat"
+                element={<SettingGeneralFiatPage />}
+              />
+              <Route
+                path="/setting/general/authz"
+                element={<SettingGeneralAuthZPage />}
+              />
+              <Route
+                path="/setting/general/authz/revoke"
+                element={<SettingGeneralAuthZRevokePage />}
+              />
+              <Route
+                path="/setting/general/link-keplr-mobile"
+                element={<SettingGeneralLinkKeplrMobilePage />}
+              />
+              <Route
+                path="setting/general/delete-suggest-chain"
+                element={<SettingGeneralDeleteSuggestChainPage />}
+              />
+              <Route
+                path="/setting/advanced"
+                element={<SettingAdvancedPage />}
+              />
+              <Route
+                path="/setting/advanced/endpoint"
+                element={<SettingAdvancedEndpointPage />}
+              />
+              <Route
+                path="/setting/security"
+                element={<SettingSecurityPage />}
+              />
+              <Route
+                path="/setting/security/permission"
+                element={<SettingSecurityPermissionPage />}
+              />
+              <Route
+                path="/setting/security/auto-lock"
+                element={<SettingSecurityAutoLockPage />}
+              />
+              <Route
+                path="/setting/security/change-password"
+                element={<SettingSecurityChangePasswordPage />}
+              />
+              <Route
+                path="/setting/token/list"
+                element={<SettingTokenListPage />}
+              />
+              <Route
+                path="/setting/token/add"
+                element={<SettingTokenAddPage />}
+              />
+              <Route
+                path="/setting/contacts/list"
+                element={<SettingContactsList />}
+              />
+              <Route
+                path="/setting/contacts/add"
+                element={<SettingContactsAdd />}
+              />
+              <Route path="/permission" element={<PermissionPage />} />
+              <Route path="/sign-cosmos" element={<SignCosmosTxPage />} />
+              <Route
+                path="/sign-cosmos-adr36"
+                element={<SignCosmosADR36Page />}
+              />
+              <Route
+                path="/sign-cosmos-icns"
+                element={<SignCosmosICNSPage />}
+              />
+              <Route path="/sign-ethereum" element={<SignEthereumTxPage />} />
+              <Route path="/wallet/select" element={<WalletSelectPage />} />
+              <Route path="/wallet/delete" element={<WalletDeletePage />} />
+              <Route
+                path="/wallet/change-name"
+                element={<WalletChangeNamePage />}
+              />
+              <Route
+                path="/wallet/show-sensitive"
+                element={<WalletShowSensitivePage />}
+              />
+              <Route path="/suggest-chain" element={<SuggestChainPage />} />
+              <Route path="/ibc-transfer" element={<IBCTransferPage />} />
+            </Routes>
+          )
+        ) : (
+          <Splash />
+        )}
+      </HashRouter>
+    </AppIntlProvider>
+  );
 });
 
-ReactDOM.render(
-  <StoreProvider>
-    <AppIntlProvider
-      additionalMessages={AdditionalIntlMessages}
-      languageToFiatCurrency={LanguageToFiatCurrency}
-    >
-      <LoadingIndicatorProvider>
-        <NotificationStoreProvider>
+const App: FunctionComponent = () => {
+  useMatchPopupSize();
+
+  return (
+    <StoreProvider>
+      <ModalRootProvider>
+        <ConfirmProvider>
           <NotificationProvider>
-            <ConfirmProvider>
-              <HashRouter>
-                <ChatStoreProvider>
-                  <Switch>
-                    <Route exact path="/" component={StateRenderer} />
-                    <Route exact path="/unlock" component={LockPage} />
-                    <Route exact path="/access" component={AccessPage} />
-                    <Route
-                      exact
-                      path="/access/viewing-key"
-                      component={Secret20ViewingKeyAccessPage}
-                    />
-                    <Route exact path="/register" component={RegisterPage} />
-                    <Route exact path="/send" component={SendPage} />
-                    <Route
-                      exact
-                      path="/ibc-transfer"
-                      component={IBCTransferPage}
-                    />
-                    <Route exact path="/setting" component={SettingPage} />
-                    <Route
-                      exact
-                      path="/keystone/import-pubkey"
-                      component={KeystoneImportPubkeyPage}
-                    />
-                    <Route
-                      exact
-                      path="/keystone/sign"
-                      component={KeystoneSignPage}
-                    />
-                    <Route
-                      exact
-                      path="/ledger-grant"
-                      component={LedgerGrantPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/language"
-                      component={SettingLanguagePage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/fiat"
-                      component={SettingFiatPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/connections"
-                      component={SettingConnectionsPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/connections/viewing-key/:contractAddress"
-                      component={SettingSecret20ViewingKeyConnectionsPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/address-book"
-                      component={AddressBookPage}
-                    />
-                    <Route exact path="/activity" component={ActivityPage} />
-                    <Route
-                      exact
-                      path="/setting/export-to-mobile"
-                      component={ExportToMobilePage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/set-keyring"
-                      component={SetKeyRingPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/export/:index"
-                      component={ExportPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/clear/:index"
-                      component={ClearPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/keyring/change/name/:index"
-                      component={ChangeNamePage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/token/add"
-                      component={AddTokenPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/token/manage"
-                      component={ManageTokenPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/endpoints"
-                      component={SettingEndpointsPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/autolock"
-                      component={SettingAutoLockPage}
-                    />
-                    <Route
-                      exact
-                      path="/setting/security-privacy"
-                      component={SettingSecurityPrivacyPage}
-                    />
-                    <Route path="/sign" component={SignPage} />
-                    <Route
-                      path="/icns/adr36-signatures"
-                      component={ICNSAdr36SignPage}
-                    />
-                    <Route
-                      path="/suggest-chain"
-                      component={ChainSuggestedPage}
-                    />
-                    <Route
-                      path="/permissions/grant/get-chain-infos"
-                      component={GrantGlobalPermissionGetChainInfosPage}
-                    />
-                    <Route
-                      path="/setting/permissions/get-chain-infos"
-                      component={SettingPermissionsGetChainInfosPage}
-                    />
-                    <Route
-                      path="/setting/chain-active"
-                      component={ChainActivePage}
-                    />
-                    <Route path="/authz" component={AuthZPage} />
-                    <Route
-                      exact
-                      path="/notification"
-                      component={NotificationPage}
-                    />
-                    <Route
-                      exact
-                      path="/notification/organisations/:type"
-                      component={NotificationOrganizations}
-                    />
-                    <Route
-                      exact
-                      path="/notification/topics/:type"
-                      component={NotificationTopics}
-                    />
-                    <Route
-                      exact
-                      path="/notification/review"
-                      component={ReviewNotification}
-                    />
-                    <Route exact path="/chat" component={ChatPage} />
-                    <Route exact path="/chat/:name" component={ChatSection} />
-                    <Route exact path="/new-chat" component={NewChat} />
-                    <Route
-                      exact
-                      path="/chat/group-chat/create"
-                      component={CreateGroupChat}
-                    />
-                    <Route
-                      exact
-                      path="/chat/group-chat/add-member"
-                      component={AddMember}
-                    />
-                    <Route
-                      exact
-                      path="/chat/group-chat/edit-member"
-                      component={EditMember}
-                    />
-                    <Route
-                      exact
-                      path="/chat/group-chat/review-details"
-                      component={ReviewGroupChat}
-                    />
-                    <Route
-                      exact
-                      path="/chat/group-chat-section/:name"
-                      component={GroupChatSection}
-                    />
-                    <Route
-                      exact
-                      path="/chat/agent/:name"
-                      component={AgentChatSection}
-                    />
-                    <Route exact path="/more" component={MorePage} />
-                    <Route
-                      exact
-                      path="/setting/notifications"
-                      component={SettingNotifications}
-                    />
-                    <Route
-                      exact
-                      path="/setting/chat"
-                      component={ChatSettings}
-                    />
-                    <Route
-                      exact
-                      path="/setting/chat/block"
-                      component={BlockList}
-                    />
-                    <Route
-                      exact
-                      path="/setting/chat/privacy"
-                      component={Privacy}
-                    />
-                    <Route
-                      exact
-                      path="/setting/chat/readRecipt"
-                      component={ReadRecipt}
-                    />
-                    <Route exact path="/validators" component={ValidatorList} />
-                    <Route
-                      exact
-                      path="/validators/:validator_address/:operation"
-                      component={Validator}
-                    />
-                    <Route
-                      exact
-                      path="/stake-complete/:validator_address"
-                      component={StakeComplete}
-                    />
-                    <Route exact path="/proposal" component={Proposals} />
-                    <Route
-                      exact
-                      path="/proposal-detail/:id"
-                      component={ProposalDetail}
-                    />
-                    <Route
-                      exact
-                      path="/proposal-vote-status/:votedOn/:id"
-                      component={PropsalVoteStatus}
-                    />
-                    <Route path="*" component={StateRenderer} />
-                  </Switch>
-                </ChatStoreProvider>
-              </HashRouter>
-            </ConfirmProvider>
+            <GlobalStyle />
+            <GlobalPopupStyle />
+            <ScrollBarStyle />
+            <ErrorBoundary>
+              <GlobalSimpleBarProvider style={{ height: "100vh" }}>
+                <RoutesAfterReady />
+              </GlobalSimpleBarProvider>
+            </ErrorBoundary>
           </NotificationProvider>
-        </NotificationStoreProvider>
-      </LoadingIndicatorProvider>
-    </AppIntlProvider>
-  </StoreProvider>,
-  document.getElementById("app")
-);
+        </ConfirmProvider>
+      </ModalRootProvider>
+    </StoreProvider>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("app"));

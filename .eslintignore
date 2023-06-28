@@ -4,8 +4,11 @@
 **/*.png
 **/*.svg
 **/*.ttf
+**/*.woff
+**/*.woff2
 **/*.secret
 **/*.md
+**/*.webm
 **/*.py
 .DS_Store
 
@@ -14,6 +17,7 @@ node_modules
 dist/*
 prod/*
 build/*
+packages/extension/noop-keplr-wallet-private/build
 
 yarn.lock
 Podfile.lock

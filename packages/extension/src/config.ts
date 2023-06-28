@@ -3,61 +3,6 @@ import { ChainInfo } from "@keplr-wallet/types";
 
 export const EmbedChainInfos: ChainInfo[] = [
   {
-    rpc: "https://rpc-fetchhub.fetch-ai.com",
-    rest: "https://rest-fetchhub.fetch-ai.com",
-    chainId: "fetchhub-4",
-    chainName: "FetchHub",
-    stakeCurrency: {
-      coinDenom: "FET",
-      coinMinimalDenom: "afet",
-      coinDecimals: 18,
-      coinGeckoId: "fetch-ai",
-    },
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("fetch"),
-    currencies: [
-      {
-        coinDenom: "FET",
-        coinMinimalDenom: "afet",
-        coinDecimals: 18,
-        coinGeckoId: "fetch-ai",
-      },
-      {
-        coinDenom: "MOBX",
-        coinMinimalDenom: "nanomobx",
-        coinDecimals: 9,
-      },
-      {
-        coinDenom: "NOMX",
-        coinMinimalDenom: "nanonomx",
-        coinDecimals: 9,
-      },
-      {
-        coinDenom: "LRN",
-        coinMinimalDenom: "ulrn",
-        coinDecimals: 6,
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "FET",
-        coinMinimalDenom: "afet",
-        coinDecimals: 18,
-        coinGeckoId: "fetch-ai",
-        gasPriceStep: {
-          low: 0,
-          average: 5000000000,
-          high: 6250000000,
-        },
-      },
-    ],
-    features: ["cosmwasm"],
-    walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/mainnet/governance/",
-  },
-  {
     rpc: "https://rpc-cosmoshub.keplr.app",
     rest: "https://lcd-cosmoshub.keplr.app",
     chainId: "cosmoshub-4",
@@ -2419,78 +2364,133 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: [],
   },
   {
-    rpc: "https://axelartest-rpc.quickapi.com:443",
-    rest: "https://axelartest-lcd.quickapi.com:443",
-    chainId: "axelar-testnet-lisbon-3",
-    chainName: "Axelar Testnet",
+    rpc: "https://rpc-neutron.keplr.app",
+    rest: "https://lcd-neutron.keplr.app",
+    chainId: "neutron-1",
+    chainName: "Neutron",
     stakeCurrency: {
-      coinDenom: "AXL",
-      coinMinimalDenom: "uaxl",
+      coinDenom: "STAKE",
+      coinMinimalDenom: "ustake",
       coinDecimals: 6,
-    },
-    bech32Config: {
-      bech32PrefixAccAddr: "axelar",
-      bech32PrefixAccPub: "axelarpub",
-      bech32PrefixValAddr: "axelarvaloper",
-      bech32PrefixValPub: "axelarvaloperpub",
-      bech32PrefixConsAddr: "axelarvalcons",
-      bech32PrefixConsPub: "axelarvalconspub",
-    },
-    bip44: { coinType: 118 },
-    currencies: [
-      { coinDenom: "AXL", coinMinimalDenom: "uaxl", coinDecimals: 6 },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "AXL",
-        coinMinimalDenom: "uaxl",
-        coinDecimals: 6,
-        gasPriceStep: { low: 0.05, average: 0.125, high: 0.2 },
-      },
-    ],
-    features: ["stargate", "no-legacy-stdTx", "ibc-transfer"],
-  },
-  {
-    rpc: "https://rpc-dorado.fetch.ai",
-    rest: "https://rest-dorado.fetch.ai",
-    chainId: "dorado-1",
-    chainName: "Dorado",
-    stakeCurrency: {
-      coinDenom: "TESTFET",
-      coinMinimalDenom: "atestfet",
-      coinDecimals: 18,
     },
     bip44: {
       coinType: 118,
     },
-    bech32Config: Bech32Address.defaultBech32Config("fetch"),
+    bech32Config: {
+      bech32PrefixAccAddr: "neutron",
+      bech32PrefixAccPub: "neutronpub",
+      bech32PrefixValAddr: "neutronvaloper",
+      bech32PrefixValPub: "neutronvaloperpub",
+      bech32PrefixConsAddr: "neutronvalcons",
+      bech32PrefixConsPub: "neutronvalconspub",
+    },
     currencies: [
       {
-        coinDenom: "TESTFET",
-        coinMinimalDenom: "atestfet",
-        coinDecimals: 18,
+        coinDenom: "NTRN",
+        coinMinimalDenom: "untrn",
+        coinDecimals: 6,
       },
       {
-        coinDenom: "MOBX",
-        coinMinimalDenom: "nanomobx",
-        coinDecimals: 9,
+        coinDenom: "STAKE",
+        coinMinimalDenom: "ustake",
+        coinDecimals: 6,
       },
     ],
     feeCurrencies: [
       {
-        coinDenom: "TESTFET",
-        coinMinimalDenom: "atestfet",
-        coinDecimals: 18,
+        coinDenom: "NTRN",
+        coinMinimalDenom: "untrn",
+        coinDecimals: 6,
+      },
+    ],
+    features: [],
+  },
+  {
+    rpc: "https://rpc-gitopia.keplr.app",
+    rest: "https://lcd-gitopia.keplr.app",
+    chainId: "gitopia",
+    chainName: "Gitopia",
+    stakeCurrency: {
+      coinDenom: "LORE",
+      coinMinimalDenom: "ulore",
+      coinDecimals: 6,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "gitopia",
+      bech32PrefixAccPub: "gitopiapub",
+      bech32PrefixValAddr: "gitopiavaloper",
+      bech32PrefixValPub: "gitopiavaloperpub",
+      bech32PrefixConsAddr: "gitopiavalcons",
+      bech32PrefixConsPub: "gitopiavalconspub",
+    },
+    currencies: [
+      {
+        coinDenom: "LORE",
+        coinMinimalDenom: "ulore",
+        coinDecimals: 6,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LORE",
+        coinMinimalDenom: "ulore",
+        coinDecimals: 6,
         gasPriceStep: {
-          low: 0,
-          average: 5000000000,
-          high: 6250000000,
+          low: 0.0012,
+          average: 0.0016,
+          high: 0.0024,
         },
       },
     ],
-    features: ["cosmwasm"],
-    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/dorado/governance/",
+    features: [],
+  },
+  {
+    rpc: "https://rpc-likecoin.keplr.app",
+    rest: "https://lcd-likecoin.keplr.app",
+    chainId: "likecoin-mainnet-2",
+    chainName: "Likecoin",
+    stakeCurrency: {
+      coinDenom: "LIKE",
+      coinMinimalDenom: "nanolike",
+      coinDecimals: 9,
+      coinGeckoId: "likecoin",
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "like",
+      bech32PrefixAccPub: "likepub",
+      bech32PrefixValAddr: "likevaloper",
+      bech32PrefixValPub: "likevaloperpub",
+      bech32PrefixConsAddr: "likevalcons",
+      bech32PrefixConsPub: "likevalconspub",
+    },
+    currencies: [
+      {
+        coinDenom: "LIKE",
+        coinMinimalDenom: "nanolike",
+        coinDecimals: 9,
+        coinGeckoId: "likecoin",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LIKE",
+        coinMinimalDenom: "nanolike",
+        coinDecimals: 9,
+        coinGeckoId: "likecoin",
+        gasPriceStep: {
+          low: 1,
+          average: 2,
+          high: 3,
+        },
+      },
+    ],
+    features: [],
   },
 ];
 

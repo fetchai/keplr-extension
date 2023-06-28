@@ -5,26 +5,14 @@ import {
   ExtensionRouter,
   InExtensionMessageRequester,
 } from "@keplr-wallet/router-extension";
-import {
-  Keplr,
-  InjectedKeplr,
-  ExtensionCoreFetchWallet,
-  startFetchWalletProxy,
-} from "@keplr-wallet/provider";
+import { Keplr, InjectedKeplr } from "@keplr-wallet/provider";
 import { initEvents } from "./events";
 
-import manifest from "../manifest.json";
+import manifest from "../manifest.v2.json";
 
-const messageRequester = new InExtensionMessageRequester();
-const coreKeplr = new Keplr(manifest.version, "core", messageRequester);
-const coreFetchWallet = new ExtensionCoreFetchWallet(
-  coreKeplr,
-  manifest.version,
-  messageRequester
+InjectedKeplr.startProxy(
+  new Keplr(manifest.version, "core", new InExtensionMessageRequester())
 );
-
-InjectedKeplr.startProxy(coreKeplr);
-startFetchWalletProxy(coreFetchWallet);
 
 const router = new ExtensionRouter(ContentScriptEnv.produceEnv);
 router.addGuard(ContentScriptGuards.checkMessageIsInternal);
@@ -52,7 +40,7 @@ export class CheckURLIsPhishingMsg extends Message<boolean> {
     // Will be checked in background process
   }
 
-  approveExternal(): boolean {
+  override approveExternal(): boolean {
     return true;
   }
 
@@ -78,7 +66,7 @@ export class CheckBadTwitterIdMsg extends Message<boolean> {
     // noop
   }
 
-  approveExternal(): boolean {
+  override approveExternal(): boolean {
     return true;
   }
 

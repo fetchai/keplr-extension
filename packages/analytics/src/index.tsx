@@ -1,20 +1,14 @@
 // import { sha256 } from "sha.js";
 
+export type Properties = Record<
+  string,
+  string | number | boolean | Array<string | number> | undefined | null
+>;
+
 export interface AnalyticsClient {
   setUserId(userId: string | null): void;
-  logEvent(
-    eventName: string,
-    eventProperties?: Record<
-      string,
-      Readonly<string | number | boolean | undefined | null>
-    >
-  ): void;
-  setUserProperties(
-    properties: Record<
-      string,
-      Readonly<string | number | boolean | undefined | null>
-    >
-  ): void;
+  logEvent(eventName: string, eventProperties?: Properties): void;
+  setUserProperties(properties: Properties): void;
 }
 
 export class NoopAnalyticsClient implements AnalyticsClient {
@@ -31,16 +25,7 @@ export class NoopAnalyticsClient implements AnalyticsClient {
   }
 }
 
-export class AnalyticsStore<
-  E extends Record<
-    string,
-    Readonly<string | number | boolean | undefined | null>
-  >,
-  U extends Record<
-    string,
-    Readonly<string | number | boolean | undefined | null>
-  >
-> {
+export class AnalyticsStore<E extends Properties, U extends Properties> {
   constructor(
     protected readonly analyticsClient: AnalyticsClient,
     protected readonly middleware: {
@@ -57,10 +42,6 @@ export class AnalyticsStore<
 
   setUserId(id: string): void {
     this.analyticsClient.setUserId(id);
-
-    if (this.legacyAnalyticsClient) {
-      this.legacyAnalyticsClient.setUserId(id);
-    }
   }
 
   setUserProperties(userProperties: U): void {
@@ -83,9 +64,5 @@ export class AnalyticsStore<
     if (this.legacyAnalyticsClient) {
       this.legacyAnalyticsClient.logEvent(eventName, eventProperties);
     }
-  }
-
-  logPageView(pageName: string, eventProperties?: E): void {
-    this.logEvent(`${pageName} viewed`, eventProperties);
   }
 }

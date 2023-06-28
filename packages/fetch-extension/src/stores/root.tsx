@@ -6,7 +6,6 @@ import {
   CoinGeckoGetPrice,
   EthereumEndpoint,
   FiatCurrencies,
-  ICNSFrontendLink,
   ICNSInfo,
 } from "../config.ui";
 import {
@@ -18,29 +17,25 @@ import {
   CosmwasmAccount,
   CosmwasmQueries,
   OsmosisQueries,
-  DeferInitialQueryController,
   getKeplrFromWindow,
   IBCChannelStore,
-  IBCCurrencyRegsitrar,
+  IBCCurrencyRegistrar,
   InteractionStore,
   KeyRingStore,
-  LedgerInitStore,
-  KeystoneStore,
-  ObservableQueryBase,
   PermissionStore,
   QueriesStore,
   SecretAccount,
   SecretQueries,
   SignInteractionStore,
   TokensStore,
-  WalletStatus,
   ICNSInteractionStore,
   ICNSQueries,
-  GeneralPermissionStore,
+  PermissionManagerStore,
+  SignEthereumInteractionStore,
 } from "@keplr-wallet/stores";
 import {
   KeplrETCQueries,
-  GravityBridgeCurrencyRegsitrar,
+  GravityBridgeCurrencyRegistrar,
   AxelarEVMBridgeCurrencyRegistrar,
 } from "@keplr-wallet/stores-etc";
 import { ExtensionKVStore } from "@keplr-wallet/common";
@@ -49,29 +44,29 @@ import {
   ContentScriptGuards,
   ExtensionRouter,
   InExtensionMessageRequester,
+  InteractionAddon,
 } from "@keplr-wallet/router-extension";
 import { APP_PORT } from "@keplr-wallet/router";
-import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
 import { FiatCurrency } from "@keplr-wallet/types";
 import { UIConfigStore } from "./ui-config";
-import { FeeType } from "@keplr-wallet/hooks";
 import { AnalyticsStore, NoopAnalyticsClient } from "@keplr-wallet/analytics";
-import Amplitude from "amplitude-js";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { HugeQueriesStore } from "./huge-queries";
+import { ExtensionAnalyticsClient } from "../analytics";
 
 export class RootStore {
   public readonly uiConfigStore: UIConfigStore;
 
-  public readonly chainStore: ChainStore;
   public readonly keyRingStore: KeyRingStore;
+  public readonly chainStore: ChainStore;
   public readonly ibcChannelStore: IBCChannelStore;
 
-  protected readonly interactionStore: InteractionStore;
+  public readonly permissionManagerStore: PermissionManagerStore;
+
+  public readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
-  public readonly generalPermissionStore: GeneralPermissionStore;
   public readonly signInteractionStore: SignInteractionStore;
-  public readonly ledgerInitStore: LedgerInitStore;
-  public readonly keystoneStore: KeystoneStore;
+  public readonly signEthereumInteractionStore: SignEthereumInteractionStore;
   public readonly chainSuggestStore: ChainSuggestStore;
   public readonly icnsInteractionStore: ICNSInteractionStore;
 
@@ -89,64 +84,54 @@ export class RootStore {
     [CosmosAccount, CosmwasmAccount, SecretAccount]
   >;
   public readonly priceStore: CoinGeckoPriceStore;
-  public readonly tokensStore: TokensStore<ChainInfoWithCoreTypes>;
+  public readonly hugeQueriesStore: HugeQueriesStore;
 
-  protected readonly ibcCurrencyRegistrar: IBCCurrencyRegsitrar<ChainInfoWithCoreTypes>;
-  protected readonly gravityBridgeCurrencyRegistrar: GravityBridgeCurrencyRegsitrar<ChainInfoWithCoreTypes>;
-  protected readonly axelarEVMBridgeCurrencyRegistrar: AxelarEVMBridgeCurrencyRegistrar<ChainInfoWithCoreTypes>;
+  public readonly tokensStore: TokensStore;
+
+  public readonly ibcCurrencyRegistrar: IBCCurrencyRegistrar;
+  public readonly gravityBridgeCurrencyRegistrar: GravityBridgeCurrencyRegistrar;
+  public readonly axelarEVMBridgeCurrencyRegistrar: AxelarEVMBridgeCurrencyRegistrar;
 
   public readonly analyticsStore: AnalyticsStore<
     {
       chainId?: string;
+      chainIds?: string[];
+      chainIdentifier?: string;
+      chainIdentifiers?: string[];
       chainName?: string;
-      toChainId?: string;
-      toChainName?: string;
-      registerType?: "seed" | "google" | "ledger" | "keystone" | "qr";
-      feeType?: FeeType | undefined;
-      isIbc?: boolean;
-      rpc?: string;
-      rest?: string;
+      chainNames?: string[];
+      inputValue?: string;
+      isFavorite?: boolean;
+      onRampProvider?: string;
+      pageName?: string;
+      tabName?: string;
+      isClaimAll?: boolean;
       proposalId?: string;
       proposalTitle?: string;
     },
     {
-      registerType?: "seed" | "google" | "ledger" | "keystone" | "qr";
-      accountType?: "mnemonic" | "privateKey" | "ledger" | "keystone";
-      currency?: string;
-      language?: string;
-      totalAccounts?: number;
+      accountCount?: number;
+      isDeveloperMode?: boolean;
     }
   >;
 
   constructor() {
-    this.uiConfigStore = new UIConfigStore(
-      new ExtensionKVStore("store_ui_config"),
-      ICNSInfo,
-      ICNSFrontendLink
-    );
-
     const router = new ExtensionRouter(ContentScriptEnv.produceEnv);
     router.addGuard(ContentScriptGuards.checkMessageIsInternal);
+
+    // Initialize the interaction addon service.
+    const interactionAddonService =
+      new InteractionAddon.InteractionAddonService();
+    InteractionAddon.init(router, interactionAddonService);
+
+    this.permissionManagerStore = new PermissionManagerStore(
+      new InExtensionMessageRequester()
+    );
 
     // Order is important.
     this.interactionStore = new InteractionStore(
       router,
       new InExtensionMessageRequester()
-    );
-
-    // Defer the first queries until chain infos are loaded from the background.
-    // Due to custom rpc/lcd features, endpoints may differ from embedded values.
-    // If the query is executed immediately on launch, the initial queries that was sent to embedded chain infos endpoints should be canceled
-    // and the queries should be executed again with the new endpoints.
-    // If you do this, there is a high risk of network waste and unstable behavior.
-    // Therefore, we defer the first queries until ready.
-    ObservableQueryBase.experimentalDeferInitialQueryController = new DeferInitialQueryController();
-
-    this.chainStore = new ChainStore(
-      new ExtensionKVStore("store_chain_config"),
-      EmbedChainInfos,
-      new InExtensionMessageRequester(),
-      ObservableQueryBase.experimentalDeferInitialQueryController
     );
 
     this.keyRingStore = new KeyRingStore(
@@ -155,10 +140,13 @@ export class RootStore {
           window.dispatchEvent(new Event(type));
         },
       },
-      "scrypt",
-      this.chainStore,
-      new InExtensionMessageRequester(),
-      this.interactionStore
+      new InExtensionMessageRequester()
+    );
+
+    this.chainStore = new ChainStore(
+      EmbedChainInfos,
+      this.keyRingStore,
+      new InExtensionMessageRequester()
     );
 
     this.ibcChannelStore = new IBCChannelStore(
@@ -169,16 +157,10 @@ export class RootStore {
       this.interactionStore,
       new InExtensionMessageRequester()
     );
-    this.generalPermissionStore = new GeneralPermissionStore(
-      this.interactionStore,
-      new InExtensionMessageRequester()
-    );
     this.signInteractionStore = new SignInteractionStore(this.interactionStore);
-    this.ledgerInitStore = new LedgerInitStore(
-      this.interactionStore,
-      new InExtensionMessageRequester()
+    this.signEthereumInteractionStore = new SignEthereumInteractionStore(
+      this.interactionStore
     );
-    this.keystoneStore = new KeystoneStore(this.interactionStore);
     this.chainSuggestStore = new ChainSuggestStore(
       this.interactionStore,
       CommunityChainInfoRepo
@@ -188,6 +170,9 @@ export class RootStore {
     this.queriesStore = new QueriesStore(
       new ExtensionKVStore("store_queries"),
       this.chainStore,
+      {
+        responseDebounceMs: 75,
+      },
       CosmosQueries.use(),
       CosmwasmQueries.use(),
       SecretQueries.use({
@@ -203,11 +188,11 @@ export class RootStore {
     this.accountStore = new AccountStore(
       window,
       this.chainStore,
+      getKeplrFromWindow,
       () => {
         return {
           suggestChain: false,
           autoInit: true,
-          getKeplr: getKeplrFromWindow,
         };
       },
       CosmosAccount.use({
@@ -268,7 +253,7 @@ export class RootStore {
             };
           }
 
-          if (chainId.startsWith("evmos_")) {
+          if (chainId.startsWith("evmos_") || chainId.startsWith("planq_")) {
             return {
               send: {
                 native: {
@@ -330,27 +315,6 @@ export class RootStore {
       })
     );
 
-    if (!window.location.href.includes("#/unlock")) {
-      // Start init for registered chains so that users can see account address more quickly.
-      for (const chainInfo of this.chainStore.chainInfos) {
-        const account = this.accountStore.getAccount(chainInfo.chainId);
-        // Because {autoInit: true} is given as the default option above,
-        // initialization for the account starts at this time just by using getAccount().
-        // However, run safe check on current status and init if status is not inited.
-        if (account.walletStatus === WalletStatus.NotInit) {
-          account.init();
-        }
-      }
-    } else {
-      // When the unlock request sent from external webpage,
-      // it will open the extension popup below the uri "/unlock".
-      // But, in this case, if the prefetching option is true, it will redirect
-      // the page to the "/unlock" with **interactionInternal=true**
-      // because prefetching will request the unlock from the internal.
-      // To prevent this problem, just check the first uri is "#/unlcok" and
-      // if it is "#/unlock", don't use the prefetching option.
-    }
-
     this.priceStore = new CoinGeckoPriceStore(
       new ExtensionKVStore("store_prices"),
       FiatCurrencies.reduce<{
@@ -366,64 +330,85 @@ export class RootStore {
       }
     );
 
+    this.hugeQueriesStore = new HugeQueriesStore(
+      this.chainStore,
+      this.queriesStore,
+      this.accountStore,
+      this.priceStore
+    );
+
+    this.uiConfigStore = new UIConfigStore(
+      {
+        kvStore: new ExtensionKVStore("store_ui_config"),
+        addressBookKVStore: new ExtensionKVStore("address-book"),
+      },
+      new InExtensionMessageRequester(),
+      this.chainStore,
+      this.keyRingStore,
+      this.priceStore,
+      ICNSInfo
+    );
+
     this.tokensStore = new TokensStore(
       window,
-      this.chainStore,
       new InExtensionMessageRequester(),
+      this.chainStore,
+      this.accountStore,
+      this.keyRingStore,
       this.interactionStore
     );
 
-    this.ibcCurrencyRegistrar = new IBCCurrencyRegsitrar<ChainInfoWithCoreTypes>(
+    this.ibcCurrencyRegistrar = new IBCCurrencyRegistrar(
       new ExtensionKVStore("store_ibc_curreny_registrar"),
       24 * 3600 * 1000,
       this.chainStore,
       this.accountStore,
-      this.queriesStore,
       this.queriesStore
     );
-    this.gravityBridgeCurrencyRegistrar = new GravityBridgeCurrencyRegsitrar<ChainInfoWithCoreTypes>(
+    this.gravityBridgeCurrencyRegistrar = new GravityBridgeCurrencyRegistrar(
       new ExtensionKVStore("store_gravity_bridge_currency_registrar"),
+      24 * 3600 * 1000,
       this.chainStore,
       this.queriesStore
     );
-    this.axelarEVMBridgeCurrencyRegistrar = new AxelarEVMBridgeCurrencyRegistrar<ChainInfoWithCoreTypes>(
-      new ExtensionKVStore("store_axelar_evm_bridge_currency_registrar"),
-      this.chainStore,
-      this.queriesStore,
-      "ethereum"
-    );
+    this.axelarEVMBridgeCurrencyRegistrar =
+      new AxelarEVMBridgeCurrencyRegistrar(
+        new ExtensionKVStore("store_axelar_evm_bridge_currency_registrar"),
+        24 * 3600 * 1000,
+        this.chainStore,
+        this.queriesStore,
+        "ethereum"
+      );
 
     // XXX: Remember that userId would be set by `StoreProvider`
     this.analyticsStore = new AnalyticsStore(
       (() => {
-        if (!AmplitudeApiKey) {
+        if (
+          !AmplitudeApiKey ||
+          localStorage.getItem("disable-analytics") === "true"
+        ) {
           return new NoopAnalyticsClient();
         } else {
-          const amplitudeClient = Amplitude.getInstance("new");
-          amplitudeClient.init(AmplitudeApiKey, undefined, {
-            saveEvents: true,
-            platform: "Extension",
-          });
-          return amplitudeClient;
+          return new ExtensionAnalyticsClient(AmplitudeApiKey);
         }
       })(),
       {
         logEvent: (eventName, eventProperties) => {
-          if (eventProperties?.chainId || eventProperties?.toChainId) {
+          if (eventProperties?.chainId || eventProperties?.chainIds) {
             eventProperties = {
               ...eventProperties,
             };
 
             if (eventProperties.chainId) {
-              eventProperties.chainId = ChainIdHelper.parse(
+              eventProperties.chainIdentifier = ChainIdHelper.parse(
                 eventProperties.chainId
               ).identifier;
             }
 
-            if (eventProperties.toChainId) {
-              eventProperties.toChainId = ChainIdHelper.parse(
-                eventProperties.toChainId
-              ).identifier;
+            if (eventProperties.chainIds) {
+              eventProperties.chainIdentifiers = eventProperties.chainIds.map(
+                (chainId) => ChainIdHelper.parse(chainId).identifier
+              );
             }
           }
 
@@ -432,20 +417,7 @@ export class RootStore {
             eventProperties,
           };
         },
-      },
-      (() => {
-        if (!AmplitudeApiKey) {
-          return new NoopAnalyticsClient();
-        } else {
-          const amplitudeClient = Amplitude.getInstance("legacy");
-          amplitudeClient.init(AmplitudeApiKey, undefined, {
-            saveEvents: true,
-            platform: "Extension",
-          });
-
-          return amplitudeClient;
-        }
-      })()
+      }
     );
 
     router.listen(APP_PORT);

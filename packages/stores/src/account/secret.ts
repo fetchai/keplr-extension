@@ -1,7 +1,8 @@
 import { AccountSetBase, AccountSetBaseSuper, MsgOpt } from "./base";
 import { SecretQueries, QueriesSetBase, IQueriesStore } from "../query";
 import { Buffer } from "buffer/";
-import { ChainGetter, CoinPrimitive } from "../common";
+import { CoinPrimitive } from "../common";
+import { ChainGetter } from "../chain";
 import { DenomHelper } from "@keplr-wallet/common";
 import { MsgExecuteContract } from "@keplr-wallet/proto-types/secret/compute/v1beta1/msg";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -10,7 +11,6 @@ import { AppCurrency, KeplrSignOptions, StdFee } from "@keplr-wallet/types";
 import { DeepPartial, DeepReadonly, Optional } from "utility-types";
 import { CosmosAccount } from "./cosmos";
 import deepmerge from "deepmerge";
-import { txEventsWithPreOnFulfill } from "./utils";
 
 export interface SecretAccount {
   secret: SecretAccountImpl;
@@ -88,7 +88,6 @@ export class SecretAccountImpl {
     protected readonly _msgOpts: SecretMsgOpts
   ) {
     this.base.registerMakeSendTokenFn(this.processMakeSendTokenTx.bind(this));
-    this.base.registerSendTokenFn(this.processSendToken.bind(this));
   }
 
   /**
@@ -149,75 +148,6 @@ export class SecretAccountImpl {
         }
       );
     }
-  }
-
-  /**
-   * @deprecated
-   */
-  protected async processSendToken(
-    amount: string,
-    currency: AppCurrency,
-    recipient: string,
-    memo: string,
-    stdFee: Partial<StdFee>,
-    signOptions?: KeplrSignOptions,
-    onTxEvents?:
-      | ((tx: any) => void)
-      | {
-          onBroadcasted?: (txHash: Uint8Array) => void;
-          onFulfill?: (tx: any) => void;
-        }
-  ): Promise<boolean> {
-    const denomHelper = new DenomHelper(currency.coinMinimalDenom);
-
-    switch (denomHelper.type) {
-      case "secret20":
-        const actualAmount = (() => {
-          let dec = new Dec(amount);
-          dec = dec.mul(DecUtils.getPrecisionDec(currency.coinDecimals));
-          return dec.truncate().toString();
-        })();
-
-        if (!("type" in currency) || currency.type !== "secret20") {
-          throw new Error("Currency is not secret20");
-        }
-        await this.sendExecuteSecretContractMsg(
-          "send",
-          currency.contractAddress,
-          {
-            transfer: {
-              recipient: recipient,
-              amount: actualAmount,
-            },
-          },
-          [],
-          memo,
-          {
-            amount: stdFee.amount ?? [],
-            gas: stdFee.gas ?? this.msgOpts.send.secret20.gas.toString(),
-          },
-          signOptions,
-          txEventsWithPreOnFulfill(onTxEvents, (tx) => {
-            if (tx.code == null || tx.code === 0) {
-              // After succeeding to send token, refresh the balance.
-              const queryBalance = this.queries.queryBalances
-                .getQueryBech32Address(this.base.bech32Address)
-                .balances.find((bal) => {
-                  return (
-                    bal.currency.coinMinimalDenom === currency.coinMinimalDenom
-                  );
-                });
-
-              if (queryBalance) {
-                queryBalance.fetch();
-              }
-            }
-          })
-        );
-        return true;
-    }
-
-    return false;
   }
 
   async createSecret20ViewingKey(
@@ -400,9 +330,10 @@ export class SecretAccountImpl {
     // eslint-disable-next-line @typescript-eslint/ban-types
     obj: object
   ): Promise<Uint8Array> {
-    const queryContractCodeHashResponse = await this.queries.secret.querySecretContractCodeHash
-      .getQueryContract(contractAddress)
-      .waitResponse();
+    const queryContractCodeHashResponse =
+      await this.queries.secret.querySecretContractCodeHash
+        .getQueryContract(contractAddress)
+        .waitResponse();
 
     if (!queryContractCodeHashResponse) {
       throw new Error(

@@ -1,22 +1,25 @@
 import { KeyRingService } from "../keyring";
 import { Env } from "@keplr-wallet/router";
-import { Hash, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
+import { PrivKeySecp256k1 } from "@keplr-wallet/crypto";
 import { decrypt, encrypt, PrivateKey } from "eciesjs";
 import { fromBase64, fromHex, toBase64, toHex } from "@cosmjs/encoding";
 import { getPubKey, registerPubKey } from "./memorandum-client";
 import { MESSAGE_CHANNEL_ID } from "./constants";
 import { PrivacySetting, PubKey } from "./types";
+import { KeyRingCosmosService } from "../keyring-cosmos";
 
 export class MessagingService {
   // map of target address vs target public key
   // assumption: chainId incorporated since each network will have a different
   // bech32 prefix
   private _publicKeyCache = new Map<string, PubKey>();
-  protected keyRingService!: KeyRingService;
 
-  init(keyRingService: KeyRingService) {
-    this.keyRingService = keyRingService;
-  }
+  constructor(
+    protected readonly keyRingService: KeyRingService,
+    protected readonly keyRingCosmosService: KeyRingCosmosService
+  ) {}
+
+  async init() {}
 
   /**
    * Lookup the public key associated with the messaging service
@@ -113,12 +116,13 @@ export class MessagingService {
           memo: "",
         };
 
-        const signData = await this.keyRingService.requestSignAmino(
+        const signData = await this.keyRingCosmosService.signAminoADR36(
           env,
           "",
+          this.keyRingService.selectedVaultId,
           chainId,
           address,
-          signDoc,
+          Buffer.from(JSON.stringify(signDoc)),
           { isADR36WithString: true }
         );
 
@@ -227,10 +231,10 @@ export class MessagingService {
     const rawPayload = fromBase64(payload);
 
     // sign the payload
-    const rawSignature = privateKey.sign(rawPayload);
+    const _sig = privateKey.signDigest32(rawPayload);
 
     // convert and return the signature
-    return toBase64(rawSignature);
+    return toBase64(new Uint8Array([..._sig.r, ..._sig.s]));
   }
 
   /**
@@ -283,30 +287,27 @@ export class MessagingService {
   /**
    * Builds a private key from the signature of the current keychain
    *
-   * @param env The environment of the extension
+   * @param _env
    * @param chainId The target chain id
    * @returns The generated private key object
    * @private
    */
-  private async getPrivateKey(env: Env, chainId: string): Promise<Uint8Array> {
-    return Hash.sha256(
+  private async getPrivateKey(_env: Env, chainId: string): Promise<Uint8Array> {
+    const _sig = await this.keyRingService.sign(
+      chainId,
+      this.keyRingService.selectedVaultId,
       Buffer.from(
-        await this.keyRingService.sign(
-          env,
-          chainId,
-          Buffer.from(
-            JSON.stringify({
-              account_number: 0,
-              chain_id: chainId,
-              fee: [],
-              memo:
-                "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
-              msgs: [],
-              sequence: 0,
-            })
-          )
-        )
-      )
+        JSON.stringify({
+          account_number: 0,
+          chain_id: chainId,
+          fee: [],
+          memo: "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
+          msgs: [],
+          sequence: 0,
+        })
+      ),
+      "sha256"
     );
+    return new Uint8Array([..._sig.r, ..._sig.s]);
   }
 }

@@ -18,6 +18,7 @@ import {
   ICNSAdr36Signatures,
   ChainInfoWithoutEndpoints,
   SecretUtils,
+  SettledResponses,
 } from "@keplr-wallet/types";
 import { Result, JSONUint8Array } from "@keplr-wallet/router";
 import { KeplrEnigmaUtils } from "./enigma";
@@ -363,6 +364,10 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
 
   async getKey(chainId: string): Promise<Key> {
     return await this.requestMethod("getKey", [chainId]);
+  }
+
+  async getKeysSettled(chainIds: string[]): Promise<SettledResponses<Key>> {
+    return await this.requestMethod("getKeysSettled", [chainIds]);
   }
 
   async sendTx(

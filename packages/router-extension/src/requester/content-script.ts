@@ -19,7 +19,7 @@ export class ContentScriptMessageRequester implements MessageRequester {
     // Set message's origin.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    msg["origin"] = window.location.origin;
+    msg["origin"] = globalThis.location.origin;
     msg.routerMeta = {
       ...msg.routerMeta,
       routerId: getKeplrExtensionRouterId(),
@@ -32,19 +32,22 @@ export class ContentScriptMessageRequester implements MessageRequester {
       status: "complete",
     });
 
+    const promises: Promise<unknown>[] = [];
     for (let i = 0; i < tabs.length; i++) {
       const tabId = tabs[i].id;
       if (tabId) {
-        try {
-          await browser.tabs.sendMessage(tabId, {
+        promises.push(
+          browser.tabs.sendMessage(tabId, {
             port,
             type: msg.type(),
             msg: wrappedMsg,
-          });
-          // Ignore the failure
-        } catch {}
+          })
+        );
       }
     }
+
+    // Ignore the failures
+    await Promise.allSettled(promises);
 
     // This requester can't handle the result of the message.
     return undefined as any;
