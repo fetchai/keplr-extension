@@ -25,14 +25,14 @@ export const ChatErrorPopup = () => {
 
   return errorMessage?.message?.length && confirmAction ? (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popup}>
+      <div className={style["overlay"]} />
+      <div className={style["popup"]}>
         <h4>Error</h4>
-        <section className={style.textContainer}>
+        <section className={style["textContainer"]}>
           {errorMessage.message}
         </section>
         {errorMessage.level < 2 && (
-          <div className={style.buttonContainer}>
+          <div className={style["buttonContainer"]}>
             <button type="button" onClick={handleOk}>
               Ok
             </button>

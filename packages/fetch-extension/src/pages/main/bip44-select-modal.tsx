@@ -46,26 +46,26 @@ const BIP44Selectable: FunctionComponent<{
           /* To prevent the readonly mode of `checked` prop, just set empty function */
         }}
       >
-        <div className={style.selectable}>
+        <div className={style["selectable"]}>
           <div
-            className={style.path}
+            className={style["path"]}
           >{`m/44’/${selectable.path.coinType}’`}</div>
           <Row>
             <Col>
-              <div className={style.label}>
+              <div className={style["label"]}>
                 <FormattedMessage id="main.modal.select-account.label.address" />
               </div>
-              <div className={style.value}>
+              <div className={style["value"]}>
                 {Bech32Address.shortenAddress(selectable.bech32Address, 26)}
               </div>
             </Col>
           </Row>
           <Row>
             <Col>
-              <div className={style.label}>
+              <div className={style["label"]}>
                 <FormattedMessage id="main.modal.select-account.label.balance" />
               </div>
-              <div className={style.value}>
+              <div className={style["value"]}>
                 {stakable.balance
                   .trim(true)
                   .shrink(true)
@@ -77,10 +77,10 @@ const BIP44Selectable: FunctionComponent<{
               </div>
             </Col>
             <Col>
-              <div className={style.label}>
+              <div className={style["label"]}>
                 <FormattedMessage id="main.modal.select-account.label.sequence" />
               </div>
-              <div className={style.value}>
+              <div className={style["value"]}>
                 {account.sequence}
                 {account.isFetching ? (
                   <i className="fas fa-spinner fa-spin ml-1" />
@@ -243,7 +243,7 @@ export const BIP44SelectModal: FunctionComponent = observer(() => {
       centered
     >
       <ModalBody>
-        <div className={style.title}>
+        <div className={style["title"]}>
           <FormattedMessage id="main.modal.select-account.title" />
         </div>
         <div>

@@ -16,16 +16,16 @@ export const NotificationOrg: FunctionComponent<Props> = (props) => {
   const { elem, handleCheck, isChecked, isNew } = props;
 
   return (
-    <div className={style.listItem}>
+    <div className={style["listItem"]}>
       <input
-        className={style.checkbox}
+        className={style["checkbox"]}
         key={elem.id}
         onChange={() => handleCheck(!isChecked)}
         type="checkbox"
         id={elem.id}
         checked={isChecked}
       />
-      <div className={style.image}>
+      <div className={style["image"]}>
         {elem.logo_href ? (
           <img draggable={false} src={elem.logo_href} />
         ) : (
@@ -34,14 +34,14 @@ export const NotificationOrg: FunctionComponent<Props> = (props) => {
       </div>
       <p
         className={classnames(
-          isChecked ? style.selectedName : style.unselectedName,
-          style.name
+          isChecked ? style["selectedName"] : style["unselectedName"],
+          style["name"]
         )}
       >
         {elem.name}
       </p>
       {isNew && (
-        <p className={classnames(style.name, style.newOrgName)}>(new)</p>
+        <p className={classnames(style["name"], style["newOrgName"])}>(new)</p>
       )}
     </div>
   );

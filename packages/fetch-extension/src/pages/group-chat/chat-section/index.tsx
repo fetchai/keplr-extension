@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { SwitchUser } from "@components/switch-user";
@@ -28,8 +28,8 @@ import { leaveGroupEvent } from "@utils/group-events";
 import amplitude from "amplitude-js";
 
 export const GroupChatSection: FunctionComponent = () => {
-  const history = useHistory();
-  const groupId = history.location.pathname.split("/")[3];
+  const navigate = useNavigate();
+  const groupId = useLocation().pathname.split("/")[3];
   const groups: Groups = useSelector(userChatGroups);
   const userChats: Chats = useSelector(userMessages);
 
@@ -91,7 +91,7 @@ export const GroupChatSection: FunctionComponent = () => {
       })
     );
     store.dispatch(setIsGroupEdit(true));
-    history.push(page);
+    navigate(page);
   }
 
   const handleClick = (option: GroupChatOptions) => {

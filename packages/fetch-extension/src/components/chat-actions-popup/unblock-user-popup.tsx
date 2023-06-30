@@ -29,22 +29,22 @@ export const UnblockUserPopup = ({
 
   return (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popup}>
+      <div className={style["overlay"]} />
+      <div className={style["popup"]}>
         <h4>Unblock User</h4>
         <section>
-          <p className={style.textContainer}>
+          <p className={style["textContainer"]}>
             This contact will be able to send you messages. The contact will not
             be notified.
           </p>
         </section>
-        <div className={style.buttonContainer}>
+        <div className={style["buttonContainer"]}>
           <button type="button" onClick={handleCancel} disabled={processing}>
             Cancel
           </button>
           <button
             type="button"
-            className={style.btn}
+            className={style["btn"]}
             onClick={handleUnblock}
             disabled={processing}
           >

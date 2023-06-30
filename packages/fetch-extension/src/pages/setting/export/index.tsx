@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useHistory, useLocation, useRouteMatch } from "react-router";
+import { useNavigate, useLocation, useRouteMatch } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PasswordInput } from "@components/form";
 import { Button, Form } from "reactstrap";
@@ -26,7 +26,7 @@ interface FormData {
 }
 
 export const ExportPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const match = useRouteMatch<{ index: string; type?: string }>();
   const intl = useIntl();
@@ -61,14 +61,14 @@ export const ExportPage: FunctionComponent = observer(() => {
           type === "mnemonic" ? "setting.export" : "setting.export.private-key",
       })}
       onBackButton={useCallback(() => {
-        history.goBack();
-      }, [history])}
+        navigate(-1);
+      }, [navigate])}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         {keyRing ? (
           <div
-            className={classnames(style.mnemonic, {
-              [style.altHex]: type !== "mnemonic",
+            className={classnames(style["mnemonic"], {
+              [style["altHex"]]: type !== "mnemonic",
             })}
           >
             {keyRing}

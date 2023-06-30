@@ -12,7 +12,7 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { NameAddress } from "@chatTypes";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatLoader } from "@components/chat-loader";
@@ -33,7 +33,7 @@ import { AGENT_ADDRESS } from "../../config.ui.var";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
 
 const NewUser = (props: { address: NameAddress }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(userDetails);
   const { chainStore } = useStore();
   const { name, address } = props.address;
@@ -70,24 +70,24 @@ const NewUser = (props: { address: NameAddress }) => {
       amplitude.getInstance().logEvent("Open DM click", {
         from: "New chat",
       });
-      history.push(`/chat/${address}`);
+      navigate(`/chat/${address}`);
     }
   };
 
   return (
     <div
-      className={style.messageContainer}
+      className={style["messageContainer"]}
       {...(isActive && { onClick: handleClick })}
     >
-      <div className={style.initials}>
+      <div className={style["initials"]}>
         {ReactHtmlParser(
           jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
             .outerHTML
         )}
       </div>
-      <div className={style.messageInner}>
-        <div className={style.name}>{formatAddress(name)}</div>
-        {!isActive && <div className={style.inactiveText}>Inactive</div>}
+      <div className={style["messageInner"]}>
+        <div className={style["name"]}>{formatAddress(name)}</div>
+        {!isActive && <div className={style["inactiveText"]}>Inactive</div>}
       </div>
       <div>
         {isLoading ? (
@@ -105,7 +105,7 @@ const NewUser = (props: { address: NameAddress }) => {
   );
 };
 export const NewChat: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(userDetails);
   const [inputVal, setInputVal] = useState("");
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
@@ -216,22 +216,22 @@ export const NewChat: FunctionComponent = observer(() => {
       {!addressBookConfig.isLoaded ? (
         <ChatLoader message="Loading contacts, please wait..." />
       ) : (
-        <div className={style.newChatContainer}>
-          <div className={style.newChatHeader}>
-            <div className={style.leftBox}>
+        <div className={style["newChatContainer"]}>
+          <div className={style["newChatHeader"]}>
+            <div className={style["leftBox"]}>
               <img
                 alt=""
-                className={style.backBtn}
+                className={style["backBtn"]}
                 src={chevronLeft}
                 onClick={() => {
-                  history.goBack();
+                  navigate(-1);
                 }}
               />
-              <span className={style.title}>New Chat</span>
+              <span className={style["title"]}>New Chat</span>
             </div>
           </div>
-          <div className={style.searchContainer}>
-            <div className={style.searchBox}>
+          <div className={style["searchContainer"]}>
+            <div className={style["searchBox"]}>
               <img draggable={false} src={searchIcon} alt="search" />
               <input
                 placeholder="Search by name or address"
@@ -240,15 +240,15 @@ export const NewChat: FunctionComponent = observer(() => {
               />
             </div>
           </div>
-          <div className={style.searchHelp}>
+          <div className={style["searchHelp"]}>
             You can search your contacts or paste any valid {current.chainName}{" "}
             address to start a conversation.
             <br /> or <br />
             <button
-              className={style.button}
+              className={style["button"]}
               onClick={() => {
                 store.dispatch(resetNewGroup());
-                history.push({
+                navigate({
                   pathname: "/chat/group-chat/create",
                 });
               }}
@@ -257,9 +257,9 @@ export const NewChat: FunctionComponent = observer(() => {
             </button>
             <br />
             <button
-              className={style.button}
+              className={style["button"]}
               onClick={() => {
-                history.push({
+                navigate({
                   pathname: "/chat/agent/" + AGENT_ADDRESS[current.chainId],
                 });
               }}
@@ -270,11 +270,11 @@ export const NewChat: FunctionComponent = observer(() => {
             </button>
           </div>
 
-          <div className={style.messagesContainer}>
+          <div className={style["messagesContainer"]}>
             {randomAddress && (
               <NewUser address={randomAddress} key={randomAddress.address} />
             )}
-            <div className={style.contacts}>
+            <div className={style["contacts"]}>
               <div>Your contacts</div>
               <i
                 className="fa fa-user-plus"
@@ -282,7 +282,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 aria-hidden="true"
                 onClick={() => {
                   amplitude.getInstance().logEvent("Address book viewed", {});
-                  history.push("/setting/address-book");
+                  navigate("/setting/address-book");
                 }}
               />
             </div>
@@ -292,7 +292,7 @@ export const NewChat: FunctionComponent = observer(() => {
           </div>
           {addresses.length === 0 && (
             <div>
-              <div className={style.resultText}>
+              <div className={style["resultText"]}>
                 No results in your contacts.
               </div>
               {user?.messagingPubKey.privacySetting ===

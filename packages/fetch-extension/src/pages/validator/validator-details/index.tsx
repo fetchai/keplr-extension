@@ -26,9 +26,9 @@ export const ValidatorDetails = ({
   ).toFixed(2);
 
   return (
-    <div className={styleValidators.item}>
-      <div className={styleValidators.title}>
-        <div className={styleValidators.label}>
+    <div className={styleValidators["item"]}>
+      <div className={styleValidators["title"]}>
+        <div className={styleValidators["label"]}>
           {validator.description.website ? (
             <a
               target="_blank"
@@ -45,38 +45,38 @@ export const ValidatorDetails = ({
           trigger="hover"
           options={{ placement: "bottom-start" }}
           tooltip={
-            <div className={styleValidators.tooltip}>
+            <div className={styleValidators["tooltip"]}>
               {validator.operator_address}
             </div>
           }
         >
-          <span className={styleValidators.address}>
+          <span className={styleValidators["address"]}>
             {formatAddress(validator.operator_address)}
           </span>
         </ToolTip>
       </div>
       {validator.description.details && (
         <div
-          className={styleValidators.description}
+          className={styleValidators["description"]}
           style={{ borderBottom: "1px solid lightgray" }}
         >
-          <span className={styleValidators.label}>Description</span>
+          <span className={styleValidators["label"]}>Description</span>
           <span>{validator.description.details}</span>
         </div>
       )}
-      <div className={styleValidators.details}>
-        <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Rate</span>
+      <div className={styleValidators["details"]}>
+        <div className={styleValidators["col"]}>
+          <span className={styleValidators["label"]}>Rate</span>
           <span>
             {commisionRate}% ({maxCommisionRate}% Max)
           </span>
         </div>
-        <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Delegated</span>
+        <div className={styleValidators["col"]}>
+          <span className={styleValidators["label"]}>Delegated</span>
           <span>{shortenNumber(validator.delegator_shares)}</span>
         </div>
-        <div className={styleValidators.col}>
-          <span className={styleValidators.label}>Status</span>
+        <div className={styleValidators["col"]}>
+          <span className={styleValidators["label"]}>Status</span>
           <span style={{ textTransform: "capitalize" }}>{status}</span>
         </div>
       </div>

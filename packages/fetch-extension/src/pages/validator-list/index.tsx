@@ -4,7 +4,7 @@ import { HeaderLayout } from "@layouts/header-layout";
 import classnames from "classnames";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { ValidatorCard } from "./validator-card";
@@ -13,7 +13,7 @@ import { CoinPretty } from "@keplr-wallet/unit";
 type ValidatorData = Staking.Validator & { amount: CoinPretty };
 
 export const ValidatorList: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [validators, setValidators] = useState<
     { [key in string]: ValidatorData }
@@ -85,13 +85,13 @@ export const ValidatorList: FunctionComponent = observer(() => {
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle="Stake"
-      onBackButton={() => history.push("/")}
+      onBackButton={() => navigate("/")}
     >
       <p className={classnames("h2", "my-0", "font-weight-normal")}>
         Validators
       </p>
-      <div className={style.searchContainer}>
-        <div className={style.searchBox}>
+      <div className={style["searchContainer"]}>
+        <div className={style["searchBox"]}>
           <img draggable={false} src={searchIcon} alt="search" />
           <input
             placeholder="Search by Validator name or address"
@@ -109,7 +109,7 @@ export const ValidatorList: FunctionComponent = observer(() => {
             padding: "110px 0px",
           }}
         >
-          <div className={style.loader}>
+          <div className={style["loader"]}>
             <svg viewBox="0 0 80 80">
               <rect x="8" y="8" width="64" height="64" />
             </svg>

@@ -22,9 +22,9 @@ export const PageButton: FunctionComponent<
 > = (props) => {
   const { title, paragraph, subParagraph, icons, disabled } = props;
 
-  const style = classnames(stylePageButton.container, {
-    [stylePageButton.withSubParagraph]: subParagraph != null,
-    [stylePageButton.disablePageButton]: disabled,
+  const style = classnames(stylePageButton["container"], {
+    [stylePageButton["withSubParagraph"]]: subParagraph != null,
+    [stylePageButton["disablePageButton"]]: disabled,
   });
 
   const attributes = { ...props };
@@ -35,7 +35,7 @@ export const PageButton: FunctionComponent<
   const mainIcons = disabled ? disabledIcons() : icons;
   return (
     <div className={style} {...attributes}>
-      <div className={stylePageButton.innerContainer}>
+      <div className={stylePageButton["innerContainer"]}>
         <ToolTip
           tooltip={title}
           theme="dark"
@@ -48,7 +48,7 @@ export const PageButton: FunctionComponent<
         </ToolTip>
         {paragraph ? <p>{paragraph}</p> : null}
         {subParagraph ? (
-          <p className={stylePageButton.innerContainerSubParagraph}>
+          <p className={stylePageButton["innerContainerSubParagraph"]}>
             {subParagraph}
           </p>
         ) : null}
@@ -57,7 +57,10 @@ export const PageButton: FunctionComponent<
       {icons
         ? mainIcons?.map((icon, i) => {
             return (
-              <div className={stylePageButton.iconContainer} key={i.toString()}>
+              <div
+                className={stylePageButton["iconContainer"]}
+                key={i.toString()}
+              >
                 <div style={{ flex: 1 }} />
                 {icon}
                 <div style={{ flex: 1 }} />

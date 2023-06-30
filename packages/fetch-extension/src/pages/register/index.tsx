@@ -46,7 +46,7 @@ export const BackButton: FunctionComponent<{ onClick: () => void }> = ({
   onClick,
 }) => {
   return (
-    <div className={style.backButton}>
+    <div className={style["backButton"]}>
       <Button color="link" onClick={onClick}>
         <i className="fas fa-angle-left" style={{ marginRight: "8px" }} />
         <FormattedMessage id="register.button.back" />
@@ -104,7 +104,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
 
   return (
     <EmptyLayout
-      className={classnames(style.container, {
+      className={classnames(style["container"], {
         large:
           !registerConfig.isFinalized &&
           registerConfig.type === "recover-mnemonic",
@@ -112,27 +112,27 @@ export const RegisterPage: FunctionComponent = observer(() => {
       style={{ height: "100%", backgroundColor: "white", padding: 0 }}
     >
       <div style={{ flex: 10 }} />
-      <div className={style.logoContainer}>
+      <div className={style["logoContainer"]}>
         <div
-          className={classnames(style.logoInnerContainer, {
-            [style.justifyCenter]: registerConfig.isIntro,
+          className={classnames(style["logoInnerContainer"], {
+            [style["justifyCenter"]]: registerConfig.isIntro,
           })}
         >
           <img
-            className={style.icon}
+            className={style["icon"]}
             src={require("@assets/logo-256.svg")}
             alt="logo"
           />
           <img
-            className={style.logo}
+            className={style["logo"]}
             src={require("@assets/brand-text.png")}
             alt="logo"
           />
         </div>
         {registerConfig.isIntro ? (
-          <div className={style.introBrandSubTextContainer}>
+          <div className={style["introBrandSubTextContainer"]}>
             <img
-              className={style.introBrandSubText}
+              className={style["introBrandSubText"]}
               src={require("../../public/assets/brand-sub-text.png")}
               alt="The Interchain Wallet"
             />
@@ -142,7 +142,7 @@ export const RegisterPage: FunctionComponent = observer(() => {
       {registerConfig.render()}
       {registerConfig.isFinalized ? <WelcomePage /> : null}
       {registerConfig.isIntro ? (
-        <div className={style.subContent}>
+        <div className={style["subContent"]}>
           <FormattedMessage
             id="register.intro.sub-content"
             values={{

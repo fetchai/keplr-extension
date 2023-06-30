@@ -10,12 +10,12 @@ export const WelcomePage: FunctionComponent = () => {
 
   return (
     <div style={{ paddingTop: "20px" }}>
-      <div className={styleWelcome.title}>
+      <div className={styleWelcome["title"]}>
         {intl.formatMessage({
           id: "register.welcome.title",
         })}
       </div>
-      <div className={styleWelcome.content}>
+      <div className={styleWelcome["content"]}>
         {intl.formatMessage({
           id: "register.welcome.content",
         })}

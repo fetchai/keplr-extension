@@ -1,6 +1,6 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { Fragment, FunctionComponent, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { SearchInput } from "@components/notification-search-input";
 import { GovStatusChip } from "@components/chips/gov-chip";
 import style from "./style.module.scss";
@@ -21,7 +21,7 @@ export const proposalOptions = {
 };
 
 export const Proposals: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const [inputVal, setInputVal] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -144,7 +144,7 @@ export const Proposals: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
       showBottomMenu={false}
     >
@@ -176,13 +176,13 @@ export const Proposals: FunctionComponent = () => {
         filter={true}
       />
 
-      <div className={style.proposalContainer}>
+      <div className={style["proposalContainer"]}>
         {isLoading ? (
-          <div className={style.isLoading}>
+          <div className={style["isLoading"]}>
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : proposals.length === 0 ? (
-          <div className={style.resultText}>
+          <div className={style["resultText"]}>
             <p>
               <FormattedMessage id="search.no-result-found" />
               {inputVal !== "" && (

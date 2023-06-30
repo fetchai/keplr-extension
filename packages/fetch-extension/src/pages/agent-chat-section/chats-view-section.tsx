@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
@@ -33,8 +33,7 @@ export const ChatsViewSection = ({
   targetPubKey: string;
   setLoadingChats: any;
 }) => {
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const targetAddress = useLocation().pathname.split("/")[3];
 
   const user = useSelector(userDetails);
   const userAgents: Groups = useSelector(userChatAgents);
@@ -224,9 +223,9 @@ export const ChatsViewSection = ({
   }, [processingLastMessage]);
 
   return (
-    <div className={style.chatArea}>
+    <div className={style["chatArea"]}>
       <AgentDisclaimer />
-      <div className={style.messages}>
+      <div className={style["messages"]}>
         {pagination?.lastPage <= pagination?.page && (
           <p>
             Messages are end to end encrypted. Nobody else can read them except
@@ -237,7 +236,7 @@ export const ChatsViewSection = ({
           (pagination?.page === -1 ||
             messages.length === 30 ||
             messages.length == 0) && (
-            <div ref={messagesStartRef} className={style.loader}>
+            <div ref={messagesStartRef} className={style["loader"]}>
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}

@@ -33,8 +33,8 @@ export const GasAutoContainer: FunctionComponent<{
   gasSimulator: IGasSimulator;
 }> = observer(({ gasConfig, gasSimulator }) => {
   return (
-    <div className={styleAuto.container}>
-      <div className={styleAuto.gasAdjustmentContainer}>
+    <div className={styleAuto["container"]}>
+      <div className={styleAuto["gasAdjustmentContainer"]}>
         <Input
           label="Gas Adjustment"
           value={
@@ -51,7 +51,7 @@ export const GasAutoContainer: FunctionComponent<{
             gasSimulator.setGasAdjustment(e.target.value);
           }}
         />
-        <div className={styleAuto.multiplyIcon}>
+        <div className={styleAuto["multiplyIcon"]}>
           <MultiplyIcon size={16} color="#C6C6CD" />
         </div>
         <Input

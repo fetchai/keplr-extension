@@ -127,11 +127,11 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         <Modal
           isOpen={isAddressBookOpen}
           backdrop={false}
-          className={styleAddressInput.fullModal}
-          wrapClassName={styleAddressInput.fullModal}
-          contentClassName={styleAddressInput.fullModal}
+          className={styleAddressInput["fullModal"]}
+          wrapClassName={styleAddressInput["fullModal"]}
+          contentClassName={styleAddressInput["fullModal"]}
         >
-          <ModalBody className={styleAddressInput.fullModal}>
+          <ModalBody className={styleAddressInput["fullModal"]}>
             <AddressBookPage
               onBackButton={() => setIsAddressBookOpen(false)}
               hideChainDropdown={true}
@@ -151,7 +151,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
               id={inputId}
               className={classnames(
                 "form-control-alternative",
-                styleAddressInput.input
+                styleAddressInput["input"]
               )}
               value={recipientConfig.rawRecipient}
               onChange={(e) => {
@@ -175,7 +175,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
             />
             {!disableAddressBook && memoConfig ? (
               <Button
-                className={styleAddressInput.addressBookButton}
+                className={styleAddressInput["addressBookButton"]}
                 color="primary"
                 type="button"
                 outline
@@ -196,11 +196,11 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
           ) : null}
           {errorText != null &&
           !recipientConfig.rawRecipient.startsWith("agent") ? (
-            <div className={styleAddressInput.errorText}>{errorText}</div>
+            <div className={styleAddressInput["errorText"]}>{errorText}</div>
           ) : null}
           {recipientConfig.rawRecipient.startsWith("agent") &&
             validateAgentAddress(recipientConfig.rawRecipient) && (
-              <div className={styleAddressInput.errorText}>
+              <div className={styleAddressInput["errorText"]}>
                 Invalid agent address
               </div>
             )}

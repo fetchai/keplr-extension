@@ -19,8 +19,8 @@ export const CommandsDropdown = ({
     <React.Fragment>
       {showDropdown && (
         <div
-          className={`${style.dropdown} ${
-            hasFET ? style.enabled : style.disabled
+          className={`${style["dropdown"]} ${
+            hasFET ? style["enabled"] : style["disabled"]
           }`}
         >
           {!hasFET && (

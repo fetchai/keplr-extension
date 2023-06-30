@@ -5,7 +5,7 @@ import { FormattedDate, FormattedMessage } from "react-intl";
 import styleStake from "./stake.module.scss";
 import { Collapse } from "@components/collapse";
 import { AuthZ } from "@keplr-wallet/stores";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Buffer } from "buffer/";
 import { ToolTip } from "@components/tooltip";
@@ -18,7 +18,7 @@ type grantListType = Record<string, AuthZ.Grant[]>;
 
 export const AuthZView: FunctionComponent<Props> = (props) => {
   const { grants } = props;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const grantList = useMemo(() => {
     const tempGrantList: grantListType = {
@@ -124,7 +124,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
   }, [grants]);
 
   const onClickAuthZItem = (title: string, grant: AuthZ.Grant) => {
-    history.push({
+    navigate({
       pathname: "/authz",
       search: `title=${title}&grant=${Buffer.from(
         JSON.stringify(grant)
@@ -133,14 +133,14 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
   };
 
   return (
-    <div className={styleAuthZ.containerInner}>
-      <div className={styleAuthZ.vertical}>
+    <div className={styleAuthZ["containerInner"]}>
+      <div className={styleAuthZ["vertical"]}>
         <p
           className={classnames(
             "h2",
             "my-0",
             "font-weight-normal",
-            styleStake.paragraphMain
+            styleStake["paragraphMain"]
           )}
         >
           <FormattedMessage id="main.authz.title" />
@@ -151,28 +151,28 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
               const grantsItems = grants.map((grant, index) => {
                 return (
                   <div
-                    className={styleAuthZ.item}
+                    className={styleAuthZ["item"]}
                     key={index}
                     onClick={() => onClickAuthZItem(title, grant)}
                   >
-                    <div className={styleAuthZ.title}>
+                    <div className={styleAuthZ["title"]}>
                       <FormattedMessage id="main.authz.grant.grantee.information" />
                       <ToolTip
                         trigger="hover"
                         options={{ placement: "bottom" }}
                         tooltip={
-                          <div className={styleAuthZ.tooltip}>
+                          <div className={styleAuthZ["tooltip"]}>
                             {grant.grantee}
                           </div>
                         }
                       >
-                        <span className={styleAuthZ.bold}>
+                        <span className={styleAuthZ["bold"]}>
                           {Bech32Address.shortenAddress(grant.grantee, 20)}
                         </span>
                       </ToolTip>
                     </div>
                     {grant.expiration ? (
-                      <div className={styleAuthZ.expiration}>
+                      <div className={styleAuthZ["expiration"]}>
                         <FormattedMessage id="main.authz.grant.expiration.information" />
                         {new Date() < new Date(grant.expiration) ? (
                           <FormattedDate
@@ -201,7 +201,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
                   title={title}
                   count={`${grantsItems.length}`}
                 >
-                  <div className={styleAuthZ.grants}>{grantsItems}</div>
+                  <div className={styleAuthZ["grants"]}>{grantsItems}</div>
                 </Collapse>
               ) : null;
             })

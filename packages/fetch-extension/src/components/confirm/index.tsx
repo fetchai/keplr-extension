@@ -91,10 +91,10 @@ export const ConfirmProvider: FunctionComponent = ({ children }) => {
       <Modal
         isOpen={isDialogOpen}
         centered
-        className={style.modalDialog}
+        className={style["modalDialog"]}
         onClosed={clearCurrentConfirm}
       >
-        <ModalBody className={style.modal}>
+        <ModalBody className={style["modal"]}>
           <ConfirmDialog
             img={currentConfirm?.img}
             title={currentConfirm?.title}

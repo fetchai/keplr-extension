@@ -8,7 +8,7 @@ import { useStore } from "../../../stores";
 import { FormattedMessage } from "react-intl";
 import amplitude from "amplitude-js";
 import { markDeliveryAsClicked } from "@utils/fetch-notification";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 interface Props {
   elem: NotyphiNotification;
   onCrossClick: (deliveryId: string) => void;
@@ -26,7 +26,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
   const { delivery_id, delivered_at, cta_url } = elem;
   const elemDate = new Date(delivered_at);
   const time = timeSince(elemDate);
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleFlag = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     amplitude.getInstance().logEvent("Notification flag click", {});
@@ -51,10 +51,11 @@ export const NotificationItem: FunctionComponent<Props> = ({
           JSON.stringify([])
       );
 
-      const unclickedNotifications: NotyphiNotification[] = localNotifications.filter(
-        (notification: NotyphiNotification) =>
-          notification.delivery_id !== delivery_id
-      );
+      const unclickedNotifications: NotyphiNotification[] =
+        localNotifications.filter(
+          (notification: NotyphiNotification) =>
+            notification.delivery_id !== delivery_id
+        );
 
       markDeliveryAsClicked(elem.delivery_id, accountInfo.bech32Address).then(
         () => {
@@ -69,7 +70,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
           } else if (cta_url.startsWith("www")) {
             window.open(`https:${cta_url}`);
           } else if (cta_url.startsWith("/")) {
-            history.push(cta_url);
+            navigate(cta_url);
           }
         }
       );
@@ -80,7 +81,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
     e.stopPropagation();
     amplitude.getInstance().logEvent("Notification remove click", {});
     const item = document.getElementById(delivery_id);
-    item?.classList.add(style.remove);
+    item?.classList.add(style["remove"]);
 
     setTimeout(() => {
       onCrossClick(delivery_id);
@@ -90,12 +91,12 @@ export const NotificationItem: FunctionComponent<Props> = ({
   return (
     <React.Fragment>
       <div
-        className={style.notification}
+        className={style["notification"]}
         onClick={handleNavigateToUrl}
         id={delivery_id}
       >
-        <div className={style.notificationHead}>
-          <div className={style.notificationImage}>
+        <div className={style["notificationHead"]}>
+          <div className={style["notificationImage"]}>
             {elem.image_url ? (
               <img draggable={false} src={elem.image_url} />
             ) : (
@@ -103,37 +104,37 @@ export const NotificationItem: FunctionComponent<Props> = ({
             )}
           </div>
 
-          <p className={style.headName}>{elem.organisation_name}</p>
-          <div className={style.notificationIcons}>
+          <p className={style["headName"]}>{elem.organisation_name}</p>
+          <div className={style["notificationIcons"]}>
             <img
               draggable={false}
               src={require("@assets/svg/flag-icon.svg")}
               id={delivery_id}
-              className={flag ? style.disabled : style.flag}
+              className={flag ? style["disabled"] : style["flag"]}
               onClick={handleFlag}
             />
             <img
               draggable={false}
               src={require("@assets/svg/cross-icon.svg")}
-              className={style.cross}
+              className={style["cross"]}
               onClick={handleRead}
             />
           </div>
         </div>
 
-        <p className={style.notificationTitle}>{elem.title}</p>
+        <p className={style["notificationTitle"]}>{elem.title}</p>
 
-        <div className={style.notificationMsg}>
+        <div className={style["notificationMsg"]}>
           <p>{elem.content}</p>
         </div>
 
-        <div className={style.notificationTime}>
+        <div className={style["notificationTime"]}>
           <p>{time}</p>
         </div>
       </div>
       {flag && (
-        <div className={style.flagged}>
-          <p className={style.flaggedText}>
+        <div className={style["flagged"]}>
+          <p className={style["flaggedText"]}>
             <FormattedMessage id="notification.item.flag-message" />
           </p>
         </div>

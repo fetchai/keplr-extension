@@ -37,7 +37,7 @@ export const VestingInfo: FunctionComponent = observer(() => {
   ]);
 
   return (
-    <Card className={style.card}>
+    <Card className={style["card"]}>
       <CardBody>
         <div
           style={{
@@ -95,10 +95,10 @@ export const VestingInfo: FunctionComponent = observer(() => {
 
           return (
             <div
-              className={styleVestingInfo.tokenContainer}
+              className={styleVestingInfo["tokenContainer"]}
               key={balance.currency.coinMinimalDenom}
             >
-              <div className={styleVestingInfo.icon}>
+              <div className={styleVestingInfo["icon"]}>
                 <div
                   style={{
                     width: "100%",
@@ -117,10 +117,10 @@ export const VestingInfo: FunctionComponent = observer(() => {
                   {name.length > 0 ? name[0] : "?"}
                 </div>
               </div>
-              <div className={styleVestingInfo.innerContainer}>
-                <div className={styleVestingInfo.content}>
-                  <div className={styleVestingInfo.name}>{name}</div>
-                  <div className={styleVestingInfo.amount}>
+              <div className={styleVestingInfo["innerContainer"]}>
+                <div className={styleVestingInfo["content"]}>
+                  <div className={styleVestingInfo["name"]}>{name}</div>
+                  <div className={styleVestingInfo["amount"]}>
                     {amount.maxDecimals(6).toString()}
                   </div>
                 </div>

@@ -12,13 +12,13 @@ function Introduction({
 }) {
   return createPortal(
     <div
-      className={styles.dialog}
+      className={styles["dialog"]}
       style={{
         display: isOpen ? "flex" : "none",
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className={styles.content}>
+      <div className={styles["content"]}>
         <div>
           <svg
             width="56"

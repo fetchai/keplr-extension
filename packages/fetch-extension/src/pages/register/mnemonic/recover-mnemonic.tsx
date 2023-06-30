@@ -262,8 +262,10 @@ export const RecoverMnemonicPage: FunctionComponent<{
 
   return (
     <React.Fragment>
-      <div className={styleRecoverMnemonic.container}>
-        <div className={classnames(style.title, styleRecoverMnemonic.title)}>
+      <div className={styleRecoverMnemonic["container"]}>
+        <div
+          className={classnames(style["title"], styleRecoverMnemonic["title"])}
+        >
           {seedType === SeedType.PRIVATE_KEY
             ? intl.formatMessage({
                 id: "register.recover.alt.private-key.title",
@@ -274,7 +276,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
           <div style={{ flex: 1 }} />
           <div>
             <ButtonDropdown
-              className={styleRecoverMnemonic.dropdown}
+              className={styleRecoverMnemonic["dropdown"]}
               isOpen={showDropdown}
               toggle={() => setShowDropdown((value) => !value)}
             >
@@ -317,7 +319,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
           </div>
         </div>
         <Form
-          className={style.formContainer}
+          className={style["formContainer"]}
           onSubmit={(e) => {
             e.preventDefault();
 
@@ -369,8 +371,8 @@ export const RecoverMnemonicPage: FunctionComponent<{
           }}
         >
           <div
-            className={classnames(styleRecoverMnemonic.mnemonicContainer, {
-              [styleRecoverMnemonic.privateKey]:
+            className={classnames(styleRecoverMnemonic["mnemonicContainer"], {
+              [styleRecoverMnemonic["privateKey"]]:
                 seedType === SeedType.PRIVATE_KEY,
             })}
           >
@@ -378,19 +380,19 @@ export const RecoverMnemonicPage: FunctionComponent<{
               return (
                 <div
                   key={index}
-                  className={styleRecoverMnemonic.mnemonicWordContainer}
+                  className={styleRecoverMnemonic["mnemonicWordContainer"]}
                 >
                   {seedType !== SeedType.PRIVATE_KEY ? (
-                    <div className={styleRecoverMnemonic.order}>
+                    <div className={styleRecoverMnemonic["order"]}>
                       {index + 1}.
                     </div>
                   ) : null}
                   <Input
                     type={shownMnemonicIndex === index ? "text" : "password"}
                     formGroupClassName={
-                      styleRecoverMnemonic.mnemonicWordFormGroup
+                      styleRecoverMnemonic["mnemonicWordFormGroup"]
                     }
-                    className={styleRecoverMnemonic.mnemonicWord}
+                    className={styleRecoverMnemonic["mnemonicWord"]}
                     onPaste={(e) => {
                       e.preventDefault();
 
@@ -445,7 +447,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
             })}
           </div>
           {seedWordsError ? (
-            <div className={styleRecoverMnemonic.alert}>
+            <div className={styleRecoverMnemonic["alert"]}>
               {(() => {
                 if (seedWordsError === "__required__") {
                   if (seedType === SeedType.PRIVATE_KEY) {
@@ -475,7 +477,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
               })()}
             </div>
           ) : null}
-          <div className={styleRecoverMnemonic.formInnerContainer}>
+          <div className={styleRecoverMnemonic["formInnerContainer"]}>
             <Input
               label={intl.formatMessage({
                 id: "register.name",
@@ -518,14 +520,12 @@ export const RecoverMnemonicPage: FunctionComponent<{
                   name="confirmPassword"
                   ref={register({
                     required: intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.required",
+                      id: "register.create.input.confirm-password.error.required",
                     }),
                     validate: (confirmPassword: string): string | undefined => {
                       if (confirmPassword !== getValues()["password"]) {
                         return intl.formatMessage({
-                          id:
-                            "register.create.input.confirm-password.error.unmatched",
+                          id: "register.create.input.confirm-password.error.unmatched",
                         });
                       }
                     },

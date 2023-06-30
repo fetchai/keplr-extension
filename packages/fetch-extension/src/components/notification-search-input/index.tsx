@@ -14,8 +14,8 @@ export const SearchInput = ({
   searchTitle?: string;
 }) => {
   return (
-    <div className={style.searchContainer}>
-      <div className={style.searchBox}>
+    <div className={style["searchContainer"]}>
+      <div className={style["searchBox"]}>
         <img draggable={false} src={searchIcon} alt="search" />
         <input
           placeholder={searchTitle ? searchTitle : "Search"}

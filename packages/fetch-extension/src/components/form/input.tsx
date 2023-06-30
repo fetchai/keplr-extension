@@ -71,7 +71,7 @@ export const Input = forwardRef<
           className={classnames(
             "form-control-alternative",
             className,
-            styleInput.input
+            styleInput["input"]
           )}
           type={type}
           innerRef={ref}

@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useLayoutEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
-import { EmptyLayout } from "../../../layouts/empty-layout";
+import { EmptyLayout } from "@layouts/empty-layout";
 import style from "./style.module.scss";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { useIntl } from "react-intl";
@@ -38,25 +38,25 @@ export const ICNSAdr36SignPage: FunctionComponent = observer(() => {
 
   return (
     <EmptyLayout style={{ height: "100%" }}>
-      <div className={style.container}>
+      <div className={style["container"]}>
         <img
           src={require("../../../public/assets/icns-logo.png")}
-          className={style.logo}
+          className={style["logo"]}
         />
-        <h1 className={style.title}>
+        <h1 className={style["title"]}>
           {intl.formatMessage({
             id: "sign.icns.registration.title",
           })}
         </h1>
-        <div className={style.namesContainer}>
+        <div className={style["namesContainer"]}>
           {icnsInteractionStore.waitingData?.data.accountInfos.map(
             (accountInfo, i) => {
               return (
-                <div key={i} className={style.nameContainer}>
+                <div key={i} className={style["nameContainer"]}>
                   <div
-                    className={style.name}
+                    className={style["name"]}
                   >{`${icnsInteractionStore.waitingData?.data.username}.${accountInfo.bech32Prefix}`}</div>
-                  <div className={style.address}>
+                  <div className={style["address"]}>
                     {Bech32Address.shortenAddress(
                       accountInfo.bech32Address,
                       30
@@ -67,9 +67,9 @@ export const ICNSAdr36SignPage: FunctionComponent = observer(() => {
             }
           )}
         </div>
-        <div className={style.buttons}>
+        <div className={style["buttons"]}>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="danger"
             outline={true}
             onClick={(e) => {
@@ -89,7 +89,7 @@ export const ICNSAdr36SignPage: FunctionComponent = observer(() => {
             })}
           </Button>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="primary"
             disabled={!icnsInteractionStore.waitingData}
             onClick={(e) => {

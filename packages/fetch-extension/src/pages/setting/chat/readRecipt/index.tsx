@@ -7,7 +7,7 @@ import React, { FunctionComponent, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useIntl } from "react-intl";
 import { store } from "@chatStore/index";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { setMessagingPubKey, userDetails } from "@chatStore/user-slice";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { HeaderLayout } from "@layouts/index";
@@ -18,7 +18,7 @@ import amplitude from "amplitude-js";
 import { GRAPHQL_URL } from "../../../../config.ui.var";
 
 export const ReadRecipt: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const loadingIndicator = useLoadingIndicator();
@@ -72,10 +72,10 @@ export const ReadRecipt: FunctionComponent = observer(() => {
         id: "setting.receipts",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title={intl.formatMessage({
             id: "setting.privacy.chat.receipts.on",

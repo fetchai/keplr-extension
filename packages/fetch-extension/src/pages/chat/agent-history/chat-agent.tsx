@@ -4,7 +4,7 @@ import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
 import amplitude from "amplitude-js";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import style from "../style.module.scss";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
@@ -18,13 +18,13 @@ export const ChatAgent: React.FC<{
   const [message, setMessage] = useState("");
   // const [groupData, setGroupData] = useState(group);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     amplitude.getInstance().logEvent("Open Agent click", {
       from: "Chat history",
     });
-    history.push(`/chat/agent/${targetAddress}`);
+    navigate(`/chat/agent/${targetAddress}`);
   };
 
   /// Current wallet user
@@ -93,8 +93,7 @@ export const ChatAgent: React.FC<{
 
     /// Storing decryptin address into the group object and updating the UI
     if (tempSenderAddress && tempReceiverAddress) {
-      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
-      tempGroup.addresses = tempGroupAddress;
+      tempGroup.addresses = [tempSenderAddress, tempReceiverAddress];
       // setGroupData(tempGroup);
     }
   };
@@ -128,15 +127,15 @@ export const ChatAgent: React.FC<{
 
   return (
     <div
-      className={style.group}
+      className={style["group"]}
       style={{ position: "relative" }}
       onClick={handleClick}
     >
       <img src={require("@assets/svg/fetchbot.svg")} width="40px" />
-      <div className={style.messageInner}>
-        <div className={style.name}>{contactName}</div>
+      <div className={style["messageInner"]}>
+        <div className={style["name"]}>{contactName}</div>
         <div
-          className={style.messageText}
+          className={style["messageText"]}
           onClick={(e) => {
             e.preventDefault();
           }}

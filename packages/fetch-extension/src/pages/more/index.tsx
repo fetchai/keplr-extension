@@ -17,14 +17,14 @@ export const MorePage: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <Card className={classnames(style.card, "shadow")}>
+      <Card className={classnames(style["card"], "shadow")}>
         <CardBody>
           <IBCTransferView />
         </CardBody>
       </Card>
 
       {chainStore.current.govUrl && (
-        <Card className={classnames(style.card, "shadow")}>
+        <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <ProposalView />
           </CardBody>

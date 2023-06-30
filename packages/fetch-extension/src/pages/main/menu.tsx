@@ -5,21 +5,21 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 
 import { FormattedMessage } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import amplitude from "amplitude-js";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore } = useStore();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
-    <div className={styleMenu.container}>
+    <div className={styleMenu["container"]}>
       <div
-        className={styleMenu.item}
+        className={styleMenu["item"]}
         onClick={() => {
           amplitude.getInstance().logEvent("Address book viewed", {});
-          history.push({
+          navigate({
             pathname: "/setting/address-book",
           });
         }}
@@ -27,9 +27,9 @@ export const Menu: FunctionComponent = observer(() => {
         <FormattedMessage id="main.menu.address-book" />
       </div>
       <div
-        className={styleMenu.item}
+        className={styleMenu["item"]}
         onClick={() => {
-          history.push({
+          navigate({
             pathname: "/setting",
           });
         }}
@@ -37,7 +37,7 @@ export const Menu: FunctionComponent = observer(() => {
         <FormattedMessage id="main.menu.settings" />
       </div>
       <a
-        className={styleMenu.item}
+        className={styleMenu["item"]}
         href="https://docs.fetch.ai/fetch-wallet/"
         target="_blank"
         rel="noopener noreferrer"
@@ -48,9 +48,9 @@ export const Menu: FunctionComponent = observer(() => {
         (feature) => feature === "cosmwasm" || feature === "secretwasm"
       ) ? (
         <div
-          className={styleMenu.item}
+          className={styleMenu["item"]}
           onClick={() => {
-            history.push({
+            navigate({
               pathname: "/setting/token/add",
             });
           }}
@@ -62,9 +62,9 @@ export const Menu: FunctionComponent = observer(() => {
         (feature) => feature === "cosmwasm" || feature === "secretwasm"
       ) ? (
         <div
-          className={styleMenu.item}
+          className={styleMenu["item"]}
           onClick={() => {
-            history.push({
+            navigate({
               pathname: "/setting/token/manage",
             });
           }}
@@ -75,10 +75,10 @@ export const Menu: FunctionComponent = observer(() => {
       {/* Empty div for separating last item */}
       <div style={{ flex: 1 }} />
       <div
-        className={styleMenu.item}
+        className={styleMenu["item"]}
         onClick={() => {
           keyRingStore.lock();
-          history.push("/");
+          navigate("/");
         }}
       >
         <FormattedMessage id="main.menu.sign-out" />
@@ -86,9 +86,9 @@ export const Menu: FunctionComponent = observer(() => {
       <div>
         <hr className="mx-4 my-1" />
       </div>
-      <div className={styleMenu.footer}>
+      <div className={styleMenu["footer"]}>
         <a
-          className={styleMenu.inner}
+          className={styleMenu["inner"]}
           href="https://github.com/fetchai/keplr-extension"
           target="_blank"
           rel="noopener noreferrer"

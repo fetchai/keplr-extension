@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Button } from "reactstrap";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 import styleTransfer from "./ibc-transfer.module.scss";
 import classnames from "classnames";
@@ -10,7 +10,7 @@ import { Dec } from "@keplr-wallet/unit";
 import { FormattedMessage } from "react-intl";
 
 export const IBCTransferView: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { accountStore, chainStore, queriesStore } = useStore();
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
@@ -24,14 +24,14 @@ export const IBCTransferView: FunctionComponent = observer(() => {
     undefined;
 
   return (
-    <div className={styleTransfer.containerInner}>
-      <div className={styleTransfer.vertical}>
+    <div className={styleTransfer["containerInner"]}>
+      <div className={styleTransfer["vertical"]}>
         <p
           className={classnames(
             "h2",
             "my-0",
             "font-weight-normal",
-            styleTransfer.paragraphMain
+            styleTransfer["paragraphMain"]
           )}
         >
           <FormattedMessage id="main.ibc.transfer.title" />
@@ -41,7 +41,7 @@ export const IBCTransferView: FunctionComponent = observer(() => {
             "h4",
             "my-0",
             "font-weight-normal",
-            styleTransfer.paragraphSub
+            styleTransfer["paragraphSub"]
           )}
         >
           <FormattedMessage id="main.ibc.transfer.paragraph" />
@@ -49,7 +49,7 @@ export const IBCTransferView: FunctionComponent = observer(() => {
       </div>
       <div style={{ flex: 1 }} />
       <Button
-        className={styleTransfer.button}
+        className={styleTransfer["button"]}
         color="primary"
         size="sm"
         disabled={
@@ -59,7 +59,7 @@ export const IBCTransferView: FunctionComponent = observer(() => {
         onClick={(e) => {
           e.preventDefault();
 
-          history.push("/ibc-transfer");
+          navigate("/ibc-transfer");
         }}
       >
         <FormattedMessage id="main.ibc.transfer.button" />

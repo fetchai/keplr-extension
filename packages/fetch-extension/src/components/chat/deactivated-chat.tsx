@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { HeaderLayout } from "@layouts/index";
 import { Menu } from "../../pages/main/menu";
 import { SwitchUser } from "../switch-user";
 import style from "./style.module.scss";
 
 export const DeactivatedChat = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <HeaderLayout
@@ -17,9 +17,9 @@ export const DeactivatedChat = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div className={style.lockedInnerContainer}>
+      <div className={style["lockedInnerContainer"]}>
         <img
-          className={style.imgLock}
+          className={style["imgLock"]}
           src={require("@assets/img/icons8-lock.svg")}
           alt="lock"
         />
@@ -38,7 +38,7 @@ export const DeactivatedChat = () => {
           }}
           onClick={(e) => {
             e.preventDefault();
-            history.push("/setting/chat/privacy");
+            navigate("/setting/chat/privacy");
           }}
         >
           Go to chat privacy settings

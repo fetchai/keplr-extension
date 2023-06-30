@@ -12,16 +12,8 @@ interface Props {
   closed: boolean;
 }
 export const VoteBlock: FunctionComponent<Props> = (props) => {
-  const {
-    title,
-    icon,
-    color,
-    activeColor,
-    id,
-    selected,
-    handleClick,
-    closed,
-  } = props;
+  const { title, icon, color, activeColor, id, selected, handleClick, closed } =
+    props;
   const isSelected = id === selected;
   const bgColor = isSelected ? activeColor : color;
   const txtColor = isSelected ? "white" : "#525F7F";
@@ -29,15 +21,15 @@ export const VoteBlock: FunctionComponent<Props> = (props) => {
   const cursor = closed ? "not-allowed" : "pointer";
   return (
     <div
-      className={classNames(style.voteBlock)}
+      className={classNames(style["voteBlock"])}
       style={{ backgroundColor: bgColor, cursor: cursor }}
       onClick={() => handleClick(id)}
     >
       <img
-        className={style.voteImage}
+        className={style["voteImage"]}
         src={require(`@assets/svg/${Icon}.svg`)}
       />
-      <p className={style.voteText} style={{ color: txtColor }}>
+      <p className={style["voteText"]} style={{ color: txtColor }}>
         {title}
       </p>
     </div>

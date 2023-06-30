@@ -1,9 +1,9 @@
 import React from "react";
 import { FunctionComponent } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 export const SwitchUser: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <div
       style={{
@@ -19,7 +19,7 @@ export const SwitchUser: FunctionComponent = () => {
         onClick={(e) => {
           e.preventDefault();
 
-          history.push("/setting/set-keyring");
+          navigate("/setting/set-keyring");
         }}
       >
         <i

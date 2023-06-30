@@ -12,15 +12,14 @@ import { HeaderLayout } from "@layouts/index";
 import { fetchPublicKey } from "@utils/fetch-public-key";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { useStore } from "../../stores";
 import { Menu } from "../main/menu";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
 
 export const AgentChatSection: FunctionComponent = () => {
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const targetAddress = useLocation().pathname.split("/")[3];
   const user = useSelector(userDetails);
 
   const [targetPubKey, setTargetPubKey] = useState("");

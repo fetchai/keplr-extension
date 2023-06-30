@@ -64,13 +64,13 @@ export const ImportKeystonePage: FunctionComponent<{
 
   return (
     <div>
-      <div className={style.title}>
+      <div className={style["title"]}>
         {intl.formatMessage({
           id: "register.name",
         })}
       </div>
       <Form
-        className={style.formContainer}
+        className={style["formContainer"]}
         onSubmit={handleSubmit(async (data: FormData) => {
           try {
             await registerConfig.createKeystone(

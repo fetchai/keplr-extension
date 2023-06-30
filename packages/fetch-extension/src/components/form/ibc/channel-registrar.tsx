@@ -47,7 +47,7 @@ export const IBCChannelRegistrarModal: FunctionComponent<{
             </Label>
             <ButtonDropdown
               id="chain-dropdown"
-              className={style.chainSelector}
+              className={style["chainSelector"]}
               isOpen={isChainDropdownOpen}
               toggle={() => setIsChainDropdownOpen((value) => !value)}
             >
@@ -89,12 +89,10 @@ export const IBCChannelRegistrarModal: FunctionComponent<{
           <Input
             type="text"
             label={intl.formatMessage({
-              id:
-                "component.ibc.channel-registrar.chain-selector.add.channel.label",
+              id: "component.ibc.channel-registrar.chain-selector.add.channel.label",
             })}
             placeholder={intl.formatMessage({
-              id:
-                "component.ibc.channel-registrar.chain-selector.add.channel.placeholder",
+              id: "component.ibc.channel-registrar.chain-selector.add.channel.placeholder",
             })}
             onChange={(e) => {
               e.preventDefault();

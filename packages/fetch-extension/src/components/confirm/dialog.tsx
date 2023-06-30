@@ -17,13 +17,13 @@ export const ConfirmDialog: FunctionComponent<{
   onReject?: () => void;
 }> = ({ img: imgElement, title, paragraph, yes, no, onConfirm, onReject }) => {
   return (
-    <div className={style.dialog}>
-      <div className={style.bodyContainer}>
+    <div className={style["dialog"]}>
+      <div className={style["bodyContainer"]}>
         {imgElement ? imgElement : null}
         {title ? <h1>{title}</h1> : null}
         <p>{paragraph}</p>
       </div>
-      <div className={style.buttons}>
+      <div className={style["buttons"]}>
         <Button
           type="button"
           size="sm"

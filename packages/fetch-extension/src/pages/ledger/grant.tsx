@@ -199,13 +199,13 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
   };
 
   return (
-    <EmptyLayout className={style.container}>
+    <EmptyLayout className={style["container"]}>
       {ledgerInitStore.isSignCompleted ? (
         <SignCompleteDialog rejected={ledgerInitStore.isSignRejected} />
       ) : initSucceed ? (
         <ConfirmLedgerDialog />
       ) : (
-        <div className={style.instructions}>
+        <div className={style["instructions"]}>
           <Instruction
             icon={
               <img
@@ -359,10 +359,10 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
               />
             </div>
           ) : null}
-          <div className={style.buttons}>
+          <div className={style["buttons"]}>
             <Button
               color="primary"
-              className={style.button}
+              className={style["button"]}
               onClick={async (e) => {
                 e.preventDefault();
                 await tryInit();
@@ -373,7 +373,7 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
             </Button>
             <Button
               color="danger"
-              className={style.button}
+              className={style["button"]}
               onClick={async (e) => {
                 e.preventDefault();
                 ledgerInitStore.abortAll();
@@ -392,7 +392,7 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
 
 const ConfirmLedgerDialog: FunctionComponent = () => {
   return (
-    <div className={style.confirmLedgerDialog}>
+    <div className={style["confirmLedgerDialog"]}>
       <div
         style={{
           flex: 1,
@@ -426,7 +426,7 @@ const SignCompleteDialog: FunctionComponent<{
   const intl = useIntl();
 
   return (
-    <div className={style.signCompleteDialog}>
+    <div className={style["signCompleteDialog"]}>
       <div
         style={{
           flex: 1,
@@ -454,7 +454,7 @@ const SignCompleteDialog: FunctionComponent<{
           justifyContent: "flex-start",
         }}
       >
-        <div className={style.subParagraph}>
+        <div className={style["subParagraph"]}>
           {!rejected
             ? intl.formatMessage({ id: "ledger.confirm.success.paragraph" })
             : intl.formatMessage({ id: "ledger.confirm.rejected.paragraph" })}
@@ -471,9 +471,11 @@ const Instruction: FunctionComponent<{
   pass: boolean;
 }> = ({ icon, title, paragraph, children, pass }) => {
   return (
-    <div className={classnames(style.instruction, { [style.pass]: pass })}>
-      <div className={style.icon}>{icon}</div>
-      <div className={style.inner}>
+    <div
+      className={classnames(style["instruction"], { [style["pass"]]: pass })}
+    >
+      <div className={style["icon"]}>{icon}</div>
+      <div className={style["inner"]}>
         <h1>
           {title}
           {pass ? (

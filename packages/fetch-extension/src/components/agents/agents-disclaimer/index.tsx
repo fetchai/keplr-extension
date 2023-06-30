@@ -5,8 +5,9 @@ import style from "./style.module.scss";
 
 export const AgentDisclaimer = () => {
   const { chainStore, accountStore } = useStore();
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {
@@ -25,8 +26,8 @@ export const AgentDisclaimer = () => {
 
   return openDialog ? (
     <React.Fragment>
-      <div className={style.overlay} onClick={() => handleClose()} />
-      <div className={style.popupContainer}>
+      <div className={style["overlay"]} onClick={() => handleClose()} />
+      <div className={style["popupContainer"]}>
         <img
           draggable={false}
           src={closeIcon}
@@ -41,7 +42,7 @@ export const AgentDisclaimer = () => {
           }}
           onClick={() => handleClose()}
         />
-        <div className={style.infoContainer}>
+        <div className={style["infoContainer"]}>
           <h3>Fetchbot disclaimer</h3>
           <p>
             Fetchbot is powered by an AI language model. As such it has similar

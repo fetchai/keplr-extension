@@ -1,6 +1,6 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Button } from "reactstrap";
 import { ProposalSetup, ProposalType } from "src/@types/proposal-type";
 import style from "./style.module.scss";
@@ -9,7 +9,9 @@ import { useSelector } from "react-redux";
 import { useProposals } from "@chatStore/proposal-slice";
 import { FormattedMessage, useIntl } from "react-intl";
 export const PropsalVoteStatus: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const intl = useIntl();
   const { votedOn, id } = useParams<{ votedOn?: string; id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
@@ -57,14 +59,14 @@ export const PropsalVoteStatus: FunctionComponent = () => {
   }, [id]);
 
   const handleReturnHome = () => {
-    history.replace("/");
+    navigate("/", { replace: true });
   };
   const handleChangeVote = () => {
-    if (history.location.search === "?true") {
-      history.replace(`/proposal-detail/${id}`);
+    if (location.search === "?true") {
+      navigate(`/proposal-detail/${id}`, { replace: true });
       return;
     }
-    history.goBack();
+    navigate(-1);
   };
   return (
     <HeaderLayout
@@ -74,31 +76,34 @@ export const PropsalVoteStatus: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
       showBottomMenu={false}
     >
-      <div className={style.pContainer}>
-        <div className={style.pCenter}>
-          <p className={style.pTitle}>{proposal?.content.title}</p>
+      <div className={style["pContainer"]}>
+        <div className={style["pCenter"]}>
+          <p className={style["pTitle"]}>{proposal?.content.title}</p>
           <img
             src={require(`@assets/svg/${icon}`)}
-            className={style.pImage}
+            className={style["pImage"]}
             alt={"Proposal_icon"}
           />
-          <p className={style.voteText} style={{ color: color }}>
+          <p className={style["voteText"]} style={{ color: color }}>
             {`Voted ${text}`}
           </p>
         </div>
-        <div className={style.pButtonContainer}>
+        <div className={style["pButtonContainer"]}>
           <Button
-            className={classNames(style.whiteButton, style.invertedButton)}
+            className={classNames(
+              style["whiteButton"],
+              style["invertedButton"]
+            )}
             onClick={handleChangeVote}
           >
             <FormattedMessage id="proposal.change.vote" />
           </Button>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="primary"
             onClick={handleReturnHome}
           >

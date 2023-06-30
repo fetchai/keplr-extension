@@ -11,13 +11,13 @@ export const NotificationOption: FunctionComponent<Props> = (props) => {
   const { name, isChecked, handleOnChange } = props;
 
   return (
-    <div className={style.notificationOptionContainer}>
-      <label className={style.switch}>
+    <div className={style["notificationOptionContainer"]}>
+      <label className={style["switch"]}>
         <input type="checkbox" checked={isChecked} onChange={handleOnChange} />
-        <span className={style.slider} />
+        <span className={style["slider"]} />
       </label>
 
-      <p className={style.notificationOption}>{name}</p>
+      <p className={style["notificationOption"]}>{name}</p>
     </div>
   );
 };

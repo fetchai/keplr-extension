@@ -19,7 +19,7 @@ import { deliverMessages } from "@graphQL/messages-api";
 import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { ChainInfoInner } from "@keplr-wallet/stores";
 import { Int } from "@keplr-wallet/unit";
@@ -47,8 +47,7 @@ export const IBCChainSelector: FunctionComponent<{
   const current = chainStore.current;
   const ibcChannelInfo = ibcChannelStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const targetAddress = useLocation().pathname.split("/")[3];
   const notification = useNotification();
   const user = useSelector(userDetails);
 
@@ -168,7 +167,7 @@ export const IBCChainSelector: FunctionComponent<{
         <ButtonDropdown
           disabled={disabled}
           id={selectorId}
-          className={style.chainSelector}
+          className={style["chainSelector"]}
           isOpen={isSelectorOpen}
           toggle={() => setIsSelectorOpen((value) => !value)}
         >
@@ -199,7 +198,7 @@ export const IBCChainSelector: FunctionComponent<{
                     }}
                   >
                     {chainInfo.chainName}
-                    <div className={style.channel}>{channel.channelId}</div>
+                    <div className={style["channel"]}>{channel.channelId}</div>
                   </DropdownItem>
                 );
               }

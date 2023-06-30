@@ -69,7 +69,7 @@ export const ChatMember = (props: {
     }
 
     if (isActive && isShowAdmin) {
-      return <div className={style.adminHeading}>Admin </div>;
+      return <div className={style["adminHeading"]}>Admin </div>;
     }
 
     /// [alreadyMember] Member is already a part of group
@@ -105,25 +105,25 @@ export const ChatMember = (props: {
   return (
     <div
       className={classnames(
-        style.memberContainer,
-        showPointer || isActive ? style.showPointer : {}
+        style["memberContainer"],
+        showPointer || isActive ? style["showPointer"] : {}
       )}
       {...(isActive && { onClick: onClick })}
     >
-      <div className={style.initials}>
+      <div className={style["initials"]}>
         {ReactHtmlParser(
           jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
             .outerHTML
         )}
       </div>
-      <div className={style.memberInner}>
-        <div className={style.name}>{formatAddress(name)}</div>
+      <div className={style["memberInner"]}>
+        <div className={style["name"]}>{formatAddress(name)}</div>
         {alreadyMember?.length > 1 && (
-          <div className={style.alreadyMemberText}>
+          <div className={style["alreadyMemberText"]}>
             Already added to the group
           </div>
         )}
-        {!isActive && <div className={style.inactiveText}>Inactive</div>}
+        {!isActive && <div className={style["inactiveText"]}>Inactive</div>}
       </div>
       {decideIconLabelView()}
     </div>

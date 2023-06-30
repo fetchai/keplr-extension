@@ -43,7 +43,7 @@ export const DepositModal: FunctionComponent<{
         setIsDepositOpen(false);
       }}
     >
-      <div className={StyleQrCode.depositModal}>
+      <div className={StyleQrCode["depositModal"]}>
         <h3 style={{ marginBottom: "8px" }}>
           Deposit to your address to receive tokens
         </h3>

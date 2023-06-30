@@ -7,17 +7,16 @@ import { useStore } from "../../../stores";
 import { Button } from "reactstrap";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 
-export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observer(
-  () => {
+export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
+  observer(() => {
     const { generalPermissionStore } = useStore();
 
     const ineractionInfo = useInteractionInfo(() => {
       generalPermissionStore.rejectAllGlobalPermission();
     });
 
-    const waitingPermissions = generalPermissionStore.getWaitingGlobalPermissions(
-      "get-chain-infos"
-    );
+    const waitingPermissions =
+      generalPermissionStore.getWaitingGlobalPermissions("get-chain-infos");
 
     const host = useMemo(() => {
       if (waitingPermissions.length > 0) {
@@ -33,16 +32,16 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
 
     return (
       <EmptyLayout style={{ height: "100%", paddingTop: "80px" }}>
-        <div className={style.container}>
+        <div className={style["container"]}>
           <img
             src={require("../../../public/assets/logo-256.svg")}
             alt="logo"
             style={{ width: "92px", height: "92px", margin: "0 auto" }}
           />
-          <h1 className={style.header}>
+          <h1 className={style["header"]}>
             <FormattedMessage id="access.title" />
           </h1>
-          <p className={style.paragraph}>
+          <p className={style["paragraph"]}>
             <FormattedMessage
               id="permissions.grant.get-chain-infos.description.title"
               values={{
@@ -52,7 +51,7 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
               }}
             />
           </p>
-          <div className={style.permission}>
+          <div className={style["permission"]}>
             <FormattedMessage id="access.permission.title" />
           </div>
           <ul>
@@ -61,9 +60,9 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
             </li>
           </ul>
           <div style={{ flex: 1 }} />
-          <div className={style.buttons}>
+          <div className={style["buttons"]}>
             <Button
-              className={style.button}
+              className={style["button"]}
               color="danger"
               outline
               onClick={async (e) => {
@@ -92,7 +91,7 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
               <FormattedMessage id="access.button.reject" />
             </Button>
             <Button
-              className={style.button}
+              className={style["button"]}
               color="primary"
               onClick={async (e) => {
                 e.preventDefault();
@@ -124,5 +123,4 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
         </div>
       </EmptyLayout>
     );
-  }
-);
+  });

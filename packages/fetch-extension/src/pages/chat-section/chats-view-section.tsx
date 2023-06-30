@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
@@ -34,8 +34,7 @@ export const ChatsViewSection = ({
   targetPubKey: string;
   handleClick: any;
 }) => {
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[2];
+  const targetAddress = useLocation().pathname.split("/")[2];
 
   let enterKeyCount = 0;
   const user = useSelector(userDetails);
@@ -162,8 +161,7 @@ export const ChatsViewSection = ({
 
     /// Storing decryptin address into the group object and updating the UI
     if (tempSenderAddress && tempReceiverAddress) {
-      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
-      tempGroup.addresses = tempGroupAddress;
+      tempGroup.addresses = [tempSenderAddress, tempReceiverAddress];
       setGroup(tempGroup);
     }
   };
@@ -247,8 +245,9 @@ export const ChatsViewSection = ({
     (val) => val.address === targetAddress
   );
   useEffect(() => {
-    const time = group?.addresses.find((val) => val.address !== targetAddress)
-      ?.lastSeenTimestamp;
+    const time = group?.addresses.find(
+      (val) => val.address !== targetAddress
+    )?.lastSeenTimestamp;
     if (lastUnreadMesageId === "") {
       const firstMessageUnseen = messages
         .filter((message) => message.commitTimestamp > Number(time))
@@ -302,11 +301,11 @@ export const ChatsViewSection = ({
 
   return (
     <div
-      className={`${style.chatArea} ${
-        isNewUser ? style.showButton : style.hideButton
+      className={`${style["chatArea"]} ${
+        isNewUser ? style["showButton"] : style["hideButton"]
       }`}
     >
-      <div className={style.messages}>
+      <div className={style["messages"]}>
         {pagination?.lastPage <= pagination?.page && (
           <React.Fragment>
             {isNewUser && (
@@ -325,7 +324,7 @@ export const ChatsViewSection = ({
           (pagination?.page === -1 ||
             messages.length === 30 ||
             messages.length == 0) && (
-            <div ref={messagesStartRef} className={style.loader}>
+            <div ref={messagesStartRef} className={style["loader"]}>
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}
@@ -377,7 +376,7 @@ export const ChatsViewSection = ({
         onClick={handleSendMessage}
         onKeyDown={handleKeydown}
         disabled={isBlocked}
-        isTargetPubKeyAvailable={targetPubKey.length ? true : false}
+        isTargetPubKeyAvailable={!!targetPubKey.length}
       />
     </div>
   );

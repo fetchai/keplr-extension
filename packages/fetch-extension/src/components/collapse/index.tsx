@@ -15,27 +15,27 @@ export const Collapse: FunctionComponent<Props> = (props) => {
   return (
     <div
       className={classNames(
-        styleCollapse.container,
-        styleCollapse.flexVertical
+        styleCollapse["container"],
+        styleCollapse["flexVertical"]
       )}
     >
       <div
         className={classNames(
-          styleCollapse.flexHorizontal,
-          styleCollapse.itemsCenter,
-          styleCollapse.contentBetween,
-          styleCollapse.clickable
+          styleCollapse["flexHorizontal"],
+          styleCollapse["itemsCenter"],
+          styleCollapse["contentBetween"],
+          styleCollapse["clickable"]
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className={styleCollapse.title}>{title}</div>
+        <div className={styleCollapse["title"]}>{title}</div>
 
-        <div className={styleCollapse.flexHorizontal}>
-          <div className={styleCollapse.count}>
+        <div className={styleCollapse["flexHorizontal"]}>
+          <div className={styleCollapse["count"]}>
             {count ? <div>{count}</div> : null}
           </div>
 
-          <div className={isOpen ? undefined : styleCollapse.rotate}>
+          <div className={isOpen ? undefined : styleCollapse["rotate"]}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5.25 15.375L12 8.625L18.75 15.375"

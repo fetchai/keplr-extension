@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import style from "../style.module.scss";
 import amplitude from "amplitude-js";
@@ -17,11 +17,9 @@ export const ChatGroupUser: React.FC<{
   encryptedSymmetricKey: string;
   addresses: NameAddress;
 }> = ({ chainId, group, encryptedSymmetricKey, addresses }) => {
-  const [
-    decryptedMessage,
-    setDecryptedMessage,
-  ] = useState<GroupMessagePayload>();
-  const history = useHistory();
+  const [decryptedMessage, setDecryptedMessage] =
+    useState<GroupMessagePayload>();
+  const navigate = useNavigate();
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -31,7 +29,7 @@ export const ChatGroupUser: React.FC<{
     amplitude.getInstance().logEvent("Open Group click", {
       from: "Chat history",
     });
-    history.push(`/chat/group-chat-section/${group.id}`);
+    navigate(`/chat/group-chat-section/${group.id}`);
   };
 
   useEffect(() => {
@@ -58,7 +56,7 @@ export const ChatGroupUser: React.FC<{
 
   return (
     <div
-      className={style.group}
+      className={style["group"]}
       style={{ position: "relative" }}
       onClick={handleClick}
     >
@@ -80,16 +78,16 @@ export const ChatGroupUser: React.FC<{
             }}
           />
         )} */}
-      <div className={style.initials}>
+      <div className={style["initials"]}>
         <img
-          className={style.groupImage}
+          className={style["groupImage"]}
           src={require("@assets/group710.svg")}
         />
       </div>
-      <div className={style.messageInner}>
-        <div className={style.name}>{group.name}</div>
+      <div className={style["messageInner"]}>
+        <div className={style["name"]}>{group.name}</div>
         <div
-          className={style.messageText}
+          className={style["messageText"]}
           onClick={(e) => {
             e.preventDefault();
           }}

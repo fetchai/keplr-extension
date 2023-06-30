@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { PageButton } from "../../page-button";
 
 import style from "./style.module.scss";
@@ -14,7 +14,7 @@ import { useIntl } from "react-intl";
 import { ToolTip } from "@components/tooltip";
 
 export const ManageTokenPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const notification = useNotification();
   const confirm = useConfirm();
@@ -59,10 +59,10 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
         id: "main.menu.token-list",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         {appCurrencies.map((currency) => {
           const cosmwasmToken = currency as CW20Currency | Secret20Currency;
 
@@ -78,8 +78,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
               tooltip={
                 <div>
                   {intl.formatMessage({
-                    id:
-                      "setting.token.manage.notification.contract-address.copy.hover",
+                    id: "setting.token.manage.notification.contract-address.copy.hover",
                   })}
                 </div>
               }
@@ -113,8 +112,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
                 tooltip={
                   <div>
                     {intl.formatMessage({
-                      id:
-                        "setting.token.manage.notification.viewing-key.copy.hover",
+                      id: "setting.token.manage.notification.viewing-key.copy.hover",
                     })}
                   </div>
                 }
@@ -149,7 +147,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
               onClick={(e) => {
                 e.preventDefault();
 
-                history.push(
+                navigate(
                   `/setting/connections/viewing-key/${currency.contractAddress}`
                 );
               }}

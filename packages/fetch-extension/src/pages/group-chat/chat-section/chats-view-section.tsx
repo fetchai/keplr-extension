@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { AddressBookConfigMap } from "@keplr-wallet/hooks";
 import { Chats, Group, Groups, GroupAddress, NameAddress } from "@chatTypes";
@@ -29,8 +29,7 @@ export const GroupChatsViewSection = ({
 }: {
   isMemberRemoved: boolean;
 }) => {
-  const history = useHistory();
-  const groupId = history.location.pathname.split("/")[3];
+  const groupId = useLocation().pathname.split("/")[3];
 
   let enterKeyCount = 0;
   const user = useSelector(userDetails);
@@ -223,13 +222,13 @@ export const GroupChatsViewSection = ({
   };
 
   return (
-    <div className={style.chatArea}>
-      <div className={style.messages}>
+    <div className={style["chatArea"]}>
+      <div className={style["messages"]}>
         {pagination?.lastPage > pagination?.page &&
           (pagination?.page === -1 ||
             messages.length === 30 ||
             messages.length == 0) && (
-            <div ref={messagesStartRef} className={style.loader}>
+            <div ref={messagesStartRef} className={style["loader"]}>
               Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
             </div>
           )}

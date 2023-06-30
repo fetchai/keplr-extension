@@ -1,6 +1,6 @@
 import { CommonPopupOptions } from "@chatTypes";
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { AlertPopup } from "./alert-popup";
 import { BlockUserPopup } from "./block-user-popup";
 import { DeleteChatPopup } from "./delete-chat-popup";
@@ -17,9 +17,8 @@ export const ChatActionsPopup = ({
   handleAction?: () => void;
 }) => {
   const [processing, setProcessing] = useState(false);
-  const history = useHistory();
   /// Target address for one to one chat
-  const targetAddress = history.location.pathname.split("/")[2];
+  const targetAddress = useLocation().pathname.split("/")[2];
 
   const handleLeaveGroup = async () => {
     setProcessing(true);

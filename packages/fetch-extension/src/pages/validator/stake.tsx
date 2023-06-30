@@ -12,14 +12,14 @@ import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo } from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 
 export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
   ({ validatorAddress }) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { chainStore, accountStore, queriesStore } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
 
@@ -109,7 +109,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
                   duration: 0.25,
                 },
               });
-              history.push("/stake-complete/" + validatorAddress);
+              navigate("/stake-complete/" + validatorAddress);
             },
           }
         );
@@ -124,7 +124,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
             duration: 0.25,
           },
         });
-        history.replace("/");
+        navigate("/", { replace: true });
       }
     };
 
@@ -133,7 +133,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
         <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
           <Label className="form-control-label" style={{ width: "100%" }}>
             <div
-              className={style.balance}
+              className={style["balance"]}
               onClick={(e) => {
                 e.preventDefault();
                 amountConfig.toggleIsMax();

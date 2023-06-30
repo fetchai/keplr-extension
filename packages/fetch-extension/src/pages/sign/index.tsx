@@ -12,7 +12,7 @@ import { DataTab } from "./data-tab";
 import { DetailsTab } from "./details-tab";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   useFeeConfig,
@@ -33,7 +33,7 @@ enum Tab {
 }
 
 export const SignPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState<Tab>(Tab.Details);
 
@@ -234,7 +234,7 @@ export const SignPage: FunctionComponent = observer(() => {
       onBackButton={
         interactionInfo.interactionInternal
           ? () => {
-              history.goBack();
+              navigate(-1);
             }
           : undefined
       }
@@ -247,12 +247,12 @@ export const SignPage: FunctionComponent = observer(() => {
          If sign data not delivered yet, show the spinner alternatively.
          */
         isLoaded ? (
-          <div className={style.container}>
-            <div className={classnames(style.tabs)}>
+          <div className={style["container"]}>
+            <div className={classnames(style["tabs"])}>
               <ul>
                 <li className={classnames({ active: tab === Tab.Details })}>
                   <a
-                    className={style.tab}
+                    className={style["tab"]}
                     onClick={() => {
                       setTab(Tab.Details);
                     }}
@@ -264,7 +264,7 @@ export const SignPage: FunctionComponent = observer(() => {
                 </li>
                 <li className={classnames({ active: tab === Tab.Data })}>
                   <a
-                    className={style.tab}
+                    className={style["tab"]}
                     onClick={() => {
                       setTab(Tab.Data);
                     }}
@@ -277,8 +277,8 @@ export const SignPage: FunctionComponent = observer(() => {
               </ul>
             </div>
             <div
-              className={classnames(style.tabContainer, {
-                [style.dataTab]: tab === Tab.Data,
+              className={classnames(style["tabContainer"], {
+                [style["dataTab"]]: tab === Tab.Data,
               })}
             >
               {tab === Tab.Data ? (
@@ -312,11 +312,11 @@ export const SignPage: FunctionComponent = observer(() => {
                 )
               ) : null}
             </div>
-            <div className={style.buttons}>
+            <div className={style["buttons"]}>
               {keyRingStore.keyRingType === "ledger" &&
               signInteractionStore.isLoading ? (
                 <Button
-                  className={style.button}
+                  className={style["button"]}
                   color="primary"
                   disabled={true}
                   outline
@@ -327,7 +327,7 @@ export const SignPage: FunctionComponent = observer(() => {
               ) : (
                 <React.Fragment>
                   <Button
-                    className={style.button}
+                    className={style["button"]}
                     color="danger"
                     disabled={signDocHelper.signDocWrapper == null}
                     data-loading={signInteractionStore.isLoading}
@@ -354,7 +354,7 @@ export const SignPage: FunctionComponent = observer(() => {
                     })}
                   </Button>
                   <Button
-                    className={style.button}
+                    className={style["button"]}
                     color="primary"
                     disabled={approveIsDisabled}
                     data-loading={signInteractionStore.isLoading}

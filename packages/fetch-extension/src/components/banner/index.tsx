@@ -11,18 +11,20 @@ interface Props {
 
 export const Banner: FunctionComponent<Props> = ({ icon, logo, subtitle }) => {
   return (
-    <div className={classmames(style.container, style.flexVertical)}>
-      <div className={style.empty} />
-      <div className={style.flexHorizontal}>
-        <div className={style.empty} />
-        <div className={classmames(style.flexVertical, style.itemsCenter)}>
-          <img className={style.icon} src={icon} />
-          <img className={style.logo} src={logo} />
-          {subtitle && <div className={style.subtitle}>{subtitle}</div>}
+    <div className={classmames(style["container"], style["flexVertical"])}>
+      <div className={style["empty"]} />
+      <div className={style["flexHorizontal"]}>
+        <div className={style["empty"]} />
+        <div
+          className={classmames(style["flexVertical"], style["itemsCenter"])}
+        >
+          <img className={style["icon"]} src={icon} />
+          <img className={style["logo"]} src={logo} />
+          {subtitle && <div className={style["subtitle"]}>{subtitle}</div>}
         </div>
-        <div className={style.empty} />
+        <div className={style["empty"]} />
       </div>
-      <div className={style.empty} />
+      <div className={style["empty"]} />
     </div>
   );
 };

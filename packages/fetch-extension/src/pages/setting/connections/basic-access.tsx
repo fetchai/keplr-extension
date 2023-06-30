@@ -2,7 +2,7 @@ import React, { FunctionComponent, useMemo, useState } from "react";
 import { HeaderLayout } from "@layouts/index";
 
 import style from "../style.module.scss";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { PageButton } from "../page-button";
@@ -18,7 +18,7 @@ import { useIntl } from "react-intl";
 import { useConfirm } from "@components/confirm";
 
 export const SettingConnectionsPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const { chainStore, permissionStore } = useStore();
@@ -46,20 +46,20 @@ export const SettingConnectionsPage: FunctionComponent = observer(() => {
         id: "setting.connections",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <ButtonDropdown
           isOpen={dropdownOpen}
           toggle={toggle}
-          className={styleConnections.dropdown}
+          className={styleConnections["dropdown"]}
         >
           <DropdownToggle caret style={{ boxShadow: "none" }}>
             {chainStore.getChain(selectedChainId).chainName}
           </DropdownToggle>
           <DropdownMenu>
-            <div className={styleConnections.dropdownWrapper}>
+            <div className={styleConnections["dropdownWrapper"]}>
               <DropdownItem>Get Chain Infos</DropdownItem>
               {chainStore.chainInfos.map((chainInfo) => {
                 return (
@@ -99,8 +99,7 @@ export const SettingConnectionsPage: FunctionComponent = observer(() => {
                       id: "setting.connections.confirm.delete-connection.title",
                     }),
                     paragraph: intl.formatMessage({
-                      id:
-                        "setting.connections.confirm.delete-connection.paragraph",
+                      id: "setting.connections.confirm.delete-connection.paragraph",
                     }),
                   })
                 ) {

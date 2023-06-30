@@ -1,6 +1,6 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Button } from "reactstrap";
 import activeStake from "@assets/icon/activeStake.png";
 import { Staking } from "@keplr-wallet/stores";
@@ -8,8 +8,8 @@ import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 
 export const StakeComplete: FunctionComponent = observer(() => {
-  const history = useHistory();
-  const validatorAddress = history.location.pathname.split("/")[2];
+  const navigate = useNavigate();
+  const validatorAddress = useLocation().pathname.split("/")[2];
 
   const { chainStore, queriesStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -66,14 +66,14 @@ export const StakeComplete: FunctionComponent = observer(() => {
         )}
       </div>
 
-      <Button color="secondary" block onClick={() => history.push("/")}>
+      <Button color="secondary" block onClick={() => navigate("/")}>
         Return Home
       </Button>
 
       <Button
         color="primary"
         block
-        onClick={() => history.push("/validators")}
+        onClick={() => navigate("/validators")}
         style={{ marginLeft: "0px" }}
       >
         <img

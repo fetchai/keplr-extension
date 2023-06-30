@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { blockUser } from "@graphQL/messages-api";
 import style from "./style.module.scss";
 
@@ -9,8 +9,7 @@ export const BlockUserPopup = ({
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [processing, setProcessing] = useState(false);
-  const history = useHistory();
-  const userName = history.location.pathname.split("/")[2];
+  const userName = useLocation().pathname.split("/")[2];
   const handleBlock = async () => {
     setProcessing(true);
     try {
@@ -29,11 +28,11 @@ export const BlockUserPopup = ({
 
   return (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popup}>
+      <div className={style["overlay"]} />
+      <div className={style["popup"]}>
         <h4>Block User</h4>
         <section>
-          <p className={style.textContainer}>
+          <p className={style["textContainer"]}>
             This contact will not be able to send you messages. The contact will
             not be notified.
           </p>
@@ -46,13 +45,13 @@ export const BlockUserPopup = ({
           The last 5 messages will be sent to Fetch.
         </p> */}
         </section>
-        <div className={style.buttonContainer}>
+        <div className={style["buttonContainer"]}>
           <button type="button" onClick={handleCancel} disabled={processing}>
             Cancel
           </button>
           <button
             type="button"
-            className={style.btn}
+            className={style["btn"]}
             onClick={handleBlock}
             disabled={processing}
           >

@@ -238,22 +238,22 @@ const ChatView = () => {
       rightRenderer={<SwitchUser />}
     >
       <ChatErrorPopup />
-      <div className={style.chatContainer}>
+      <div className={style["chatContainer"]}>
         <ChatInitPopup
           openDialog={openDialog}
           setIsOpendialog={setIsOpendialog}
           setLoadingChats={setLoadingChats}
         />
 
-        <div className={style.title}>Chats</div>
+        <div className={style["title"]}>Chats</div>
         <ChatSearchInput
           handleSearch={handleSearch}
           setSearchInput={setInputVal}
           searchInput={inputVal}
         />
-        <div className={style.chatTabList}>
+        <div className={style["chatTabList"]}>
           <div
-            className={style.chatTab}
+            className={style["chatTab"]}
             style={{
               borderBottom: selectedTab == 1 ? "2px solid #D43BF6" : "",
               color: selectedTab == 1 ? "#D43BF6" : "#000000",
@@ -264,7 +264,7 @@ const ChatView = () => {
           </div>
 
           <div
-            className={style.chatTab}
+            className={style["chatTab"]}
             style={{
               borderBottom: selectedTab == 2 ? "2px solid #3B82F6" : "",
               color: selectedTab == 2 ? "#3B82F6" : "#000000",

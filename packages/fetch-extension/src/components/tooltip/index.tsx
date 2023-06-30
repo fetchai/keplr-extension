@@ -20,7 +20,7 @@ export class ToolTip extends React.Component<ToolTipProps> {
     theme: "dark",
   };
 
-  state = {
+  override state = {
     show: false,
   };
 
@@ -32,7 +32,7 @@ export class ToolTip extends React.Component<ToolTipProps> {
   private hover = false;
   private bodyClicked = false;
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     const tooltip = this.tooltipRef.current;
     const component = this.componentRef.current;
 
@@ -66,13 +66,13 @@ export class ToolTip extends React.Component<ToolTipProps> {
     }
   };
 
-  componentDidUpdate(): void {
+  override componentDidUpdate(): void {
     if (this.popper) {
       this.popper.update();
     }
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     if (this.popper) {
       this.popper.destroy();
     }
@@ -80,7 +80,7 @@ export class ToolTip extends React.Component<ToolTipProps> {
     document.removeEventListener("click", this.handleClickOutside);
   }
 
-  render() {
+  override render() {
     const { theme, tooltip, trigger, children, childrenStyle } = this.props;
 
     const show =
@@ -90,7 +90,7 @@ export class ToolTip extends React.Component<ToolTipProps> {
       <div
         ref={this.ref}
         className={classNames({
-          [style.bright]: theme === "bright",
+          [style["bright"]]: theme === "bright",
           show: show,
         })}
         onMouseEnter={this.onMouseEnter}

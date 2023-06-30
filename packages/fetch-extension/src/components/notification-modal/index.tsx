@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
-import { NotificationItem } from "@components/notification-messages/notification-item/index";
+import { NotificationItem } from "@components/notification-messages/notification-item";
 import { markDeliveryAsRejected } from "@utils/fetch-notification";
 import { useStore } from "../../stores";
 import { NotificationSetup, NotyphiNotification } from "@notificationTypes";
@@ -30,7 +30,7 @@ export enum NotificationModalType {
 }
 
 export const NotificationModal: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -46,7 +46,7 @@ export const NotificationModal: FunctionComponent = () => {
 
   const handleClick = () => {
     if (notificationPayload?.modalType === NotificationModalType.initial) {
-      history.push("notification/organisations/add");
+      navigate("notification/organisations/add");
     } else if (
       notificationPayload?.modalType === NotificationModalType.notificationOff
     ) {
@@ -166,7 +166,7 @@ export const NotificationModal: FunctionComponent = () => {
   function decideNotificationView(): React.ReactNode {
     if (isLoading) {
       return (
-        <div className={style.isLoading}>
+        <div className={style["isLoading"]}>
           <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
         </div>
       );
@@ -190,8 +190,8 @@ export const NotificationModal: FunctionComponent = () => {
     if (notificationPayload) {
       return (
         <React.Fragment>
-          <div className={style.notifyContainer}>
-            <div className={style.greyCircle}>
+          <div className={style["notifyContainer"]}>
+            <div className={style["greyCircle"]}>
               {notificationPayload.image && (
                 <img
                   draggable={false}
@@ -200,24 +200,24 @@ export const NotificationModal: FunctionComponent = () => {
               )}
             </div>
             <p
-              className={style.notifyHeading}
+              className={style["notifyHeading"]}
               style={{ color: notificationPayload.headingColor }}
             >
               {notificationPayload.heading}
             </p>
             {notificationPayload.subHeading && (
-              <p className={style.notifySubHeading}>
+              <p className={style["notifySubHeading"]}>
                 {notificationPayload.subHeading}
               </p>
             )}
             {notificationPayload.paragraph && (
-              <p className={style.notifyDescription}>
+              <p className={style["notifyDescription"]}>
                 {notificationPayload.paragraph}
               </p>
             )}
             {notificationPayload.buttonLabel && (
               <Button
-                className={style.notifyButton}
+                className={style["notifyButton"]}
                 color="primary"
                 onClick={handleClick}
               >
@@ -235,11 +235,11 @@ export const NotificationModal: FunctionComponent = () => {
       className={
         notificationInfo.allNotifications.length > 0 &&
         notificationInfo.isNotificationOn
-          ? `${style.notificationModal} ${style.preventCenter}`
-          : `${style.notificationModal} ${style.enableCenter}`
+          ? `${style["notificationModal"]} ${style["preventCenter"]}`
+          : `${style["notificationModal"]} ${style["enableCenter"]}`
       }
     >
-      <div className={style.scrollView}>{decideNotificationView()}</div>
+      <div className={style["scrollView"]}>{decideNotificationView()}</div>
     </div>
   );
 };

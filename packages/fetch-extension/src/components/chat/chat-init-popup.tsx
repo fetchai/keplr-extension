@@ -5,7 +5,7 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import amplitude from "amplitude-js";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { store } from "@chatStore/index";
 import {
   resetUser,
@@ -30,20 +30,19 @@ export const ChatInitPopup = ({
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
 
-  const history = useHistory();
+  const navigate = useNavigate();
   // address book values
 
-  const [
-    selectedPrivacySetting,
-    setSelectedPrivacySetting,
-  ] = useState<PrivacySetting>(
-    userState?.messagingPubKey.privacySetting
-      ? userState?.messagingPubKey.privacySetting
-      : PrivacySetting.Everybody
-  );
+  const [selectedPrivacySetting, setSelectedPrivacySetting] =
+    useState<PrivacySetting>(
+      userState?.messagingPubKey.privacySetting
+        ? userState?.messagingPubKey.privacySetting
+        : PrivacySetting.Everybody
+    );
 
   const requester = new InExtensionMessageRequester();
 
@@ -61,13 +60,13 @@ export const ChatInitPopup = ({
         )
       );
       store.dispatch(setMessagingPubKey(messagingPubKey));
-      history.replace("/chat");
+      navigate("/chat", { replace: true });
     } catch (e) {
       // Show error toaster
       console.error("error", e);
       store.dispatch(resetUser({}));
       // Redirect to home
-      history.replace("/");
+      navigate("/", { replace: true });
     } finally {
       amplitude.getInstance().logEvent("Privacy setting click", {
         SelectedPrivacySetting: selectedPrivacySetting,
@@ -79,11 +78,11 @@ export const ChatInitPopup = ({
 
   return openDialog && userState.accessToken.length > 0 ? (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popupContainer}>
+      <div className={style["overlay"]} />
+      <div className={style["popupContainer"]}>
         <img draggable={false} src={privacyIcon} />
         <br />
-        <div className={style.infoContainer}>
+        <div className={style["infoContainer"]}>
           <h3>We have just added Chat!</h3>
           <p>Now you can chat with other active wallets.</p>
           <p>Select who can send you messages</p>

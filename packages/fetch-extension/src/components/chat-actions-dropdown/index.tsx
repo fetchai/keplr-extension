@@ -1,6 +1,6 @@
 import amplitude from "amplitude-js";
 import React from "react";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import style from "./style.module.scss";
 
 export const ChatActionsDropdown = ({
@@ -17,7 +17,7 @@ export const ChatActionsDropdown = ({
   return (
     <React.Fragment>
       {showDropdown && (
-        <div className={style.dropdown}>
+        <div className={style["dropdown"]}>
           {added ? <ViewContactOption /> : <AddContactOption />}
           {blocked ? (
             <UnblockOption handleClick={handleClick} />
@@ -32,12 +32,12 @@ export const ChatActionsDropdown = ({
 };
 
 const ViewContactOption = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <div
       onClick={() => {
         amplitude.getInstance().logEvent("Address book viewed", {});
-        history.push("/setting/address-book");
+        navigate("/setting/address-book");
       }}
     >
       View in address book
@@ -46,14 +46,13 @@ const ViewContactOption = () => {
 };
 
 const AddContactOption = () => {
-  const history = useHistory();
-  const userName = history.location.pathname.split("/")[2];
+  const navigate = useNavigate();
+  const userName = useLocation().pathname.split("/")[2];
   return (
     <div
       onClick={() => {
         amplitude.getInstance().logEvent("Add to address click", {});
-        history.push({
-          pathname: "/setting/address-book",
+        navigate("/setting/address-book", {
           state: {
             openModal: true,
             addressInputValue: userName,

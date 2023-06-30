@@ -46,16 +46,16 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
 
   return (
     <EmptyLayout style={{ height: "100%", paddingTop: "80px" }}>
-      <div className={style.container}>
+      <div className={style["container"]}>
         <img
           src={require("@assets/logo-256.svg")}
           alt="logo"
           style={{ width: "92px", height: "92px", margin: "0 auto" }}
         />
-        <h1 className={style.header}>
+        <h1 className={style["header"]}>
           <FormattedMessage id="access.viewing-key.title" />
         </h1>
-        <p className={style.paragraph}>
+        <p className={style["paragraph"]}>
           <FormattedMessage
             id="access.viewing-key.paragraph"
             values={{
@@ -68,7 +68,7 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
             }}
           />
         </p>
-        <div className={style.permission}>
+        <div className={style["permission"]}>
           <FormattedMessage id="access.viewing-key.permission.title" />
         </div>
         <ul>
@@ -77,9 +77,9 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
           </li>
         </ul>
         <div style={{ flex: 1 }} />
-        <div className={style.buttons}>
+        <div className={style["buttons"]}>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="danger"
             outline
             onClick={async (e) => {
@@ -105,7 +105,7 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
             <FormattedMessage id="access.viewing-key.button.reject" />
           </Button>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="primary"
             onClick={async (e) => {
               e.preventDefault();

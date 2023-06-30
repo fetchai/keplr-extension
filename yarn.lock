@@ -7729,6 +7729,7 @@ __metadata:
     "@types/debounce": ^1.2.1
     "@types/firefox-webext-browser": ^70.0.1
     "@types/js-yaml": ^4
+    "@types/react-html-parser": ^2.0.2
     "@types/react-infinite-scroller": ^1.2.3
     "@types/react-is": ^16.7.2
     "@types/react-modal": ^3.10.0
@@ -7775,6 +7776,7 @@ __metadata:
     query-string: ^6.8.3
     react-chartjs-2: ^2.10.0
     react-hook-form: ^7.43.1
+    react-html-parser: ^2.0.2
     react-infinite-scroll-component: ^6.1.0
     react-infinite-scroller: ^1.2.6
     react-intl: ^6.2.8
@@ -11860,6 +11862,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/domutils@npm:*":
+  version: 1.7.4
+  resolution: "@types/domutils@npm:1.7.4"
+  dependencies:
+    domhandler: ^2.4.0
+  checksum: 9041ed4d250b96068f1ba7c568b9416a63dc8f94e9fd63dc5fc8c1552e84fa2d5a5fe4bf42dd37edd8a4e29b22e3c738b20243dcee8b83fcf1b6ca94f154584f
+  languageName: node
+  linkType: hard
+
 "@types/elliptic@npm:^6.4.12":
   version: 6.4.12
   resolution: "@types/elliptic@npm:6.4.12"
@@ -12048,6 +12059,17 @@ __metadata:
   version: 6.1.0
   resolution: "@types/html-minifier-terser@npm:6.1.0"
   checksum: eb843f6a8d662d44fb18ec61041117734c6aae77aa38df1be3b4712e8e50ffaa35f1e1c92fdd0fde14a5675fecf457abcd0d15a01fae7506c91926176967f452
+  languageName: node
+  linkType: hard
+
+"@types/htmlparser2@npm:*":
+  version: 3.10.3
+  resolution: "@types/htmlparser2@npm:3.10.3"
+  dependencies:
+    "@types/domutils": "*"
+    "@types/node": "*"
+    domhandler: ^2.4.0
+  checksum: 1b0009625fd09237439b3f9bb798f4c2544e9fda61e2b6c5546bf7d2f97d389924762e16d2913d5ab93e0d97ceb288d8b5dd234813506e4a390a2ab04eeafcca
   languageName: node
   linkType: hard
 
@@ -12377,6 +12399,16 @@ __metadata:
   dependencies:
     "@types/react": ^16
   checksum: cc09ff350e595dc0f022e7db2d1b61306de8fe412b7fbc3eb85cbe453247f85ffa87a1391c4fd75a7525813b460224d385f3548903289563d740531a3c26ebc7
+  languageName: node
+  linkType: hard
+
+"@types/react-html-parser@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@types/react-html-parser@npm:2.0.2"
+  dependencies:
+    "@types/htmlparser2": "*"
+    "@types/react": "*"
+  checksum: bff764fa8dda726ac17571d307f3cdeffca8ddef7fb7575fbb65a52f9555bcd10d51eb18647741e2c217e7ccb7a5345986808a88a9300fa0fbb3dc05b83534e3
   languageName: node
   linkType: hard
 
@@ -19362,7 +19394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domhandler@npm:^2.3.0":
+"domhandler@npm:^2.3.0, domhandler@npm:^2.4.0":
   version: 2.4.2
   resolution: "domhandler@npm:2.4.2"
   dependencies:
@@ -23461,7 +23493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^3.9.2":
+"htmlparser2@npm:^3.9.0, htmlparser2@npm:^3.9.2":
   version: 3.10.1
   resolution: "htmlparser2@npm:3.10.1"
   dependencies:
@@ -26675,11 +26707,11 @@ __metadata:
 
 "keplr-wallet-private@file:./noop-keplr-wallet-private::locator=%40keplr-wallet%2Fextension%40workspace%3Apackages%2Fextension":
   version: 0.0.1
-  resolution: "keplr-wallet-private@file:./noop-keplr-wallet-private#./noop-keplr-wallet-private::hash=b104ee&locator=%40keplr-wallet%2Fextension%40workspace%3Apackages%2Fextension"
+  resolution: "keplr-wallet-private@file:./noop-keplr-wallet-private#./noop-keplr-wallet-private::hash=62d7fb&locator=%40keplr-wallet%2Fextension%40workspace%3Apackages%2Fextension"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
     styled-components: "*"
-  checksum: 2eb0cc910fcb50060477f9c0e5112cb1066f0e160d81d61a1362d44a3ab39067591214d3f354f3e300d708f8bccff69298c066def73faeefe3c1279cd11305cb
+  checksum: efd06473d052f24c1e5896d480d810e43c3237c0aa8acfe3b05a89ab03a8e3cb42171821189965a241bb91a064c3bfee7bf384b14083bdfe4be0cf40af8b0636
   languageName: node
   linkType: hard
 
@@ -33551,6 +33583,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
   checksum: a15b672885cf9bb43c6691bf544b3ead59860bb8c6298c7607b8b82952707ec8dd9fd9d1346310abb8696e99319b1f78f6023941d129154815811ee64d750461
+  languageName: node
+  linkType: hard
+
+"react-html-parser@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "react-html-parser@npm:2.0.2"
+  dependencies:
+    htmlparser2: ^3.9.0
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.0 || ^16.0.0-0
+  checksum: 2e6bf4cd90b07667de5771eec7738155c3df39114b28df4a117722b17412015aa9115fd2cb76ca959fd364909de70ebc6032f13ae0fec16d888c792fbaa2226c
   languageName: node
   linkType: hard
 

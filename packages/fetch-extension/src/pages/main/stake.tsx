@@ -12,13 +12,13 @@ import { Dec } from "@keplr-wallet/unit";
 
 import { useNotification } from "@components/notification";
 
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 import { FormattedMessage } from "react-intl";
 import { DefaultGasMsgWithdrawRewards } from "../../config.ui";
 
 export const StakeView: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -79,9 +79,9 @@ export const StakeView: FunctionComponent = observer(() => {
           }
         );
 
-        history.replace("/");
+        navigate("/", { replace: true });
       } catch (e) {
-        history.replace("/");
+        navigate("/", { replace: true });
         notification.push({
           type: "warning",
           placement: "top-center",
@@ -103,15 +103,15 @@ export const StakeView: FunctionComponent = observer(() => {
       {isRewardExist ? (
         <React.Fragment>
           <div
-            className={classnames(styleStake.containerInner, styleStake.reward)}
+            className={classnames(styleStake["containerInner"], styleStake["reward"])}
           >
-            <div className={styleStake.vertical}>
+            <div className={styleStake["vertical"]}>
               <p
                 className={classnames(
                   "h4",
                   "my-0",
                   "font-weight-normal",
-                  styleStake.paragraphSub
+                  styleStake["paragraphSub"]
                 )}
               >
                 <FormattedMessage id="main.stake.message.pending-staking-reward" />
@@ -121,7 +121,7 @@ export const StakeView: FunctionComponent = observer(() => {
                   "h2",
                   "my-0",
                   "font-weight-normal",
-                  styleStake.paragraphMain
+                  styleStake["paragraphMain"]
                 )}
               >
                 {stakableReward.shrink(true).maxDecimals(6).toString()}
@@ -135,7 +135,7 @@ export const StakeView: FunctionComponent = observer(() => {
             <div style={{ flex: 1 }} />
             {
               <Button
-                className={styleStake.button}
+                className={styleStake["button"]}
                 color="primary"
                 size="sm"
                 disabled={!accountInfo.isReadyToSendMsgs}
@@ -149,18 +149,18 @@ export const StakeView: FunctionComponent = observer(() => {
               </Button>
             }
           </div>
-          <hr className={styleStake.hr} />
+          <hr className={styleStake["hr"]} />
         </React.Fragment>
       ) : null}
 
-      <div className={classnames(styleStake.containerInner, styleStake.stake)}>
-        <div className={styleStake.vertical}>
+      <div className={classnames(styleStake["containerInner"], styleStake["stake"])}>
+        <div className={styleStake["vertical"]}>
           <p
             className={classnames(
               "h2",
               "my-0",
               "font-weight-normal",
-              styleStake.paragraphMain
+              styleStake["paragraphMain"]
             )}
           >
             <FormattedMessage id="main.stake.message.stake" />
@@ -171,7 +171,7 @@ export const StakeView: FunctionComponent = observer(() => {
                 "h4",
                 "my-0",
                 "font-weight-normal",
-                styleStake.paragraphSub
+                styleStake["paragraphSub"]
               )}
             >
               <FormattedMessage
@@ -195,7 +195,7 @@ export const StakeView: FunctionComponent = observer(() => {
         <div style={{ flex: 1 }} />
 
         <Button
-          className={styleStake.button}
+          className={styleStake["button"]}
           color="primary"
           size="sm"
           outline={isRewardExist}
@@ -205,7 +205,7 @@ export const StakeView: FunctionComponent = observer(() => {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
             });
-            history.push("/validators");
+            navigate("/validators");
           }}
         >
           <FormattedMessage id="main.stake.button.stake" />

@@ -17,7 +17,7 @@ import delay from "delay";
 const PrimaryLoading: FunctionComponent = () => {
   return (
     <svg
-      className={style.spin}
+      className={style["spin"]}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -75,7 +75,7 @@ const PrimaryLoading: FunctionComponent = () => {
 const FailedLoading: FunctionComponent = () => {
   return (
     <svg
-      className={style.spin}
+      className={style["spin"]}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -205,8 +205,8 @@ export const LedgerGrantFullScreenPage: FunctionComponent = () => {
   };
 
   return (
-    <div className={style.container}>
-      <div className={style.inner}>
+    <div className={style["container"]}>
+      <div className={style["inner"]}>
         <div>
           <img
             style={{
@@ -226,8 +226,8 @@ export const LedgerGrantFullScreenPage: FunctionComponent = () => {
           />
         </div>
         <div>
-          <h1 className={style.title}>Allow Browser to Connect to Ledger</h1>
-          <p className={style.description}>
+          <h1 className={style["title"]}>Allow Browser to Connect to Ledger</h1>
+          <p className={style["description"]}>
             We’ve identified a Chrome related bug where attempting to connect a
             hardware wallet in a popup may cause browser to crash. As a
             temporary measure, you can give Ledger permission in this page.
@@ -235,7 +235,7 @@ export const LedgerGrantFullScreenPage: FunctionComponent = () => {
           </p>
           {!succeded ? (
             <button
-              className={style.buttonText}
+              className={style["buttonText"]}
               style={{
                 color: hasFailed ? "#F0224B" : "#314FDF",
                 opacity: isLoading ? 0.5 : 1,
@@ -287,7 +287,7 @@ export const LedgerGrantFullScreenPage: FunctionComponent = () => {
             </button>
           ) : (
             <div
-              className={style.buttonText}
+              className={style["buttonText"]}
               style={{
                 color: "#22AC71",
                 cursor: "auto",

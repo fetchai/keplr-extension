@@ -23,8 +23,8 @@ export const GovStatusChip: FunctionComponent<Props> = (props) => {
     handleCheck,
   } = props;
   return (
-    <span className={style.topicChips}>
-      <label className={style.switch}>
+    <span className={style["topicChips"]}>
+      <label className={style["switch"]}>
         <input
           type="checkbox"
           checked={id === selectedIndex}
@@ -34,7 +34,7 @@ export const GovStatusChip: FunctionComponent<Props> = (props) => {
           id={name}
         />
         <span
-          className={filter ? style.contentInverter : style.govStatus}
+          className={filter ? style["contentInverter"] : style["govStatus"]}
           style={{ backgroundColor: background, color: color }}
         >
           {icon && (

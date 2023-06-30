@@ -5,7 +5,7 @@ import { HeaderLayout } from "@layouts/index";
 // import { useLanguage } from "../../../languages";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { store } from "@chatStore/index";
 import { userBlockedAddresses } from "@chatStore/messages-slice";
 import {
@@ -23,14 +23,15 @@ import style from "./style.module.scss";
 
 export const ChatSettings: FunctionComponent = observer(() => {
   // const language = useLanguage();
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const userState = useSelector(userDetails);
   const blockedUsers = useSelector(userBlockedAddresses);
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [loadingChatSettings, setLoadingChatSettings] = useState(false);
   const [chatPubKeyExists, setChatPubKeyExists] = useState(true);
   const [privacyParagraph, setPrivacyParagraph] = useState<
@@ -97,10 +98,10 @@ export const ChatSettings: FunctionComponent = observer(() => {
         id: "setting.chat",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title={intl.formatMessage({
             id: "setting.block",
@@ -117,7 +118,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
           }
           onClick={() => {
             if (chatPubKeyExists)
-              history.push({
+              navigate({
                 pathname: "/setting/chat/block",
               });
           }}
@@ -140,7 +141,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             })
           }
           onClick={() => {
-            history.push({
+            navigate({
               pathname: "/setting/chat/privacy",
             });
           }}
@@ -160,7 +161,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             })
           }
           onClick={() => {
-            history.push({
+            navigate({
               pathname: "/setting/chat/readRecipt",
             });
           }}

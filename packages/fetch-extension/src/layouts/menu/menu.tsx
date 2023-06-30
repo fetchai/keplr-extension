@@ -83,7 +83,7 @@ export const Menu: FunctionComponent<Props> = ({ isOpen, children }) => {
       <AnimatePresence>
         {isOpen ? (
           <motion.div
-            className={style.background}
+            className={style["background"]}
             animate={isOpen ? "open" : "closed"}
             variants={background}
             exit="closed"
@@ -93,7 +93,7 @@ export const Menu: FunctionComponent<Props> = ({ isOpen, children }) => {
         ) : null}
       </AnimatePresence>
       <motion.nav
-        className={style.menuNav}
+        className={style["menuNav"]}
         ref={containerRef}
         animate={isOpen ? "open" : "closed"}
         variants={sidebar}

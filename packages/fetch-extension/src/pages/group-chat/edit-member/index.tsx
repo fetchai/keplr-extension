@@ -27,7 +27,7 @@ import amplitude from "amplitude-js";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
 import { fetchPublicKey } from "@utils/fetch-public-key";
@@ -46,7 +46,7 @@ import {
 import { ChatErrorPopup } from "@components/chat-error-popup";
 
 export const EditMember: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const loadingIndicator = useLoadingIndicator();
 
   const user = useSelector(userDetails);
@@ -364,8 +364,7 @@ export const EditMember: FunctionComponent = observer(() => {
     amplitude.getInstance().logEvent("Add to address click", {
       from: "Group Info",
     });
-    history.push({
-      pathname: "/setting/address-book",
+    navigate("/setting/address-book", {
       state: {
         openModal: true,
         addressInputValue: address,
@@ -392,7 +391,7 @@ export const EditMember: FunctionComponent = observer(() => {
         amplitude.getInstance().logEvent("Open DM click", {
           from: "Group Info",
         });
-        history.push(`/chat/${selectedAddress.address}`);
+        navigate(`/chat/${selectedAddress.address}`);
         break;
 
       case GroupChatMemberOptions.addToAddressBook:
@@ -424,7 +423,7 @@ export const EditMember: FunctionComponent = observer(() => {
         amplitude.getInstance().logEvent("Address book viewed", {
           from: "Group Info",
         });
-        history.push("/setting/address-book");
+        navigate("/setting/address-book");
         break;
     }
   }
@@ -435,21 +434,21 @@ export const EditMember: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={"New Group Chat"}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       <ChatErrorPopup />
-      <div className={style.group}>
-        <div className={style.groupContainer}>
-          <div className={style.groupHeader}>
-            <span className={style.groupName}>{group.name}</span>
-            <span className={style.groupMembers}>
+      <div className={style["group"]}>
+        <div className={style["groupContainer"]}>
+          <div className={style["groupHeader"]}>
+            <span className={style["groupName"]}>{group.name}</span>
+            <span className={style["groupMembers"]}>
               {`${addresses.length} member${addresses.length > 1 ? "s" : ""}`}
               <i
                 className={"fa fa-user-plus"}
                 aria-hidden="true"
                 onClick={() => {
-                  history.push({
+                  navigate({
                     pathname: "/chat/group-chat/add-member",
                   });
                 }}
@@ -457,12 +456,12 @@ export const EditMember: FunctionComponent = observer(() => {
             </span>
           </div>
         </div>
-        <span className={style.groupDescription}>{group.description}</span>
+        <span className={style["groupDescription"]}>{group.description}</span>
         {!addressBookConfig.isLoaded ? (
           <ChatLoader message="Loading contacts, please wait..." />
         ) : (
-          <div className={style.newMemberContainer}>
-            <div className={style.membersContainer}>
+          <div className={style["newMemberContainer"]}>
+            <div className={style["membersContainer"]}>
               {addresses.map((address: any) => {
                 return (
                   <ChatMember

@@ -4,19 +4,19 @@ import style from "./style.module.scss";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import { Button } from "reactstrap";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 export const ProposalView: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
-    <div className={style.containerInner}>
-      <div className={style.vertical}>
+    <div className={style["containerInner"]}>
+      <div className={style["vertical"]}>
         <p
           className={classnames(
             "h2",
             "my-0",
             "font-weight-normal",
-            style.paragraphMain
+            style["paragraphMain"]
           )}
         >
           <FormattedMessage id="main.proposals.title" />
@@ -26,7 +26,7 @@ export const ProposalView: FunctionComponent = () => {
             "h4",
             "my-0",
             "font-weight-normal",
-            style.paragraphSub
+            style["paragraphSub"]
           )}
         >
           <FormattedMessage id="main.proposals.paragraph" />
@@ -35,11 +35,11 @@ export const ProposalView: FunctionComponent = () => {
       <div style={{ flex: 1 }} />
 
       <Button
-        className={style.button}
+        className={style["button"]}
         color="primary"
         size="sm"
         onClick={() => {
-          history.push("/proposal");
+          navigate("/proposal");
         }}
       >
         <FormattedMessage id="main.proposals.button" />

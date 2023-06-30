@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import {
   userChatGroupPagination,
   userChatGroups,
@@ -23,7 +23,7 @@ export const ChatsGroupHistory: React.FC<{
   addresses: NameAddress;
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const userState = useSelector(userDetails);
   const groups: Groups = useSelector(userChatGroups);
   const groupsPagination: Pagination = useSelector(userChatGroupPagination);
@@ -99,8 +99,8 @@ export const ChatsGroupHistory: React.FC<{
 
   if (!Object.keys(groups).length)
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           No results. Don&apos;t worry you can create a new chat by clicking on
           the icon beside the search box.
         </div>
@@ -113,8 +113,8 @@ export const ChatsGroupHistory: React.FC<{
     userState.messagingPubKey.privacySetting === PrivacySetting.Contacts
   )
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           If you are searching for an address not in your address book, you
           can&apos;t see them due to your selected privacy settings being
           &quot;contact only&quot;. Please add the address to your address book
@@ -128,7 +128,7 @@ export const ChatsGroupHistory: React.FC<{
             }}
             onClick={(e) => {
               e.preventDefault();
-              history.push("/setting/chat/privacy");
+              navigate("/setting/chat/privacy");
             }}
           >
             Go to chat privacy settings
@@ -139,16 +139,16 @@ export const ChatsGroupHistory: React.FC<{
 
   if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           No results found. Please refine your search.
         </div>
       </div>
     );
 
   return (
-    <div className={style.groupsArea}>
-      <div className={style.messageDisappear}>
+    <div className={style["groupsArea"]}>
+      <div className={style["messageDisappear"]}>
         <img
           src={require("@assets/svg/ic-clock.svg")}
           draggable={false}
@@ -207,7 +207,7 @@ export const ChatsGroupHistory: React.FC<{
           );
         })}
       {groupsPagination?.lastPage > groupsPagination?.page && (
-        <div className={style.loader} ref={messagesEndRef}>
+        <div className={style["loader"]} ref={messagesEndRef}>
           Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}

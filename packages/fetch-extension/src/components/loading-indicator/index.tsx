@@ -51,8 +51,8 @@ export const LoadingIndicatorProvider: FunctionComponent = ({ children }) => {
     >
       {isLoading ? (
         <Modal
-          modalClassName={style.modal}
-          contentClassName={style.modalContentEmpty}
+          modalClassName={style["modal"]}
+          contentClassName={style["modalContentEmpty"]}
           isOpen
           centered
         >

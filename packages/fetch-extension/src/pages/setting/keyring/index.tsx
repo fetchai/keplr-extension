@@ -5,7 +5,7 @@ import { HeaderLayout } from "@layouts/index";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Button, Popover, PopoverBody } from "reactstrap";
 
 import style from "./style.module.scss";
@@ -27,7 +27,7 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
   const { keyRingStore, analyticsStore } = useStore();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const loadingIndicator = useLoadingIndicator();
 
@@ -37,11 +37,11 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({ id: "setting.keyring" })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
-        <div className={style.innerTopContainer}>
+      <div className={style["container"]}>
+        <div className={style["innerTopContainer"]}>
           <div style={{ flex: 1 }} />
           <div
             style={{
@@ -147,7 +147,7 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                         store.dispatch(resetChatList({}));
                         store.dispatch(setIsChatSubscriptionActive(false));
                         messageAndGroupListenerUnsubscribe();
-                        history.push("/");
+                        navigate("/");
                       } catch (e: any) {
                         console.log(`Failed to change keyring: ${e.message}`);
                         loadingIndicator.setIsLoading("keyring", false);
@@ -173,7 +173,7 @@ const KeyRingToolsIcon: FunctionComponent<{
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toggleOpen = () => setIsOpen((isOpen) => !isOpen);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [tooltipId] = useState(() => {
     const bytes = new Uint8Array(4);
@@ -194,7 +194,7 @@ const KeyRingToolsIcon: FunctionComponent<{
             e.preventDefault();
             e.stopPropagation();
 
-            history.push("");
+            navigate("");
           }}
         >
           {keyStore.type === "mnemonic" || keyStore.type === "privateKey" ? (
@@ -204,7 +204,7 @@ const KeyRingToolsIcon: FunctionComponent<{
                 e.preventDefault();
                 e.stopPropagation();
 
-                history.push(`/setting/export/${index}?type=${keyStore.type}`);
+                navigate(`/setting/export/${index}?type=${keyStore.type}`);
               }}
             >
               <FormattedMessage
@@ -222,7 +222,7 @@ const KeyRingToolsIcon: FunctionComponent<{
               e.preventDefault();
               e.stopPropagation();
 
-              history.push(`/setting/keyring/change/name/${index}`);
+              navigate(`/setting/keyring/change/name/${index}`);
             }}
           >
             <FormattedMessage id="setting.keyring.change.name" />
@@ -233,7 +233,7 @@ const KeyRingToolsIcon: FunctionComponent<{
               e.preventDefault();
               e.stopPropagation();
 
-              history.push(`/setting/clear/${index}`);
+              navigate(`/setting/clear/${index}`);
             }}
           >
             <FormattedMessage id="setting.clear" />

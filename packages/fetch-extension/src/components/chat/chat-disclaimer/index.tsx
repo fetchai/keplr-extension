@@ -1,6 +1,6 @@
 import privacyIcon from "@assets/hello.png";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import closeIcon from "@assets/icon/close-grey.png";
@@ -11,8 +11,9 @@ export const ChatDisclaimer = () => {
   const userState = useSelector(userDetails);
   const { chainStore, accountStore, keyRingStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export const ChatDisclaimer = () => {
     walletAddress,
   ]);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleClick = async (redirectFlag: boolean) => {
     const addresses = localStorage.getItem("fetchChatAnnouncementSeen") || "";
     localStorage.setItem(
@@ -40,13 +41,13 @@ export const ChatDisclaimer = () => {
       addresses + `[${walletAddress}]`
     );
     setIsOpendialog(false);
-    if (redirectFlag) history.push("/chat");
+    if (redirectFlag) navigate("/chat");
   };
 
   return openDialog ? (
     <React.Fragment>
-      <div className={style.overlay} onClick={() => handleClick(false)} />
-      <div className={style.popupContainer}>
+      <div className={style["overlay"]} onClick={() => handleClick(false)} />
+      <div className={style["popupContainer"]}>
         <img
           draggable={false}
           src={closeIcon}
@@ -65,7 +66,7 @@ export const ChatDisclaimer = () => {
 
         <img draggable={false} src={privacyIcon} />
         <br />
-        <div className={style.infoContainer}>
+        <div className={style["infoContainer"]}>
           <h3>Chat is now free for a limited time!</h3>
           <p>
             Previously you would need some FET balance to be able to use this

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useMemo, useState } from "react";
 import styleToken from "./token.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Hash } from "@keplr-wallet/crypto";
 import { UncontrolledTooltip } from "reactstrap";
 import {
@@ -55,7 +55,7 @@ const TokenView: FunctionComponent<{
     .replace(/\d+/g, "")
     .slice(0, 20);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const notification = useNotification();
   const loadingIndicator = useLoadingIndicator();
@@ -92,8 +92,8 @@ const TokenView: FunctionComponent<{
   }
 
   return (
-    <div className={styleToken.tokenContainer}>
-      <div className={styleToken.tokenImg}>
+    <div className={styleToken["tokenContainer"]}>
+      <div className={styleToken["tokenImg"]}>
         <div
           style={{
             width: "100%",
@@ -112,12 +112,12 @@ const TokenView: FunctionComponent<{
           {name.length > 0 ? name[0] : "?"}
         </div>
       </div>
-      <div className={styleToken.tokenName}>
+      <div className={styleToken["tokenName"]}>
         <ToolTip trigger="hover" tooltip={name}>
           {formatTokenName(name)}
         </ToolTip>
       </div>
-      <div className={styleToken.tokenBalance}>
+      <div className={styleToken["tokenBalance"]}>
         {balance.isFetching ? (
           <i className="fas fa-spinner fa-spin ml-1" />
         ) : (
@@ -171,7 +171,7 @@ const TokenView: FunctionComponent<{
                 viewingKey,
               });
 
-              history.push({
+              navigate({
                 pathname: "/",
               });
             }
@@ -240,19 +240,19 @@ export const TokensView: FunctionComponent = observer(() => {
       return a.currency.coinDenom < b.currency.coinDenom ? -1 : 1;
     });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <div>
-      <div className={styleToken.tokenTitle}>Tokens</div>
-      <div className={styleToken.tokenContainnerInner}>
+      <div className={styleToken["tokenTitle"]}>Tokens</div>
+      <div className={styleToken["tokenContainnerInner"]}>
         {tokens.map((token, i) => {
           return (
             <TokenView
               key={i.toString()}
               balance={token}
               onClick={() => {
-                history.push({
+                navigate({
                   pathname: "/send",
                   search: `?defaultDenom=${token.currency.coinMinimalDenom}`,
                 });

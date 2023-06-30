@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HeaderLayout } from "../../../layouts";
 
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import {
@@ -31,7 +31,7 @@ interface FormData {
 }
 
 export const SettingEndpointsPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const notification = useNotification();
   const confirm = useConfirm();
@@ -69,17 +69,17 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
         id: "setting.endpoints",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
-        <div className={style.innerTopContainer}>
+      <div className={style["container"]}>
+        <div className={style["innerTopContainer"]}>
           <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle caret style={{ boxShadow: "none" }}>
               {chainStore.getChain(selectedChainId).chainName}
             </DropdownToggle>
             <DropdownMenu>
-              <div className={style.dropdownWrapper}>
+              <div className={style["dropdownWrapper"]}>
                 {chainStore.chainInfos.map((chainInfo) => {
                   return (
                     <DropdownItem
@@ -134,7 +134,7 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
           </div>
         </div>
         <form
-          className={style.formContainer}
+          className={style["formContainer"]}
           onSubmit={handleSubmit(async (data) => {
             setIsLoading(true);
 
@@ -179,7 +179,7 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
               // To avoid confusion when the user returns to the main page, select the chain if the rpc/lcd endpoints have changed.
               chainStore.selectChain(selectedChainId);
 
-              history.push("/");
+              navigate("/");
             } catch (e) {
               notification.push({
                 type: "warning",

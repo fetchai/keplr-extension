@@ -12,10 +12,10 @@ import { FormattedMessage } from "react-intl";
 
 export const InactiveAgentMessage = () => {
   return (
-    <InputGroup className={style.inputText}>
+    <InputGroup className={style["inputText"]}>
       <div
         style={{ textAlign: "center", color: "grey" }}
-        className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+        className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
       >
         The Agent is inactive
       </div>
@@ -25,10 +25,10 @@ export const InactiveAgentMessage = () => {
 
 export const ProcessingLastMessage = () => {
   return (
-    <InputGroup className={style.inputText}>
+    <InputGroup className={style["inputText"]}>
       <div
         style={{ textAlign: "center", color: "grey" }}
-        className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+        className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
       >
         Generating Response, Please Wait
       </div>
@@ -87,8 +87,8 @@ export const InputField = ({
   };
 
   return (
-    <div className={style.inputSection}>
-      <div className={style.messageDisappear}>
+    <div className={style["inputSection"]}>
+      <div className={style["messageDisappear"]}>
         <img
           src={require("@assets/svg/ic-clock.svg")}
           draggable={false}
@@ -96,7 +96,7 @@ export const InputField = ({
         />
         <FormattedMessage id="chat.disappear-message" />
       </div>
-      <InputGroup className={style.inputText}>
+      <InputGroup className={style["inputText"]}>
         <CommandsDropdown
           newMessage={newMessage}
           showDropdown={showCommandDropdown}
@@ -106,7 +106,7 @@ export const InputField = ({
         <ReactTextareaAutosize
           ref={messageInput}
           maxRows={3}
-          className={`${style.inputArea}`}
+          className={`${style["inputArea"]}`}
           placeholder={"Ask a question or type '/' for commands"}
           value={newMessage}
           onChange={handleChange}

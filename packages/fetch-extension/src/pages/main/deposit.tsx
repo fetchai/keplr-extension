@@ -50,7 +50,7 @@ export const DepositView: FunctionComponent = observer(() => {
 
   return (
     <div>
-      <div className={styleDeposit.containerInner}>
+      <div className={styleDeposit["containerInner"]}>
         <DepositModal
           chainName={chainStore.current.chainName}
           bech32Address={accountInfo.bech32Address}
@@ -58,13 +58,13 @@ export const DepositView: FunctionComponent = observer(() => {
           setIsDepositOpen={setIsDepositOpen}
         />
 
-        <div className={styleDeposit.vertical}>
+        <div className={styleDeposit["vertical"]}>
           <p
             className={classnames(
               "h4",
               "my-0",
               "font-weight-normal",
-              styleDeposit.paragraphMain
+              styleDeposit["paragraphMain"]
             )}
           >
             <FormattedMessage id="main.account.button.deposit" />{" "}
@@ -75,7 +75,7 @@ export const DepositView: FunctionComponent = observer(() => {
               "h5",
               "my-0",
               "font-weight-normal",
-              styleDeposit.paragraphSub
+              styleDeposit["paragraphSub"]
             )}
           >
             <FormattedMessage id="main.account.deposit.paragraph" />
@@ -83,7 +83,7 @@ export const DepositView: FunctionComponent = observer(() => {
         </div>
         <div style={{ flex: 1 }} />
         <Button
-          className={styleDeposit.button}
+          className={styleDeposit["button"]}
           color="primary"
           size="sm"
           onClick={async (e) => {
@@ -98,16 +98,16 @@ export const DepositView: FunctionComponent = observer(() => {
 
       {(chainStore.current.chainId == "fetchhub-4" || isBuySupportChain) && (
         <div>
-          <hr className={styleDeposit.hr} />
+          <hr className={styleDeposit["hr"]} />
 
-          <div className={styleDeposit.containerInner}>
-            <div className={styleDeposit.vertical}>
+          <div className={styleDeposit["containerInner"]}>
+            <div className={styleDeposit["vertical"]}>
               <p
                 className={classnames(
                   "h4",
                   "my-0",
                   "font-weight-normal",
-                  styleDeposit.paragraphMain
+                  styleDeposit["paragraphMain"]
                 )}
               >
                 <FormattedMessage id="main.account.button.buy" />{" "}
@@ -118,7 +118,7 @@ export const DepositView: FunctionComponent = observer(() => {
                   "h5",
                   "my-0",
                   "font-weight-normal",
-                  styleDeposit.paragraphSub
+                  styleDeposit["paragraphSub"]
                 )}
               >
                 <FormattedMessage id="main.account.buy.paragraph" />
@@ -127,7 +127,7 @@ export const DepositView: FunctionComponent = observer(() => {
             <div style={{ flex: 1 }} />
 
             <Button
-              className={styleDeposit.button}
+              className={styleDeposit["button"]}
               color="primary"
               size="sm"
               onClick={(e) => {

@@ -41,7 +41,7 @@ export const GroupChatActionsDropdown = ({
   return (
     <React.Fragment>
       {showDropdown && (
-        <div className={style.dropdown}>
+        <div className={style["dropdown"]}>
           {options.map(({ title, option }) => (
             <ChatOption
               key={title}

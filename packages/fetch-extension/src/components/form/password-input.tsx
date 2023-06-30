@@ -48,7 +48,7 @@ export const PasswordInput = forwardRef<
       />
       {otherRef.current && (
         <Tooltip
-          arrowClassName={stylePasswordInput.capslockTooltipArrow}
+          arrowClassName={stylePasswordInput["capslockTooltipArrow"]}
           placement="top-start"
           isOpen={isOnCapsLock}
           target={otherRef.current}

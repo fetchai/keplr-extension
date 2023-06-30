@@ -19,15 +19,15 @@ export const AlertPopup = ({
 }) => {
   return (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popup}>
+      <div className={style["overlay"]} />
+      <div className={style["popup"]}>
         <h4>{heading}</h4>
         <section>
-          <p style={{ whiteSpace: "pre-wrap" }} className={style.textContainer}>
+          <p style={{ whiteSpace: "pre-wrap" }} className={style["textContainer"]}>
             {description}
           </p>
         </section>
-        <div className={style.buttonContainer}>
+        <div className={style["buttonContainer"]}>
           <button
             type="button"
             disabled={processing}
@@ -37,7 +37,7 @@ export const AlertPopup = ({
           </button>
           <button
             type="button"
-            className={style.btn}
+            className={style["btn"]}
             disabled={processing}
             onClick={() => onClick(CommonPopupOptions.ok)}
           >

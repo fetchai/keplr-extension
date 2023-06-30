@@ -22,10 +22,10 @@ export const GroupChatPopup = ({
   return (
     <React.Fragment>
       <div
-        className={style.overlay}
+        className={style["overlay"]}
         onClick={() => onClick(GroupChatMemberOptions.dissmisPopup)}
       />
-      <div className={style.popup}>
+      <div className={style["popup"]}>
         <i
           className={"fa fa-times"}
           style={{

@@ -118,9 +118,8 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           // Basically, `FeeConfig` implementation select the first fee currency as default.
           // So, let's put the priority to first fee currency.
           const firstFeeCurrency = feeConfig.feeCurrencies[0];
-          const firstFeeCurrencyBal = queryBalances.getBalanceFromCurrency(
-            firstFeeCurrency
-          );
+          const firstFeeCurrencyBal =
+            queryBalances.getBalanceFromCurrency(firstFeeCurrency);
 
           if (feeConfig.feeType) {
             const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
@@ -131,9 +130,8 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
               // Not enough balances for fee.
               // Try to find other fee currency to send.
               for (const feeCurrency of feeConfig.feeCurrencies) {
-                const feeCurrencyBal = queryBalances.getBalanceFromCurrency(
-                  feeCurrency
-                );
+                const feeCurrencyBal =
+                  queryBalances.getBalanceFromCurrency(feeCurrency);
                 const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
                   feeCurrency,
                   feeConfig.feeType
@@ -254,7 +252,7 @@ export const FeeCurrencySelector: FunctionComponent<{
       </Label>
       <ButtonDropdown
         id={`selector-${randomId}`}
-        className={styleCoinInput.tokenSelector}
+        className={styleCoinInput["tokenSelector"]}
         isOpen={isOpenTokenSelector}
         toggle={() => setIsOpenTokenSelector((value) => !value)}
       >
@@ -373,20 +371,22 @@ export const FeeButtonsInner: FunctionComponent<
             {label}
           </Label>
         ) : null}
-        <ButtonGroup id={inputId} className={styleFeeButtons.buttons}>
+        <ButtonGroup id={inputId} className={styleFeeButtons["buttons"]}>
           <Button
             type="button"
-            className={styleFeeButtons.button}
+            className={styleFeeButtons["button"]}
             color={feeConfig.feeType === "low" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
               feeConfig.setFeeType("low");
               e.preventDefault();
             }}
           >
-            <div className={styleFeeButtons.title}>{feeSelectLabels.low}</div>
+            <div className={styleFeeButtons["title"]}>
+              {feeSelectLabels.low}
+            </div>
             {lowFeePrice ? (
               <div
-                className={classnames(styleFeeButtons.fiat, {
+                className={classnames(styleFeeButtons["fiat"], {
                   "text-muted": feeConfig.feeType !== "low",
                 })}
               >
@@ -394,7 +394,7 @@ export const FeeButtonsInner: FunctionComponent<
               </div>
             ) : null}
             <div
-              className={classnames(styleFeeButtons.coin, {
+              className={classnames(styleFeeButtons["coin"], {
                 "text-muted": feeConfig.feeType !== "low",
               })}
             >
@@ -407,19 +407,19 @@ export const FeeButtonsInner: FunctionComponent<
           </Button>
           <Button
             type="button"
-            className={styleFeeButtons.button}
+            className={styleFeeButtons["button"]}
             color={feeConfig.feeType === "average" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
               feeConfig.setFeeType("average");
               e.preventDefault();
             }}
           >
-            <div className={styleFeeButtons.title}>
+            <div className={styleFeeButtons["title"]}>
               {feeSelectLabels.average}
             </div>
             {averageFeePrice ? (
               <div
-                className={classnames(styleFeeButtons.fiat, {
+                className={classnames(styleFeeButtons["fiat"], {
                   "text-muted": feeConfig.feeType !== "average",
                 })}
               >
@@ -427,7 +427,7 @@ export const FeeButtonsInner: FunctionComponent<
               </div>
             ) : null}
             <div
-              className={classnames(styleFeeButtons.coin, {
+              className={classnames(styleFeeButtons["coin"], {
                 "text-muted": feeConfig.feeType !== "average",
               })}
             >
@@ -436,17 +436,19 @@ export const FeeButtonsInner: FunctionComponent<
           </Button>
           <Button
             type="button"
-            className={styleFeeButtons.button}
+            className={styleFeeButtons["button"]}
             color={feeConfig.feeType === "high" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
               feeConfig.setFeeType("high");
               e.preventDefault();
             }}
           >
-            <div className={styleFeeButtons.title}>{feeSelectLabels.high}</div>
+            <div className={styleFeeButtons["title"]}>
+              {feeSelectLabels.high}
+            </div>
             {highFeePrice ? (
               <div
-                className={classnames(styleFeeButtons.fiat, {
+                className={classnames(styleFeeButtons["fiat"], {
                   "text-muted": feeConfig.feeType !== "high",
                 })}
               >
@@ -454,7 +456,7 @@ export const FeeButtonsInner: FunctionComponent<
               </div>
             ) : null}
             <div
-              className={classnames(styleFeeButtons.coin, {
+              className={classnames(styleFeeButtons["coin"], {
                 "text-muted": feeConfig.feeType !== "high",
               })}
             >
@@ -475,7 +477,7 @@ export const FeeButtonsInner: FunctionComponent<
 
         <div>
           <Button
-            className={styleFeeButtons.setGasButton}
+            className={styleFeeButtons["setGasButton"]}
             size="sm"
             color="link"
             onClick={(e) => {

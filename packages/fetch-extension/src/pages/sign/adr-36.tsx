@@ -50,7 +50,7 @@ export const ADR36SignDocDetailsTab: FunctionComponent<{
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-      <div className={styleDetailsTab.msgContainer} style={{ flex: "none" }}>
+      <div className={styleDetailsTab["msgContainer"]} style={{ flex: "none" }}>
         <MsgRender icon="fas fa-pen-nib" title={renderTitleText()}>
           {origin ?? "Unknown"}
         </MsgRender>

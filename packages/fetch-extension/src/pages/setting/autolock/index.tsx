@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HeaderLayout } from "../../../layouts";
 
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Button, Form } from "reactstrap";
 import { DescriptionView } from "./description-view";
 
@@ -23,7 +23,7 @@ interface FormData {
 }
 
 export const SettingAutoLockPage: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const minDuration = 0;
@@ -51,7 +51,7 @@ export const SettingAutoLockPage: FunctionComponent = () => {
       const msg = new UpdateAutoLockAccountDurationMsg(duration);
       new InExtensionMessageRequester().sendMessage(BACKGROUND_PORT, msg);
     }
-    history.goBack();
+    navigate(-1);
   }
 
   const [isLoading, setIsLoading] = useState(false);
@@ -65,10 +65,10 @@ export const SettingAutoLockPage: FunctionComponent = () => {
         id: "setting.autolock",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <DescriptionView />
         <Form
           onSubmit={handleSubmit(async (data) => {

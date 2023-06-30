@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "../../../layouts";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
 import { PageButton } from "../page-button";
@@ -31,7 +31,7 @@ const ChainItem: FunctionComponent<{
 };
 
 export const ChainActivePage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const { chainStore } = useStore();
@@ -44,10 +44,10 @@ export const ChainActivePage: FunctionComponent = observer(() => {
         id: "setting.chain-active.title",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         {chainStore.chainInfosWithUIConfig.map((chainInfoUI) => (
           <ChainItem
             key={chainInfoUI.chainInfo.chainId}

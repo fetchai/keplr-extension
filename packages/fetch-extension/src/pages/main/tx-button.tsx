@@ -13,7 +13,7 @@ import Modal from "react-modal";
 import { useNotification } from "@components/notification";
 
 import { FormattedMessage } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 import { Dec } from "@keplr-wallet/unit";
 import send from "@assets/icon/send.png";
@@ -43,7 +43,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
 
   const [sendTooltipOpen, setSendTooltipOpen] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const hasAssets =
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
@@ -93,9 +93,9 @@ export const TxButtonView: FunctionComponent = observer(() => {
           }
         );
 
-        history.replace("/");
+        navigate("/", { replace: true });
       } catch (e: any) {
-        history.replace("/");
+        navigate("/", { replace: true });
         notification.push({
           type: "warning",
           placement: "top-center",
@@ -112,7 +112,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
 
   return (
     <div
-      className={styleTxButton.containerTxButton}
+      className={styleTxButton["containerTxButton"]}
       style={{ margin: "0px -2px" }}
     >
       {/*
@@ -122,7 +122,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
        */}
       <Button
         innerRef={sendBtnRef}
-        className={styleTxButton.button}
+        className={styleTxButton["button"]}
         style={
           !hasAssets
             ? {
@@ -138,7 +138,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
           e.preventDefault();
 
           if (hasAssets) {
-            history.push("/send");
+            navigate("/send");
           }
         }}
         onMouseEnter={() => {
@@ -159,7 +159,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
         <FormattedMessage id="main.account.button.send" />
       </Button>
       <Button
-        className={styleTxButton.button}
+        className={styleTxButton["button"]}
         style={
           !accountInfo.isReadyToSendMsgs ||
           !isRewardExist ||
@@ -218,7 +218,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
         }}
       >
         <Button
-          className={styleTxButton.button}
+          className={styleTxButton["button"]}
           color="primary"
           outline
           onMouseEnter={() => {

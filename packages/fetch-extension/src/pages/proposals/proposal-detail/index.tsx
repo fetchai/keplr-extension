@@ -1,7 +1,7 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { useEffect, useState, Fragment } from "react";
 import { FunctionComponent } from "react";
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
 import { ProposalSetup, ProposalType } from "src/@types/proposal-type";
@@ -20,7 +20,7 @@ import remarkGfm from "remark-gfm";
 const voteArr = ["Unspecified", "Yes", "Abstain", "No", "NoWithVeto"];
 
 export const ProposalDetail: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const notification = useNotification();
   const intl = useIntl();
   const { id } = useParams<{ id?: string }>();
@@ -107,7 +107,7 @@ export const ProposalDetail: FunctionComponent = () => {
           }
         );
 
-        history.replace(`/proposal-vote-status/${votedOn}/${id}`);
+        navigate(`/proposal-vote-status/${votedOn}/${id}`, { replace: true });
       } catch (e: any) {
         console.log(e);
         if (e?.message === "Request rejected") {
@@ -121,7 +121,7 @@ export const ProposalDetail: FunctionComponent = () => {
               duration: 0.25,
             },
           });
-          history.replace("/");
+          navigate("/", { replace: true });
           return;
         }
         notification.push({
@@ -134,8 +134,8 @@ export const ProposalDetail: FunctionComponent = () => {
             duration: 0.25,
           },
         });
-        history.go(-2);
-        history.replace(`/proposal?id=${category}`);
+        navigate(-2);
+        navigate(`/proposal?id=${category}`, { replace: true });
       } finally {
         setIsSendingTx(false);
       }
@@ -157,32 +157,32 @@ export const ProposalDetail: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
       showBottomMenu={false}
     >
-      <div className={style.pContainer}>
+      <div className={style["pContainer"]}>
         {isLoading ? (
-          <div className={style.isLoading}>
+          <div className={style["isLoading"]}>
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : (
           <Fragment>
             <div
-              className={classNames(style.pContentScroll, {
-                [style.closed]: closed,
+              className={classNames(style["pContentScroll"], {
+                [style["closed"]]: closed,
               })}
             >
-              <div className={style.pHeading}>
-                <p className={style.pTitle}>{proposal?.content.title}</p>
-                <p className={style.pId}>{proposal?.proposal_id}</p>
+              <div className={style["pHeading"]}>
+                <p className={style["pTitle"]}>{proposal?.content.title}</p>
+                <p className={style["pId"]}>{proposal?.proposal_id}</p>
               </div>
-              <div className={style.pVotingDate}>
-                <div className={style.votingStart}>
-                  <p className={style.pVotingHead}>
+              <div className={style["pVotingDate"]}>
+                <div className={style["votingStart"]}>
+                  <p className={style["pVotingHead"]}>
                     <FormattedMessage id="proposal.vote.start.time" />
                   </p>
-                  <p className={style.pVotingEnd}>
+                  <p className={style["pVotingEnd"]}>
                     {moment(proposal?.voting_start_time)
                       .utc()
                       .format("ddd, DD MMM YYYY hh:mm:ss ")}
@@ -190,10 +190,10 @@ export const ProposalDetail: FunctionComponent = () => {
                   </p>
                 </div>
                 <div>
-                  <p className={style.pVotingHead}>
+                  <p className={style["pVotingHead"]}>
                     <FormattedMessage id="proposal.vote.end.time" />
                   </p>
-                  <p className={style.pVotingEnd}>
+                  <p className={style["pVotingEnd"]}>
                     {moment(proposal?.voting_end_time)
                       .utc()
                       .format("ddd, DD MMM YYYY hh:mm:ss ")}
@@ -201,7 +201,7 @@ export const ProposalDetail: FunctionComponent = () => {
                   </p>
                 </div>
               </div>
-              <p className={style.pDesc}>
+              <p className={style["pDesc"]}>
                 {proposal && (
                   <ReactMarkdown
                     linkTarget={"_blank"}
@@ -214,9 +214,9 @@ export const ProposalDetail: FunctionComponent = () => {
               </p>
             </div>
 
-            <div className={style.pLinkContainer}>
+            <div className={style["pLinkContainer"]}>
               <p
-                className={style.pLink}
+                className={style["pLink"]}
                 onClick={() => {
                   if (chainStore.current.govUrl) {
                     window.open(`${chainStore.current.govUrl}${id}`, "_blank");
@@ -229,8 +229,8 @@ export const ProposalDetail: FunctionComponent = () => {
             </div>
 
             {!closed && (
-              <div className={style.endBody}>
-                <div className={style.voteContainer}>
+              <div className={style["endBody"]}>
+                <div className={style["voteContainer"]}>
                   <VoteBlock
                     selected={votedOn}
                     title="Yes"
@@ -276,7 +276,7 @@ export const ProposalDetail: FunctionComponent = () => {
                   />
                 </div>
                 <Button
-                  className={style.button}
+                  className={style["button"]}
                   color="primary"
                   disabled={votedOn === 0}
                   onClick={handleClick}

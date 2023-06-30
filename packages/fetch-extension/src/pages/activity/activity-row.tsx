@@ -151,17 +151,17 @@ export const ActivityRow = ({ node }: { node: any }) => {
       target="_blank"
       rel="noreferrer"
     >
-      <div className={style.activityRow}>
-        <div className={style.activityCol} style={{ width: "7%" }}>
+      <div className={style["activityRow"]}>
+        <div className={style["activityCol"]} style={{ width: "7%" }}>
           <img src={getActivityIcon(typeUrl)} alt={typeUrl} />
         </div>
-        <div className={style.activityCol} style={{ width: "33%" }}>
+        <div className={style["activityCol"]} style={{ width: "33%" }}>
           {hash}
         </div>
-        <div className={style.activityCol} style={{ width: "53%" }}>
+        <div className={style["activityCol"]} style={{ width: "53%" }}>
           {details}
         </div>
-        <div className={style.activityCol} style={{ width: "7%" }}>
+        <div className={style["activityCol"]} style={{ width: "7%" }}>
           <img src={getStatusIcon(node.transaction.status)} alt={node.status} />
         </div>
       </div>

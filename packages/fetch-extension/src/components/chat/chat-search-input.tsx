@@ -1,6 +1,6 @@
 import amplitude from "amplitude-js";
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import newChatIcon from "@assets/icon/new-chat.png";
 import searchIcon from "@assets/icon/search.png";
 import style from "./style.module.scss";
@@ -14,10 +14,10 @@ export const ChatSearchInput = ({
   handleSearch: any;
   setSearchInput: any;
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
-    <div className={style.searchContainer}>
-      <div className={style.searchBox}>
+    <div className={style["searchContainer"]}>
+      <div className={style["searchBox"]}>
         <img draggable={false} src={searchIcon} alt="search" />
         <input
           placeholder="Search by name or address"
@@ -29,12 +29,12 @@ export const ChatSearchInput = ({
       <div
         onClick={() => {
           amplitude.getInstance().logEvent("New chat click", {});
-          history.push("/new-chat");
+          navigate("/new-chat");
         }}
       >
         <img
           draggable={false}
-          className={style.newChatIcon}
+          className={style["newChatIcon"]}
           src={newChatIcon}
           alt=""
         />

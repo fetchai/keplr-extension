@@ -13,7 +13,7 @@ import { TokenDropdown } from "@components/agents/tokens-dropdown";
 import { IBCChainSelector } from "@components/agents/ibc-chain-selector";
 import { SignTransaction } from "@components/agents/sign-transaction";
 import { MessageFeedBack } from "@components/chat-message-feedback";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
 import { RecipientAddressInput } from "@components/agents/address-input";
@@ -47,8 +47,7 @@ export const AgentChatMessage = ({
 }) => {
   const [decryptedMessage, setDecryptedMessage] = useState<MessagePrimitive>();
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const targetAddress = useLocation().pathname.split("/")[3];
   useEffect(() => {
     decryptMessage(chainId, message, isSender)
       .then((message) => {
@@ -85,7 +84,7 @@ export const AgentChatMessage = ({
     const messageContent = decryptedMessage.content.text;
     if (decryptedMessage.type === 1) {
       messageView = (
-        <div className={style.message}>
+        <div className={style["message"]}>
           {typeof messageContent == "string"
             ? parse(processHyperlinks(messageContent))
             : messageContent}
@@ -101,12 +100,13 @@ export const AgentChatMessage = ({
       if (disabled) {
         if (messageObj.method === "signTransaction")
           messageView = (
-            <div className={style.message}>
+            <div className={style["message"]}>
               Please recheck parameters of the transaction in Data Tab before
               approving the transaction.
             </div>
           );
-        else messageView = <div className={style.message}>{messageLabel}</div>;
+        else
+          messageView = <div className={style["message"]}>{messageLabel}</div>;
       } else
         switch (messageObj.method) {
           case "signTransaction":
@@ -140,7 +140,7 @@ export const AgentChatMessage = ({
             break;
           default:
             messageView = (
-              <div className={style.message}>
+              <div className={style["message"]}>
                 {messageObj?.message || "Cant Parse Message"}
               </div>
             );
@@ -153,7 +153,7 @@ export const AgentChatMessage = ({
 
   const decideFeedbackView = () => {
     const feedbackView = (
-      <div className={style.timestamp}>
+      <div className={style["timestamp"]}>
         {isHovered && (
           <MessageFeedBack
             messageId={messageId}
@@ -172,24 +172,24 @@ export const AgentChatMessage = ({
 
   return (
     <React.Fragment>
-      <div className={style.currentDateContainer}>
+      <div className={style["currentDateContainer"]}>
         {showDate ? (
-          <span className={style.currentDate}>{getDate(timestamp)}</span>
+          <span className={style["currentDate"]}>{getDate(timestamp)}</span>
         ) : null}
       </div>
-      <div className={isSender ? style.senderAlign : style.receiverAlign}>
+      <div className={isSender ? style["senderAlign"] : style["receiverAlign"]}>
         <Container
           fluid
-          className={classnames(style.messageBox, {
-            [style.senderBox]: isSender,
+          className={classnames(style["messageBox"], {
+            [style["senderBox"]]: isSender,
           })}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           {decideMessageView()}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div className={style.timestamp}>{decideFeedbackView()}</div>
-            <div className={style.timestamp}>
+            <div className={style["timestamp"]}>{decideFeedbackView()}</div>
+            <div className={style["timestamp"]}>
               {formatTime(timestamp)}
               {isSender && groupLastSeenTimestamp < timestamp && (
                 <img draggable={false} alt="delivered" src={deliveredIcon} />

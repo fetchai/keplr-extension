@@ -3,7 +3,7 @@ import { useNotification } from "@components/notification";
 import { deliverMessages } from "@graphQL/messages-api";
 import React, { FunctionComponent, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
@@ -19,8 +19,7 @@ export const RecipientAddressInput: FunctionComponent<{
   const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const targetAddress = useLocation().pathname.split("/")[3];
 
   const user = useSelector(userDetails);
   const notification = useNotification();
@@ -97,7 +96,7 @@ export const RecipientAddressInput: FunctionComponent<{
   };
 
   return (
-    <div className={style.message}>
+    <div className={style["message"]}>
       <AddressInput
         recipientConfig={sendConfigs.recipientConfig}
         memoConfig={sendConfigs.memoConfig}

@@ -76,8 +76,8 @@ export const GroupsHistory: React.FC<{
 
   if (!Object.keys(groups).length)
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           No results. Don&apos;t worry you can create a new chat by clicking on
           the icon beside the search box.
         </div>
@@ -90,22 +90,22 @@ export const GroupsHistory: React.FC<{
     userState.messagingPubKey.privacySetting === PrivacySetting.Contacts
   )
     return (
-      <div className={style.groupsArea}>
+      <div className={style["groupsArea"]}>
         <ContactsOnlyMessage />
       </div>
     );
 
   if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           No results found. Please refine your search.
         </div>
       </div>
     );
 
   return (
-    <div className={style.groupsArea}>
+    <div className={style["groupsArea"]}>
       {Object.keys(groups)
         .sort(
           (a, b) =>
@@ -157,7 +157,7 @@ export const GroupsHistory: React.FC<{
           );
         })}
       {groupsPagination?.lastPage > groupsPagination?.page && (
-        <div className={style.loader} ref={messagesEndRef}>
+        <div className={style["loader"]} ref={messagesEndRef}>
           Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}

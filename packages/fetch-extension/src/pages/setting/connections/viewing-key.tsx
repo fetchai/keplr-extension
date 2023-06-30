@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo } from "react";
-import { useHistory, useRouteMatch } from "react-router";
+import { useNavigate, useRouteMatch } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
@@ -8,14 +8,14 @@ import { HeaderLayout } from "@layouts/index";
 import { useIntl } from "react-intl";
 import { useConfirm } from "@components/confirm";
 
-export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = observer(
-  () => {
+export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
+  observer(() => {
     const match = useRouteMatch<{
       contractAddress: string;
     }>();
 
     const intl = useIntl();
-    const history = useHistory();
+    const navigate = useNavigate();
     const confirm = useConfirm();
 
     const { chainStore, permissionStore, queriesStore } = useStore();
@@ -44,10 +44,10 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
           id: "setting.connections.viewing-key",
         })}
         onBackButton={() => {
-          history.goBack();
+          navigate(-1);
         }}
       >
-        <div className={style.container}>
+        <div className={style["container"]}>
           <div
             className="text-gray"
             style={{
@@ -73,12 +73,10 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
                         />
                       ),
                       title: intl.formatMessage({
-                        id:
-                          "setting.connections.viewing-key.confirm.delete-connection.title",
+                        id: "setting.connections.viewing-key.confirm.delete-connection.title",
                       }),
                       paragraph: intl.formatMessage({
-                        id:
-                          "setting.connections.viewing-key.confirm.delete-connection.paragraph",
+                        id: "setting.connections.viewing-key.confirm.delete-connection.paragraph",
                       }),
                     })
                   ) {
@@ -92,5 +90,4 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
         </div>
       </HeaderLayout>
     );
-  }
-);
+  });

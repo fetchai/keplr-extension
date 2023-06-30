@@ -2,7 +2,7 @@ import React, { FunctionComponent, MouseEvent, useCallback } from "react";
 
 import styleWarningView from "./warning-view.module.scss";
 import { Alert, Button } from "reactstrap";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { FormattedMessage } from "react-intl";
 
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
@@ -11,19 +11,19 @@ export const WarningView: FunctionComponent<{
   index: number;
   keyStore: MultiKeyStoreInfoWithSelectedElem;
 }> = ({ index, keyStore }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onBackUpMnemonicButtonClick = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
 
-      history.push(`/setting/export/${index}`);
+      navigate(`/setting/export/${index}`);
     },
-    [history, index]
+    [navigate, index]
   );
 
   return (
-    <div className={styleWarningView.innerContainer}>
+    <div className={styleWarningView["innerContainer"]}>
       {keyStore.type === "mnemonic" ? (
         <Alert color="warning" fade={false}>
           <div>
@@ -40,7 +40,7 @@ export const WarningView: FunctionComponent<{
           </Button>
         </Alert>
       ) : null}
-      <div className={styleWarningView.trashContainer}>
+      <div className={styleWarningView["trashContainer"]}>
         <img
           src={require("@assets/img/icons8-trash-can.svg")}
           alt="trash-can"

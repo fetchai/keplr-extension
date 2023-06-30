@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect } from "react";
 import { HeaderLayout } from "../../layouts";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { AuthZ } from "@keplr-wallet/stores";
 import style from "./style.module.scss";
 import classNames from "classnames";
@@ -16,10 +16,11 @@ export const AuthZPage: FunctionComponent = () => {
 
   const intl = useIntl();
   const notification = useNotification();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const grant: AuthZ.Grant = JSON.parse(
     Buffer.from(
-      new URLSearchParams(history.location.search).get("grant") ?? "",
+      new URLSearchParams(location.search).get("grant") ?? "",
       "base64"
     ).toString()
   );
@@ -117,15 +118,15 @@ export const AuthZPage: FunctionComponent = () => {
           },
         }
       );
-      history.replace("/");
+      navigate("/", { replace: true });
     } catch (e) {
       if (e.message === "Request rejected") {
-        if (history.location.pathname === "/authz") {
+        if (location.pathname === "/authz") {
           return;
         }
       }
 
-      history.replace("/");
+      navigate("/", { replace: true });
       notification.push({
         type: "warning",
         placement: "top-center",
@@ -144,21 +145,19 @@ export const AuthZPage: FunctionComponent = () => {
       showChainName={false}
       canChangeChainInfo={false}
       smallTitle={true}
-      alternativeTitle={
-        new URLSearchParams(history.location.search).get("title") ?? ""
-      }
+      alternativeTitle={new URLSearchParams(location.search).get("title") ?? ""}
       onBackButton={useCallback(() => {
-        history.goBack();
-      }, [history])}
+        navigate(-1);
+      }, [navigate])}
       innerStyle={{ background: "#FAFBFD" }}
     >
-      <div className={style.container}>
-        <div className={style.item}>
-          <div className={style.title}>
+      <div className={style["container"]}>
+        <div className={style["item"]}>
+          <div className={style["title"]}>
             <FormattedMessage id="main.authz.grant.grantee.address" />
           </div>
           <div
-            className={classNames(style.content, style.clickable)}
+            className={classNames(style["content"], style["clickable"])}
             onClick={() => copyAddress(grant.grantee)}
           >
             {grant.grantee}
@@ -188,12 +187,12 @@ export const AuthZPage: FunctionComponent = () => {
           </div>
         </div>
 
-        <div className={style.item}>
-          <div className={style.title}>
+        <div className={style["item"]}>
+          <div className={style["title"]}>
             <FormattedMessage id="main.authz.grant.expiration.title" />
           </div>
           {grant.expiration ? (
-            <div className={style.content}>
+            <div className={style["content"]}>
               {new Date() < new Date(grant.expiration) ? (
                 <FormattedDate
                   value={grant.expiration}
@@ -209,19 +208,19 @@ export const AuthZPage: FunctionComponent = () => {
               )}
             </div>
           ) : (
-            <div className={style.bold}>
+            <div className={style["bold"]}>
               <FormattedMessage id="main.authz.grant.expiration.infinite" />
             </div>
           )}
         </div>
-        <pre className={classNames(style.item, style.raw)}>
+        <pre className={classNames(style["item"], style["raw"])}>
           {JSON.stringify(grant.authorization, undefined, 2)}
         </pre>
 
         <div style={{ flex: 1 }} />
 
         <button
-          className={style.revoke}
+          className={style["revoke"]}
           onClick={() => onClickRevokeButton(grant)}
         >
           <FormattedMessage id="main.authz.grant.revoke" />

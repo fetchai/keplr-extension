@@ -47,14 +47,14 @@ export const ProgressBar = ({
 
   return (
     <div>
-      <div className={styleAsset.progressDiv} style={{ width }}>
+      <div className={styleAsset["progressDiv"]} style={{ width }}>
         <div
           style={{ width: `${values[0]}px` }}
-          className={styleAsset.progressAvailable}
+          className={styleAsset["progressAvailable"]}
         />
         <div
           style={{ width: `${values[0] + values[1]}px` }}
-          className={styleAsset.progressStake}
+          className={styleAsset["progressStake"]}
         />
       </div>
     </div>
@@ -122,7 +122,7 @@ const EmptyState = ({
   const { buySupportServiceInfos } = useBuy();
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   return (
-    <div className={styleAsset.emptyState}>
+    <div className={styleAsset["emptyState"]}>
       <DepositModal
         chainName={chainName}
         bech32Address={bech32Address}
@@ -130,9 +130,9 @@ const EmptyState = ({
         setIsDepositOpen={setIsDepositOpen}
       />
 
-      <h1 className={styleAsset.title}>No funds added</h1>
+      <h1 className={styleAsset["title"]}>No funds added</h1>
       <img draggable={false} src={walletIcon} alt="no fund" />
-      <p className={styleAsset.desc}>
+      <p className={styleAsset["desc"]}>
         That’s okay, you can deposit tokens to your address or buy some.
       </p>
       <button
@@ -148,7 +148,7 @@ const EmptyState = ({
       {/* isBuySupportChain || */}
       {chainId == "fetchhub-4" && (
         <button
-          className={styleAsset.buyButton}
+          className={styleAsset["buyButton"]}
           onClick={(e) => {
             e.preventDefault();
             if (chainId == "fetchhub-4") {
@@ -280,14 +280,14 @@ export const AssetView: FunctionComponent = observer(() => {
 
   return (
     <Fragment>
-      <div className={styleAsset.containerAsset}>
-        <div className={styleAsset.containerChart}>
-          <div className={styleAsset.centerText}>
-            <div className={styleAsset.big}>
+      <div className={styleAsset["containerAsset"]}>
+        <div className={styleAsset["containerChart"]}>
+          <div className={styleAsset["centerText"]}>
+            <div className={styleAsset["big"]}>
               <FormattedMessage id="main.account.chart.total-balance" />
             </div>
             <div
-              className={styleAsset.small}
+              className={styleAsset["small"]}
               style={{
                 marginBottom: "20px",
               }}
@@ -296,7 +296,7 @@ export const AssetView: FunctionComponent = observer(() => {
                 ? totalPrice.toString()
                 : total.shrink(true).trim(true).maxDecimals(6).toString()}
             </div>
-            <div className={styleAsset.indicatorIcon}>
+            <div className={styleAsset["indicatorIcon"]}>
               <Fragment>
                 {balanceStakableQuery.isFetching ? (
                   <i className="fas fa-spinner fa-spin" />
@@ -320,14 +320,14 @@ export const AssetView: FunctionComponent = observer(() => {
           </div>
           <ProgressBar width={300} data={data} />
         </div>
-        <div className={styleAsset.legendContainer}>
-          <div className={styleAsset.legend}>
-            <div className={styleAsset.label} style={{ color: "#3B82F6" }}>
+        <div className={styleAsset["legendContainer"]}>
+          <div className={styleAsset["legend"]}>
+            <div className={styleAsset["label"]} style={{ color: "#3B82F6" }}>
               <FormattedMessage id="main.account.chart.available-balance" />
             </div>
             <div style={{ minWidth: "16px" }} />
             <div
-              className={styleAsset.value}
+              className={styleAsset["value"]}
               style={{
                 color: "#525f7f",
               }}
@@ -335,13 +335,13 @@ export const AssetView: FunctionComponent = observer(() => {
               {stakable.shrink(true).maxDecimals(6).toString()}
             </div>
           </div>
-          <div className={styleAsset.legend}>
-            <div className={styleAsset.label} style={{ color: "#11cdef" }}>
+          <div className={styleAsset["legend"]}>
+            <div className={styleAsset["label"]} style={{ color: "#11cdef" }}>
               <FormattedMessage id="main.account.chart.staked-balance" />
             </div>
             <div style={{ minWidth: "16px" }} />
             <div
-              className={styleAsset.value}
+              className={styleAsset["value"]}
               style={{
                 color: "#525f7f",
               }}
@@ -350,13 +350,13 @@ export const AssetView: FunctionComponent = observer(() => {
             </div>
           </div>
           {isNoble && hasUSDC ? null : (
-            <div className={styleAsset.legend}>
-              <div className={styleAsset.label} style={{ color: "#D43BF6" }}>
+            <div className={styleAsset["legend"]}>
+              <div className={styleAsset["label"]} style={{ color: "#D43BF6" }}>
                 <FormattedMessage id="main.account.chart.reward-balance" />
               </div>
               <div style={{ minWidth: "16px" }} />
               <div
-                className={styleAsset.value}
+                className={styleAsset["value"]}
                 style={{
                   color: "#525f7f",
                 }}
@@ -368,7 +368,7 @@ export const AssetView: FunctionComponent = observer(() => {
         </div>
       </div>
       <TxButtonView />
-      <hr className={styleAsset.hr} />
+      <hr className={styleAsset["hr"]} />
       <DepositView />
     </Fragment>
   );
@@ -378,26 +378,26 @@ export const BuyModalContent: FunctionComponent<{
   buySupportServiceInfos: BuySupportServiceInfo[];
 }> = ({ buySupportServiceInfos }) => {
   return (
-    <div className={styleTxButton.modalContent}>
+    <div className={styleTxButton["modalContent"]}>
       <h1 style={{ marginBottom: 0 }}>Buy Crypto</h1>
-      <div className={styleTxButton.buySupportServices}>
+      <div className={styleTxButton["buySupportServices"]}>
         {buySupportServiceInfos.map((serviceInfo) => (
           <a
             key={serviceInfo.serviceId}
             href={serviceInfo.buyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={classNames(styleTxButton.service, {
-              [styleTxButton.disabled]: !serviceInfo.buyUrl,
+            className={classNames(styleTxButton["service"], {
+              [styleTxButton["disabled"]]: !serviceInfo.buyUrl,
             })}
             onClick={(e) => !serviceInfo.buyUrl && e.preventDefault()}
           >
-            <div className={styleTxButton.serviceLogoContainer}>
+            <div className={styleTxButton["serviceLogoContainer"]}>
               <img
                 src={require(`../../public/assets/img/fiat-on-ramp/${serviceInfo.serviceId}.svg`)}
               />
             </div>
-            <div className={styleTxButton.serviceName}>
+            <div className={styleTxButton["serviceName"]}>
               {serviceInfo.serviceName}
             </div>
           </a>

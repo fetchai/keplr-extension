@@ -2,7 +2,7 @@ import classnames from "classnames";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent } from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { store } from "@chatStore/index";
 import {
   resetChatList,
@@ -14,12 +14,12 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
-import { resetProposals } from "../../stores/chats/proposal-slice";
+import { resetProposals } from "@chatStore/proposal-slice";
 const ChainElement: FunctionComponent<{
   chainInfo: ChainInfoWithCoreTypes;
 }> = observer(({ chainInfo }) => {
   const { chainStore, analyticsStore } = useStore();
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const confirm = useConfirm();
@@ -27,7 +27,7 @@ const ChainElement: FunctionComponent<{
   return (
     <div
       className={classnames({
-        [style.chainName]: true,
+        [style["chainName"]]: true,
         selected: chainInfo.chainId === chainStore.current.chainId,
       })}
       onClick={() => {
@@ -48,7 +48,7 @@ const ChainElement: FunctionComponent<{
         store.dispatch(resetChatList({}));
         store.dispatch(setIsChatSubscriptionActive(false));
         messageAndGroupListenerUnsubscribe();
-        history.push("/");
+        navigate("/");
         if (Object.values(properties).length > 0) {
           analyticsStore.logEvent("Chain changed", properties);
         }
@@ -57,7 +57,7 @@ const ChainElement: FunctionComponent<{
       {chainInfo.chainName}
       {!chainInfo.embeded &&
       chainStore.current.chainId !== chainInfo.chainId ? (
-        <div className={style.removeBtn}>
+        <div className={style["removeBtn"]}>
           <i
             className="fas fa-times-circle"
             onClick={async (e) => {
@@ -130,7 +130,7 @@ export const ChainList: FunctionComponent = observer(() => {
   );
 
   return (
-    <div className={style.chainListContainer}>
+    <div className={style["chainListContainer"]}>
       {mainChainList.map((chainInfo) => (
         <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.raw} />
       ))}
@@ -146,7 +146,7 @@ export const ChainList: FunctionComponent = observer(() => {
         rel="noopener noreferrer"
         style={{ display: "none" }}
       >
-        <div className={classnames(style.chainName, style.addChain)}>
+        <div className={classnames(style["chainName"], style["addChain"])}>
           <div>{intl.formatMessage({ id: "main.suggest.chain.link" })}</div>
         </div>
       </a>

@@ -6,7 +6,7 @@ import {
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import { userBlockedAddresses } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
 import { ChatActionsPopup } from "@components/chat-actions-popup";
@@ -21,8 +21,7 @@ import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
 
 export const ChatSection: FunctionComponent = () => {
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[2];
+  const targetAddress = useLocation().pathname.split("/")[2];
 
   const blockedUsers = useSelector(userBlockedAddresses);
   const user = useSelector(userDetails);

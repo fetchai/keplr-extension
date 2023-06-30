@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, useEffect, useMemo } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useHistory, useRouteMatch } from "react-router";
+import { useNavigate, useRouteMatch } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Input } from "@components/form";
 import { Button, Form } from "reactstrap";
@@ -17,7 +17,7 @@ interface FormData {
 }
 
 export const ChangeNamePage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const match = useRouteMatch<{ index: string }>();
 
   const intl = useIntl();
@@ -26,17 +26,12 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
 
   const waitingNameData = keyRingStore.waitingNameData?.data;
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    setValue,
-  } = useForm<FormData>({
-    defaultValues: {
-      name: "",
-    },
-  });
+  const { register, handleSubmit, errors, setError, setValue } =
+    useForm<FormData>({
+      defaultValues: {
+        name: "",
+      },
+    });
 
   useEffect(() => {
     if (waitingNameData?.defaultName) {
@@ -70,11 +65,11 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
         id: "setting.keyring.change.name",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       <Form
-        className={styleName.container}
+        className={styleName["container"]}
         onSubmit={handleSubmit(async (data) => {
           setLoading(true);
           try {
@@ -91,7 +86,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
               data.name.trim()
             );
 
-            history.push("/");
+            navigate("/");
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
             setError(

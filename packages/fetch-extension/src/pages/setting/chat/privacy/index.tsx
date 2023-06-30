@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { store } from "@chatStore/index";
 import { setMessagingPubKey, userDetails } from "@chatStore/user-slice";
 import { useLoadingIndicator } from "@components/loading-indicator";
@@ -19,7 +19,7 @@ import { GRAPHQL_URL } from "../../../../config.ui.var";
 
 export const Privacy: FunctionComponent = observer(() => {
   // const language = useLanguage();
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const { chainStore, accountStore } = useStore();
 
@@ -73,10 +73,10 @@ export const Privacy: FunctionComponent = observer(() => {
         id: "setting.privacy",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title="Everybody"
           onClick={(e) => {

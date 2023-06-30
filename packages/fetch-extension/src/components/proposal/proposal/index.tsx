@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FunctionComponent } from "react";
 import style from "./style.module.scss";
 import { GovStatusChip } from "@components/chips/gov-chip";
-import { useHistory } from "react-router";
-import { proposalOptions } from "../../../pages/proposals/index";
+import { useNavigate } from "react-router";
+import { proposalOptions } from "../../../pages/proposals";
 import { useStore } from "../../../stores";
 import { fetchVote } from "@utils/fetch-proposals";
 import { ProposalSetup } from "src/@types/proposal-type";
@@ -18,7 +18,7 @@ interface Props {
 
 export const Proposal: FunctionComponent<Props> = (props) => {
   const { title, status, id } = props;
-  const history = useHistory();
+  const navigate = useNavigate();
   let icon, color, background, name;
   const reduxProposals: ProposalSetup = useSelector(useProposals);
 
@@ -79,21 +79,21 @@ export const Proposal: FunctionComponent<Props> = (props) => {
         "VOTE_OPTION_NO",
         "VOTE_OPTION_NO_WITH_VETO",
       ];
-      history.push(
+      navigate(
         `/proposal-vote-status/${voteArr.indexOf(alreadyVoted)}/${id}?true`
       );
       return;
     }
-    history.push(`/proposal-detail/${id}`);
+    navigate(`/proposal-detail/${id}`);
   };
   return (
-    <div className={style.proposal} onClick={handleClick}>
-      <div className={style.pContent}>
-        <p className={style.pTitle}>{title}</p>
-        <p className={style.pDesc}>{id}</p>
+    <div className={style["proposal"]} onClick={handleClick}>
+      <div className={style["pContent"]}>
+        <p className={style["pTitle"]}>{title}</p>
+        <p className={style["pDesc"]}>{id}</p>
       </div>
 
-      <div className={style.govStatus}>
+      <div className={style["govStatus"]}>
         <GovStatusChip
           id={4}
           name={name}

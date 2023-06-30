@@ -1,12 +1,12 @@
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import style from "./style.module.scss";
 
 export const ContactsOnlyMessage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
-    <div className={style.resultText}>
+    <div className={style["resultText"]}>
       If you are searching for an address not in your address book, you
       can&apos;t see them due to your selected privacy settings being
       &quot;contact only&quot;. Please add the address to your address book to
@@ -19,7 +19,7 @@ export const ContactsOnlyMessage = () => {
         }}
         onClick={(e) => {
           e.preventDefault();
-          history.push("/setting/chat/privacy");
+          navigate("/setting/chat/privacy");
         }}
       >
         Go to chat privacy settings

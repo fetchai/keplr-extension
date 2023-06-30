@@ -4,12 +4,12 @@ import { PageButton } from "../page-button";
 
 import style from "../style.module.scss";
 import { useLanguage } from "../../../languages";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useIntl } from "react-intl";
 
 export const SettingLanguagePage: FunctionComponent = () => {
   const language = useLanguage();
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const selectedIcon = useMemo(
@@ -26,20 +26,18 @@ export const SettingLanguagePage: FunctionComponent = () => {
         id: "setting.language",
       })}
       onBackButton={useCallback(() => {
-        history.goBack();
-      }, [history])}
+        navigate(-1);
+      }, [navigate])}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title={intl.formatMessage({
             id: "setting.language.automatic",
           })}
           onClick={useCallback(() => {
             language.clearLanguage();
-            history.push({
-              pathname: "/",
-            });
-          }, [history, language])}
+            navigate("/");
+          }, [navigate, language])}
           icons={language.automatic ? selectedIcon : undefined}
         />
         <PageButton
@@ -48,10 +46,8 @@ export const SettingLanguagePage: FunctionComponent = () => {
           })}
           onClick={useCallback(() => {
             language.setLanguage("en");
-            history.push({
-              pathname: "/",
-            });
-          }, [history, language])}
+            navigate("/");
+          }, [navigate, language])}
           icons={
             !language.automatic && language.language == "en"
               ? selectedIcon
@@ -64,10 +60,8 @@ export const SettingLanguagePage: FunctionComponent = () => {
           })}
           onClick={useCallback(() => {
             language.setLanguage("ko");
-            history.push({
-              pathname: "/",
-            });
-          }, [history, language])}
+            navigate("/");
+          }, [navigate, language])}
           icons={
             !language.automatic && language.language == "ko"
               ? selectedIcon

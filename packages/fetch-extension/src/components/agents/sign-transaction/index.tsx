@@ -4,7 +4,7 @@ import { deliverMessages } from "@graphQL/messages-api";
 import { signTransaction } from "@utils/sign-transaction";
 import React from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   AGENT_ADDRESS,
   TRANSACTION_FAILED,
@@ -26,16 +26,16 @@ export const SignTransaction = ({
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const navigate = useNavigate();
+  const targetAddress = useLocation().pathname.split("/")[3];
 
   const user = useSelector(userDetails);
   const notification = useNotification();
   const signTxn = async (data: string) => {
     try {
       const signResult = await signTransaction(data, chainId, accountInfo);
-      history.goBack();
-      deliverMessages(
+      navigate(-1);
+      await deliverMessages(
         user.accessToken,
         chainId,
         {
@@ -65,7 +65,7 @@ export const SignTransaction = ({
         accountInfo.bech32Address,
         targetAddress
       );
-      history.push(`/chat/agent/${AGENT_ADDRESS[current.chainId]}`);
+      navigate(`/chat/agent/${AGENT_ADDRESS[current.chainId]}`);
     }
   };
 
@@ -94,7 +94,7 @@ export const SignTransaction = ({
   };
 
   return (
-    <div className={style.message}>
+    <div className={style["message"]}>
       Please recheck parameters of the transaction in Data Tab before approving
       the transaction.
       <Button

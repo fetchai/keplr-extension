@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -40,7 +40,7 @@ export interface WCExportKeyRingDatasResponse {
 }
 
 export const ExportToMobilePage: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const [exportKeyRingDatas, setExportKeyRingDatas] = useState<
@@ -56,7 +56,7 @@ export const ExportToMobilePage: FunctionComponent = () => {
         id: "setting.export-to-mobile",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       {exportKeyRingDatas.length === 0 ? (
@@ -92,7 +92,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className={style.container}>
+    <div className={style["container"]}>
       <div
         style={{
           display: "flex",
@@ -220,7 +220,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
 }> = observer(({ exportKeyRingDatas }) => {
   const { chainStore } = useStore();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const loadingIndicator = useLoadingIndicator();
 
@@ -253,7 +253,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
       connector.on("display_uri", (error, payload) => {
         if (error) {
           console.log(error);
-          history.replace("/");
+          navigate("/", { replace: true });
           connector.killSession();
           return;
         }
@@ -279,7 +279,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
       connector.on("connect", (error) => {
         if (error) {
           console.log(error);
-          history.replace("/");
+          navigate("/", { replace: true });
           connector.killSession();
         } else {
           loadingIndicator.setIsLoading("export-to-mobile", true);
@@ -293,7 +293,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
             "keplr_request_export_keyring_datas_wallet_connect_v1"
         ) {
           console.log(error, payload?.method);
-          history.replace("/");
+          navigate("/", { replace: true });
           connector.killSession();
           loadingIndicator.setIsLoading("export-to-mobile", false);
         } else {
@@ -318,9 +318,8 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
             if (payload.params && payload.params.length > 0) {
               for (const chainId of payload.params[0].addressBookChainIds ??
                 []) {
-                const addressBookConfig = addressBookConfigMap.getAddressBookConfig(
-                  chainId
-                );
+                const addressBookConfig =
+                  addressBookConfigMap.getAddressBookConfig(chainId);
 
                 await addressBookConfig.waitLoaded();
 
@@ -344,7 +343,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
               result: [response],
             });
 
-            history.replace("/");
+            navigate("/", { replace: true });
             setTimeout(() => {
               connector.killSession();
             }, 5000);
@@ -357,7 +356,7 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
   }, [connector, qrCodeData]);
 
   return (
-    <div className={style.container}>
+    <div className={style["container"]}>
       <div style={{ flex: 1 }} />
       <div
         style={{

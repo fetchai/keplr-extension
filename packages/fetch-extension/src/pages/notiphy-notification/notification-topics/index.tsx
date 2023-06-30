@@ -6,7 +6,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { NotyphiTopic } from "@notificationTypes";
 import { useStore } from "../../../stores";
 
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
 import { FormattedMessage } from "react-intl";
@@ -17,7 +17,7 @@ const pageOptions = {
 };
 
 export const NotificationTopics: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [inputVal, setInputVal] = useState("");
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -53,11 +53,11 @@ export const NotificationTopics: FunctionComponent = () => {
       JSON.stringify(selectedTopics)
     );
     if (type === pageOptions.edit) {
-      history.goBack();
+      navigate(-1);
       return;
     }
 
-    history.push("/notification/review");
+    navigate("/notification/review");
   };
 
   const handleSearch = () => {
@@ -98,11 +98,11 @@ export const NotificationTopics: FunctionComponent = () => {
       alternativeTitle={"Topics"}
       showBottomMenu={false}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.topicsContainer}>
-        <div className={style.heading}>
+      <div className={style["topicsContainer"]}>
+        <div className={style["heading"]}>
           <FormattedMessage id="notification.topic.header-message" />
         </div>
         <SearchInput
@@ -111,13 +111,13 @@ export const NotificationTopics: FunctionComponent = () => {
           setInputVal={setInputVal}
         />
         {isLoading ? (
-          <div className={style.isLoading}>
+          <div className={style["isLoading"]}>
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : (
-          <div className={style.topicChipsContainer}>
+          <div className={style["topicChipsContainer"]}>
             {!topicsList.length && (
-              <div className={style.resultText}>
+              <div className={style["resultText"]}>
                 <p>
                   <FormattedMessage id="search.no-result-found" />
                   {inputVal !== "" && (
@@ -142,13 +142,13 @@ export const NotificationTopics: FunctionComponent = () => {
           </div>
         )}
 
-        <p className={style.selectedTopics}>
+        <p className={style["selectedTopics"]}>
           {selectedTopics.length} notification types selected
         </p>
 
-        <div className={style.topicButton}>
+        <div className={style["topicButton"]}>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="primary"
             onClick={handleNextPage}
             disabled={type === pageOptions.edit && disabled}

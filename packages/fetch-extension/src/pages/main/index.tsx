@@ -146,9 +146,9 @@ export const MainPage: FunctionComponent = observer(() => {
       <BIP44SelectModal />
       <ChatDisclaimer />
       <LedgerAppModal />
-      <Card className={classnames(style.card, "shadow")}>
+      <Card className={classnames(style["card"], "shadow")}>
         <CardBody>
-          <div className={style.containerAccountInner}>
+          <div className={style["containerAccountInner"]}>
             <AccountView />
             <AssetView />
           </div>
@@ -158,16 +158,16 @@ export const MainPage: FunctionComponent = observer(() => {
       {showVestingInfo ? <VestingInfo /> : null}
 
       {queryBalances.unstakables.length > 0 && (
-        <Card className={classnames(style.card, "shadow")}>
+        <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
-            <div className={style.containerAccountInner}>
+            <div className={style["containerAccountInner"]}>
               <TokensView />
             </div>
           </CardBody>
         </Card>
       )}
       {chainStore.current.chainId === "evmos_9001-2" && (
-        <Card className={classnames(style.card, "shadow")}>
+        <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <EvmosDashboardView />
           </CardBody>
@@ -175,7 +175,7 @@ export const MainPage: FunctionComponent = observer(() => {
       )}
 
       {queryAuthZGrants.response?.data.grants.length ? (
-        <Card className={classnames(style.card, "shadow")}>
+        <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <AuthZView grants={queryAuthZGrants.response.data.grants} />
           </CardBody>

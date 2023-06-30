@@ -38,6 +38,9 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 
 export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
   @observable
+  protected _selectedChainId: string;
+
+  @observable
   protected _isInitializing: boolean = false;
 
   @observable
@@ -63,6 +66,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
         };
       })
     );
+    this._selectedChainId = embedChainInfos[0].chainId;
 
     // Should be enabled at least one chain.
     this._enabledChainIdentifiers = [
@@ -94,6 +98,19 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
         }
       });
     });
+  }
+
+  get selectedChainId(): string {
+    return this._selectedChainId;
+  }
+
+  @computed
+  get current(): IChainInfoImpl<ChainInfoWithCoreTypes> {
+    if (this.hasChain(this._selectedChainId)) {
+      return this.getChain(this._selectedChainId);
+    }
+
+    return this.chainInfos[0];
   }
 
   @computed

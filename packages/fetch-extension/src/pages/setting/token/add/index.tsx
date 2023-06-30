@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useIntl, FormattedMessage } from "react-intl";
 
 import style from "./style.module.scss";
@@ -23,7 +23,8 @@ interface FormData {
 
 export const AddTokenPage: FunctionComponent = observer(() => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
   const tokensOf = tokensStore.getTokensOf(chainStore.current.chainId);
@@ -74,9 +75,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
   const queryContractInfo = query.getQueryContract(contractAddress);
 
   const tokenInfo = queryContractInfo.tokenInfo;
-  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] = useState(
-    false
-  );
+  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] =
+    useState(false);
 
   const notification = useNotification();
   const loadingIndicator = useLoadingIndicator();
@@ -113,12 +113,12 @@ export const AddTokenPage: FunctionComponent = observer(() => {
         interactionInfo.interaction
           ? undefined
           : () => {
-              history.goBack();
+              navigate(-1);
             }
       }
     >
       <Form
-        className={style.container}
+        className={style["container"]}
         onSubmit={form.handleSubmit(async (data) => {
           if (
             tokenInfo?.decimals != null &&
@@ -172,10 +172,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
                   ) {
                     window.close();
                   } else {
-                    if (history.location.hash === "#agent") history.goBack();
-                    history.push({
-                      pathname: "/",
-                    });
+                    if (location.hash === "#agent") navigate(-1);
+                    navigate("/");
                   }
 
                   return;
@@ -220,16 +218,14 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             ) {
               window.close();
             } else {
-              if (history.location.hash === "#agent") history.goBack();
-              history.push({
-                pathname: "/",
-              });
+              if (location.hash === "#agent") navigate(-1);
+              navigate("/");
             }
           }
         })}
       >
         <Input
-          formGroupClassName={style.formGroup}
+          formGroupClassName={style["formGroup"]}
           type="text"
           label={intl.formatMessage({
             id: "setting.token.add.contract-address",

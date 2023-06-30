@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { HeaderLayout } from "@layouts/index";
 import style from "./style.module.scss";
 import { store } from "@chatStore/index";
@@ -24,7 +24,7 @@ import amplitude from "amplitude-js";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 
 export const CreateGroupChat: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const notification = useNotification();
   const user = useSelector(userDetails);
 
@@ -76,7 +76,7 @@ export const CreateGroupChat: FunctionComponent = () => {
       amplitude.getInstance().logEvent("Group info updated", {
         from: "Group Info",
       });
-      history.goBack();
+      navigate(-1);
     }
     setIsLoading(false);
   }
@@ -114,7 +114,7 @@ export const CreateGroupChat: FunctionComponent = () => {
       })
     );
     store.dispatch(setIsGroupEdit(false));
-    history.push({
+    navigate({
       pathname: "/chat/group-chat/add-member",
     });
   }
@@ -123,7 +123,7 @@ export const CreateGroupChat: FunctionComponent = () => {
     setConfirmAction(false);
 
     if (action === CommonPopupOptions.ok) {
-      history.goBack();
+      navigate(-1);
     }
   }
 
@@ -139,7 +139,7 @@ export const CreateGroupChat: FunctionComponent = () => {
       }
     }
 
-    history.goBack();
+    navigate(-1);
   }
 
   function isBtnDisable(): boolean | undefined {
@@ -176,22 +176,22 @@ export const CreateGroupChat: FunctionComponent = () => {
           />
         )}
       </div>
-      <div className={style.tokens}>
-        <span className={style.groupImageText} hidden={true}>
+      <div className={style["tokens"]}>
+        <span className={style["groupImageText"]} hidden={true}>
           Group Image (Optional)
         </span>
         <img
-          className={style.groupImage}
+          className={style["groupImage"]}
           draggable="false"
           src={require("@assets/group710.svg")}
         />
-        <span className={style.recommendedSize}>
+        <span className={style["recommendedSize"]}>
           Recommended size: 120 x 120
         </span>
-        <div className={style.input}>
-          <span className={style.text}>Group Name</span>
+        <div className={style["input"]}>
+          <span className={style["text"]}>Group Name</span>
           <input
-            className={style.inputText}
+            className={style["inputText"]}
             placeholder="Type your group chat name"
             type="text"
             value={name}
@@ -200,10 +200,10 @@ export const CreateGroupChat: FunctionComponent = () => {
             }}
           />
         </div>
-        <div className={style.input}>
-          <span className={style.text}>Description (Optional)</span>
+        <div className={style["input"]}>
+          <span className={style["text"]}>Description (Optional)</span>
           <textarea
-            className={style.inputText}
+            className={style["inputText"]}
             placeholder="Tell us more about your group"
             value={description}
             onChange={(event) => {
@@ -211,16 +211,18 @@ export const CreateGroupChat: FunctionComponent = () => {
             }}
           />
         </div>
-        <div className={style.adminToggle}>
+        <div className={style["adminToggle"]}>
           <img
             draggable={false}
-            className={style.toggle}
+            className={style["toggle"]}
             src={require("@assets/toggle.svg")}
           />
-          <span className={style.adminText}>Only admins can send messages</span>
+          <span className={style["adminText"]}>
+            Only admins can send messages
+          </span>
         </div>
         <Button
-          className={style.button}
+          className={style["button"]}
           color="primary"
           data-loading={isLoading}
           disabled={isBtnDisable()}

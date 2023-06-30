@@ -58,16 +58,16 @@ export const AccessPage: FunctionComponent = observer(() => {
 
   return (
     <EmptyLayout style={{ height: "100%", paddingTop: "80px" }}>
-      <div className={style.container}>
+      <div className={style["container"]}>
         <img
           src={require("@assets/logo-256.svg")}
           alt="logo"
           style={{ width: "92px", height: "92px", margin: "0 auto" }}
         />
-        <h1 className={style.header}>
+        <h1 className={style["header"]}>
           <FormattedMessage id="access.title" />
         </h1>
-        <p className={style.paragraph}>
+        <p className={style["paragraph"]}>
           <FormattedMessage
             id="access.paragraph"
             values={{
@@ -78,7 +78,7 @@ export const AccessPage: FunctionComponent = observer(() => {
             }}
           />
         </p>
-        <div className={style.permission}>
+        <div className={style["permission"]}>
           <FormattedMessage id="access.permission.title" />
         </div>
         <ul>
@@ -95,9 +95,9 @@ export const AccessPage: FunctionComponent = observer(() => {
           ) : null}
         </ul>
         <div style={{ flex: 1 }} />
-        <div className={style.buttons}>
+        <div className={style["buttons"]}>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="danger"
             outline
             onClick={async (e) => {
@@ -122,7 +122,7 @@ export const AccessPage: FunctionComponent = observer(() => {
             <FormattedMessage id="access.button.reject" />
           </Button>
           <Button
-            className={style.button}
+            className={style["button"]}
             color="primary"
             onClick={async (e) => {
               e.preventDefault();

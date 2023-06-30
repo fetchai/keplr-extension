@@ -68,15 +68,15 @@ export const AgentsHistory: React.FC<{
 
   if (!Object.keys(groups).filter((contact) => filterGroups(contact)).length)
     return (
-      <div className={style.groupsArea}>
-        <div className={style.resultText}>
+      <div className={style["groupsArea"]}>
+        <div className={style["resultText"]}>
           No results found. Please refine your search.
         </div>
       </div>
     );
 
   return (
-    <div className={style.groupsArea}>
+    <div className={style["groupsArea"]}>
       {Object.keys(groups)
         .sort(
           (a, b) =>
@@ -106,7 +106,7 @@ export const AgentsHistory: React.FC<{
           );
         })}
       {groupsPagination?.lastPage > groupsPagination?.page && (
-        <div className={style.loader} ref={messagesEndRef}>
+        <div className={style["loader"]} ref={messagesEndRef}>
           Fetching older Chats <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}

@@ -26,8 +26,8 @@ export const ChatInputSection = (props: {
   } = props;
 
   return (
-    <div className={style.inputSection}>
-      <div className={style.messageDisappear}>
+    <div className={style["inputSection"]}>
+      <div className={style["messageDisappear"]}>
         <img
           src={require("@assets/svg/ic-clock.svg")}
           draggable={false}
@@ -35,11 +35,11 @@ export const ChatInputSection = (props: {
         />
         <FormattedMessage id="chat.disappear-message" />
       </div>
-      <InputGroup className={style.inputText}>
+      <InputGroup className={style["inputText"]}>
         {isTargetPubKeyAvailable ? (
           <ReactTextareaAutosize
             maxRows={3}
-            className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+            className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
@@ -54,7 +54,7 @@ export const ChatInputSection = (props: {
           >
             <ReactTextareaAutosize
               maxRows={3}
-              className={`${style.inputArea} ${style["send-message-inputArea"]}`}
+              className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
               placeholder={placeholder}
               disabled={true}
             />

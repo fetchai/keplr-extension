@@ -11,14 +11,14 @@ export const EvmosDashboardView: FunctionComponent = observer(() => {
   const { chainStore, analyticsStore } = useStore();
 
   return (
-    <div className={styleTransfer.containerInner}>
-      <div className={styleTransfer.vertical}>
+    <div className={styleTransfer["containerInner"]}>
+      <div className={styleTransfer["vertical"]}>
         <p
           className={classnames(
             "h2",
             "my-0",
             "font-weight-normal",
-            styleTransfer.paragraphMain
+            styleTransfer["paragraphMain"]
           )}
         >
           <FormattedMessage id="main.evmos.dashboard.title" />
@@ -28,7 +28,7 @@ export const EvmosDashboardView: FunctionComponent = observer(() => {
             "h4",
             "my-0",
             "font-weight-normal",
-            styleTransfer.paragraphSub
+            styleTransfer["paragraphSub"]
           )}
         >
           <FormattedMessage id="main.evmos.dashboard.paragraph" />
@@ -46,7 +46,7 @@ export const EvmosDashboardView: FunctionComponent = observer(() => {
           });
         }}
       >
-        <Button className={styleTransfer.button} color="primary" size="sm">
+        <Button className={styleTransfer["button"]} color="primary" size="sm">
           <FormattedMessage id="main.evmos.dashboard.button" />
         </Button>
       </a>

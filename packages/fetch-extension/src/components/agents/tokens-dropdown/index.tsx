@@ -17,7 +17,7 @@ import {
 } from "reactstrap";
 import { useStore } from "../../../stores";
 import { deliverMessages } from "@graphQL/messages-api";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
@@ -30,8 +30,8 @@ export const TokenDropdown: FunctionComponent<{
   const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const history = useHistory();
-  const targetAddress = history.location.pathname.split("/")[3];
+  const navigate = useNavigate();
+  const targetAddress = useLocation().pathname.split("/")[3];
   const notification = useNotification();
   const user = useSelector(userDetails);
   const sendConfigs = useSendTxConfig(
@@ -142,7 +142,7 @@ export const TokenDropdown: FunctionComponent<{
         </Label>
         <ButtonDropdown
           id={`selector-${randomId}`}
-          className={classnames(styleCoinInput.tokenSelector, {
+          className={classnames(styleCoinInput["tokenSelector"], {
             disabled: amountConfig.isMax || disabled,
           })}
           isOpen={isOpenTokenSelector}
@@ -175,7 +175,7 @@ export const TokenDropdown: FunctionComponent<{
               <DropdownItem
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push({
+                  navigate({
                     pathname: "/setting/token/add",
                     hash: "agent",
                   });

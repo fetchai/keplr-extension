@@ -2,7 +2,7 @@
 import amplitude from "amplitude-js";
 import React from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { userBlockedAddresses } from "@chatStore/messages-slice";
 import style from "./style.module.scss";
 
@@ -13,22 +13,21 @@ export const NewUserSection = ({
   targetAddress: string;
   handleClick: any;
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const blockedUsers = useSelector(userBlockedAddresses);
 
   return (
-    <div className={style.contactsContainer}>
-      <div className={style.displayText}>
+    <div className={style["contactsContainer"]}>
+      <div className={style["displayText"]}>
         This contact is not saved in your address book
       </div>
-      <div className={style.buttons}>
+      <div className={style["buttons"]}>
         <button
           style={{ padding: "4px 20px" }}
           onClick={() => {
             amplitude.getInstance().logEvent("Add to address click", {});
-            history.push({
-              pathname: "/setting/address-book",
+            navigate("/setting/address-book", {
               state: {
                 openModal: true,
                 addressInputValue: targetAddress,

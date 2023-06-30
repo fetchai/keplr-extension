@@ -3,14 +3,14 @@ import { HeaderLayout } from "@layouts/index";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
 import { ActivityRow } from "./activity-row";
 
 export const ActivityPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -77,13 +77,13 @@ export const ActivityPage: FunctionComponent = observer(() => {
         id: "main.menu.activity",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
-        <div className={style.title}>
+      <div className={style["container"]}>
+        <div className={style["title"]}>
           <FormattedMessage id="main.menu.activity" />
-          <div className={style.block}>
+          <div className={style["block"]}>
             Latest Block: {latestBlock}{" "}
             {blockIsLoading && <i className="fas fa-spinner fa-spin ml-2" />}
           </div>

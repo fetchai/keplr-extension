@@ -4,7 +4,7 @@ import {
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { HeaderLayout } from "@layouts/index";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
@@ -37,7 +37,7 @@ import { createGroupEvent } from "@utils/group-events";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const notification = useNotification();
 
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
@@ -186,8 +186,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     amplitude.getInstance().logEvent("Add to address click", {
       from: "Group Info",
     });
-    history.push({
-      pathname: "/setting/address-book",
+    navigate("/setting/address-book", {
       state: {
         openModal: true,
         addressInputValue: address,
@@ -214,7 +213,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         amplitude.getInstance().logEvent("Open DM click", {
           from: "Group Info",
         });
-        history.push(`/chat/${selectedAddress.address}`);
+        navigate(`/chat/${selectedAddress.address}`);
         break;
 
       case GroupChatMemberOptions.addToAddressBook:
@@ -225,7 +224,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         amplitude.getInstance().logEvent("Address book viewed", {
           from: "Group Info",
         });
-        history.push("/setting/address-book");
+        navigate("/setting/address-book");
         break;
     }
   }
@@ -264,10 +263,10 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       const groups: any = { [groupData.id]: groupData };
       store.dispatch(setGroups({ groups }));
       /// Clearing stack till chat tab
-      history.go(-4);
+      navigate(-4);
       setTimeout(() => {
         amplitude.getInstance().logEvent("New group created", {});
-        history.push(`/chat/group-chat-section/${groupData.id}`);
+        navigate(`/chat/group-chat-section/${groupData.id}`);
       }, 100);
     }
   };
@@ -278,36 +277,36 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={"New Group Chat"}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       <ChatErrorPopup />
-      <div className={style.tokens}>
+      <div className={style["tokens"]}>
         <img
-          className={style.groupImage}
+          className={style["groupImage"]}
           src={require("@assets/group710.svg")}
         />
-        <span className={style.groupDescription}>
+        <span className={style["groupDescription"]}>
           {group?.name ?? newGroupState.group.name}
         </span>
-        <span className={style.groupDescription}>
+        <span className={style["groupDescription"]}>
           {group?.description ?? newGroupState.group.description}
         </span>
         {newGroupState.isEditGroup && isUserAdmin(walletAddress) && (
           <Button
-            className={style.button}
+            className={style["button"]}
             size="large"
             onClick={async () => {
-              history.push("/chat/group-chat/edit-member");
+              navigate("/chat/group-chat/edit-member");
             }}
           >
             Edit Chat Settings
           </Button>
         )}
       </div>
-      <div className={style.membersContainer}>
+      <div className={style["membersContainer"]}>
         {
-          <text className={style.memberText}>
+          <text className={style["memberText"]}>
             {addresses.length} member
             {addresses.length > 1 ? "s" : ""}
           </text>
@@ -333,7 +332,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       </div>
       {!newGroupState.isEditGroup && (
         <Button
-          className={style.button}
+          className={style["button"]}
           size="large"
           data-loading={isLoading}
           onClick={() => {

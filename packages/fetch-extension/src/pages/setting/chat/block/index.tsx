@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { NameAddress } from "@chatTypes";
 import { userBlockedAddresses } from "@chatStore/messages-slice";
 import { UnblockUserPopup } from "@components/chat-actions-popup/unblock-user-popup";
@@ -16,7 +16,7 @@ import style from "./style.module.scss";
 export const BlockList: FunctionComponent = observer(() => {
   // const language = useLanguage();
   const blockedAddresses = useSelector(userBlockedAddresses);
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
   const { chainStore } = useStore();
 
@@ -47,7 +47,7 @@ export const BlockList: FunctionComponent = observer(() => {
         id: "setting.block",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       <BlockAddresses
@@ -66,14 +66,14 @@ const BlockAddresses: React.FC<{
   const [userName, setUserName] = useState<string>("");
 
   return (
-    <div className={style.chatContainer}>
+    <div className={style["chatContainer"]}>
       {confirmAction && (
         <UnblockUserPopup
           setConfirmAction={setConfirmAction}
           userName={userName}
         />
       )}
-      <div className={style.messagesContainer}>
+      <div className={style["messagesContainer"]}>
         {Object.keys(blockedAddresses).filter(
           (contact) => blockedAddresses[contact]
         ).length ? (
@@ -84,12 +84,12 @@ const BlockAddresses: React.FC<{
                 addresses.find((entry) => entry.address === contact)?.name ||
                 formatAddress(contact);
               return (
-                <div key={contact} className={style.messageContainer}>
-                  <div className={style.initials}>
+                <div key={contact} className={style["messageContainer"]}>
+                  <div className={style["initials"]}>
                     {contactName.charAt(0).toUpperCase()}
                   </div>
-                  <div className={style.messageInner}>
-                    <div className={style.name}>{contactName}</div>
+                  <div className={style["messageInner"]}>
+                    <div className={style["name"]}>{contactName}</div>
                   </div>
                   <div>
                     <img
@@ -106,9 +106,9 @@ const BlockAddresses: React.FC<{
               );
             })
         ) : (
-          <div className={style.messageContainer}>
-            <div className={style.messageInner}>
-              <div className={style.name}>No Addresses Blocked</div>
+          <div className={style["messageContainer"]}>
+            <div className={style["messageInner"]}>
+              <div className={style["name"]}>No Addresses Blocked</div>
             </div>
           </div>
         )}

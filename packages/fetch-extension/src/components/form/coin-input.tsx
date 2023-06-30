@@ -123,7 +123,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           </Label>
           <ButtonDropdown
             id={`selector-${randomId}`}
-            className={classnames(styleCoinInput.tokenSelector)}
+            className={classnames(styleCoinInput["tokenSelector"])}
             isOpen={isOpenTokenSelector}
             toggle={() => setIsOpenTokenSelector((value) => !value)}
           >
@@ -163,10 +163,10 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               {!disableAllBalance ? (
                 <div
                   className={classnames(
-                    styleCoinInput.balance,
-                    styleCoinInput.clickable,
+                    styleCoinInput["balance"],
+                    styleCoinInput["clickable"],
                     {
-                      [styleCoinInput.clicked]: amountConfig.isMax,
+                      [styleCoinInput["clicked"]]: amountConfig.isMax,
                     }
                   )}
                   onClick={(e) => {
@@ -183,7 +183,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           <Input
             className={classnames(
               "form-control-alternative",
-              styleCoinInput.input
+              styleCoinInput["input"]
             )}
             id={`input-${randomId}`}
             type="number"
@@ -204,7 +204,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             autoComplete="off"
           />
           {errorText != null ? (
-            <div className={styleCoinInput.errorText}>{errorText}</div>
+            <div className={styleCoinInput["errorText"]}>{errorText}</div>
           ) : null}
         </FormGroup>
       </React.Fragment>

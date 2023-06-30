@@ -15,7 +15,7 @@ import style from "./style.module.scss";
 
 import { FormattedMessage, useIntl } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import delay from "delay";
 import { StartAutoLockMonitoringMsg } from "@keplr-wallet/background";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
@@ -27,7 +27,7 @@ interface FormData {
 
 export const LockPage: FunctionComponent = observer(() => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const passwordRef = useRef<HTMLInputElement | null>();
 
@@ -54,7 +54,7 @@ export const LockPage: FunctionComponent = observer(() => {
   return (
     <EmptyLayout style={{ backgroundColor: "white", height: "100%" }}>
       <Form
-        className={style.formContainer}
+        className={style["formContainer"]}
         onSubmit={handleSubmit(async (data) => {
           setLoading(true);
           try {
@@ -78,7 +78,7 @@ export const LockPage: FunctionComponent = observer(() => {
                   window.close();
                 }
               } else {
-                history.replace("/");
+                navigate("/", { replace: true });
               }
             }
           } catch (e) {

@@ -2,7 +2,7 @@ import { fromBech32 } from "@cosmjs/encoding";
 import jazzicon from "@metamask/jazzicon";
 import React, { useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
@@ -21,13 +21,13 @@ export const ChatUser: React.FC<{
   const [message, setMessage] = useState("");
   const [groupData, setGroupData] = useState(group);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     amplitude.getInstance().logEvent("Open DM click", {
       from: "Chat history",
     });
-    history.push(`/chat/${targetAddress}`);
+    navigate(`/chat/${targetAddress}`);
   };
 
   /// Current wallet user
@@ -124,7 +124,7 @@ export const ChatUser: React.FC<{
 
   return (
     <div
-      className={style.group}
+      className={style["group"]}
       style={{ position: "relative" }}
       onClick={handleClick}
     >
@@ -146,16 +146,16 @@ export const ChatUser: React.FC<{
             }}
           />
         )}
-      <div className={style.initials}>
+      <div className={style["initials"]}>
         {ReactHtmlParser(
           jazzicon(28, parseInt(fromBech32(targetAddress).data.toString(), 16))
             .outerHTML
         )}
       </div>
-      <div className={style.messageInner}>
-        <div className={style.name}>{contactName}</div>
+      <div className={style["messageInner"]}>
+        <div className={style["name"]}>{contactName}</div>
         <div
-          className={style.messageText}
+          className={style["messageText"]}
           onClick={(e) => {
             e.preventDefault();
           }}

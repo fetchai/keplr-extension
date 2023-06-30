@@ -1,6 +1,6 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import style from "./style.module.scss";
 import { NotificationOption } from "@components/notification-option/notification-option";
 import { PageButton } from "../page-button";
@@ -12,7 +12,7 @@ import { store } from "@chatStore/index";
 import amplitude from "amplitude-js";
 
 export const SettingNotifications: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -62,18 +62,18 @@ export const SettingNotifications: FunctionComponent = () => {
       alternativeTitle={"Notifications"}
       showBottomMenu={false}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.notificationSettingContainer}>
-        <div className={style.notificationOptionMainContainer}>
+      <div className={style["notificationSettingContainer"]}>
+        <div className={style["notificationOptionMainContainer"]}>
           <NotificationOption
             name="Receive Notifications"
             isChecked={notificationInfo.isNotificationOn}
             handleOnChange={handleOnChange}
           />
           {!notificationInfo.isNotificationOn && (
-            <p className={style.notificationOffMsg}>
+            <p className={style["notificationOffMsg"]}>
               You are not receiving notifications
             </p>
           )}
@@ -87,7 +87,7 @@ export const SettingNotifications: FunctionComponent = () => {
               paragraph={`${orgInfo.length} organisation${orgSuffix} followed`}
               icons={icon}
               onClick={() => {
-                history.push("/notification/organisations/edit");
+                navigate("/notification/organisations/edit");
               }}
             />
 
@@ -96,8 +96,7 @@ export const SettingNotifications: FunctionComponent = () => {
               paragraph={`${topicInfo.length} topic${topicSuffix} followed`}
               icons={icon}
               onClick={() => {
-                history.push({
-                  pathname: "/notification/topics/edit",
+                navigate("/notification/topics/edit", {
                   state: {
                     isUpdating: true,
                   },

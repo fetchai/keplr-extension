@@ -9,9 +9,9 @@ export const DescriptionView: FunctionComponent = observer(() => {
   const { uiConfigStore } = useStore();
 
   return (
-    <div className={styleDescriptionView.innerContainer}>
+    <div className={styleDescriptionView["innerContainer"]}>
       <img
-        className={styleDescriptionView.imgLock}
+        className={styleDescriptionView["imgLock"]}
         src={require("../../../public/assets/img/icons8-lock.svg")}
         alt="lock"
       />

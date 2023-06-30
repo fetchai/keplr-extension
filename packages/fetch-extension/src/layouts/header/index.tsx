@@ -51,7 +51,7 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
     return (
       <CompHeader
         left={
-          <div className={style.menuContainer}>
+          <div className={style["menuContainer"]}>
             {menuRenderer ? (
               <React.Fragment>
                 <Menu isOpen={isMenuOpen}>{menuRenderer}</Menu>
@@ -96,12 +96,12 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
             tooltip={<ChainList />}
           >
             <div
-              className={style.chainListContainer}
+              className={style["chainListContainer"]}
               style={{ cursor: chainInfoChangable ? undefined : "default" }}
             >
               <div
-                className={classnames(style.title, {
-                  [style.small]: smallTitle,
+                className={classnames(style["title"], {
+                  [style["small"]]: smallTitle,
                 })}
               >
                 {showChainName
@@ -110,9 +110,9 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
               </div>
 
               {chainInfoChangable ? (
-                <div className={style.titleIconContainer}>
+                <div className={style["titleIconContainer"]}>
                   <svg
-                    className={style.titleIcon}
+                    className={style["titleIcon"]}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 512 512"
                   >

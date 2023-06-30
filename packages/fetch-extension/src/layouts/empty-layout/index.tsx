@@ -14,7 +14,7 @@ export const EmptyLayout: FunctionComponent<Props> = (props) => {
 
   return (
     <div
-      className={classnames(style.container, props.className)}
+      className={classnames(style["container"], props.className)}
       style={props.style}
     >
       {children}

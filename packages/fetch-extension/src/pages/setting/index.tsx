@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { PageButton } from "./page-button";
 import style from "./style.module.scss";
 import { useLanguage } from "../../languages";
@@ -13,7 +13,7 @@ import { useStore } from "../../stores";
 
 export const SettingPage: FunctionComponent = observer(() => {
   const language = useLanguage();
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const { accountStore, chainStore, keyRingStore } = useStore();
@@ -60,19 +60,17 @@ export const SettingPage: FunctionComponent = observer(() => {
         id: "main.menu.settings",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title={intl.formatMessage({
             id: "setting.language",
           })}
           paragraph={paragraphLang}
           onClick={() => {
-            history.push({
-              pathname: "/setting/language",
-            });
+            navigate("/setting/language");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -85,9 +83,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           paragraph={paragraphFiat}
           onClick={() => {
-            history.push({
-              pathname: "/setting/fiat",
-            });
+            navigate("/setting/fiat");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -99,9 +95,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             id: "setting.security-privacy",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/security-privacy",
-            });
+            navigate("/setting/security-privacy");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -119,10 +113,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             }
             title={"Chat"}
             onClick={() => {
-              if (isChatActive)
-                history.push({
-                  pathname: "/setting/chat",
-                });
+              if (isChatActive) navigate("/setting/chat");
             }}
             icons={useMemo(
               () => [<i key="next" className="fas fa-chevron-right" />],
@@ -138,9 +129,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             <PageButton
               title={"Notifications"}
               onClick={() => {
-                history.push({
-                  pathname: "/setting/notifications",
-                });
+                navigate("/setting/notifications");
               }}
               icons={useMemo(
                 () => [<i key="next" className="fas fa-chevron-right" />],
@@ -155,9 +144,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           style={{ display: "none" }}
           onClick={() => {
-            history.push({
-              pathname: "/setting/export-to-mobile",
-            });
+            navigate("/setting/export-to-mobile");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -169,9 +156,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             id: "setting.chain-active.title",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/chain-active",
-            });
+            navigate("/setting/chain-active");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -210,9 +195,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             id: "setting.endpoints.paragraph",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/endpoints",
-            });
+            navigate("/setting/endpoints");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],

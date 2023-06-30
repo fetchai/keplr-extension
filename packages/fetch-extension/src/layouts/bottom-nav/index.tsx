@@ -44,7 +44,7 @@ const bottomNav = [
 
 export const BottomNav = () => {
   return (
-    <div className={style.bottomNavContainer}>
+    <div className={style["bottomNavContainer"]}>
       <HomeTab />
       <NotificationTab />
       <ChatTab />
@@ -96,7 +96,7 @@ const NotificationTab = () => {
     <React.Fragment>
       {!isComingSoon &&
         notificationInfo.unreadNotification &&
-        notificationInfo.isNotificationOn && <span className={style.bellDot} />}
+        notificationInfo.isNotificationOn && <span className={style["bellDot"]} />}
       <Tab
         title={"Notifications"}
         icon={bellOnGreyIcon}

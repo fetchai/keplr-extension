@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "@layouts/index";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
 import {
   Button,
@@ -45,7 +45,7 @@ export const AddressBookPage: FunctionComponent<{
 }> = observer(
   ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
     const intl = useIntl();
-    const history = useHistory();
+    const navigate = useNavigate();
     const { chainStore, uiConfigStore } = useStore();
     const current = chainStore.current;
     const location = useLocation();
@@ -101,7 +101,7 @@ export const AddressBookPage: FunctionComponent<{
     const confirm = useConfirm();
     const closeModal = () => {
       if (chatSectionParams.openModal) {
-        history.goBack();
+        navigate(-1);
       }
       setAddAddressModalOpen(false);
       setAddAddressModalIndex(-1);
@@ -181,18 +181,18 @@ export const AddressBookPage: FunctionComponent<{
           onBackButton
             ? onBackButton
             : () => {
-                history.goBack();
+                navigate(-1);
               }
         }
       >
         <Modal
           isOpen={addAddressModalOpen}
           backdrop={false}
-          className={styleAddressBook.fullModal}
-          wrapClassName={styleAddressBook.fullModal}
-          contentClassName={styleAddressBook.fullModal}
+          className={styleAddressBook["fullModal"]}
+          wrapClassName={styleAddressBook["fullModal"]}
+          contentClassName={styleAddressBook["fullModal"]}
         >
-          <ModalBody className={styleAddressBook.fullModal}>
+          <ModalBody className={styleAddressBook["fullModal"]}>
             <AddAddressModal
               closeModal={() => closeModal()}
               recipientConfig={recipientConfig}
@@ -204,10 +204,10 @@ export const AddressBookPage: FunctionComponent<{
           </ModalBody>
         </Modal>
         {loading ? (
-          <div className={styleAddressBook.loader}>Loading ....</div>
+          <div className={styleAddressBook["loader"]}>Loading ....</div>
         ) : (
-          <div className={style.container}>
-            <div className={styleAddressBook.innerTopContainer}>
+          <div className={style["container"]}>
+            <div className={styleAddressBook["innerTopContainer"]}>
               {hideChainDropdown ? null : (
                 <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
                   <DropdownToggle caret style={{ boxShadow: "none" }}>
@@ -215,7 +215,7 @@ export const AddressBookPage: FunctionComponent<{
                   </DropdownToggle>
 
                   <DropdownMenu>
-                    <div className={styleAddressBook.dropdownWrapper}>
+                    <div className={styleAddressBook["dropdownWrapper"]}>
                       {chainStore.chainInfos.map((chainInfo) => {
                         return (
                           <DropdownItem

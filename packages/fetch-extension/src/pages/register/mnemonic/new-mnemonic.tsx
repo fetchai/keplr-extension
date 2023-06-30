@@ -106,7 +106,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
           </li>
         </ul>
       </Alert>
-      <div className={style.title}>
+      <div className={style["title"]}>
         {intl.formatMessage({
           id: "register.create.title",
         })}
@@ -136,7 +136,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
         </div>
       </div>
       <Form
-        className={style.formContainer}
+        className={style["formContainer"]}
         onSubmit={handleSubmit(async (data: FormData) => {
           newMnemonicConfig.setName(data.name);
           newMnemonicConfig.setPassword(data.password);
@@ -144,7 +144,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
           newMnemonicConfig.setMode("verify");
         })}
       >
-        <div className={style.newMnemonic}>{newMnemonicConfig.mnemonic}</div>
+        <div className={style["newMnemonic"]}>{newMnemonicConfig.mnemonic}</div>
         <Input
           label={intl.formatMessage({
             id: "register.name",
@@ -252,7 +252,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   return (
     <div>
       <div style={{ minHeight: "153px" }}>
-        <div className={style.buttons}>
+        <div className={style["buttons"]}>
           {suggestedWords.map((word, i) => {
             return (
               <Button
@@ -276,7 +276,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
       </div>
       <hr />
       <div style={{ minHeight: "153px" }}>
-        <div className={style.buttons}>
+        <div className={style["buttons"]}>
           {randomizedWords.map((word, i) => {
             return (
               <Button

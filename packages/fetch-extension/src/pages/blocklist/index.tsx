@@ -17,21 +17,21 @@ export const BlocklistPage: FunctionComponent = () => {
       });
 
   return (
-    <div className={style.container}>
-      <div className={style.inner}>
+    <div className={style["container"]}>
+      <div className={style["inner"]}>
         <img
-          className={style.image}
+          className={style["image"]}
           src={require("../../public/assets/img/blocklist.svg")}
           alt=""
         />
         <div>
-          <h1 className={style.title}>SECURITY ALERT</h1>
-          <p className={style.description}>
+          <h1 className={style["title"]}>SECURITY ALERT</h1>
+          <p className={style["description"]}>
             Keplr has detected that this domain has been flagged as a phishing
             site. To protect the safety of your assets, we recommend you exit
             this website immediately.
           </p>
-          <button className={style.link} onClick={handleMove}>
+          <button className={style["link"]} onClick={handleMove}>
             Continue to {origin} (unsafe)
           </button>
         </div>

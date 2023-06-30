@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import chevronLeft from "@assets/icon/chevron-left.png";
@@ -16,11 +16,11 @@ export const UserNameSection = ({
   handleDropDown: any;
   addresses: any;
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const notification = useNotification();
   const intl = useIntl();
 
-  const userName = history.location.pathname.split("/")[2];
+  const userName = useLocation().pathname.split("/")[2];
 
   const contactName = (addresses: any) => {
     let val = "";
@@ -49,18 +49,18 @@ export const UserNameSection = ({
   };
 
   return (
-    <div className={style.username}>
-      <div className={style.leftBox}>
+    <div className={style["username"]}>
+      <div className={style["leftBox"]}>
         <img
           alt=""
           draggable="false"
-          className={style.backBtn}
+          className={style["backBtn"]}
           src={chevronLeft}
           onClick={() => {
-            history.goBack();
+            navigate(-1);
           }}
         />
-        <span className={style.recieverName}>
+        <span className={style["recieverName"]}>
           <ToolTip
             tooltip={
               contactName(addresses).length ? contactName(addresses) : userName
@@ -71,23 +71,26 @@ export const UserNameSection = ({
               placement: "top",
             }}
           >
-            <div className={style.user}>
+            <div className={style["user"]}>
               {contactName(addresses).length
                 ? formatAddress(contactName(addresses))
                 : formatAddress(userName)}
             </div>
           </ToolTip>
         </span>
-        <span className={style.copyIcon} onClick={() => copyAddress(userName)}>
+        <span
+          className={style["copyIcon"]}
+          onClick={() => copyAddress(userName)}
+        >
           <i className="fas fa-copy" />
         </span>
       </div>
-      <div className={style.rightBox}>
+      <div className={style["rightBox"]}>
         <img
           alt=""
           draggable="false"
           style={{ cursor: "pointer" }}
-          className={style.more}
+          className={style["more"]}
           src={moreIcon}
           onClick={(e) => {
             e.stopPropagation();

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "@layouts/index";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 import style from "./style.module.scss";
 import { Alert, Button } from "reactstrap";
@@ -29,7 +29,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 
 export const IBCTransferPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [phase, setPhase] = useState<"channel" | "amount">("channel");
 
@@ -100,7 +100,7 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
       showChainName={true}
       canChangeChainInfo={false}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       {phase === "channel" ? (
@@ -150,9 +150,9 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
                   }
                 );
 
-                history.push("/");
+                navigate("/");
               } catch (e) {
-                history.replace("/");
+                navigate("/", { replace: true });
                 notification.push({
                   type: "warning",
                   placement: "top-center",
@@ -187,8 +187,8 @@ export const IBCTransferPageChannel: FunctionComponent<{
   const isChannelSet = channelConfig.channel != null;
 
   return (
-    <form className={style.formContainer}>
-      <div className={style.formInnerContainer}>
+    <form className={style["formContainer"]}>
+      <div className={style["formInnerContainer"]}>
         <DestinationChainSelector ibcChannelConfig={channelConfig} />
         <AddressInput
           label={intl.formatMessage({
@@ -208,7 +208,7 @@ export const IBCTransferPageChannel: FunctionComponent<{
           disabled={!isChannelSet}
         />
         <div style={{ flex: 1 }} />
-        <Alert className={style.alert}>
+        <Alert className={style["alert"]}>
           <i className="fas fa-exclamation-circle" />
           <div>
             <h1>IBC is production ready</h1>
@@ -255,8 +255,8 @@ export const IBCTransferPageAmount: FunctionComponent<{
       gasConfig.error == null;
 
     return (
-      <form className={style.formContainer}>
-        <div className={style.formInnerContainer}>
+      <form className={style["formContainer"]}>
+        <div className={style["formInnerContainer"]}>
           <CoinInput
             label={intl.formatMessage({
               id: "send.input.amount",

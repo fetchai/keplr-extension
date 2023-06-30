@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Button } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import { HeaderLayout } from "@layouts/header-layout";
-import { useHistory, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import style from "./style.module.scss";
 import { NotificationOrg } from "@components/notification-org/notification-org";
 import {
@@ -32,9 +32,9 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   // Getting page type edit or add
   const { type } = useParams<{ type?: string }>();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   // Extracting org id from url
-  const newOrg = history.location.search.split("?")[1]?.split("&");
+  const newOrg = useLocation().search.split("?")[1]?.split("&");
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -135,9 +135,9 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       );
 
       if (type === pageOptions.edit) {
-        history.goBack();
+        navigate(-1);
       } else {
-        history.push({ pathname: "/notification/topics/add" });
+        navigate("/notification/topics/add");
       }
     });
   };
@@ -162,10 +162,10 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       alternativeTitle={"Organisations"}
       showBottomMenu={false}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.heading}>
+      <div className={style["heading"]}>
         <FormattedMessage id="notification.organisation.header-message" />
       </div>
       <SearchInput
@@ -174,15 +174,15 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         setInputVal={setInputVal}
       />
 
-      <div className={style.listContainer}>
+      <div className={style["listContainer"]}>
         {isLoading ? (
-          <div className={style.isLoading}>
+          <div className={style["isLoading"]}>
             <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
           </div>
         ) : (
           <React.Fragment>
             {!orgList.length && (
-              <div className={style.resultText}>
+              <div className={style["resultText"]}>
                 <p>
                   <FormattedMessage id="search.no-result-found" />
                   {inputVal !== "" && (
@@ -199,11 +199,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
               return (
                 <NotificationOrg
                   handleCheck={(isChecked) => handleCheck(isChecked, index)}
-                  isChecked={
-                    selectedOrg.find((item) => item.id === elem.id)
-                      ? true
-                      : false
-                  }
+                  isChecked={!!selectedOrg.find((item) => item.id === elem.id)}
                   elem={elem}
                   key={elem.id}
                   isNew={newOrg && newOrg.indexOf(elem.id) != -1}
@@ -213,10 +209,10 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
           </React.Fragment>
         )}
       </div>
-      <div className={style.buttonContainer}>
+      <div className={style["buttonContainer"]}>
         <p>{selectedOrg.length} selected</p>
         <Button
-          className={style.button}
+          className={style["button"]}
           color="primary"
           disabled={
             selectedOrg.length === 0 ||

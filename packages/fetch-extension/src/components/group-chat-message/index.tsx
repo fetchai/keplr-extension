@@ -39,10 +39,8 @@ export const GroupChatMessage = ({
   showDate: boolean;
   groupLastSeenTimestamp: number;
 }) => {
-  const [
-    decryptedMessage,
-    setDecryptedMessage,
-  ] = useState<GroupMessagePayload>();
+  const [decryptedMessage, setDecryptedMessage] =
+    useState<GroupMessagePayload>();
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -73,17 +71,17 @@ export const GroupChatMessage = ({
 
   return (
     <React.Fragment>
-      <div className={style.currentDateContainer}>
+      <div className={style["currentDateContainer"]}>
         {" "}
         {showDate ? (
-          <span className={style.currentDate}>{getDate(timestamp)}</span>
+          <span className={style["currentDate"]}>{getDate(timestamp)}</span>
         ) : null}
       </div>
       {decryptedMessage &&
       (decryptedMessage.type == GroupMessageType.event.toString() ||
         decryptedMessage.type === GroupMessageType[GroupMessageType.event]) ? (
-        <div className={style.currentEventContainer}>
-          <span className={style.currentEvent}>
+        <div className={style["currentEventContainer"]}>
+          <span className={style["currentEvent"]}>
             {parse(
               processHyperlinks(
                 getEventMessage(
@@ -96,15 +94,17 @@ export const GroupChatMessage = ({
           </span>
         </div>
       ) : (
-        <div className={isSender ? style.senderAlign : style.receiverAlign}>
+        <div
+          className={isSender ? style["senderAlign"] : style["receiverAlign"]}
+        >
           <Container
             fluid
-            className={classnames(style.messageBox, {
-              [style.senderBox]: isSender,
+            className={classnames(style["messageBox"], {
+              [style["senderBox"]]: isSender,
             })}
           >
             {!isSender && (
-              <div className={style.title}>
+              <div className={style["title"]}>
                 {getUserName(
                   accountInfo.bech32Address,
                   addresses,
@@ -115,11 +115,11 @@ export const GroupChatMessage = ({
             {!decryptedMessage ? (
               <i className="fas fa-spinner fa-spin ml-1" />
             ) : (
-              <div className={style.message}>
+              <div className={style["message"]}>
                 {parse(processHyperlinks(decryptedMessage.message))}
               </div>
             )}
-            <div className={style.timestamp}>
+            <div className={style["timestamp"]}>
               {formatTime(timestamp)}
               {isSender && groupLastSeenTimestamp < timestamp && (
                 <img draggable={false} alt="delivered" src={deliveredIcon} />

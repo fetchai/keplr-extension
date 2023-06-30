@@ -5,9 +5,9 @@ export const AgentInfo = ({ handleClose }: { handleClose: any }) => {
   // address book values
   return (
     <React.Fragment>
-      <div className={style.overlay} />
-      <div className={style.popupContainer}>
-        <div className={style.infoContainer}>
+      <div className={style["overlay"]} />
+      <div className={style["popupContainer"]}>
+        <div className={style["infoContainer"]}>
           <h3 style={{ textAlign: "center" }}>Agents can do more!!</h3>
           <p>Type / to access a list of commands such as</p>
           <img

@@ -17,7 +17,7 @@ import { useNotification } from "@components/notification";
 import { useIntl } from "react-intl";
 import { Button } from "reactstrap";
 
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import queryString from "querystring";
 
 import { useGasSimulator, useSendTxConfig } from "@keplr-wallet/hooks";
@@ -29,7 +29,7 @@ import {
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 
 export const SendPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   let search = useLocation().search;
   if (search.startsWith("?")) {
     search = search.slice(1);
@@ -224,7 +224,7 @@ export const SendPage: FunctionComponent = observer(() => {
         isDetachedPage
           ? undefined
           : () => {
-              history.goBack();
+              navigate(-1);
             }
       }
       rightRenderer={
@@ -281,7 +281,7 @@ export const SendPage: FunctionComponent = observer(() => {
       }
     >
       <form
-        className={style.formContainer}
+        className={style["formContainer"]}
         onSubmit={async (e) => {
           e.preventDefault();
 
@@ -315,11 +315,11 @@ export const SendPage: FunctionComponent = observer(() => {
               );
 
               if (!isDetachedPage) {
-                history.replace("/");
+                navigate("/", { replace: true });
               }
             } catch (e) {
               if (!isDetachedPage) {
-                history.replace("/");
+                navigate("/", { replace: true });
               }
               notification.push({
                 type: "warning",
@@ -341,7 +341,7 @@ export const SendPage: FunctionComponent = observer(() => {
           }
         }}
       >
-        <div className={style.formInnerContainer}>
+        <div className={style["formInnerContainer"]}>
           <div>
             <AddressInput
               recipientConfig={sendConfigs.recipientConfig}
@@ -356,19 +356,11 @@ export const SendPage: FunctionComponent = observer(() => {
                 id: "send.input-button.balance",
               })}
               disableAllBalance={(() => {
-                if (
-                  // In the case of terra classic, tax is applied in proportion to the amount.
-                  // However, in this case, the tax itself changes the fee,
-                  // so if you use the max function, it will fall into infinite repetition.
-                  // We currently disable if chain is terra classic because we can't handle it properly.
-                  sendConfigs.feeConfig.chainInfo.features &&
+                return sendConfigs.feeConfig.chainInfo.features &&
                   sendConfigs.feeConfig.chainInfo.features.includes(
                     "terra-classic-fee"
-                  )
-                ) {
-                  return true;
-                }
-                return false;
+                  );
+
               })()}
               overrideSelectableCurrencies={(() => {
                 if (

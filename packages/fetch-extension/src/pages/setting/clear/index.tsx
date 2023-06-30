@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useHistory, useRouteMatch } from "react-router";
+import { useNavigate, useRouteMatch } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PasswordInput } from "@components/form";
 import { Button, Form } from "reactstrap";
@@ -23,7 +23,7 @@ interface FormData {
 }
 
 export const ClearPage: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const match = useRouteMatch<{ index: string }>();
 
   const intl = useIntl();
@@ -55,10 +55,10 @@ export const ClearPage: FunctionComponent = observer(() => {
         id: "setting.clear",
       })}
       onBackButton={useCallback(() => {
-        history.goBack();
-      }, [history])}
+        navigate(-1);
+      }, [navigate])}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         {keyStore ? (
           <WarningView
             index={parseInt(match.params.index)}
@@ -76,7 +76,7 @@ export const ClearPage: FunctionComponent = observer(() => {
               );
               analyticsStore.logEvent("Account removed");
 
-              history.push("/");
+              navigate("/");
             } catch (e) {
               console.log("Fail to decrypt: " + e.message);
               setError(

@@ -1,6 +1,6 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import style from "./style.module.scss";
 import { Staking } from "@keplr-wallet/stores";
 import { useStore } from "../../stores";
@@ -10,9 +10,10 @@ import { Stake } from "./stake";
 import { Unstake } from "./unstake";
 
 export const Validator: FunctionComponent = observer(() => {
-  const history = useHistory();
-  const validatorAddress = history.location.pathname.split("/")[2];
-  const operation = history.location.pathname.split("/")[3];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const validatorAddress = location.pathname.split("/")[2];
+  const operation = location.pathname.split("/")[3];
 
   const { chainStore, accountStore, queriesStore } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
@@ -27,9 +28,10 @@ export const Validator: FunctionComponent = observer(() => {
   const unbondedValidators = queries.cosmos.queryValidators.getQueryStatus(
     Staking.BondStatus.Unbonded
   );
-  const queryDelegations = queries.cosmos.queryDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryDelegations =
+    queries.cosmos.queryDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
   const { validator, amount } = useMemo(() => {
     const amount = queryDelegations.getDelegationTo(validatorAddress);
     const validator =
@@ -59,7 +61,7 @@ export const Validator: FunctionComponent = observer(() => {
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle={operation == "stake" ? "Stake" : "Unstake"}
-      onBackButton={() => history.push("/validators")}
+      onBackButton={() => navigate("/validators")}
     >
       <div className={style["stake-container"]}>
         {validator && (
@@ -80,28 +82,26 @@ export const Validator: FunctionComponent = observer(() => {
               {amount.maxDecimals(4).trim(true).toString()}
             </div>
           </div>
-          <div className={style.tabList}>
+          <div className={style["tabList"]}>
             <div
-              className={style.tab}
+              className={style["tab"]}
               style={{
                 borderBottom: operation == "stake" ? "2px solid #D43BF6" : "",
                 color: operation == "stake" ? "#D43BF6" : "#000000",
               }}
-              onClick={() =>
-                history.push(`/validators/${validatorAddress}/stake`)
-              }
+              onClick={() => navigate(`/validators/${validatorAddress}/stake`)}
             >
               Stake
             </div>
 
             <div
-              className={style.tab}
+              className={style["tab"]}
               style={{
                 borderBottom: operation == "unstake" ? "2px solid #3B82F6" : "",
                 color: operation == "unstake" ? "#3B82F6" : "#000000",
               }}
               onClick={() =>
-                history.push(`/validators/${validatorAddress}/unstake`)
+                navigate(`/validators/${validatorAddress}/unstake`)
               }
             >
               Unstake

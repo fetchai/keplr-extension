@@ -68,14 +68,14 @@ export const ChatMessage = ({
 
     if (decryptedMessage.type === 1)
       messageView = (
-        <div className={style.message}>
+        <div className={style["message"]}>
           {parse(processHyperlinks(decryptedMessage.content.text))}
         </div>
       );
     else {
       const messageObj = JSON.parse(decryptedMessage.content.text);
       messageView = (
-        <div className={style.message}>
+        <div className={style["message"]}>
           {messageObj?.message || "Cant Parse Message"}
         </div>
       );
@@ -85,21 +85,21 @@ export const ChatMessage = ({
 
   return (
     <React.Fragment>
-      <div className={style.currentDateContainer}>
+      <div className={style["currentDateContainer"]}>
         {" "}
         {showDate ? (
-          <span className={style.currentDate}>{getDate(timestamp)}</span>
+          <span className={style["currentDate"]}>{getDate(timestamp)}</span>
         ) : null}
       </div>
-      <div className={isSender ? style.senderAlign : style.receiverAlign}>
+      <div className={isSender ? style["senderAlign"] : style["receiverAlign"]}>
         <Container
           fluid
-          className={classnames(style.messageBox, {
-            [style.senderBox]: isSender,
+          className={classnames(style["messageBox"], {
+            [style["senderBox"]]: isSender,
           })}
         >
           {decideMessageView()}
-          <div className={style.timestamp}>
+          <div className={style["timestamp"]}>
             {formatTime(timestamp)}
             {isSender && groupLastSeenTimestamp < timestamp && (
               <img draggable={false} alt="delivered" src={deliveredIcon} />

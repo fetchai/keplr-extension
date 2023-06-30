@@ -3,7 +3,7 @@ import { HeaderLayout } from "../../../../../layouts";
 import style from "../../../style.module.scss";
 import { PageButton } from "../../../page-button";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useConfirm } from "@components/confirm";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import {
@@ -26,7 +26,7 @@ export const SettingPermissionsGetChainInfosPage: FunctionComponent = () => {
       .then((r) => setOrigins(r));
   }, [requester]);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const confirm = useConfirm();
@@ -45,10 +45,10 @@ export const SettingPermissionsGetChainInfosPage: FunctionComponent = () => {
         id: "setting.permissions.get-chain-infos",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         {origins.map((origin) => {
           return (
             <PageButton
@@ -70,8 +70,7 @@ export const SettingPermissionsGetChainInfosPage: FunctionComponent = () => {
                       id: "setting.connections.confirm.delete-connection.title",
                     }),
                     paragraph: intl.formatMessage({
-                      id:
-                        "setting.connections.confirm.delete-connection.paragraph",
+                      id: "setting.connections.confirm.delete-connection.paragraph",
                     }),
                   })
                 ) {

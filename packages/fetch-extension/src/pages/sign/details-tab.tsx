@@ -97,7 +97,7 @@ export const DetailsTab: FunctionComponent<{
     })();
 
     return (
-      <div className={styleDetailsTab.container}>
+      <div className={styleDetailsTab["container"]}>
         <Label
           for="signing-messages"
           className="form-control-label"
@@ -108,7 +108,7 @@ export const DetailsTab: FunctionComponent<{
             {msgs.length}
           </Badge>
         </Label>
-        <div id="signing-messages" className={styleDetailsTab.msgContainer}>
+        <div id="signing-messages" className={styleDetailsTab["msgContainer"]}>
           {renderedMsgs}
         </div>
         <div style={{ flex: 1 }} />
@@ -217,11 +217,11 @@ export const DetailsTab: FunctionComponent<{
           </React.Fragment>
         )}
         {isNeedLedgerEthBlindSigning ? (
-          <div className={styleDetailsTab.ethLedgerBlindSigningWarning}>
-            <div className={styleDetailsTab.title}>
+          <div className={styleDetailsTab["ethLedgerBlindSigningWarning"]}>
+            <div className={styleDetailsTab["title"]}>
               Before you click ‘Approve’
             </div>
-            <ul className={styleDetailsTab.list}>
+            <ul className={styleDetailsTab["list"]}>
               <li>Connect your Ledger device and select the Ethereum app</li>
               <li>Enable ‘blind signing’ on your Ledger device</li>
             </ul>
@@ -237,15 +237,15 @@ export const MsgRender: FunctionComponent<{
   title: string;
 }> = ({ icon = "fas fa-question", title, children }) => {
   return (
-    <div className={styleDetailsTab.msg}>
-      <div className={styleDetailsTab.icon}>
+    <div className={styleDetailsTab["msg"]}>
+      <div className={styleDetailsTab["icon"]}>
         <div style={{ height: "2px" }} />
         <i className={icon} />
         <div style={{ flex: 1 }} />
       </div>
-      <div className={styleDetailsTab.contentContainer}>
-        <div className={styleDetailsTab.contentTitle}>{title}</div>
-        <div className={styleDetailsTab.content}>{children}</div>
+      <div className={styleDetailsTab["contentContainer"]}>
+        <div className={styleDetailsTab["contentTitle"]}>{title}</div>
+        <div className={styleDetailsTab["content"]}>{children}</div>
       </div>
     </div>
   );

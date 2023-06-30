@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import chevronLeft from "@assets/icon/chevron-left.png";
@@ -16,7 +16,7 @@ export const UserNameSection = ({
   handleDropDown: any;
   groupName: string;
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const notification = useNotification();
   const intl = useIntl();
 
@@ -37,14 +37,14 @@ export const UserNameSection = ({
   };
 
   return (
-    <div className={style.username}>
-      <div className={style.leftBox}>
+    <div className={style["username"]}>
+      <div className={style["leftBox"]}>
         <img
           alt=""
-          className={style.backBtn}
+          className={style["backBtn"]}
           src={chevronLeft}
           onClick={() => {
-            history.goBack();
+            navigate(-1);
           }}
         />
 
@@ -56,20 +56,23 @@ export const UserNameSection = ({
             placement: "top",
           }}
         >
-          <span className={style.recieverName}>
+          <span className={style["recieverName"]}>
             {formatGroupName(groupName)}
           </span>
         </ToolTip>
 
-        <span className={style.copyIcon} onClick={() => copyAddress(groupName)}>
+        <span
+          className={style["copyIcon"]}
+          onClick={() => copyAddress(groupName)}
+        >
           <i className="fas fa-copy" />
         </span>
       </div>
-      <div className={style.rightBox}>
+      <div className={style["rightBox"]}>
         <img
           alt=""
           style={{ cursor: "pointer" }}
-          className={style.more}
+          className={style["more"]}
           src={moreIcon}
           onClick={handleDropDown}
           onBlur={handleDropDown}

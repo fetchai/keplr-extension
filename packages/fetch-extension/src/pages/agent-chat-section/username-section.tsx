@@ -4,14 +4,14 @@ import { AgentInfo } from "@components/agents/agent-info";
 import { ToolTip } from "@components/tooltip";
 import { formatAddress } from "@utils/format";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 
 export const UserNameSection = ({ addresses }: { addresses: any }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const userName = history.location.pathname.split("/")[3];
+  const userName = useLocation().pathname.split("/")[3];
   const { chainStore, accountStore } = useStore();
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
@@ -44,16 +44,16 @@ export const UserNameSection = ({ addresses }: { addresses: any }) => {
   };
 
   return (
-    <div className={style.username}>
+    <div className={style["username"]}>
       {openDialog && <AgentInfo handleClose={handleClose} />}
-      <div className={style.leftBox}>
+      <div className={style["leftBox"]}>
         <img
           alt=""
           draggable="false"
-          className={style.backBtn}
+          className={style["backBtn"]}
           src={chevronLeft}
           onClick={() => {
-            history.push("/chat?id=2");
+            navigate("/chat?id=2");
           }}
         />
         <img
@@ -61,10 +61,10 @@ export const UserNameSection = ({ addresses }: { addresses: any }) => {
           width="25px"
           draggable={false}
         />
-        <span className={style.recieverName}>
+        <span className={style["recieverName"]}>
           <ToolTip
             tooltip={
-              <div className={style.user} style={{ minWidth: "300px" }}>
+              <div className={style["user"]} style={{ minWidth: "300px" }}>
                 {userName}
               </div>
             }
@@ -77,11 +77,11 @@ export const UserNameSection = ({ addresses }: { addresses: any }) => {
             {formatAddress(contactName(addresses))}
           </ToolTip>
         </span>
-        <span className={style.copyIcon} onClick={() => setIsOpendialog(true)}>
+        <span className={style["copyIcon"]} onClick={() => setIsOpendialog(true)}>
           <i className="fa fa-info-circle" draggable={false} />
         </span>
       </div>
-      <div className={style.rightBox} />
+      <div className={style["rightBox"]} />
     </div>
   );
 };

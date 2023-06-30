@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { SwitchUser } from "@components/switch-user";
 import { HeaderLayout } from "@layouts/index";
 import { NotificationModal } from "@components/notification-modal";
@@ -14,13 +14,13 @@ import { NotificationSetup } from "@notificationTypes";
 import amplitude from "amplitude-js";
 export const NotificationPage: FunctionComponent = () => {
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const navigateToSettingsHandler = () => {
-    history.push("/setting/notifications");
+    navigate("/setting/notifications");
   };
 
   const handleClearAll = () => {
@@ -36,23 +36,23 @@ export const NotificationPage: FunctionComponent = () => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      <div className={style.activityContainer}>
+      <div className={style["activityContainer"]}>
         {(Object.values(notificationInfo.allNotifications).length > 0 ||
           Object.values(notificationInfo.organisations).length !== 0) &&
           notificationInfo.isNotificationOn && (
-            <div className={style.heading}>
+            <div className={style["heading"]}>
               {Object.values(notificationInfo.allNotifications).length > 0 && (
-                <div className={style.deleteIcon} onClick={handleClearAll}>
+                <div className={style["deleteIcon"]} onClick={handleClearAll}>
                   <img
                     src={require("@assets/svg/delete-icon.svg")}
                     draggable={false}
                   />
-                  <p className={style.clearAll}>Clear all</p>
+                  <p className={style["clearAll"]}>Clear all</p>
                 </div>
               )}
               {Object.values(notificationInfo.organisations).length !== 0 && (
                 <p
-                  className={style.settings}
+                  className={style["settings"]}
                   onClick={navigateToSettingsHandler}
                 >
                   Settings

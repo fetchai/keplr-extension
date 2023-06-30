@@ -28,7 +28,7 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
@@ -47,7 +47,7 @@ import { ContactsOnlyMessage } from "@components/contacts-only-message";
 import amplitude from "amplitude-js";
 
 export const AddMember: FunctionComponent = observer(() => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(userDetails);
   /// Current Group State
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
@@ -242,7 +242,7 @@ export const AddMember: FunctionComponent = observer(() => {
 
   async function handleUpdateGroup() {
     if (newAddedMembers.length === 0) {
-      history.goBack();
+      navigate(-1);
       return;
     }
 
@@ -281,7 +281,7 @@ export const AddMember: FunctionComponent = observer(() => {
       amplitude.getInstance().logEvent("New members added", {
         from: "Group Info",
       });
-      history.goBack();
+      navigate(-1);
     }
   }
 
@@ -298,15 +298,15 @@ export const AddMember: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={"New Group Chat"}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
       {!addressBookConfig.isLoaded ? (
         <ChatLoader message="Loading contacts, please wait..." />
       ) : (
-        <div className={style.newMemberContainer}>
-          <div className={style.searchContainer}>
-            <div className={style.searchBox}>
+        <div className={style["newMemberContainer"]}>
+          <div className={style["searchContainer"]}>
+            <div className={style["searchBox"]}>
               <img draggable={false} src={searchIcon} alt="search" />
               <input
                 placeholder="Search by name or address"
@@ -315,7 +315,7 @@ export const AddMember: FunctionComponent = observer(() => {
               />
             </div>
           </div>
-          <div className={style.membersContainer}>
+          <div className={style["membersContainer"]}>
             {randomAddress && (
               <ChatMember
                 address={randomAddress}
@@ -337,7 +337,7 @@ export const AddMember: FunctionComponent = observer(() => {
           </div>
           {addresses.length === 0 && !randomAddress && (
             <div>
-              <div className={style.resultText}>
+              <div className={style["resultText"]}>
                 No results in your contacts.
               </div>
               {user?.messagingPubKey.privacySetting ===
@@ -346,16 +346,16 @@ export const AddMember: FunctionComponent = observer(() => {
           )}
         </div>
       )}
-      <div className={style.groupContainer}>
-        <div className={style.initials}>
+      <div className={style["groupContainer"]}>
+        <div className={style["initials"]}>
           {ReactHtmlParser(
             jazzicon(
               24,
               parseInt(fromBech32(walletAddress).data.toString(), 16)
             ).outerHTML
           )}
-          <div className={style.groupHeader}>
-            <span className={style.groupName}>
+          <div className={style["groupHeader"]}>
+            <span className={style["groupName"]}>
               <ToolTip
                 tooltip={newGroupState.group.name}
                 theme="dark"
@@ -364,12 +364,12 @@ export const AddMember: FunctionComponent = observer(() => {
                   placement: "top",
                 }}
               >
-                <div className={style.user}>
+                <div className={style["user"]}>
                   {formatGroupName(newGroupState.group.name)}
                 </div>
               </ToolTip>
             </span>
-            <span className={style.groupMembers}>
+            <span className={style["groupMembers"]}>
               {`${selectedMembers.length} member${
                 selectedMembers.length > 1 ? "s" : ""
               }`}
@@ -378,7 +378,7 @@ export const AddMember: FunctionComponent = observer(() => {
         </div>
 
         <Button
-          className={style.button}
+          className={style["button"]}
           color="primary"
           data-loading={isLoading}
           disabled={
@@ -388,7 +388,7 @@ export const AddMember: FunctionComponent = observer(() => {
             if (newGroupState.isEditGroup) {
               handleUpdateGroup();
             } else {
-              history.push("/chat/group-chat/review-details");
+              navigate("/chat/group-chat/review-details");
             }
           }}
         >

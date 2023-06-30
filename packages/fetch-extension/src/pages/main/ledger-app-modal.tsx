@@ -49,8 +49,8 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
   return (
     <Modal isOpen={isOpen} centered>
       <ModalBody>
-        <div className={style.title}>Please Connect your Ledger device</div>
-        <div className={style.paragraph}>
+        <div className={style["title"]}>Please Connect your Ledger device</div>
+        <div className={style["paragraph"]}>
           For making address of {chainStore.current.chainName}, you need to
           connect your Ledger device through Ethereum app
         </div>

@@ -1,6 +1,6 @@
 import amplitude from "amplitude-js";
 import React from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UncontrolledTooltip } from "reactstrap";
 // import { ToolTip } from "@components/tooltip";
 
@@ -23,7 +23,7 @@ export const Tab = ({
   disabled,
   tooltip,
 }: TabProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const isChatActive =
     title == "Chat" &&
@@ -34,20 +34,20 @@ export const Tab = ({
   return (
     <div
       id={title}
-      className={`${style.tab} ${
-        isActive ? style.active : disabled ? style.disabled : null
+      className={`${style["tab"]} ${
+        isActive ? style["active"] : disabled ? style["disabled"] : null
       }`}
       onClick={() => {
         if (!disabled) {
           if (path === "/chat") {
             amplitude.getInstance().logEvent("Chat tab click", {});
           }
-          history.push(path);
+          navigate(path);
         }
       }}
     >
       <img draggable={false} src={isActive ? activeTabIcon : icon} alt="tab" />
-      <div className={style.title}>{title}</div>
+      <div className={style["title"]}>{title}</div>
       {disabled && (
         <UncontrolledTooltip placement="top" target={title}>
           {tooltip}

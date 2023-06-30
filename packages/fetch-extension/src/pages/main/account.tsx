@@ -58,9 +58,9 @@ export const AccountView: FunctionComponent = observer(() => {
 
   return (
     <div>
-      <div className={styleAccount.containerName}>
+      <div className={styleAccount["containerName"]}>
         <div style={{ flex: 1 }} />
-        <div className={styleAccount.name}>
+        <div className={styleAccount["name"]}>
           {(() => {
             if (accountInfo.walletStatus === WalletStatus.Loaded) {
               if (icnsPrimaryName) {
@@ -122,15 +122,15 @@ export const AccountView: FunctionComponent = observer(() => {
           }}
         >
           <i
-            className={`fas fa-exclamation-triangle text-danger ${styleAccount.unsupportedKeyIcon}`}
+            className={`fas fa-exclamation-triangle text-danger ${styleAccount["unsupportedKeyIcon"]}`}
           />
         </ToolTip>
       )}
       {accountInfo.walletStatus !== WalletStatus.Rejected && (
-        <div className={styleAccount.containerAccount}>
+        <div className={styleAccount["containerAccount"]}>
           <div style={{ flex: 1 }} />
           <div
-            className={styleAccount.address}
+            className={styleAccount["address"]}
             onClick={() => copyAddress(accountInfo.bech32Address)}
           >
             <Address
@@ -149,12 +149,12 @@ export const AccountView: FunctionComponent = observer(() => {
       )}
       {accountInfo.hasEthereumHexAddress && (
         <div
-          className={styleAccount.containerAccount}
+          className={styleAccount["containerAccount"]}
           style={{ marginTop: "2px" }}
         >
           <div style={{ flex: 1 }} />
           <div
-            className={styleAccount.address}
+            className={styleAccount["address"]}
             onClick={() => copyAddress(accountInfo.ethereumHexAddress)}
           >
             <Address

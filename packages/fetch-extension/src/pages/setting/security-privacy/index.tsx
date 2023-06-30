@@ -2,11 +2,11 @@ import React, { FunctionComponent, useMemo } from "react";
 import { HeaderLayout } from "../../../layouts";
 import style from "../style.module.scss";
 import { PageButton } from "../page-button";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useIntl } from "react-intl";
 
 export const SettingSecurityPrivacyPage: FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const intl = useIntl();
 
@@ -18,10 +18,10 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
         id: "setting.security-privacy",
       })}
       onBackButton={() => {
-        history.goBack();
+        navigate(-1);
       }}
     >
-      <div className={style.container}>
+      <div className={style["container"]}>
         <PageButton
           title={intl.formatMessage({
             id: "setting.connections",
@@ -30,9 +30,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.connections.paragraph",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/connections",
-            });
+            navigate("/setting/connections");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -47,9 +45,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.permissions.get-chain-infos.paragraph",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/permissions/get-chain-infos",
-            });
+            navigate("/setting/permissions/get-chain-infos");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -61,9 +57,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.autolock",
           })}
           onClick={() => {
-            history.push({
-              pathname: "/setting/autolock",
-            });
+            navigate("/setting/autolock");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],

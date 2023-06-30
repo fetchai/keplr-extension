@@ -44,7 +44,7 @@ export const DestinationChainSelector: FunctionComponent<{
         </Label>
         <ButtonDropdown
           id={selectorId}
-          className={style.chainSelector}
+          className={style["chainSelector"]}
           isOpen={isSelectorOpen}
           toggle={() => setIsSelectorOpen((value) => !value)}
         >
@@ -77,7 +77,7 @@ export const DestinationChainSelector: FunctionComponent<{
                     }}
                   >
                     {chainInfo.chainName}
-                    <div className={style.channel}>{channel.channelId}</div>
+                    <div className={style["channel"]}>{channel.channelId}</div>
                   </DropdownItem>
                 );
               }

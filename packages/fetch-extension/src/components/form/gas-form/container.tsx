@@ -17,10 +17,10 @@ export const GasContainer: FunctionComponent<{
   };
 }> = observer(({ label, gasConfig, gasSimulator }) => {
   return (
-    <div className={styleContainer.container}>
-      <div className={styleContainer.autoButtonGroup}>
+    <div className={styleContainer["container"]}>
+      <div className={styleContainer["autoButtonGroup"]}>
         <div style={{ flex: 1 }} />
-        <div className={styleContainer.label}>Auto</div>
+        <div className={styleContainer["label"]}>Auto</div>
         <label
           key="toggle"
           className="custom-toggle"
