@@ -11,11 +11,10 @@ import { useStore } from "../../stores";
 import { store } from "@chatStore/index";
 import { Menu } from "../main/menu";
 import { NotificationSetup } from "@notificationTypes";
-import amplitude from "amplitude-js";
 export const NotificationPage: FunctionComponent = () => {
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
   const navigate = useNavigate();
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -24,7 +23,7 @@ export const NotificationPage: FunctionComponent = () => {
   };
 
   const handleClearAll = () => {
-    amplitude.getInstance().logEvent("Notification clear all click", {});
+    analyticsStore.logEvent("Notification clear all click");
     localStorage.removeItem(`notifications-${accountInfo.bech32Address}`);
     store.dispatch(setNotifications({ allNotifications: [] }));
   };

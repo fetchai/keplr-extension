@@ -36,8 +36,7 @@ export class AnalyticsStore<E extends Properties, U extends Properties> {
         eventName: string;
         eventProperties?: E;
       };
-    } = {},
-    protected readonly legacyAnalyticsClient?: AnalyticsClient
+    } = {}
   ) {}
 
   setUserId(id: string): void {
@@ -46,10 +45,6 @@ export class AnalyticsStore<E extends Properties, U extends Properties> {
 
   setUserProperties(userProperties: U): void {
     this.analyticsClient.setUserProperties(userProperties);
-
-    if (this.legacyAnalyticsClient) {
-      this.legacyAnalyticsClient.setUserProperties(userProperties);
-    }
   }
 
   logEvent(eventName: string, eventProperties?: E): void {
@@ -60,9 +55,5 @@ export class AnalyticsStore<E extends Properties, U extends Properties> {
     }
 
     this.analyticsClient.logEvent(eventName, eventProperties);
-
-    if (this.legacyAnalyticsClient) {
-      this.legacyAnalyticsClient.logEvent(eventName, eventProperties);
-    }
   }
 }

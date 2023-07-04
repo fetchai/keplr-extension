@@ -6,7 +6,6 @@ import ReactHtmlParser from "react-html-parser";
 import jazzicon from "@metamask/jazzicon";
 import { useStore } from "../../../stores";
 import { FormattedMessage } from "react-intl";
-import amplitude from "amplitude-js";
 import { markDeliveryAsClicked } from "@utils/fetch-notification";
 import { useNavigate } from "react-router";
 interface Props {
@@ -20,7 +19,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
   onFlagClick,
 }) => {
   const [flag, setFlag] = useState(false);
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const { delivery_id, delivered_at, cta_url } = elem;
@@ -29,7 +28,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
   const navigate = useNavigate();
   const handleFlag = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    amplitude.getInstance().logEvent("Notification flag click", {});
+    analyticsStore.logEvent("Notification flag click");
     if (!flag) {
       setFlag(true);
       const item = document.getElementById(delivery_id);
@@ -44,7 +43,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
 
   const handleNavigateToUrl = () => {
     if (cta_url != null) {
-      amplitude.getInstance().logEvent("Notification click", {});
+      analyticsStore.logEvent("Notification click");
 
       const localNotifications = JSON.parse(
         localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
@@ -79,7 +78,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
 
   const handleRead = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    amplitude.getInstance().logEvent("Notification remove click", {});
+    analyticsStore.logEvent("Notification remove click");
     const item = document.getElementById(delivery_id);
     item?.classList.add(style["remove"]);
 

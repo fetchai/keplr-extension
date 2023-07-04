@@ -6,10 +6,9 @@ import { useStore } from "../../stores";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
-import amplitude from "amplitude-js";
 
 export const Menu: FunctionComponent = observer(() => {
-  const { chainStore, keyRingStore } = useStore();
+  const { chainStore, keyRingStore, analyticsStore } = useStore();
 
   const navigate = useNavigate();
 
@@ -18,7 +17,7 @@ export const Menu: FunctionComponent = observer(() => {
       <div
         className={styleMenu["item"]}
         onClick={() => {
-          amplitude.getInstance().logEvent("Address book viewed", {});
+          analyticsStore.logEvent("Address book viewed");
           navigate({
             pathname: "/setting/address-book",
           });

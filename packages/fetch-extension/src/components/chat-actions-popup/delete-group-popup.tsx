@@ -1,8 +1,8 @@
 import { deleteGroup } from "@graphQL/groups-api";
-import amplitude from "amplitude-js";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 export const DeleteGroupPopup = ({
   setConfirmAction,
@@ -12,12 +12,14 @@ export const DeleteGroupPopup = ({
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { analyticsStore } = useStore();
+
   const handleDelete = async () => {
     setProcessing(true);
     const groupId = location.pathname.split("/")[3];
     deleteGroup(groupId);
     setConfirmAction(false);
-    amplitude.getInstance().logEvent("Delete group click", {});
+    analyticsStore.logEvent("Delete group click");
     navigate("/chat");
   };
 

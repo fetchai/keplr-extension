@@ -30,7 +30,6 @@ import { setGroups, userChatGroups } from "@chatStore/messages-slice";
 import { createEncryptedSymmetricKeyForAddresses } from "@utils/symmetric-key";
 import { userDetails } from "@chatStore/user-slice";
 import { encryptGroupMessage, GroupMessageType } from "@utils/encrypt-group";
-import amplitude from "amplitude-js";
 import { GroupChatPopup } from "@components/group-chat-popup";
 import { useNotification } from "@components/notification";
 import { createGroupEvent } from "@utils/group-events";
@@ -54,7 +53,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   const [selectedAddress, setSelectedAddresse] = useState<any>();
   const [confirmAction, setConfirmAction] = useState(false);
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -183,8 +182,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    amplitude.getInstance().logEvent("Add to address click", {
-      from: "Group Info",
+    analyticsStore.logEvent("Add to address click", {
+      pageName: "Group Info",
     });
     navigate("/setting/address-book", {
       state: {
@@ -210,8 +209,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
 
     switch (action) {
       case GroupChatMemberOptions.messageMember:
-        amplitude.getInstance().logEvent("Open DM click", {
-          from: "Group Info",
+        analyticsStore.logEvent("Open DM click", {
+          pageName: "Group Info",
         });
         navigate(`/chat/${selectedAddress.address}`);
         break;
@@ -221,8 +220,8 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         break;
 
       case GroupChatMemberOptions.viewInAddressBook:
-        amplitude.getInstance().logEvent("Address book viewed", {
-          from: "Group Info",
+        analyticsStore.logEvent("Address book viewed", {
+          pageName: "Group Info",
         });
         navigate("/setting/address-book");
         break;
@@ -265,7 +264,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       /// Clearing stack till chat tab
       navigate(-4);
       setTimeout(() => {
-        amplitude.getInstance().logEvent("New group created", {});
+        analyticsStore.logEvent("New group created");
         navigate(`/chat/group-chat-section/${groupData.id}`);
       }, 100);
     }

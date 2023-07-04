@@ -7,7 +7,6 @@ import {
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import jazzicon from "@metamask/jazzicon";
-import amplitude from "amplitude-js";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
@@ -35,7 +34,7 @@ import { ContactsOnlyMessage } from "@components/contacts-only-message";
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
   const user = useSelector(userDetails);
-  const { chainStore } = useStore();
+  const { chainStore, analyticsStore } = useStore();
   const { name, address } = props.address;
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,8 +66,8 @@ const NewUser = (props: { address: NameAddress }) => {
 
   const handleClick = () => {
     if (!isLoading) {
-      amplitude.getInstance().logEvent("Open DM click", {
-        from: "New chat",
+      analyticsStore.logEvent("Open DM click", {
+        pageName: "New chat",
       });
       navigate(`/chat/${address}`);
     }
@@ -111,7 +110,7 @@ export const NewChat: FunctionComponent = observer(() => {
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -281,7 +280,7 @@ export const NewChat: FunctionComponent = observer(() => {
                 style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
                 aria-hidden="true"
                 onClick={() => {
-                  amplitude.getInstance().logEvent("Address book viewed", {});
+                  analyticsStore.logEvent("Address book viewed");
                   navigate("/setting/address-book");
                 }}
               />

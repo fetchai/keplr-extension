@@ -1,10 +1,10 @@
-import amplitude from "amplitude-js";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UncontrolledTooltip } from "reactstrap";
 // import { ToolTip } from "@components/tooltip";
 
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 interface TabProps {
   title: string;
@@ -25,6 +25,8 @@ export const Tab = ({
 }: TabProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { analyticsStore } = useStore();
+
   const isChatActive =
     title == "Chat" &&
     (location.pathname == "/new-chat" ||
@@ -40,7 +42,7 @@ export const Tab = ({
       onClick={() => {
         if (!disabled) {
           if (path === "/chat") {
-            amplitude.getInstance().logEvent("Chat tab click", {});
+            analyticsStore.logEvent("Chat tab click");
           }
           navigate(path);
         }

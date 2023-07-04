@@ -2,7 +2,6 @@ import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import amplitude from "amplitude-js";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -21,7 +20,7 @@ export const Privacy: FunctionComponent = observer(() => {
   // const language = useLanguage();
   const navigate = useNavigate();
   const intl = useIntl();
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
 
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
@@ -82,7 +81,7 @@ export const Privacy: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(PrivacySetting.Everybody);
-            amplitude.getInstance().logEvent("Privacy setting click", {
+            analyticsStore.logEvent("Privacy setting click", {
               selectedPrivacySetting: PrivacySetting.Everybody,
             });
           }}
@@ -106,7 +105,7 @@ export const Privacy: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(PrivacySetting.Contacts);
-            amplitude.getInstance().logEvent("Privacy setting click", {
+            analyticsStore.logEvent("Privacy setting click", {
               selectedPrivacySetting: PrivacySetting.Contacts,
             });
           }}
@@ -130,7 +129,7 @@ export const Privacy: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(PrivacySetting.Nobody);
-            amplitude.getInstance().logEvent("Privacy setting click", {
+            analyticsStore.logEvent("Privacy setting click", {
               selectedPrivacySetting: PrivacySetting.Nobody,
             });
           }}

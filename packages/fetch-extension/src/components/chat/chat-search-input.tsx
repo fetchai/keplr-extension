@@ -1,9 +1,9 @@
-import amplitude from "amplitude-js";
 import React from "react";
 import { useNavigate } from "react-router";
 import newChatIcon from "@assets/icon/new-chat.png";
 import searchIcon from "@assets/icon/search.png";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 export const ChatSearchInput = ({
   searchInput,
@@ -15,6 +15,8 @@ export const ChatSearchInput = ({
   setSearchInput: any;
 }) => {
   const navigate = useNavigate();
+  const { analyticsStore } = useStore();
+
   return (
     <div className={style["searchContainer"]}>
       <div className={style["searchBox"]}>
@@ -28,7 +30,7 @@ export const ChatSearchInput = ({
       </div>
       <div
         onClick={() => {
-          amplitude.getInstance().logEvent("New chat click", {});
+          analyticsStore.logEvent("New chat click");
           navigate("/new-chat");
         }}
       >

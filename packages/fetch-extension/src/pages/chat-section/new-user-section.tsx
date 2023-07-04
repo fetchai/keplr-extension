@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import amplitude from "amplitude-js";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { userBlockedAddresses } from "@chatStore/messages-slice";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 export const NewUserSection = ({
   targetAddress,
@@ -14,6 +14,7 @@ export const NewUserSection = ({
   handleClick: any;
 }) => {
   const navigate = useNavigate();
+  const { analyticsStore } = useStore();
 
   const blockedUsers = useSelector(userBlockedAddresses);
 
@@ -26,7 +27,7 @@ export const NewUserSection = ({
         <button
           style={{ padding: "4px 20px" }}
           onClick={() => {
-            amplitude.getInstance().logEvent("Add to address click", {});
+            analyticsStore.logEvent("Add to address click");
             navigate("/setting/address-book", {
               state: {
                 openModal: true,
@@ -40,7 +41,7 @@ export const NewUserSection = ({
         {blockedUsers[targetAddress] ? (
           <button
             onClick={() => {
-              amplitude.getInstance().logEvent("Unblock click", {});
+              analyticsStore.logEvent("Unblock click");
               handleClick("unblock");
             }}
           >
@@ -49,7 +50,7 @@ export const NewUserSection = ({
         ) : (
           <button
             onClick={() => {
-              amplitude.getInstance().logEvent("Block click", {});
+              analyticsStore.logEvent("Block click");
               handleClick("block");
             }}
           >

@@ -2,12 +2,12 @@ import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { Group, GroupAddress } from "@chatTypes";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
-import amplitude from "amplitude-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import style from "../style.module.scss";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
+import { useStore } from "../../../stores";
 
 export const ChatAgent: React.FC<{
   chainId: string;
@@ -17,12 +17,13 @@ export const ChatAgent: React.FC<{
 }> = ({ chainId, group, contactName, targetAddress }) => {
   const [message, setMessage] = useState("");
   // const [groupData, setGroupData] = useState(group);
+  const {  analyticsStore } = useStore();
 
   const navigate = useNavigate();
 
   const handleClick = () => {
-    amplitude.getInstance().logEvent("Open Agent click", {
-      from: "Chat history",
+    analyticsStore.logEvent("Open Agent click", {
+      pageName: "Chat history",
     });
     navigate(`/chat/agent/${targetAddress}`);
   };

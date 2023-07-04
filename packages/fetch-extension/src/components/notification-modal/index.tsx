@@ -9,7 +9,6 @@ import { NotificationSetup, NotyphiNotification } from "@notificationTypes";
 import { store } from "@chatStore/index";
 import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { useSelector } from "react-redux";
-import amplitude from "amplitude-js";
 interface NotificationPayload {
   modalType: NotificationModalType;
   notificationList?: NotyphiNotification[];
@@ -32,7 +31,7 @@ export enum NotificationModalType {
 export const NotificationModal: FunctionComponent = () => {
   const navigate = useNavigate();
 
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -50,7 +49,7 @@ export const NotificationModal: FunctionComponent = () => {
     } else if (
       notificationPayload?.modalType === NotificationModalType.notificationOff
     ) {
-      amplitude.getInstance().logEvent("Notification on", {});
+      analyticsStore.logEvent("Notification on");
 
       localStorage.setItem(
         `turnNotifications-${accountInfo.bech32Address}`,

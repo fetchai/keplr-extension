@@ -20,7 +20,6 @@ import { createGroup } from "@graphQL/groups-api";
 import { setGroups } from "@chatStore/messages-slice";
 import { recieveMessages } from "@graphQL/recieve-messages";
 import { createGroupEvent, updateInfoEvent } from "@utils/group-events";
-import amplitude from "amplitude-js";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 
 export const CreateGroupChat: FunctionComponent = () => {
@@ -28,7 +27,7 @@ export const CreateGroupChat: FunctionComponent = () => {
   const notification = useNotification();
   const user = useSelector(userDetails);
 
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const newGroupState: NewGroupDetails = useSelector(newGroupDetails);
@@ -73,8 +72,8 @@ export const CreateGroupChat: FunctionComponent = () => {
       store.dispatch(setGroups({ groups }));
       /// fetching the group messages again
       await recieveMessages(group.id, null, 0, group.isDm, group.id);
-      amplitude.getInstance().logEvent("Group info updated", {
-        from: "Group Info",
+      analyticsStore.logEvent("Group info updated", {
+        pageName: "Group Info",
       });
       navigate(-1);
     }

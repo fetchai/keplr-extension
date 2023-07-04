@@ -23,7 +23,6 @@ import {
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/index";
-import amplitude from "amplitude-js";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -71,7 +70,7 @@ export const EditMember: FunctionComponent = observer(() => {
   /// Show alert popup for remove member
   const [removeMemberPopup, setRemoveMemberPopup] = useState(false);
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -361,8 +360,8 @@ export const EditMember: FunctionComponent = observer(() => {
   };
 
   const AddContactOption = (address: string) => {
-    amplitude.getInstance().logEvent("Add to address click", {
-      from: "Group Info",
+    analyticsStore.logEvent("Add to address click", {
+      pageName: "Group Info",
     });
     navigate("/setting/address-book", {
       state: {
@@ -388,8 +387,8 @@ export const EditMember: FunctionComponent = observer(() => {
 
     switch (action) {
       case GroupChatMemberOptions.messageMember:
-        amplitude.getInstance().logEvent("Open DM click", {
-          from: "Group Info",
+        analyticsStore.logEvent("Open DM click", {
+          pageName: "Group Info",
         });
         navigate(`/chat/${selectedAddress.address}`);
         break;
@@ -400,28 +399,28 @@ export const EditMember: FunctionComponent = observer(() => {
 
       case GroupChatMemberOptions.removeMember:
         setRemoveMemberPopup(true);
-        amplitude.getInstance().logEvent("Remove Member from Group", {
-          from: "Group Info",
+        analyticsStore.logEvent("Remove Member from Group", {
+          pageName: "Group Info",
         });
         break;
 
       case GroupChatMemberOptions.makeAdminStatus:
         updateAdminStatus(selectedAddress.address, true);
-        amplitude.getInstance().logEvent("Make member an Admin", {
-          from: "Group Info",
+        analyticsStore.logEvent("Make member an Admin", {
+          pageName: "Group Info",
         });
         break;
 
       case GroupChatMemberOptions.removeAdminStatus:
         updateAdminStatus(selectedAddress.address, false);
-        amplitude.getInstance().logEvent("Remove member as Admin", {
-          from: "Group Info",
+        analyticsStore.logEvent("Remove member as Admin", {
+          pageName: "Group Info",
         });
         break;
 
       case GroupChatMemberOptions.viewInAddressBook:
-        amplitude.getInstance().logEvent("Address book viewed", {
-          from: "Group Info",
+        analyticsStore.logEvent("Address book viewed", {
+          pageName: "Group Info",
         });
         navigate("/setting/address-book");
         break;

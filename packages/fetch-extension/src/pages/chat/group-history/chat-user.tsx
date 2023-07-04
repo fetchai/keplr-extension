@@ -7,10 +7,10 @@ import rightArrowIcon from "@assets/icon/right-arrow.png";
 import { decryptGroupTimestamp } from "@utils/decrypt-group";
 import { decryptMessage } from "@utils/decrypt-message";
 import style from "../style.module.scss";
-import amplitude from "amplitude-js";
 import { Group, GroupAddress } from "@chatTypes";
 import { processHyperlinks } from "@utils/process-hyperlinks";
 import parse from "react-html-parser";
+import { useStore } from "../../../stores";
 
 export const ChatUser: React.FC<{
   chainId: string;
@@ -22,10 +22,11 @@ export const ChatUser: React.FC<{
   const [groupData, setGroupData] = useState(group);
 
   const navigate = useNavigate();
+  const { analyticsStore } = useStore();
 
   const handleClick = () => {
-    amplitude.getInstance().logEvent("Open DM click", {
-      from: "Chat history",
+    analyticsStore.logEvent("Open DM click", {
+      pageName: "Chat history",
     });
     navigate(`/chat/${targetAddress}`);
   };

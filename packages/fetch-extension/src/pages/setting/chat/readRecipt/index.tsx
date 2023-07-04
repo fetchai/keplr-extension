@@ -14,7 +14,6 @@ import { HeaderLayout } from "@layouts/index";
 import { PageButton } from "../../page-button";
 import { useStore } from "../../../../stores";
 import style from "./style.module.scss";
-import amplitude from "amplitude-js";
 import { GRAPHQL_URL } from "../../../../config.ui.var";
 
 export const ReadRecipt: FunctionComponent = observer(() => {
@@ -22,7 +21,7 @@ export const ReadRecipt: FunctionComponent = observer(() => {
   const intl = useIntl();
 
   const loadingIndicator = useLoadingIndicator();
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
 
   const walletAddress = accountStore.getAccount(chainStore.current.chainId)
     .bech32Address;
@@ -86,8 +85,7 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(true);
-            amplitude
-              .getInstance()
+            analyticsStore
               .logEvent("Read Receipts Privacy setting click", {
                 readRecipt: true,
               });
@@ -117,8 +115,7 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(false);
-            amplitude
-              .getInstance()
+            analyticsStore
               .logEvent("Read Receipts Privacy setting click", {
                 readRecipt: false,
               });

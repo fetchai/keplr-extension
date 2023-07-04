@@ -9,11 +9,10 @@ import { NotificationSetup } from "@notificationTypes";
 import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { store } from "@chatStore/index";
-import amplitude from "amplitude-js";
 
 export const SettingNotifications: FunctionComponent = () => {
   const navigate = useNavigate();
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -29,13 +28,11 @@ export const SettingNotifications: FunctionComponent = () => {
   const orgSuffix = orgInfo.length > 1 ? "s" : "";
 
   const handleOnChange = () => {
-    amplitude
-      .getInstance()
+    analyticsStore
       .logEvent(
         notificationInfo.isNotificationOn
           ? "Notification off"
-          : "Notification on",
-        {}
+          : "Notification on"
       );
 
     localStorage.setItem(

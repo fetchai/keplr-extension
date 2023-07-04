@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import rightArrowIcon from "@assets/icon/right-arrow.png";
 import style from "../style.module.scss";
-import amplitude from "amplitude-js";
 import { Group, GroupMessagePayload, NameAddress } from "@chatTypes";
 import { decryptGroupMessage } from "@utils/decrypt-group";
 import { GroupMessageType } from "@utils/encrypt-group";
@@ -21,13 +20,13 @@ export const ChatGroupUser: React.FC<{
     useState<GroupMessagePayload>();
   const navigate = useNavigate();
 
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const handleClick = () => {
-    amplitude.getInstance().logEvent("Open Group click", {
-      from: "Chat history",
+    analyticsStore.logEvent("Open Group click", {
+      pageName: "Chat history",
     });
     navigate(`/chat/group-chat-section/${group.id}`);
   };

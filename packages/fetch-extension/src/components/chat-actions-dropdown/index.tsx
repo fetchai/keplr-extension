@@ -1,7 +1,7 @@
-import amplitude from "amplitude-js";
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 export const ChatActionsDropdown = ({
   added,
@@ -33,10 +33,12 @@ export const ChatActionsDropdown = ({
 
 const ViewContactOption = () => {
   const navigate = useNavigate();
+  const { analyticsStore } = useStore();
+
   return (
     <div
       onClick={() => {
-        amplitude.getInstance().logEvent("Address book viewed", {});
+        analyticsStore.logEvent("Address book viewed");
         navigate("/setting/address-book");
       }}
     >
@@ -47,11 +49,12 @@ const ViewContactOption = () => {
 
 const AddContactOption = () => {
   const navigate = useNavigate();
+  const { analyticsStore } = useStore();
   const userName = useLocation().pathname.split("/")[2];
   return (
     <div
       onClick={() => {
-        amplitude.getInstance().logEvent("Add to address click", {});
+        analyticsStore.logEvent("Add to address click");
         navigate("/setting/address-book", {
           state: {
             openModal: true,
@@ -70,10 +73,12 @@ const BlockOption = ({
 }: {
   handleClick: (data: string) => void;
 }) => {
+  const { analyticsStore } = useStore();
+
   return (
     <div
       onClick={() => {
-        amplitude.getInstance().logEvent("Block click", {});
+        analyticsStore.logEvent("Block click");
         handleClick("block");
       }}
     >
@@ -87,10 +92,12 @@ const UnblockOption = ({
 }: {
   handleClick: (data: string) => void;
 }) => {
+  const { analyticsStore } = useStore();
+
   return (
     <div
       onClick={() => {
-        amplitude.getInstance().logEvent("Unblock click", {});
+        analyticsStore.logEvent("Unblock click");
         handleClick("unblock");
       }}
     >

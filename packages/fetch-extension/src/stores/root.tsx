@@ -106,6 +106,8 @@ export class RootStore {
       pageName?: string;
       tabName?: string;
       isClaimAll?: boolean;
+      selectedPrivacySetting?: string;
+      readRecipt?: boolean;
       proposalId?: string;
       proposalTitle?: string;
     },

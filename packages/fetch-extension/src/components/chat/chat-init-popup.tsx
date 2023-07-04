@@ -2,7 +2,6 @@ import { RegisterPublicKey } from "@keplr-wallet/background/build/messaging";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import amplitude from "amplitude-js";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -28,7 +27,7 @@ export const ChatInitPopup = ({
 }) => {
   const userState = useSelector(userDetails);
 
-  const { chainStore, accountStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const walletAddress = accountStore.getAccount(
     chainStore.current.chainId
@@ -68,8 +67,8 @@ export const ChatInitPopup = ({
       // Redirect to home
       navigate("/", { replace: true });
     } finally {
-      amplitude.getInstance().logEvent("Privacy setting click", {
-        SelectedPrivacySetting: selectedPrivacySetting,
+      analyticsStore.logEvent("Privacy setting click", {
+        selectedPrivacySetting,
       });
       setIsOpendialog(false);
       setLoadingChats(false);

@@ -44,7 +44,6 @@ import { addMemberEvent } from "@utils/group-events";
 import { ToolTip } from "@components/tooltip";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
-import amplitude from "amplitude-js";
 
 export const AddMember: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -65,7 +64,7 @@ export const AddMember: FunctionComponent = observer(() => {
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -278,8 +277,8 @@ export const AddMember: FunctionComponent = observer(() => {
       store.dispatch(setGroups({ groups }));
       /// fetching the group messages again
       await recieveMessages(group.id, null, 0, group.isDm, group.id);
-      amplitude.getInstance().logEvent("New members added", {
-        from: "Group Info",
+      analyticsStore.logEvent("New members added", {
+        pageName: "Group Info",
       });
       navigate(-1);
     }
