@@ -15,7 +15,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-  
+  };
 
   return (
     <HeaderLayout
