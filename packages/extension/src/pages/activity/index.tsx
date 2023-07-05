@@ -2,32 +2,29 @@ import { HeaderLayout } from "@layouts/index";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router";
 import { GovProposalsTab } from "./gov-proposals";
 import { LatestBlock } from "./latest-block";
 import { NativeTab } from "./native";
 import style from "./style.module.scss";
+import { Menu } from "../main/menu";
 
 export const ActivityPage: FunctionComponent = observer(() => {
-  const history = useHistory();
   const intl = useIntl();
   const [latestBlock, setLatestBlock] = useState();
   const [activeTab, setActiveTab] = useState("native");
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-  };
+  
 
   return (
     <HeaderLayout
       showChainName={true}
       canChangeChainInfo={false}
+      menuRenderer={<Menu />}
       alternativeTitle={intl.formatMessage({
         id: "main.menu.activity",
       })}
-      onBackButton={() => {
-        history.goBack();
-      }}
     >
       <div className={style.container}>
         <div className={style.title}>

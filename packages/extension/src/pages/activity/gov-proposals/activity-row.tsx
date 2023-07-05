@@ -36,6 +36,9 @@ const getHash = (proposal: any) => {
   }
   return null;
 };
+function getParsedVoteDetail(input: string): string {
+  return input.replace(/_/g, " ");
+}
 
 export const ActivityRow = ({ node }: { node: any }) => {
   const details = node.option;
@@ -66,7 +69,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
             src={require("@assets/svg/" + getVoteIcon(details))}
             className={style.govImage}
           />{" "}
-          {details}
+          {getParsedVoteDetail(details)}
         </div>
         <div
           className={style.activityCol}

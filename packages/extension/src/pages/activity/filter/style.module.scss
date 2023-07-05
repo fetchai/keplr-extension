@@ -1,7 +1,9 @@
 .dropdown {
   font-size: 12px;
 }
-
+.dropdown-toggle :hover {
+  background: #f0f0f0;
+}
 .dropdown-toggle {
   padding: 0px 10px;
   height: 20px;
@@ -52,12 +54,20 @@
 }
 
 .select {
+  border: none;
+  outline: none;
   padding: 2px 5px 0px 2px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border-color: none;
 }
 
 .select div:hover {
   color: #3b82f6;
+}
+.select :disabled {
+  border: none;
+  outline: none;
+  color: grey !important;
 }

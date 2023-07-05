@@ -8,6 +8,8 @@ export const FilterActivities: React.FC<{
   selectedFilter: any[];
 }> = ({ onFilterChange, options, selectedFilter }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectAllDisabled, setSelectAllDisabled] = useState(false);
+  const [unselectAllDisabled, setUnselectAllDisabled] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -24,12 +26,20 @@ export const FilterActivities: React.FC<{
   };
 
   const handleDeselectClicks = () => {
-    if (selectedFilter.length != 0) onFilterChange([]);
+    if (selectedFilter.length !== 0) {
+      onFilterChange([]);
+      setSelectAllDisabled(false);
+      setUnselectAllDisabled(true);
+    }
   };
 
   const handleSelectClicks = () => {
     const allFilters = options.map((option) => option.value);
-    if (selectedFilter.length != allFilters.length) onFilterChange(allFilters);
+    if (selectedFilter.length !== allFilters.length) {
+      onFilterChange(allFilters);
+      setSelectAllDisabled(true);
+      setUnselectAllDisabled(false);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -48,6 +58,11 @@ export const FilterActivities: React.FC<{
     };
   }, []);
 
+  useEffect(() => {
+    setSelectAllDisabled(selectedFilter.length === options.length);
+    setUnselectAllDisabled(selectedFilter.length === 0);
+  }, [selectedFilter, options]);
+
   return (
     <div className={styles.dropdown}>
       <div className={styles["dropdown-toggle"]} ref={dropdownRef}>
@@ -58,8 +73,20 @@ export const FilterActivities: React.FC<{
         {isOpen && (
           <div className={styles["dropdown-menu-popup"]}>
             <div className={styles.select}>
-              <div onClick={handleSelectClicks}>Select all</div>
-              <div onClick={handleDeselectClicks}>Unselect all</div>
+              <button
+                className={styles.select}
+                onClick={handleSelectClicks}
+                disabled={selectAllDisabled}
+              >
+                Select all
+              </button>
+              <button
+                className={styles.select}
+                onClick={handleDeselectClicks}
+                disabled={unselectAllDisabled}
+              >
+                Unselect all
+              </button>
             </div>
             <div className={styles["dropdown-menu"]}>
               {options.map((option) => (
