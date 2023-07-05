@@ -32,7 +32,8 @@ interface ICNSFetchData {
 
 export class RecipientConfig
   extends TxChainSetter
-  implements IRecipientConfig, IRecipientConfigWithICNS {
+  implements IRecipientConfig, IRecipientConfigWithICNS
+{
   @observable
   protected _value: string = "";
 

@@ -7,11 +7,11 @@ import React, {
 } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useNavigate, useRouteMatch } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PasswordInput } from "@components/form";
 import { Button, Form } from "reactstrap";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useStore } from "../../../stores";
 import { observer } from "mobx-react-lite";
 
@@ -24,28 +24,28 @@ interface FormData {
 
 export const ClearPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const match = useRouteMatch<{ index: string }>();
+  const { index = "-1 "} = useParams<{ index: string }>();
 
   const intl = useIntl();
 
   const [loading, setLoading] = useState(false);
 
   const { keyRingStore, analyticsStore } = useStore();
-  const { register, handleSubmit, setError, errors } = useForm<FormData>({
+  const { register, handleSubmit, setError, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
   });
 
   useEffect(() => {
-    if (parseInt(match.params.index).toString() !== match.params.index) {
+    if (parseInt(index).toString() !== index) {
       throw new Error("Invalid index");
     }
-  }, [match.params.index]);
+  }, [index]);
 
   const keyStore = useMemo(() => {
-    return keyRingStore.multiKeyStoreInfo[parseInt(match.params.index)];
-  }, [keyRingStore.multiKeyStoreInfo, match.params.index]);
+    return keyRingStore.multiKeyStoreInfo[parseInt(index)];
+  }, [keyRingStore.multiKeyStoreInfo, index]);
 
   return (
     <HeaderLayout
@@ -61,7 +61,7 @@ export const ClearPage: FunctionComponent = observer(() => {
       <div className={style["container"]}>
         {keyStore ? (
           <WarningView
-            index={parseInt(match.params.index)}
+            index={parseInt(index)}
             keyStore={keyStore}
           />
         ) : null}
@@ -71,7 +71,7 @@ export const ClearPage: FunctionComponent = observer(() => {
             try {
               // Make sure that password is valid and keyring is cleared.
               await keyRingStore.deleteKeyRing(
-                parseInt(match.params.index),
+                parseInt(index),
                 data.password
               );
               analyticsStore.logEvent("Account removed");
@@ -79,13 +79,11 @@ export const ClearPage: FunctionComponent = observer(() => {
               navigate("/");
             } catch (e) {
               console.log("Fail to decrypt: " + e.message);
-              setError(
-                "password",
-                "invalid",
-                intl.formatMessage({
-                  id: "setting.clear.input.password.error.invalid",
-                })
-              );
+              setError('password', {
+                message: intl.formatMessage({
+                  id: 'setting.clear.input.password.error.invalid',
+                }),
+              });
               setLoading(false);
             }
           })}
@@ -94,9 +92,8 @@ export const ClearPage: FunctionComponent = observer(() => {
             label={intl.formatMessage({
               id: "setting.clear.input.password",
             })}
-            name="password"
             error={errors.password && errors.password.message}
-            ref={register({
+            {...register("password", {
               required: intl.formatMessage({
                 id: "setting.clear.input.password.error.required",
               }),

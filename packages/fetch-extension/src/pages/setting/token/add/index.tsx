@@ -8,10 +8,10 @@ import { Button, Form } from "reactstrap";
 import { Input } from "@components/form";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../../stores";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { CW20Currency, Secret20Currency } from "@keplr-wallet/types";
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { useNotification } from "@components/notification";
 
@@ -230,10 +230,9 @@ export const AddTokenPage: FunctionComponent = observer(() => {
           label={intl.formatMessage({
             id: "setting.token.add.contract-address",
           })}
-          name="contractAddress"
           autoComplete="off"
           readOnly={tokensStore.waitingSuggestedToken != null}
-          ref={form.register({
+          {...form.register("contractAddress", {
             required: "Contract address is required",
             validate: (value: string): string | undefined => {
               try {
@@ -247,8 +246,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             },
           })}
           error={
-            form.errors.contractAddress
-              ? form.errors.contractAddress.message
+            form.formState.errors.contractAddress
+              ? form.formState.errors.contractAddress.message
               : tokenInfo == null
               ? (queryContractInfo.error?.data as any)?.error ||
                 queryContractInfo.error?.message
@@ -290,14 +289,13 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             label={intl.formatMessage({
               id: "setting.token.add.secret20.viewing-key",
             })}
-            name="viewingKey"
             autoComplete="off"
-            ref={form.register({
+            {...form.register("viewingKey", {
               required: "Viewing key is required",
             })}
             error={
-              form.errors.viewingKey
-                ? form.errors.viewingKey.message
+              form.formState.errors.viewingKey
+                ? form.formState.errors.viewingKey.message
                 : undefined
             }
           />

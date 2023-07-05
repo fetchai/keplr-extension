@@ -67,10 +67,10 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
 
     useEffect(() => {
       if (value) {
-        recipientConfig.setRawRecipient(value);
+        recipientConfig.setValue(value);
       }
     }, [recipientConfig, value]);
-    const error = recipientConfig.error;
+    const error = recipientConfig.uiProperties.error;
     const errorText: string | undefined = useMemo(() => {
       if (error) {
         switch (error.constructor) {
@@ -113,11 +113,11 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
 
     const selectAddressFromAddressBook = {
       setRecipient: (recipient: string) => {
-        recipientConfig.setRawRecipient(recipient);
+        recipientConfig.setValue(recipient);
       },
       setMemo: (memo: string) => {
         if (memoConfig) {
-          memoConfig.setMemo(memo);
+          memoConfig.setValue(memo);
         }
       },
     };
@@ -153,7 +153,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 "form-control-alternative",
                 styleAddressInput["input"]
               )}
-              value={recipientConfig.rawRecipient}
+              value={recipientConfig.recipient}
               onChange={(e) => {
                 let value = e.target.value;
                 if (
@@ -163,11 +163,11 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                   value.length > 0 &&
                   value[value.length - 1] === "." &&
                   numOfCharacter(value, ".") === 1 &&
-                  numOfCharacter(recipientConfig.rawRecipient, ".") === 0
+                  numOfCharacter(recipientConfig.recipient, ".") === 0
                 ) {
                   value = value + recipientConfig.icnsExpectedBech32Prefix;
                 }
-                recipientConfig.setRawRecipient(value);
+                recipientConfig.setValue(value);
                 e.preventDefault();
               }}
               autoComplete="off"
@@ -195,11 +195,11 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
             <FormText>{recipientConfig.recipient}</FormText>
           ) : null}
           {errorText != null &&
-          !recipientConfig.rawRecipient.startsWith("agent") ? (
+          !recipientConfig.recipient.startsWith("agent") ? (
             <div className={styleAddressInput["errorText"]}>{errorText}</div>
           ) : null}
-          {recipientConfig.rawRecipient.startsWith("agent") &&
-            validateAgentAddress(recipientConfig.rawRecipient) && (
+          {recipientConfig.recipient.startsWith("agent") &&
+            validateAgentAddress(recipientConfig.recipient) && (
               <div className={styleAddressInput["errorText"]}>
                 Invalid agent address
               </div>

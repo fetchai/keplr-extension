@@ -123,7 +123,7 @@ export const MainPage: FunctionComponent = observer(() => {
 
   /// Fetching wallet config info
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
+    if (keyRingStore.selectedKeyInfo?.type === "ledger") {
       return;
     }
     getJWT(chainStore.current.chainId, AUTH_SERVER).then((res) => {

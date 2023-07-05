@@ -17,17 +17,15 @@ import styleAddressBook from "./style.module.scss";
 import { useStore } from "../../../stores";
 import { PageButton } from "../page-button";
 import { AddAddressModal } from "./add-address-modal";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { useConfirm } from "@components/confirm";
 import {
-  AddressBookSelectHandler,
   IIBCChannelConfig,
-  useAddressBookConfig,
   useMemoConfig,
   useRecipientConfig,
 } from "@keplr-wallet/hooks";
 import { shortenAgentAddress } from "@utils/validate-agent";
+import { AddressBookData } from "../../../stores/ui-config/address-book";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -40,10 +38,9 @@ export const defaultParamValues: chatSectionParams = {
 export const AddressBookPage: FunctionComponent<{
   onBackButton?: () => void;
   hideChainDropdown?: boolean;
-  selectHandler?: AddressBookSelectHandler;
   ibcChannelConfig?: IIBCChannelConfig;
 }> = observer(
-  ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
+  ({ onBackButton, hideChainDropdown, ibcChannelConfig }) => {
     const intl = useIntl();
     const navigate = useNavigate();
     const { chainStore, uiConfigStore } = useStore();
@@ -62,22 +59,6 @@ export const AddressBookPage: FunctionComponent<{
       icns: uiConfigStore.icnsInfo,
     });
     const memoConfig = useMemoConfig(chainStore, selectedChainId);
-
-    const addressBookConfig = useAddressBookConfig(
-      new ExtensionKVStore("address-book"),
-      chainStore,
-      selectedChainId,
-      selectHandler
-        ? selectHandler
-        : {
-            setRecipient: (): void => {
-              // noop
-            },
-            setMemo: (): void => {
-              // noop
-            },
-          }
-    );
 
     const [dropdownOpen, setOpen] = useState(false);
     const toggle = () => setOpen(!dropdownOpen);
@@ -147,7 +128,7 @@ export const AddressBookPage: FunctionComponent<{
             ) {
               setAddAddressModalOpen(false);
               setAddAddressModalIndex(-1);
-              await addressBookConfig.removeAddressBook(index);
+              await uiConfigStore.addressBookConfig.removeAddressBookAt(chainStore.selectedChainId, index);
             }
           }}
         />,
@@ -157,12 +138,13 @@ export const AddressBookPage: FunctionComponent<{
     const handleAddressClick = (
       e: React.MouseEvent<HTMLDivElement>,
       address: string,
-      i: number
+      //i: number
     ) => {
       e.preventDefault();
       e.stopPropagation();
       if (!address.startsWith("agent")) {
-        addressBookConfig.selectAddressAt(i);
+        // Todo
+        //uiConfigStore.addressBookConfig.selectAddressAt(i);
 
         if (onBackButton) {
           onBackButton();
@@ -197,7 +179,7 @@ export const AddressBookPage: FunctionComponent<{
               closeModal={() => closeModal()}
               recipientConfig={recipientConfig}
               memoConfig={memoConfig}
-              addressBookConfig={addressBookConfig}
+              addressBookConfig={uiConfigStore.addressBookConfig}
               index={addAddressModalIndex}
               chainId={selectedChainId}
             />
@@ -259,7 +241,7 @@ export const AddressBookPage: FunctionComponent<{
               </div>
             </div>
             <div style={{ flex: "1 1 0", overflowY: "auto" }}>
-              {addressBookConfig.addressBookDatas.map((data, i) => {
+              {uiConfigStore.addressBookConfig.getAddressBook(chainStore.selectedChainId).map((data: AddressBookData, i: number) => {
                 return (
                   <PageButton
                     key={i.toString()}
@@ -278,8 +260,9 @@ export const AddressBookPage: FunctionComponent<{
                     icons={addressBookIcons(i)}
                     data-index={i}
                     disabled={onBackButton && data.address.startsWith("agent")}
-                    onClick={(e) => handleAddressClick(e, data.address, i)}
-                    style={{ cursor: selectHandler ? undefined : "auto" }}
+                    onClick={(e) => handleAddressClick(e, data.address)}
+                    style={{ cursor: "auto" }}
+                   // style={{ cursor: selectHandler ? undefined : "auto" }}
                   />
                 );
               })}

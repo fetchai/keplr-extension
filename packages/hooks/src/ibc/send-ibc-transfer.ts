@@ -16,9 +16,9 @@ import { useIBCRecipientConfig } from "./reciepient";
  * So, you should remember that the recipient config's chain id is equal to the sending chain id, if channel not set.
  * @param chainGetter
  * @param queriesStore
- * @param accountStore
  * @param chainId
  * @param sender
+ * @param initialGas
  * @param options
  */
 export const useIBCTransferConfig = (

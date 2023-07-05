@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo } from "react";
 
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 import { Button } from "reactstrap";
 
 import { ChainIdHelper } from "@keplr-wallet/cosmos";

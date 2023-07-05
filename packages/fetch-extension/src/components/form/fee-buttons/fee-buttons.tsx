@@ -340,7 +340,7 @@ export const FeeButtonsInner: FunctionComponent<
 
     let isFeeLoading = false;
 
-    const error = feeConfig.error;
+    const error = feeConfig.uiProperties.error;
     const errorText: string | undefined = (() => {
       if (error) {
         switch (error.constructor) {

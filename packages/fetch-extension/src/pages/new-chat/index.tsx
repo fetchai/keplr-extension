@@ -1,9 +1,7 @@
 import { fromBech32 } from "@cosmjs/encoding";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import {
-  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import jazzicon from "@metamask/jazzicon";
@@ -30,6 +28,7 @@ import { resetNewGroup } from "@chatStore/new-group-slice";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { AGENT_ADDRESS } from "../../config.ui.var";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
+import { InitialGas } from "../../config.ui";
 
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
@@ -118,9 +117,9 @@ export const NewChat: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -132,21 +131,8 @@ export const NewChat: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-  const addressBookConfig = useAddressBookConfig(
-    new ExtensionKVStore("address-book"),
-    chainStore,
-    selectedChainId,
-    {
-      setRecipient: (): void => {
-        // noop
-      },
-      setMemo: (): void => {
-        // noop
-      },
-    }
-  );
 
-  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas
+  const userAddresses: NameAddress[] = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId)
     .filter((data) => !data.address.startsWith("agent"))
     .map((data) => {
       return { name: data.name, address: data.address };
@@ -156,17 +142,17 @@ export const NewChat: FunctionComponent = observer(() => {
     });
 
   useEffect(() => {
-    setAddresses(userAddresses.filter((a) => a.address !== walletAddress));
-  }, [addressBookConfig.addressBookDatas]);
+    setAddresses(userAddresses.filter((a) => a["address"] !== walletAddress));
+  }, [uiConfigStore.addressBookConfig]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
     const searchedVal = e.target.value.toLowerCase();
     const addresses = userAddresses.filter(
       (address: NameAddress) =>
-        address.address !== walletAddress &&
-        (address.name.toLowerCase().includes(searchedVal) ||
-          address.address.toLowerCase().includes(searchedVal))
+        address["address"] !== walletAddress &&
+        (address["name"].toLowerCase().includes(searchedVal) ||
+          address["address"].toLowerCase().includes(searchedVal))
     );
 
     if (
@@ -212,7 +198,7 @@ export const NewChat: FunctionComponent = observer(() => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      {!addressBookConfig.isLoaded ? (
+      {!uiConfigStore.isInitialized ? (
         <ChatLoader message="Loading contacts, please wait..." />
       ) : (
         <div className={style["newChatContainer"]}>
@@ -271,7 +257,7 @@ export const NewChat: FunctionComponent = observer(() => {
 
           <div className={style["messagesContainer"]}>
             {randomAddress && (
-              <NewUser address={randomAddress} key={randomAddress.address} />
+              <NewUser address={randomAddress} key={randomAddress["address"]} />
             )}
             <div className={style["contacts"]}>
               <div>Your contacts</div>
@@ -286,7 +272,7 @@ export const NewChat: FunctionComponent = observer(() => {
               />
             </div>
             {addresses.map((address: NameAddress) => {
-              return <NewUser address={address} key={address.address} />;
+              return <NewUser address={address} key={address["address"]} />;
             })}
           </div>
           {addresses.length === 0 && (

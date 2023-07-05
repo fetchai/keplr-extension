@@ -16,16 +16,18 @@ import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import {
   useFeeConfig,
-  useInteractionInfo,
-  useMemoConfig,
+  useMemoConfig, useSenderConfig,
   useSignDocAmountConfig,
   useSignDocHelper,
-  useZeroAllowedGasConfig,
+  useZeroAllowedGasConfig
 } from "@keplr-wallet/hooks";
 import { ADR36SignDocDetailsTab } from "./adr-36";
-import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { ChainIdHelper, SignDocWrapper } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
 import { EthSignType } from "@keplr-wallet/types";
+import { useInteractionInfo } from "@hooks/interaction";
+import { InteractionWaitingData } from "@keplr-wallet/background";
+import { SignInteractionData } from "@keplr-wallet/stores";
 
 enum Tab {
   Details,
@@ -53,22 +55,25 @@ export const SignPage: FunctionComponent = observer(() => {
     boolean | undefined
   >();
   const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
+  const [signInteractionData, setSignInteractionData] = useState<InteractionWaitingData<
+    SignInteractionData & { signDocWrapper: SignDocWrapper }
+  >>();
 
   const current = chainStore.current;
+  const senderConfig = useSenderConfig(chainStore, current.chainId, signer);
   // There are services that sometimes use invalid tx to sign arbitrary data on the sign page.
   // In this case, there is no obligation to deal with it, but 0 gas is favorably allowed.
   const gasConfig = useZeroAllowedGasConfig(chainStore, current.chainId, 0);
   const amountConfig = useSignDocAmountConfig(
     chainStore,
-    accountStore,
     current.chainId,
-    signer
+    senderConfig
   );
   const feeConfig = useFeeConfig(
     chainStore,
     queriesStore,
     current.chainId,
-    signer,
+    senderConfig,
     amountConfig,
     gasConfig
   );
@@ -80,9 +85,10 @@ export const SignPage: FunctionComponent = observer(() => {
   useEffect(() => {
     if (signInteractionStore.waitingData) {
       const data = signInteractionStore.waitingData;
+      setSignInteractionData(data);
       chainStore.selectChain(data.data.chainId);
       if (data.data.signDocWrapper.isADR36SignDoc) {
-        setIsADR36WithString(data.data.isADR36WithString);
+        setIsADR36WithString(data.data.signOptions.isADR36WithString);
       }
       if (data.data.ethSignType) {
         setEthSignType(data.data.ethSignType);
@@ -97,7 +103,7 @@ export const SignPage: FunctionComponent = observer(() => {
         throw new Error("Chain id unmatched");
       }
       signDocHelper.setSignDocWrapper(data.data.signDocWrapper);
-      gasConfig.setGas(data.data.signDocWrapper.gas);
+      gasConfig.setValue(data.data.signDocWrapper.gas);
       let memo = data.data.signDocWrapper.memo;
       if (data.data.signDocWrapper.mode === "amino") {
         // For amino-json sign doc, the memo is escaped by default behavior of golang's json marshaller.
@@ -106,7 +112,7 @@ export const SignPage: FunctionComponent = observer(() => {
         // In this logic, memo should be escaped from account store or background's request signing function.
         memo = unescapeHTML(memo);
       }
-      memoConfig.setMemo(memo);
+      memoConfig.setValue(memo);
       if (
         data.data.signOptions.preferNoSetFee &&
         data.data.signDocWrapper.fees[0]
@@ -161,9 +167,6 @@ export const SignPage: FunctionComponent = observer(() => {
       }
 
       signInteractionStore.rejectAll();
-    },
-    {
-      enableScroll: true,
     }
   );
 
@@ -223,7 +226,7 @@ export const SignPage: FunctionComponent = observer(() => {
       return false;
     }
 
-    return memoConfig.error != null || feeConfig.error != null;
+    return memoConfig.uiProperties.error != null || feeConfig.uiProperties.error != null;
   })();
 
   return (
@@ -313,8 +316,8 @@ export const SignPage: FunctionComponent = observer(() => {
               ) : null}
             </div>
             <div className={style["buttons"]}>
-              {keyRingStore.keyRingType === "ledger" &&
-              signInteractionStore.isLoading ? (
+              {keyRingStore.selectedKeyInfo?.type === "ledger" &&
+              signInteractionStore.isObsoleteInteraction(signInteractionData?.id) ? (
                 <Button
                   className={style["button"]}
                   color="primary"
@@ -330,7 +333,7 @@ export const SignPage: FunctionComponent = observer(() => {
                     className={style["button"]}
                     color="danger"
                     disabled={signDocHelper.signDocWrapper == null}
-                    data-loading={signInteractionStore.isLoading}
+                    data-loading={signInteractionStore.isObsoleteInteraction(signInteractionData?.id)}
                     onClick={async (e) => {
                       e.preventDefault();
 
@@ -357,7 +360,7 @@ export const SignPage: FunctionComponent = observer(() => {
                     className={style["button"]}
                     color="primary"
                     disabled={approveIsDisabled}
-                    data-loading={signInteractionStore.isLoading}
+                    data-loading={signInteractionStore.isObsoleteInteraction(signInteractionData?.id)}
                     onClick={async (e) => {
                       e.preventDefault();
 

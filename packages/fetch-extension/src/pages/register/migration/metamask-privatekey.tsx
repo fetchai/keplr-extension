@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { Input, TextArea } from "@components/form";
 import style from "../style.module.scss";
 import { Button, Form } from "reactstrap";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Buffer } from "buffer";
 import { parseEthPrivateKey } from "@fetchai/eth-migration";
 import { RegisterConfig } from "@keplr-wallet/hooks";
@@ -31,7 +31,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
 }> = ({ registerConfig, onBack }) => {
   const intl = useIntl();
 
-  const { register, handleSubmit, errors, getValues } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } , getValues } = useForm<FormData>({
     defaultValues: {
       name: "",
       ethAddress: "",
@@ -81,8 +81,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
             id: "register.name",
           })}
           type="text"
-          name="name"
-          ref={register({
+          {...register("name", {
             required: intl.formatMessage({
               id: "register.name.error.required",
             }),
@@ -95,8 +94,8 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
             id: "register.eth-migrate.eth-address",
           })}
           type="text"
-          name="ethAddress"
-          ref={register({
+
+          {...register("ethAddress", {
             required: intl.formatMessage({
               id: "register.eth-migrate.eth-address.error.required",
             }),
@@ -107,9 +106,8 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
           label="Private Key"
           className={style["mnemonic"]}
           placeholder="Enter your private key"
-          name="ethPrivateKey"
           rows={3}
-          ref={register({
+          {...register("ethPrivateKey", {
             required: "Private key is required",
             validate: (value: string): string | undefined => {
               if (!isPrivateKey(value)) {
@@ -162,8 +160,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
                 id: "register.create.input.password",
               })}
               type="password"
-              name="password"
-              ref={register({
+              {...register("password", {
                 required: intl.formatMessage({
                   id: "register.create.input.password.error.required",
                 }),
@@ -182,8 +179,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
                 id: "register.create.input.confirm-password",
               })}
               type="password"
-              name="confirmPassword"
-              ref={register({
+              {...register("confirmPassword", {
                 required: intl.formatMessage({
                   id: "register.create.input.confirm-password.error.required",
                 }),

@@ -7,14 +7,14 @@ import { Button, Form } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { Banner } from "@components/banner";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { EmptyLayout } from "@layouts/empty-layout";
 
 import style from "./style.module.scss";
 
 import { FormattedMessage, useIntl } from "react-intl";
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 import { useNavigate } from "react-router";
 import delay from "delay";
 import { StartAutoLockMonitoringMsg } from "@keplr-wallet/background";
@@ -31,7 +31,7 @@ export const LockPage: FunctionComponent = observer(() => {
 
   const passwordRef = useRef<HTMLInputElement | null>();
 
-  const { register, handleSubmit, setError, errors } = useForm<FormData>({
+  const { register, handleSubmit, setError, formState: { errors }  } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
@@ -83,13 +83,11 @@ export const LockPage: FunctionComponent = observer(() => {
             }
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
-            setError(
-              "password",
-              "invalid",
-              intl.formatMessage({
-                id: "lock.input.password.error.invalid",
-              })
-            );
+            setError('password', {
+              message: intl.formatMessage({
+                id: 'lock.input.password.error.invalid',
+              }),
+            });
             setLoading(false);
           }
         })}
@@ -102,16 +100,14 @@ export const LockPage: FunctionComponent = observer(() => {
           label={intl.formatMessage({
             id: "lock.input.password",
           })}
-          name="password"
           error={errors.password && errors.password.message}
+          {...register('password', {
+            required: intl.formatMessage({
+              id: "lock.input.password.error.required",
+            }),
+          })}
           ref={(ref) => {
             passwordRef.current = ref;
-
-            register({
-              required: intl.formatMessage({
-                id: "lock.input.password.error.required",
-              }),
-            })(ref);
           }}
         />
         <Button type="submit" color="primary" block data-loading={loading}>

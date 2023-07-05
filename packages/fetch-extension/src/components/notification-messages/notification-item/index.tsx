@@ -35,7 +35,7 @@ export const NotificationItem: FunctionComponent<Props> = ({
 
       setTimeout(() => {
         setFlag(false);
-        item?.classList.add(style.remove);
+        item?.classList.add(style["remove"]);
         onFlagClick(delivery_id);
       }, 1500);
     }

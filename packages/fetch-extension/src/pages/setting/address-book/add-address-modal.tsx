@@ -5,7 +5,6 @@ import { Button } from "reactstrap";
 import { FormattedMessage, useIntl } from "react-intl";
 import { observer } from "mobx-react-lite";
 import {
-  AddressBookConfig,
   MemoConfig,
   RecipientConfig,
 } from "@keplr-wallet/hooks";
@@ -13,6 +12,7 @@ import { useLocation } from "react-router";
 import { chatSectionParams, defaultParamValues } from "./index";
 import { useNotification } from "@components/notification";
 import { validateAgentAddress } from "@utils/validate-agent";
+import { AddressBookConfig } from "../../../stores/ui-config/address-book";
 
 /**
  *
@@ -31,7 +31,7 @@ export const AddAddressModal: FunctionComponent<{
   index: number;
   chainId: string;
 }> = observer(
-  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index }) => {
+  ({ closeModal, recipientConfig, memoConfig, addressBookConfig, index, chainId }) => {
     const intl = useIntl();
 
     const [name, setName] = useState("");
@@ -42,16 +42,17 @@ export const AddAddressModal: FunctionComponent<{
       (location.state as chatSectionParams) || defaultParamValues;
     useEffect(() => {
       if (index >= 0) {
-        const data = addressBookConfig.addressBookDatas[index];
+        const data = addressBookConfig.getAddressBook(chainId)[index];
         setName(data.name);
-        recipientConfig.setRawRecipient(data.address);
-        memoConfig.setMemo(data.memo);
+        recipientConfig.setValue(data.address);
+        memoConfig.setValue(data.memo);
       }
     }, [
-      addressBookConfig.addressBookDatas,
+      addressBookConfig,
       index,
       memoConfig,
       recipientConfig,
+      chainId
     ]);
 
     return (
@@ -69,8 +70,8 @@ export const AddAddressModal: FunctionComponent<{
         }
         onBackButton={() => {
           // Clear the recipient and memo before closing
-          recipientConfig.setRawRecipient("");
-          memoConfig.setMemo("");
+          recipientConfig.setValue("");
+          memoConfig.setValue("");
           closeModal();
         }}
       >
@@ -103,9 +104,9 @@ export const AddAddressModal: FunctionComponent<{
             disabled={
               !name ||
               name.trim() === "" ||
-              (recipientConfig.error != null &&
-                validateAgentAddress(recipientConfig.rawRecipient)) ||
-              memoConfig.error != null
+              (recipientConfig.uiProperties.error != null &&
+                validateAgentAddress(recipientConfig.recipient)) ||
+              memoConfig.uiProperties.error != null
             }
             onClick={async (e) => {
               e.preventDefault();
@@ -116,13 +117,13 @@ export const AddAddressModal: FunctionComponent<{
               }
 
               /// return -1 if address not matched
-              const addressIndex = addressBookConfig.addressBookDatas.findIndex(
+              const addressIndex = addressBookConfig.getAddressBook(chainId).findIndex(
                 (element) => element.address === recipientConfig.recipient
               );
 
               /// Validating a new address is unique in the address book
               if (index < 0 && addressIndex < 0) {
-                addressBookConfig.addAddressBook({
+                addressBookConfig.addAddressBook(chainId, {
                   name: name.trim(),
                   address: recipientConfig.recipient,
                   memo: memoConfig.memo,
@@ -134,7 +135,7 @@ export const AddAddressModal: FunctionComponent<{
                 /// Validating edit case and address is already added in the address book
                 /// [addressIndex === -1] replacing old address to unique address
                 /// [index === addressIndex] if the index and address index is same that means we are dealing with unique address
-                addressBookConfig.editAddressBookAt(index, {
+                addressBookConfig.setAddressBookAt(chainId, index, {
                   name: name.trim(),
                   address: recipientConfig.recipient,
                   memo: memoConfig.memo,
@@ -156,8 +157,8 @@ export const AddAddressModal: FunctionComponent<{
               }
 
               // Clear the recipient and memo before closing
-              recipientConfig.setRawRecipient("");
-              memoConfig.setMemo("");
+              recipientConfig.setValue("");
+              memoConfig.setValue("");
               closeModal();
             }}
           >

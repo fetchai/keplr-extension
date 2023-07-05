@@ -23,7 +23,7 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
       return `input-${Buffer.from(bytes).toString("hex")}`;
     });
 
-    const error = memoConfig.error;
+    const error = memoConfig.uiProperties.error;
     const errorText: string | undefined = useMemo(() => {
       if (error) {
         switch (error.constructor) {
@@ -52,7 +52,7 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
           }}
           value={memoConfig.memo}
           onChange={(e) => {
-            memoConfig.setMemo(e.target.value.substring(0, 256));
+            memoConfig.setValue(e.target.value.substring(0, 256));
             e.preventDefault();
           }}
           autoComplete="off"

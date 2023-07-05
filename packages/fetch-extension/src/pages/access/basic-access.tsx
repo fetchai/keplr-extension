@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from "react";
 
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 import { Button } from "reactstrap";
 
 import { observer } from "mobx-react-lite";

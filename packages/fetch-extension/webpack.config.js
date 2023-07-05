@@ -57,6 +57,44 @@ const altResolve = () => {
 
   return {};
 };
+const sassRule = {
+  test: /(\.s?css)|(\.sass)$/,
+  oneOf: [
+    // if ext includes module as prefix, it perform by css loader.
+    {
+      test: /.module(\.s?css)|(\.sass)$/,
+      use: [
+        "style-loader",
+        {
+          loader: "css-loader",
+          options: {
+            modules: {
+              localIdentName: "[local]-[hash:base64]",
+            },
+          },
+        },
+        {
+          loader: "sass-loader",
+          options: {
+            implementation: require("sass"),
+          },
+        },
+      ],
+    },
+    {
+      use: [
+        "style-loader",
+        { loader: "css-loader", options: { modules: false } },
+        {
+          loader: "sass-loader",
+          options: {
+            implementation: require("sass"),
+          },
+        },
+      ],
+    },
+  ],
+};
 const tsRule = { test: /\.tsx?$/, loader: "ts-loader" };
 const fileRule = {
   test: /\.(svg|png|webm|mp4|jpe?g|gif|woff|woff2|eot|ttf)$/i,
@@ -80,7 +118,6 @@ const extensionConfig = () => {
     watch: isEnvDevelopment,
     entry: {
       popup: ["./src/index.tsx"],
-      register: ["./src/register.tsx"],
       blocklist: ["./src/pages/blocklist/index.tsx"],
       ledgerGrant: ["./src/ledger-grant.tsx"],
       background: ["./src/background/background.ts"],
@@ -113,11 +150,6 @@ const extensionConfig = () => {
           ...(() => {
             const res = {
               popup: {
-                maxSize: 3_000_000,
-                maxInitialRequests: 100,
-                maxAsyncRequests: 100,
-              },
-              register: {
                 maxSize: 3_000_000,
                 maxInitialRequests: 100,
                 maxAsyncRequests: 100,
@@ -162,6 +194,7 @@ const extensionConfig = () => {
     },
     module: {
       rules: [
+        sassRule,
         tsRule,
         fileRule,
         wasmRule,
@@ -213,11 +246,6 @@ const extensionConfig = () => {
         template: "./src/index.html",
         filename: "popup.html",
         chunks: ["popup"],
-      }),
-      new HtmlWebpackPlugin({
-        template: "./src/index.html",
-        filename: "register.html",
-        chunks: ["register"],
       }),
       new HtmlWebpackPlugin({
         template: "./src/index.html",

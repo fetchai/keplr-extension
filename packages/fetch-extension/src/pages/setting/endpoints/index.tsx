@@ -14,7 +14,7 @@ import {
 
 import { Input } from "@components/form";
 import style from "./style.module.scss";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNotification } from "@components/notification";
 import { useConfirm } from "@components/confirm";
 import { AlertExperimentalFeature } from "@components/alert-experimental-feature";
@@ -44,7 +44,7 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
   const [dropdownOpen, setOpen] = useState(false);
   const toggle = () => setOpen(!dropdownOpen);
 
-  const { setValue, register, handleSubmit, errors, watch } = useForm<FormData>(
+  const { setValue, register, handleSubmit, formState: { errors }, watch } = useForm<FormData>(
     {
       defaultValues: {
         rpc: "",
@@ -198,9 +198,8 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
         >
           <Input
             label="RPC"
-            name="rpc"
             error={errors.rpc && errors.rpc.message}
-            ref={register({
+            {...register("rpc", {
               required: "RPC endpoint is required",
               validate: (value: string) => {
                 try {
@@ -216,9 +215,8 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
           />
           <Input
             label="LCD"
-            name="lcd"
             error={errors.lcd && errors.lcd.message}
-            ref={register({
+            {...register("lcd", {
               required: "LCD endpoint is required",
               validate: (value: string) => {
                 try {

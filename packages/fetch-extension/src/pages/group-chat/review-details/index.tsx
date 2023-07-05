@@ -1,6 +1,4 @@
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
-  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -34,6 +32,7 @@ import { GroupChatPopup } from "@components/group-chat-popup";
 import { useNotification } from "@components/notification";
 import { createGroupEvent } from "@utils/group-events";
 import { ChatErrorPopup } from "@components/chat-error-popup";
+import { InitialGas } from "../../../config.ui";
 
 export const ReviewGroupChat: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -62,9 +61,9 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -76,24 +75,11 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-  const addressBookConfig = useAddressBookConfig(
-    new ExtensionKVStore("address-book"),
-    chainStore,
-    selectedChainId,
-    {
-      setRecipient: (): void => {
-        // noop
-      },
-      setMemo: (): void => {
-        // noop
-      },
-    }
-  );
 
   useEffect(() => {
     const userAddresses: any[] = selectedMembers
       .reduce((acc: any[], element: GroupMembers) => {
-        const addressData = addressBookConfig.addressBookDatas.find(
+        const addressData = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId).find(
           (data) => data.address === element.address
         );
         if (addressData && addressData.address !== walletAddress) {
@@ -129,7 +115,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         return b.address === walletAddress ? 0 : a.name.localeCompare(b.name);
       });
     setAddresses(userAddresses);
-  }, [addressBookConfig.addressBookDatas, selectedMembers]);
+  }, [uiConfigStore.addressBookConfig, selectedMembers]);
 
   useEffect(() => {
     if (newGroupState.isEditGroup) {

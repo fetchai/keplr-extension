@@ -14,7 +14,7 @@ import style from "../style.module.scss";
 import styleRecoverMnemonic from "./recover-mnemonic.module.scss";
 import { BackButton } from "../index";
 import { Input, PasswordInput } from "@components/form";
-import useForm from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { observer } from "mobx-react-lite";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { AdvancedBIP44Option, useBIP44Option } from "../advanced-bip44";
@@ -103,7 +103,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
 
   const { analyticsStore } = useStore();
 
-  const { register, handleSubmit, getValues, errors } = useForm<FormData>({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       name: "",
       password: "",
@@ -483,8 +483,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                 id: "register.name",
               })}
               type="text"
-              name="name"
-              ref={register({
+              {...register("name",{
                 required: intl.formatMessage({
                   id: "register.name.error.required",
                 }),
@@ -498,8 +497,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                   label={intl.formatMessage({
                     id: "register.create.input.password",
                   })}
-                  name="password"
-                  ref={register({
+                  {...register("password", {
                     required: intl.formatMessage({
                       id: "register.create.input.password.error.required",
                     }),
@@ -517,8 +515,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                   label={intl.formatMessage({
                     id: "register.create.input.confirm-password",
                   })}
-                  name="confirmPassword"
-                  ref={register({
+                  {...register("confirmPassword",{
                     required: intl.formatMessage({
                       id: "register.create.input.confirm-password.error.required",
                     }),

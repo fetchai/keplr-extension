@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState, useEffect, useMemo } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useNavigate, useRouteMatch } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Input } from "@components/form";
 import { Button, Form } from "reactstrap";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useStore } from "../../../../stores";
 import { observer } from "mobx-react-lite";
 
@@ -18,7 +18,7 @@ interface FormData {
 
 export const ChangeNamePage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const match = useRouteMatch<{ index: string }>();
+  const { index = "-1 "} = useParams<{ index: string }>();
 
   const intl = useIntl();
 
@@ -26,7 +26,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
 
   const waitingNameData = keyRingStore.waitingNameData?.data;
 
-  const { register, handleSubmit, errors, setError, setValue } =
+  const { register, handleSubmit, setError, setValue, formState: { errors }  } =
     useForm<FormData>({
       defaultValues: {
         name: "",
@@ -42,16 +42,16 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
   const [loading, setLoading] = useState(false);
 
   const keyStore = useMemo(() => {
-    return keyRingStore.multiKeyStoreInfo[parseInt(match.params.index)];
-  }, [keyRingStore.multiKeyStoreInfo, match.params.index]);
+    return keyRingStore.multiKeyStoreInfo[parseInt(index)];
+  }, [keyRingStore.multiKeyStoreInfo, index]);
 
   const isKeyStoreReady = keyRingStore.status === KeyRingStatus.UNLOCKED;
 
   useEffect(() => {
-    if (parseInt(match.params.index).toString() !== match.params.index) {
+    if (parseInt(index).toString() !== index) {
       throw new Error("Invalid keyring index, check the url");
     }
-  }, [match.params.index]);
+  }, [index]);
 
   if (isKeyStoreReady && keyStore == null) {
     return null;
@@ -82,20 +82,18 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
 
             // Make sure that name is changed
             await keyRingStore.updateNameKeyRing(
-              parseInt(match.params.index),
+              parseInt(index),
               data.name.trim()
             );
 
             navigate("/");
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
-            setError(
-              "name",
-              "invalid",
-              intl.formatMessage({
-                id: "setting.keyring.change.input.name.error.invalid",
-              })
-            );
+            setError('name', {
+              message: intl.formatMessage({
+                id: 'setting.keyring.change.input.name.error.invalid',
+              }),
+            });
             setLoading(false);
           }
         })}
@@ -113,9 +111,8 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
           label={intl.formatMessage({
             id: "setting.keyring.change.input.name",
           })}
-          name="name"
           error={errors.name && errors.name.message}
-          ref={register({
+          {...register("name",{
             required: intl.formatMessage({
               id: "setting.keyring.change.input.name.error.required",
             }),

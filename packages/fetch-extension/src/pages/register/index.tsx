@@ -24,7 +24,6 @@ import {
   TypeImportLedger,
 } from "./ledger";
 import { WelcomePage } from "./welcome";
-import { AdditionalSignInPrepend } from "../../config.ui";
 import classnames from "classnames";
 import {
   ImportKeystoneIntro,
@@ -67,7 +66,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
   const { keyRingStore, uiConfigStore } = useStore();
 
   const registerConfig = useRegisterConfig(keyRingStore, [
-    ...(AdditionalSignInPrepend ?? []),
     {
       type: TypeNewMnemonic,
       intro: NewMnemonicIntro,

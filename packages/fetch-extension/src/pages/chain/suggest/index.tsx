@@ -5,7 +5,7 @@ import { Button } from "reactstrap";
 import style from "./style.module.scss";
 import { EmptyLayout } from "@layouts/empty-layout";
 import { FormattedMessage } from "react-intl";
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { ToolTip } from "@components/tooltip";

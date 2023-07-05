@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Form } from "reactstrap";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import style from "../style.module.scss";
 import { Input, PasswordInput } from "@components/form";
 import { useBIP44Option } from "../advanced-bip44";
@@ -52,7 +52,7 @@ export const ImportKeystonePage: FunctionComponent<{
 
   const bip44Option = useBIP44Option();
 
-  const { register, handleSubmit, getValues, errors } = useForm<FormData>({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       name: "",
       password: "",
@@ -93,8 +93,8 @@ export const ImportKeystonePage: FunctionComponent<{
             id: "register.name",
           })}
           type="text"
-          name="name"
-          ref={register({
+
+          {...register("name", {
             required: intl.formatMessage({
               id: "register.name.error.required",
             }),
@@ -107,8 +107,7 @@ export const ImportKeystonePage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.password",
               })}
-              name="password"
-              ref={register({
+              {...register("password",{
                 required: intl.formatMessage({
                   id: "register.create.input.password.error.required",
                 }),
@@ -126,8 +125,7 @@ export const ImportKeystonePage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.confirm-password",
               })}
-              name="confirmPassword"
-              ref={register({
+              {...register("confirmPassword",{
                 required: intl.formatMessage({
                   id: "register.create.input.confirm-password.error.required",
                 }),

@@ -132,7 +132,7 @@ export const DetailsTab: FunctionComponent<{
             </div>
           </React.Fragment>
         )}
-        {!preferNoSetFee || !feeConfig.isManual ? (
+        {!preferNoSetFee || !(feeConfig.type === "manual") ? (
           <FeeButtons
             feeConfig={feeConfig}
             gasConfig={gasConfig}

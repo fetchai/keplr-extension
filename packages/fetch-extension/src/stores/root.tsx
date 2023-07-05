@@ -99,6 +99,11 @@ export class RootStore {
       chainIdentifier?: string;
       chainIdentifiers?: string[];
       chainName?: string;
+      toChainId?: string;
+      toChainName?: string;
+      registerType?: "seed" | "google" | "ledger" | "keystone" | "qr";
+      rpc?: string;
+      rest?: string;
       chainNames?: string[];
       inputValue?: string;
       isFavorite?: boolean;
@@ -112,6 +117,10 @@ export class RootStore {
       proposalTitle?: string;
     },
     {
+      registerType?: "seed" | "google" | "ledger" | "keystone" | "qr";
+      accountType?: "mnemonic" | "privateKey" | "ledger" | "keystone";
+      currency?: string;
+      language?: string;
       accountCount?: number;
       isDeveloperMode?: boolean;
     }

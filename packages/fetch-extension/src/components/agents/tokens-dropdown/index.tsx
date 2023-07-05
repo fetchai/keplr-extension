@@ -21,6 +21,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
+import { InitialGas } from "../../../config.ui";
 
 export const TokenDropdown: FunctionComponent<{
   label: ReactElement<any>[];
@@ -37,9 +38,9 @@ export const TokenDropdown: FunctionComponent<{
   const sendConfigs = useSendTxConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -49,9 +50,9 @@ export const TokenDropdown: FunctionComponent<{
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,

@@ -25,6 +25,7 @@ export class MessagingService {
    * Lookup the public key associated with the messaging service
    *
    * @param env The extension environment
+   * @param memorandumUrl
    * @param chainId The target chain id
    * @param targetAddress Get the public key for the specified address (if specified), otherwise return senders public key
    * @param accessToken accessToken token to authenticate in memorandum service
@@ -59,9 +60,12 @@ export class MessagingService {
    * Register public key in memorandum as messaging key
    *
    * @param env The extension environment
+   * @param memorandumUrl
    * @param chainId The target chain id
    * @param address Wallet bech32 address
    * @param accessToken accessToken token to authenticate in memorandum service
+   * @param privacySetting
+   * @param chatReadReceiptSetting
    * @returns The hex encoded compressed public key
    */
   public async registerPublicKey(
@@ -184,6 +188,7 @@ export class MessagingService {
    * Encrypt a message using the messaging protocol key
    *
    * @param _env The extension environment
+   * @param memorandumUrl
    * @param _chainId The target chain id
    * @param targetAddress The target address
    * @param message The base64 encoded message to be processed
@@ -242,8 +247,10 @@ export class MessagingService {
    *
    * Will first check the local cache, if not present will attempt to lookup the
    * information from the memorandum service
+   * @param memorandumUrl
    * @param accessToken accessToken token to authenticate in memorandum service
    * @param targetAddress The target address to find the public key for
+   * @param chainId
    * @returns The base64 encoded public key for the target address if successful
    * @protected
    */

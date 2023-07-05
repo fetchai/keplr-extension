@@ -16,10 +16,8 @@ import { ChatMember } from "@components/chat-member";
 import { fromBech32 } from "@cosmjs/encoding";
 import { createGroup } from "@graphQL/groups-api";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import {
-  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/index";
@@ -44,6 +42,7 @@ import { addMemberEvent } from "@utils/group-events";
 import { ToolTip } from "@components/tooltip";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
+import { InitialGas } from "../../../config.ui";
 
 export const AddMember: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -72,9 +71,9 @@ export const AddMember: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -86,21 +85,8 @@ export const AddMember: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
-  const addressBookConfig = useAddressBookConfig(
-    new ExtensionKVStore("address-book"),
-    chainStore,
-    selectedChainId,
-    {
-      setRecipient: (): void => {
-        // noop
-      },
-      setMemo: (): void => {
-        // noop
-      },
-    }
-  );
 
-  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas
+  const userAddresses: NameAddress[] = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId)
     .filter((data) => !data.address.startsWith("agent"))
     .map((data) => {
       if (newGroupState.isEditGroup) {
@@ -125,20 +111,20 @@ export const AddMember: FunctionComponent = observer(() => {
     });
 
   useEffect(() => {
-    setAddresses(userAddresses.filter((a) => a.address !== walletAddress));
+    setAddresses(userAddresses.filter((a) => a["address"] !== walletAddress));
 
     /// Adding login user into the list
     if (!newGroupState.isEditGroup) handleAddRemoveMember(walletAddress, true);
-  }, [addressBookConfig.addressBookDatas]);
+  }, [uiConfigStore.addressBookConfig]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
     const searchedVal = e.target.value.toLowerCase();
     const addresses = userAddresses.filter(
       (address: NameAddress) =>
-        address.address !== walletAddress &&
-        (address.name.toLowerCase().includes(searchedVal) ||
-          address.address.toLowerCase().includes(searchedVal))
+        address["address"] !== walletAddress &&
+        (address["name"].toLowerCase().includes(searchedVal) ||
+          address["address"].toLowerCase().includes(searchedVal))
     );
 
     if (
@@ -300,7 +286,7 @@ export const AddMember: FunctionComponent = observer(() => {
         navigate(-1);
       }}
     >
-      {!addressBookConfig.isLoaded ? (
+      {!uiConfigStore.isInitialized ? (
         <ChatLoader message="Loading contacts, please wait..." />
       ) : (
         <div className={style["newMemberContainer"]}>
@@ -318,18 +304,18 @@ export const AddMember: FunctionComponent = observer(() => {
             {randomAddress && (
               <ChatMember
                 address={randomAddress}
-                key={randomAddress.address}
-                isSelected={isMemberExist(randomAddress.address)}
-                onIconClick={() => handleAddRemoveMember(randomAddress.address)}
+                key={randomAddress["address"]}
+                isSelected={isMemberExist(randomAddress["address"])}
+                onIconClick={() => handleAddRemoveMember(randomAddress["address"])}
               />
             )}
             {addresses.map((address: NameAddress) => {
               return (
                 <ChatMember
                   address={address}
-                  key={address.address}
-                  isSelected={isMemberExist(address.address)}
-                  onIconClick={() => handleAddRemoveMember(address.address)}
+                  key={address["address"]}
+                  isSelected={isMemberExist(address["address"])}
+                  onIconClick={() => handleAddRemoveMember(address["address"])}
                 />
               );
             })}

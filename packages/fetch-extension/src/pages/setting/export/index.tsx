@@ -6,11 +6,11 @@ import React, {
 } from "react";
 import { HeaderLayout } from "@layouts/index";
 
-import { useNavigate, useLocation, useRouteMatch } from "react-router";
+import { useNavigate, useLocation, useParams } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PasswordInput } from "@components/form";
 import { Button, Form } from "reactstrap";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { WarningView } from "./warning-view";
 
 import classnames from "classnames";
@@ -28,29 +28,30 @@ interface FormData {
 export const ExportPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const location = useLocation();
-  const match = useRouteMatch<{ index: string; type?: string }>();
+  const { index = "-1 " } = useParams<{ index: string; type?: string }>();
+
   const intl = useIntl();
 
   const { keyRingStore } = useStore();
 
   const query = queryString.parse(location.search);
 
-  const type = query.type ?? "mnemonic";
+  const keyringType = query["type"] ?? "mnemonic";
 
   const [loading, setLoading] = useState(false);
   const [keyRing, setKeyRing] = useState("");
 
-  const { register, handleSubmit, setError, errors } = useForm<FormData>({
+  const { register, handleSubmit, setError,  formState: { errors } } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
   });
 
   useEffect(() => {
-    if (parseInt(match.params.index).toString() !== match.params.index) {
+    if (parseInt(index).toString() !== index) {
       throw new Error("Invalid index");
     }
-  }, [match.params.index]);
+  }, [index]);
 
   return (
     <HeaderLayout
@@ -58,7 +59,7 @@ export const ExportPage: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
         id:
-          type === "mnemonic" ? "setting.export" : "setting.export.private-key",
+          keyringType === "mnemonic" ? "setting.export" : "setting.export.private-key",
       })}
       onBackButton={useCallback(() => {
         navigate(-1);
@@ -68,7 +69,7 @@ export const ExportPage: FunctionComponent = observer(() => {
         {keyRing ? (
           <div
             className={classnames(style["mnemonic"], {
-              [style["altHex"]]: type !== "mnemonic",
+              [style["altHex"]]: keyringType !== "mnemonic",
             })}
           >
             {keyRing}
@@ -83,20 +84,18 @@ export const ExportPage: FunctionComponent = observer(() => {
                   setKeyRing(
                     await flowResult(
                       keyRingStore.showKeyRing(
-                        parseInt(match.params.index),
+                        parseInt(index),
                         data.password
                       )
                     )
                   );
                 } catch (e) {
                   console.log("Fail to decrypt: " + e.message);
-                  setError(
-                    "password",
-                    "invalid",
-                    intl.formatMessage({
-                      id: "setting.export.input.password.error.invalid",
-                    })
-                  );
+                  setError('password', {
+                    message: intl.formatMessage({
+                      id: 'setting.export.input.password.error.invalid',
+                    }),
+                  });
                 } finally {
                   setLoading(false);
                 }
@@ -106,9 +105,8 @@ export const ExportPage: FunctionComponent = observer(() => {
                 label={intl.formatMessage({
                   id: "setting.export.input.password",
                 })}
-                name="password"
                 error={errors.password && errors.password.message}
-                ref={register({
+                {...register("password", {
                   required: intl.formatMessage({
                     id: "setting.export.input.password.error.required",
                   }),

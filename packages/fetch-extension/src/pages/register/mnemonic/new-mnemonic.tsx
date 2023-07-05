@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { FormattedMessage, useIntl } from "react-intl";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   AdvancedBIP44Option,
   BIP44Option,
@@ -82,7 +82,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
 }> = observer(({ registerConfig, newMnemonicConfig, bip44Option }) => {
   const intl = useIntl();
 
-  const { register, handleSubmit, getValues, errors } = useForm<FormData>({
+  const { register, handleSubmit, getValues, formState: { errors }  } = useForm<FormData>({
     defaultValues: {
       name: newMnemonicConfig.name,
       words: newMnemonicConfig.mnemonic,
@@ -150,8 +150,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
             id: "register.name",
           })}
           type="text"
-          name="name"
-          ref={register({
+          {...register("name", {
             required: intl.formatMessage({
               id: "register.name.error.required",
             }),
@@ -165,8 +164,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.password",
               })}
-              name="password"
-              ref={register({
+              {...register("password", {
                 required: intl.formatMessage({
                   id: "register.create.input.password.error.required",
                 }),
@@ -184,8 +182,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.confirm-password",
               })}
-              name="confirmPassword"
-              ref={register({
+              {...register("confirmPassword", {
                 required: intl.formatMessage({
                   id: "register.create.input.confirm-password.error.required",
                 }),

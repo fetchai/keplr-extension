@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo } from "react";
-import { useNavigate, useRouteMatch } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
@@ -10,9 +10,8 @@ import { useConfirm } from "@components/confirm";
 
 export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
   observer(() => {
-    const match = useRouteMatch<{
-      contractAddress: string;
-    }>();
+    const { contractAddress = "" } = useParams<{ contractAddress: string; }>();
+
 
     const intl = useIntl();
     const navigate = useNavigate();
@@ -23,12 +22,12 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
     const tokenInfo = queriesStore
       .get(chainStore.current.chainId)
       .secret.querySecret20ContractInfo.getQueryContract(
-        match.params.contractAddress
+        contractAddress
       );
 
     const accessInfo = permissionStore.getSecret20ViewingKeyAccessInfo(
       chainStore.current.chainId,
-      match.params.contractAddress
+      contractAddress
     );
 
     const xIcon = useMemo(

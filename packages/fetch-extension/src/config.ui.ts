@@ -28,6 +28,8 @@ export const AutoFetchingAssetsInterval = 15 * 1000; // 15sec
 
 export const DefaultGasMsgWithdrawRewards = 240000; // Gas per messages.
 
+export const InitialGas = 300000;
+
 // Endpoint for Ethereum node.
 // This is used for ENS.
 export const EthereumEndpoint =

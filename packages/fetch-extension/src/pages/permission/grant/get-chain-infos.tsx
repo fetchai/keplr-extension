@@ -5,7 +5,7 @@ import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { Button } from "reactstrap";
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useInteractionInfo } from "@hooks/interaction";
 
 export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
   observer(() => {

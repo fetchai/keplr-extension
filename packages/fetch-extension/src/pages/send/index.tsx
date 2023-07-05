@@ -27,6 +27,11 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
+import { InitialGas } from "../../config.ui";
+import { SendTxAndRecordMsg } from "@keplr-wallet/background";
+import { DecUtils } from "@keplr-wallet/unit";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
 export const SendPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -58,9 +63,11 @@ export const SendPage: FunctionComponent = observer(() => {
     accountStore,
     priceStore,
     queriesStore,
-    analyticsStore,
     uiConfigStore,
   } = useStore();
+
+  const historyType = "basic-send";
+
   const current = chainStore.current;
 
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -68,9 +75,9 @@ export const SendPage: FunctionComponent = observer(() => {
   const sendConfigs = useSendTxConfig(
     chainStore,
     queriesStore,
-    accountStore,
     current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -79,9 +86,9 @@ export const SendPage: FunctionComponent = observer(() => {
   );
 
   const gasSimulatorKey = useMemo(() => {
-    if (sendConfigs.amountConfig.sendCurrency) {
+    if (sendConfigs.amountConfig.amount[0].currency) {
       const denomHelper = new DenomHelper(
-        sendConfigs.amountConfig.sendCurrency.coinMinimalDenom
+        sendConfigs.amountConfig.amount[0].currency.coinMinimalDenom
       );
 
       if (denomHelper.type !== "native") {
@@ -95,7 +102,7 @@ export const SendPage: FunctionComponent = observer(() => {
     }
 
     return "native";
-  }, [sendConfigs.amountConfig.sendCurrency]);
+  }, [sendConfigs.amountConfig.amount[0].currency]);
 
   const gasSimulator = useGasSimulator(
     new ExtensionKVStore("gas-simulator.main.send"),
@@ -105,7 +112,7 @@ export const SendPage: FunctionComponent = observer(() => {
     sendConfigs.feeConfig,
     gasSimulatorKey,
     () => {
-      if (!sendConfigs.amountConfig.sendCurrency) {
+      if (!sendConfigs.amountConfig.amount[0].currency) {
         throw new Error("Send currency not set");
       }
 
@@ -113,14 +120,14 @@ export const SendPage: FunctionComponent = observer(() => {
       // because gas simulator can change the gas config and fee config from the result of reaction,
       // and it can make repeated reaction.
       if (
-        sendConfigs.amountConfig.error != null ||
-        sendConfigs.recipientConfig.error != null
+        sendConfigs.amountConfig.uiProperties.error != null ||
+        sendConfigs.recipientConfig.uiProperties.error != null
       ) {
         throw new Error("Not ready to simulate tx");
       }
 
       const denomHelper = new DenomHelper(
-        sendConfigs.amountConfig.sendCurrency.coinMinimalDenom
+        sendConfigs.amountConfig.amount[0].currency.coinMinimalDenom
       );
       // I don't know why, but simulation does not work for secret20
       if (denomHelper.type === "secret20") {
@@ -128,9 +135,8 @@ export const SendPage: FunctionComponent = observer(() => {
       }
 
       return accountInfo.makeSendTokenTx(
-        sendConfigs.amountConfig.amount,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        sendConfigs.amountConfig.sendCurrency!,
+        sendConfigs.amountConfig.amount[0].toDec().toString(),
+        sendConfigs.amountConfig.amount[0].currency,
         sendConfigs.recipientConfig.recipient
       );
     }
@@ -140,15 +146,15 @@ export const SendPage: FunctionComponent = observer(() => {
     // To simulate secretwasm, we need to include the signature in the tx.
     // With the current structure, this approach is not possible.
     if (
-      sendConfigs.amountConfig.sendCurrency &&
-      new DenomHelper(sendConfigs.amountConfig.sendCurrency.coinMinimalDenom)
+      sendConfigs.amountConfig.amount[0].currency &&
+      new DenomHelper(sendConfigs.amountConfig.amount[0].currency.coinMinimalDenom)
         .type === "secret20"
     ) {
       gasSimulator.forceDisable(
         new Error("Simulating secret20 is not supported")
       );
-      sendConfigs.gasConfig.setGas(
-        accountInfo.secret.msgOpts.send.secret20.gas
+      sendConfigs.gasConfig.setValue(
+        250000
       );
     } else {
       gasSimulator.forceDisable(false);
@@ -157,7 +163,7 @@ export const SendPage: FunctionComponent = observer(() => {
   }, [
     accountInfo.secret.msgOpts.send.secret20.gas,
     gasSimulator,
-    sendConfigs.amountConfig.sendCurrency,
+    sendConfigs.amountConfig.amount[0].currency,
     sendConfigs.gasConfig,
   ]);
 
@@ -170,7 +176,7 @@ export const SendPage: FunctionComponent = observer(() => {
       // Simulation itself doesn't consider the stability tax send.
       // Thus, it always returns fairly lower gas.
       // To adjust this, for terra classic, increase the default gas adjustment
-      gasSimulator.setGasAdjustment(1.6);
+      gasSimulator.setGasAdjustmentValue(1.6);
     }
   }, [gasSimulator, sendConfigs.feeConfig.chainInfo]);
 
@@ -181,7 +187,7 @@ export const SendPage: FunctionComponent = observer(() => {
       );
 
       if (currency) {
-        sendConfigs.amountConfig.setSendCurrency(currency);
+        sendConfigs.amountConfig.setCurrency(currency);
       }
     }
   }, [current.currencies, query.defaultDenom, sendConfigs.amountConfig]);
@@ -196,23 +202,23 @@ export const SendPage: FunctionComponent = observer(() => {
 
   useEffect(() => {
     if (query.defaultRecipient) {
-      sendConfigs.recipientConfig.setRawRecipient(query.defaultRecipient);
+      sendConfigs.recipientConfig.setValue(query.defaultRecipient);
     }
     if (query.defaultAmount) {
-      sendConfigs.amountConfig.setAmount(query.defaultAmount);
+      sendConfigs.amountConfig.setValue(query.defaultAmount);
     }
     if (query.defaultMemo) {
-      sendConfigs.memoConfig.setMemo(query.defaultMemo);
+      sendConfigs.memoConfig.setValue(query.defaultMemo);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.defaultAmount, query.defaultMemo, query.defaultRecipient]);
 
   const sendConfigError =
-    sendConfigs.recipientConfig.error ??
-    sendConfigs.amountConfig.error ??
-    sendConfigs.memoConfig.error ??
-    sendConfigs.gasConfig.error ??
-    sendConfigs.feeConfig.error;
+    sendConfigs.recipientConfig.uiProperties.error ??
+    sendConfigs.amountConfig.uiProperties.error ??
+    sendConfigs.memoConfig.uiProperties.error ??
+    sendConfigs.gasConfig.uiProperties.error ??
+    sendConfigs.feeConfig.uiProperties.error;
   const txStateIsValid = sendConfigError == null;
 
   return (
@@ -250,9 +256,9 @@ export const SendPage: FunctionComponent = observer(() => {
 
                 const windowInfo = await browser.windows.getCurrent();
 
-                let queryString = `?detached=true&defaultDenom=${sendConfigs.amountConfig.sendCurrency.coinMinimalDenom}`;
-                if (sendConfigs.recipientConfig.rawRecipient) {
-                  queryString += `&defaultRecipient=${sendConfigs.recipientConfig.rawRecipient}`;
+                let queryString = `?detached=true&defaultDenom=${sendConfigs.amountConfig.amount[0].currency.coinMinimalDenom}`;
+                if (sendConfigs.recipientConfig.recipient) {
+                  queryString += `&defaultRecipient=${sendConfigs.recipientConfig.recipient}`;
                 }
                 if (sendConfigs.amountConfig.amount) {
                   queryString += `&defaultAmount=${sendConfigs.amountConfig.amount}`;
@@ -287,30 +293,77 @@ export const SendPage: FunctionComponent = observer(() => {
 
           if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
             try {
-              const stdFee = sendConfigs.feeConfig.toStdFee();
-
               const tx = accountInfo.makeSendTokenTx(
-                sendConfigs.amountConfig.amount,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                sendConfigs.amountConfig.sendCurrency!,
+                sendConfigs.amountConfig.amount[0].toDec().toString(),
+                sendConfigs.amountConfig.amount[0].currency!,
                 sendConfigs.recipientConfig.recipient
               );
 
               await tx.send(
-                stdFee,
+                sendConfigs.feeConfig.toStdFee(),
                 sendConfigs.memoConfig.memo,
                 {
                   preferNoSetFee: true,
                   preferNoSetMemo: true,
+                  sendTx: async (chainId, tx, mode) => {
+                    const msg = new SendTxAndRecordMsg(
+                      historyType,
+                      chainId,
+                      sendConfigs.recipientConfig.chainId,
+                      tx,
+                      mode,
+                      false,
+                      sendConfigs.senderConfig.sender,
+                      sendConfigs.recipientConfig.recipient,
+                      sendConfigs.amountConfig.amount.map((amount) => {
+                        return {
+                          amount: DecUtils.getTenExponentN(
+                            amount.currency.coinDecimals
+                          )
+                            .mul(amount.toDec())
+                            .toString(),
+                          denom: amount.currency.coinMinimalDenom,
+                        };
+                      }),
+                      sendConfigs.memoConfig.memo
+                    );
+                    return await new InExtensionMessageRequester().sendMessage(
+                      BACKGROUND_PORT,
+                      msg
+                    );
+                  },
                 },
                 {
                   onBroadcasted: () => {
-                    analyticsStore.logEvent("Send token tx broadcasted", {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                      feeType: sendConfigs.feeConfig.feeType,
-                    });
+                    chainStore.enableVaultsWithCosmosAddress(
+                      sendConfigs.recipientConfig.chainId,
+                      sendConfigs.recipientConfig.recipient
+                    );
                   },
+                  onFulfill: (tx: any) => {
+                    if (tx.code != null && tx.code !== 0) {
+                      console.log(tx.log ?? tx.raw_log);
+                      notification.push({
+                        type:"danger",
+                        placement:"top-center",
+                        duration: 5,
+                        content: "Transaction Failed",
+                        canDelete: true,
+                        transition: {
+                          duration: 0.25,
+                        },
+                      });                      return;
+                    }
+                    notification.push({
+                      type:"success",
+                      placement:"top-center",
+                      duration: 5,
+                      content: "Transaction Success",
+                      canDelete: true,
+                      transition: {
+                        duration: 0.25,
+                      },
+                    });                  },
                 }
               );
 
@@ -370,17 +423,11 @@ export const SendPage: FunctionComponent = observer(() => {
                   // At present, can't handle stability tax well if it is not registered native token.
                   // So, for terra classic, disable other tokens.
                   const currencies =
-                    sendConfigs.amountConfig.sendableCurrencies;
+                    sendConfigs.amountConfig.selectableCurrencies;
                   return currencies.filter((cur) => {
                     const denom = new DenomHelper(cur.coinMinimalDenom);
-                    if (
-                      denom.type !== "native" ||
-                      denom.denom.startsWith("ibc/")
-                    ) {
-                      return false;
-                    }
-
-                    return true;
+                    return !(denom.type !== "native" ||
+                      denom.denom.startsWith("ibc/"));
                   });
                 }
 

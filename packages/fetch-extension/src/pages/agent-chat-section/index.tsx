@@ -3,9 +3,7 @@ import { userDetails } from "@chatStore/user-slice";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { SwitchUser } from "@components/switch-user";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
-  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/index";
@@ -17,6 +15,7 @@ import { useStore } from "../../stores";
 import { Menu } from "../main/menu";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
+import { InitialGas } from "../../config.ui";
 
 export const AgentChatSection: FunctionComponent = () => {
   const targetAddress = useLocation().pathname.split("/")[3];
@@ -43,9 +42,9 @@ export const AgentChatSection: FunctionComponent = () => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
-    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
+    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -57,20 +56,7 @@ export const AgentChatSection: FunctionComponent = () => {
       : current.chainId
   );
 
-  const addressBookConfig = useAddressBookConfig(
-    new ExtensionKVStore("address-book"),
-    chainStore,
-    selectedChainId,
-    {
-      setRecipient: (): void => {
-        // noop
-      },
-      setMemo: (): void => {
-        // noop
-      },
-    }
-  );
-  const addresses = addressBookConfig.addressBookDatas;
+  const addresses = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId);
 
   return (
     <HeaderLayout

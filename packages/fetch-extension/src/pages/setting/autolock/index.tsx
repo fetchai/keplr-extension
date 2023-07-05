@@ -7,7 +7,7 @@ import { DescriptionView } from "./description-view";
 
 import { Input } from "@components/form";
 import style from "./style.module.scss";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import {
@@ -29,7 +29,7 @@ export const SettingAutoLockPage: FunctionComponent = () => {
   const minDuration = 0;
   const maxDuration = 4320;
 
-  const { setValue, register, handleSubmit, errors } = useForm<FormData>({
+  const { setValue, register, handleSubmit,  formState: { errors } } = useForm<FormData>({
     defaultValues: {
       duration: "0",
     },
@@ -81,8 +81,7 @@ export const SettingAutoLockPage: FunctionComponent = () => {
               id: "setting.autolock.duration",
             })}
             min="0"
-            name="duration"
-            ref={register({
+            {...register("duration", {
               required: intl.formatMessage({
                 id: "setting.autolock.error.required",
               }),
