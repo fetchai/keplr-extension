@@ -11,22 +11,47 @@ import { useStore } from "../../../stores";
 import { ToolTip } from "@components/tooltip";
 import classNames from "classnames";
 import { GithubIcon, InformationCircleOutline } from "@components/icon";
+import { InteractionWaitingData } from "@keplr-wallet/background";
+import { ChainInfo } from "@keplr-wallet/types";
 
 export const ChainSuggestedPage: FunctionComponent = observer(() => {
+  const { chainSuggestStore } = useStore();
+
+  useInteractionInfo(async () => {
+    await chainSuggestStore.rejectAll();
+  });
+
+  const waitingData = chainSuggestStore.waitingSuggestedChainInfo;
+
+  if (!waitingData) {
+    return null;
+  }
+  // waiting data가 변하면 `SuggestChainPageImpl`가 unmount되고 다시 mount되는데,
+  // 이때, `SuggestChainPageImpl`의 key가 바뀌면서, `SuggestChainPageImpl`의 state가 초기화된다.
+  return (
+    <ChainSuggestedPageImpl key={waitingData.id} waitingData={waitingData} />
+  );
+});
+
+export const ChainSuggestedPageImpl: FunctionComponent<{
+  waitingData: InteractionWaitingData<{
+    chainInfo: ChainInfo;
+    origin: string;
+  }>;
+}> = observer(({ waitingData }) => {
   const { chainSuggestStore, analyticsStore, uiConfigStore } = useStore();
   const [updateFromRepoDisabled, setUpdateFromRepoDisabled] = useState(false);
   const [isLoadingPlaceholder, setIsLoadingPlaceholder] = useState(true);
   const navigate = useNavigate();
 
-  const interactionInfo = useInteractionInfo(() => {
-    chainSuggestStore.rejectAll();
+  const interactionInfo = useInteractionInfo(async () => {
+    await chainSuggestStore.rejectAll();
   });
 
-  const communityChainInfo = chainSuggestStore.waitingSuggestedChainInfo
-    ? chainSuggestStore.getCommunityChainInfo(
-        chainSuggestStore.waitingSuggestedChainInfo.data.chainInfo.chainId
-      )
-    : undefined;
+  const queryCommunityChainInfo = chainSuggestStore.getCommunityChainInfo(
+    waitingData.data.chainInfo.chainId
+  );
+  const communityChainInfo = queryCommunityChainInfo.chainInfo;
 
   useEffect(() => {
     if (chainSuggestStore.waitingSuggestedChainInfo) {
@@ -141,9 +166,9 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
         </div>
       ) : (
         <div className={style["container"]}>
-          {updateFromRepoDisabled || !communityChainInfo?.chainInfo ? (
+          {updateFromRepoDisabled || !communityChainInfo ? (
             <div className={style["content"]}>
-              {communityChainInfo?.chainInfo && (
+              {communityChainInfo && (
                 <img
                   className={style["backButton"]}
                   src={require("@assets/svg/arrow-left.svg")}
@@ -189,7 +214,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                 </div>
 
                 {uiConfigStore.isDeveloper &&
-                  !communityChainInfo?.chainInfo && (
+                  !communityChainInfo && (
                     <div
                       className={classNames(
                         style["developerInfo"],
@@ -218,7 +243,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                 <div
                   className={classNames(
                     style["approveInfoContainer"],
-                    !communityChainInfo?.chainInfo
+                    !communityChainInfo
                       ? style["info"]
                       : style["alert"]
                   )}
@@ -226,7 +251,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                   <div className={style["titleContainer"]}>
                     <InformationCircleOutline
                       fill={
-                        !communityChainInfo?.chainInfo ? "#566172" : "#F0224B"
+                        !communityChainInfo ? "#566172" : "#F0224B"
                       }
                     />
                     <div className={style["text"]}>
@@ -234,13 +259,13 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                     </div>
                   </div>
                   <div className={style["content"]}>
-                    {!communityChainInfo?.chainInfo ? (
+                    {!communityChainInfo ? (
                       <FormattedMessage id="chain.suggested.approve-info.content" />
                     ) : (
                       <FormattedMessage id="chain.suggested.approve-alert.content" />
                     )}
                   </div>
-                  {!communityChainInfo?.chainInfo && (
+                  {!communityChainInfo && (
                     <div className={style["link"]}>
                       <a
                         href={chainSuggestStore.communityChainInfoRepoUrl}
@@ -262,7 +287,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                   <img
                     className={style["logoImage"]}
                     src={
-                      communityChainInfo?.chainInfo?.chainSymbolImageUrl ||
+                      communityChainInfo?.chainSymbolImageUrl ||
                       require("@assets/logo-256.svg")
                     }
                     alt="chain logo"
@@ -352,20 +377,27 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
               color="danger"
               outline
               disabled={!chainSuggestStore.waitingSuggestedChainInfo}
-              data-loading={chainSuggestStore.isLoading}
+              data-loading={chainSuggestStore.isObsoleteInteraction(waitingData.id)}
               onClick={async (e) => {
                 e.preventDefault();
 
-                await chainSuggestStore.reject();
-
-                if (
-                  interactionInfo.interaction &&
-                  !interactionInfo.interactionInternal
-                ) {
-                  window.close();
-                } else {
-                  navigate("/");
-                }
+                await chainSuggestStore.rejectWithProceedNext(
+                  waitingData.id,
+                  (proceedNext) => {
+                    if (!proceedNext) {
+                      if (
+                        interactionInfo.interaction &&
+                        !interactionInfo.interactionInternal
+                      ) {
+                        window.close();
+                      }  else {
+                        navigate("/");
+                      }
+                    }  else {
+                      navigate("/");
+                    }
+                  }
+                );
               }}
             >
               <FormattedMessage id="chain.suggested.button.reject" />
@@ -374,30 +406,47 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
               className={style["button"]}
               color="primary"
               disabled={!chainSuggestStore.waitingSuggestedChainInfo}
-              data-loading={chainSuggestStore.isLoading}
+              data-loading={chainSuggestStore.isObsoleteInteraction(waitingData.id)}
               onClick={async (e) => {
                 e.preventDefault();
 
                 const chainInfo = updateFromRepoDisabled
                   ? chainSuggestStore.waitingSuggestedChainInfo?.data.chainInfo
-                  : communityChainInfo?.chainInfo ||
+                  : communityChainInfo ||
                     chainSuggestStore.waitingSuggestedChainInfo?.data.chainInfo;
 
-                if (chainInfo) {
-                  await chainSuggestStore.approve({
-                    ...chainInfo,
-                    updateFromRepoDisabled,
-                  });
+                function handlingInteraction() {
+                  if (
+                    interactionInfo.interaction &&
+                    !interactionInfo.interactionInternal
+                  ) {
+                    window.close();
+                  } else {
+                    navigate("/");
+                  }
                 }
 
-                if (
-                  interactionInfo.interaction &&
-                  !interactionInfo.interactionInternal
-                ) {
-                  window.close();
+                if (chainInfo) {
+                  await chainSuggestStore.approveWithProceedNext(
+                    waitingData.id,
+                    {
+                      ...chainInfo,
+                    },
+                    (proceedNext) => {
+                      if (!proceedNext) {
+                        handlingInteraction();
+
+                      }else {
+                        navigate("/");
+                      }
+                    }
+                  );
                 } else {
-                  navigate("/");
+                handlingInteraction();
                 }
+
+
+
               }}
             >
               <FormattedMessage id="chain.suggested.button.approve" />

@@ -1,7 +1,7 @@
 import { InteractionStore } from "./interaction";
 import { computed, makeObservable } from "mobx";
 import { SignDocWrapper } from "@keplr-wallet/cosmos";
-import { KeplrSignOptions, StdSignDoc } from "@keplr-wallet/types";
+import { EthSignType, KeplrSignOptions, StdSignDoc } from "@keplr-wallet/types";
 import { InteractionWaitingData, PlainObject } from "@keplr-wallet/background";
 
 export type SignInteractionData =
@@ -14,9 +14,11 @@ export type SignInteractionData =
       signOptions: KeplrSignOptions & {
         isADR36WithString?: boolean;
       };
+  isADR36SignDoc: boolean;
+  isADR36WithString?: boolean;
+  ethSignType?: EthSignType;
       keyType: string;
       keyInsensitive: PlainObject;
-
       eip712?: {
         types: Record<string, { name: string; type: string }[] | undefined>;
         domain: Record<string, any>;
@@ -29,7 +31,12 @@ export type SignInteractionData =
       mode: "direct";
       signer: string;
       signDocBytes: Uint8Array;
-      signOptions: KeplrSignOptions;
+      signOptions: KeplrSignOptions  & {
+        isADR36WithString?: boolean;
+      };
+  isADR36SignDoc: boolean;
+  isADR36WithString?: boolean;
+  ethSignType?: EthSignType;
       keyType: string;
       keyInsensitive: PlainObject;
     };
@@ -48,7 +55,8 @@ export class SignInteractionStore {
   @computed
   get waitingData():
     | InteractionWaitingData<
-        SignInteractionData & { signDocWrapper: SignDocWrapper }
+        SignInteractionData & { signDocWrapper: SignDocWrapper;
+    ethSignType?: EthSignType; }
       >
     | undefined {
     const datas = this.waitingDatas;
@@ -70,6 +78,8 @@ export class SignInteractionStore {
       data: {
         ...data.data,
         signDocWrapper: wrapper,
+        ethSignType:
+          "ethSignType" in data.data ? data.data.ethSignType : undefined,
       },
     };
   }

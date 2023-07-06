@@ -21,7 +21,7 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
       : undefined;
 
   const ineractionInfo = useInteractionInfo(() => {
-    permissionStore.rejectAll();
+    permissionStore.rejectPermissionAll();
   });
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export const Secret20ViewingKeyAccessPage: FunctionComponent = observer(() => {
               e.preventDefault();
 
               if (waitingPermission) {
-                await permissionStore.reject(waitingPermission.id);
+                await permissionStore.rejectPermissionWithProceedNext(waitingPermission.id);
                 if (
                   permissionStore.waitingSecret20ViewingKeyAccessPermissions
                     .length === 0

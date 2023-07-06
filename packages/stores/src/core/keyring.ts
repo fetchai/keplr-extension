@@ -9,14 +9,12 @@ import {
 } from "mobx";
 import { toGenerator } from "@keplr-wallet/common";
 import {
-  AddLedgerKeyMsg,
-  AddMnemonicKeyMsg, AddPrivateKeyMsg,
   AppendLedgerKeyAppMsg,
   BIP44HDPath,
   ChangeKeyRingNameMsg,
   ChangeUserPasswordMsg,
   CheckLegacyKeyRingPasswordMsg,
-  ComputeNotFinalizedMnemonicKeyAddressesMsg, CreateLedgerKeyMsg, CreateMnemonicKeyMsg, CreatePrivateKeyMsg,
+  ComputeNotFinalizedMnemonicKeyAddressesMsg,
   DeleteKeyRingMsg,
   FinalizeMnemonicKeyCoinTypeMsg,
   GetKeyRingStatusMsg,
@@ -30,7 +28,7 @@ import {
   PlainObject,
   SelectKeyRingMsg,
   ShowSensitiveKeyRingDataMsg,
-  UnlockKeyRingMsg
+  UnlockKeyRingMsg,
 } from "@keplr-wallet/background";
 import { ChainInfo } from "@keplr-wallet/types";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
@@ -55,7 +53,6 @@ export class KeyRingStore {
     protected readonly eventDispatcher: {
       dispatchEvent: (type: string) => void;
     },
-    public readonly defaultKdf: "scrypt" | "sha256" | "pbkdf2",
     protected readonly requester: MessageRequester
   ) {
     makeObservable(this);
@@ -195,116 +192,6 @@ export class KeyRingStore {
     );
     this._status = result.status;
     this._keyInfos = result.keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-  @flow
-  *createMnemonicKey(
-    mnemonic: string,
-    password: string,
-    meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new CreateMnemonicKeyMsg(
-      kdf,
-      mnemonic,
-      password,
-      meta,
-      bip44HDPath
-    );
-    const result = yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    );
-    this._status = result.status;
-    this._keyInfos = result.keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-  @flow
-  *createPrivateKey(
-    privateKey: Uint8Array,
-    password: string,
-    meta: Record<string, string>,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new CreatePrivateKeyMsg(kdf, privateKey, password, meta);
-    const result = yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    );
-    this._status = result.status;
-    this._keyInfos = result.keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-  @flow
-  *createLedgerKey(
-    password: string,
-    meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath,
-    cosmosLikeApp: string,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new CreateLedgerKeyMsg(
-      kdf,
-      password,
-      meta,
-      bip44HDPath,
-      cosmosLikeApp
-    );
-    const result = yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    );
-    this._status = result.status;
-    this._keyInfos = result.keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-  @flow
-  *addMnemonicKey(
-    mnemonic: string,
-    meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new AddMnemonicKeyMsg(kdf, mnemonic, meta, bip44HDPath);
-    this._keyInfos = (yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    )).keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-  @flow
-  *addPrivateKey(
-    privateKey: Uint8Array,
-    meta: Record<string, string>,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new AddPrivateKeyMsg(kdf, privateKey, meta);
-    this._keyInfos = (yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    )).keyInfos;
-
-    this.eventDispatcher.dispatchEvent("keplr_keystorechange");
-  }
-
-
-  @flow
-  *addLedgerKey(
-    meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath,
-    cosmosLikeApp: string,
-    kdf: "scrypt" | "sha256" | "pbkdf2" = this.defaultKdf
-  ) {
-    const msg = new AddLedgerKeyMsg(kdf, meta, bip44HDPath, cosmosLikeApp);
-    this._keyInfos = (yield* toGenerator(
-      this.requester.sendMessage(BACKGROUND_PORT, msg)
-    )).keyInfos;
 
     this.eventDispatcher.dispatchEvent("keplr_keystorechange");
   }

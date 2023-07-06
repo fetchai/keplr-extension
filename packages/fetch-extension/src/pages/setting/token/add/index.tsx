@@ -27,7 +27,6 @@ export const AddTokenPage: FunctionComponent = observer(() => {
   const location = useLocation();
 
   const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
-  const tokensOf = tokensStore.getTokensOf(chainStore.current.chainId);
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
@@ -63,13 +62,12 @@ export const AddTokenPage: FunctionComponent = observer(() => {
     }
   }, [chainStore, contractAddress, form, tokensStore.waitingSuggestedToken]);
 
-  const isSecret20 =
-    (chainStore.current.features ?? []).find(
-      (feature) => feature === "secretwasm"
-    ) != null;
+  const isSecretWasm = chainStore.getChain(chainStore.current.chainId).hasFeature("secretwasm");
+
+
 
   const queries = queriesStore.get(chainStore.current.chainId);
-  const query = isSecret20
+  const query = isSecretWasm
     ? queries.secret.querySecret20ContractInfo
     : queries.cosmwasm.querycw20ContractInfo;
   const queryContractInfo = query.getQueryContract(contractAddress);
@@ -102,6 +100,29 @@ export const AddTokenPage: FunctionComponent = observer(() => {
     });
   };
 
+  async function approveSuggestedTokenAndProceed(currency: CW20Currency | Secret20Currency) {
+    if (
+      interactionInfo.interaction &&
+      tokensStore.waitingSuggestedToken
+    ) {
+      await tokensStore.approveSuggestedTokenWithProceedNext(tokensStore.waitingSuggestedToken.id, currency, (_) => {
+        if (
+          interactionInfo.interaction &&
+          !interactionInfo.interactionInternal
+        ) {
+          window.close();
+        } else {
+          if (location.hash === "#agent") navigate(-1);
+          navigate("/");
+        }
+      });
+    } else {
+      await tokensStore.addToken(chainStore.current.chainId, currency);
+
+      navigate("/");
+    }
+  }
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -125,7 +146,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             tokenInfo.name &&
             tokenInfo.symbol
           ) {
-            if (!isSecret20) {
+            if (!isSecretWasm) {
               const currency: CW20Currency = {
                 type: "cw20",
                 contractAddress: data.contractAddress,
@@ -134,14 +155,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
                 coinDecimals: tokenInfo.decimals,
               };
 
-              if (
-                interactionInfo.interaction &&
-                tokensStore.waitingSuggestedToken
-              ) {
-                await tokensStore.approveSuggestedToken(currency);
-              } else {
-                await tokensOf.addToken(currency);
-              }
+            await approveSuggestedTokenAndProceed(currency);
+
             } else {
               let viewingKey = data.viewingKey;
               if (!viewingKey && !isOpenSecret20ViewingKey) {
@@ -201,25 +216,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
                   coinDecimals: tokenInfo.decimals,
                 };
 
-                if (
-                  interactionInfo.interaction &&
-                  tokensStore.waitingSuggestedToken
-                ) {
-                  await tokensStore.approveSuggestedToken(currency);
-                } else {
-                  await tokensOf.addToken(currency);
-                }
+                await approveSuggestedTokenAndProceed(currency);
               }
-            }
-
-            if (
-              interactionInfo.interaction &&
-              !interactionInfo.interactionInternal
-            ) {
-              window.close();
-            } else {
-              if (location.hash === "#agent") navigate(-1);
-              navigate("/");
             }
           }
         })}
@@ -283,7 +281,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
           value={tokenInfo?.decimals ?? "-"}
           readOnly={true}
         />
-        {isSecret20 && isOpenSecret20ViewingKey ? (
+        {isSecretWasm && isOpenSecret20ViewingKey ? (
           <Input
             type="text"
             label={intl.formatMessage({
@@ -301,7 +299,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
           />
         ) : null}
         <div style={{ flex: 1 }} />
-        {isSecret20 ? (
+        {isSecretWasm ? (
           <div className="custom-control custom-checkbox mb-2">
             <input
               className="custom-control-input"

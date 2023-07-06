@@ -7,8 +7,8 @@ import { useNavigate } from "react-router";
 import { Hash } from "@keplr-wallet/crypto";
 import { UncontrolledTooltip } from "reactstrap";
 import {
-  WrongViewingKeyError,
-  ObservableQueryBalanceInner,
+  IObservableQueryBalanceImpl,
+  WrongViewingKeyError
 } from "@keplr-wallet/stores";
 import { useNotification } from "@components/notification";
 import { useLoadingIndicator } from "@components/loading-indicator";
@@ -19,7 +19,7 @@ import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
 
 const TokenView: FunctionComponent<{
-  balance: ObservableQueryBalanceInner;
+  balance: IObservableQueryBalanceImpl;
   onClick: () => void;
 }> = observer(({ onClick, balance }) => {
   const { chainStore, accountStore, tokensStore } = useStore();
@@ -162,15 +162,7 @@ const TokenView: FunctionComponent<{
                 return;
               }
 
-              const tokenOf = tokensStore.getTokensOf(
-                chainStore.current.chainId
-              );
-
-              await tokenOf.addToken({
-                ...balance.currency,
-                viewingKey,
-              });
-
+              await tokensStore.addToken(chainStore.current.chainId, balance.currency);
               navigate({
                 pathname: "/",
               });

@@ -173,8 +173,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
                   })
                 ) {
                   await tokensStore
-                    .getTokensOf(chainStore.current.chainId)
-                    .removeToken(cosmwasmToken);
+                    .removeToken(chainStore.current.chainId, {currency, associatedAccountAddress: cosmwasmToken.contractAddress});
                 }
               }}
             />

@@ -242,6 +242,10 @@ export class ChainInfoImpl<C extends ChainInfo = ChainInfo>
     return this._embedded.chainName;
   }
 
+  get govUrl(): string | undefined {
+    return this._embedded.govUrl;
+  }
+
   get features(): string[] {
     return this._embedded.features ?? [];
   }

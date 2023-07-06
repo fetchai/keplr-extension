@@ -18,16 +18,17 @@ import {
   useFeeConfig,
   useMemoConfig, useSenderConfig,
   useSignDocAmountConfig,
-  useSignDocHelper,
+  useSignDocHelper, useTxConfigsValidate,
   useZeroAllowedGasConfig
 } from "@keplr-wallet/hooks";
 import { ADR36SignDocDetailsTab } from "./adr-36";
-import { ChainIdHelper, SignDocWrapper } from "@keplr-wallet/cosmos";
+import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
 import { EthSignType } from "@keplr-wallet/types";
 import { useInteractionInfo } from "@hooks/interaction";
-import { InteractionWaitingData } from "@keplr-wallet/background";
-import { SignInteractionData } from "@keplr-wallet/stores";
+import { SignInteractionStore } from "@keplr-wallet/stores";
+import { handleCosmosPreSign } from "@keplr-wallet/extension/src/pages/sign/utils/handle-cosmos-sign";
+import { useUnmount } from "@keplr-wallet/extension/src/hooks/use-unmount";
 
 enum Tab {
   Details,
@@ -35,6 +36,39 @@ enum Tab {
 }
 
 export const SignPage: FunctionComponent = observer(() => {
+  const { signInteractionStore } = useStore();
+
+  useInteractionInfo(() => {
+    signInteractionStore.rejectAll();
+  });
+
+  return (
+    <React.Fragment>
+      {signInteractionStore.waitingData ? (
+        <SignPageImpl
+          key={signInteractionStore.waitingData.id}
+          interactionData={signInteractionStore.waitingData}
+        />
+      ) : (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <i className="fas fa-spinner fa-spin fa-2x text-gray" />
+        </div>
+      )}
+    </React.Fragment>
+  );
+});
+
+export const SignPageImpl: FunctionComponent<{
+  interactionData: NonNullable<SignInteractionStore["waitingData"]>;
+}> = observer(({ interactionData }) => {
   const navigate = useNavigate();
 
   const [tab, setTab] = useState<Tab>(Tab.Details);
@@ -47,6 +81,7 @@ export const SignPage: FunctionComponent = observer(() => {
     signInteractionStore,
     accountStore,
     queriesStore,
+    uiConfigStore
   } = useStore();
 
   const [signer, setSigner] = useState("");
@@ -55,9 +90,6 @@ export const SignPage: FunctionComponent = observer(() => {
     boolean | undefined
   >();
   const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
-  const [signInteractionData, setSignInteractionData] = useState<InteractionWaitingData<
-    SignInteractionData & { signDocWrapper: SignDocWrapper }
-  >>();
 
   const current = chainStore.current;
   const senderConfig = useSenderConfig(chainStore, current.chainId, signer);
@@ -83,29 +115,26 @@ export const SignPage: FunctionComponent = observer(() => {
   amountConfig.setSignDocHelper(signDocHelper);
 
   useEffect(() => {
-    if (signInteractionStore.waitingData) {
-      const data = signInteractionStore.waitingData;
-      setSignInteractionData(data);
-      chainStore.selectChain(data.data.chainId);
-      if (data.data.signDocWrapper.isADR36SignDoc) {
-        setIsADR36WithString(data.data.signOptions.isADR36WithString);
+      chainStore.selectChain(interactionData.data.chainId);
+      if (interactionData.data.signDocWrapper.isADR36SignDoc) {
+        setIsADR36WithString(interactionData.data.isADR36WithString);
       }
-      if (data.data.ethSignType) {
-        setEthSignType(data.data.ethSignType);
+      if (interactionData.data.ethSignType) {
+        setEthSignType(interactionData.data.ethSignType);
       }
-      setOrigin(data.data.msgOrigin);
+      setOrigin(interactionData.data.origin);
       if (
-        !data.data.signDocWrapper.isADR36SignDoc &&
-        data.data.chainId !== data.data.signDocWrapper.chainId
+        !interactionData.data.signDocWrapper.isADR36SignDoc &&
+        interactionData.data.chainId !== interactionData.data.signDocWrapper.chainId
       ) {
         // Validate the requested chain id and the chain id in the sign doc are same.
         // If the sign doc is for ADR-36, there is no chain id in the sign doc, so no need to validate.
         throw new Error("Chain id unmatched");
       }
-      signDocHelper.setSignDocWrapper(data.data.signDocWrapper);
-      gasConfig.setValue(data.data.signDocWrapper.gas);
-      let memo = data.data.signDocWrapper.memo;
-      if (data.data.signDocWrapper.mode === "amino") {
+      signDocHelper.setSignDocWrapper(interactionData.data.signDocWrapper);
+      gasConfig.setValue(interactionData.data.signDocWrapper.gas);
+      let memo = interactionData.data.signDocWrapper.memo;
+      if (interactionData.data.signDocWrapper.mode === "amino") {
         // For amino-json sign doc, the memo is escaped by default behavior of golang's json marshaller.
         // For normal users, show the escaped characters with unescaped form.
         // Make sure that the actual sign doc's memo should be escaped.
@@ -113,26 +142,27 @@ export const SignPage: FunctionComponent = observer(() => {
         memo = unescapeHTML(memo);
       }
       memoConfig.setValue(memo);
-      if (
-        data.data.signOptions.preferNoSetFee &&
-        data.data.signDocWrapper.fees[0]
-      ) {
-        feeConfig.setManualFee(data.data.signDocWrapper.fees[0]);
-      }
+      // if (
+      //   data.data.signOptions.preferNoSetFee &&
+      //   data.data.signDocWrapper.fees[0]
+      // ) {
+      //   const fee = data.data.signDocWrapper.fees[0];
+      //   feeConfig.setFee(new CoinPretty(fee.denom, fee.amount));
+      //
+      // }
       amountConfig.setDisableBalanceCheck(
-        !!data.data.signOptions.disableBalanceCheck
+        !!interactionData.data.signOptions.disableBalanceCheck
       );
       feeConfig.setDisableBalanceCheck(
-        !!data.data.signOptions.disableBalanceCheck
+        !!interactionData.data.signOptions.disableBalanceCheck
       );
       if (
-        data.data.signDocWrapper.granter &&
-        data.data.signDocWrapper.granter !== data.data.signer
+        interactionData.data.signDocWrapper.granter &&
+        interactionData.data.signDocWrapper.granter !== interactionData.data.signer
       ) {
         feeConfig.setDisableBalanceCheck(true);
       }
-      setSigner(data.data.signer);
-    }
+      setSigner(interactionData.data.signer);
   }, [
     amountConfig,
     chainStore,
@@ -140,7 +170,6 @@ export const SignPage: FunctionComponent = observer(() => {
     memoConfig,
     feeConfig,
     signDocHelper,
-    signInteractionStore.waitingData,
   ]);
 
   // If the preferNoSetFee or preferNoSetMemo in sign options is true,
@@ -149,15 +178,15 @@ export const SignPage: FunctionComponent = observer(() => {
   // Thus, without this state, the fee buttons/memo input would be shown after clicking the approve buttion.
   const [isProcessing, setIsProcessing] = useState(false);
   const needSetIsProcessing =
-    signInteractionStore.waitingData?.data.signOptions.preferNoSetFee ===
+    interactionData?.data.signOptions.preferNoSetFee ===
       true ||
-    signInteractionStore.waitingData?.data.signOptions.preferNoSetMemo === true;
+    interactionData?.data.signOptions.preferNoSetMemo === true;
 
   const preferNoSetFee =
-    signInteractionStore.waitingData?.data.signOptions.preferNoSetFee ===
+    interactionData?.data.signOptions.preferNoSetFee ===
       true || isProcessing;
   const preferNoSetMemo =
-    signInteractionStore.waitingData?.data.signOptions.preferNoSetMemo ===
+    interactionData?.data.signOptions.preferNoSetMemo ===
       true || isProcessing;
 
   const interactionInfo = useInteractionInfo(
@@ -211,12 +240,38 @@ export const SignPage: FunctionComponent = observer(() => {
     return undefined;
   })();
 
-  const approveIsDisabled = (() => {
-    if (!isLoaded) {
-      return true;
-    }
 
-    if (!signDocHelper.signDocWrapper) {
+
+  const [unmountPromise] = useState(() => {
+    let resolver: () => void;
+    const promise = new Promise<void>((resolve) => {
+      resolver = resolve;
+    });
+
+    return {
+      promise,
+      resolver: resolver!,
+    };
+  });
+
+  useUnmount(() => {
+    unmountPromise.resolver();
+  });
+
+  const isLedgerAndDirect =
+    interactionData.data.keyType === "ledger" &&
+    interactionData.data.mode === "direct";
+
+  const txConfigsValidate = useTxConfigsValidate({
+    senderConfig,
+    gasConfig,
+    amountConfig,
+    feeConfig,
+    memoConfig,
+  });
+
+  const approveIsDisabled = (() => {
+    if (!isLoaded || txConfigsValidate.interactionBlocked || !signDocHelper.signDocWrapper || isLedgerAndDirect) {
       return true;
     }
 
@@ -228,6 +283,59 @@ export const SignPage: FunctionComponent = observer(() => {
 
     return memoConfig.uiProperties.error != null || feeConfig.uiProperties.error != null;
   })();
+
+  const approve = async (e: any) => {
+    e.preventDefault();
+    if (needSetIsProcessing) {
+      setIsProcessing(true);
+    }
+    if (signDocHelper.signDocWrapper) {
+      try {
+        const signature = await handleCosmosPreSign(
+          uiConfigStore.useWebHIDLedger,
+          interactionData,
+          signDocHelper.signDocWrapper
+        );
+
+        await signInteractionStore.approveWithProceedNext(
+          interactionData.id,
+          signDocHelper.signDocWrapper,
+          signature,
+          async (proceedNext) => {
+            if (!proceedNext) {
+              if (
+                interactionInfo.interaction &&
+                !interactionInfo.interactionInternal
+              ) {
+                window.close();
+              }
+            }
+
+            if (
+              interactionInfo.interaction &&
+              interactionInfo.interactionInternal
+            ) {
+              // XXX: 약간 난해한 부분인데
+              //      내부의 tx의 경우에는 tx 이후의 routing을 요청한 쪽에서 처리한다.
+              //      하지만 tx를 처리할때 tx broadcast 등의 과정이 있고
+              //      서명 페이지에서는 이러한 과정이 끝났는지 아닌지를 파악하기 힘들다.
+              //      만약에 밑과같은 처리를 하지 않으면 interaction data가 먼저 지워지면서
+              //      화면이 깜빡거리는 문제가 발생한다.
+              //      이 문제를 해결하기 위해서 내부의 tx는 보내는 쪽에서 routing을 잘 처리한다고 가정하고
+              //      페이지를 벗어나고 나서야 data를 지우도록한다.
+              await unmountPromise.promise;
+            }
+          },
+          {
+            // XXX: 단지 special button의 애니메이션을 보여주기 위해서 delay를 넣음...ㅋ;
+            preDelay: 200,
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
 
   return (
     <HeaderLayout
@@ -244,12 +352,10 @@ export const SignPage: FunctionComponent = observer(() => {
       style={{ background: "white", minHeight: "100%" }}
       innerStyle={{ display: "flex", flexDirection: "column" }}
     >
-      {
         /*
          Show the informations of tx when the sign data is delivered.
          If sign data not delivered yet, show the spinner alternatively.
          */
-        isLoaded ? (
           <div className={style["container"]}>
             <div className={classnames(style["tabs"])}>
               <ul>
@@ -317,7 +423,7 @@ export const SignPage: FunctionComponent = observer(() => {
             </div>
             <div className={style["buttons"]}>
               {keyRingStore.selectedKeyInfo?.type === "ledger" &&
-              signInteractionStore.isObsoleteInteraction(signInteractionData?.id) ? (
+              signInteractionStore.isObsoleteInteraction(interactionData?.id) ? (
                 <Button
                   className={style["button"]}
                   color="primary"
@@ -333,7 +439,7 @@ export const SignPage: FunctionComponent = observer(() => {
                     className={style["button"]}
                     color="danger"
                     disabled={signDocHelper.signDocWrapper == null}
-                    data-loading={signInteractionStore.isObsoleteInteraction(signInteractionData?.id)}
+                    data-loading={signInteractionStore.isObsoleteInteraction(interactionData?.id)}
                     onClick={async (e) => {
                       e.preventDefault();
 
@@ -341,7 +447,7 @@ export const SignPage: FunctionComponent = observer(() => {
                         setIsProcessing(true);
                       }
 
-                      await signInteractionStore.reject();
+                      await signInteractionStore.rejectAll();
 
                       if (
                         interactionInfo.interaction &&
@@ -360,27 +466,8 @@ export const SignPage: FunctionComponent = observer(() => {
                     className={style["button"]}
                     color="primary"
                     disabled={approveIsDisabled}
-                    data-loading={signInteractionStore.isObsoleteInteraction(signInteractionData?.id)}
-                    onClick={async (e) => {
-                      e.preventDefault();
-
-                      if (needSetIsProcessing) {
-                        setIsProcessing(true);
-                      }
-
-                      if (signDocHelper.signDocWrapper) {
-                        await signInteractionStore.approveAndWaitEnd(
-                          signDocHelper.signDocWrapper
-                        );
-                      }
-
-                      if (
-                        interactionInfo.interaction &&
-                        !interactionInfo.interactionInternal
-                      ) {
-                        window.close();
-                      }
-                    }}
+                    data-loading={signInteractionStore.isObsoleteInteraction(interactionData?.id)}
+                    onClick={approve}
                   >
                     {intl.formatMessage({
                       id: "sign.button.approve",
@@ -390,20 +477,6 @@ export const SignPage: FunctionComponent = observer(() => {
               )}
             </div>
           </div>
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <i className="fas fa-spinner fa-spin fa-2x text-gray" />
-          </div>
-        )
-      }
     </HeaderLayout>
   );
 });

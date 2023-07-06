@@ -1371,12 +1371,96 @@ export class CosmosAccountImpl {
   }
 
   /**
+   * @deprecated
+   * Send `MsgUndelegate` msg to the chain.
+   * @param amount Decimal number used by humans.
+   *               If amount is 0.1 and the stake currenct is uatom, actual amount will be changed to the 100000uatom.
+   * @param validatorAddress
+   * @param memo
+   * @param stdFee
+   * @param signOptions
+   * @param onTxEvents
+   */
+  async sendUndelegateMsg(
+    amount: string,
+    validatorAddress: string,
+    memo: string = "",
+    stdFee: Partial<StdFee> = {},
+    signOptions?: KeplrSignOptions,
+    onTxEvents?:
+      | ((tx: any) => void)
+      | {
+      onBroadcasted?: (txHash: Uint8Array) => void;
+      onFulfill?: (tx: any) => void;
+    }
+  ) {
+    const currency = this.chainGetter.getChain(this.chainId).stakeCurrency;
+
+    let dec = new Dec(amount);
+    dec = dec.mulTruncate(DecUtils.getPrecisionDec(currency.coinDecimals));
+
+    const msg = {
+      type: this.msgOpts.undelegate.type,
+      value: {
+        delegator_address: this.base.bech32Address,
+        validator_address: validatorAddress,
+        amount: {
+          denom: currency.coinMinimalDenom,
+          amount: dec.truncate().toString(),
+        },
+      },
+    };
+
+    await this.sendMsgs(
+      "undelegate",
+      {
+        aminoMsgs: [msg],
+        protoMsgs: [
+          {
+            typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
+            value: MsgUndelegate.encode({
+              delegatorAddress: msg.value.delegator_address,
+              validatorAddress: msg.value.validator_address,
+              amount: msg.value.amount,
+            }).finish(),
+          },
+        ],
+      },
+      memo,
+      {
+        amount: stdFee.amount ?? [],
+        gas: stdFee.gas ?? this.msgOpts.undelegate.gas.toString(),
+      },
+      signOptions,
+      txEventsWithPreOnFulfill(onTxEvents, (tx) => {
+        if (tx.code == null || tx.code === 0) {
+          // After succeeding to unbond, refresh the validators and delegations, unbonding delegations, rewards.
+          this.queries.cosmos.queryValidators
+            .getQueryStatus(BondStatus.Bonded)
+            .fetch();
+          this.queries.cosmos.queryDelegations
+            .getQueryBech32Address(this.base.bech32Address)
+            .fetch();
+          this.queries.cosmos.queryUnbondingDelegations
+            .getQueryBech32Address(this.base.bech32Address)
+            .fetch();
+          this.queries.cosmos.queryRewards
+            .getQueryBech32Address(this.base.bech32Address)
+            .fetch();
+        }
+      })
+    );
+  }
+
+  /**
    * Send `MsgDelegate` msg to the chain.
    * @param amount Decimal number used by humans.
    *               If amount is 0.1 and the stake currenct is uatom, actual amount will be changed to the 100000uatom.
    * @param validatorAddress
    * @param memo
-   * @param onFulfill
+   * @param stdFee
+   * @param signOptions
+   * @param onTxEvents
    */
   async sendDelegateMsg(
     amount: string,

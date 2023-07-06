@@ -27,13 +27,6 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-loss-of-precision": "off",
     "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/ban-ts-comment": [
-      "error",
-      {
-        "ts-ignore": "allow-with-description",
-        minimumDescriptionLength: 10,
-      },
-    ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "unicorn/filename-case": [
@@ -51,34 +44,22 @@ module.exports = {
           "**/*.test.ts",
           "**/*.test.js",
           "**/webpack.config.js",
-          "**/*.stories.tsx",
         ],
       },
     ],
     "import/no-default-export": "error",
     "import/no-useless-path-segments": "error",
     "unused-imports/no-unused-imports": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
-  overrides: [
-    {
-      files: ["**/*.stories.tsx"],
-      rules: {
-        "import/no-default-export": "off",
-      },
-    },
-    {
-      // Make options for codes and MDX files separate
-      files: ["**/*.stories.mdx"],
-      extends: ["plugin:mdx/recommended"],
-      plugins: [],
-      rules: {
-        "import/no-extraneous-dependencies": "off",
-      },
-      settings: {
-        "mdx/code-blocks": true,
-      },
-    },
-  ],
   settings: {
     react: {
       version: "detect",

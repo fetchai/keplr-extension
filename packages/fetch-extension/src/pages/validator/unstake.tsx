@@ -6,7 +6,6 @@ import {
   InvalidNumberAmountError,
   NegativeAmountError,
   ZeroAmountError,
-  useUndelegateTxConfig,
 } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo } from "react";
@@ -15,6 +14,7 @@ import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { useUndelegateTxConfig } from "@keplr-wallet/hooks/build/tx/undelegate-tx";
 
 export const Unstake: FunctionComponent<{
   validatorAddress: string;
@@ -34,7 +34,7 @@ export const Unstake: FunctionComponent<{
   const { amountConfig, memoConfig, feeConfig } = sendConfigs;
 
   const intl = useIntl();
-  const error = amountConfig.error;
+  const error = amountConfig.uiProperties.error;
 
   const balance = queriesStore
     .get(amountConfig.chainId)
@@ -73,7 +73,7 @@ export const Unstake: FunctionComponent<{
   const stakeClicked = async () => {
     try {
       await account.cosmos.sendUndelegateMsg(
-        amountConfig.amount,
+        amountConfig.value,
         validatorAddress,
         memoConfig.memo,
         feeConfig.toStdFee(),
@@ -137,11 +137,11 @@ export const Unstake: FunctionComponent<{
         <Input
           className="form-control-alternative"
           type="number"
-          value={amountConfig.amount}
+          value={amountConfig.value}
           placeholder="0 FET"
           onChange={(e) => {
             e.preventDefault();
-            amountConfig.setAmount(e.target.value);
+            amountConfig.setValue(e.target.value);
           }}
           style={{ borderRadius: "0%" }}
           min={0}

@@ -50,7 +50,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
           (grant.authorization as AuthZ.GenericAuthorization).msg ===
             "/cosmos.bank.v1beta1.MsgSend")
       ) {
-        tempGrantList.Send.push(grant);
+        tempGrantList["Send"].push(grant);
         return;
       }
 
@@ -62,7 +62,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
           (grant.authorization as AuthZ.GenericAuthorization).msg ===
             "/cosmos.staking.v1beta1.MsgDelegate")
       ) {
-        tempGrantList.Delegate.push(grant);
+        tempGrantList["Delegate"].push(grant);
         return;
       }
 
@@ -74,7 +74,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
           (grant.authorization as AuthZ.GenericAuthorization).msg ===
             "/cosmos.staking.v1beta1.MsgBeginRedelegate")
       ) {
-        tempGrantList.Redelegate.push(grant);
+        tempGrantList["Redelegate"].push(grant);
         return;
       }
 
@@ -86,7 +86,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
           (grant.authorization as AuthZ.GenericAuthorization).msg ===
             "/cosmos.staking.v1beta1.MsgUndelegate")
       ) {
-        tempGrantList.Undelegate.push(grant);
+        tempGrantList["Undelegate"].push(grant);
         return;
       }
 
@@ -104,7 +104,7 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
         (grant.authorization as AuthZ.GenericAuthorization).msg ===
           "/cosmos.gov.v1beta1.MsgVote"
       ) {
-        tempGrantList.Vote.push(grant);
+        tempGrantList["Vote"].push(grant);
         return;
       }
 
@@ -113,11 +113,11 @@ export const AuthZView: FunctionComponent<Props> = (props) => {
         (grant.authorization as AuthZ.GenericAuthorization).msg ===
           "/cosmos.gov.v1beta1.MsgDeposit"
       ) {
-        tempGrantList.Deposit.push(grant);
+        tempGrantList["Deposit"].push(grant);
         return;
       }
 
-      tempGrantList.Custom.push(grant);
+      tempGrantList["Custom"].push(grant);
     });
 
     return tempGrantList;

@@ -6,7 +6,6 @@ import {
   InvalidNumberAmountError,
   NegativeAmountError,
   ZeroAmountError,
-  useDelegateTxConfig,
 } from "@keplr-wallet/hooks";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
@@ -16,6 +15,7 @@ import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { useDelegateTxConfig } from "@keplr-wallet/hooks/build/tx/delegate-tx";
 
 export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
   ({ validatorAddress }) => {
@@ -33,20 +33,20 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
     const { amountConfig, memoConfig, feeConfig } = sendConfigs;
 
     const intl = useIntl();
-    const error = amountConfig.error;
+    const error = amountConfig.uiProperties.error;
 
     const queryBalances = queriesStore
       .get(amountConfig.chainId)
-      .queryBalances.getQueryBech32Address(amountConfig.sender);
+      .queryBalances.getQueryBech32Address(account.bech32Address);
 
     const queryBalance = queryBalances.balances.find(
       (bal) =>
-        amountConfig.sendCurrency.coinMinimalDenom ===
+        amountConfig.currency.coinMinimalDenom ===
         bal.currency.coinMinimalDenom
     );
     const balance = queryBalance
       ? queryBalance.balance
-      : new CoinPretty(amountConfig.sendCurrency, new Int(0));
+      : new CoinPretty(amountConfig.currency, new Int(0));
 
     const errorText: string | undefined = useMemo(() => {
       if (error) {
@@ -80,7 +80,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
     const stakeClicked = async () => {
       try {
         await account.cosmos.sendDelegateMsg(
-          amountConfig.amount,
+          amountConfig.value,
           validatorAddress,
           memoConfig.memo,
           feeConfig.toStdFee(),
@@ -136,18 +136,18 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
               className={style["balance"]}
               onClick={(e) => {
                 e.preventDefault();
-                amountConfig.toggleIsMax();
+                amountConfig.setFraction(amountConfig.fraction === 1 ? 0 : 1);
               }}
             >{`Balance: ${balance.trim(true).maxDecimals(6).toString()}`}</div>
           </Label>
           <Input
             className="form-control-alternative"
             type="number"
-            value={amountConfig.amount}
+            value={amountConfig.value}
             placeholder="0 FET"
             onChange={(e) => {
               e.preventDefault();
-              amountConfig.setAmount(e.target.value);
+              amountConfig.setValue(e.target.value);
             }}
             style={{ borderRadius: "0%" }}
             min={0}

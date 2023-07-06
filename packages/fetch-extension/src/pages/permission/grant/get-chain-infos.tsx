@@ -6,17 +6,20 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { Button } from "reactstrap";
 import { useInteractionInfo } from "@hooks/interaction";
+import { GlobalPermissionData, InteractionWaitingData } from "@keplr-wallet/background";
 
-export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
-  observer(() => {
-    const { generalPermissionStore } = useStore();
+export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent<{
+  data: InteractionWaitingData<GlobalPermissionData>;
+}>  =
+  observer(({ data }) => {
+    const { permissionStore } = useStore();
 
-    const ineractionInfo = useInteractionInfo(() => {
-      generalPermissionStore.rejectAllGlobalPermission();
+    const interactionInfo = useInteractionInfo(() => {
+      permissionStore.rejectGlobalPermissionAll();
     });
 
     const waitingPermissions =
-      generalPermissionStore.getWaitingGlobalPermissions("get-chain-infos");
+      permissionStore.waitingGlobalPermissionDatas;
 
     const host = useMemo(() => {
       if (waitingPermissions.length > 0) {
@@ -68,25 +71,21 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
               onClick={async (e) => {
                 e.preventDefault();
 
-                if (waitingPermissions.length > 0) {
-                  await generalPermissionStore.rejectGlobalPermission(
-                    waitingPermissions[0].id
-                  );
-                  if (
-                    generalPermissionStore.getWaitingGlobalPermissions(
-                      "get-chain-infos"
-                    ).length === 0
-                  ) {
-                    if (
-                      ineractionInfo.interaction &&
-                      !ineractionInfo.interactionInternal
-                    ) {
-                      window.close();
+                await permissionStore.approveGlobalPermissionWithProceedNext(
+                  data.id,
+                  (proceedNext) => {
+                    if (!proceedNext) {
+                      if (
+                        interactionInfo.interaction &&
+                        !interactionInfo.interactionInternal
+                      ) {
+                        window.close();
+                      }
                     }
                   }
-                }
+                );
               }}
-              data-loading={generalPermissionStore.isLoading}
+              data-loading={permissionStore.isObsoleteInteraction(data.id)}
             >
               <FormattedMessage id="access.button.reject" />
             </Button>
@@ -96,26 +95,22 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
               onClick={async (e) => {
                 e.preventDefault();
 
-                if (waitingPermissions.length > 0) {
-                  await generalPermissionStore.approveGlobalPermission(
-                    waitingPermissions[0].id
-                  );
-                  if (
-                    generalPermissionStore.getWaitingGlobalPermissions(
-                      "get-chain-infos"
-                    ).length === 0
-                  ) {
-                    if (
-                      ineractionInfo.interaction &&
-                      !ineractionInfo.interactionInternal
-                    ) {
-                      window.close();
+                await permissionStore.approveGlobalPermissionWithProceedNext(
+                  data.id,
+                  (proceedNext) => {
+                    if (!proceedNext) {
+                      if (
+                        interactionInfo.interaction &&
+                        !interactionInfo.interactionInternal
+                      ) {
+                        window.close();
+                      }
                     }
                   }
-                }
+                );
               }}
               disabled={waitingPermissions.length === 0}
-              data-loading={generalPermissionStore.isLoading}
+              data-loading={permissionStore.isObsoleteInteraction(data.id)}
             >
               <FormattedMessage id="access.button.approve" />
             </Button>

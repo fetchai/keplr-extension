@@ -16,16 +16,20 @@ import {
 import styleConnections from "./style.module.scss";
 import { useIntl } from "react-intl";
 import { useConfirm } from "@components/confirm";
+import { PermissionData } from "@keplr-wallet/background";
 
-export const SettingConnectionsPage: FunctionComponent = observer(() => {
+export const SettingConnectionsPage: FunctionComponent<{
+  data: {
+    ids: string[];
+  } & PermissionData;
+}> = observer(({ data }) => {
   const navigate = useNavigate();
   const intl = useIntl();
 
-  const { chainStore, permissionStore } = useStore();
+  const { chainStore, permissionManagerStore } = useStore();
   const [selectedChainId, setSelectedChainId] = useState(
     chainStore.current.chainId
   );
-  const basicAccessInfo = permissionStore.getBasicAccessInfo(selectedChainId);
 
   const [dropdownOpen, setOpen] = useState(false);
   const toggle = () => setOpen(!dropdownOpen);
@@ -78,7 +82,7 @@ export const SettingConnectionsPage: FunctionComponent = observer(() => {
             </div>
           </DropdownMenu>
         </ButtonDropdown>
-        {basicAccessInfo.origins.map((origin) => {
+        {data.origins.map((origin) => {
           return (
             <PageButton
               title={origin}
@@ -103,7 +107,7 @@ export const SettingConnectionsPage: FunctionComponent = observer(() => {
                     }),
                   })
                 ) {
-                  await basicAccessInfo.removeOrigin(origin);
+                  await permissionManagerStore.clearOrigin(origin);
                 }
               }}
               icons={xIcon}

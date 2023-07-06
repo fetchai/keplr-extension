@@ -40,9 +40,7 @@ export const LockPage: FunctionComponent = observer(() => {
   const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);
 
-  const interactionInfo = useInteractionInfo(() => {
-    keyRingStore.rejectAll();
-  });
+  const interactionInfo = useInteractionInfo();
 
   useEffect(() => {
     if (passwordRef.current) {

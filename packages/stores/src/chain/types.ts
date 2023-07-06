@@ -48,6 +48,7 @@ export interface IChainInfoImpl<C extends ChainInfo = ChainInfo> {
   readonly beta: boolean | undefined;
   readonly bip44: BIP44;
   readonly chainName: string;
+  readonly govUrl?: string;
   readonly features: string[];
   readonly feeCurrencies: FeeCurrency[];
   readonly rest: string;

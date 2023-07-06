@@ -40,9 +40,9 @@ export const MainPage: FunctionComponent = observer(() => {
 
   useEffect(() => {
     analyticsStore.setUserProperties({
-      totalAccounts: keyRingStore.multiKeyStoreInfo.length,
+      accountCount: keyRingStore.keyInfos.length,
     });
-  }, [analyticsStore, keyRingStore.multiKeyStoreInfo.length]);
+  }, [analyticsStore, keyRingStore.keyInfos.length]);
 
   const confirm = useConfirm();
 
