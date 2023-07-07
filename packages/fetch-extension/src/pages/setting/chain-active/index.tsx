@@ -48,14 +48,14 @@ export const ChainActivePage: FunctionComponent = observer(() => {
       }}
     >
       <div className={style["container"]}>
-        {chainStore.chainInfosWithUIConfig.map((chainInfoUI) => (
+        {chainStore.chainInfosInUI.map((chainInfoUI) => (
           <ChainItem
-            key={chainInfoUI.chainInfo.chainId}
-            chainName={chainInfoUI.chainInfo.chainName}
+            key={chainInfoUI.chainId}
+            chainName={chainInfoUI.chainName}
             disabled={chainInfoUI.disabled}
             onClick={async () => {
               await chainStore.toggleChainInfoInUI(
-                chainInfoUI.chainInfo.chainId
+                chainInfoUI.chainId
               );
             }}
           />

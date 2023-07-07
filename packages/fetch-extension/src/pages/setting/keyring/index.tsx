@@ -137,7 +137,7 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                       e.preventDefault();
                       loadingIndicator.setIsLoading("keyring", true);
                       try {
-                        await keyRingStore.changeKeyRing(i);
+                        await keyRingStore.selectKeyRing(keyStore.id);
                         analyticsStore.logEvent("Account changed");
                         loadingIndicator.setIsLoading("keyring", false);
                         store.dispatch(resetUser({}));

@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { InitialGas } from "../../../config.ui";
+import { AppCurrency } from "@keplr-wallet/types";
 
 export const TokenDropdown: FunctionComponent<{
   label: ReactElement<any>[];
@@ -62,7 +63,7 @@ export const TokenDropdown: FunctionComponent<{
   const { amountConfig } = ibc ? ibcTransferConfigs : sendConfigs;
   const queryBalances = queriesStore
     .get(amountConfig.chainId)
-    .queryBalances.getQueryBech32Address(amountConfig.sender);
+    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
   const [randomId] = useState(() => {
     const bytes = new Uint8Array(4);
@@ -72,19 +73,19 @@ export const TokenDropdown: FunctionComponent<{
 
   const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
 
-  const selectableCurrencies = amountConfig.sendableCurrencies
+  const selectableCurrencies = amountConfig.selectableCurrencies
     .filter((cur) => {
       const bal = queryBalances.getBalanceFromCurrency(cur);
       return !bal.toDec().isZero();
     })
-    .sort((a, b) => {
+    .sort((a: AppCurrency, b: AppCurrency) => {
       return a.coinDenom < b.coinDenom ? -1 : 1;
     });
 
   const sendTokenDetails = async () => {
     const messagePayload = {
-      token: amountConfig.sendCurrency,
-      message: `Selected Token: ${amountConfig.sendCurrency.coinDenom}`,
+      token: amountConfig.currency,
+      message: `Selected Token: ${amountConfig.currency.coinDenom}`,
     };
     try {
       await deliverMessages(
@@ -144,14 +145,14 @@ export const TokenDropdown: FunctionComponent<{
         <ButtonDropdown
           id={`selector-${randomId}`}
           className={classnames(styleCoinInput["tokenSelector"], {
-            disabled: amountConfig.isMax || disabled,
+            disabled: amountConfig.fraction === 1 || disabled,
           })}
           isOpen={isOpenTokenSelector}
           toggle={() => setIsOpenTokenSelector((value) => !value)}
-          disabled={amountConfig.isMax || disabled}
+          disabled={amountConfig.fraction === 1 || disabled}
         >
           <DropdownToggle caret>
-            {amountConfig.sendCurrency.coinDenom}
+            {amountConfig.currency.coinDenom}
           </DropdownToggle>
           <DropdownMenu>
             {selectableCurrencies.map((currency) => {
@@ -160,12 +161,12 @@ export const TokenDropdown: FunctionComponent<{
                   key={currency.coinMinimalDenom}
                   active={
                     currency.coinMinimalDenom ===
-                    amountConfig.sendCurrency.coinMinimalDenom
+                    amountConfig.currency.coinMinimalDenom
                   }
                   onClick={(e) => {
                     e.preventDefault();
 
-                    amountConfig.setSendCurrency(currency);
+                    amountConfig.setCurrency(currency);
                   }}
                 >
                   {currency.coinDenom}

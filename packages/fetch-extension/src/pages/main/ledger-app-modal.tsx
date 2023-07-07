@@ -5,10 +5,6 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { BACKGROUND_PORT, KeplrError } from "@keplr-wallet/router";
-import {
-  InitNonDefaultLedgerAppMsg,
-  LedgerApp,
-} from "@keplr-wallet/background";
 
 export const LedgerAppModal: FunctionComponent = observer(() => {
   const { chainStore, accountStore } = useStore();

@@ -141,8 +141,7 @@ export const IBCChannelRegistrarModal: FunctionComponent<{
 
               if (clientState) {
                 if (
-                  clientState.data.identified_client_state.client_state
-                    .chain_id !== selectedChainId
+                  clientState.data.identified_client_state.client_state["chain_id"] !== selectedChainId
                 ) {
                   error = `Client is not for ${selectedChainId}`;
                 }

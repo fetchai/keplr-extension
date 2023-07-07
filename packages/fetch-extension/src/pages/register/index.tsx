@@ -26,11 +26,6 @@ import {
 import { WelcomePage } from "./welcome";
 import classnames from "classnames";
 import {
-  ImportKeystoneIntro,
-  ImportKeystonePage,
-  TypeImportKeystone,
-} from "./keystone";
-import {
   MigrateEthereumAddressIntro,
   MigrateEthereumAddressPage,
   TypeMigrateEth,
@@ -87,11 +82,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
           },
         ]
       : []),
-    {
-      type: TypeImportKeystone,
-      intro: ImportKeystoneIntro,
-      page: ImportKeystonePage,
-    },
     // TODO: think about moving this into the configuration at some point
     {
       type: TypeMigrateEth,

@@ -33,7 +33,6 @@ import {
   StartAutoLockMonitoringMsg,
 } from "@keplr-wallet/background";
 import Modal from "react-modal";
-import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
 import { AddressBookPage } from "./pages/setting/address-book";
 import { ClearPage } from "./pages/setting/clear";
@@ -53,7 +52,7 @@ import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
 
 import { Keplr } from "@keplr-wallet/provider";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import manifest from "./manifest.json";
+import manifest from "./manifest.v2.json";
 import { ChatPage } from "./pages/chat";
 import { ChatSection } from "./pages/chat-section";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
@@ -195,11 +194,6 @@ ReactDOM.render(
                       element={IBCTransferPage}
                     />
                     <Route path="/setting" element={SettingPage} />
-                    <Route
-
-                      path="/ledger-grant"
-                      element={LedgerGrantPage}
-                    />
                     <Route
 
                       path="/setting/language"

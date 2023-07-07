@@ -1,5 +1,6 @@
 import {
   autorun,
+  action,
   computed,
   flow,
   makeObservable,
@@ -42,7 +43,6 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
   @observable
   protected _isInitializing: boolean = false;
-
   @observable
   protected _lastSyncedEnabledChainsVaultId: string = "";
   @observable.ref
@@ -102,6 +102,11 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
   get selectedChainId(): string {
     return this._selectedChainId;
+  }
+
+  @action
+  selectChain(chainId: string) {
+    this._selectedChainId = chainId;
   }
 
   @computed

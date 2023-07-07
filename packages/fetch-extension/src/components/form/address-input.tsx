@@ -111,16 +111,17 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
       return false;
     })();
 
-    const selectAddressFromAddressBook = {
-      setRecipient: (recipient: string) => {
-        recipientConfig.setValue(recipient);
-      },
-      setMemo: (memo: string) => {
-        if (memoConfig) {
-          memoConfig.setValue(memo);
-        }
-      },
-    };
+    // Todo
+    // const selectAddressFromAddressBook = {
+    //   setRecipient: (recipient: string) => {
+    //     recipientConfig.setValue(recipient);
+    //   },
+    //   setMemo: (memo: string) => {
+    //     if (memoConfig) {
+    //       memoConfig.setValue(memo);
+    //     }
+    //   },
+    // };
 
     return (
       <React.Fragment>
@@ -135,7 +136,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
             <AddressBookPage
               onBackButton={() => setIsAddressBookOpen(false)}
               hideChainDropdown={true}
-              selectHandler={selectAddressFromAddressBook}
+              //selectHandler={selectAddressFromAddressBook}
               ibcChannelConfig={ibcChannelConfig}
             />
           </ModalBody>

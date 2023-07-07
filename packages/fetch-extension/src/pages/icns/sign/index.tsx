@@ -76,12 +76,15 @@ export const ICNSAdr36SignPage: FunctionComponent = observer(() => {
               e.preventDefault();
 
               if (icnsInteractionStore.waitingData) {
-                icnsInteractionStore.reject(
-                  icnsInteractionStore.waitingData.id
+                icnsInteractionStore.rejectWithProceedNext(
+                  icnsInteractionStore.waitingData.id,
+                  _ => {
+                    window.close();
+                  }
                 );
+              } else {
+                window.close();
               }
-
-              window.close();
             }}
           >
             {intl.formatMessage({
@@ -96,12 +99,15 @@ export const ICNSAdr36SignPage: FunctionComponent = observer(() => {
               e.preventDefault();
 
               if (icnsInteractionStore.waitingData) {
-                icnsInteractionStore.approve(
-                  icnsInteractionStore.waitingData.id
+                icnsInteractionStore.approveWithProceedNext(
+                  icnsInteractionStore.waitingData.id,
+                  _ => {
+                    window.close();
+                  }
                 );
+              } else {
+                window.close();
               }
-
-              window.close();
             }}
           >
             {intl.formatMessage({
