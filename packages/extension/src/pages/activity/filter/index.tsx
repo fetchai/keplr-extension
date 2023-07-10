@@ -72,16 +72,16 @@ export const FilterActivities: React.FC<{
         </div>
         {isOpen && (
           <div className={styles["dropdown-menu-popup"]}>
-            <div className={styles.select}>
+            <div className={styles.selectGroup}>
               <button
-                className={styles.select}
+                className={styles.selectButton}
                 onClick={handleSelectClicks}
                 disabled={selectAllDisabled}
               >
                 Select all
               </button>
               <button
-                className={styles.select}
+                className={styles.selectButton}
                 onClick={handleDeselectClicks}
                 disabled={unselectAllDisabled}
               >
