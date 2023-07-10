@@ -9,23 +9,22 @@ import { PageButton } from "../page-button";
 
 const ChainItem: FunctionComponent<{
   chainName: string;
-  disabled: boolean;
   onClick: () => void;
-}> = ({ chainName, disabled, onClick }) => {
+}> = ({ chainName, onClick }) => {
   return (
     <PageButton
       title={chainName}
       onClick={onClick}
-      icons={[
-        <label
-          key="toggle"
-          className="custom-toggle"
-          style={{ marginBottom: 0 }}
-        >
-          <input type="checkbox" checked={!disabled} />
-          <span className="custom-toggle-slider rounded-circle" />
-        </label>,
-      ]}
+      // icons={[
+      //   <label
+      //     key="toggle"
+      //     className="custom-toggle"
+      //     style={{ marginBottom: 0 }}
+      //   >
+      //     <input type="checkbox" checked={!disabled} />
+      //     <span className="custom-toggle-slider rounded-circle" />
+      //   </label>,
+      // ]}
     />
   );
 };
@@ -52,7 +51,6 @@ export const ChainActivePage: FunctionComponent = observer(() => {
           <ChainItem
             key={chainInfoUI.chainId}
             chainName={chainInfoUI.chainName}
-            disabled={chainInfoUI.disabled}
             onClick={async () => {
               await chainStore.toggleChainInfoInUI(
                 chainInfoUI.chainId

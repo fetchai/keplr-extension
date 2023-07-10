@@ -19,7 +19,7 @@ import {
   ZeroAmountError,
   NegativeAmountError,
   InsufficientAmountError,
-  IAmountConfig,
+  IAmountConfig, ISenderConfig
 } from "@keplr-wallet/hooks";
 import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -28,6 +28,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
+  senderConfig: ISenderConfig;
 
   balanceText?: string;
 
@@ -42,6 +43,7 @@ export interface CoinInputProps {
 export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   ({
     amountConfig,
+     senderConfig,
     className,
     label,
     disableAllBalance,
@@ -49,12 +51,11 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   }) => {
     const intl = useIntl();
 
-    const { queriesStore, chainStore, accountStore } = useStore();
-    const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+    const { queriesStore } = useStore();
 
     const queryBalances = queriesStore
       .get(amountConfig.chainId)
-      .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+      .queryBalances.getQueryBech32Address(senderConfig.sender);
 
     const queryBalance = queryBalances.balances.find(
       (bal) =>

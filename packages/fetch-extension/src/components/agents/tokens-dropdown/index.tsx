@@ -60,10 +60,10 @@ export const TokenDropdown: FunctionComponent<{
     }
   );
 
-  const { amountConfig } = ibc ? ibcTransferConfigs : sendConfigs;
+  const { amountConfig, senderConfig } = ibc ? ibcTransferConfigs : sendConfigs;
   const queryBalances = queriesStore
     .get(amountConfig.chainId)
-    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+    .queryBalances.getQueryBech32Address(senderConfig.sender);
 
   const [randomId] = useState(() => {
     const bytes = new Uint8Array(4);

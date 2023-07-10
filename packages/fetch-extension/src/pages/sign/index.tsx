@@ -405,6 +405,7 @@ export const SignPageImpl: FunctionComponent<{
                   <DetailsTab
                     signDocHelper={signDocHelper}
                     memoConfig={memoConfig}
+                    senderConfig={senderConfig}
                     feeConfig={feeConfig}
                     gasConfig={gasConfig}
                     isInternal={

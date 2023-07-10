@@ -186,6 +186,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     });
   }
 
+
   isEnabledChain(chainId: string): boolean {
     const chainIdentifier = ChainIdHelper.parse(chainId).identifier;
     return this.enabledChainIdentifiesMap.get(chainIdentifier) === true;

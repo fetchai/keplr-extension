@@ -7,7 +7,7 @@ import "./styles/global.scss";
 
 import { HashRouter, Route } from "react-router-dom";
 
-import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
+import { AccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages/lock";
@@ -38,7 +38,6 @@ import { AddressBookPage } from "./pages/setting/address-book";
 import { ClearPage } from "./pages/setting/clear";
 import {
   SettingConnectionsPage,
-  SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages/setting/connections";
 import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
@@ -181,11 +180,6 @@ ReactDOM.render(
                     <Route path="/" element={StateRenderer} />
                     <Route path="/unlock" element={LockPage} />
                     <Route path="/access" element={AccessPage} />
-                    <Route
-
-                      path="/access/viewing-key"
-                      element={Secret20ViewingKeyAccessPage}
-                    />
                     <Route path="/register" element={RegisterPage} />
                     <Route path="/send" element={SendPage} />
                     <Route
@@ -208,11 +202,6 @@ ReactDOM.render(
 
                       path="/setting/connections"
                       element={SettingConnectionsPage}
-                    />
-                    <Route
-
-                      path="/setting/connections/viewing-key/:contractAddress"
-                      element={SettingSecret20ViewingKeyConnectionsPage}
                     />
                     <Route
 

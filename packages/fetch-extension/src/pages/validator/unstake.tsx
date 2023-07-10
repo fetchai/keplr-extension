@@ -31,14 +31,14 @@ export const Unstake: FunctionComponent<{
     account.bech32Address,
     validatorAddress
   );
-  const { amountConfig, memoConfig, feeConfig } = sendConfigs;
+  const { amountConfig, memoConfig, feeConfig, senderConfig } = sendConfigs;
 
   const intl = useIntl();
   const error = amountConfig.uiProperties.error;
 
   const balance = queriesStore
     .get(amountConfig.chainId)
-    .cosmos.queryDelegations.getQueryBech32Address(amountConfig.sender)
+    .cosmos.queryDelegations.getQueryBech32Address(senderConfig.sender)
     .getDelegationTo(validatorAddress);
 
   const errorText: string | undefined = useMemo(() => {

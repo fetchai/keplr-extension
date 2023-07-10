@@ -12,8 +12,8 @@ import { FeeButtons, MemoInput } from "@components/form";
 import {
   IFeeConfig,
   IGasConfig,
-  IMemoConfig,
-  SignDocHelper,
+  IMemoConfig, ISenderConfig,
+  SignDocHelper
 } from "@keplr-wallet/hooks";
 import { useLanguage } from "../../languages";
 import { Badge, Button, Label } from "reactstrap";
@@ -24,6 +24,7 @@ import { CoinPretty } from "@keplr-wallet/unit";
 export const DetailsTab: FunctionComponent<{
   signDocHelper: SignDocHelper;
   memoConfig: IMemoConfig;
+  senderConfig: ISenderConfig;
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
 
@@ -37,6 +38,7 @@ export const DetailsTab: FunctionComponent<{
   ({
     signDocHelper,
     memoConfig,
+     senderConfig,
     feeConfig,
     gasConfig,
     isInternal,
@@ -132,8 +134,9 @@ export const DetailsTab: FunctionComponent<{
             </div>
           </React.Fragment>
         )}
-        {!preferNoSetFee || !(feeConfig.type === "manual") ? (
+        {!preferNoSetFee || !feeConfig.isManual ? (
           <FeeButtons
+            senderConfig={senderConfig}
             feeConfig={feeConfig}
             gasConfig={gasConfig}
             priceStore={priceStore}
@@ -206,7 +209,15 @@ export const DetailsTab: FunctionComponent<{
                     }}
                     onClick={(e) => {
                       e.preventDefault();
-                      feeConfig.setFeeType("average");
+                      if (
+                        feeConfig.fees.length === 0 &&
+                        feeConfig.selectableFeeCurrencies.length > 0
+                      ) {
+                        feeConfig.setFee({
+                          type: "average",
+                          currency: feeConfig.selectableFeeCurrencies[0],
+                        });
+                      }
                     }}
                   >
                     <FormattedMessage id="sign.info.fee.override" />

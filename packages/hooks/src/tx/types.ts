@@ -49,7 +49,7 @@ export interface IFeeConfig extends ITxChainSetter {
   setFee(
     fee:
       | {
-          type: FeeType;
+          type: FeeType | "manual";
           currency: FeeCurrency;
         }
       | CoinPretty
@@ -64,9 +64,9 @@ export interface IFeeConfig extends ITxChainSetter {
 
   getFeeTypePrettyForFeeCurrency(
     currency: FeeCurrency,
-    feeType: FeeType
+    feeType: FeeType | "manual"
   ): CoinPretty;
-
+  isManual: boolean;
   uiProperties: UIProperties;
 }
 

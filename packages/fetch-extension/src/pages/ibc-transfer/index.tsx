@@ -19,9 +19,9 @@ import {
   IGasSimulator,
   IIBCChannelConfig,
   IMemoConfig,
-  IRecipientConfig,
+  IRecipientConfig, ISenderConfig,
   useGasSimulator,
-  useIBCTransferConfig,
+  useIBCTransferConfig
 } from "@keplr-wallet/hooks";
 import { useStore } from "../../stores";
 import { useNotification } from "@components/notification";
@@ -113,6 +113,7 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
       {phase === "amount" ? (
         <IBCTransferPageAmount
           amountConfig={ibcTransferConfigs.amountConfig}
+          senderConfig={ibcTransferConfigs.senderConfig}
           feeConfig={ibcTransferConfigs.feeConfig}
           gasConfig={ibcTransferConfigs.gasConfig}
           gasSimulator={gasSimulator}
@@ -284,12 +285,13 @@ export const IBCTransferPageChannel: FunctionComponent<{
 
 export const IBCTransferPageAmount: FunctionComponent<{
   amountConfig: IAmountConfig;
+  senderConfig: ISenderConfig;
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
   gasSimulator?: IGasSimulator;
   onSubmit: () => void;
 }> = observer(
-  ({ amountConfig, feeConfig, gasConfig, gasSimulator, onSubmit }) => {
+  ({ amountConfig, senderConfig, feeConfig, gasConfig, gasSimulator, onSubmit }) => {
     const intl = useIntl();
     const { accountStore, chainStore, priceStore } = useStore();
 
@@ -307,6 +309,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
             label={intl.formatMessage({
               id: "send.input.amount",
             })}
+            senderConfig={senderConfig}
             amountConfig={amountConfig}
           />
           <div style={{ flex: 1 }} />
@@ -314,6 +317,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
             label={intl.formatMessage({
               id: "send.input.fee",
             })}
+            senderConfig={senderConfig}
             feeConfig={feeConfig}
             gasConfig={gasConfig}
             priceStore={priceStore}

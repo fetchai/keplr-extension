@@ -403,6 +403,7 @@ export const SendPage: FunctionComponent = observer(() => {
               value={""}
             />
             <CoinInput
+              senderConfig={sendConfigs.senderConfig}
               amountConfig={sendConfigs.amountConfig}
               label={intl.formatMessage({ id: "send.input.amount" })}
               balanceText={intl.formatMessage({
@@ -439,6 +440,7 @@ export const SendPage: FunctionComponent = observer(() => {
               label={intl.formatMessage({ id: "send.input.memo" })}
             />
             <FeeButtons
+              senderConfig={sendConfigs.senderConfig}
               feeConfig={sendConfigs.feeConfig}
               gasConfig={sendConfigs.gasConfig}
               priceStore={priceStore}

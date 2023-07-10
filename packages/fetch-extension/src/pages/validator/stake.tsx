@@ -30,14 +30,14 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
       chainStore.current.chainId,
       account.bech32Address
     );
-    const { amountConfig, memoConfig, feeConfig } = sendConfigs;
+    const { amountConfig, memoConfig, feeConfig, senderConfig } = sendConfigs;
 
     const intl = useIntl();
     const error = amountConfig.uiProperties.error;
 
     const queryBalances = queriesStore
       .get(amountConfig.chainId)
-      .queryBalances.getQueryBech32Address(account.bech32Address);
+      .queryBalances.getQueryBech32Address(senderConfig.sender);
 
     const queryBalance = queryBalances.balances.find(
       (bal) =>

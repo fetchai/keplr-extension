@@ -15,7 +15,7 @@ import { useNotification } from "@components/notification";
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
 
-import { Dec } from "@keplr-wallet/unit";
+import { Dec, Int } from "@keplr-wallet/unit";
 import send from "@assets/icon/send.png";
 import reward from "@assets/icon/reward.png";
 import stake from "@assets/icon/stake.png";
@@ -69,25 +69,71 @@ export const TxButtonView: FunctionComponent = observer(() => {
     return stakable.balance.toDec().gt(new Dec(0));
   }, [stakable.balance]);
 
+  const defaultGasPerDelegation = 140000;
+
   const withdrawAllRewards = async () => {
     if (
       accountInfo.isReadyToSendMsgs &&
       chainStore.current.walletUrlForStaking
     ) {
+      // When the user delegated too many validators,
+      // it can't be sent to withdraw rewards from all validators due to the block gas limit.
+      // So, to prevent this problem, just send the msgs up to 8.
+      const validatorAddresses =  rewards.getDescendingPendingRewardValidatorAddresses(8);
+      const tx =await accountInfo.cosmos.makeWithdrawDelegationRewardTx(
+       validatorAddresses);
+
+      let gas = new Int(validatorAddresses.length * defaultGasPerDelegation);
+
       try {
-        // When the user delegated too many validators,
-        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
-        // So, to prevent this problem, just send the msgs up to 8.
-        await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
-          rewards.getDescendingPendingRewardValidatorAddresses(8),
+        const simulated = await tx.simulate();
+
+        // Gas adjustment is 1.5
+        // Since there is currently no convenient way to adjust the gas adjustment on the UI,
+        // Use high gas adjustment to prevent failure.
+        gas = new Dec(simulated.gasUsed * 1.5).truncate();
+      } catch (e) {
+        console.log(e);
+      }
+      try {
+        await tx.send(
+          {
+            gas: gas.toString(),
+            amount: [],
+          },
           "",
-          undefined,
-          undefined,
+          {},
           {
             onBroadcasted: () => {
               analyticsStore.logEvent("Claim reward tx broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
+              });
+            },
+            onFulfill: (tx: any) => {
+              if (tx.code != null && tx.code !== 0) {
+                console.log(tx.log ?? tx.raw_log);
+                notification.push({
+                  type:"danger",
+                  placement:"top-center",
+                  duration: 5,
+                  content: "Transaction Failed",
+                  canDelete: true,
+                  transition: {
+                    duration: 0.25,
+                  },
+                });
+                return;
+              }
+              notification.push({
+                type:"success",
+                placement:"top-center",
+                duration: 5,
+                content: "Transaction Success",
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
               });
             },
           }

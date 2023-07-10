@@ -129,6 +129,7 @@ export const useDelegateTxConfig = (
 
   return {
     amountConfig,
+    senderConfig,
     memoConfig,
     gasConfig,
     feeConfig,

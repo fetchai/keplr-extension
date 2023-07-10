@@ -81,6 +81,10 @@ export class FeeConfig extends TxChainSetter implements IFeeConfig {
     return this._disableBalanceCheck;
   }
 
+  get isManual(): boolean {
+    return this.type === "manual";
+  }
+
   get type(): FeeType | "manual" {
     if (!this.fee) {
       return "manual";

@@ -103,6 +103,7 @@ export const useUndelegateTxConfig = (
 
   return {
     amountConfig,
+    senderConfig,
     memoConfig,
     gasConfig,
     feeConfig,
