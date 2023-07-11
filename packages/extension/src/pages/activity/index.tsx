@@ -47,7 +47,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
             className={`${style.tab} ${
               activeTab === "gov" ? style.active : ""
             }`}
-            onClick={() => handleTabClick("gov")}
+            onClick={() => { handleTabClick("gov"); }}
           >
             Gov Proposals
           </div>
