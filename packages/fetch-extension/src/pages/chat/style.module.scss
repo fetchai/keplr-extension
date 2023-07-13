@@ -102,7 +102,7 @@
   }
 }
 
-.locked-inner-container {
+.lockedInnerContainer {
   flex: 1;
 
   display: flex;
@@ -112,13 +112,13 @@
   height: 350px;
   color: #808da0;
 
-  .img-lock {
+  .imgLock {
     height: 120px;
     margin-bottom: 20px;
   }
 }
 
-.message-disappear {
+.messageDisappear {
   font-weight: 400;
   font-size: 15px;
   color: #525f7f;

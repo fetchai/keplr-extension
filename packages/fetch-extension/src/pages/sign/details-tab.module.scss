@@ -10,7 +10,7 @@
   flex-direction: column;
 }
 
-.msg-container {
+.msgContainer {
   flex: 1;
 
   hr {
@@ -34,12 +34,12 @@
       }
     }
 
-    .content-container {
+    .contentContainer {
       display: flex;
       flex: 1;
       flex-direction: column;
 
-      .content-title {
+      .contentTitle {
         font-size: 16px;
         font-weight: bold;
       }
@@ -52,7 +52,7 @@
   }
 }
 
-.eth-ledger-blind-signing-warning {
+.ethLedgerBlindSigningWarning {
   padding: 20px 0;
   background: #f7f9fc;
   border-radius: 6px;

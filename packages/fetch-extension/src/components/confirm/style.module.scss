@@ -6,7 +6,7 @@
   padding: 12px;
 }
 
-.modal-dialog {
+.modalDialog {
   @include media-breakpoint-down(xs) {
     margin: 32px;
 
@@ -18,7 +18,7 @@
 }
 
 .dialog {
-  .body-container {
+  .bodyContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;

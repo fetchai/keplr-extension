@@ -3,22 +3,22 @@ import {
   ObservableChainQueryMap,
 } from "../../chain-query";
 import { ProposalVoter } from "./types";
-import { ChainGetter } from "../../../chain";
-import { QuerySharedContext } from "../../../common";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainGetter } from "../../../common";
 
 export class ObservableQueryProposalVoteInner extends ObservableChainQuery<ProposalVoter> {
   protected proposalId: string;
   protected bech32Address: string;
 
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     proposalsId: string,
     bech32Address: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/cosmos/gov/v1beta1/proposals/${proposalsId}/votes/${bech32Address}`
@@ -55,15 +55,15 @@ export class ObservableQueryProposalVoteInner extends ObservableChainQuery<Propo
 
 export class ObservableQueryProposalVote extends ObservableChainQueryMap<ProposalVoter> {
   constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
+    protected override readonly kvStore: KVStore,
+    protected override readonly chainId: string,
+    protected override readonly chainGetter: ChainGetter
   ) {
-    super(sharedContext, chainId, chainGetter, (param: string) => {
+    super(kvStore, chainId, chainGetter, (param: string) => {
       const { proposalId, voter } = JSON.parse(param);
 
       return new ObservableQueryProposalVoteInner(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         proposalId,

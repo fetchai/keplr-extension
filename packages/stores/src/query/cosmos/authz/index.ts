@@ -2,19 +2,19 @@ import {
   ObservableChainQuery,
   ObservableChainQueryMap,
 } from "../../chain-query";
-import { ChainGetter } from "../../../chain";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainGetter } from "../../../common";
 import { Granter } from "./types";
-import { QuerySharedContext } from "../../../common";
 
 export class ObservableQueryAuthZGranterInner extends ObservableChainQuery<Granter> {
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     protected readonly granter: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/cosmos/authz/v1beta1/grants/granter/${granter}?pagination.limit=1000`
@@ -27,14 +27,10 @@ export class ObservableQueryAuthZGranterInner extends ObservableChainQuery<Grant
 }
 
 export class ObservableQueryAuthZGranter extends ObservableChainQueryMap<Granter> {
-  constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
-  ) {
-    super(sharedContext, chainId, chainGetter, (granter) => {
+  constructor(kvStore: KVStore, chainId: string, chainGetter: ChainGetter) {
+    super(kvStore, chainId, chainGetter, (granter) => {
       return new ObservableQueryAuthZGranterInner(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         granter

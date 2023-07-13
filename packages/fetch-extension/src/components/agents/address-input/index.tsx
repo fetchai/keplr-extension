@@ -11,7 +11,6 @@ import { Button } from "reactstrap";
 import { AddressInput } from "@components/form";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { InitialGas } from "../../../config.ui";
 
 export const RecipientAddressInput: FunctionComponent<{
   label: string;
@@ -27,9 +26,9 @@ export const RecipientAddressInput: FunctionComponent<{
   const sendConfigs = useSendTxConfig(
     chainStore,
     queriesStore,
+    accountStore,
     current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -37,7 +36,7 @@ export const RecipientAddressInput: FunctionComponent<{
     }
   );
 
-  const error = sendConfigs.recipientConfig.uiProperties.error;
+  const error = sendConfigs.recipientConfig.error;
   const errorText: boolean | undefined = useMemo(() => {
     if (error) {
       if (error.constructor) {

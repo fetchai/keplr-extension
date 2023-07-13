@@ -199,7 +199,11 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
               return (
                 <NotificationOrg
                   handleCheck={(isChecked) => handleCheck(isChecked, index)}
-                  isChecked={!!selectedOrg.find((item) => item.id === elem.id)}
+                  isChecked={
+                    selectedOrg.find((item) => item.id === elem.id)
+                      ? true
+                      : false
+                  }
                   elem={elem}
                   key={elem.id}
                   isNew={newOrg && newOrg.indexOf(elem.id) != -1}

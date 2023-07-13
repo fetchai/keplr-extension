@@ -67,14 +67,14 @@
   }
 }
 
-.mnemonic-container {
+.mnemonicContainer {
   display: grid;
 
   grid-template-columns: 1fr 1fr 1fr;
   &.private-key {
     grid-template-columns: 1fr;
 
-    .mnemonic-word-form-group {
+    .mnemonicWordFormGroup {
       flex: 1;
     }
   }
@@ -84,7 +84,7 @@
 
   margin-bottom: 1.5rem;
 
-  .mnemonic-word-container {
+  .mnemonicWordContainer {
     display: flex;
     align-items: center;
 
@@ -92,17 +92,17 @@
       width: 40px;
     }
 
-    .mnemonic-word-form-group {
+    .mnemonicWordFormGroup {
       margin-bottom: 0;
     }
 
-    .mnemonic-word {
+    .mnemonicWord {
       border-radius: 0.375rem !important;
       padding-right: 38px;
     }
   }
 }
 
-.form-inner-container {
+.formInnerContainer {
   width: 420px;
 }

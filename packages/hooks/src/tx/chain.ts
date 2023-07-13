@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { ChainGetter, IChainInfoImpl } from "@keplr-wallet/stores";
+import { ChainGetter } from "@keplr-wallet/stores";
+import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
 import { ITxChainSetter } from "./types";
 
 export class TxChainSetter implements ITxChainSetter {
@@ -16,7 +17,12 @@ export class TxChainSetter implements ITxChainSetter {
   }
 
   @computed
-  get chainInfo(): IChainInfoImpl {
+  get chainInfo(): ChainInfo & {
+    raw: ChainInfo;
+    addUnknownCurrencies(...coinMinimalDenoms: string[]): void;
+    findCurrency(coinMinimalDenom: string): AppCurrency | undefined;
+    forceFindCurrency(coinMinimalDenom: string): AppCurrency;
+  } {
     return this.chainGetter.getChain(this.chainId);
   }
 

@@ -118,7 +118,8 @@ describe("Test phishing list service utils", () => {
         expect: "asd.test.com",
       },
       {
-        url: "chrome-extension://hajcclbibbmagnhankhjinooiploogfm/_generated_background_page.html",
+        url:
+          "chrome-extension://hajcclbibbmagnhankhjinooiploogfm/_generated_background_page.html",
         invalid: true,
       },
       {
@@ -134,7 +135,8 @@ describe("Test phishing list service utils", () => {
         expect: "hajcclbibbmagnhankhjinooiploogfm.test",
       },
       {
-        url: "chrome-extension://hajcclbibbmagnhankhjinooiploogfm.test/_generated_background_page.html",
+        url:
+          "chrome-extension://hajcclbibbmagnhankhjinooiploogfm.test/_generated_background_page.html",
         expect: "hajcclbibbmagnhankhjinooiploogfm.test",
       },
     ];

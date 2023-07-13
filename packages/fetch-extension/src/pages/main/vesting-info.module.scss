@@ -1,4 +1,4 @@
-.token-container {
+.tokenContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -16,7 +16,7 @@
     margin-right: 8px;
   }
 
-  .inner-container {
+  .innerContainer {
     flex: 1;
     display: flex;
     justify-content: space-between;

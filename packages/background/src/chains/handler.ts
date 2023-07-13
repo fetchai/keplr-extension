@@ -1,114 +1,64 @@
-import {
-  Env,
-  Handler,
-  InternalHandler,
-  KeplrError,
-  Message,
-} from "@keplr-wallet/router";
+import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { ChainsService } from "./service";
 import {
-  GetChainInfosWithCoreTypesMsg,
+  GetChainInfosMsg,
   GetChainInfosWithoutEndpointsMsg,
   RemoveSuggestedChainInfoMsg,
   SuggestChainInfoMsg,
-  SetChainEndpointsMsg,
-  ClearChainEndpointsMsg,
-  GetChainOriginalEndpointsMsg,
-  ClearAllSuggestedChainInfosMsg,
-  ClearAllChainEndpointsMsg,
 } from "./messages";
 import { ChainInfo } from "@keplr-wallet/types";
-import { getBasicAccessPermissionType, PermissionService } from "../permission";
-import { PermissionInteractiveService } from "../permission-interactive";
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-export const getHandler: (
-  chainsService: ChainsService,
-  permissionService: PermissionService,
-  permissionInteractiveService: PermissionInteractiveService
-) => Handler = (
-  chainsService,
-  permissionService,
-  permissionInteractiveService
-) => {
+export const getHandler: (service: ChainsService) => Handler = (service) => {
   return (env: Env, msg: Message<unknown>) => {
     switch (msg.constructor) {
-      case GetChainInfosWithCoreTypesMsg:
-        return handleGetInfosWithCoreTypesMsg(chainsService)(
-          env,
-          msg as GetChainInfosWithCoreTypesMsg
-        );
+      case GetChainInfosMsg:
+        return handleGetChainInfosMsg(service)(env, msg as GetChainInfosMsg);
       case GetChainInfosWithoutEndpointsMsg:
-        return handleGetChainInfosWithoutEndpointsMsg(
-          chainsService,
-          permissionInteractiveService
-        )(env, msg as GetChainInfosWithoutEndpointsMsg);
+        return handleGetChainInfosWithoutEndpointsMsg(service)(
+          env,
+          msg as GetChainInfosWithoutEndpointsMsg
+        );
       case SuggestChainInfoMsg:
-        return handleSuggestChainInfoMsg(chainsService, permissionService)(
+        return handleSuggestChainInfoMsg(service)(
           env,
           msg as SuggestChainInfoMsg
         );
       case RemoveSuggestedChainInfoMsg:
-        return handleRemoveSuggestedChainInfoMsg(chainsService)(
+        return handleRemoveSuggestedChainInfoMsg(service)(
           env,
           msg as RemoveSuggestedChainInfoMsg
         );
-      case SetChainEndpointsMsg:
-        return handleSetChainEndpointsMsg(chainsService)(
-          env,
-          msg as SetChainEndpointsMsg
-        );
-      case ClearChainEndpointsMsg:
-        return handleClearChainEndpointsMsg(chainsService)(
-          env,
-          msg as ClearChainEndpointsMsg
-        );
-      case GetChainOriginalEndpointsMsg:
-        return handleGetChainOriginalEndpointsMsg(chainsService)(
-          env,
-          msg as GetChainOriginalEndpointsMsg
-        );
-      case ClearAllSuggestedChainInfosMsg:
-        return handleClearAllSuggestedChainInfosMsg(chainsService)(
-          env,
-          msg as ClearAllSuggestedChainInfosMsg
-        );
-      case ClearAllChainEndpointsMsg:
-        return handleClearAllChainEndpointsMsg(chainsService)(
-          env,
-          msg as ClearAllChainEndpointsMsg
-        );
       default:
-        throw new KeplrError("chains", 110, "Unknown msg type");
+        throw new Error("Unknown msg type");
     }
   };
 };
 
-const handleGetInfosWithCoreTypesMsg: (
+const handleGetChainInfosMsg: (
   service: ChainsService
-) => InternalHandler<GetChainInfosWithCoreTypesMsg> = (service) => {
-  return () => {
+) => InternalHandler<GetChainInfosMsg> = (service) => {
+  return async () => {
+    const chainInfos = await service.getChainInfos();
     return {
-      chainInfos: service.getChainInfosWithCoreTypes(),
+      chainInfos,
     };
   };
 };
 
 const handleGetChainInfosWithoutEndpointsMsg: (
-  service: ChainsService,
-  permissionInteractiveService: PermissionInteractiveService
-) => InternalHandler<GetChainInfosWithoutEndpointsMsg> = (
-  service,
-  permissionInteractiveService
-) => {
+  service: ChainsService
+) => InternalHandler<GetChainInfosWithoutEndpointsMsg> = (service) => {
   return async (env, msg) => {
-    await permissionInteractiveService.checkOrGrantGetChainInfosWithoutEndpointsPermission(
+    await service.permissionService.checkOrGrantGlobalPermission(
       env,
+      "/permissions/grant/get-chain-infos",
+      "get-chain-infos",
       msg.origin
     );
 
-    const chainInfos = service.getChainInfosWithoutEndpoints();
+    const chainInfos = await service.getChainInfosWithoutEndpoints();
     return {
       chainInfos,
     };
@@ -116,81 +66,27 @@ const handleGetChainInfosWithoutEndpointsMsg: (
 };
 
 const handleSuggestChainInfoMsg: (
-  chainsService: ChainsService,
-  permissionService: PermissionService
-) => InternalHandler<SuggestChainInfoMsg> = (
-  chainsService,
-  permissionService
-) => {
+  service: ChainsService
+) => InternalHandler<SuggestChainInfoMsg> = (service) => {
   return async (env, msg) => {
-    if (chainsService.getChainInfo(msg.chainInfo.chainId) != null) {
+    if (await service.hasChainInfo(msg.chainInfo.chainId)) {
       // If suggested chain info is already registered, just return.
       return;
     }
 
     const chainInfo = msg.chainInfo as Writeable<ChainInfo>;
+    // And, always handle it as beta.
     chainInfo.beta = true;
 
-    await chainsService.suggestChainInfo(env, chainInfo, msg.origin);
-
-    permissionService.addPermission(
-      [chainInfo.chainId],
-      getBasicAccessPermissionType(),
-      [msg.origin]
-    );
+    await service.suggestChainInfo(env, chainInfo, msg.origin);
   };
 };
 
 const handleRemoveSuggestedChainInfoMsg: (
   service: ChainsService
 ) => InternalHandler<RemoveSuggestedChainInfoMsg> = (service) => {
-  return (_, msg) => {
-    service.removeSuggestedChainInfo(msg.chainId);
-    return service.getChainInfosWithCoreTypes();
-  };
-};
-
-const handleSetChainEndpointsMsg: (
-  service: ChainsService
-) => InternalHandler<SetChainEndpointsMsg> = (service) => {
-  return (_, msg) => {
-    service.setEndpoint(msg.chainId, {
-      rpc: msg.rpc,
-      rest: msg.rest,
-    });
-    return service.getChainInfosWithCoreTypes();
-  };
-};
-
-const handleClearChainEndpointsMsg: (
-  service: ChainsService
-) => InternalHandler<ClearChainEndpointsMsg> = (service) => {
-  return (_, msg) => {
-    service.clearEndpoint(msg.chainId);
-    return service.getChainInfosWithCoreTypes();
-  };
-};
-
-const handleGetChainOriginalEndpointsMsg: (
-  service: ChainsService
-) => InternalHandler<GetChainOriginalEndpointsMsg> = (service) => {
-  return (_, msg) => {
-    return service.getOriginalEndpoint(msg.chainId);
-  };
-};
-
-const handleClearAllSuggestedChainInfosMsg: (
-  service: ChainsService
-) => InternalHandler<ClearAllSuggestedChainInfosMsg> = (service) => {
-  return () => {
-    return service.clearAllSuggestedChainInfos();
-  };
-};
-
-const handleClearAllChainEndpointsMsg: (
-  service: ChainsService
-) => InternalHandler<ClearAllChainEndpointsMsg> = (service) => {
-  return () => {
-    return service.clearAllEndpoints();
+  return async (_, msg) => {
+    await service.removeChainInfo(msg.chainId);
+    return await service.getChainInfos();
   };
 };

@@ -1,10 +1,10 @@
 import { ChainGetter, IAccountStore, MsgOpt } from "@keplr-wallet/stores";
 import {
   AmountConfig,
-  GasConfig, ISenderConfig,
+  GasConfig,
   useFeeConfig,
   useMemoConfig,
-  useRecipientConfig, useSenderConfig
+  useRecipientConfig,
 } from "./index";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { makeObservable, override } from "mobx";
 import { QueriesStore } from "./internal";
 
 export class DelegateAmountConfig extends AmountConfig {
-  get sendableCurrencies(): AppCurrency[] {
+  override get sendableCurrencies(): AppCurrency[] {
     return [this.chainInfo.stakeCurrency];
   }
 }
@@ -37,7 +37,7 @@ export class DelegateGasConfig extends GasConfig {
   @override
   override get gas(): number {
     // If gas not set manually, assume that the tx is for MsgTransfer.
-    if (this._value == null) {
+    if (this._gasRaw == null) {
       return this.accountStore.getAccount(this.chainId).cosmos.msgOpts.delegate
         .gas;
     }
@@ -50,7 +50,7 @@ export const useDelegateAmountConfig = (
   chainGetter: ChainGetter,
   queriesStore: QueriesStore,
   chainId: string,
-  senderConfig: ISenderConfig,
+  sender: string
 ) => {
   const [txConfig] = useState(
     () =>
@@ -58,10 +58,12 @@ export const useDelegateAmountConfig = (
         chainGetter,
         queriesStore,
         chainId,
-        senderConfig,
+        sender,
+        undefined
       )
   );
   txConfig.setChain(chainId);
+  txConfig.setSender(sender);
 
   return txConfig;
 };
@@ -98,15 +100,12 @@ export const useDelegateTxConfig = (
   chainId: string,
   sender: string
 ) => {
-  const senderConfig = useSenderConfig(chainGetter, chainId, sender);
-
   const amountConfig = useDelegateAmountConfig(
     chainGetter,
     queriesStore,
     chainId,
-    senderConfig
+    sender
   );
-
 
   const memoConfig = useMemoConfig(chainGetter, chainId);
   const gasConfig = useDelegateGasConfig(chainGetter, accountStore, chainId);
@@ -114,7 +113,7 @@ export const useDelegateTxConfig = (
     chainGetter,
     queriesStore,
     chainId,
-    senderConfig,
+    sender,
     amountConfig,
     gasConfig
   );
@@ -129,7 +128,6 @@ export const useDelegateTxConfig = (
 
   return {
     amountConfig,
-    senderConfig,
     memoConfig,
     gasConfig,
     feeConfig,

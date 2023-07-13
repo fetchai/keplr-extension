@@ -49,14 +49,14 @@ html[data-register-page="true"] {
     margin-top: 14px;
   }
 
-  .logo-container {
+  .logoContainer {
     margin-top: 40px;
     margin-bottom: 40px;
 
     display: flex;
     flex-direction: column;
 
-    .logo-inner-container {
+    .logoInnerContainer {
       display: flex;
       flex-direction: row;
 
@@ -72,7 +72,7 @@ html[data-register-page="true"] {
         height: 100px;
       }
 
-      .logo-inner-container {
+      .logoInnerContainer {
         margin-top: 8px;
         margin-left: 20px;
 
@@ -90,18 +90,18 @@ html[data-register-page="true"] {
           line-height: 1;
         }
 
-        .brand-text {
+        .brandText {
           height: 80px;
           margin-left: 18px;
         }
       }
     }
 
-    .intro-brand-sub-text-container {
+    .introBrandSubTextContainer {
       margin-top: 16px;
       height: 14px;
 
-      .intro-brand-sub-text {
+      .introBrandSubText {
         display: block;
         width: auto;
         height: 100%;
@@ -118,7 +118,7 @@ html[data-register-page="true"] {
     color: #525f7f;
   }
 
-  .new-mnemonic {
+  .newMnemonic {
     font-family: "Courier Prime", serif;
     font-size: 16px;
     letter-spacing: -0.36px;
@@ -152,7 +152,7 @@ html[data-register-page="true"] {
     }
   }
 
-  .sub-content {
+  .subContent {
     margin-top: 34px;
 
     font-size: 14px;
@@ -168,7 +168,7 @@ html[data-register-page="true"] {
   }
 }
 
-.form-container {
+.formContainer {
   display: flex;
   flex-direction: column;
 }
@@ -188,7 +188,7 @@ html[data-register-page="true"] {
   }
 }
 
-.intro-icon {
+.introIcon {
   position: absolute;
   right: 13px;
   top: 50%;

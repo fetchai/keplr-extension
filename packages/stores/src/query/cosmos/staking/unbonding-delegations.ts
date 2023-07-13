@@ -3,22 +3,22 @@ import {
   ObservableChainQueryMap,
 } from "../../chain-query";
 import { UnbondingDelegation, UnbondingDelegations } from "./types";
-import { ChainGetter } from "../../../chain";
-import { CoinPretty, Int, Dec } from "@keplr-wallet/unit";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainGetter } from "../../../common";
+import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { computed, makeObservable } from "mobx";
-import { QuerySharedContext } from "../../../common";
 
 export class ObservableQueryUnbondingDelegationsInner extends ObservableChainQuery<UnbondingDelegations> {
   protected bech32Address: string;
 
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     bech32Address: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/cosmos/staking/v1beta1/delegators/${bech32Address}/unbonding_delegations?pagination.limit=1000`
@@ -44,10 +44,7 @@ export class ObservableQueryUnbondingDelegationsInner extends ObservableChainQue
     let totalBalance = new Int(0);
     for (const unbondingDelegation of this.response.data.unbonding_responses) {
       for (const entry of unbondingDelegation.entries) {
-        const amount = new Int(entry.balance);
-        if (amount.gt(new Int(0))) {
-          totalBalance = totalBalance.add(amount);
-        }
+        totalBalance = totalBalance.add(new Int(entry.balance));
       }
     }
 
@@ -71,22 +68,17 @@ export class ObservableQueryUnbondingDelegationsInner extends ObservableChainQue
     for (const unbonding of unbondings) {
       const entries = [];
       for (const entry of unbonding.entries) {
-        const balance = new CoinPretty(stakeCurrency, new Int(entry.balance));
-        if (balance.toDec().gt(new Dec(0))) {
-          entries.push({
-            creationHeight: new Int(entry.creation_height),
-            completionTime: entry.completion_time,
-            balance,
-          });
-        }
-      }
-
-      if (entries.length > 0) {
-        result.push({
-          validatorAddress: unbonding.validator_address,
-          entries,
+        entries.push({
+          creationHeight: new Int(entry.creation_height),
+          completionTime: entry.completion_time,
+          balance: new CoinPretty(stakeCurrency, new Int(entry.balance)),
         });
       }
+
+      result.push({
+        validatorAddress: unbonding.validator_address,
+        entries,
+      });
     }
 
     return result;
@@ -104,13 +96,13 @@ export class ObservableQueryUnbondingDelegationsInner extends ObservableChainQue
 
 export class ObservableQueryUnbondingDelegations extends ObservableChainQueryMap<UnbondingDelegations> {
   constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
+    protected override readonly kvStore: KVStore,
+    protected override readonly chainId: string,
+    protected override readonly chainGetter: ChainGetter
   ) {
-    super(sharedContext, chainId, chainGetter, (bech32Address: string) => {
+    super(kvStore, chainId, chainGetter, (bech32Address: string) => {
       return new ObservableQueryUnbondingDelegationsInner(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         bech32Address

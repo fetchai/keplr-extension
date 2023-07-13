@@ -19,19 +19,14 @@ import {
   IGasSimulator,
   IIBCChannelConfig,
   IMemoConfig,
-  IRecipientConfig, ISenderConfig,
+  IRecipientConfig,
   useGasSimulator,
-  useIBCTransferConfig
+  useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { useStore } from "../../stores";
 import { useNotification } from "@components/notification";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { InitialGas } from "../../config.ui";
-import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { SendTxAndRecordMsg } from "@keplr-wallet/background";
-import { DecUtils } from "@keplr-wallet/unit";
 
 export const IBCTransferPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -43,6 +38,7 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
     accountStore,
     queriesStore,
     uiConfigStore,
+    analyticsStore,
   } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
@@ -51,9 +47,9 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
+    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -75,22 +71,29 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
       // because gas simulator can change the gas config and fee config from the result of reaction,
       // and it can make repeated reaction.
       if (
-        ibcTransferConfigs.amountConfig.uiProperties.error != null ||
-        ibcTransferConfigs.recipientConfig.uiProperties.error != null
+        ibcTransferConfigs.amountConfig.error != null ||
+        ibcTransferConfigs.recipientConfig.error != null
       ) {
         throw new Error("Not ready to simulate tx");
       }
 
       return accountInfo.cosmos.makeIBCTransferTx(
         ibcTransferConfigs.channelConfig.channel,
-        ibcTransferConfigs.amountConfig.amount[0].toDec().toString(),
-        ibcTransferConfigs.amountConfig.amount[0].currency,
+        ibcTransferConfigs.amountConfig.amount,
+        ibcTransferConfigs.amountConfig.sendCurrency,
         ibcTransferConfigs.recipientConfig.recipient
       );
     }
   );
 
-  const historyType = "ibc-transfer";
+  const toChainId =
+    (ibcTransferConfigs &&
+      ibcTransferConfigs.channelConfig &&
+      ibcTransferConfigs.channelConfig.channel &&
+      ibcTransferConfigs.channelConfig.channel.counterpartyChainId) ||
+    "";
+  const toChainName =
+    (toChainId && chainStore.getChain(toChainId).chainName) || "";
 
   return (
     <HeaderLayout
@@ -113,7 +116,6 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
       {phase === "amount" ? (
         <IBCTransferPageAmount
           amountConfig={ibcTransferConfigs.amountConfig}
-          senderConfig={ibcTransferConfigs.senderConfig}
           feeConfig={ibcTransferConfigs.feeConfig}
           gasConfig={ibcTransferConfigs.gasConfig}
           gasSimulator={gasSimulator}
@@ -122,8 +124,8 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
               try {
                 const tx = accountInfo.cosmos.makeIBCTransferTx(
                   ibcTransferConfigs.channelConfig.channel,
-                  ibcTransferConfigs.amountConfig.amount[0].toDec().toString(),
-                  ibcTransferConfigs.amountConfig.amount[0].currency,
+                  ibcTransferConfigs.amountConfig.amount,
+                  ibcTransferConfigs.amountConfig.sendCurrency,
                   ibcTransferConfigs.recipientConfig.recipient
                 );
 
@@ -133,65 +135,16 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
                   {
                     preferNoSetFee: true,
                     preferNoSetMemo: true,
-                    sendTx: async (chainId, tx, mode) => {
-                      const msg = new SendTxAndRecordMsg(
-                        historyType,
-                        chainId,
-                        ibcTransferConfigs.recipientConfig.chainId,
-                        tx,
-                        mode,
-                        false,
-                        ibcTransferConfigs.senderConfig.sender,
-                        ibcTransferConfigs.recipientConfig.recipient,
-                        ibcTransferConfigs.amountConfig.amount.map((amount) => {
-                          return {
-                            amount: DecUtils.getTenExponentN(
-                              amount.currency.coinDecimals
-                            )
-                              .mul(amount.toDec())
-                              .toString(),
-                            denom: amount.currency.coinMinimalDenom,
-                          };
-                        }),
-                        ibcTransferConfigs.memoConfig.memo
-                      );
-                      return await new InExtensionMessageRequester().sendMessage(
-                        BACKGROUND_PORT,
-                        msg
-                      );
-                    },
                   },
                   {
                     onBroadcasted: () => {
-                      chainStore.enableVaultsWithCosmosAddress(
-                        ibcTransferConfigs.recipientConfig.chainId,
-                        ibcTransferConfigs.recipientConfig.recipient
-                      );
-                    },
-                    onFulfill: (tx) => {
-                      if (tx.code != null && tx.code !== 0) {
-                        console.log(tx.log ?? tx.raw_log);
-                        notification.push({
-                          type:"danger",
-                          placement:"top-center",
-                          duration: 5,
-                          content: "Transaction Failed",
-                          canDelete: true,
-                          transition: {
-                            duration: 0.25,
-                          },
-                        });
-                        return;
-                      }
-                      notification.push({
-                        type:"success",
-                        placement:"top-center",
-                        duration: 5,
-                        content: "Transaction Success",
-                        canDelete: true,
-                        transition: {
-                          duration: 0.25,
-                        },
+                      analyticsStore.logEvent("Send token tx broadCasted", {
+                        chainId: chainStore.current.chainId,
+                        chainName: chainStore.current.chainName,
+                        feeType: ibcTransferConfigs.feeConfig.feeType,
+                        isIbc: true,
+                        toChainId,
+                        toChainName,
                       });
                     },
                   }
@@ -228,8 +181,8 @@ export const IBCTransferPageChannel: FunctionComponent<{
   const intl = useIntl();
   const isValid =
     channelConfig.error == null &&
-    recipientConfig.uiProperties.error == null &&
-    memoConfig.uiProperties.error == null;
+    recipientConfig.error == null &&
+    memoConfig.error == null;
 
   const isChannelSet = channelConfig.channel != null;
 
@@ -285,22 +238,21 @@ export const IBCTransferPageChannel: FunctionComponent<{
 
 export const IBCTransferPageAmount: FunctionComponent<{
   amountConfig: IAmountConfig;
-  senderConfig: ISenderConfig;
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
   gasSimulator?: IGasSimulator;
   onSubmit: () => void;
 }> = observer(
-  ({ amountConfig, senderConfig, feeConfig, gasConfig, gasSimulator, onSubmit }) => {
+  ({ amountConfig, feeConfig, gasConfig, gasSimulator, onSubmit }) => {
     const intl = useIntl();
     const { accountStore, chainStore, priceStore } = useStore();
 
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
     const isValid =
-      amountConfig.uiProperties.error == null &&
-      feeConfig.uiProperties.error == null &&
-      gasConfig.uiProperties.error == null;
+      amountConfig.error == null &&
+      feeConfig.error == null &&
+      gasConfig.error == null;
 
     return (
       <form className={style["formContainer"]}>
@@ -309,7 +261,6 @@ export const IBCTransferPageAmount: FunctionComponent<{
             label={intl.formatMessage({
               id: "send.input.amount",
             })}
-            senderConfig={senderConfig}
             amountConfig={amountConfig}
           />
           <div style={{ flex: 1 }} />
@@ -317,7 +268,6 @@ export const IBCTransferPageAmount: FunctionComponent<{
             label={intl.formatMessage({
               id: "send.input.fee",
             })}
-            senderConfig={senderConfig}
             feeConfig={feeConfig}
             gasConfig={gasConfig}
             priceStore={priceStore}

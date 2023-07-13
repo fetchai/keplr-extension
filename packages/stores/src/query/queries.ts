@@ -1,30 +1,25 @@
 import { makeObservable, observable, runInAction } from "mobx";
+import { KVStore } from "@keplr-wallet/common";
 import { DeepReadonly, UnionToIntersection } from "utility-types";
 import { ObservableQueryBalances } from "./balances";
 import {
+  ChainGetter,
   IObject,
   mergeStores,
   ChainedFunctionifyTuple,
-  QuerySharedContext,
 } from "../common";
-import { ChainGetter } from "../chain";
-import { KVStore, MultiGet } from "@keplr-wallet/common";
 
 export interface QueriesSetBase {
   readonly queryBalances: DeepReadonly<ObservableQueryBalances>;
 }
 
 export const createQueriesSetBase = (
-  sharedContext: QuerySharedContext,
+  kvStore: KVStore,
   chainId: string,
   chainGetter: ChainGetter
 ): QueriesSetBase => {
   return {
-    queryBalances: new ObservableQueryBalances(
-      sharedContext,
-      chainId,
-      chainGetter
-    ),
+    queryBalances: new ObservableQueryBalances(kvStore, chainId, chainGetter),
   };
 };
 
@@ -45,30 +40,22 @@ export class QueriesStore<Injects extends Array<IObject>> {
     // kvStore: KVStore,
     // chainId: string,
     // chainGetter: ChainGetter
-    [QuerySharedContext, string, ChainGetter],
+    [KVStore, string, ChainGetter],
     Injects
   >;
 
-  protected readonly sharedContext: QuerySharedContext;
-
   constructor(
-    protected readonly kvStore: KVStore | (KVStore & MultiGet),
+    protected readonly kvStore: KVStore,
     protected readonly chainGetter: ChainGetter,
-    protected readonly options: {
-      responseDebounceMs?: number;
-    },
     ...queriesCreators: ChainedFunctionifyTuple<
       QueriesSetBase,
       // kvStore: KVStore,
       // chainId: string,
       // chainGetter: ChainGetter
-      [QuerySharedContext, string, ChainGetter],
+      [KVStore, string, ChainGetter],
       Injects
     >
   ) {
-    this.sharedContext = new QuerySharedContext(kvStore, {
-      responseDebounceMs: this.options.responseDebounceMs ?? 0,
-    });
     this.queriesCreators = queriesCreators;
 
     makeObservable(this);
@@ -79,14 +66,14 @@ export class QueriesStore<Injects extends Array<IObject>> {
   ): DeepReadonly<QueriesSetBase & UnionToIntersection<Injects[number]>> {
     if (!this.queriesMap.has(chainId)) {
       const queriesSetBase = createQueriesSetBase(
-        this.sharedContext,
+        this.kvStore,
         chainId,
         this.chainGetter
       );
       runInAction(() => {
         const merged = mergeStores(
           queriesSetBase,
-          [this.sharedContext, chainId, this.chainGetter],
+          [this.kvStore, chainId, this.chainGetter],
           ...this.queriesCreators
         );
 

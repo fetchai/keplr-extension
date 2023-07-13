@@ -12,8 +12,16 @@ interface Props {
   closed: boolean;
 }
 export const VoteBlock: FunctionComponent<Props> = (props) => {
-  const { title, icon, color, activeColor, id, selected, handleClick, closed } =
-    props;
+  const {
+    title,
+    icon,
+    color,
+    activeColor,
+    id,
+    selected,
+    handleClick,
+    closed,
+  } = props;
   const isSelected = id === selected;
   const bgColor = isSelected ? activeColor : color;
   const txtColor = isSelected ? "white" : "#525F7F";

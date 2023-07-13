@@ -10,29 +10,21 @@ import { useStore } from "../../../../stores";
 import { observer } from "mobx-react-lite";
 
 import styleName from "./name.module.scss";
-import { InteractionWaitingData } from "@keplr-wallet/background";
-import { useInteractionInfo } from "@hooks/interaction";
-import { useSearchParams } from "react-router-dom";
+import { KeyRingStatus } from "@keplr-wallet/background";
 
 interface FormData {
   name: string;
 }
 
 export const ChangeNamePage: FunctionComponent = observer(() => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { index = "-1 "} = useParams<{ index: string }>();
-  const vaultId = searchParams.get("id");
 
   const intl = useIntl();
 
-  const { keyRingStore, interactionStore } = useStore();
+  const { keyRingStore } = useStore();
 
-  const interactionInfo = useInteractionInfo(() => {
-    interactionStore.rejectAll("change-keyring-name");
-  });
-  const interactionData: InteractionWaitingData | undefined =
-    interactionStore.getAllData("change-keyring-name")[0];
+  const waitingNameData = keyRingStore.waitingNameData?.data;
 
   const { register, handleSubmit, setError, setValue, formState: { errors }  } =
     useForm<FormData>({
@@ -42,25 +34,18 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
     });
 
   useEffect(() => {
-    if (interactionData?.data) {
-      const defaultName = (interactionData.data as any).defaultName;
-      if (defaultName) {
-        setValue("name", defaultName);
-      }
+    if (waitingNameData?.defaultName) {
+      setValue("name", waitingNameData.defaultName);
     }
-  }, [interactionData?.data, setValue]);
-
-  const notEditable =
-    interactionData?.data != null &&
-    (interactionData.data as any).editable === false;
+  }, [waitingNameData, setValue]);
 
   const [loading, setLoading] = useState(false);
 
-  const walletName = useMemo(() => {
-    return keyRingStore.keyInfos.find((info) => info.id === vaultId);
-  }, [keyRingStore.keyInfos, vaultId]);
+  const keyStore = useMemo(() => {
+    return keyRingStore.multiKeyStoreInfo[parseInt(index)];
+  }, [keyRingStore.multiKeyStoreInfo, index]);
 
-  const isKeyStoreReady = keyRingStore.status === "unlocked";
+  const isKeyStoreReady = keyRingStore.status === KeyRingStatus.UNLOCKED;
 
   useEffect(() => {
     if (parseInt(index).toString() !== index) {
@@ -68,7 +53,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
     }
   }, [index]);
 
-  if (isKeyStoreReady && walletName == null) {
+  if (isKeyStoreReady && keyStore == null) {
     return null;
   }
 
@@ -88,28 +73,20 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
         onSubmit={handleSubmit(async (data) => {
           setLoading(true);
           try {
-            if (vaultId) {
-              if (
-                interactionInfo.interaction &&
-                !interactionInfo.interactionInternal
-              ) {
-                await interactionStore.approveWithProceedNextV2(
-                  interactionStore
-                    .getAllData("change-keyring-name")
-                    .map((data) => data.id),
-                  data.name,
-                  (proceedNext) => {
-                    if (!proceedNext) {
-                      window.close();
-                    }
-                  }
-                );
-              } else {
-                await keyRingStore.changeKeyRingName(vaultId, data.name);
-
-                navigate("/");
-              }
+            // Close the popup by external change name message
+            if (waitingNameData != null) {
+              await keyRingStore.approveChangeName(data.name);
+              window.close();
+              return;
             }
+
+            // Make sure that name is changed
+            await keyRingStore.updateNameKeyRing(
+              parseInt(index),
+              data.name.trim()
+            );
+
+            navigate("/");
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
             setError('name', {
@@ -126,7 +103,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
           label={intl.formatMessage({
             id: "setting.keyring.change.previous-name",
           })}
-          value={walletName?.name ?? ""}
+          value={keyStore?.meta?.["name"] ?? ""}
           readOnly={true}
         />
         <Input
@@ -141,7 +118,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
             }),
           })}
           maxLength={20}
-          readOnly={notEditable}
+          readOnly={waitingNameData !== undefined && !waitingNameData?.editable}
         />
 
         <div style={{ flex: 1 }} />

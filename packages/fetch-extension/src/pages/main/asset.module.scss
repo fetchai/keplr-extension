@@ -1,6 +1,6 @@
 @import "../../styles/var";
 
-.container-asset {
+.containerAsset {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -41,10 +41,10 @@
   }
 }
 
-.container-chart {
+.containerChart {
   position: relative;
 
-  .center-text {
+  .centerText {
     z-index: 1;
     text-align: center;
     top: 50%;
@@ -61,7 +61,7 @@
       font-weight: bold;
     }
 
-    .indicator-icon {
+    .indicatorIcon {
       position: absolute;
       width: 100%;
     }

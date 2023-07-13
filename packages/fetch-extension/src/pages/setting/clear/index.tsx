@@ -44,8 +44,8 @@ export const ClearPage: FunctionComponent = observer(() => {
   }, [index]);
 
   const keyStore = useMemo(() => {
-    return keyRingStore.keyInfos[parseInt(index)];
-  }, [keyRingStore.keyInfos, index]);
+    return keyRingStore.multiKeyStoreInfo[parseInt(index)];
+  }, [keyRingStore.multiKeyStoreInfo, index]);
 
   return (
     <HeaderLayout

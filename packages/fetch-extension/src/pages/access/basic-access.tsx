@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from "react";
 
-import { useInteractionInfo } from "@hooks/interaction";
+import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { Button } from "reactstrap";
 
 import { observer } from "mobx-react-lite";
@@ -13,16 +13,18 @@ import { FormattedMessage } from "react-intl";
 export const AccessPage: FunctionComponent = observer(() => {
   const { chainStore, permissionStore } = useStore();
 
-  const waitingPermission = permissionStore.waitingPermissionMergedData;
+  const waitingPermission =
+    permissionStore.waitingBasicAccessPermissions.length > 0
+      ? permissionStore.waitingBasicAccessPermissions[0]
+      : undefined;
 
-  const interactionInfo = useInteractionInfo(() => {
-    permissionStore.rejectPermissionAll();
-    permissionStore.rejectGlobalPermissionAll();
+  const ineractionInfo = useInteractionInfo(() => {
+    permissionStore.rejectAll();
   });
 
   const isSecretWasmIncluded = useMemo(() => {
     if (waitingPermission) {
-      for (const chainId of waitingPermission.chainIds) {
+      for (const chainId of waitingPermission.data.chainIds) {
         if (chainStore.hasChain(chainId)) {
           const chainInfo = chainStore.getChain(chainId);
           if (chainInfo.features && chainInfo.features.includes("secretwasm")) {
@@ -36,7 +38,7 @@ export const AccessPage: FunctionComponent = observer(() => {
 
   const host = useMemo(() => {
     if (waitingPermission) {
-      return waitingPermission.origins
+      return waitingPermission.data.origins
         .map((origin) => {
           return new URL(origin).host;
         })
@@ -51,7 +53,7 @@ export const AccessPage: FunctionComponent = observer(() => {
       return "";
     }
 
-    return waitingPermission?.chainIds.join(", ");
+    return waitingPermission.data.chainIds.join(", ");
   }, [waitingPermission]);
 
   return (
@@ -102,24 +104,20 @@ export const AccessPage: FunctionComponent = observer(() => {
               e.preventDefault();
 
               if (waitingPermission) {
-                await permissionStore.rejectPermissionWithProceedNext(waitingPermission.ids, proceedNext => {
-                  if (!proceedNext) {
-                    if (
-                      interactionInfo.interaction &&
-                      !interactionInfo.interactionInternal
-                    ) {
-                      window.close();
-                    }
+                await permissionStore.reject(waitingPermission.id);
+                if (
+                  permissionStore.waitingBasicAccessPermissions.length === 0
+                ) {
+                  if (
+                    ineractionInfo.interaction &&
+                    !ineractionInfo.interactionInternal
+                  ) {
+                    window.close();
                   }
-                });
+                }
               }
             }}
-            data-loading={(() => {
-              const obsolete = waitingPermission?.ids?.find((id) => {
-                return permissionStore.isObsoleteInteraction(id);
-              });
-              return !!obsolete;
-            })()}
+            data-loading={permissionStore.isLoading}
           >
             <FormattedMessage id="access.button.reject" />
           </Button>
@@ -130,28 +128,21 @@ export const AccessPage: FunctionComponent = observer(() => {
               e.preventDefault();
 
               if (waitingPermission) {
-                await permissionStore.approvePermissionWithProceedNext(
-                  waitingPermission.ids,
-                  (proceedNext) => {
-                    if (!proceedNext) {
-                      if (
-                        interactionInfo.interaction &&
-                        !interactionInfo.interactionInternal
-                      ) {
-                        window.close();
-                      }
-                    }
+                await permissionStore.approve(waitingPermission.id);
+                if (
+                  permissionStore.waitingBasicAccessPermissions.length === 0
+                ) {
+                  if (
+                    ineractionInfo.interaction &&
+                    !ineractionInfo.interactionInternal
+                  ) {
+                    window.close();
                   }
-                );
+                }
               }
             }}
             disabled={!waitingPermission}
-            data-loading={(() => {
-              const obsolete = waitingPermission?.ids.find((id) => {
-                return permissionStore.isObsoleteInteraction(id);
-              });
-              return !!obsolete;
-            })()}
+            data-loading={permissionStore.isLoading}
           >
             <FormattedMessage id="access.button.approve" />
           </Button>

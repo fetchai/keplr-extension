@@ -2,11 +2,10 @@ import { InteractionWaitingData } from "./types";
 import {
   Env,
   FnRequestInteractionOptions,
-  KeplrError,
   MessageRequester,
 } from "@keplr-wallet/router";
 import { PushEventDataMsg, PushInteractionDataMsg } from "./foreground";
-import { Buffer } from "buffer/";
+import { RNG } from "@keplr-wallet/crypto";
 
 export class InteractionService {
   protected waitingMap: Map<string, InteractionWaitingData> = new Map();
@@ -15,14 +14,10 @@ export class InteractionService {
     { onApprove: (result: unknown) => void; onReject: (e: Error) => void }
   > = new Map();
 
-  protected resolverV2Map: Map<
-    string,
-    {
-      resolver: () => void;
-    }[]
-  > = new Map();
-
-  constructor(protected readonly eventMsgRequester: MessageRequester) {}
+  constructor(
+    protected readonly eventMsgRequester: MessageRequester,
+    protected readonly rng: RNG
+  ) {}
 
   init() {
     // noop
@@ -32,7 +27,7 @@ export class InteractionService {
   // And, don't ensure that the event is delivered successfully, just ignore the any errors.
   dispatchEvent(port: string, type: string, data: unknown) {
     if (!type) {
-      throw new KeplrError("interaction", 101, "Type should not be empty");
+      throw new Error("Type should not be empty");
     }
 
     const msg = new PushEventDataMsg({
@@ -50,14 +45,14 @@ export class InteractionService {
     url: string,
     type: string,
     data: unknown,
-    options?: Omit<FnRequestInteractionOptions, "unstableOnClose">
+    options?: FnRequestInteractionOptions
   ): Promise<unknown> {
     if (!type) {
-      throw new KeplrError("interaction", 101, "Type should not be empty");
+      throw new Error("Type should not be empty");
     }
 
     // TODO: Add timeout?
-    const interactionWaitingData = this.addDataToMap(
+    const interactionWaitingData = await this.addDataToMap(
       type,
       env.isInternalMsg,
       data
@@ -65,53 +60,14 @@ export class InteractionService {
 
     const msg = new PushInteractionDataMsg(interactionWaitingData);
 
-    return await this.wait(env, url, msg, options);
+    return await this.wait(msg.data.id, () => {
+      env.requestInteraction(url, msg, options);
+    });
   }
 
-  async waitApproveV2<Return, Response>(
-    env: Env,
-    url: string,
-    type: string,
-    data: unknown,
-    returnFn: (response: Response) => Promise<Return> | Return,
-    options?: Omit<FnRequestInteractionOptions, "unstableOnClose">
-  ): Promise<Return> {
-    if (!type) {
-      throw new KeplrError("interaction", 101, "Type should not be empty");
-    }
-
-    // TODO: Add timeout?
-    const interactionWaitingData = this.addDataToMap(
-      type,
-      env.isInternalMsg,
-      data
-    );
-
-    const msg = new PushInteractionDataMsg(interactionWaitingData);
-
-    try {
-      const response: any = await this.wait(env, url, msg, options);
-      return returnFn(response);
-    } finally {
-      const resolvers = this.resolverV2Map.get(interactionWaitingData.id);
-      if (resolvers) {
-        for (const resolver of resolvers) {
-          resolver.resolver();
-        }
-      }
-      this.resolverV2Map.delete(interactionWaitingData.id);
-    }
-  }
-
-  protected async wait(
-    env: Env,
-    url: string,
-    msg: PushInteractionDataMsg,
-    options?: Omit<FnRequestInteractionOptions, "unstableOnClose">
-  ): Promise<unknown> {
-    const id = msg.data.id;
+  protected async wait(id: string, fn: () => void): Promise<unknown> {
     if (this.resolverMap.has(id)) {
-      throw new KeplrError("interaction", 100, "Id is aleady in use");
+      throw new Error("Id is aleady in use");
     }
 
     return new Promise<unknown>((resolve, reject) => {
@@ -120,12 +76,7 @@ export class InteractionService {
         onReject: reject,
       });
 
-      env.requestInteraction(url, msg, {
-        ...options,
-        unstableOnClose: () => {
-          this.reject(id);
-        },
-      });
+      fn();
     });
   }
 
@@ -139,24 +90,6 @@ export class InteractionService {
     this.removeDataFromMap(id);
   }
 
-  approveV2(id: string, result: unknown): Promise<void> {
-    return new Promise((resolve) => {
-      const resolvers = this.resolverV2Map.get(id) || [];
-      resolvers.push({
-        resolver: resolve,
-      });
-      this.resolverV2Map.set(id, resolvers);
-
-      if (this.resolverMap.has(id)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.resolverMap.get(id)!.onApprove(result);
-        this.resolverMap.delete(id);
-      }
-
-      this.removeDataFromMap(id);
-    });
-  }
-
   reject(id: string) {
     if (this.resolverMap.has(id)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -167,32 +100,21 @@ export class InteractionService {
     this.removeDataFromMap(id);
   }
 
-  rejectV2(id: string): Promise<void> {
-    return new Promise((resolve) => {
-      const resolvers = this.resolverV2Map.get(id) || [];
-      resolvers.push({
-        resolver: resolve,
-      });
-      this.resolverV2Map.set(id, resolvers);
-
-      if (this.resolverMap.has(id)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.resolverMap.get(id)!.onReject(new Error("Request rejected"));
-        this.resolverMap.delete(id);
-      }
-
-      this.removeDataFromMap(id);
-    });
-  }
-
-  protected addDataToMap(
+  protected async addDataToMap(
     type: string,
     isInternal: boolean,
     data: unknown
-  ): InteractionWaitingData {
+  ): Promise<InteractionWaitingData> {
     const bytes = new Uint8Array(12);
-    crypto.getRandomValues(bytes);
-    const id = Buffer.from(bytes).toString("hex");
+    const id: string = Array.from(await this.rng(bytes))
+      .map((value) => {
+        let v = value.toString(16);
+        if (v.length === 1) {
+          v = "0" + v;
+        }
+        return v;
+      })
+      .join("");
 
     const interactionWaitingData: InteractionWaitingData = {
       id,
@@ -202,7 +124,7 @@ export class InteractionService {
     };
 
     if (this.waitingMap.has(id)) {
-      throw new KeplrError("interaction", 100, "Id is aleady in use");
+      throw new Error("Id is aleady in use");
     }
 
     this.waitingMap.set(id, interactionWaitingData);

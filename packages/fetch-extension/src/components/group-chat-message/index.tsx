@@ -39,8 +39,10 @@ export const GroupChatMessage = ({
   showDate: boolean;
   groupLastSeenTimestamp: number;
 }) => {
-  const [decryptedMessage, setDecryptedMessage] =
-    useState<GroupMessagePayload>();
+  const [
+    decryptedMessage,
+    setDecryptedMessage,
+  ] = useState<GroupMessagePayload>();
 
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;

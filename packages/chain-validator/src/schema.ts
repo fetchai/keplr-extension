@@ -197,6 +197,7 @@ export const ChainInfoSchema = Joi.object<ChainInfo>({
       return values;
     })
     .required(),
+  coinType: Joi.number().strict().integer(),
   beta: Joi.boolean(),
   features: Joi.array()
     .items(Joi.string().valid(...SupportedChainFeatures))

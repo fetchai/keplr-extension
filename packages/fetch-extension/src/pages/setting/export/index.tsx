@@ -36,7 +36,7 @@ export const ExportPage: FunctionComponent = observer(() => {
 
   const query = queryString.parse(location.search);
 
-  const keyringType = query["type"] ?? "mnemonic";
+  const type = query["type"] ?? "mnemonic";
 
   const [loading, setLoading] = useState(false);
   const [keyRing, setKeyRing] = useState("");
@@ -59,7 +59,7 @@ export const ExportPage: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
         id:
-          keyringType === "mnemonic" ? "setting.export" : "setting.export.private-key",
+          type === "mnemonic" ? "setting.export" : "setting.export.private-key",
       })}
       onBackButton={useCallback(() => {
         navigate(-1);
@@ -69,7 +69,7 @@ export const ExportPage: FunctionComponent = observer(() => {
         {keyRing ? (
           <div
             className={classnames(style["mnemonic"], {
-              [style["altHex"]]: keyringType !== "mnemonic",
+              [style["altHex"]]: type !== "mnemonic",
             })}
           >
             {keyRing}

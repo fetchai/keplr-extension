@@ -1,37 +1,40 @@
+import { KVStore } from "@keplr-wallet/common";
 import {
   ObservableChainQuery,
   ObservableChainQueryMap,
 } from "../../chain-query";
-import { ChainGetter } from "../../../chain";
+import { ChainGetter } from "../../../common";
 import { DenomTraceResponse } from "./types";
 import { autorun, computed } from "mobx";
-import { QuerySharedContext } from "../../../common";
 
 export class ObservableChainQueryDenomTrace extends ObservableChainQuery<DenomTraceResponse> {
   protected disposer?: () => void;
 
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     protected readonly hash: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/ibc/applications/transfer/v1beta1/denom_traces/${hash}`
     );
   }
 
-  protected override onStart(): void {
+  protected override onStart() {
     super.onStart();
 
-    this.disposer = autorun(() => {
-      const chainInfo = this.chainGetter.getChain(this.chainId);
-      if (chainInfo.features && chainInfo.features.includes("ibc-go")) {
-        this.setUrl(`/ibc/apps/transfer/v1/denom_traces/${this.hash}`);
-      }
+    return new Promise<void>((resolve) => {
+      this.disposer = autorun(() => {
+        const chainInfo = this.chainGetter.getChain(this.chainId);
+        if (chainInfo.features && chainInfo.features.includes("ibc-go")) {
+          this.setUrl(`/ibc/apps/transfer/v1/denom_traces/${this.hash}`);
+        }
+        resolve();
+      });
     });
   }
 
@@ -103,13 +106,13 @@ export class ObservableChainQueryDenomTrace extends ObservableChainQuery<DenomTr
 
 export class ObservableQueryDenomTrace extends ObservableChainQueryMap<DenomTraceResponse> {
   constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
+    protected override readonly kvStore: KVStore,
+    protected override readonly chainId: string,
+    protected override readonly chainGetter: ChainGetter
   ) {
-    super(sharedContext, chainId, chainGetter, (hash: string) => {
+    super(kvStore, chainId, chainGetter, (hash: string) => {
       return new ObservableChainQueryDenomTrace(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         hash

@@ -1,15 +1,18 @@
 import { InteractionStore } from "./interaction";
 import { ChainInfo } from "@keplr-wallet/types";
 import {
-  ChainInfoWithSuggestedOptions,
+  ChainInfoWithRepoUpdateOptions,
   SuggestChainInfoMsg,
 } from "@keplr-wallet/background";
 import { flow, makeObservable, observable } from "mobx";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import Axios from "axios";
 import { toGenerator } from "@keplr-wallet/common";
-import { simpleFetch } from "@keplr-wallet/simple-fetch";
 
 export class ChainSuggestStore {
+  @observable
+  protected _isLoading: boolean = false;
+
   @observable.shallow
   protected communityChainInfo: Map<
     string,
@@ -31,13 +34,13 @@ export class ChainSuggestStore {
   }
 
   get waitingSuggestedChainInfo() {
-    const data = this.interactionStore.getAllData<{
+    const datas = this.interactionStore.getDatas<{
       chainInfo: ChainInfo;
       origin: string;
     }>(SuggestChainInfoMsg.type());
 
-    if (data.length > 0) {
-      return data[0];
+    if (datas.length > 0) {
+      return datas[0];
     }
   }
 
@@ -50,7 +53,9 @@ export class ChainSuggestStore {
     return `${this.communityChainInfoRepoUrl}/blob/${this.communityChainInfoRepo.branchName}/cosmos/${chainIdHelper.identifier}.json`;
   }
 
-  getCommunityChainInfo(chainId: string): {
+  getCommunityChainInfo(
+    chainId: string
+  ): {
     chainInfo: ChainInfo | undefined;
     isLoading: boolean;
   } {
@@ -77,10 +82,9 @@ export class ChainSuggestStore {
 
     try {
       const response = yield* toGenerator(
-        simpleFetch<ChainInfo>(
-          `https://raw.githubusercontent.com/${this.communityChainInfoRepo.organizationName}/${this.communityChainInfoRepo.repoName}/${this.communityChainInfoRepo.branchName}`,
-          `/cosmos/${chainIdentifier}.json`
-        )
+        Axios.get<ChainInfo>(`/cosmos/${chainIdentifier}.json`, {
+          baseURL: `https://raw.githubusercontent.com/${this.communityChainInfoRepo.organizationName}/${this.communityChainInfoRepo.repoName}/${this.communityChainInfoRepo.branchName}`,
+        })
       );
 
       if (
@@ -107,30 +111,46 @@ export class ChainSuggestStore {
     }
   }
 
-  async approveWithProceedNext(
-    id: string,
-    chainInfo: ChainInfoWithSuggestedOptions,
-    afterFn: (proceedNext: boolean) => void | Promise<void>
-  ) {
-    await this.interactionStore.approveWithProceedNextV2(
-      id,
-      chainInfo,
-      afterFn
-    );
+  @flow
+  *approve(chainInfo: ChainInfoWithRepoUpdateOptions) {
+    this._isLoading = true;
+
+    try {
+      const data = this.waitingSuggestedChainInfo;
+
+      if (data) {
+        yield this.interactionStore.approve(data.type, data.id, chainInfo);
+      }
+    } finally {
+      this._isLoading = false;
+    }
   }
 
-  async rejectWithProceedNext(
-    id: string,
-    afterFn: (proceedNext: boolean) => void | Promise<void>
-  ) {
-    await this.interactionStore.rejectWithProceedNext(id, afterFn);
+  @flow
+  *reject() {
+    this._isLoading = true;
+
+    try {
+      const data = this.waitingSuggestedChainInfo;
+      if (data) {
+        yield this.interactionStore.reject(data.type, data.id);
+      }
+    } finally {
+      this._isLoading = false;
+    }
   }
 
-  async rejectAll() {
-    await this.interactionStore.rejectAll(SuggestChainInfoMsg.type());
+  @flow
+  *rejectAll() {
+    this._isLoading = true;
+    try {
+      yield this.interactionStore.rejectAll(SuggestChainInfoMsg.type());
+    } finally {
+      this._isLoading = false;
+    }
   }
 
-  isObsoleteInteraction(id: string | undefined): boolean {
-    return this.interactionStore.isObsoleteInteraction(id);
+  get isLoading(): boolean {
+    return this._isLoading;
   }
 }

@@ -11,7 +11,7 @@ import { useStore } from "../../../../stores";
 import { useForm } from "react-hook-form";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { CW20Currency, Secret20Currency } from "@keplr-wallet/types";
-import { useInteractionInfo } from "@hooks/interaction";
+import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { useNotification } from "@components/notification";
 
@@ -27,6 +27,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
   const location = useLocation();
 
   const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
+  const tokensOf = tokensStore.getTokensOf(chainStore.current.chainId);
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
@@ -62,19 +63,21 @@ export const AddTokenPage: FunctionComponent = observer(() => {
     }
   }, [chainStore, contractAddress, form, tokensStore.waitingSuggestedToken]);
 
-  const isSecretWasm = chainStore.getChain(chainStore.current.chainId).hasFeature("secretwasm");
-
-
+  const isSecret20 =
+    (chainStore.current.features ?? []).find(
+      (feature) => feature === "secretwasm"
+    ) != null;
 
   const queries = queriesStore.get(chainStore.current.chainId);
-  const query = isSecretWasm
+  const query = isSecret20
     ? queries.secret.querySecret20ContractInfo
     : queries.cosmwasm.querycw20ContractInfo;
   const queryContractInfo = query.getQueryContract(contractAddress);
 
   const tokenInfo = queryContractInfo.tokenInfo;
-  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] =
-    useState(false);
+  const [isOpenSecret20ViewingKey, setIsOpenSecret20ViewingKey] = useState(
+    false
+  );
 
   const notification = useNotification();
   const loadingIndicator = useLoadingIndicator();
@@ -100,29 +103,6 @@ export const AddTokenPage: FunctionComponent = observer(() => {
     });
   };
 
-  async function approveSuggestedTokenAndProceed(currency: CW20Currency | Secret20Currency) {
-    if (
-      interactionInfo.interaction &&
-      tokensStore.waitingSuggestedToken
-    ) {
-      await tokensStore.approveSuggestedTokenWithProceedNext(tokensStore.waitingSuggestedToken.id, currency, (_) => {
-        if (
-          interactionInfo.interaction &&
-          !interactionInfo.interactionInternal
-        ) {
-          window.close();
-        } else {
-          if (location.hash === "#agent") navigate(-1);
-          navigate("/");
-        }
-      });
-    } else {
-      await tokensStore.addToken(chainStore.current.chainId, currency);
-
-      navigate("/");
-    }
-  }
-
   return (
     <HeaderLayout
       showChainName={false}
@@ -146,7 +126,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             tokenInfo.name &&
             tokenInfo.symbol
           ) {
-            if (!isSecretWasm) {
+            if (!isSecret20) {
               const currency: CW20Currency = {
                 type: "cw20",
                 contractAddress: data.contractAddress,
@@ -155,8 +135,14 @@ export const AddTokenPage: FunctionComponent = observer(() => {
                 coinDecimals: tokenInfo.decimals,
               };
 
-            await approveSuggestedTokenAndProceed(currency);
-
+              if (
+                interactionInfo.interaction &&
+                tokensStore.waitingSuggestedToken
+              ) {
+                await tokensStore.approveSuggestedToken(currency);
+              } else {
+                await tokensOf.addToken(currency);
+              }
             } else {
               let viewingKey = data.viewingKey;
               if (!viewingKey && !isOpenSecret20ViewingKey) {
@@ -216,8 +202,25 @@ export const AddTokenPage: FunctionComponent = observer(() => {
                   coinDecimals: tokenInfo.decimals,
                 };
 
-                await approveSuggestedTokenAndProceed(currency);
+                if (
+                  interactionInfo.interaction &&
+                  tokensStore.waitingSuggestedToken
+                ) {
+                  await tokensStore.approveSuggestedToken(currency);
+                } else {
+                  await tokensOf.addToken(currency);
+                }
               }
+            }
+
+            if (
+              interactionInfo.interaction &&
+              !interactionInfo.interactionInternal
+            ) {
+              window.close();
+            } else {
+              if (location.hash === "#agent") navigate(-1);
+              navigate("/");
             }
           }
         })}
@@ -281,7 +284,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
           value={tokenInfo?.decimals ?? "-"}
           readOnly={true}
         />
-        {isSecretWasm && isOpenSecret20ViewingKey ? (
+        {isSecret20 && isOpenSecret20ViewingKey ? (
           <Input
             type="text"
             label={intl.formatMessage({
@@ -299,7 +302,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
           />
         ) : null}
         <div style={{ flex: 1 }} />
-        {isSecretWasm ? (
+        {isSecret20 ? (
           <div className="custom-control custom-checkbox mb-2">
             <input
               className="custom-control-input"

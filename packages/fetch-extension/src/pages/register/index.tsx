@@ -1,3 +1,6 @@
+// Shim ------------
+require("setimmediate");
+// Shim ------------
 import React, { FunctionComponent, useEffect } from "react";
 
 import { EmptyLayout } from "@layouts/empty-layout";
@@ -24,13 +27,23 @@ import {
   TypeImportLedger,
 } from "./ledger";
 import { WelcomePage } from "./welcome";
+import { AdditionalSignInPrepend } from "../../config.ui";
 import classnames from "classnames";
+import {
+  ImportKeystoneIntro,
+  ImportKeystonePage,
+  TypeImportKeystone,
+} from "./keystone";
 import {
   MigrateEthereumAddressIntro,
   MigrateEthereumAddressPage,
   TypeMigrateEth,
 } from "./migration";
-
+import { AuthIntro, AuthPage } from "./auth";
+import { configure } from "mobx";
+configure({
+  enforceActions: "always", // Make mobx to strict mode.
+});
 export enum NunWords {
   WORDS12,
   WORDS24,
@@ -61,6 +74,12 @@ export const RegisterPage: FunctionComponent = observer(() => {
   const { keyRingStore, uiConfigStore } = useStore();
 
   const registerConfig = useRegisterConfig(keyRingStore, [
+    ...(AdditionalSignInPrepend ?? []),
+    {
+      type: "auth",
+      intro: AuthIntro,
+      page: AuthPage,
+    },
     {
       type: TypeNewMnemonic,
       intro: NewMnemonicIntro,
@@ -82,6 +101,11 @@ export const RegisterPage: FunctionComponent = observer(() => {
           },
         ]
       : []),
+    {
+      type: TypeImportKeystone,
+      intro: ImportKeystoneIntro,
+      page: ImportKeystonePage,
+    },
     // TODO: think about moving this into the configuration at some point
     {
       type: TypeMigrateEth,
@@ -117,15 +141,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
             alt="logo"
           />
         </div>
-        {registerConfig.isIntro ? (
-          <div className={style["introBrandSubTextContainer"]}>
-            <img
-              className={style["introBrandSubText"]}
-              src={require("../../public/assets/brand-sub-text.png")}
-              alt="The Interchain Wallet"
-            />
-          </div>
-        ) : null}
       </div>
       {registerConfig.render()}
       {registerConfig.isFinalized ? <WelcomePage /> : null}

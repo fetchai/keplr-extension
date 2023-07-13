@@ -26,8 +26,8 @@ import {
   IFeeConfig,
   IGasConfig,
   IGasSimulator,
-  InsufficientFeeError, ISenderConfig,
-  NotLoadedFeeError
+  InsufficientFeeError,
+  NotLoadedFeeError,
 } from "@keplr-wallet/hooks";
 import { CoinGeckoPriceStore } from "@keplr-wallet/stores";
 import { useLanguage } from "../../../languages";
@@ -40,7 +40,6 @@ import { useStore } from "../../../stores";
 
 export interface FeeButtonsProps {
   feeConfig: IFeeConfig;
-  senderConfig: ISenderConfig,
   gasConfig: IGasConfig;
   priceStore: CoinGeckoPriceStore;
 
@@ -79,7 +78,6 @@ class FeeButtonState {
 export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
   ({
     feeConfig,
-     senderConfig,
     gasConfig,
     priceStore,
     label,
@@ -108,46 +106,44 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
         if (
           !skip &&
           !feeConfig.isManual &&
-          feeConfig.selectableFeeCurrencies.length > 1 &&
-          feeConfig.fees.length > 0
+          feeConfig.feeCurrencies.length > 1 &&
+          feeConfig.feeCurrency &&
+          feeConfig.feeCurrencies[0].coinMinimalDenom ===
+            feeConfig.feeCurrency.coinMinimalDenom
         ) {
           const queryBalances = queriesStore
             .get(feeConfig.chainId)
-            .queryBalances.getQueryBech32Address(senderConfig.sender);
+            .queryBalances.getQueryBech32Address(feeConfig.sender);
 
           // Basically, `FeeConfig` implementation select the first fee currency as default.
           // So, let's put the priority to first fee currency.
-          const firstFeeCurrency = feeConfig.selectableFeeCurrencies[0];
-          const firstFeeCurrencyBal =
-            queryBalances.getBalanceFromCurrency(firstFeeCurrency);
+          const firstFeeCurrency = feeConfig.feeCurrencies[0];
+          const firstFeeCurrencyBal = queryBalances.getBalanceFromCurrency(
+            firstFeeCurrency
+          );
 
-          if (feeConfig.type) {
+          if (feeConfig.feeType) {
             const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
               firstFeeCurrency,
-              feeConfig.type
+              feeConfig.feeType
             );
             if (firstFeeCurrencyBal.toDec().lt(fee.toDec())) {
               // Not enough balances for fee.
               // Try to find other fee currency to send.
-              for (const feeCurrency of feeConfig.selectableFeeCurrencies) {
-                const feeCurrencyBal =
-                  queryBalances.getBalanceFromCurrency(feeCurrency);
+              for (const feeCurrency of feeConfig.feeCurrencies) {
+                const feeCurrencyBal = queryBalances.getBalanceFromCurrency(
+                  feeCurrency
+                );
                 const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
                   feeCurrency,
-                  feeConfig.type
+                  feeConfig.feeType
                 );
 
-
                 if (feeCurrencyBal.toDec().gte(fee.toDec())) {
-                  feeConfig.setFee({
-                    type: feeConfig.type,
-                    currency: feeCurrency,
-                  });
-                  const uiProperties = feeConfig.uiProperties;
-                  skip =
-                    !uiProperties.loadingState &&
-                    uiProperties.error == null &&
-                    uiProperties.warning == null;
+                  feeConfig.setAutoFeeCoinMinimalDenom(
+                    feeCurrency.coinMinimalDenom
+                  );
+                  skip = true;
                   return;
                 }
               }
@@ -164,11 +160,11 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
 
     return (
       <React.Fragment>
-        {feeConfig.selectableFeeCurrencies.length > 1 &&
+        {feeConfig.feeCurrencies.length > 1 &&
         !showFeeCurrencySelectorUnderSetGas ? (
-          <FeeCurrencySelector feeConfig={feeConfig} senderConfig={senderConfig}/>
+          <FeeCurrencySelector feeConfig={feeConfig} />
         ) : null}
-        {feeConfig.selectableFeeCurrencies[0] ? (
+        {feeConfig.feeCurrency ? (
           <FeeButtonsInner
             feeConfig={feeConfig}
             priceStore={priceStore}
@@ -178,12 +174,12 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
             gasSimulator={gasSimulator}
           />
         ) : null}
-        {feeButtonState.isGasInputOpen || !feeConfig.selectableFeeCurrencies[0] ? (
+        {feeButtonState.isGasInputOpen || !feeConfig.feeCurrency ? (
           gasSimulator ? (
-            feeConfig.selectableFeeCurrencies.length > 1 &&
+            feeConfig.feeCurrencies.length > 1 &&
             showFeeCurrencySelectorUnderSetGas ? (
               <React.Fragment>
-                <FeeCurrencySelector feeConfig={feeConfig} senderConfig={senderConfig}/>
+                <FeeCurrencySelector feeConfig={feeConfig} />
                 <GasContainer
                   label={gasLabel}
                   gasConfig={gasConfig}
@@ -197,10 +193,10 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
                 gasSimulator={gasSimulator}
               />
             )
-          ) : feeConfig.selectableFeeCurrencies.length > 1 &&
+          ) : feeConfig.feeCurrencies.length > 1 &&
             showFeeCurrencySelectorUnderSetGas ? (
             <React.Fragment>
-              <FeeCurrencySelector feeConfig={feeConfig} senderConfig={senderConfig} />
+              <FeeCurrencySelector feeConfig={feeConfig} />
               <GasInput label={gasLabel} gasConfig={gasConfig} />
             </React.Fragment>
           ) : (
@@ -214,12 +210,11 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
 
 export const FeeCurrencySelector: FunctionComponent<{
   feeConfig: IFeeConfig;
-  senderConfig: ISenderConfig;
-}> = observer(({ feeConfig, senderConfig }) => {
+}> = observer(({ feeConfig }) => {
   const { queriesStore } = useStore();
   const queryBalances = queriesStore
     .get(feeConfig.chainId)
-    .queryBalances.getQueryBech32Address(senderConfig.sender);
+    .queryBalances.getQueryBech32Address(feeConfig.sender);
 
   const [randomId] = useState(() => {
     const bytes = new Uint8Array(4);
@@ -230,21 +225,21 @@ export const FeeCurrencySelector: FunctionComponent<{
   const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
 
   const firstFeeCurrencyDenom =
-    feeConfig.selectableFeeCurrencies.length > 0
-      ? feeConfig.selectableFeeCurrencies[0].coinMinimalDenom
+    feeConfig.feeCurrencies.length > 0
+      ? feeConfig.feeCurrencies[0].coinMinimalDenom
       : "";
 
   // Show the fee currencies that account has.
   // But, always show the first fee currency to reduce the confusion to user because first fee currency has priority.
-  const feeCurrencies = feeConfig.fees.filter((cur) => {
+  const selectableCurrencies = feeConfig.feeCurrencies.filter((cur) => {
     if (
       firstFeeCurrencyDenom &&
-      cur.currency.coinMinimalDenom === firstFeeCurrencyDenom
+      cur.coinMinimalDenom === firstFeeCurrencyDenom
     ) {
       return true;
     }
 
-    const bal = queryBalances.getBalanceFromCurrency(cur.currency);
+    const bal = queryBalances.getBalanceFromCurrency(cur);
     return !bal.toDec().isZero();
   });
 
@@ -264,25 +259,25 @@ export const FeeCurrencySelector: FunctionComponent<{
         toggle={() => setIsOpenTokenSelector((value) => !value)}
       >
         <DropdownToggle caret>
-          {feeConfig.selectableFeeCurrencies[0]?.coinDenom || "Unknown"}
+          {feeConfig.feeCurrency?.coinDenom || "Unknown"}
         </DropdownToggle>
         <DropdownMenu>
-          {feeCurrencies.map((coin) => {
+          {selectableCurrencies.map((currency) => {
             return (
               <DropdownItem
-                key={coin.currency.coinMinimalDenom}
+                key={currency.coinMinimalDenom}
                 active={
-                  coin.currency.coinMinimalDenom === feeConfig.selectableFeeCurrencies[0]?.coinDenom
+                  currency.coinMinimalDenom === feeConfig.feeCurrency?.coinDenom
                 }
                 onClick={(e) => {
                   e.preventDefault();
 
-                  feeConfig.setFee(
-                    coin
+                  feeConfig.setAutoFeeCoinMinimalDenom(
+                    currency.coinMinimalDenom
                   );
                 }}
               >
-                {coin.currency.coinDenom}
+                {currency.coinDenom}
               </DropdownItem>
             );
           })}
@@ -307,10 +302,10 @@ export const FeeButtonsInner: FunctionComponent<
     gasSimulator,
   }) => {
     useEffect(() => {
-      if (feeConfig.selectableFeeCurrencies[0] && !feeConfig.fees[0]) {
-        feeConfig.setFee({type: "average", currency: feeConfig.fees[0]});
+      if (feeConfig.feeCurrency && !feeConfig.fee) {
+        feeConfig.setFeeType("average");
       }
-    }, [feeConfig, feeConfig.selectableFeeCurrencies[0], feeConfig.fees]);
+    }, [feeConfig, feeConfig.feeCurrency, feeConfig.fee]);
 
     const intl = useIntl();
 
@@ -322,32 +317,32 @@ export const FeeButtonsInner: FunctionComponent<
 
     const language = useLanguage();
 
-    // For chains without selectableFeeCurrencies, Keplr assumes tx doesn’t need to include information about the fee and the fee button does not have to be rendered.
-    // The architecture is designed so that fee button is not rendered if the parental component doesn’t have a selectableFeeCurrencies[0].
+    // For chains without feeCurrencies, Keplr assumes tx doesn’t need to include information about the fee and the fee button does not have to be rendered.
+    // The architecture is designed so that fee button is not rendered if the parental component doesn’t have a feeCurrency.
     // However, because there may be situations where the fee buttons is rendered before the chain information is changed,
     // and the fee button is an observer, and the sequence of rendering the observer may not appear stabilized,
     // so only handling the rendering in the parent component may not be sufficient
     // Therefore, this line double checks to ensure that the fee buttons is not rendered if fee currency doesn’t exist.
     // But because this component uses hooks, using a hook in the line below can cause an error.
     // Note that hooks should be used above this line, and only rendering-related logic should exist below this line.
-    if (!feeConfig.selectableFeeCurrencies[0]) {
+    if (!feeConfig.feeCurrency) {
       return <React.Fragment />;
     }
 
     const fiatCurrency = language.fiatCurrency;
 
-    const lowFee = feeConfig.getFeeTypePrettyForFeeCurrency(feeConfig.selectableFeeCurrencies[0], "low");
+    const lowFee = feeConfig.getFeeTypePretty("low");
     const lowFeePrice = priceStore.calculatePrice(lowFee, fiatCurrency);
 
-    const averageFee = feeConfig.getFeeTypePrettyForFeeCurrency(feeConfig.selectableFeeCurrencies[0], "average");
+    const averageFee = feeConfig.getFeeTypePretty("average");
     const averageFeePrice = priceStore.calculatePrice(averageFee, fiatCurrency);
 
-    const highFee = feeConfig.getFeeTypePrettyForFeeCurrency(feeConfig.selectableFeeCurrencies[0], "high");
+    const highFee = feeConfig.getFeeTypePretty("high");
     const highFeePrice = priceStore.calculatePrice(highFee, fiatCurrency);
 
     let isFeeLoading = false;
 
-    const error = feeConfig.uiProperties.error;
+    const error = feeConfig.error;
     const errorText: string | undefined = (() => {
       if (error) {
         switch (error.constructor) {
@@ -382,27 +377,17 @@ export const FeeButtonsInner: FunctionComponent<
           <Button
             type="button"
             className={styleFeeButtons["button"]}
-            color={feeConfig.type === "low" ? "primary" : undefined}
+            color={feeConfig.feeType === "low" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
+              feeConfig.setFeeType("low");
               e.preventDefault();
-              if (
-                feeConfig.fees.length === 0 &&
-                feeConfig.selectableFeeCurrencies.length > 0
-              ) {
-                feeConfig.setFee({
-                  type: "low",
-                  currency: feeConfig.selectableFeeCurrencies[0],
-                });
-              }
             }}
           >
-            <div className={styleFeeButtons["title"]}>
-              {feeSelectLabels.low}
-            </div>
+            <div className={styleFeeButtons["title"]}>{feeSelectLabels.low}</div>
             {lowFeePrice ? (
               <div
                 className={classnames(styleFeeButtons["fiat"], {
-                  "text-muted": feeConfig.type !== "low",
+                  "text-muted": feeConfig.feeType !== "low",
                 })}
               >
                 {lowFeePrice.trim(true).toString()}
@@ -410,7 +395,7 @@ export const FeeButtonsInner: FunctionComponent<
             ) : null}
             <div
               className={classnames(styleFeeButtons["coin"], {
-                "text-muted": feeConfig.type !== "low",
+                "text-muted": feeConfig.feeType !== "low",
               })}
             >
               {
@@ -423,18 +408,10 @@ export const FeeButtonsInner: FunctionComponent<
           <Button
             type="button"
             className={styleFeeButtons["button"]}
-            color={feeConfig.type === "average" ? "primary" : undefined}
+            color={feeConfig.feeType === "average" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
+              feeConfig.setFeeType("average");
               e.preventDefault();
-              if (
-                feeConfig.fees.length === 0 &&
-                feeConfig.selectableFeeCurrencies.length > 0
-              ) {
-                feeConfig.setFee({
-                  type: "average",
-                  currency: feeConfig.selectableFeeCurrencies[0],
-                });
-              }
             }}
           >
             <div className={styleFeeButtons["title"]}>
@@ -443,7 +420,7 @@ export const FeeButtonsInner: FunctionComponent<
             {averageFeePrice ? (
               <div
                 className={classnames(styleFeeButtons["fiat"], {
-                  "text-muted": feeConfig.type !== "average",
+                  "text-muted": feeConfig.feeType !== "average",
                 })}
               >
                 {averageFeePrice.toString()}
@@ -451,7 +428,7 @@ export const FeeButtonsInner: FunctionComponent<
             ) : null}
             <div
               className={classnames(styleFeeButtons["coin"], {
-                "text-muted": feeConfig.type !== "average",
+                "text-muted": feeConfig.feeType !== "average",
               })}
             >
               {averageFee.hideIBCMetadata(true).trim(true).toMetricPrefix()}
@@ -460,27 +437,17 @@ export const FeeButtonsInner: FunctionComponent<
           <Button
             type="button"
             className={styleFeeButtons["button"]}
-            color={feeConfig.type === "high" ? "primary" : undefined}
+            color={feeConfig.feeType === "high" ? "primary" : undefined}
             onClick={(e: MouseEvent) => {
+              feeConfig.setFeeType("high");
               e.preventDefault();
-              if (
-                feeConfig.fees.length === 0 &&
-                feeConfig.selectableFeeCurrencies.length > 0
-              ) {
-                feeConfig.setFee({
-                  type: "high",
-                  currency: feeConfig.selectableFeeCurrencies[0],
-                });
-              }
             }}
           >
-            <div className={styleFeeButtons["title"]}>
-              {feeSelectLabels.high}
-            </div>
+            <div className={styleFeeButtons["title"]}>{feeSelectLabels.high}</div>
             {highFeePrice ? (
               <div
                 className={classnames(styleFeeButtons["fiat"], {
-                  "text-muted": feeConfig.type !== "high",
+                  "text-muted": feeConfig.feeType !== "high",
                 })}
               >
                 {highFeePrice.toString()}
@@ -488,7 +455,7 @@ export const FeeButtonsInner: FunctionComponent<
             ) : null}
             <div
               className={classnames(styleFeeButtons["coin"], {
-                "text-muted": feeConfig.type !== "high",
+                "text-muted": feeConfig.feeType !== "high",
               })}
             >
               {highFee.hideIBCMetadata(true).trim(true).toMetricPrefix()}

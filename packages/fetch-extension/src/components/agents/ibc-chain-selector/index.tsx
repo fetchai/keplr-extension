@@ -21,10 +21,10 @@ import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { useLocation } from "react-router";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { ChainInfoInner } from "@keplr-wallet/stores";
 import { Int } from "@keplr-wallet/unit";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
-import { IChainInfoImpl } from "@keplr-wallet/stores";
 
 interface ChannelDetails extends Channel {
   counterPartyBech32Prefix: string;
@@ -121,7 +121,7 @@ export const IBCChainSelector: FunctionComponent<{
 
   const setChannel = async (
     channel: Channel,
-    chainInfo: IChainInfoImpl<ChainInfoWithCoreTypes>
+    chainInfo: ChainInfoInner<ChainInfoWithCoreTypes>
   ) => {
     loadingIndicator.setIsLoading("set-channel", true);
     const destinationBlockHeight = queriesStore.get(channel.counterpartyChainId)

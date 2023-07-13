@@ -1,20 +1,20 @@
 import { SupplyTotal } from "./types";
+import { KVStore } from "@keplr-wallet/common";
 import {
   ObservableChainQuery,
   ObservableChainQueryMap,
 } from "../../chain-query";
-import { ChainGetter } from "../../../chain";
-import { QuerySharedContext } from "../../../common";
+import { ChainGetter } from "../../../common";
 
 export class ObservableChainQuerySupplyTotal extends ObservableChainQuery<SupplyTotal> {
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     denom: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/cosmos/bank/v1beta1/supply/${denom}`
@@ -24,13 +24,13 @@ export class ObservableChainQuerySupplyTotal extends ObservableChainQuery<Supply
 
 export class ObservableQuerySupplyTotal extends ObservableChainQueryMap<SupplyTotal> {
   constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
+    protected override readonly kvStore: KVStore,
+    protected override readonly chainId: string,
+    protected override readonly chainGetter: ChainGetter
   ) {
-    super(sharedContext, chainId, chainGetter, (denom: string) => {
+    super(kvStore, chainId, chainGetter, (denom: string) => {
       return new ObservableChainQuerySupplyTotal(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         denom

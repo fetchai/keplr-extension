@@ -78,7 +78,8 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
               tooltip={
                 <div>
                   {intl.formatMessage({
-                    id: "setting.token.manage.notification.contract-address.copy.hover",
+                    id:
+                      "setting.token.manage.notification.contract-address.copy.hover",
                   })}
                 </div>
               }
@@ -112,7 +113,8 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
                 tooltip={
                   <div>
                     {intl.formatMessage({
-                      id: "setting.token.manage.notification.viewing-key.copy.hover",
+                      id:
+                        "setting.token.manage.notification.viewing-key.copy.hover",
                     })}
                   </div>
                 }
@@ -136,6 +138,25 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
             );
           }
 
+          /*
+          icons.push(
+            <i
+              key="connections"
+              className="fas fa-link"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+
+                history.push(
+                  `/setting/connections/viewing-key/${currency.contractAddress}`
+                );
+              }}
+            />
+          );
+           */
+
           icons.push(
             <i
               key="trash"
@@ -154,7 +175,8 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
                   })
                 ) {
                   await tokensStore
-                    .removeToken(chainStore.current.chainId, {currency, associatedAccountAddress: cosmwasmToken.contractAddress});
+                    .getTokensOf(chainStore.current.chainId)
+                    .removeToken(cosmwasmToken);
                 }
               }}
             />

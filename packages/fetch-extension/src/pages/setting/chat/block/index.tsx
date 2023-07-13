@@ -1,3 +1,5 @@
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { useAddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
@@ -10,18 +12,31 @@ import { HeaderLayout } from "@layouts/index";
 import { useStore } from "../../../../stores";
 import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
-import { AddressBookData } from "../../../../stores/ui-config/address-book";
 
 export const BlockList: FunctionComponent = observer(() => {
   // const language = useLanguage();
   const blockedAddresses = useSelector(userBlockedAddresses);
   const navigate = useNavigate();
   const intl = useIntl();
-  const { chainStore, uiConfigStore } = useStore();
+  const { chainStore } = useStore();
 
-  const addresses = uiConfigStore.addressBookConfig.getAddressBook(chainStore.current.chainId).map(
-    (data: AddressBookData) => {
-      return { name: data.name, address: data.address };
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    chainStore.current.chainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+
+  const addresses = addressBookConfig.addressBookDatas.map(
+    (data: NameAddress) => {
+      return { name: data["name"], address: data["address"] };
     }
   );
   return (

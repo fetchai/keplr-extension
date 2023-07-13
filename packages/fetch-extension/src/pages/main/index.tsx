@@ -40,9 +40,9 @@ export const MainPage: FunctionComponent = observer(() => {
 
   useEffect(() => {
     analyticsStore.setUserProperties({
-      accountCount: keyRingStore.keyInfos.length,
+      totalAccounts: keyRingStore.multiKeyStoreInfo.length,
     });
-  }, [analyticsStore, keyRingStore.keyInfos.length]);
+  }, [analyticsStore, keyRingStore.multiKeyStoreInfo.length]);
 
   const confirm = useConfirm();
 
@@ -123,7 +123,7 @@ export const MainPage: FunctionComponent = observer(() => {
 
   /// Fetching wallet config info
   useEffect(() => {
-    if (keyRingStore.selectedKeyInfo?.type === "ledger") {
+    if (keyRingStore.keyRingType === "ledger") {
       return;
     }
     getJWT(chainStore.current.chainId, AUTH_SERVER).then((res) => {

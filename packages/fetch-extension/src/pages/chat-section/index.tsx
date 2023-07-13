@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
+  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -17,7 +19,6 @@ import { Menu } from "../main/menu";
 import { ChatActionsDropdown } from "@components/chat-actions-dropdown";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
-import { InitialGas } from "../../config.ui";
 
 export const ChatSection: FunctionComponent = () => {
   const targetAddress = useLocation().pathname.split("/")[2];
@@ -37,9 +38,9 @@ export const ChatSection: FunctionComponent = () => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
+    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -52,7 +53,20 @@ export const ChatSection: FunctionComponent = () => {
       : current.chainId
   );
 
-  const addresses = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId);
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
+  const addresses = addressBookConfig.addressBookDatas;
 
   const contactName = (addresses: any) => {
     let val = "";

@@ -58,11 +58,11 @@ export const ImportLedgerPage: FunctionComponent<{
     },
   });
 
-  const { analyticsStore, uiConfigStore } = useStore();
+  const { analyticsStore, ledgerInitStore } = useStore();
 
   const ensureUSBPermission = async () => {
     const anyNavigator = navigator as any;
-    if (uiConfigStore.useWebHIDLedger) {
+    if (ledgerInitStore.isWebHID) {
       const device = await anyNavigator.hid.requestDevice({
         filters: [
           {

@@ -19,7 +19,7 @@ import {
   ZeroAmountError,
   NegativeAmountError,
   InsufficientAmountError,
-  IAmountConfig, ISenderConfig
+  IAmountConfig,
 } from "@keplr-wallet/hooks";
 import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -28,7 +28,6 @@ import { AppCurrency } from "@keplr-wallet/types";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
-  senderConfig: ISenderConfig;
 
   balanceText?: string;
 
@@ -43,7 +42,6 @@ export interface CoinInputProps {
 export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   ({
     amountConfig,
-     senderConfig,
     className,
     label,
     disableAllBalance,
@@ -52,19 +50,18 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     const intl = useIntl();
 
     const { queriesStore } = useStore();
-
     const queryBalances = queriesStore
       .get(amountConfig.chainId)
-      .queryBalances.getQueryBech32Address(senderConfig.sender);
+      .queryBalances.getQueryBech32Address(amountConfig.sender);
 
     const queryBalance = queryBalances.balances.find(
       (bal) =>
-        amountConfig.currency.coinMinimalDenom ===
+        amountConfig.sendCurrency.coinMinimalDenom ===
         bal.currency.coinMinimalDenom
     );
     const balance = queryBalance
       ? queryBalance.balance
-      : new CoinPretty(amountConfig.currency, new Int(0));
+      : new CoinPretty(amountConfig.sendCurrency, new Int(0));
 
     const [randomId] = useState(() => {
       const bytes = new Uint8Array(4);
@@ -72,7 +69,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       return Buffer.from(bytes).toString("hex");
     });
 
-    const error = amountConfig.uiProperties.error;
+    const error = amountConfig.error;
     const errorText: string | undefined = useMemo(() => {
       if (error) {
         switch (error.constructor) {
@@ -104,7 +101,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
 
     const selectableCurrencies = (
-      overrideSelectableCurrencies || amountConfig.selectableCurrencies
+      overrideSelectableCurrencies || amountConfig.sendableCurrencies
     )
       .filter((cur) => {
         const bal = queryBalances.getBalanceFromCurrency(cur);
@@ -131,7 +128,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             toggle={() => setIsOpenTokenSelector((value) => !value)}
           >
             <DropdownToggle caret>
-              {amountConfig.currency.coinDenom}
+              {amountConfig.sendCurrency.coinDenom}
             </DropdownToggle>
             <DropdownMenu>
               {selectableCurrencies.map((currency) => {
@@ -140,12 +137,12 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                     key={currency.coinMinimalDenom}
                     active={
                       currency.coinMinimalDenom ===
-                      amountConfig.currency.coinMinimalDenom
+                      amountConfig.sendCurrency.coinMinimalDenom
                     }
                     onClick={(e) => {
                       e.preventDefault();
 
-                      amountConfig.setCurrency(currency);
+                      amountConfig.setSendCurrency(currency);
                     }}
                   >
                     {currency.coinDenom}
@@ -169,13 +166,13 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                     styleCoinInput["balance"],
                     styleCoinInput["clickable"],
                     {
-                      [styleCoinInput["clicked"]]: amountConfig.fraction === 1,
+                      [styleCoinInput["clicked"]]: amountConfig.isMax,
                     }
                   )}
                   onClick={(e) => {
                     e.preventDefault();
 
-                    amountConfig.setFraction(amountConfig.fraction === 1 ? 0 : 1);
+                    amountConfig.toggleIsMax();
                   }}
                 >
                   {`Balance: ${balance.trim(true).maxDecimals(6).toString()}`}
@@ -190,19 +187,19 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             )}
             id={`input-${randomId}`}
             type="number"
-            value={amountConfig.value}
+            value={amountConfig.amount}
             onChange={(e) => {
               e.preventDefault();
 
-              amountConfig.setValue(e.target.value);
+              amountConfig.setAmount(e.target.value);
             }}
             step={new Dec(1)
               .quo(
                 DecUtils.getPrecisionDec(
-                  amountConfig.currency?.coinDecimals ?? 0
+                  amountConfig.sendCurrency?.coinDecimals ?? 0
                 )
               )
-              .toString(amountConfig.currency?.coinDecimals ?? 0)}
+              .toString(amountConfig.sendCurrency?.coinDecimals ?? 0)}
             min={0}
             autoComplete="off"
           />

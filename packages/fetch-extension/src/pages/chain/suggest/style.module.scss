@@ -10,10 +10,10 @@
     flex-direction: column;
     height: 100%;
 
-    .back-button {
+    .backButton {
       position: absolute;
-      top: 0px;
-      left: 0px;
+      top: 0;
+      left: 0;
       width: 24px;
       height: 24px;
 
@@ -62,18 +62,18 @@
       }
     }
 
-    .chain-container {
+    .chainContainer {
       display: flex;
       flex-direction: column;
 
       max-height: 405px;
 
-      .chain-info-container {
+      .chainInfoContainer {
         background: white;
         border-radius: 8px;
         overflow: auto;
 
-        .chain-info {
+        .chainInfo {
           margin-bottom: 0;
           font-size: 12px;
           overflow: visible;
@@ -81,14 +81,14 @@
         }
       }
 
-      .developer-info {
+      .developerInfo {
         margin-top: 8px;
         margin-bottom: 25px;
 
         height: inherit;
       }
 
-      .approve-info-container {
+      .approveInfoContainer {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -96,7 +96,7 @@
         padding: 16px;
         gap: 6px;
 
-        .title-container {
+        .titleContainer {
           display: flex;
           align-items: center;
 
@@ -166,7 +166,7 @@
       gap: 16px;
       margin-top: 115px;
 
-      .image-container {
+      .imageContainer {
         position: relative;
         display: flex;
         flex-direction: row;
@@ -176,7 +176,7 @@
         height: 80px;
         border-radius: 50%;
 
-        .image-background {
+        .imageBackground {
           width: 80px;
           height: 80px;
           background: linear-gradient(
@@ -188,7 +188,7 @@
           opacity: 0.3;
         }
 
-        .logo-image {
+        .logoImage {
           position: absolute;
           left: 50%;
           top: 50%;
@@ -261,7 +261,7 @@
       color: #566172;
     }
 
-    .chain-detail-container {
+    .chainDetailContainer {
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -292,7 +292,7 @@
       }
     }
 
-    .info-with-link {
+    .infoWithLink {
       margin-bottom: 14px;
       display: flex;
       justify-content: center;
@@ -310,7 +310,7 @@
         color: #566172;
       }
 
-      .github-link {
+      .githubLink {
         display: flex;
         align-items: center;
 
@@ -346,7 +346,7 @@
       display: flex;
       flex-direction: row;
 
-      .img-container {
+      .imgContainer {
         display: flex;
         height: 100%;
         justify-content: center;
@@ -410,27 +410,27 @@
     }
   }
 
-  .skeleton-image-background {
+  .skeletonImageBackground {
     width: 80px;
     height: 80px;
     background-color: #cbd3df;
     border-radius: 50%;
   }
 
-  .skeleton-dot {
+  .skeletonDot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background-color: #cbd3df;
   }
 
-  .skeleton-tag {
+  .skeletonTag {
     margin-top: 20px;
     display: flex;
     flex-direction: row;
     justify-content: center;
 
-    .skeleton-github-link {
+    .skeletonGithubLink {
       width: 108px;
       height: 25px;
       border-radius: 40px;
@@ -448,18 +448,18 @@
     align-items: center;
     gap: 6px;
 
-    .skeleton-title {
+    .skeletonTitle {
       width: 215px;
       height: 15px;
     }
 
-    .skeleton-content {
+    .skeletonContent {
       width: 170px;
       height: 15px;
     }
   }
 
-  .skeleton-button {
+  .skeletonButton {
     height: 44px;
     margin: 6px;
     border-radius: 6px;

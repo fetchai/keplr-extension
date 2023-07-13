@@ -1,4 +1,4 @@
-import { AmountConfig, ISenderConfig } from "../tx";
+import { AmountConfig, IFeeConfig } from "../tx";
 import { ChainGetter, IQueriesStore } from "@keplr-wallet/stores";
 import { AppCurrency } from "@keplr-wallet/types";
 import { computed, makeObservable } from "mobx";
@@ -8,19 +8,20 @@ import { useState } from "react";
 export class IBCAmountConfig extends AmountConfig {
   constructor(
     chainGetter: ChainGetter,
-    queriesStore: IQueriesStore,
+    protected override readonly queriesStore: IQueriesStore,
     initialChainId: string,
-    senderConfig: ISenderConfig
+    sender: string,
+    feeConfig: IFeeConfig | undefined
   ) {
-    super(chainGetter, queriesStore, initialChainId, senderConfig);
+    super(chainGetter, queriesStore, initialChainId, sender, feeConfig);
 
     makeObservable(this);
   }
 
   @computed
-  override get selectableCurrencies(): AppCurrency[] {
+  override get sendableCurrencies(): AppCurrency[] {
     // Only native currencies can be sent by IBC transfer.
-    return super.selectableCurrencies.filter(
+    return super.sendableCurrencies.filter(
       (cur) => new DenomHelper(cur.coinMinimalDenom).type === "native"
     );
   }
@@ -30,12 +31,14 @@ export const useIBCAmountConfig = (
   chainGetter: ChainGetter,
   queriesStore: IQueriesStore,
   chainId: string,
-  senderConfig: ISenderConfig
+  sender: string
 ) => {
   const [txConfig] = useState(
-    () => new IBCAmountConfig(chainGetter, queriesStore, chainId, senderConfig)
+    () =>
+      new IBCAmountConfig(chainGetter, queriesStore, chainId, sender, undefined)
   );
   txConfig.setChain(chainId);
+  txConfig.setSender(sender);
 
   return txConfig;
 };

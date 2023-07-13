@@ -1,8 +1,4 @@
-import {
-  IRecipientConfig,
-  IRecipientConfigWithICNS,
-  UIProperties,
-} from "./types";
+import { IRecipientConfig, IRecipientConfigWithICNS } from "./types";
 import { TxChainSetter } from "./chain";
 import { ChainGetter } from "@keplr-wallet/stores";
 import {
@@ -15,6 +11,7 @@ import {
 import {
   EmptyAddressError,
   ICNSFailedToFetchError,
+  ICNSIsFetchingError,
   InvalidBech32Error,
   InvalidHexError,
 } from "./errors";
@@ -32,10 +29,9 @@ interface ICNSFetchData {
 
 export class RecipientConfig
   extends TxChainSetter
-  implements IRecipientConfig, IRecipientConfigWithICNS
-{
+  implements IRecipientConfig, IRecipientConfigWithICNS {
   @observable
-  protected _value: string = "";
+  protected _rawRecipient: string = "";
 
   @observable
   protected _allowHexAddressOnEthermint: boolean | undefined = undefined;
@@ -147,8 +143,10 @@ export class RecipientConfig
 
   @computed
   get isICNSName(): boolean {
+    const rawRecipient = this.rawRecipient.trim();
+
     if (this._icns) {
-      return validateICNSName(this.value.trim(), this.bech32Prefix);
+      return validateICNSName(rawRecipient, this.bech32Prefix);
     }
 
     return false;
@@ -160,7 +158,9 @@ export class RecipientConfig
       return false;
     }
 
-    return this.getICNSFetchData(this.value.trim()).isFetching;
+    const rawRecipient = this.rawRecipient.trim();
+
+    return this.getICNSFetchData(rawRecipient).isFetching;
   }
 
   get icnsExpectedBech32Prefix(): string {
@@ -168,7 +168,7 @@ export class RecipientConfig
   }
 
   get recipient(): string {
-    const rawRecipient = this.value.trim();
+    const rawRecipient = this.rawRecipient.trim();
 
     if (this.isICNSName) {
       try {
@@ -179,8 +179,9 @@ export class RecipientConfig
     }
 
     if (this._allowHexAddressOnEthermint) {
-      const hasEthereumAddress =
-        this.chainInfo.features?.includes("eth-address-gen");
+      const hasEthereumAddress = this.chainInfo.features?.includes(
+        "eth-address-gen"
+      );
       if (hasEthereumAddress && rawRecipient.startsWith("0x")) {
         try {
           if (isAddress(rawRecipient)) {
@@ -206,90 +207,62 @@ export class RecipientConfig
   }
 
   @computed
-  get uiProperties(): UIProperties {
-    const rawRecipient = this.value.trim();
+  get error(): Error | undefined {
+    const rawRecipient = this.rawRecipient.trim();
 
     if (!rawRecipient) {
-      return {
-        error: new EmptyAddressError("Address is empty"),
-      };
+      return new EmptyAddressError("Address is empty");
     }
 
     if (this.isICNSName) {
       try {
         const fetched = this.getICNSFetchData(rawRecipient);
-
         if (fetched.isFetching) {
-          return {
-            loadingState: "loading-block",
-          };
+          return new ICNSIsFetchingError("ICNS is fetching");
         }
-
         if (!fetched.bech32Address) {
-          return {
-            error: new ICNSFailedToFetchError(
-              "Failed to fetch the address from ICNS"
-            ),
-            loadingState: fetched.isFetching ? "loading-block" : undefined,
-          };
+          return new ICNSFailedToFetchError(
+            "Failed to fetch the address from ICNS"
+          );
         }
-
-        if (fetched.error) {
-          return {
-            error: new ICNSFailedToFetchError(
-              "Failed to fetch the address from ICNS"
-            ),
-            loadingState: fetched.isFetching ? "loading-block" : undefined,
-          };
-        }
-
-        return {};
       } catch (e) {
-        return {
-          error: e,
-        };
+        return e;
       }
     }
 
     if (this._allowHexAddressOnEthermint) {
-      const hasEthereumAddress =
-        this.chainInfo.features?.includes("eth-address-gen");
+      const hasEthereumAddress = this.chainInfo.features?.includes(
+        "eth-address-gen"
+      );
       if (hasEthereumAddress && rawRecipient.startsWith("0x")) {
         try {
           if (isAddress(rawRecipient)) {
-            return {};
-          } else {
-            return {
-              error: new InvalidHexError("Invalid hex address for chain"),
-            };
+            return;
           }
         } catch (e) {
-          return {
-            error: e,
-          };
+          return e;
         }
+        return new InvalidHexError("Invalid hex address for chain");
       }
     }
 
     try {
       Bech32Address.validate(this.recipient, this.bech32Prefix);
     } catch (e) {
-      return {
-        error: new InvalidBech32Error(
-          `Invalid bech32: ${e.message || e.toString()}`
-        ),
-      };
+      return new InvalidBech32Error(
+        `Invalid bech32: ${e.message || e.toString()}`
+      );
     }
-    return {};
+    return;
   }
 
-  get value(): string {
-    return this._value;
+  get rawRecipient(): string {
+    return this._rawRecipient;
   }
 
   @action
-  setValue(value: string): void {
-    this._value = value;
+  setRawRecipient(recipient: string): void {
+    this._rawRecipient = recipient;
   }
 }
 

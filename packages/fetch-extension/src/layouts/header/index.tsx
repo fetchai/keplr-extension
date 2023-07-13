@@ -56,7 +56,7 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
               <React.Fragment>
                 <Menu isOpen={isMenuOpen}>{menuRenderer}</Menu>
                 <motion.div
-                  className={style["menu-img"]}
+                  className={style["menuImg"]}
                   style={{ zIndex: 901 }}
                   animate={isMenuOpen ? "open" : "closed"}
                   onClick={menu.toggle}
@@ -67,7 +67,7 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
             ) : null}
             {onBackButton ? (
               <div
-                className={style["menu-img"]}
+                className={style["menuImg"]}
                 onClick={() => {
                   if (onBackButton) {
                     onBackButton();

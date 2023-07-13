@@ -1,8 +1,8 @@
-import { ChainGetter } from "../../../../chain";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainGetter } from "../../../../common";
 import { ObservableChainQuery } from "../../../chain-query";
 import { Epochs } from "./types";
 import { computed, observable } from "mobx";
-import { QuerySharedContext } from "../../../../common";
 
 export class ObservableQueryOsmosisEpochsInner {
   constructor(
@@ -51,17 +51,8 @@ export class ObservableQueryOsmosisEpochs extends ObservableChainQuery<Epochs> {
   @observable.shallow
   protected map: Map<string, ObservableQueryOsmosisEpochsInner> = new Map();
 
-  constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
-  ) {
-    super(
-      sharedContext,
-      chainId,
-      chainGetter,
-      "/osmosis/epochs/v1beta1/epochs"
-    );
+  constructor(kvStore: KVStore, chainId: string, chainGetter: ChainGetter) {
+    super(kvStore, chainId, chainGetter, "/osmosis/epochs/v1beta1/epochs");
   }
 
   getEpoch(identifier: string) {

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 
 import { PasswordInput } from "@components/form";
 
@@ -14,7 +14,7 @@ import { EmptyLayout } from "@layouts/empty-layout";
 import style from "./style.module.scss";
 
 import { FormattedMessage, useIntl } from "react-intl";
-import { useInteractionInfo } from "@hooks/interaction";
+import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { useNavigate } from "react-router";
 import delay from "delay";
 import { StartAutoLockMonitoringMsg } from "@keplr-wallet/background";
@@ -29,8 +29,6 @@ export const LockPage: FunctionComponent = observer(() => {
   const intl = useIntl();
   const navigate = useNavigate();
 
-  const passwordRef = useRef<HTMLInputElement | null>();
-
   const { register, handleSubmit, setError, formState: { errors }  } = useForm<FormData>({
     defaultValues: {
       password: "",
@@ -40,14 +38,9 @@ export const LockPage: FunctionComponent = observer(() => {
   const { keyRingStore } = useStore();
   const [loading, setLoading] = useState(false);
 
-  const interactionInfo = useInteractionInfo();
-
-  useEffect(() => {
-    if (passwordRef.current) {
-      // Focus the password input on enter.
-      passwordRef.current.focus();
-    }
-  }, []);
+  const interactionInfo = useInteractionInfo(() => {
+    keyRingStore.rejectAll();
+  });
 
   return (
     <EmptyLayout style={{ backgroundColor: "white", height: "100%" }}>
@@ -104,9 +97,6 @@ export const LockPage: FunctionComponent = observer(() => {
               id: "lock.input.password.error.required",
             }),
           })}
-          ref={(ref) => {
-            passwordRef.current = ref;
-          }}
         />
         <Button type="submit" color="primary" block data-loading={loading}>
           <FormattedMessage id="lock.button.unlock" />

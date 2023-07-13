@@ -1,20 +1,23 @@
+// Shim ------------
+require("setimmediate");
+// Shim ------------
+if (typeof importScripts !== "undefined") {
+  importScripts("browser-polyfill.js");
+}
+
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import {
-  ExtensionRouter,
-  ExtensionGuards,
-  ExtensionEnv,
   ContentScriptMessageRequester,
+  ExtensionEnv,
+  ExtensionGuards,
+  ExtensionRouter
 } from "@keplr-wallet/router-extension";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { init } from "@keplr-wallet/background";
+import { init, ScryptParams } from "@keplr-wallet/background";
 import scrypt from "scrypt-js";
 import { Buffer } from "buffer/";
 
-import {
-  CommunityChainInfoRepo,
-  EmbedChainInfos,
-  PrivilegedOrigins,
-} from "../config";
+import { CommunityChainInfoRepo, EmbedChainInfos, PrivilegedOrigins } from "../config";
 
 const router = new ExtensionRouter(ExtensionEnv.produceEnv);
 router.addGuard(ExtensionGuards.checkOriginIsValid);
@@ -28,6 +31,21 @@ const { initFn } = init(
   PrivilegedOrigins,
   PrivilegedOrigins,
   CommunityChainInfoRepo,
+  {
+    rng: (array) => {
+      return Promise.resolve(crypto.getRandomValues(array));
+    },
+    scrypt: async (text: string, params: ScryptParams) => {
+      return await scrypt.scrypt(
+        Buffer.from(text),
+        Buffer.from(params.salt, "hex"),
+        params.n,
+        params.r,
+        params.p,
+        params.dklen
+      );
+    },
+  },
   {
     create: (params: {
       iconRelativeUrl?: string;
@@ -43,35 +61,10 @@ const { initFn } = init(
         message: params.message,
       });
     },
-  },
-  {
-    commonCrypto: {
-      scrypt: async (
-        text: string,
-        params: { dklen: number; salt: string; n: number; r: number; p: number }
-      ) => {
-        return await scrypt.scrypt(
-          Buffer.from(text),
-          Buffer.from(params.salt, "hex"),
-          params.n,
-          params.r,
-          params.p,
-          params.dklen
-        );
-      },
-    },
-    getDisabledChainIdentifiers: async () => {
-      const kvStore = new ExtensionKVStore("store_chain_config");
-      const legacy = await kvStore.get<{ disabledChains: string[] }>(
-        "extension_chainInfoInUIConfig"
-      );
-      if (!legacy) {
-        return [];
-      }
-      return legacy.disabledChains ?? [];
-    },
   }
 );
+
+
 
 router.listen(BACKGROUND_PORT, initFn);
 
@@ -86,3 +79,4 @@ browser.alarms.onAlarm.addListener((alarm) => {
     // https://developer.chrome.com/blog/longer-esw-lifetimes/
   }
 });
+

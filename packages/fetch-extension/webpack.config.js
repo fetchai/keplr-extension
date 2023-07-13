@@ -27,6 +27,8 @@ const envDefaults = {
     "https://api.coingecko.com/api/v3",
   KEPLR_EXT_COINGECKO_GETPRICE:
     process.env["KEPLR_EXT_COINGECKO_GETPRICE"] || "/simple/price",
+  DEV_AUTH_CLIENT_ID: process.env["DEV_AUTH_CLIENT_ID"] || "",
+  PROD_AUTH_CLIENT_ID: process.env["PROD_AUTH_CLIENT_ID"] || "",
 };
 const commonResolve = () => ({
   extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss", ".svg", ".wasm"],
@@ -42,14 +44,14 @@ const commonResolve = () => ({
   },
 });
 const altResolve = () => {
-  const p = path.resolve(__dirname, "./src/keplr-wallet-private/index.ts");
+  const p = path.resolve(__dirname, "./src/keplr-torus-signin/index.ts");
 
   if (fs.existsSync(p)) {
     return {
       alias: {
-        "keplr-wallet-private": path.resolve(
+        "alt-sign-in": path.resolve(
           __dirname,
-          "./src/keplr-wallet-private/index.ts"
+          "./src/keplr-torus-signin/index.ts"
         ),
       },
     };
@@ -117,10 +119,10 @@ const extensionConfig = () => {
     // In development environment, webpack watch the file changes, and recompile
     watch: isEnvDevelopment,
     entry: {
+      background: ["./src/background/background.ts"],
       popup: ["./src/index.tsx"],
       blocklist: ["./src/pages/blocklist/index.tsx"],
-      ledgerGrant: ["./src/ledger-grant.tsx"],
-      background: ["./src/background/background.ts"],
+      ledgerGrant: ["./src/pages/ledger-grant/index.tsx"],
       contentScripts: ["./src/content-scripts/content-scripts.ts"],
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],
     },
@@ -150,6 +152,11 @@ const extensionConfig = () => {
           ...(() => {
             const res = {
               popup: {
+                maxSize: 3_000_000,
+                maxInitialRequests: 100,
+                maxAsyncRequests: 100,
+              },
+              register: {
                 maxSize: 3_000_000,
                 maxInitialRequests: 100,
                 maxAsyncRequests: 100,
@@ -190,6 +197,11 @@ const extensionConfig = () => {
         crypto: require.resolve("crypto-browserify"),
         stream: require.resolve("stream-browserify"),
         process: require.resolve("process/browser"),
+        path: require.resolve("path-browserify"),
+        zlib: require.resolve("browserify-zlib"),
+        fs: false,
+        assert: require.resolve("assert"),
+        url: require.resolve("url"),
       },
     },
     module: {
@@ -205,8 +217,9 @@ const extensionConfig = () => {
           },
         },
         {
-          test: /\.css$/i,
-          use: ["style-loader", "css-loader"],
+          test: /\.css$/,
+          exclude: /swiper-bundle\.min\.css/,
+          use: ['style-loader', 'css-loader'],
         },
       ],
     },

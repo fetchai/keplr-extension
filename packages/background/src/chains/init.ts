@@ -1,40 +1,19 @@
 import { Router } from "@keplr-wallet/router";
 import {
-  GetChainInfosWithCoreTypesMsg,
+  GetChainInfosMsg,
   SuggestChainInfoMsg,
   RemoveSuggestedChainInfoMsg,
   GetChainInfosWithoutEndpointsMsg,
-  SetChainEndpointsMsg,
-  ClearChainEndpointsMsg,
-  GetChainOriginalEndpointsMsg,
-  ClearAllSuggestedChainInfosMsg,
-  ClearAllChainEndpointsMsg,
 } from "./messages";
 import { ROUTE } from "./constants";
 import { getHandler } from "./handler";
 import { ChainsService } from "./service";
-import { PermissionService } from "../permission";
-import { PermissionInteractiveService } from "../permission-interactive";
 
-export function init(
-  router: Router,
-  chainService: ChainsService,
-  permissionService: PermissionService,
-  permissionInteractiveService: PermissionInteractiveService
-): void {
-  router.registerMessage(GetChainInfosWithCoreTypesMsg);
-  router.registerMessage(GetChainInfosWithoutEndpointsMsg);
+export function init(router: Router, service: ChainsService): void {
+  router.registerMessage(GetChainInfosMsg);
   router.registerMessage(GetChainInfosWithoutEndpointsMsg);
   router.registerMessage(SuggestChainInfoMsg);
   router.registerMessage(RemoveSuggestedChainInfoMsg);
-  router.registerMessage(SetChainEndpointsMsg);
-  router.registerMessage(ClearChainEndpointsMsg);
-  router.registerMessage(GetChainOriginalEndpointsMsg);
-  router.registerMessage(ClearAllSuggestedChainInfosMsg);
-  router.registerMessage(ClearAllChainEndpointsMsg);
 
-  router.addHandler(
-    ROUTE,
-    getHandler(chainService, permissionService, permissionInteractiveService)
-  );
+  router.addHandler(ROUTE, getHandler(service));
 }

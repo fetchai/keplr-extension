@@ -1,22 +1,22 @@
 import { SpendableBalances } from "./types";
+import { KVStore } from "@keplr-wallet/common";
 import {
   ObservableChainQuery,
   ObservableChainQueryMap,
 } from "../../chain-query";
-import { ChainGetter } from "../../../chain";
+import { ChainGetter } from "../../../common";
 import { CoinPretty } from "@keplr-wallet/unit";
 import { computed } from "mobx";
-import { QuerySharedContext } from "../../../common";
 
 export class ObservableChainQuerySpendableBalances extends ObservableChainQuery<SpendableBalances> {
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     address: string
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       `/cosmos/bank/v1beta1/spendable_balances/${address}`
@@ -46,13 +46,13 @@ export class ObservableChainQuerySpendableBalances extends ObservableChainQuery<
 
 export class ObservableQuerySpendableBalances extends ObservableChainQueryMap<SpendableBalances> {
   constructor(
-    sharedContext: QuerySharedContext,
-    chainId: string,
-    chainGetter: ChainGetter
+    protected override readonly kvStore: KVStore,
+    protected override readonly chainId: string,
+    protected override readonly chainGetter: ChainGetter
   ) {
-    super(sharedContext, chainId, chainGetter, (denom: string) => {
+    super(kvStore, chainId, chainGetter, (denom: string) => {
       return new ObservableChainQuerySpendableBalances(
-        this.sharedContext,
+        this.kvStore,
         this.chainId,
         this.chainGetter,
         denom

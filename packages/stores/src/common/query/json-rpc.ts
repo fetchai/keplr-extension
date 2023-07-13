@@ -1,10 +1,10 @@
-import { ObservableQuery, QueryOptions } from "./query";
-import { QuerySharedContext } from "./context";
+import { ObservableQuery, QueryOptions, QueryResponse } from "./index";
+import { KVStore } from "@keplr-wallet/common";
+import { AxiosInstance } from "axios";
 import { action, makeObservable, observable } from "mobx";
 import { Hash } from "@keplr-wallet/crypto";
 import { Buffer } from "buffer/";
 import { HasMapStore } from "../map";
-import { simpleFetch } from "@keplr-wallet/simple-fetch";
 
 /**
  * Experimental implementation for json rpc.
@@ -17,14 +17,14 @@ export class ObservableJsonRPCQuery<
   protected _params: readonly any[];
 
   constructor(
-    sharedContext: QuerySharedContext,
-    baseURL: string,
+    kvStore: KVStore,
+    instance: AxiosInstance,
     url: string,
     protected readonly method: string,
     params: readonly any[],
     options: Partial<QueryOptions> = {}
   ) {
-    super(sharedContext, baseURL, url, options);
+    super(kvStore, instance, url, options);
 
     this._params = params;
 
@@ -43,8 +43,8 @@ export class ObservableJsonRPCQuery<
 
   protected override async fetchResponse(
     abortController: AbortController
-  ): Promise<{ headers: any; data: T }> {
-    const result = await simpleFetch<{
+  ): Promise<{ response: QueryResponse<T>; headers: any }> {
+    const result = await this.instance.post<{
       jsonrpc: "2.0";
       result?: T;
       id: string;
@@ -52,19 +52,18 @@ export class ObservableJsonRPCQuery<
         code?: number;
         message?: string;
       };
-    }>(this.baseURL, this.url, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
+    }>(
+      this.url,
+      {
         jsonrpc: "2.0",
         id: "1",
         method: this.method,
         params: this.params,
-      }),
-      signal: abortController.signal,
-    });
+      },
+      {
+        signal: abortController.signal,
+      }
+    );
 
     if (result.data.error && result.data.error.message) {
       throw new Error(result.data.error.message);
@@ -76,7 +75,12 @@ export class ObservableJsonRPCQuery<
 
     return {
       headers: result.headers,
-      data: result.data.result,
+      response: {
+        data: result.data.result,
+        status: result.status,
+        staled: false,
+        timestamp: Date.now(),
+      },
     };
   }
 

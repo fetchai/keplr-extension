@@ -26,24 +26,3 @@ export class GetAnalyticsIdMsg extends Message<string> {
     return GetAnalyticsIdMsg.type();
   }
 }
-
-export class SetDisableAnalyticsMsg extends Message<boolean> {
-  public static type() {
-    return "set-disable-analytics";
-  }
-
-  constructor(public readonly disabled: boolean) {
-    super();
-  }
-
-  validateBasic(): void {
-    // noop
-  }
-  route(): string {
-    return ROUTE;
-  }
-
-  type(): string {
-    return SetDisableAnalyticsMsg.type();
-  }
-}

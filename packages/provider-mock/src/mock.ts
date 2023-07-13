@@ -15,7 +15,6 @@ import {
   ICNSAdr36Signatures,
   ChainInfoWithoutEndpoints,
   SecretUtils,
-  SettledResponses,
 } from "@keplr-wallet/types";
 import {
   Bech32Address,
@@ -26,7 +25,7 @@ import {
   CosmJSOfflineSigner,
   CosmJSOfflineSignerOnlyAmino,
 } from "@keplr-wallet/provider";
-import { Hash, Mnemonic, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
+import { Mnemonic, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
 import Long from "long";
 import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 
@@ -106,9 +105,9 @@ export class MockKeplr implements Keplr {
       name: "mock",
       algo: "secp256k1",
       pubKey: wallet.getPubKey().toBytes(),
-      address: wallet.getPubKey().getCosmosAddress(),
+      address: wallet.getPubKey().getAddress(),
       bech32Address: new Bech32Address(
-        wallet.getPubKey().getCosmosAddress()
+        wallet.getPubKey().getAddress()
       ).toBech32(
         this.chainInfos.find((c) => c.chainId === chainId)!.bech32Config
           .bech32PrefixAccAddr
@@ -116,30 +115,6 @@ export class MockKeplr implements Keplr {
       isNanoLedger: false,
       isKeystone: false,
     };
-  }
-
-  async getKeysSettled(chainIds: string[]): Promise<SettledResponses<Key>> {
-    return chainIds.map((chainId) => {
-      const wallet = this.getWallet(chainId);
-
-      return {
-        status: "fulfilled",
-        value: {
-          name: "mock",
-          algo: "secp256k1",
-          pubKey: wallet.getPubKey().toBytes(),
-          address: wallet.getPubKey().getCosmosAddress(),
-          bech32Address: new Bech32Address(
-            wallet.getPubKey().getCosmosAddress()
-          ).toBech32(
-            this.chainInfos.find((c) => c.chainId === chainId)!.bech32Config
-              .bech32PrefixAccAddr
-          ),
-          isNanoLedger: false,
-          isKeystone: false,
-        },
-      };
-    });
   }
 
   signArbitrary(
@@ -207,15 +182,13 @@ export class MockKeplr implements Keplr {
       throw new Error("Unmatched signer");
     }
 
-    const signature = wallet.signDigest32(
-      Hash.sha256(serializeSignDoc(signDoc))
-    );
+    const signature = wallet.sign(serializeSignDoc(signDoc));
 
     return {
       signed: signDoc,
       signature: encodeSecp256k1Signature(
         wallet.getPubKey().toBytes(),
-        new Uint8Array([...signature.r, ...signature.s])
+        signature
       ),
     };
   }
@@ -245,17 +218,15 @@ export class MockKeplr implements Keplr {
       throw new Error("Unmatched signer");
     }
 
-    const signature = wallet.signDigest32(
-      Hash.sha256(
-        SignDoc.encode(
-          SignDoc.fromPartial({
-            bodyBytes: signDoc.bodyBytes!,
-            authInfoBytes: signDoc.authInfoBytes!,
-            chainId: signDoc.chainId!,
-            accountNumber: signDoc.accountNumber!.toString(),
-          })
-        ).finish()
-      )
+    const signature = wallet.sign(
+      SignDoc.encode(
+        SignDoc.fromPartial({
+          bodyBytes: signDoc.bodyBytes!,
+          authInfoBytes: signDoc.authInfoBytes!,
+          chainId: signDoc.chainId!,
+          accountNumber: signDoc.accountNumber!.toString(),
+        })
+      ).finish()
     );
 
     return {
@@ -267,10 +238,7 @@ export class MockKeplr implements Keplr {
       },
       signature: encodeSecp256k1Signature(
         wallet.getPubKey().toBytes(),
-        new Uint8Array([
-          ...signature.r.map((b) => (Math.random() > 0.5 ? 0 : b)),
-          ...signature.s.map((b) => (Math.random() > 0.5 ? 0 : b)),
-        ])
+        signature
       ),
     };
   }

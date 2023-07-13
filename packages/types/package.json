@@ -16,6 +16,7 @@
     "lint-fix": "eslint --fix \"src/**/*\" && prettier --write \"src/**/*\""
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "long": "^4.0.0"
   }
 }

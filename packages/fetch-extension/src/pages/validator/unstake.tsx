@@ -6,6 +6,7 @@ import {
   InvalidNumberAmountError,
   NegativeAmountError,
   ZeroAmountError,
+  useUndelegateTxConfig,
 } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo } from "react";
@@ -14,7 +15,6 @@ import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-import { useUndelegateTxConfig } from "@keplr-wallet/hooks/build/tx/undelegate-tx";
 
 export const Unstake: FunctionComponent<{
   validatorAddress: string;
@@ -31,14 +31,14 @@ export const Unstake: FunctionComponent<{
     account.bech32Address,
     validatorAddress
   );
-  const { amountConfig, memoConfig, feeConfig, senderConfig } = sendConfigs;
+  const { amountConfig, memoConfig, feeConfig } = sendConfigs;
 
   const intl = useIntl();
-  const error = amountConfig.uiProperties.error;
+  const error = amountConfig.error;
 
   const balance = queriesStore
     .get(amountConfig.chainId)
-    .cosmos.queryDelegations.getQueryBech32Address(senderConfig.sender)
+    .cosmos.queryDelegations.getQueryBech32Address(amountConfig.sender)
     .getDelegationTo(validatorAddress);
 
   const errorText: string | undefined = useMemo(() => {
@@ -73,7 +73,7 @@ export const Unstake: FunctionComponent<{
   const stakeClicked = async () => {
     try {
       await account.cosmos.sendUndelegateMsg(
-        amountConfig.value,
+        amountConfig.amount,
         validatorAddress,
         memoConfig.memo,
         feeConfig.toStdFee(),
@@ -137,11 +137,11 @@ export const Unstake: FunctionComponent<{
         <Input
           className="form-control-alternative"
           type="number"
-          value={amountConfig.value}
+          value={amountConfig.amount}
           placeholder="0 FET"
           onChange={(e) => {
             e.preventDefault();
-            amountConfig.setValue(e.target.value);
+            amountConfig.setAmount(e.target.value);
           }}
           style={{ borderRadius: "0%" }}
           min={0}

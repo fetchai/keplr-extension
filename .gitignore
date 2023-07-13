@@ -42,3 +42,4 @@ packages/proto-types/proto-types-gen/src
 
 storybook-static
 build-storybook.log
+/.yarn/

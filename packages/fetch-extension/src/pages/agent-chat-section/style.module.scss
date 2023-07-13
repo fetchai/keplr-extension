@@ -10,14 +10,14 @@
   flex-direction: row;
 }
 
-.input-section {
+.inputSection {
   margin-left: -12px;
   margin-right: -12px;
   margin-bottom: -12px;
   background: white;
   padding: 12px;
 
-  .message-disappear {
+  .messageDisappear {
     font-weight: 400;
     font-size: 15px;
     color: #525f7f;
@@ -85,7 +85,7 @@
   height: 24px;
 }
 
-.send-message-inputArea {
+.sendMessageInputArea {
   // height: 32px;
   outline: none !important;
 }
@@ -101,7 +101,7 @@
   word-break: break-word;
 }
 
-.send-message-icon {
+.sendMessageIcon {
   margin-right: 5px;
   cursor: pointer;
 }

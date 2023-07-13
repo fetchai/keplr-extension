@@ -17,7 +17,9 @@ import { ChatMember } from "@components/chat-member";
 import { GroupChatPopup } from "@components/group-chat-popup";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { createGroup } from "@graphQL/groups-api";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
+  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/index";
@@ -41,7 +43,6 @@ import {
   removeMemberEvent,
 } from "@utils/group-events";
 import { ChatErrorPopup } from "@components/chat-error-popup";
-import { InitialGas } from "../../../config.ui";
 
 export const EditMember: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -80,9 +81,9 @@ export const EditMember: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
+    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -94,11 +95,24 @@ export const EditMember: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
 
   const updateUserAddresses = (members: GroupMembers[]) => {
     const userAddresses: any[] = members
       .reduce((acc: any[], element: GroupMembers) => {
-        const addressData = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId).find(
+        const addressData = addressBookConfig.addressBookDatas.find(
           (data) => data.address === element.address
         );
         if (addressData && addressData.address !== walletAddress) {
@@ -147,7 +161,7 @@ export const EditMember: FunctionComponent = observer(() => {
           ?.isAdmin ?? false
       );
     }
-  }, [uiConfigStore.addressBookConfig, selectedMembers]);
+  }, [addressBookConfig.addressBookDatas, selectedMembers]);
 
   /// Listening the live group updates
   useEffect(() => {
@@ -442,7 +456,7 @@ export const EditMember: FunctionComponent = observer(() => {
           </div>
         </div>
         <span className={style["groupDescription"]}>{group.description}</span>
-        {!uiConfigStore.isInitialized ? (
+        {!addressBookConfig.isLoaded ? (
           <ChatLoader message="Loading contacts, please wait..." />
         ) : (
           <div className={style["newMemberContainer"]}>

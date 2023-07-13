@@ -1,3 +1,9 @@
+// Shim ------------
+
+import { ErrorBoundary } from "./error-boundary";
+
+require("setimmediate");
+// Shim ------------
 import React, { FunctionComponent, useEffect } from "react";
 import ReactDOM from "react-dom";
 
@@ -5,9 +11,9 @@ import { AppIntlProvider } from "./languages";
 
 import "./styles/global.scss";
 
-import { HashRouter, Route } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
-import { AccessPage } from "./pages/access";
+import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages/lock";
@@ -30,14 +36,17 @@ import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
 
 import {
+  KeyRingStatus,
   StartAutoLockMonitoringMsg,
 } from "@keplr-wallet/background";
 import Modal from "react-modal";
+import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
 import { AddressBookPage } from "./pages/setting/address-book";
 import { ClearPage } from "./pages/setting/clear";
 import {
   SettingConnectionsPage,
+  SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages/setting/connections";
 import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
@@ -54,6 +63,7 @@ import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import manifest from "./manifest.v2.json";
 import { ChatPage } from "./pages/chat";
 import { ChatSection } from "./pages/chat-section";
+import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { ChatStoreProvider } from "@components/chat/store";
 import { NewChat } from "./pages/new-chat";
@@ -71,6 +81,8 @@ import { NotificationOrganizations } from "./pages/notiphy-notification/notifica
 import { NotificationTopics } from "./pages/notiphy-notification/notification-topics";
 import { SettingNotifications } from "./pages/setting/notification";
 import { ReviewNotification } from "./pages/notiphy-notification/review-notification";
+import { KeystoneImportPubkeyPage } from "./pages/keystone";
+import { KeystoneSignPage } from "./pages/keystone/sign";
 import { SettingEndpointsPage } from "./pages/setting/endpoints";
 import { SettingAutoLockPage } from "./pages/setting/autolock";
 import { SettingSecurityPrivacyPage } from "./pages/setting/security-privacy";
@@ -130,18 +142,18 @@ const StateRenderer: FunctionComponent = observer(() => {
 
   useEffect(() => {
     // Notify to auto lock service to start activation check whenever the keyring is unlocked.
-    if (keyRingStore.status === "unlocked") {
+    if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
       const msg = new StartAutoLockMonitoringMsg();
       const requester = new InExtensionMessageRequester();
       requester.sendMessage(BACKGROUND_PORT, msg);
     }
   }, [keyRingStore.status]);
 
-  if (keyRingStore.status === "unlocked") {
+  if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
     return <MainPage />;
-  } else if (keyRingStore.status === "locked") {
+  } else if (keyRingStore.status === KeyRingStatus.LOCKED) {
     return <LockPage />;
-  } else if (keyRingStore.status === "empty") {
+  } else if (keyRingStore.status === KeyRingStatus.EMPTY) {
     browser.tabs.create({
       url: "/popup.html#/register",
     });
@@ -154,7 +166,7 @@ const StateRenderer: FunctionComponent = observer(() => {
         />
       </div>
     );
-  } else {
+  } else if (keyRingStore.status === KeyRingStatus.NOTLOADED) {
     return (
       <div style={{ height: "100%" }}>
         <Banner
@@ -162,7 +174,10 @@ const StateRenderer: FunctionComponent = observer(() => {
           logo={require("@assets/brand-text.png")}
         />
       </div>
-    );  }
+    );
+  } else {
+    return <div>Unknown status</div>;
+  }
 });
 
 ReactDOM.render(
@@ -175,211 +190,206 @@ ReactDOM.render(
         <NotificationStoreProvider>
           <NotificationProvider>
             <ConfirmProvider>
+              <ErrorBoundary>
               <HashRouter>
                 <ChatStoreProvider>
-                    <Route path="/" element={StateRenderer} />
-                    <Route path="/unlock" element={LockPage} />
-                    <Route path="/access" element={AccessPage} />
-                    <Route path="/register" element={RegisterPage} />
-                    <Route path="/send" element={SendPage} />
+                  <Routes>
+                    <Route path="/" element={<StateRenderer/>} />
+                    <Route path="/unlock" element={<LockPage/>} />
+                    <Route path="/access" element={<AccessPage/>} />
                     <Route
-
+                      path="/access/viewing-key"
+                      element={<Secret20ViewingKeyAccessPage/>}
+                    />
+                    <Route path="/register" element={<RegisterPage/>} />
+                    <Route path="/send" element={<SendPage/>} />
+                    <Route
                       path="/ibc-transfer"
-                      element={IBCTransferPage}
+                      element={<IBCTransferPage/>}
                     />
-                    <Route path="/setting" element={SettingPage} />
+                    <Route path="/setting" element={<SettingPage/>} />
                     <Route
-
+                      path="/keystone/import-pubkey"
+                      element={<KeystoneImportPubkeyPage/>}
+                    />
+                    <Route
+                      path="/keystone/sign"
+                      element={<KeystoneSignPage/>}
+                    />
+                    <Route
+                      path="/ledger-grant"
+                      element={<LedgerGrantPage/>}
+                    />
+                    <Route
                       path="/setting/language"
-                      element={SettingLanguagePage}
+                      element={<SettingLanguagePage/>}
                     />
                     <Route
-
                       path="/setting/fiat"
-                      element={SettingFiatPage}
+                      element={<SettingFiatPage/>}
                     />
                     <Route
-
                       path="/setting/connections"
-                      element={SettingConnectionsPage}
+                      element={<SettingConnectionsPage/>}
                     />
                     <Route
-
+                      path="/setting/connections/viewing-key/:contractAddress"
+                      element={<SettingSecret20ViewingKeyConnectionsPage/>}
+                    />
+                    <Route
                       path="/setting/address-book"
-                      element={AddressBookPage}
+                      element={<AddressBookPage/>}
                     />
-                    <Route path="/activity" element={ActivityPage} />
+                    <Route path="/activity" element={<ActivityPage/>} />
                     <Route
-
+                      path="/setting/export-to-mobile"
+                      element={<ExportToMobilePage/>}
+                    />
+                    <Route
                       path="/setting/set-keyring"
-                      element={SetKeyRingPage}
+                      element={<SetKeyRingPage/>}
                     />
                     <Route
-
                       path="/setting/export/:index"
-                      element={ExportPage}
+                      element={<ExportPage/>}
                     />
                     <Route
-
                       path="/setting/clear/:index"
-                      element={ClearPage}
+                      element={<ClearPage/>}
                     />
                     <Route
-
                       path="/setting/keyring/change/name/:index"
-                      element={ChangeNamePage}
+                      element={<ChangeNamePage/>}
                     />
                     <Route
-
                       path="/setting/token/add"
-                      element={AddTokenPage}
+                      element={<AddTokenPage/>}
                     />
                     <Route
-
                       path="/setting/token/manage"
-                      element={ManageTokenPage}
+                      element={<ManageTokenPage/>}
                     />
                     <Route
-
                       path="/setting/endpoints"
-                      element={SettingEndpointsPage}
+                      element={<SettingEndpointsPage/>}
                     />
                     <Route
-
                       path="/setting/autolock"
-                      element={SettingAutoLockPage}
+                      element={<SettingAutoLockPage/>}
                     />
                     <Route
-
                       path="/setting/security-privacy"
-                      element={SettingSecurityPrivacyPage}
+                      element={<SettingSecurityPrivacyPage/>}
                     />
-                    <Route path="/sign" element={SignPage} />
+                    <Route path="/sign" element={<SignPage/>} />
                     <Route
                       path="/icns/adr36-signatures"
-                      element={ICNSAdr36SignPage}
+                      element={<ICNSAdr36SignPage/>}
                     />
                     <Route
                       path="/suggest-chain"
-                      element={ChainSuggestedPage}
+                      element={<ChainSuggestedPage/>}
                     />
                     <Route
                       path="/permissions/grant/get-chain-infos"
-                      element={GrantGlobalPermissionGetChainInfosPage}
+                      element={<GrantGlobalPermissionGetChainInfosPage/>}
                     />
                     <Route
                       path="/setting/permissions/get-chain-infos"
-                      element={SettingPermissionsGetChainInfosPage}
+                      element={<SettingPermissionsGetChainInfosPage/>}
                     />
                     <Route
                       path="/setting/chain-active"
-                      element={ChainActivePage}
+                      element={<ChainActivePage/>}
                     />
-                    <Route path="/authz" element={AuthZPage} />
+                    <Route path="/authz" element={<AuthZPage/>} />
                     <Route
-
                       path="/notification"
-                      element={NotificationPage}
+                      element={<NotificationPage/>}
                     />
                     <Route
-
                       path="/notification/organisations/:type"
-                      element={NotificationOrganizations}
+                      element={<NotificationOrganizations/>}
                     />
                     <Route
-
                       path="/notification/topics/:type"
-                      element={NotificationTopics}
+                      element={<NotificationTopics/>}
                     />
                     <Route
-
                       path="/notification/review"
-                      element={ReviewNotification}
+                      element={<ReviewNotification/>}
                     />
-                    <Route path="/chat" element={ChatPage} />
-                    <Route path="/chat/:name" element={ChatSection} />
-                    <Route path="/new-chat" element={NewChat} />
+                    <Route path="/chat" element={<ChatPage/>} />
+                    <Route path="/chat/:name" element={<ChatSection/>} />
+                    <Route path="/new-chat" element={<NewChat/>} />
                     <Route
-
                       path="/chat/group-chat/create"
-                      element={CreateGroupChat}
+                      element={<CreateGroupChat/>}
                     />
                     <Route
-
                       path="/chat/group-chat/add-member"
-                      element={AddMember}
+                      element={<AddMember/>}
                     />
                     <Route
-
                       path="/chat/group-chat/edit-member"
-                      element={EditMember}
+                      element={<EditMember/>}
                     />
                     <Route
-
                       path="/chat/group-chat/review-details"
-                      element={ReviewGroupChat}
+                      element={<ReviewGroupChat/>}
                     />
                     <Route
-
                       path="/chat/group-chat-section/:name"
-                      element={GroupChatSection}
+                      element={<GroupChatSection/>}
                     />
                     <Route
-
                       path="/chat/agent/:name"
-                      element={AgentChatSection}
+                      element={<AgentChatSection/>}
                     />
-                    <Route path="/more" element={MorePage} />
+                    <Route path="/more" element={<MorePage/>} />
                     <Route
-
                       path="/setting/notifications"
-                      element={SettingNotifications}
+                      element={<SettingNotifications/>}
                     />
                     <Route
-
                       path="/setting/chat"
-                      element={ChatSettings}
+                      element={<ChatSettings/>}
                     />
                     <Route
-
                       path="/setting/chat/block"
-                      element={BlockList}
+                      element={<BlockList/>}
                     />
                     <Route
-
                       path="/setting/chat/privacy"
-                      element={Privacy}
+                      element={<Privacy/>}
                     />
                     <Route
-
                       path="/setting/chat/readRecipt"
-                      element={ReadRecipt}
+                      element={<ReadRecipt/>}
                     />
-                    <Route path="/validators" element={ValidatorList} />
+                    <Route path="/validators" element={<ValidatorList/>} />
                     <Route
-
                       path="/validators/:validator_address/:operation"
-                      element={Validator}
+                      element={<Validator/>}
                     />
                     <Route
-
                       path="/stake-complete/:validator_address"
-                      element={StakeComplete}
+                      element={<StakeComplete/>}
                     />
-                    <Route path="/proposal" element={Proposals} />
+                    <Route path="/proposal" element={<Proposals/>} />
                     <Route
-
                       path="/proposal-detail/:id"
-                      element={ProposalDetail}
+                      element={<ProposalDetail/>}
                     />
                     <Route
-
                       path="/proposal-vote-status/:votedOn/:id"
-                      element={PropsalVoteStatus}
+                      element={<PropsalVoteStatus/>}
                     />
-                    <Route path="*" element={StateRenderer} />
+                    <Route path="*" element={<StateRenderer/>} />
+                  </Routes>
                 </ChatStoreProvider>
               </HashRouter>
+              </ErrorBoundary>
             </ConfirmProvider>
           </NotificationProvider>
         </NotificationStoreProvider>

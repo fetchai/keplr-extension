@@ -39,7 +39,7 @@ export const GasAutoContainer: FunctionComponent<{
           label="Gas Adjustment"
           value={
             gasSimulator.gasEstimated != null
-              ? gasSimulator.gasAdjustmentValue
+              ? gasSimulator.gasAdjustmentRaw
               : "-"
           }
           type={gasSimulator.gasEstimated != null ? "number" : "text"}
@@ -48,7 +48,7 @@ export const GasAutoContainer: FunctionComponent<{
           onChange={(e) => {
             e.preventDefault();
 
-            gasSimulator.setGasAdjustmentValue(e.target.value);
+            gasSimulator.setGasAdjustment(e.target.value);
           }}
         />
         <div className={styleAuto["multiplyIcon"]}>

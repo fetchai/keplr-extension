@@ -1,6 +1,7 @@
 import { ObservableChainQuery } from "../chain-query";
-import { ChainGetter } from "../../chain";
-import { QuerySharedContext } from "../../common";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainGetter } from "../../common";
+import { QueryResponse } from "../../common";
 
 import { Buffer } from "buffer/";
 import { autorun } from "mobx";
@@ -11,7 +12,7 @@ export class ObservableCosmwasmContractChainQuery<
   protected disposer?: () => void;
 
   constructor(
-    sharedContext: QuerySharedContext,
+    kvStore: KVStore,
     chainId: string,
     chainGetter: ChainGetter,
     protected readonly contractAddress: string,
@@ -19,27 +20,31 @@ export class ObservableCosmwasmContractChainQuery<
     protected obj: object
   ) {
     super(
-      sharedContext,
+      kvStore,
       chainId,
       chainGetter,
       ObservableCosmwasmContractChainQuery.getUrlFromObj(contractAddress, obj)
     );
   }
 
-  protected override onStart(): void {
+  protected override onStart() {
     super.onStart();
 
-    this.disposer = autorun(() => {
-      const chainInfo = this.chainGetter.getChain(this.chainId);
-      if (chainInfo.features && chainInfo.features.includes("wasmd_0.24+")) {
-        if (this.url.startsWith("/wasm/v1/")) {
-          this.setUrl(`/cosmwasm${this.url}`);
+    return new Promise<void>((resolve) => {
+      this.disposer = autorun(() => {
+        const chainInfo = this.chainGetter.getChain(this.chainId);
+        if (chainInfo.features && chainInfo.features.includes("wasmd_0.24+")) {
+          if (this.url.startsWith("/wasm/v1/")) {
+            this.setUrl(`/cosmwasm${this.url}`);
+          }
+        } else {
+          if (this.url.startsWith("/cosmwasm/")) {
+            this.setUrl(`${this.url.replace("/cosmwasm", "")}`);
+          }
         }
-      } else {
-        if (this.url.startsWith("/cosmwasm/")) {
-          this.setUrl(`${this.url.replace("/cosmwasm", "")}`);
-        }
-      }
+
+        resolve();
+      });
     });
   }
 
@@ -65,10 +70,10 @@ export class ObservableCosmwasmContractChainQuery<
 
   protected override async fetchResponse(
     abortController: AbortController
-  ): Promise<{ headers: any; data: T }> {
-    const { data, headers } = await super.fetchResponse(abortController);
+  ): Promise<{ response: QueryResponse<T>; headers: any }> {
+    const { response, headers } = await super.fetchResponse(abortController);
 
-    const wasmResult = data as unknown as
+    const wasmResult = (response.data as unknown) as
       | {
           data: any;
         }
@@ -80,7 +85,12 @@ export class ObservableCosmwasmContractChainQuery<
 
     return {
       headers,
-      data: wasmResult.data as T,
+      response: {
+        data: wasmResult.data as T,
+        status: response.status,
+        staled: false,
+        timestamp: Date.now(),
+      },
     };
   }
 }

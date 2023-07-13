@@ -1,63 +1,63 @@
 import { InteractionStore } from "./interaction";
-import { computed, makeObservable } from "mobx";
+import { autorun, computed, flow, makeObservable, observable } from "mobx";
+import { InteractionWaitingData } from "@keplr-wallet/background";
 import { SignDocWrapper } from "@keplr-wallet/cosmos";
 import { EthSignType, KeplrSignOptions, StdSignDoc } from "@keplr-wallet/types";
-import { InteractionWaitingData, PlainObject } from "@keplr-wallet/background";
-
-export type SignInteractionData =
-  | {
-      origin: string;
-      chainId: string;
-      mode: "amino";
-      signer: string;
-      signDoc: StdSignDoc;
-      signOptions: KeplrSignOptions & {
-        isADR36WithString?: boolean;
-      };
-  isADR36SignDoc: boolean;
-  isADR36WithString?: boolean;
-  ethSignType?: EthSignType;
-      keyType: string;
-      keyInsensitive: PlainObject;
-      eip712?: {
-        types: Record<string, { name: string; type: string }[] | undefined>;
-        domain: Record<string, any>;
-        primaryType: string;
-      };
-    }
-  | {
-      origin: string;
-      chainId: string;
-      mode: "direct";
-      signer: string;
-      signDocBytes: Uint8Array;
-      signOptions: KeplrSignOptions  & {
-        isADR36WithString?: boolean;
-      };
-  isADR36SignDoc: boolean;
-  isADR36WithString?: boolean;
-  ethSignType?: EthSignType;
-      keyType: string;
-      keyInsensitive: PlainObject;
-    };
 
 export class SignInteractionStore {
+  @observable
+  protected _isLoading: boolean = false;
+
   constructor(protected readonly interactionStore: InteractionStore) {
     makeObservable(this);
+
+    autorun(() => {
+      // Reject all interactions that is not first one.
+      // This interaction can have only one interaction at once.
+      const datas = this.waitingDatas.slice();
+      if (datas.length > 1) {
+        for (let i = 1; i < datas.length; i++) {
+          this.rejectWithId(datas[i].id);
+        }
+      }
+    });
   }
 
-  get waitingDatas() {
-    return this.interactionStore.getAllData<SignInteractionData>(
-      "request-sign-cosmos"
-    );
+  protected get waitingDatas() {
+    return this.interactionStore.getDatas<
+      | {
+          msgOrigin: string;
+          chainId: string;
+          mode: "amino";
+          signer: string;
+          signDoc: StdSignDoc;
+          signOptions: KeplrSignOptions;
+          isADR36SignDoc: boolean;
+          isADR36WithString?: boolean;
+          ethSignType?: EthSignType;
+        }
+      | {
+          msgOrigin: string;
+          chainId: string;
+          mode: "direct";
+          signer: string;
+          signDocBytes: Uint8Array;
+          signOptions: KeplrSignOptions;
+        }
+    >("request-sign");
   }
 
   @computed
   get waitingData():
-    | InteractionWaitingData<
-        SignInteractionData & { signDocWrapper: SignDocWrapper;
-    ethSignType?: EthSignType; }
-      >
+    | InteractionWaitingData<{
+        chainId: string;
+        msgOrigin: string;
+        signer: string;
+        signDocWrapper: SignDocWrapper;
+        signOptions: KeplrSignOptions;
+        isADR36WithString?: boolean;
+        ethSignType?: EthSignType;
+      }>
     | undefined {
     const datas = this.waitingDatas;
 
@@ -76,57 +76,101 @@ export class SignInteractionStore {
       type: data.type,
       isInternal: data.isInternal,
       data: {
-        ...data.data,
+        chainId: data.data.chainId,
+        msgOrigin: data.data.msgOrigin,
+        signer: data.data.signer,
         signDocWrapper: wrapper,
+        signOptions: data.data.signOptions,
+        isADR36WithString:
+          "isADR36WithString" in data.data
+            ? data.data.isADR36WithString
+            : undefined,
         ethSignType:
           "ethSignType" in data.data ? data.data.ethSignType : undefined,
       },
     };
   }
 
-  async approveWithProceedNext(
-    id: string,
-    newSignDocWrapper: SignDocWrapper,
-    signature: Uint8Array | undefined,
-    afterFn: (proceedNext: boolean) => void | Promise<void>,
-    options: {
-      preDelay?: number;
-    } = {}
-  ) {
-    const res = (() => {
-      if (newSignDocWrapper.mode === "amino") {
-        return {
-          newSignDoc: newSignDocWrapper.aminoSignDoc,
-        };
-      }
-      return {
-        newSignDocBytes: newSignDocWrapper.protoSignDoc.toBytes(),
-      };
-    })();
-
-    await this.interactionStore.approveWithProceedNextV2(
-      id,
-      {
-        ...res,
-        signature,
-      },
-      afterFn,
-      options
-    );
+  protected isEnded(): boolean {
+    return this.interactionStore.getEvents<void>("request-sign-end").length > 0;
   }
 
-  async rejectWithProceedNext(
-    id: string,
-    afterFn: (proceedNext: boolean) => void | Promise<void>
-  ) {
-    await this.interactionStore.rejectWithProceedNext(id, afterFn);
+  protected clearEnded() {
+    this.interactionStore.clearEvent("request-sign-end");
   }
 
-  async rejectAll() {
-    await this.interactionStore.rejectAll("request-sign-cosmos");
+  protected waitEnd(): Promise<void> {
+    if (this.isEnded()) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const disposer = autorun(() => {
+        if (this.isEnded()) {
+          resolve();
+          this.clearEnded();
+          disposer();
+        }
+      });
+    });
   }
 
-  isObsoleteInteraction(id: string | undefined): boolean {
-    return this.interactionStore.isObsoleteInteraction(id);
+  @flow
+  *approveAndWaitEnd(newSignDocWrapper: SignDocWrapper) {
+    if (this.waitingDatas.length === 0) {
+      return;
+    }
+
+    this._isLoading = true;
+    const id = this.waitingDatas[0].id;
+    try {
+      const newSignDoc =
+        newSignDocWrapper.mode === "amino"
+          ? newSignDocWrapper.aminoSignDoc
+          : newSignDocWrapper.protoSignDoc.toBytes();
+
+      yield this.interactionStore.approveWithoutRemovingData(id, newSignDoc);
+    } finally {
+      yield this.waitEnd();
+      this.interactionStore.removeData("request-sign", id);
+
+      this._isLoading = false;
+    }
+  }
+
+  @flow
+  *reject() {
+    if (this.waitingDatas.length === 0) {
+      return;
+    }
+
+    this._isLoading = true;
+    try {
+      yield this.interactionStore.reject(
+        "request-sign",
+        this.waitingDatas[0].id
+      );
+    } finally {
+      this._isLoading = false;
+    }
+  }
+
+  @flow
+  *rejectAll() {
+    this._isLoading = true;
+    try {
+      yield this.interactionStore.rejectAll("request-sign");
+    } finally {
+      this._isLoading = false;
+    }
+  }
+
+  @flow
+  protected *rejectWithId(id: string) {
+    yield this.interactionStore.reject("request-sign", id);
+  }
+
+  get isLoading(): boolean {
+    return this._isLoading;
   }
 }

@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { AddressBookConfigMap } from "@keplr-wallet/hooks";
 import { Chats, Group, Groups, GroupAddress, NameAddress } from "@chatTypes";
 import { userChatGroups, userMessages } from "@chatStore/messages-slice";
 import { userDetails } from "@chatStore/user-slice";
@@ -34,18 +36,34 @@ export const GroupChatsViewSection = ({
   const userGroups: Groups = useSelector(userChatGroups);
   const userChats: Chats = useSelector(userMessages);
 
-  const { chainStore, accountStore, uiConfigStore } = useStore();
+  const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const [addresses, setAddresses] = useState<NameAddress>({});
   useEffect(() => {
-    const addressList: NameAddress = {};
-    uiConfigStore.addressBookConfig.getAddressBook(current.chainId).map((data) => {
-      addressList[data.address] = data.name;
+    const configMap = new AddressBookConfigMap(
+      new ExtensionKVStore("address-book"),
+      chainStore
+    );
+
+    const addressBookConfig = configMap.getAddressBookConfig(current.chainId);
+    addressBookConfig.setSelectHandler({
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
     });
-    setAddresses(addressList);
-  }, [current.chainId, uiConfigStore.addressBookConfig]);
+    addressBookConfig.waitLoaded().then(() => {
+      const addressList: NameAddress = {};
+      addressBookConfig.addressBookDatas.map((data) => {
+        addressList[data.address] = data.name;
+      });
+      setAddresses(addressList);
+    });
+  }, [current.chainId]);
 
   const preLoadedChats = useMemo(() => {
     return (

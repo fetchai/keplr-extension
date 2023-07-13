@@ -1,7 +1,9 @@
 import { fromBech32 } from "@cosmjs/encoding";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import {
+  useAddressBookConfig,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import jazzicon from "@metamask/jazzicon";
@@ -28,7 +30,6 @@ import { resetNewGroup } from "@chatStore/new-group-slice";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { AGENT_ADDRESS } from "../../config.ui.var";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
-import { InitialGas } from "../../config.ui";
 
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
@@ -117,9 +118,9 @@ export const NewChat: FunctionComponent = observer(() => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
+    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -131,8 +132,21 @@ export const NewChat: FunctionComponent = observer(() => {
       ? ibcTransferConfigs.channelConfig.channel.counterpartyChainId
       : current.chainId
   );
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    selectedChainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
 
-  const userAddresses: NameAddress[] = uiConfigStore.addressBookConfig.getAddressBook(selectedChainId)
+  const userAddresses: NameAddress[] = addressBookConfig.addressBookDatas
     .filter((data) => !data.address.startsWith("agent"))
     .map((data) => {
       return { name: data.name, address: data.address };
@@ -143,7 +157,7 @@ export const NewChat: FunctionComponent = observer(() => {
 
   useEffect(() => {
     setAddresses(userAddresses.filter((a) => a["address"] !== walletAddress));
-  }, [uiConfigStore.addressBookConfig]);
+  }, [addressBookConfig.addressBookDatas]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
@@ -198,7 +212,7 @@ export const NewChat: FunctionComponent = observer(() => {
       menuRenderer={<Menu />}
       rightRenderer={<SwitchUser />}
     >
-      {!uiConfigStore.isInitialized ? (
+      {!addressBookConfig.isLoaded ? (
         <ChatLoader message="Loading contacts, please wait..." />
       ) : (
         <div className={style["newChatContainer"]}>

@@ -6,7 +6,6 @@ import {
 } from "@keplr-wallet/router";
 import { openPopupWindow as openPopupWindowInner } from "@keplr-wallet/popup";
 import { InExtensionMessageRequester } from "../requester";
-import { ReplacePageMsg } from "../interaction-addon";
 
 class PromiseQueue {
   protected workingOnPromise: boolean = false;
@@ -164,13 +163,31 @@ export class ExtensionEnv {
           url += "?" + queryString;
         }
 
-        const messageRequester = new InExtensionMessageRequester();
-        const replacePageMsg = new ReplacePageMsg(url);
-        replacePageMsg.routerMeta = {
-          ...replacePageMsg.routerMeta,
-          receiverRouterId: routerMeta["routerId"],
-        };
-        await messageRequester.sendMessage(APP_PORT, replacePageMsg);
+        const backgroundPage = await browser.runtime.getBackgroundPage();
+        const views = browser.extension
+          .getViews({
+            // Request only for the same tab as the requested frontend.
+            // But the browser popup itself has no information about tab.
+            // Also, if user has multiple windows on, we need another way to distinguish them.
+            // See the comment right below this part.
+            tabId: sender.tab?.id,
+          })
+          .filter((window) => {
+            // You need to request interaction with the frontend that requested the message.
+            // It is difficult to achieve this with the browser api alone.
+            // Check the router id under the window of each view
+            // and process only the view that has the same router id of the requested frontend.
+            return (
+              window.location.href !== backgroundPage.location.href &&
+              (routerMeta["routerId"] == null ||
+                routerMeta["routerId"] === window.keplrExtensionRouterId)
+            );
+          });
+        if (views.length > 0) {
+          for (const view of views) {
+            view.location.href = url;
+          }
+        }
 
         msg.routerMeta = {
           ...msg.routerMeta,

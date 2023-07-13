@@ -1,4 +1,4 @@
-import { IMemoConfig, UIProperties } from "./types";
+import { IMemoConfig } from "./types";
 import { action, computed, makeObservable, observable } from "mobx";
 import { ChainGetter } from "@keplr-wallet/stores";
 import { TxChainSetter } from "./chain";
@@ -7,7 +7,7 @@ import { MemoSuspectMnemonicInclusion } from "./errors";
 
 export class MemoConfig extends TxChainSetter implements IMemoConfig {
   @observable
-  protected _value: string = "";
+  protected _memo: string = "";
 
   constructor(chainGetter: ChainGetter, initialChainId: string) {
     super(chainGetter, initialChainId);
@@ -15,20 +15,16 @@ export class MemoConfig extends TxChainSetter implements IMemoConfig {
   }
 
   get memo(): string {
-    return this._value;
-  }
-
-  get value(): string {
-    return this._value;
+    return this._memo;
   }
 
   @action
-  setValue(value: string) {
-    this._value = value;
+  setMemo(memo: string) {
+    this._memo = memo;
   }
 
   @computed
-  get uiProperties(): UIProperties {
+  get error(): Error | undefined {
     const words = this.memo
       .trim()
       .split(" ")
@@ -47,13 +43,10 @@ export class MemoConfig extends TxChainSetter implements IMemoConfig {
       }
 
       if (numMnemonics >= n) {
-        return {
-          error: new MemoSuspectMnemonicInclusion("Memo contains mnemonic"),
-        };
+        return new MemoSuspectMnemonicInclusion("Memo contains mnemonic");
       }
     }
-
-    return {};
+    return undefined;
   }
 }
 

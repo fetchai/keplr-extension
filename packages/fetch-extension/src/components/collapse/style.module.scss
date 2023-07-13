@@ -29,21 +29,21 @@
   }
 }
 
-.flex-horizontal {
+.flexHorizontal {
   display: flex;
   flex-direction: row;
 }
 
-.flex-vertical {
+.flexVertical {
   display: flex;
   flex-direction: column;
 }
 
-.content-between {
+.contentBetween {
   justify-content: space-between;
 }
 
-.items-center {
+.itemsCenter {
   align-items: center;
 }
 

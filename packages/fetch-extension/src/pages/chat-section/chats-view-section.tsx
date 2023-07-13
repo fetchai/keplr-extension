@@ -161,7 +161,8 @@ export const ChatsViewSection = ({
 
     /// Storing decryptin address into the group object and updating the UI
     if (tempSenderAddress && tempReceiverAddress) {
-      tempGroup.addresses = [tempSenderAddress, tempReceiverAddress];
+      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
+      tempGroup.addresses = tempGroupAddress;
       setGroup(tempGroup);
     }
   };
@@ -245,9 +246,8 @@ export const ChatsViewSection = ({
     (val) => val.address === targetAddress
   );
   useEffect(() => {
-    const time = group?.addresses.find(
-      (val) => val.address !== targetAddress
-    )?.lastSeenTimestamp;
+    const time = group?.addresses.find((val) => val.address !== targetAddress)
+      ?.lastSeenTimestamp;
     if (lastUnreadMesageId === "") {
       const firstMessageUnseen = messages
         .filter((message) => message.commitTimestamp > Number(time))
@@ -376,7 +376,7 @@ export const ChatsViewSection = ({
         onClick={handleSendMessage}
         onKeyDown={handleKeydown}
         disabled={isBlocked}
-        isTargetPubKeyAvailable={!!targetPubKey.length}
+        isTargetPubKeyAvailable={targetPubKey.length ? true : false}
       />
     </div>
   );

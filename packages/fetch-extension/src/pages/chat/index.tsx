@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
+  AddressBookConfigMap,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
@@ -42,7 +44,6 @@ import { GroupsHistory } from "./group-history";
 import style from "./style.module.scss";
 import { ToolTip } from "@components/tooltip";
 import { useLocation } from "react-router";
-import { InitialGas } from "../../config.ui";
 
 const ChatView = () => {
   const userState = useSelector(userDetails);
@@ -58,9 +59,9 @@ const ChatView = () => {
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
     queriesStore,
+    accountStore,
     chainStore.current.chainId,
     accountInfo.bech32Address,
-    InitialGas,
     {
       allowHexAddressOnEthermint: true,
       icns: uiConfigStore.icnsInfo,
@@ -199,12 +200,28 @@ const ChatView = () => {
 
   const [addresses, setAddresses] = useState<NameAddress>({});
   useEffect(() => {
-    const addressList: NameAddress = {};
-    uiConfigStore.addressBookConfig.getAddressBook(selectedChainId).map((data) => {
-      addressList[data.address] = data.name;
+    const configMap = new AddressBookConfigMap(
+      new ExtensionKVStore("address-book"),
+      chainStore
+    );
+
+    const addressBookConfig = configMap.getAddressBookConfig(selectedChainId);
+    addressBookConfig.setSelectHandler({
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
     });
-    setAddresses(addressList);
-  }, [selectedChainId, uiConfigStore.isInitialized]);
+    addressBookConfig.waitLoaded().then(() => {
+      const addressList: NameAddress = {};
+      addressBookConfig.addressBookDatas.map((data) => {
+        addressList[data.address] = data.name;
+      });
+      setAddresses(addressList);
+    });
+  }, [selectedChainId]);
 
   if (
     userState.messagingPubKey.privacySetting &&

@@ -55,7 +55,7 @@ const ChainElement: FunctionComponent<{
       }}
     >
       {chainInfo.chainName}
-      {!chainInfo.embedded &&
+      {!chainInfo.embeded &&
       chainStore.current.chainId !== chainInfo.chainId ? (
         <div className={style["removeBtn"]}>
           <i
@@ -132,11 +132,11 @@ export const ChainList: FunctionComponent = observer(() => {
   return (
     <div className={style["chainListContainer"]}>
       {mainChainList.map((chainInfo) => (
-        <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.embedded} />
+        <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.raw} />
       ))}
       {betaChainList.length > 0 ? <Divider>Beta support</Divider> : null}
       {betaChainList.map((chainInfo) => (
-        <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.embedded} />
+        <ChainElement key={chainInfo.chainId} chainInfo={chainInfo.raw} />
       ))}
 
       {/* <Divider /> */}

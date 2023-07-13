@@ -59,6 +59,7 @@
     "@noble/hashes": "1.0.0",
     "@nucypher/umbral-pre": "^0.5.2",
     "aes-js": "^3.1.2",
+    "axios": "^0.27.2",
     "big-integer": "^1.6.48",
     "bip39": "^3.0.2",
     "buffer": "^6.0.3",

@@ -3,7 +3,7 @@ import {
   GasConfig,
   useFeeConfig,
   useMemoConfig,
-  useRecipientConfig, useSenderConfig
+  useRecipientConfig,
 } from "./index";
 import { useStakedAmountConfig } from "./staked-amount";
 import { makeObservable, override } from "mobx";
@@ -30,7 +30,7 @@ export class UndelegateGasConfig extends GasConfig {
   @override
   override get gas(): number {
     // If gas not set manually, assume that the tx is for MsgTransfer.
-    if (this._value == null) {
+    if (this._gasRaw == null) {
       return this.accountStore.getAccount(this.chainId).cosmos.msgOpts
         .undelegate.gas;
     }
@@ -80,21 +80,19 @@ export const useUndelegateTxConfig = (
     validatorAddress
   );
 
-  const senderConfig = useSenderConfig(chainGetter, chainId, sender);
   const memoConfig = useMemoConfig(chainGetter, chainId);
   const gasConfig = useUndelegateGasConfig(chainGetter, accountStore, chainId);
   const feeConfig = useFeeConfig(
     chainGetter,
     queriesStore,
     chainId,
-    senderConfig,
+    sender,
     amountConfig,
     gasConfig,
     {
       additionAmountToNeedFee: false,
     }
   );
-
 
   const recipientConfig = useRecipientConfig(chainGetter, chainId);
   recipientConfig.setBech32Prefix(
@@ -103,7 +101,6 @@ export const useUndelegateTxConfig = (
 
   return {
     amountConfig,
-    senderConfig,
     memoConfig,
     gasConfig,
     feeConfig,

@@ -94,7 +94,8 @@ export const ChatAgent: React.FC<{
 
     /// Storing decryptin address into the group object and updating the UI
     if (tempSenderAddress && tempReceiverAddress) {
-      tempGroup.addresses = [tempSenderAddress, tempReceiverAddress];
+      const tempGroupAddress = [tempSenderAddress, tempReceiverAddress];
+      tempGroup.addresses = tempGroupAddress;
       // setGroupData(tempGroup);
     }
   };

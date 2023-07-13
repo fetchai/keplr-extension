@@ -11,9 +11,8 @@ export const ChatDisclaimer = () => {
   const userState = useSelector(userDetails);
   const { chainStore, accountStore, keyRingStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(
-    chainStore.current.chainId
-  ).bech32Address;
+  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
+    .bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {
@@ -22,12 +21,12 @@ export const ChatDisclaimer = () => {
       walletAddress &&
       userState?.enabledChainIds.includes(current.chainId) &&
       !userState.walletConfig.requiredNative &&
-      keyRingStore.selectedKeyInfo?.type !== "ledger"
+      keyRingStore.keyRingType !== "ledger"
     )
       setIsOpendialog(!addresses.includes(walletAddress));
   }, [
     current.chainId,
-    keyRingStore.selectedKeyInfo?.type,
+    keyRingStore.keyRingType,
     userState.enabledChainIds,
     userState.walletConfig.requiredNative,
     walletAddress,

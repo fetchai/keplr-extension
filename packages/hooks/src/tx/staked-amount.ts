@@ -1,4 +1,4 @@
-import { IAmountConfig, UIProperties } from "./types";
+import { IAmountConfig } from "./types";
 import { TxChainSetter } from "./chain";
 import { ChainGetter, CoinPrimitive } from "@keplr-wallet/stores";
 import { action, computed, makeObservable, observable } from "mobx";
@@ -8,9 +8,9 @@ import {
   InsufficientAmountError,
   InvalidNumberAmountError,
   NegativeAmountError,
-  ZeroAmountError
+  ZeroAmountError,
 } from "./errors";
-import { CoinPretty, Dec, DecUtils } from "@keplr-wallet/unit";
+import { Dec, DecUtils } from "@keplr-wallet/unit";
 import { useState } from "react";
 import { QueriesStore } from "./internal";
 
@@ -22,10 +22,10 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
   protected _validatorAddress: string;
 
   @observable
-  protected _value: string;
+  protected _amount: string;
 
   @observable
-  protected _fraction: number = 0;
+  protected _fraction: number | undefined = undefined;
 
   constructor(
     chainGetter: ChainGetter,
@@ -37,7 +37,7 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
     super(chainGetter, initialChainId);
 
     this._sender = sender;
-    this._value = "";
+    this._amount = "";
     this._validatorAddress = initialValidatorAddress;
 
     makeObservable(this);
@@ -58,25 +58,25 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
   }
 
   @action
-  setCurrency() {
+  setSendCurrency() {
     // noop
   }
 
   @action
-  setValue(value: string) {
-    if (value.startsWith(".")) {
-      value = "0" + value;
+  setAmount(amount: string) {
+    if (amount.startsWith(".")) {
+      amount = "0" + amount;
     }
 
     if (this.isMax) {
       this.setIsMax(false);
     }
-    this._value = value;
+    this._amount = amount;
   }
 
   @action
   setIsMax(isMax: boolean) {
-    this._fraction = isMax ? 1 : 0;
+    this._fraction = isMax ? 1 : undefined;
   }
 
   @action
@@ -88,12 +88,12 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
     return this._fraction === 1;
   }
 
-  get fraction(): number {
+  get fraction(): number | undefined {
     return this._fraction;
   }
 
   @action
-  setFraction(value: number) {
+  setFraction(value: number | undefined) {
     this._fraction = value;
   }
 
@@ -102,7 +102,7 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
   }
 
   @computed
-  get value(): string {
+  get amount(): string {
     if (!this.queriesStore.get(this.chainId).cosmos) {
       throw new Error("No querier for delegations");
     }
@@ -125,89 +125,72 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
         .toString();
     }
 
-    return this._value;
+    return this._amount;
   }
 
   getAmountPrimitive(): CoinPrimitive {
-    const amountStr = this.value;
-    const currency = this.currency;
+    const amountStr = this.amount;
+    const sendCurrency = this.sendCurrency;
 
     if (!amountStr) {
       return {
-        denom: currency.coinMinimalDenom,
+        denom: sendCurrency.coinMinimalDenom,
         amount: "0",
       };
     }
 
     try {
       return {
-        denom: currency.coinMinimalDenom,
+        denom: sendCurrency.coinMinimalDenom,
         amount: new Dec(amountStr)
-          .mul(DecUtils.getPrecisionDec(currency.coinDecimals))
+          .mul(DecUtils.getPrecisionDec(sendCurrency.coinDecimals))
           .truncate()
           .toString(),
       };
     } catch {
       return {
-        denom: currency.coinMinimalDenom,
+        denom: sendCurrency.coinMinimalDenom,
         amount: "0",
       };
     }
   }
 
   @computed
-  get currency(): AppCurrency {
+  get sendCurrency(): AppCurrency {
     return this.chainInfo.stakeCurrency;
   }
 
-  get selectableCurrencies(): AppCurrency[] {
+  get sendableCurrencies(): AppCurrency[] {
     return [this.chainInfo.stakeCurrency];
   }
 
   @computed
-  get amount(): CoinPretty[] {
-    return [];
-  }
-
-  @computed
-  get uiProperties(): UIProperties {
+  get error(): Error | undefined {
     if (!this.queriesStore.get(this.chainId).cosmos) {
       throw new Error("No querier for delegations");
     }
 
-    const currency = this.currency;
-    if (!currency) {
-      return {
-        error: new Error("Currency to send not set"),
-      }
+    const sendCurrency = this.sendCurrency;
+    if (!sendCurrency) {
+      return new Error("Currency to send not set");
     }
-    if (this.value === "") {
-      return {
-        error: new EmptyAmountError("Amount is empty"),
-      }
+    if (this.amount === "") {
+      return new EmptyAmountError("Amount is empty");
     }
-    if (Number.isNaN(parseFloat(this.value))) {
-      return {
-        error: new InvalidNumberAmountError("Invalid form of number"),
-      }
+    if (Number.isNaN(parseFloat(this.amount))) {
+      return new InvalidNumberAmountError("Invalid form of number");
     }
     let dec;
     try {
-      dec = new Dec(this.value);
+      dec = new Dec(this.amount);
       if (dec.equals(new Dec(0))) {
-        return {
-          error: new ZeroAmountError("Amount is zero"),
-        }
+        return new ZeroAmountError("Amount is zero");
       }
     } catch {
-      return {
-        error: new InvalidNumberAmountError("Invalid form of number"),
-      }
+      return new InvalidNumberAmountError("Invalid form of number");
     }
-    if (new Dec(this.value).lt(new Dec(0))) {
-      return {
-        error: new NegativeAmountError("Amount is negative"),
-      }
+    if (new Dec(this.amount).lt(new Dec(0))) {
+      return new NegativeAmountError("Amount is negative");
     }
 
     const balance = this.queriesStore
@@ -216,12 +199,10 @@ export class StakedAmountConfig extends TxChainSetter implements IAmountConfig {
       .getDelegationTo(this.validatorAddress);
     const balanceDec = balance.toDec();
     if (dec.gt(balanceDec)) {
-      return {
-        error: new InsufficientAmountError("Insufficient amount"),
-      }
+      return new InsufficientAmountError("Insufficient amount");
     }
 
-    return {};
+    return;
   }
 }
 

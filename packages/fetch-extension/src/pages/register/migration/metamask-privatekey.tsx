@@ -94,7 +94,6 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
             id: "register.eth-migrate.eth-address",
           })}
           type="text"
-
           {...register("ethAddress", {
             required: intl.formatMessage({
               id: "register.eth-migrate.eth-address.error.required",

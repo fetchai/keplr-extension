@@ -1,10 +1,14 @@
 import { action, computed, flow, makeObservable, observable } from "mobx";
-import { AppCurrency, Keplr } from "@keplr-wallet/types";
-import { ChainGetter } from "../chain";
+import {
+  AppCurrency,
+  Keplr,
+  KeplrSignOptions,
+  StdFee,
+} from "@keplr-wallet/types";
+import { ChainGetter } from "../common";
 import { DenomHelper, toGenerator } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { MakeTxResponse } from "./types";
-import { AccountSharedContext } from "./context";
 
 export enum WalletStatus {
   NotInit = "NotInit",
@@ -26,6 +30,7 @@ export interface AccountSetOpts {
     chainInfo: ReturnType<ChainGetter["getChain"]>
   ) => Promise<void>;
   readonly autoInit: boolean;
+  readonly getKeplr: () => Promise<Keplr | undefined>;
 }
 
 export class AccountSetBase {
@@ -55,6 +60,22 @@ export class AccountSetBase {
 
   protected hasInited = false;
 
+  protected sendTokenFns: ((
+    amount: string,
+    currency: AppCurrency,
+    recipient: string,
+    memo: string,
+    stdFee: Partial<StdFee>,
+    signOptions?: KeplrSignOptions,
+    onTxEvents?:
+      | ((tx: any) => void)
+      | {
+          onBroadcastFailed?: (e?: Error) => void;
+          onBroadcasted?: (txHash: Uint8Array) => void;
+          onFulfill?: (tx: any) => void;
+        }
+  ) => Promise<boolean>)[] = [];
+
   protected makeSendTokenTxFns: ((
     amount: string,
     currency: AppCurrency,
@@ -68,7 +89,6 @@ export class AccountSetBase {
     },
     protected readonly chainGetter: ChainGetter,
     protected readonly chainId: string,
-    protected readonly sharedContext: AccountSharedContext,
     protected readonly opts: AccountSetOpts
   ) {
     makeObservable(this);
@@ -81,7 +101,26 @@ export class AccountSetBase {
   }
 
   getKeplr(): Promise<Keplr | undefined> {
-    return this.sharedContext.getKeplr();
+    return this.opts.getKeplr();
+  }
+
+  registerSendTokenFn(
+    fn: (
+      amount: string,
+      currency: AppCurrency,
+      recipient: string,
+      memo: string,
+      stdFee: Partial<StdFee>,
+      signOptions?: KeplrSignOptions,
+      onTxEvents?:
+        | ((tx: any) => void)
+        | {
+            onBroadcasted?: (txHash: Uint8Array) => void;
+            onFulfill?: (tx: any) => void;
+          }
+    ) => Promise<boolean>
+  ) {
+    this.sendTokenFns.push(fn);
   }
 
   registerMakeSendTokenFn(
@@ -94,26 +133,24 @@ export class AccountSetBase {
     this.makeSendTokenTxFns.push(fn);
   }
 
-  protected async enable(chainId: string): Promise<void> {
+  protected async enable(keplr: Keplr, chainId: string): Promise<void> {
     const chainInfo = this.chainGetter.getChain(chainId);
 
     if (this.opts.suggestChain) {
-      const keplr = await this.sharedContext.getKeplr();
       if (this.opts.suggestChainFn) {
-        await this.sharedContext.suggestChain(async () => {
-          if (keplr && this.opts.suggestChainFn) {
-            await this.opts.suggestChainFn(keplr, chainInfo);
-          }
-        });
+        await this.opts.suggestChainFn(keplr, chainInfo);
       } else {
-        await this.sharedContext.suggestChain(async () => {
-          if (keplr) {
-            await keplr.experimentalSuggestChain(chainInfo.embedded);
-          }
-        });
+        await this.suggestChain(keplr, chainInfo);
       }
     }
-    await this.sharedContext.enable(chainId);
+    await keplr.enable(chainId);
+  }
+
+  protected async suggestChain(
+    keplr: Keplr,
+    chainInfo: ReturnType<ChainGetter["getChain"]>
+  ): Promise<void> {
+    await keplr.experimentalSuggestChain(chainInfo.raw);
   }
 
   private readonly handleInit = () => this.init();
@@ -138,7 +175,7 @@ export class AccountSetBase {
     // Set wallet status as loading whenever try to init.
     this._walletStatus = WalletStatus.Loading;
 
-    const keplr = yield* toGenerator(this.sharedContext.getKeplr());
+    const keplr = yield* toGenerator(this.getKeplr());
     if (!keplr) {
       this._walletStatus = WalletStatus.NotExist;
       return;
@@ -147,7 +184,7 @@ export class AccountSetBase {
     this._walletVersion = keplr.version;
 
     try {
-      yield this.enable(this.chainId);
+      yield this.enable(keplr, this.chainId);
     } catch (e) {
       console.log(e);
       this._walletStatus = WalletStatus.Rejected;
@@ -155,35 +192,34 @@ export class AccountSetBase {
       return;
     }
 
-    yield this.sharedContext.getKey(this.chainId, (res) => {
-      if (res.status === "fulfilled") {
-        const key = res.value;
-        this._bech32Address = key.bech32Address;
-        this._isNanoLedger = key.isNanoLedger;
-        this._isKeystone = key.isKeystone;
-        this._name = key.name;
-        this._pubKey = key.pubKey;
+    try {
+      const key = yield* toGenerator(keplr.getKey(this.chainId));
+      this._bech32Address = key.bech32Address;
+      this._isNanoLedger = key.isNanoLedger;
+      this._isKeystone = key.isKeystone;
+      this._name = key.name;
+      this._pubKey = key.pubKey;
 
-        // Set the wallet status as loaded after getting all necessary infos.
-        this._walletStatus = WalletStatus.Loaded;
-      } else {
-        // Caught error loading key
-        // Reset properties, and set status to Rejected
-        this._bech32Address = "";
-        this._isNanoLedger = false;
-        this._isKeystone = false;
-        this._name = "";
-        this._pubKey = new Uint8Array(0);
+      // Set the wallet status as loaded after getting all necessary infos.
+      this._walletStatus = WalletStatus.Loaded;
+    } catch (e) {
+      console.log(e);
+      // Caught error loading key
+      // Reset properties, and set status to Rejected
+      this._bech32Address = "";
+      this._isNanoLedger = false;
+      this._isKeystone = false;
+      this._name = "";
+      this._pubKey = new Uint8Array(0);
 
-        this._walletStatus = WalletStatus.Rejected;
-        this._rejectionReason = res.reason;
-      }
+      this._walletStatus = WalletStatus.Rejected;
+      this._rejectionReason = e;
+    }
 
-      if (this._walletStatus !== WalletStatus.Rejected) {
-        // Reset previous rejection error message
-        this._rejectionReason = undefined;
-      }
-    });
+    if (this._walletStatus !== WalletStatus.Rejected) {
+      // Reset previous rejection error message
+      this._rejectionReason = undefined;
+    }
   }
 
   @action
@@ -234,6 +270,43 @@ export class AccountSetBase {
       const res = fn(amount, currency, recipient);
       if (res) {
         return res;
+      }
+    }
+
+    const denomHelper = new DenomHelper(currency.coinMinimalDenom);
+
+    throw new Error(`Unsupported type of currency (${denomHelper.type})`);
+  }
+
+  async sendToken(
+    amount: string,
+    currency: AppCurrency,
+    recipient: string,
+    memo: string = "",
+    stdFee: Partial<StdFee> = {},
+    signOptions?: KeplrSignOptions,
+    onTxEvents?:
+      | ((tx: any) => void)
+      | {
+          onBroadcasted?: (txHash: Uint8Array) => void;
+          onFulfill?: (tx: any) => void;
+        }
+  ) {
+    for (let i = 0; i < this.sendTokenFns.length; i++) {
+      const fn = this.sendTokenFns[i];
+
+      if (
+        await fn(
+          amount,
+          currency,
+          recipient,
+          memo,
+          stdFee,
+          signOptions,
+          onTxEvents
+        )
+      ) {
+        return;
       }
     }
 

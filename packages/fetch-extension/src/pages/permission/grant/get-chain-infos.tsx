@@ -5,21 +5,19 @@ import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { Button } from "reactstrap";
-import { useInteractionInfo } from "@hooks/interaction";
-import { GlobalPermissionData, InteractionWaitingData } from "@keplr-wallet/background";
+import { useInteractionInfo } from "@keplr-wallet/hooks";
 
-export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent<{
-  data: InteractionWaitingData<GlobalPermissionData>;
-}>  =
-  observer(({ data }) => {
-    const { permissionStore } = useStore();
+export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observer(
+  () => {
+    const { generalPermissionStore } = useStore();
 
-    const interactionInfo = useInteractionInfo(() => {
-      permissionStore.rejectGlobalPermissionAll();
+    const ineractionInfo = useInteractionInfo(() => {
+      generalPermissionStore.rejectAllGlobalPermission();
     });
 
-    const waitingPermissions =
-      permissionStore.waitingGlobalPermissionDatas;
+    const waitingPermissions = generalPermissionStore.getWaitingGlobalPermissions(
+      "get-chain-infos"
+    );
 
     const host = useMemo(() => {
       if (waitingPermissions.length > 0) {
@@ -71,21 +69,25 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent<{
               onClick={async (e) => {
                 e.preventDefault();
 
-                await permissionStore.approveGlobalPermissionWithProceedNext(
-                  data.id,
-                  (proceedNext) => {
-                    if (!proceedNext) {
-                      if (
-                        interactionInfo.interaction &&
-                        !interactionInfo.interactionInternal
-                      ) {
-                        window.close();
-                      }
+                if (waitingPermissions.length > 0) {
+                  await generalPermissionStore.rejectGlobalPermission(
+                    waitingPermissions[0].id
+                  );
+                  if (
+                    generalPermissionStore.getWaitingGlobalPermissions(
+                      "get-chain-infos"
+                    ).length === 0
+                  ) {
+                    if (
+                      ineractionInfo.interaction &&
+                      !ineractionInfo.interactionInternal
+                    ) {
+                      window.close();
                     }
                   }
-                );
+                }
               }}
-              data-loading={permissionStore.isObsoleteInteraction(data.id)}
+              data-loading={generalPermissionStore.isLoading}
             >
               <FormattedMessage id="access.button.reject" />
             </Button>
@@ -95,22 +97,26 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent<{
               onClick={async (e) => {
                 e.preventDefault();
 
-                await permissionStore.approveGlobalPermissionWithProceedNext(
-                  data.id,
-                  (proceedNext) => {
-                    if (!proceedNext) {
-                      if (
-                        interactionInfo.interaction &&
-                        !interactionInfo.interactionInternal
-                      ) {
-                        window.close();
-                      }
+                if (waitingPermissions.length > 0) {
+                  await generalPermissionStore.approveGlobalPermission(
+                    waitingPermissions[0].id
+                  );
+                  if (
+                    generalPermissionStore.getWaitingGlobalPermissions(
+                      "get-chain-infos"
+                    ).length === 0
+                  ) {
+                    if (
+                      ineractionInfo.interaction &&
+                      !ineractionInfo.interactionInternal
+                    ) {
+                      window.close();
                     }
                   }
-                );
+                }
               }}
               disabled={waitingPermissions.length === 0}
-              data-loading={permissionStore.isObsoleteInteraction(data.id)}
+              data-loading={generalPermissionStore.isLoading}
             >
               <FormattedMessage id="access.button.approve" />
             </Button>
@@ -118,4 +124,5 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent<{
         </div>
       </EmptyLayout>
     );
-  });
+  }
+);
