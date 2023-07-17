@@ -94,7 +94,8 @@ import { ActivityPage } from "./pages/activity";
 import { Proposals } from "./pages/proposals";
 import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
-
+import { FetchnameService } from "./pages/fetch-name-service";
+import { DomainDetails } from "./pages/fetch-name-service/domain-details";
 window.keplr = new Keplr(
   manifest.version,
   "core",
@@ -248,6 +249,16 @@ ReactDOM.render(
                       exact
                       path="/setting/export-to-mobile"
                       component={ExportToMobilePage}
+                    />
+                    <Route
+                      exact
+                      path="/fetch-name-service"
+                      component={FetchnameService}
+                    />
+                    <Route
+                      exact
+                      path="/fetch-name-service/domain-details"
+                      component={DomainDetails}
                     />
                     <Route
                       exact
