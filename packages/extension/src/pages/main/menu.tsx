@@ -7,6 +7,7 @@ import { useStore } from "../../stores";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router";
 import amplitude from "amplitude-js";
+import { FNS_CONFIG } from "../../config.ui.var";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore } = useStore();
@@ -36,16 +37,18 @@ export const Menu: FunctionComponent = observer(() => {
       >
         <FormattedMessage id="main.menu.settings" />
       </div>
-      <div
-        className={styleMenu.item}
-        onClick={() => {
-          history.push({
-            pathname: "/fetch-name-service",
-          });
-        }}
-      >
-        <FormattedMessage id="main.menu.fetch-name-service" />
-      </div>
+      {Object.keys(FNS_CONFIG).includes(chainStore.current.chainId) ? (
+        <div
+          className={styleMenu.item}
+          onClick={() => {
+            history.push({
+              pathname: "/fetch-name-service",
+            });
+          }}
+        >
+          <FormattedMessage id="main.menu.fetch-name-service" />
+        </div>
+      ) : null}
       <a
         className={styleMenu.item}
         href="https://docs.fetch.ai/fetch-wallet/"
