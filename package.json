@@ -90,5 +90,8 @@
     "node-sass": "file:./etc/noop",
     "@ethereumjs/common": "2.6.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@azoyalabs/fns-client": "0.0.3",
+    "@cosmjs/cosmwasm-stargate": "^0.31.0"
+  }
 }
