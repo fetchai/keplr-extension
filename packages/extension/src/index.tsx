@@ -257,7 +257,7 @@ ReactDOM.render(
                     />
                     <Route
                       exact
-                      path="/fetch-name-service/domain-details"
+                      path="/fetch-name-service/domain-details/:domain"
                       component={DomainDetails}
                     />
                     <Route
