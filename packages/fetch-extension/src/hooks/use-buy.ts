@@ -38,8 +38,8 @@ export const useBuy = () => {
     })();
   }, []);
 
-  const buySupportServiceInfos: BuySupportServiceInfo[] = fiatOnRampServiceInfos.map(
-    (serviceInfo) => {
+  const buySupportServiceInfos: BuySupportServiceInfo[] =
+    fiatOnRampServiceInfos.map((serviceInfo) => {
       if (
         !Object.keys(serviceInfo.buySupportCoinDenomsByChainId).includes(
           currentChainId
@@ -56,10 +56,12 @@ export const useBuy = () => {
               showWalletAddressForm: "true",
               walletAddress: encodeURIComponent(
                 JSON.stringify({
-                  [currentChainInfo.stakeCurrency.coinDenom.toLowerCase()]: currentChainAccount?.bech32Address,
+                  [currentChainInfo.stakeCurrency.coinDenom.toLowerCase()]:
+                    currentChainAccount?.bech32Address,
                 })
               ),
-              currencyCode: currentChainInfo.stakeCurrency.coinDenom.toLowerCase(),
+              currencyCode:
+                currentChainInfo.stakeCurrency.coinDenom.toLowerCase(),
             };
           case "transak":
             return {
@@ -105,19 +107,15 @@ export const useBuy = () => {
         ...serviceInfo,
         buyUrl,
       };
-    }
-  );
+    });
 
   const moonpayServiceInfo = buySupportServiceInfos.find(
     (serviceInfo) => serviceInfo.serviceId === "moonpay"
   );
-  const [moonpayBuyUrlWithSign, setMoonpayBuyUrlWithSign] = useState<string>(
-    ""
-  );
-  const [
-    isMoonpayBuyUrlSignLoading,
-    setIsMoonpayBuyUrlSignLoading,
-  ] = useState<boolean>(false);
+  const [moonpayBuyUrlWithSign, setMoonpayBuyUrlWithSign] =
+    useState<string>("");
+  const [isMoonpayBuyUrlSignLoading, setIsMoonpayBuyUrlSignLoading] =
+    useState<boolean>(false);
   useEffect(() => {
     if (moonpayServiceInfo?.buyUrl) {
       (async () => {

@@ -1,4 +1,9 @@
-import React, { Component, ErrorInfo, FunctionComponent, useState } from "react";
+import React, {
+  Component,
+  ErrorInfo,
+  FunctionComponent,
+  useState,
+} from "react";
 import { observer } from "mobx-react-lite";
 import { Button } from "reactstrap";
 
@@ -35,7 +40,6 @@ export class ErrorBoundary extends Component<
 }
 
 const ErrorBoundaryView: FunctionComponent = observer(() => {
-
   const [isLoading, setIsLoading] = useState(false);
 
   const resetStoreQueries = async () => {
@@ -47,31 +51,36 @@ const ErrorBoundaryView: FunctionComponent = observer(() => {
   };
 
   return (
-   <div>
-     <span> An error with an unknown reason has occurred. To potentially resolve the
+    <div>
+      <span>
+        {" "}
+        An error with an unknown reason has occurred. To potentially resolve the
         issue, we recommend deleting the cache data. However, please note that
-        we cannot guarantee this will fix the problem.</span>
-     <Button
-       text="Reset Cache Data"
-       color="primary"
-       size="medium"
-       style={{ width: "100%" }}
-       onClick={async () => {
-         if (isLoading) {
-           return;
-         }
+        we cannot guarantee this will fix the problem.
+      </span>
+      <Button
+        text="Reset Cache Data"
+        color="primary"
+        size="medium"
+        style={{ width: "100%" }}
+        onClick={async () => {
+          if (isLoading) {
+            return;
+          }
 
-         setIsLoading(true);
+          setIsLoading(true);
 
-         try {
-           await resetStoreQueries();
+          try {
+            await resetStoreQueries();
 
-           window.location.reload();
-         } finally {
-           setIsLoading(false);
-         }
-       }}
-     >Reset Cache Data</Button>
-   </div>
-);
+            window.location.reload();
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+      >
+        Reset Cache Data
+      </Button>
+    </div>
+  );
 });

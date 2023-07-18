@@ -302,8 +302,7 @@ export class MessagingService {
               account_number: 0,
               chain_id: chainId,
               fee: [],
-              memo:
-                "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
+              memo: "Create Messaging Signing Secret encryption key. Only approve requests by Keplr.",
               msgs: [],
               sequence: 0,
             })

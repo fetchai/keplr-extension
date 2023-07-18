@@ -78,8 +78,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
               tooltip={
                 <div>
                   {intl.formatMessage({
-                    id:
-                      "setting.token.manage.notification.contract-address.copy.hover",
+                    id: "setting.token.manage.notification.contract-address.copy.hover",
                   })}
                 </div>
               }
@@ -113,8 +112,7 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
                 tooltip={
                   <div>
                     {intl.formatMessage({
-                      id:
-                        "setting.token.manage.notification.viewing-key.copy.hover",
+                      id: "setting.token.manage.notification.viewing-key.copy.hover",
                     })}
                   </div>
                 }

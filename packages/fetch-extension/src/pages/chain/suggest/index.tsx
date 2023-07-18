@@ -188,38 +188,37 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                   </pre>
                 </div>
 
-                {uiConfigStore.isDeveloper && !communityChainInfo?.chainInfo && (
-                  <div
-                    className={classNames(
-                      style["developerInfo"],
-                      "custom-control custom-checkbox"
-                    )}
-                  >
-                    <input
-                      className="custom-control-input"
-                      id="use-community-checkbox"
-                      type="checkbox"
-                      checked={updateFromRepoDisabled}
-                      onChange={(e) => {
-                        setUpdateFromRepoDisabled(e.target.checked);
-                      }}
-                    />
-                    <label
-                      className="custom-control-label"
-                      htmlFor="use-community-checkbox"
-                      style={{ color: "#323C4A", paddingTop: "1px" }}
+                {uiConfigStore.isDeveloper &&
+                  !communityChainInfo?.chainInfo && (
+                    <div
+                      className={classNames(
+                        style["developerInfo"],
+                        "custom-control custom-checkbox"
+                      )}
                     >
-                      <FormattedMessage id="chain.suggested.developer.checkbox" />
-                    </label>
-                  </div>
-                )}
+                      <input
+                        className="custom-control-input"
+                        id="use-community-checkbox"
+                        type="checkbox"
+                        checked={updateFromRepoDisabled}
+                        onChange={(e) => {
+                          setUpdateFromRepoDisabled(e.target.checked);
+                        }}
+                      />
+                      <label
+                        className="custom-control-label"
+                        htmlFor="use-community-checkbox"
+                        style={{ color: "#323C4A", paddingTop: "1px" }}
+                      >
+                        <FormattedMessage id="chain.suggested.developer.checkbox" />
+                      </label>
+                    </div>
+                  )}
 
                 <div
                   className={classNames(
                     style["approveInfoContainer"],
-                    !communityChainInfo
-                      ? style["info"]
-                      : style["alert"]
+                    !communityChainInfo ? style["info"] : style["alert"]
                   )}
                 >
                   <div className={style["titleContainer"]}>
@@ -321,8 +320,8 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                 <FormattedMessage
                   id="chain.suggested.paragraph"
                   values={{
-                    host:
-                      chainSuggestStore.waitingSuggestedChainInfo?.data.origin,
+                    host: chainSuggestStore.waitingSuggestedChainInfo?.data
+                      .origin,
                     chainId:
                       chainSuggestStore.waitingSuggestedChainInfo?.data
                         .chainInfo.chainId,

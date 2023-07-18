@@ -41,7 +41,12 @@ export const ExportPage: FunctionComponent = observer(() => {
   const [loading, setLoading] = useState(false);
   const [keyRing, setKeyRing] = useState("");
 
-  const { register, handleSubmit, setError,  formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
@@ -83,17 +88,14 @@ export const ExportPage: FunctionComponent = observer(() => {
                 try {
                   setKeyRing(
                     await flowResult(
-                      keyRingStore.showKeyRing(
-                        parseInt(index),
-                        data.password
-                      )
+                      keyRingStore.showKeyRing(parseInt(index), data.password)
                     )
                   );
                 } catch (e) {
                   console.log("Fail to decrypt: " + e.message);
-                  setError('password', {
+                  setError("password", {
                     message: intl.formatMessage({
-                      id: 'setting.export.input.password.error.invalid',
+                      id: "setting.export.input.password.error.invalid",
                     }),
                   });
                 } finally {

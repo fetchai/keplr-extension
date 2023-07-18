@@ -89,12 +89,10 @@ export const IBCChannelRegistrarModal: FunctionComponent<{
           <Input
             type="text"
             label={intl.formatMessage({
-              id:
-                "component.ibc.channel-registrar.chain-selector.add.channel.label",
+              id: "component.ibc.channel-registrar.chain-selector.add.channel.label",
             })}
             placeholder={intl.formatMessage({
-              id:
-                "component.ibc.channel-registrar.chain-selector.add.channel.placeholder",
+              id: "component.ibc.channel-registrar.chain-selector.add.channel.placeholder",
             })}
             onChange={(e) => {
               e.preventDefault();
@@ -143,7 +141,9 @@ export const IBCChannelRegistrarModal: FunctionComponent<{
 
               if (clientState) {
                 if (
-                  clientState.data.identified_client_state.client_state["chain_id"] !== selectedChainId
+                  clientState.data.identified_client_state.client_state[
+                    "chain_id"
+                  ] !== selectedChainId
                 ) {
                   error = `Client is not for ${selectedChainId}`;
                 }

@@ -24,14 +24,19 @@ interface FormData {
 
 export const ClearPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const { index = "-1 "} = useParams<{ index: string }>();
+  const { index = "-1 " } = useParams<{ index: string }>();
 
   const intl = useIntl();
 
   const [loading, setLoading] = useState(false);
 
   const { keyRingStore, analyticsStore } = useStore();
-  const { register, handleSubmit, setError, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
@@ -60,28 +65,22 @@ export const ClearPage: FunctionComponent = observer(() => {
     >
       <div className={style["container"]}>
         {keyStore ? (
-          <WarningView
-            index={parseInt(index)}
-            keyStore={keyStore}
-          />
+          <WarningView index={parseInt(index)} keyStore={keyStore} />
         ) : null}
         <Form
           onSubmit={handleSubmit(async (data) => {
             setLoading(true);
             try {
               // Make sure that password is valid and keyring is cleared.
-              await keyRingStore.deleteKeyRing(
-                parseInt(index),
-                data.password
-              );
+              await keyRingStore.deleteKeyRing(parseInt(index), data.password);
               analyticsStore.logEvent("Account removed");
 
               navigate("/");
             } catch (e) {
               console.log("Fail to decrypt: " + e.message);
-              setError('password', {
+              setError("password", {
                 message: intl.formatMessage({
-                  id: 'setting.clear.input.password.error.invalid',
+                  id: "setting.clear.input.password.error.invalid",
                 }),
               });
               setLoading(false);

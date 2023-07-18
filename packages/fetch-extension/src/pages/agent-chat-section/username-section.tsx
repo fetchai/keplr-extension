@@ -13,8 +13,9 @@ export const UserNameSection = ({ addresses }: { addresses: any }) => {
 
   const userName = useLocation().pathname.split("/")[3];
   const { chainStore, accountStore } = useStore();
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,10 @@ export const UserNameSection = ({ addresses }: { addresses: any }) => {
             {formatAddress(contactName(addresses))}
           </ToolTip>
         </span>
-        <span className={style["copyIcon"]} onClick={() => setIsOpendialog(true)}>
+        <span
+          className={style["copyIcon"]}
+          onClick={() => setIsOpendialog(true)}
+        >
           <i className="fa fa-info-circle" draggable={false} />
         </span>
       </div>

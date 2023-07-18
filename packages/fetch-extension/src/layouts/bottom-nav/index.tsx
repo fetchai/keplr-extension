@@ -96,7 +96,9 @@ const NotificationTab = () => {
     <React.Fragment>
       {!isComingSoon &&
         notificationInfo.unreadNotification &&
-        notificationInfo.isNotificationOn && <span className={style["bellDot"]} />}
+        notificationInfo.isNotificationOn && (
+          <span className={style["bellDot"]} />
+        )}
       <Tab
         title={"Notifications"}
         icon={bellOnGreyIcon}

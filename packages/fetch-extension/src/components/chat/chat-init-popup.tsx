@@ -29,20 +29,19 @@ export const ChatInitPopup = ({
 
   const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
 
   const navigate = useNavigate();
   // address book values
 
-  const [
-    selectedPrivacySetting,
-    setSelectedPrivacySetting,
-  ] = useState<PrivacySetting>(
-    userState?.messagingPubKey.privacySetting
-      ? userState?.messagingPubKey.privacySetting
-      : PrivacySetting.Everybody
-  );
+  const [selectedPrivacySetting, setSelectedPrivacySetting] =
+    useState<PrivacySetting>(
+      userState?.messagingPubKey.privacySetting
+        ? userState?.messagingPubKey.privacySetting
+        : PrivacySetting.Everybody
+    );
 
   const requester = new InExtensionMessageRequester();
 

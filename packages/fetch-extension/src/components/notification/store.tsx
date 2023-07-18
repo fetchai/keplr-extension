@@ -2,9 +2,8 @@ import React, { FunctionComponent } from "react";
 import { NotificationProperty } from "./index";
 import { action, observable, IObservableArray, makeObservable } from "mobx";
 
-export const NotificationStoreContext = React.createContext<NotificationStore | null>(
-  null
-);
+export const NotificationStoreContext =
+  React.createContext<NotificationStore | null>(null);
 
 export const NotificationStoreProvider: FunctionComponent = ({ children }) => (
   <NotificationStoreContext.Provider value={new NotificationStore()}>

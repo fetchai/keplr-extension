@@ -15,9 +15,9 @@ type ValidatorData = Staking.Validator & { amount: CoinPretty };
 export const ValidatorList: FunctionComponent = observer(() => {
   const navigate = useNavigate();
 
-  const [validators, setValidators] = useState<
-    { [key in string]: ValidatorData }
-  >({});
+  const [validators, setValidators] = useState<{
+    [key in string]: ValidatorData;
+  }>({});
   const [filteredValidators, setFilteredValidators] = useState<ValidatorData[]>(
     []
   );
@@ -26,9 +26,10 @@ export const ValidatorList: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, accountStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
   const account = accountStore.getAccount(chainStore.current.chainId);
-  const queryDelegations = queries.cosmos.queryDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryDelegations =
+    queries.cosmos.queryDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
   useEffect(() => {
     const fetchValidators = async () => {
       setLoading(true);

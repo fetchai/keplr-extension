@@ -10,14 +10,18 @@ import {
   ContentScriptMessageRequester,
   ExtensionEnv,
   ExtensionGuards,
-  ExtensionRouter
+  ExtensionRouter,
 } from "@keplr-wallet/router-extension";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { init, ScryptParams } from "@keplr-wallet/background";
 import scrypt from "scrypt-js";
 import { Buffer } from "buffer/";
 
-import { CommunityChainInfoRepo, EmbedChainInfos, PrivilegedOrigins } from "../config";
+import {
+  CommunityChainInfoRepo,
+  EmbedChainInfos,
+  PrivilegedOrigins,
+} from "../config";
 
 const router = new ExtensionRouter(ExtensionEnv.produceEnv);
 router.addGuard(ExtensionGuards.checkOriginIsValid);
@@ -64,8 +68,6 @@ const { initFn } = init(
   }
 );
 
-
-
 router.listen(BACKGROUND_PORT, initFn);
 
 browser.alarms.create("keep-alive-alarm", {
@@ -79,4 +81,3 @@ browser.alarms.onAlarm.addListener((alarm) => {
     // https://developer.chrome.com/blog/longer-esw-lifetimes/
   }
 });
-

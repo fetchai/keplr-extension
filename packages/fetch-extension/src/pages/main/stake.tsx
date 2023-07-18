@@ -43,12 +43,10 @@ export const StakeView: FunctionComponent = observer(() => {
         // When the user delegated too many validators,
         // it can't be sent to withdraw rewards from all validators due to the block gas limit.
         // So, to prevent this problem, just send the msgs up to 8.
-        const validatorAddresses = rewards.getDescendingPendingRewardValidatorAddresses(
-          8
-        );
-        const tx = accountInfo.cosmos.makeWithdrawDelegationRewardTx(
-          validatorAddresses
-        );
+        const validatorAddresses =
+          rewards.getDescendingPendingRewardValidatorAddresses(8);
+        const tx =
+          accountInfo.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
 
         let gas: number;
         try {
@@ -103,7 +101,10 @@ export const StakeView: FunctionComponent = observer(() => {
       {isRewardExist ? (
         <React.Fragment>
           <div
-            className={classnames(styleStake["containerInner"], styleStake["reward"])}
+            className={classnames(
+              styleStake["containerInner"],
+              styleStake["reward"]
+            )}
           >
             <div className={styleStake["vertical"]}>
               <p
@@ -153,7 +154,12 @@ export const StakeView: FunctionComponent = observer(() => {
         </React.Fragment>
       ) : null}
 
-      <div className={classnames(styleStake["containerInner"], styleStake["stake"])}>
+      <div
+        className={classnames(
+          styleStake["containerInner"],
+          styleStake["stake"]
+        )}
+      >
         <div className={styleStake["vertical"]}>
           <p
             className={classnames(

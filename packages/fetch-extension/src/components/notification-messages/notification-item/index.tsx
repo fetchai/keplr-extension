@@ -50,10 +50,11 @@ export const NotificationItem: FunctionComponent<Props> = ({
           JSON.stringify([])
       );
 
-      const unclickedNotifications: NotyphiNotification[] = localNotifications.filter(
-        (notification: NotyphiNotification) =>
-          notification.delivery_id !== delivery_id
-      );
+      const unclickedNotifications: NotyphiNotification[] =
+        localNotifications.filter(
+          (notification: NotyphiNotification) =>
+            notification.delivery_id !== delivery_id
+        );
 
       markDeliveryAsClicked(elem.delivery_id, accountInfo.bech32Address).then(
         () => {

@@ -29,8 +29,9 @@ export const ChatSettings: FunctionComponent = observer(() => {
   const blockedUsers = useSelector(userBlockedAddresses);
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [loadingChatSettings, setLoadingChatSettings] = useState(false);
   const [chatPubKeyExists, setChatPubKeyExists] = useState(true);
   const [privacyParagraph, setPrivacyParagraph] = useState<
@@ -116,9 +117,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
               : "Please Activate Chat Functionality to Proceed"
           }
           onClick={() => {
-            if (chatPubKeyExists)
-              navigate("/setting/chat/block"
-              );
+            if (chatPubKeyExists) navigate("/setting/chat/block");
           }}
           icons={useMemo(
             () =>
@@ -139,8 +138,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             })
           }
           onClick={() => {
-            navigate("/setting/chat/privacy"
-            );
+            navigate("/setting/chat/privacy");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],
@@ -158,8 +156,7 @@ export const ChatSettings: FunctionComponent = observer(() => {
             })
           }
           onClick={() => {
-            navigate("/setting/chat/readRecipt"
-            );
+            navigate("/setting/chat/readRecipt");
           }}
           icons={useMemo(
             () => [<i key="next" className="fas fa-chevron-right" />],

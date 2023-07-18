@@ -5,8 +5,9 @@ import style from "./style.module.scss";
 
 export const AgentDisclaimer = () => {
   const { chainStore, accountStore } = useStore();
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
   const [openDialog, setIsOpendialog] = useState(false);
 
   useEffect(() => {

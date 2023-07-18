@@ -23,7 +23,10 @@ export const AlertPopup = ({
       <div className={style["popup"]}>
         <h4>{heading}</h4>
         <section>
-          <p style={{ whiteSpace: "pre-wrap" }} className={style["textContainer"]}>
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className={style["textContainer"]}
+          >
             {description}
           </p>
         </section>

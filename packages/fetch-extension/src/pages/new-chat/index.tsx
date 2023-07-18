@@ -110,7 +110,13 @@ export const NewChat: FunctionComponent = observer(() => {
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    uiConfigStore,
+    analyticsStore,
+  } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;

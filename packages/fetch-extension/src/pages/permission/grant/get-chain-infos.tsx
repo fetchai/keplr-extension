@@ -7,17 +7,16 @@ import { useStore } from "../../../stores";
 import { Button } from "reactstrap";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 
-export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observer(
-  () => {
+export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent =
+  observer(() => {
     const { generalPermissionStore } = useStore();
 
     const ineractionInfo = useInteractionInfo(() => {
       generalPermissionStore.rejectAllGlobalPermission();
     });
 
-    const waitingPermissions = generalPermissionStore.getWaitingGlobalPermissions(
-      "get-chain-infos"
-    );
+    const waitingPermissions =
+      generalPermissionStore.getWaitingGlobalPermissions("get-chain-infos");
 
     const host = useMemo(() => {
       if (waitingPermissions.length > 0) {
@@ -124,5 +123,4 @@ export const GrantGlobalPermissionGetChainInfosPage: FunctionComponent = observe
         </div>
       </EmptyLayout>
     );
-  }
-);
+  });

@@ -22,19 +22,18 @@ export const Privacy: FunctionComponent = observer(() => {
   const intl = useIntl();
   const { chainStore, accountStore, analyticsStore } = useStore();
 
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
 
   const userState = useSelector(userDetails);
 
-  const [
-    selectedPrivacySetting,
-    setSelectedPrivacySetting,
-  ] = useState<PrivacySetting>(
-    userState?.messagingPubKey.privacySetting
-      ? userState?.messagingPubKey.privacySetting
-      : PrivacySetting.Everybody
-  );
+  const [selectedPrivacySetting, setSelectedPrivacySetting] =
+    useState<PrivacySetting>(
+      userState?.messagingPubKey.privacySetting
+        ? userState?.messagingPubKey.privacySetting
+        : PrivacySetting.Everybody
+    );
 
   const loadingIndicator = useLoadingIndicator();
 

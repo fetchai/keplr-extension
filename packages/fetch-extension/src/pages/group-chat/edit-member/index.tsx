@@ -70,7 +70,13 @@ export const EditMember: FunctionComponent = observer(() => {
   /// Show alert popup for remove member
   const [removeMemberPopup, setRemoveMemberPopup] = useState(false);
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    uiConfigStore,
+    analyticsStore,
+  } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;

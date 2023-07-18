@@ -219,7 +219,7 @@ const extensionConfig = () => {
         {
           test: /\.css$/,
           exclude: /swiper-bundle\.min\.css/,
-          use: ['style-loader', 'css-loader'],
+          use: ["style-loader", "css-loader"],
         },
       ],
     },

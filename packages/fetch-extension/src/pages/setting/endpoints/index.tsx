@@ -44,14 +44,18 @@ export const SettingEndpointsPage: FunctionComponent = observer(() => {
   const [dropdownOpen, setOpen] = useState(false);
   const toggle = () => setOpen(!dropdownOpen);
 
-  const { setValue, register, handleSubmit, formState: { errors }, watch } = useForm<FormData>(
-    {
-      defaultValues: {
-        rpc: "",
-        lcd: "",
-      },
-    }
-  );
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<FormData>({
+    defaultValues: {
+      rpc: "",
+      lcd: "",
+    },
+  });
   useEffect(() => {
     const chainInfo = chainStore.getChain(selectedChainId);
     setValue("rpc", chainInfo.rpc);

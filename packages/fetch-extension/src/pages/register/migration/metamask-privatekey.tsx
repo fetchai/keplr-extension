@@ -31,7 +31,12 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
 }> = ({ registerConfig, onBack }) => {
   const intl = useIntl();
 
-  const { register, handleSubmit, formState: { errors } , getValues } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm<FormData>({
     defaultValues: {
       name: "",
       ethAddress: "",

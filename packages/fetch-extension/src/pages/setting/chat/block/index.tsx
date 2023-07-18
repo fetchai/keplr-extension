@@ -81,8 +81,9 @@ const BlockAddresses: React.FC<{
             .filter((contact) => blockedAddresses[contact])
             .map((contact) => {
               const contactName =
-                addresses.find((entry) => entry["address"] === contact)?.["name"] ||
-                formatAddress(contact);
+                addresses.find((entry) => entry["address"] === contact)?.[
+                  "name"
+                ] || formatAddress(contact);
               return (
                 <div key={contact} className={style["messageContainer"]}>
                   <div className={style["initials"]}>

@@ -18,7 +18,7 @@ interface FormData {
 
 export const ChangeNamePage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const { index = "-1 "} = useParams<{ index: string }>();
+  const { index = "-1 " } = useParams<{ index: string }>();
 
   const intl = useIntl();
 
@@ -26,12 +26,17 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
 
   const waitingNameData = keyRingStore.waitingNameData?.data;
 
-  const { register, handleSubmit, setError, setValue, formState: { errors }  } =
-    useForm<FormData>({
-      defaultValues: {
-        name: "",
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+    },
+  });
 
   useEffect(() => {
     if (waitingNameData?.defaultName) {
@@ -89,9 +94,9 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
             navigate("/");
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
-            setError('name', {
+            setError("name", {
               message: intl.formatMessage({
-                id: 'setting.keyring.change.input.name.error.invalid',
+                id: "setting.keyring.change.input.name.error.invalid",
               }),
             });
             setLoading(false);
@@ -112,7 +117,7 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
             id: "setting.keyring.change.input.name",
           })}
           error={errors.name && errors.name.message}
-          {...register("name",{
+          {...register("name", {
             required: intl.formatMessage({
               id: "setting.keyring.change.input.name.error.required",
             }),

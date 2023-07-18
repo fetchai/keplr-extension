@@ -82,7 +82,12 @@ export const GenerateMnemonicModePage: FunctionComponent<{
 }> = observer(({ registerConfig, newMnemonicConfig, bip44Option }) => {
   const intl = useIntl();
 
-  const { register, handleSubmit, getValues, formState: { errors }  } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       name: newMnemonicConfig.name,
       words: newMnemonicConfig.mnemonic,
@@ -189,8 +194,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

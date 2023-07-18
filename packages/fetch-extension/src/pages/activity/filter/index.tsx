@@ -53,7 +53,11 @@ export const FilterActivities: React.FC<{
       <div className={styles["dropdown-toggle"]} ref={dropdownRef}>
         <div className={styles["dropdown-heading"]} onClick={toggleDropdown}>
           <span>Filter</span>
-          <img src={arrowIcon} alt="Arrow Icon" className={styles["arrowIcon"]} />
+          <img
+            src={arrowIcon}
+            alt="Arrow Icon"
+            className={styles["arrowIcon"]}
+          />
         </div>
         {isOpen && (
           <div className={styles["dropdown-menu-popup"]}>

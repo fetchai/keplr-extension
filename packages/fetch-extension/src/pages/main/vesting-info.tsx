@@ -13,9 +13,10 @@ export const VestingInfo: FunctionComponent = observer(() => {
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
 
-  const spendableBalances = queries.cosmos.querySpendableBalances.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
+  const spendableBalances =
+    queries.cosmos.querySpendableBalances.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
 
   const relativeTime = (() => {
     if (!spendableBalances.response) {

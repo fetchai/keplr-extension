@@ -52,7 +52,12 @@ export const ImportKeystonePage: FunctionComponent<{
 
   const bip44Option = useBIP44Option();
 
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       name: "",
       password: "",
@@ -131,8 +136,7 @@ export const ImportKeystonePage: FunctionComponent<{
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

@@ -28,9 +28,10 @@ export const Validator: FunctionComponent = observer(() => {
   const unbondedValidators = queries.cosmos.queryValidators.getQueryStatus(
     Staking.BondStatus.Unbonded
   );
-  const queryDelegations = queries.cosmos.queryDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryDelegations =
+    queries.cosmos.queryDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
   const { validator, amount } = useMemo(() => {
     const amount = queryDelegations.getDelegationTo(validatorAddress);
     const validator =

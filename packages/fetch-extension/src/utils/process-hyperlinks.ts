@@ -1,6 +1,7 @@
 export const processHyperlinks = (inputText: string) => {
   const scriptRegex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
-  const urlRegex = /(<a\s+(?:[^>]*?\s+)?href=(['"])(?:[^'"]*?)\2[^>]*?>.*?<\/a>)|((https?:\/\/[^\s]+)|(?<!\w)(www\.[^\s]+))/g;
+  const urlRegex =
+    /(<a\s+(?:[^>]*?\s+)?href=(['"])(?:[^'"]*?)\2[^>]*?>.*?<\/a>)|((https?:\/\/[^\s]+)|(?<!\w)(www\.[^\s]+))/g;
   const processedText = inputText
     .replace(
       urlRegex,

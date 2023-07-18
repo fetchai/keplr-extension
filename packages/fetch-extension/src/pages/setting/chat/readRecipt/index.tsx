@@ -23,8 +23,9 @@ export const ReadRecipt: FunctionComponent = observer(() => {
   const loadingIndicator = useLoadingIndicator();
   const { chainStore, accountStore, analyticsStore } = useStore();
 
-  const walletAddress = accountStore.getAccount(chainStore.current.chainId)
-    .bech32Address;
+  const walletAddress = accountStore.getAccount(
+    chainStore.current.chainId
+  ).bech32Address;
 
   const userState = useSelector(userDetails);
   const requester = new InExtensionMessageRequester();
@@ -85,10 +86,9 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(true);
-            analyticsStore
-              .logEvent("Read Receipts Privacy setting click", {
-                readRecipt: true,
-              });
+            analyticsStore.logEvent("Read Receipts Privacy setting click", {
+              readRecipt: true,
+            });
           }}
           icons={useMemo(
             () =>
@@ -115,10 +115,9 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(false);
-            analyticsStore
-              .logEvent("Read Receipts Privacy setting click", {
-                readRecipt: false,
-              });
+            analyticsStore.logEvent("Read Receipts Privacy setting click", {
+              readRecipt: false,
+            });
           }}
           icons={useMemo(
             () =>

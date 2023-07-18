@@ -17,7 +17,7 @@ export const ChatAgent: React.FC<{
 }> = ({ chainId, group, contactName, targetAddress }) => {
   const [message, setMessage] = useState("");
   // const [groupData, setGroupData] = useState(group);
-  const {  analyticsStore } = useStore();
+  const { analyticsStore } = useStore();
 
   const navigate = useNavigate();
 

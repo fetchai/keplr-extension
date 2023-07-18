@@ -2,7 +2,10 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { Web3AuthNoModal as Web3Auth } from "@web3auth/no-modal";
 import { CommonPrivateKeyProvider } from "@web3auth/base-provider";
 import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
-import { OPENLOGIN_NETWORK, OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import {
+  OPENLOGIN_NETWORK,
+  OpenloginAdapter,
+} from "@web3auth/openlogin-adapter";
 import style from "./style.module.scss";
 import { Image } from "./image";
 import classNames from "classnames";
@@ -44,7 +47,9 @@ export const AuthIntro: FunctionComponent<{
             : OPENLOGIN_NETWORK.CYAN,
         });
         setWeb3auth(web3auth);
-        const privateKeyProvider = new CommonPrivateKeyProvider({ config: { chainConfig } });
+        const privateKeyProvider = new CommonPrivateKeyProvider({
+          config: { chainConfig },
+        });
         const openloginAdapter = new OpenloginAdapter({ privateKeyProvider });
         web3auth.configureAdapter(openloginAdapter);
 
@@ -61,12 +66,9 @@ export const AuthIntro: FunctionComponent<{
     if (!web3auth) {
       return;
     }
-    return await web3auth.connectTo(
-      WALLET_ADAPTERS.OPENLOGIN,
-      {
-        loginProvider: "google",
-      }
-    );
+    return await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+      loginProvider: "google",
+    });
   };
 
   const logout = async () => {
@@ -161,7 +163,12 @@ export const AuthPage: FunctionComponent<{
   registerConfig: RegisterConfig;
 }> = observer(({ registerConfig }) => {
   const intl = useIntl();
-  const { register, getValues, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       name: "",
       password: "",
@@ -204,7 +211,7 @@ export const AuthPage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.password",
               })}
-              {...register("password",{
+              {...register("password", {
                 required: intl.formatMessage({
                   id: "register.create.input.password.error.required",
                 }),
@@ -222,15 +229,14 @@ export const AuthPage: FunctionComponent<{
               label={intl.formatMessage({
                 id: "register.create.input.confirm-password",
               })}
-              {...register("confirmPassword",{
+              {...register("confirmPassword", {
                 required: intl.formatMessage({
                   id: "register.create.input.confirm-password.error.required",
                 }),
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

@@ -9,7 +9,6 @@
 **/*.secret
 **/*.md
 **/*.webm
-**/*.py
 .DS_Store
 
 node_modules

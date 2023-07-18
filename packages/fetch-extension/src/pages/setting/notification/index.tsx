@@ -28,12 +28,9 @@ export const SettingNotifications: FunctionComponent = () => {
   const orgSuffix = orgInfo.length > 1 ? "s" : "";
 
   const handleOnChange = () => {
-    analyticsStore
-      .logEvent(
-        notificationInfo.isNotificationOn
-          ? "Notification off"
-          : "Notification on"
-      );
+    analyticsStore.logEvent(
+      notificationInfo.isNotificationOn ? "Notification off" : "Notification on"
+    );
 
     localStorage.setItem(
       `turnNotifications-${accountInfo.bech32Address}`,

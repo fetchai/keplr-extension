@@ -118,7 +118,7 @@ export class ToolTip extends React.Component<ToolTipProps> {
             opacity: show ? 1 : 0,
           }}
         >
-          <div x-arrow="" />
+          <div data-arrow="" />
           {tooltip}
         </div>
         <div style={childrenStyle} ref={this.componentRef}>

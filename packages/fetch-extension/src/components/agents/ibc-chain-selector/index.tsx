@@ -36,12 +36,8 @@ export const IBCChainSelector: FunctionComponent<{
   label: ReactElement<any>[];
   disabled: boolean;
 }> = observer(({ label, disabled }) => {
-  const {
-    accountStore,
-    chainStore,
-    ibcChannelStore,
-    queriesStore,
-  } = useStore();
+  const { accountStore, chainStore, ibcChannelStore, queriesStore } =
+    useStore();
   const loadingIndicator = useLoadingIndicator();
 
   const current = chainStore.current;

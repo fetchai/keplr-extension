@@ -38,10 +38,8 @@ export const NotificationModal: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
 
-  const [
-    notificationPayload,
-    setNotificationPayload,
-  ] = useState<NotificationPayload>();
+  const [notificationPayload, setNotificationPayload] =
+    useState<NotificationPayload>();
 
   const handleClick = () => {
     if (notificationPayload?.modalType === NotificationModalType.initial) {

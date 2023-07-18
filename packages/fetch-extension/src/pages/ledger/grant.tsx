@@ -471,7 +471,9 @@ const Instruction: FunctionComponent<{
   pass: boolean;
 }> = ({ icon, title, paragraph, children, pass }) => {
   return (
-    <div className={classnames(style["instruction"], { [style["pass"]]: pass })}>
+    <div
+      className={classnames(style["instruction"], { [style["pass"]]: pass })}
+    >
       <div className={style["icon"]}>{icon}</div>
       <div className={style["inner"]}>
         <h1>

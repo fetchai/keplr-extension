@@ -53,7 +53,13 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
   const [selectedAddress, setSelectedAddresse] = useState<any>();
   const [confirmAction, setConfirmAction] = useState(false);
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    uiConfigStore,
+    analyticsStore,
+  } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;

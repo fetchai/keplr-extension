@@ -28,11 +28,8 @@ export const newGroupSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  resetNewGroup,
-  setNewGroupInfo,
-  setIsGroupEdit,
-} = newGroupSlice.actions;
+export const { resetNewGroup, setNewGroupInfo, setIsGroupEdit } =
+  newGroupSlice.actions;
 
 export const newGroupDetails = (state: { newGroup: any }) => state.newGroup;
 

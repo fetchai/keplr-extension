@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Form } from "reactstrap";
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import style from "../style.module.scss";
 import { Input, PasswordInput } from "@components/form";
 import { AdvancedBIP44Option, useBIP44Option } from "../advanced-bip44";
@@ -50,7 +50,12 @@ export const ImportLedgerPage: FunctionComponent<{
 
   const bip44Option = useBIP44Option(118);
 
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       name: "",
       password: "",
@@ -161,8 +166,7 @@ export const ImportLedgerPage: FunctionComponent<{
                 validate: (confirmPassword: string): string | undefined => {
                   if (confirmPassword !== getValues()["password"]) {
                     return intl.formatMessage({
-                      id:
-                        "register.create.input.confirm-password.error.unmatched",
+                      id: "register.create.input.confirm-password.error.unmatched",
                     });
                   }
                 },

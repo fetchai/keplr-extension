@@ -29,7 +29,11 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["injectedScript.bundle.js", "assets/logo-256.svg", "blocklist.html"],
+      "resources": [
+        "injectedScript.bundle.js",
+        "assets/logo-256.svg",
+        "blocklist.html"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

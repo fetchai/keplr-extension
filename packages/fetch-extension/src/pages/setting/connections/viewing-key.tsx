@@ -9,8 +9,8 @@ import { useIntl } from "react-intl";
 import { useConfirm } from "@components/confirm";
 import { Secret20ViewingKeyPermissionInnerStore } from "@keplr-wallet/stores";
 
-export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = observer(
-  () => {
+export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
+  observer(() => {
     const { contractAddress } = useParams<{ contractAddress?: string }>();
 
     const intl = useIntl();
@@ -23,16 +23,14 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
     let accessInfo: Secret20ViewingKeyPermissionInnerStore | undefined;
 
     if (contractAddress) {
-    tokenInfo = queriesStore
-      .get(chainStore.current.chainId)
-      .secret.querySecret20ContractInfo.getQueryContract(
+      tokenInfo = queriesStore
+        .get(chainStore.current.chainId)
+        .secret.querySecret20ContractInfo.getQueryContract(contractAddress);
+
+      accessInfo = permissionStore.getSecret20ViewingKeyAccessInfo(
+        chainStore.current.chainId,
         contractAddress
       );
-
-    accessInfo = permissionStore.getSecret20ViewingKeyAccessInfo(
-      chainStore.current.chainId,
-      contractAddress
-    );
     }
 
     const xIcon = useMemo(
@@ -77,12 +75,10 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
                         />
                       ),
                       title: intl.formatMessage({
-                        id:
-                          "setting.connections.viewing-key.confirm.delete-connection.title",
+                        id: "setting.connections.viewing-key.confirm.delete-connection.title",
                       }),
                       paragraph: intl.formatMessage({
-                        id:
-                          "setting.connections.viewing-key.confirm.delete-connection.paragraph",
+                        id: "setting.connections.viewing-key.confirm.delete-connection.paragraph",
                       }),
                     })
                   ) {
@@ -96,5 +92,4 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent = obser
         </div>
       </HeaderLayout>
     );
-  }
-);
+  });

@@ -191,204 +191,201 @@ ReactDOM.render(
           <NotificationProvider>
             <ConfirmProvider>
               <ErrorBoundary>
-              <HashRouter>
-                <ChatStoreProvider>
-                  <Routes>
-                    <Route path="/" element={<StateRenderer/>} />
-                    <Route path="/unlock" element={<LockPage/>} />
-                    <Route path="/access" element={<AccessPage/>} />
-                    <Route
-                      path="/access/viewing-key"
-                      element={<Secret20ViewingKeyAccessPage/>}
-                    />
-                    <Route path="/register" element={<RegisterPage/>} />
-                    <Route path="/send" element={<SendPage/>} />
-                    <Route
-                      path="/ibc-transfer"
-                      element={<IBCTransferPage/>}
-                    />
-                    <Route path="/setting" element={<SettingPage/>} />
-                    <Route
-                      path="/keystone/import-pubkey"
-                      element={<KeystoneImportPubkeyPage/>}
-                    />
-                    <Route
-                      path="/keystone/sign"
-                      element={<KeystoneSignPage/>}
-                    />
-                    <Route
-                      path="/ledger-grant"
-                      element={<LedgerGrantPage/>}
-                    />
-                    <Route
-                      path="/setting/language"
-                      element={<SettingLanguagePage/>}
-                    />
-                    <Route
-                      path="/setting/fiat"
-                      element={<SettingFiatPage/>}
-                    />
-                    <Route
-                      path="/setting/connections"
-                      element={<SettingConnectionsPage/>}
-                    />
-                    <Route
-                      path="/setting/connections/viewing-key/:contractAddress"
-                      element={<SettingSecret20ViewingKeyConnectionsPage/>}
-                    />
-                    <Route
-                      path="/setting/address-book"
-                      element={<AddressBookPage/>}
-                    />
-                    <Route path="/activity" element={<ActivityPage/>} />
-                    <Route
-                      path="/setting/export-to-mobile"
-                      element={<ExportToMobilePage/>}
-                    />
-                    <Route
-                      path="/setting/set-keyring"
-                      element={<SetKeyRingPage/>}
-                    />
-                    <Route
-                      path="/setting/export/:index"
-                      element={<ExportPage/>}
-                    />
-                    <Route
-                      path="/setting/clear/:index"
-                      element={<ClearPage/>}
-                    />
-                    <Route
-                      path="/setting/keyring/change/name/:index"
-                      element={<ChangeNamePage/>}
-                    />
-                    <Route
-                      path="/setting/token/add"
-                      element={<AddTokenPage/>}
-                    />
-                    <Route
-                      path="/setting/token/manage"
-                      element={<ManageTokenPage/>}
-                    />
-                    <Route
-                      path="/setting/endpoints"
-                      element={<SettingEndpointsPage/>}
-                    />
-                    <Route
-                      path="/setting/autolock"
-                      element={<SettingAutoLockPage/>}
-                    />
-                    <Route
-                      path="/setting/security-privacy"
-                      element={<SettingSecurityPrivacyPage/>}
-                    />
-                    <Route path="/sign" element={<SignPage/>} />
-                    <Route
-                      path="/icns/adr36-signatures"
-                      element={<ICNSAdr36SignPage/>}
-                    />
-                    <Route
-                      path="/suggest-chain"
-                      element={<ChainSuggestedPage/>}
-                    />
-                    <Route
-                      path="/permissions/grant/get-chain-infos"
-                      element={<GrantGlobalPermissionGetChainInfosPage/>}
-                    />
-                    <Route
-                      path="/setting/permissions/get-chain-infos"
-                      element={<SettingPermissionsGetChainInfosPage/>}
-                    />
-                    <Route
-                      path="/setting/chain-active"
-                      element={<ChainActivePage/>}
-                    />
-                    <Route path="/authz" element={<AuthZPage/>} />
-                    <Route
-                      path="/notification"
-                      element={<NotificationPage/>}
-                    />
-                    <Route
-                      path="/notification/organisations/:type"
-                      element={<NotificationOrganizations/>}
-                    />
-                    <Route
-                      path="/notification/topics/:type"
-                      element={<NotificationTopics/>}
-                    />
-                    <Route
-                      path="/notification/review"
-                      element={<ReviewNotification/>}
-                    />
-                    <Route path="/chat" element={<ChatPage/>} />
-                    <Route path="/chat/:name" element={<ChatSection/>} />
-                    <Route path="/new-chat" element={<NewChat/>} />
-                    <Route
-                      path="/chat/group-chat/create"
-                      element={<CreateGroupChat/>}
-                    />
-                    <Route
-                      path="/chat/group-chat/add-member"
-                      element={<AddMember/>}
-                    />
-                    <Route
-                      path="/chat/group-chat/edit-member"
-                      element={<EditMember/>}
-                    />
-                    <Route
-                      path="/chat/group-chat/review-details"
-                      element={<ReviewGroupChat/>}
-                    />
-                    <Route
-                      path="/chat/group-chat-section/:name"
-                      element={<GroupChatSection/>}
-                    />
-                    <Route
-                      path="/chat/agent/:name"
-                      element={<AgentChatSection/>}
-                    />
-                    <Route path="/more" element={<MorePage/>} />
-                    <Route
-                      path="/setting/notifications"
-                      element={<SettingNotifications/>}
-                    />
-                    <Route
-                      path="/setting/chat"
-                      element={<ChatSettings/>}
-                    />
-                    <Route
-                      path="/setting/chat/block"
-                      element={<BlockList/>}
-                    />
-                    <Route
-                      path="/setting/chat/privacy"
-                      element={<Privacy/>}
-                    />
-                    <Route
-                      path="/setting/chat/readRecipt"
-                      element={<ReadRecipt/>}
-                    />
-                    <Route path="/validators" element={<ValidatorList/>} />
-                    <Route
-                      path="/validators/:validator_address/:operation"
-                      element={<Validator/>}
-                    />
-                    <Route
-                      path="/stake-complete/:validator_address"
-                      element={<StakeComplete/>}
-                    />
-                    <Route path="/proposal" element={<Proposals/>} />
-                    <Route
-                      path="/proposal-detail/:id"
-                      element={<ProposalDetail/>}
-                    />
-                    <Route
-                      path="/proposal-vote-status/:votedOn/:id"
-                      element={<PropsalVoteStatus/>}
-                    />
-                    <Route path="*" element={<StateRenderer/>} />
-                  </Routes>
-                </ChatStoreProvider>
-              </HashRouter>
+                <HashRouter>
+                  <ChatStoreProvider>
+                    <Routes>
+                      <Route path="/" element={<StateRenderer />} />
+                      <Route path="/unlock" element={<LockPage />} />
+                      <Route path="/access" element={<AccessPage />} />
+                      <Route
+                        path="/access/viewing-key"
+                        element={<Secret20ViewingKeyAccessPage />}
+                      />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/send" element={<SendPage />} />
+                      <Route
+                        path="/ibc-transfer"
+                        element={<IBCTransferPage />}
+                      />
+                      <Route path="/setting" element={<SettingPage />} />
+                      <Route
+                        path="/keystone/import-pubkey"
+                        element={<KeystoneImportPubkeyPage />}
+                      />
+                      <Route
+                        path="/keystone/sign"
+                        element={<KeystoneSignPage />}
+                      />
+                      <Route
+                        path="/ledger-grant"
+                        element={<LedgerGrantPage />}
+                      />
+                      <Route
+                        path="/setting/language"
+                        element={<SettingLanguagePage />}
+                      />
+                      <Route
+                        path="/setting/fiat"
+                        element={<SettingFiatPage />}
+                      />
+                      <Route
+                        path="/setting/connections"
+                        element={<SettingConnectionsPage />}
+                      />
+                      <Route
+                        path="/setting/connections/viewing-key/:contractAddress"
+                        element={<SettingSecret20ViewingKeyConnectionsPage />}
+                      />
+                      <Route
+                        path="/setting/address-book"
+                        element={<AddressBookPage />}
+                      />
+                      <Route path="/activity" element={<ActivityPage />} />
+                      <Route
+                        path="/setting/export-to-mobile"
+                        element={<ExportToMobilePage />}
+                      />
+                      <Route
+                        path="/setting/set-keyring"
+                        element={<SetKeyRingPage />}
+                      />
+                      <Route
+                        path="/setting/export/:index"
+                        element={<ExportPage />}
+                      />
+                      <Route
+                        path="/setting/clear/:index"
+                        element={<ClearPage />}
+                      />
+                      <Route
+                        path="/setting/keyring/change/name/:index"
+                        element={<ChangeNamePage />}
+                      />
+                      <Route
+                        path="/setting/token/add"
+                        element={<AddTokenPage />}
+                      />
+                      <Route
+                        path="/setting/token/manage"
+                        element={<ManageTokenPage />}
+                      />
+                      <Route
+                        path="/setting/endpoints"
+                        element={<SettingEndpointsPage />}
+                      />
+                      <Route
+                        path="/setting/autolock"
+                        element={<SettingAutoLockPage />}
+                      />
+                      <Route
+                        path="/setting/security-privacy"
+                        element={<SettingSecurityPrivacyPage />}
+                      />
+                      <Route path="/sign" element={<SignPage />} />
+                      <Route
+                        path="/icns/adr36-signatures"
+                        element={<ICNSAdr36SignPage />}
+                      />
+                      <Route
+                        path="/suggest-chain"
+                        element={<ChainSuggestedPage />}
+                      />
+                      <Route
+                        path="/permissions/grant/get-chain-infos"
+                        element={<GrantGlobalPermissionGetChainInfosPage />}
+                      />
+                      <Route
+                        path="/setting/permissions/get-chain-infos"
+                        element={<SettingPermissionsGetChainInfosPage />}
+                      />
+                      <Route
+                        path="/setting/chain-active"
+                        element={<ChainActivePage />}
+                      />
+                      <Route path="/authz" element={<AuthZPage />} />
+                      <Route
+                        path="/notification"
+                        element={<NotificationPage />}
+                      />
+                      <Route
+                        path="/notification/organisations/:type"
+                        element={<NotificationOrganizations />}
+                      />
+                      <Route
+                        path="/notification/topics/:type"
+                        element={<NotificationTopics />}
+                      />
+                      <Route
+                        path="/notification/review"
+                        element={<ReviewNotification />}
+                      />
+                      <Route path="/chat" element={<ChatPage />} />
+                      <Route path="/chat/:name" element={<ChatSection />} />
+                      <Route path="/new-chat" element={<NewChat />} />
+                      <Route
+                        path="/chat/group-chat/create"
+                        element={<CreateGroupChat />}
+                      />
+                      <Route
+                        path="/chat/group-chat/add-member"
+                        element={<AddMember />}
+                      />
+                      <Route
+                        path="/chat/group-chat/edit-member"
+                        element={<EditMember />}
+                      />
+                      <Route
+                        path="/chat/group-chat/review-details"
+                        element={<ReviewGroupChat />}
+                      />
+                      <Route
+                        path="/chat/group-chat-section/:name"
+                        element={<GroupChatSection />}
+                      />
+                      <Route
+                        path="/chat/agent/:name"
+                        element={<AgentChatSection />}
+                      />
+                      <Route path="/more" element={<MorePage />} />
+                      <Route
+                        path="/setting/notifications"
+                        element={<SettingNotifications />}
+                      />
+                      <Route path="/setting/chat" element={<ChatSettings />} />
+                      <Route
+                        path="/setting/chat/block"
+                        element={<BlockList />}
+                      />
+                      <Route
+                        path="/setting/chat/privacy"
+                        element={<Privacy />}
+                      />
+                      <Route
+                        path="/setting/chat/readRecipt"
+                        element={<ReadRecipt />}
+                      />
+                      <Route path="/validators" element={<ValidatorList />} />
+                      <Route
+                        path="/validators/:validator_address/:operation"
+                        element={<Validator />}
+                      />
+                      <Route
+                        path="/stake-complete/:validator_address"
+                        element={<StakeComplete />}
+                      />
+                      <Route path="/proposal" element={<Proposals />} />
+                      <Route
+                        path="/proposal-detail/:id"
+                        element={<ProposalDetail />}
+                      />
+                      <Route
+                        path="/proposal-vote-status/:votedOn/:id"
+                        element={<PropsalVoteStatus />}
+                      />
+                      <Route path="*" element={<StateRenderer />} />
+                    </Routes>
+                  </ChatStoreProvider>
+                </HashRouter>
               </ErrorBoundary>
             </ConfirmProvider>
           </NotificationProvider>

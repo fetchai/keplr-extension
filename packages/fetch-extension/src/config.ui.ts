@@ -112,9 +112,8 @@ export const LanguageToFiatCurrency: TypeLanguageToFiatCurrency = {
   ko: "krw",
 };
 
-export const AdditionalSignInPrepend:
-  | RegisterOption[]
-  | undefined = ADDITIONAL_SIGN_IN_PREPEND;
+export const AdditionalSignInPrepend: RegisterOption[] | undefined =
+  ADDITIONAL_SIGN_IN_PREPEND;
 
 export const AdditionalIntlMessages: IntlMessages = ADDITIONAL_INTL_MESSAGES;
 

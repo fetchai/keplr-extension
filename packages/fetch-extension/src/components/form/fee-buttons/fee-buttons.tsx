@@ -118,9 +118,8 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           // Basically, `FeeConfig` implementation select the first fee currency as default.
           // So, let's put the priority to first fee currency.
           const firstFeeCurrency = feeConfig.feeCurrencies[0];
-          const firstFeeCurrencyBal = queryBalances.getBalanceFromCurrency(
-            firstFeeCurrency
-          );
+          const firstFeeCurrencyBal =
+            queryBalances.getBalanceFromCurrency(firstFeeCurrency);
 
           if (feeConfig.feeType) {
             const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
@@ -131,9 +130,8 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
               // Not enough balances for fee.
               // Try to find other fee currency to send.
               for (const feeCurrency of feeConfig.feeCurrencies) {
-                const feeCurrencyBal = queryBalances.getBalanceFromCurrency(
-                  feeCurrency
-                );
+                const feeCurrencyBal =
+                  queryBalances.getBalanceFromCurrency(feeCurrency);
                 const fee = feeConfig.getFeeTypePrettyForFeeCurrency(
                   feeCurrency,
                   feeConfig.feeType
@@ -383,7 +381,9 @@ export const FeeButtonsInner: FunctionComponent<
               e.preventDefault();
             }}
           >
-            <div className={styleFeeButtons["title"]}>{feeSelectLabels.low}</div>
+            <div className={styleFeeButtons["title"]}>
+              {feeSelectLabels.low}
+            </div>
             {lowFeePrice ? (
               <div
                 className={classnames(styleFeeButtons["fiat"], {
@@ -443,7 +443,9 @@ export const FeeButtonsInner: FunctionComponent<
               e.preventDefault();
             }}
           >
-            <div className={styleFeeButtons["title"]}>{feeSelectLabels.high}</div>
+            <div className={styleFeeButtons["title"]}>
+              {feeSelectLabels.high}
+            </div>
             {highFeePrice ? (
               <div
                 className={classnames(styleFeeButtons["fiat"], {

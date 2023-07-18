@@ -29,7 +29,12 @@ export const LockPage: FunctionComponent = observer(() => {
   const intl = useIntl();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, setError, formState: { errors }  } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
@@ -74,9 +79,9 @@ export const LockPage: FunctionComponent = observer(() => {
             }
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);
-            setError('password', {
+            setError("password", {
               message: intl.formatMessage({
-                id: 'lock.input.password.error.invalid',
+                id: "lock.input.password.error.invalid",
               }),
             });
             setLoading(false);
@@ -92,7 +97,7 @@ export const LockPage: FunctionComponent = observer(() => {
             id: "lock.input.password",
           })}
           error={errors.password && errors.password.message}
-          {...register('password', {
+          {...register("password", {
             required: intl.formatMessage({
               id: "lock.input.password.error.required",
             }),

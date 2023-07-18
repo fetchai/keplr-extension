@@ -74,13 +74,14 @@ export function init(
     embedChainInfos,
     {
       useMemoryKVStoreForSuggestChain:
-      experimentalOptions.suggestChain?.useMemoryKVStore,
+        experimentalOptions.suggestChain?.useMemoryKVStore,
     }
   );
 
   const tokensService = new Tokens.TokensService(storeCreator("tokens"));
 
-  const persistentMemoryService = new PersistentMemory.PersistentMemoryService();
+  const persistentMemoryService =
+    new PersistentMemory.PersistentMemoryService();
 
   const permissionService = new Permission.PermissionService(
     storeCreator("permission"),
@@ -139,7 +140,6 @@ export function init(
 
   const messagingService = new Messaging.MessagingService();
 
-
   Interaction.init(router, interactionService);
   PersistentMemory.init(router, persistentMemoryService);
   Permission.init(router, permissionService);
@@ -157,42 +157,41 @@ export function init(
   Umbral.init(router, umbralService);
   Messaging.init(router, messagingService);
 
-
-return {
-  initFn: async () => {
-    persistentMemoryService.init();
-    permissionService.init(interactionService, chainsService, keyRingService);
-    chainUpdaterService.init(chainsService);
-    tokensService.init(
-      interactionService,
-      permissionService,
-      chainsService,
-      keyRingService
-    );
-    chainsService.init(
-      chainUpdaterService,
-      interactionService,
-      permissionService
-    );
-    ledgerService.init(interactionService);
-    keystoneService.init(interactionService);
-    keyRingService.init(
-      interactionService,
-      chainsService,
-      permissionService,
-      ledgerService,
-      keystoneService,
-      analyticsService
-    );
-    secretWasmService.init(chainsService, keyRingService, permissionService);
-    backgroundTxService.init(chainsService, permissionService);
-    phishingListService.init();
-    // No need to wait because user can't interact with app right after launch.
-    await autoLockAccountService.init(keyRingService);
-    // No need to wait because user can't interact with app right after launch.
-    await analyticsService.init();
-    await umbralService.init(keyRingService, permissionService);
-    await messagingService.init(keyRingService);
-  },
-}
+  return {
+    initFn: async () => {
+      persistentMemoryService.init();
+      permissionService.init(interactionService, chainsService, keyRingService);
+      chainUpdaterService.init(chainsService);
+      tokensService.init(
+        interactionService,
+        permissionService,
+        chainsService,
+        keyRingService
+      );
+      chainsService.init(
+        chainUpdaterService,
+        interactionService,
+        permissionService
+      );
+      ledgerService.init(interactionService);
+      keystoneService.init(interactionService);
+      keyRingService.init(
+        interactionService,
+        chainsService,
+        permissionService,
+        ledgerService,
+        keystoneService,
+        analyticsService
+      );
+      secretWasmService.init(chainsService, keyRingService, permissionService);
+      backgroundTxService.init(chainsService, permissionService);
+      phishingListService.init();
+      // No need to wait because user can't interact with app right after launch.
+      await autoLockAccountService.init(keyRingService);
+      // No need to wait because user can't interact with app right after launch.
+      await analyticsService.init();
+      await umbralService.init(keyRingService, permissionService);
+      await messagingService.init(keyRingService);
+    },
+  };
 }

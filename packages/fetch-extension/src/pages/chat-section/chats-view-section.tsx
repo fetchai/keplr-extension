@@ -246,8 +246,9 @@ export const ChatsViewSection = ({
     (val) => val.address === targetAddress
   );
   useEffect(() => {
-    const time = group?.addresses.find((val) => val.address !== targetAddress)
-      ?.lastSeenTimestamp;
+    const time = group?.addresses.find(
+      (val) => val.address !== targetAddress
+    )?.lastSeenTimestamp;
     if (lastUnreadMesageId === "") {
       const firstMessageUnseen = messages
         .filter((message) => message.commitTimestamp > Number(time))

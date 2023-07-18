@@ -58,7 +58,9 @@ export class ObservableChainQueryClientState extends ObservableChainQuery<Client
       return undefined;
     }
 
-    return this.response.data.identified_client_state?.client_state?.["chain_id"] as string | undefined;
+    return this.response.data.identified_client_state?.client_state?.[
+      "chain_id"
+    ] as string | undefined;
   }
 }
 

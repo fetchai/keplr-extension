@@ -16,10 +16,8 @@ export const ChatGroupUser: React.FC<{
   encryptedSymmetricKey: string;
   addresses: NameAddress;
 }> = ({ chainId, group, encryptedSymmetricKey, addresses }) => {
-  const [
-    decryptedMessage,
-    setDecryptedMessage,
-  ] = useState<GroupMessagePayload>();
+  const [decryptedMessage, setDecryptedMessage] =
+    useState<GroupMessagePayload>();
   const navigate = useNavigate();
 
   const { chainStore, accountStore, analyticsStore } = useStore();

@@ -83,7 +83,12 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
 
   const intl = useIntl();
 
-  const { register, handleSubmit, setError,  formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
     },
@@ -186,7 +191,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
             setError("password", {
               message: intl.formatMessage({
                 id: "setting.export-to-mobile.input.password.error.invalid",
-              })
+              }),
             });
           } finally {
             setLoading(false);
@@ -200,7 +205,7 @@ export const EnterPasswordToExportKeyRingView: FunctionComponent<{
           {...register("password", {
             required: intl.formatMessage({
               id: "setting.export-to-mobile.input.password.error.required",
-            })
+            }),
           })}
           error={errors.password && errors.password.message}
         />
@@ -321,9 +326,8 @@ export const WalletConnectToExportKeyRingView: FunctionComponent<{
             if (payload.params && payload.params.length > 0) {
               for (const chainId of payload.params[0].addressBookChainIds ??
                 []) {
-                const addressBookConfig = addressBookConfigMap.getAddressBookConfig(
-                  chainId
-                );
+                const addressBookConfig =
+                  addressBookConfigMap.getAddressBookConfig(chainId);
 
                 await addressBookConfig.waitLoaded();
 

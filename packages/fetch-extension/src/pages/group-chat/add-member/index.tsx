@@ -64,7 +64,13 @@ export const AddMember: FunctionComponent = observer(() => {
   const [addresses, setAddresses] = useState<NameAddress[]>([]);
   const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
 
-  const { chainStore, accountStore, queriesStore, uiConfigStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    uiConfigStore,
+    analyticsStore,
+  } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -320,7 +326,9 @@ export const AddMember: FunctionComponent = observer(() => {
                 address={randomAddress}
                 key={randomAddress["address"]}
                 isSelected={isMemberExist(randomAddress["address"])}
-                onIconClick={() => handleAddRemoveMember(randomAddress["address"])}
+                onIconClick={() =>
+                  handleAddRemoveMember(randomAddress["address"])
+                }
               />
             )}
             {addresses.map((address: NameAddress) => {
