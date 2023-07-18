@@ -1,16 +1,42 @@
-/**
- * @jest-environment jsdom
- */
-
 import { clearDecimals } from "./decimals";
 
-describe("Test methods in messages", () => {
-  test("Test clearDecimals", () => {
-    expect(clearDecimals("0.00100")).toBe("0.001");
-    expect(clearDecimals("10.00100")).toBe("10.001");
-    expect(clearDecimals("100")).toBe("100");
-    expect(clearDecimals("0")).toBe("0");
-    expect(clearDecimals("10.00101")).toBe("10.00101");
-    expect(clearDecimals("0.1")).toBe("0.1");
+describe("clearDecimals", () => {
+  it("should return the input string if it does not contain a decimal point", () => {
+    const input = "1234";
+    expect(clearDecimals(input)).toBe(input);
+  });
+
+  it("should remove trailing zeros after the decimal point", () => {
+    const input = "1234.0000";
+    const expected = "1234";
+    expect(clearDecimals(input)).toBe(expected);
+  });
+
+  it("should remove the decimal point if the last character is a dot", () => {
+    const input = "1234.";
+    const expected = "1234";
+    expect(clearDecimals(input)).toBe(expected);
+  });
+
+  it("should remove trailing zeros and the decimal point if both are present", () => {
+    const input = "12.340000";
+    const expected = "12.34";
+    expect(clearDecimals(input)).toBe(expected);
+  });
+
+  it("should handle decimals with no trailing zeros", () => {
+    const input = "12.34";
+    expect(clearDecimals(input)).toBe(input);
+  });
+
+  it("should handle input with multiple decimal points", () => {
+    const input = "12.34.56.000";
+    const expected = "12.34.56";
+    expect(clearDecimals(input)).toBe(expected);
+  });
+
+  it("should handle an empty string input", () => {
+    const input = "";
+    expect(clearDecimals(input)).toBe(input);
   });
 });

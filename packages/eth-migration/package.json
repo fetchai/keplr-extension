@@ -11,13 +11,12 @@
     "clean": "rm -rf node_modules; rm -rf build",
     "build": "tsc",
     "dev": "tsc -w",
-    "test": "mocha --timeout 30000 -r ts-node/register 'src/**/*.spec.ts'",
+    "test": "jest --passWithNoTests",
     "lint-test": "eslint \"src/**/*\" && prettier --check \"src/**/*\"",
     "lint-fix": "eslint --fix \"src/**/*\" && prettier --write \"src/**/*\""
   },
   "devDependencies": {
-    "@types/keccak": "^3.0.1",
-    "mocha": "^8.2.1"
+    "@types/keccak": "^3.0.1"
   },
   "dependencies": {
     "@keplr-wallet/cosmos": "0.12.12",

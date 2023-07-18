@@ -3,7 +3,7 @@
 
   "name": "Fetch Wallet",
   "description": "The official Fetch wallet for interacting with the Fetch ledger",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "icons": {
     "16": "assets/icon-16.png",
     "48": "assets/icon-48.png",
@@ -18,7 +18,6 @@
     "service_worker": "background.bundle.js"
   },
   "permissions": ["storage", "notifications", "identity", "idle", "alarms"],
-  "content_security_policy": "script-src 'self' 'wasm-eval'; object-src 'self'",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
