@@ -39,7 +39,7 @@ export const ChatInputSection = (props: {
         {isTargetPubKeyAvailable ? (
           <ReactTextareaAutosize
             maxRows={3}
-            className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
+            className={`${style["inputArea"]} ${style["sendMessageInputArea"]}`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
@@ -54,14 +54,14 @@ export const ChatInputSection = (props: {
           >
             <ReactTextareaAutosize
               maxRows={3}
-              className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
+              className={`${style["inputArea"]} ${style["sendMessageInputArea"]}`}
               placeholder={placeholder}
               disabled={true}
             />
           </ToolTip>
         )}
         {value.length && value.trim() !== "" ? (
-          <div className={style["send-message-icon"]} onClick={onClick}>
+          <div className={style["sendMessageIcon"]} onClick={onClick}>
             <img draggable={false} src={paperAirplaneIcon} alt="" />
           </div>
         ) : (

@@ -66,23 +66,23 @@ export function Guide({ onScan }: { onScan(): void }) {
         </Swiper>
         <div id="swiper-pagination" className={style["pagination"]} />
         {stepIndex === 0 && (
-          <div className={style["swiper-title"]}>
+          <div className={style["swiperTitle"]}>
             Select the <em>Cosmos</em> option in the “Software Wallet” menu
             available in your Keystone
           </div>
         )}
         {stepIndex === 1 && (
-          <div className={style["swiper-title"]}>
+          <div className={style["swiperTitle"]}>
             Tap the icon “ <em>…</em> ” on the top right corner
           </div>
         )}
         {stepIndex === 2 && (
-          <div className={style["swiper-title"]}>
+          <div className={style["swiperTitle"]}>
             Select <em>Connect Software Wallet</em>
           </div>
         )}
         {stepIndex === 3 && (
-          <div className={style["swiper-title"]}>
+          <div className={style["swiperTitle"]}>
             Click <em>Scan</em> button below and scan the QR code on the
             Keystone device
           </div>

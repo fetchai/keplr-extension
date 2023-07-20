@@ -8,13 +8,13 @@ interface Props {
 export function Loading({ title }: Props) {
   return (
     <div className={style["modal"]}>
-      <div className={style["modal-content"]}>
+      <div className={style["modalContent"]}>
         <img
-          className={style["loading-icon"]}
+          className={style["loadingIcon"]}
           src={require("../../public/assets/svg/loading.svg")}
           height="24"
         />
-        {title && <div className={style["loading-title"]}>{title}</div>}
+        {title && <div className={style["loadingTitle"]}>{title}</div>}
       </div>
     </div>
   );

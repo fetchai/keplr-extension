@@ -121,11 +121,11 @@ export function Scan({ type, onChange, onBack }: Props) {
           />
         </div>
         {isPermitted ? (
-          <p className={style["help-text"]}>
+          <p className={style["helpText"]}>
             Position the QR code in front of your camera.
           </p>
         ) : (
-          <p className={style["error-text"]}>
+          <p className={style["errorText"]}>
             Please enable your camera permission via [Settings]
           </p>
         )}

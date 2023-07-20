@@ -82,7 +82,7 @@ export const KeystoneSignPage = observer(() => {
             />
           )}
         </div>
-        <div className={style["help-text"]}>
+        <div className={style["helpText"]}>
           Click on the &#39;<em>Get Signature</em>&#39; button after signing the
           transaction with your Keystone device.
         </div>

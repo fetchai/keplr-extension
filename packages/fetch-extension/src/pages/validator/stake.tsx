@@ -154,7 +154,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
             autoComplete="off"
           />
           {errorText != null ? (
-            <div className={style["error-text"]}>{errorText}</div>
+            <div className={style["errorText"]}>{errorText}</div>
           ) : null}
           <Button
             type="submit"

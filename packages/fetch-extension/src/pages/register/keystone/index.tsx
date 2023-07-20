@@ -40,7 +40,7 @@ export const ImportKeystoneIntro: FunctionComponent<{
       }}
     >
       <FormattedMessage id="register.keystone.title" />
-      <KeystoneIntroduction className={style["intro-icon"]} />
+      <KeystoneIntroduction className={style["introIcon"]} />
     </Button>
   );
 });

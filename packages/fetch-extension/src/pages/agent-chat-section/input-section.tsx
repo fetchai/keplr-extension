@@ -15,7 +15,7 @@ export const InactiveAgentMessage = () => {
     <InputGroup className={style["inputText"]}>
       <div
         style={{ textAlign: "center", color: "grey" }}
-        className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
+        className={`${style["inputArea"]} ${style["sendMessageInputArea"]}`}
       >
         The Agent is inactive
       </div>
@@ -28,11 +28,11 @@ export const ProcessingLastMessage = () => {
     <InputGroup className={style["inputText"]}>
       <div
         style={{ textAlign: "center", color: "grey" }}
-        className={`${style["inputArea"]} ${style["send-message-inputArea"]}`}
+        className={`${style["inputArea"]} ${style["sendMessageInputArea"]}`}
       >
         Generating Response, Please Wait
       </div>
-      <div className={style["send-message-icon"]}>
+      <div className={style["sendMessageIcon"]}>
         <img src={loadingChatGif} width={20} />
       </div>
     </InputGroup>
@@ -113,7 +113,7 @@ export const InputField = ({
           onKeyDown={handleKeydown}
           disabled={disabled}
         />
-        <div className={style["send-message-icon"]}>
+        <div className={style["sendMessageIcon"]}>
           {newMessage?.length && newMessage.trim() !== "" ? (
             <img
               src={paperAirplaneIcon}

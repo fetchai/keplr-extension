@@ -11,17 +11,17 @@ interface Props {
 export function Message({ type, onClose, children }: Props) {
   return (
     <div className={style["modal"]}>
-      <div className={style["modal-content"]}>
+      <div className={style["modalContent"]}>
         {type && (
           <img
-            className={style["message-icon"]}
+            className={style["messageIcon"]}
             src={require(`../../public/assets/svg/${type}.svg`)}
             height="64"
           />
         )}
-        <div className={style["message-content"]}>{children}</div>
+        <div className={style["messageContent"]}>{children}</div>
         <Button
-          className={style["message-button"]}
+          className={style["messageButton"]}
           color="primary"
           block
           onClick={onClose}

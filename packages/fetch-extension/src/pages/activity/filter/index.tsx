@@ -50,8 +50,8 @@ export const FilterActivities: React.FC<{
 
   return (
     <div className={styles["dropdown"]}>
-      <div className={styles["dropdown-toggle"]} ref={dropdownRef}>
-        <div className={styles["dropdown-heading"]} onClick={toggleDropdown}>
+      <div className={styles["dropdownToggle"]} ref={dropdownRef}>
+        <div className={styles["dropdownHeading"]} onClick={toggleDropdown}>
           <span>Filter</span>
           <img
             src={arrowIcon}
@@ -60,14 +60,14 @@ export const FilterActivities: React.FC<{
           />
         </div>
         {isOpen && (
-          <div className={styles["dropdown-menu-popup"]}>
+          <div className={styles["dropdownMenuPopup"]}>
             <div className={styles["select"]}>
               <div onClick={handleSelectClicks}>Select all</div>
               <div onClick={handleDeselectClicks}>Unselect all</div>
             </div>
-            <div className={styles["dropdown-menu"]}>
+            <div className={styles["dropdownMenu"]}>
               {options.map((option) => (
-                <label key={option.value} className={styles["dropdown-item"]}>
+                <label key={option.value} className={styles["dropdownItem"]}>
                   <input
                     type="checkbox"
                     className="mx-2"

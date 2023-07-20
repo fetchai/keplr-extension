@@ -148,7 +148,7 @@ export const Unstake: FunctionComponent<{
           autoComplete="off"
         />
         {errorText != null ? (
-          <div className={style["error-text"]}>{errorText}</div>
+          <div className={style["errorText"]}>{errorText}</div>
         ) : null}
         <Label className="form-control-label" style={{ fontSize: "12px" }}>
           Your tokens will go through a 21-day unstaking process

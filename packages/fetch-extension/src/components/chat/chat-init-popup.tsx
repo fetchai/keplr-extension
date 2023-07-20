@@ -94,7 +94,7 @@ export const ChatInitPopup = ({
                 setSelectedPrivacySetting(e.target.value as PrivacySetting)
               }
             />
-            <label htmlFor="option1" className={style["options-label"]}>
+            <label htmlFor="option1" className={style["optionsLabel"]}>
               Everybody
             </label>
             <br />
@@ -106,7 +106,7 @@ export const ChatInitPopup = ({
                 setSelectedPrivacySetting(e.target.value as PrivacySetting)
               }
             />
-            <label htmlFor="option2" className={style["options-label"]}>
+            <label htmlFor="option2" className={style["optionsLabel"]}>
               Only contacts in address book
             </label>
             <br />
@@ -118,7 +118,7 @@ export const ChatInitPopup = ({
                 setSelectedPrivacySetting(e.target.value as PrivacySetting)
               }
             />
-            <label htmlFor="option3" className={style["options-label"]}>
+            <label htmlFor="option3" className={style["optionsLabel"]}>
               Nobody
             </label>
             <br />

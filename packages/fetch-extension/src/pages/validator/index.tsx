@@ -63,7 +63,7 @@ export const Validator: FunctionComponent = observer(() => {
       alternativeTitle={operation == "stake" ? "Stake" : "Unstake"}
       onBackButton={() => navigate("/validators")}
     >
-      <div className={style["stake-container"]}>
+      <div className={style["stakeContainer"]}>
         {validator && (
           <ValidatorDetails
             chainID={chainStore.current.chainId}
@@ -71,7 +71,7 @@ export const Validator: FunctionComponent = observer(() => {
           />
         )}
         <div>
-          <div className={style["staked-amount"]}>
+          <div className={style["stakedAmount"]}>
             <div>Current Staked Amount</div>
             <div
               style={{
