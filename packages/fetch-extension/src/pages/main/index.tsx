@@ -39,6 +39,7 @@ export const MainPage: FunctionComponent = observer(() => {
   } = useStore();
 
   useEffect(() => {
+    analyticsStore.logEvent("Home tab click");
     analyticsStore.setUserProperties({
       totalAccounts: keyRingStore.multiKeyStoreInfo.length,
     });

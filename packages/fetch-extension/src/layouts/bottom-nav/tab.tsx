@@ -41,8 +41,8 @@ export const Tab = ({
       }`}
       onClick={() => {
         if (!disabled) {
-          if (path === "/chat") {
-            analyticsStore.logEvent("Chat tab click");
+          if (path !== "/") {
+            analyticsStore.logEvent(`${title} tab click`);
           }
           navigate(path);
         }
