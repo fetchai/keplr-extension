@@ -36,7 +36,14 @@
     box-shadow: $input-focus-alternative-box-shadow !important;
   }
 }
-.error-text {
+.errorText {
   color: #fb8c72;
-  font: 10px;
+  font-size: 12px;
+  margin: 3px;
+}
+
+.infoText {
+  color: grey;
+  font-size: 12px;
+  margin: 3px;
 }
