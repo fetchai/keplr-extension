@@ -7,6 +7,7 @@ import Axios, { AxiosInstance } from "axios";
 export const SupportedChainFeatures = [
   "stargate",
   "cosmwasm",
+  "evm",
   "wasmd_0.24+",
   "secretwasm",
   "ibc-transfer",

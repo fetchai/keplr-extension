@@ -31,6 +31,8 @@ export const AccountView: FunctionComponent = observer(() => {
     }
   })();
 
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+
   const intl = useIntl();
 
   const notification = useNotification();
@@ -126,7 +128,7 @@ export const AccountView: FunctionComponent = observer(() => {
           />
         </ToolTip>
       )}
-      {accountInfo.walletStatus !== WalletStatus.Rejected && (
+      {accountInfo.walletStatus !== WalletStatus.Rejected && !isEvm && (
         <div className={styleAccount.containerAccount}>
           <div style={{ flex: 1 }} />
           <div
@@ -147,34 +149,35 @@ export const AccountView: FunctionComponent = observer(() => {
           <div style={{ flex: 1 }} />
         </div>
       )}
-      {accountInfo.hasEthereumHexAddress && (
-        <div
-          className={styleAccount.containerAccount}
-          style={{ marginTop: "2px" }}
-        >
-          <div style={{ flex: 1 }} />
+      {accountInfo.walletStatus !== WalletStatus.Rejected &&
+        (isEvm || accountInfo.hasEthereumHexAddress) && (
           <div
-            className={styleAccount.address}
-            onClick={() => copyAddress(accountInfo.ethereumHexAddress)}
+            className={styleAccount.containerAccount}
+            style={{ marginTop: "2px" }}
           >
-            <Address
-              isRaw={true}
-              tooltipAddress={accountInfo.ethereumHexAddress}
+            <div style={{ flex: 1 }} />
+            <div
+              className={styleAccount.address}
+              onClick={() => copyAddress(accountInfo.ethereumHexAddress)}
             >
-              {accountInfo.walletStatus === WalletStatus.Loaded &&
-              accountInfo.ethereumHexAddress
-                ? accountInfo.ethereumHexAddress.length === 42
-                  ? `${accountInfo.ethereumHexAddress.slice(
-                      0,
-                      10
-                    )}...${accountInfo.ethereumHexAddress.slice(-8)}`
-                  : accountInfo.ethereumHexAddress
-                : "..."}
-            </Address>
+              <Address
+                isRaw={true}
+                tooltipAddress={accountInfo.ethereumHexAddress}
+              >
+                {accountInfo.walletStatus === WalletStatus.Loaded &&
+                accountInfo.ethereumHexAddress
+                  ? accountInfo.ethereumHexAddress.length === 42
+                    ? `${accountInfo.ethereumHexAddress.slice(
+                        0,
+                        10
+                      )}...${accountInfo.ethereumHexAddress.slice(-8)}`
+                    : accountInfo.ethereumHexAddress
+                  : "..."}
+              </Address>
+            </div>
+            <div style={{ flex: 1 }} />
           </div>
-          <div style={{ flex: 1 }} />
-        </div>
-      )}
+        )}
     </div>
   );
 });

@@ -48,12 +48,16 @@ export const DepositView: FunctionComponent = observer(() => {
   const { isBuySupportChain, buySupportServiceInfos } = useBuy();
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+
   return (
     <div>
       <div className={styleDeposit.containerInner}>
         <DepositModal
           chainName={chainStore.current.chainName}
-          bech32Address={accountInfo.bech32Address}
+          address={
+            isEvm ? accountInfo.ethereumHexAddress : accountInfo.bech32Address
+          }
           isDepositOpen={isDepositOpen}
           setIsDepositOpen={setIsDepositOpen}
         />
