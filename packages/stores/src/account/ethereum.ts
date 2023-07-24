@@ -176,9 +176,7 @@ export class EthereumAccountImpl {
     };
   }
 
-  async simulateTx(
-    params: TransactionRequest
-  ): Promise<{
+  async simulateTx(params: TransactionRequest): Promise<{
     gasUsed: number;
   }> {
     const result = await this.instance.post("", {

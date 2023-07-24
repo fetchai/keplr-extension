@@ -29,7 +29,8 @@ interface ICNSFetchData {
 
 export class RecipientConfig
   extends TxChainSetter
-  implements IRecipientConfig, IRecipientConfigWithICNS {
+  implements IRecipientConfig, IRecipientConfigWithICNS
+{
   @observable
   protected _rawRecipient: string = "";
 
@@ -179,9 +180,8 @@ export class RecipientConfig
     }
 
     if (this._allowHexAddressOnEthermint) {
-      const hasEthereumAddress = this.chainInfo.features?.includes(
-        "eth-address-gen"
-      );
+      const hasEthereumAddress =
+        this.chainInfo.features?.includes("eth-address-gen");
       if (hasEthereumAddress && rawRecipient.startsWith("0x")) {
         try {
           if (isAddress(rawRecipient)) {
@@ -244,9 +244,8 @@ export class RecipientConfig
     }
 
     if (this._allowHexAddressOnEthermint) {
-      const hasEthereumAddress = this.chainInfo.features?.includes(
-        "eth-address-gen"
-      );
+      const hasEthereumAddress =
+        this.chainInfo.features?.includes("eth-address-gen");
       if (hasEthereumAddress && rawRecipient.startsWith("0x")) {
         try {
           if (isAddress(rawRecipient)) {

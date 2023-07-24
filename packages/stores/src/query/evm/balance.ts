@@ -120,7 +120,8 @@ export class ObservableQueryEvmNativeBalanceInner extends ObservableQueryBalance
 }
 
 export class ObservableQueryEvmNativeBalanceRegistry
-  implements BalanceRegistry {
+  implements BalanceRegistry
+{
   constructor(protected readonly kvStore: KVStore) {}
 
   getBalanceInner(
