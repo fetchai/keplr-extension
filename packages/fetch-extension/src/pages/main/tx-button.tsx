@@ -39,6 +39,8 @@ export const TxButtonView: FunctionComponent = observer(() => {
     accountInfo.bech32Address
   );
 
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
 
   const [sendTooltipOpen, setSendTooltipOpen] = useState(false);
@@ -266,7 +268,9 @@ export const TxButtonView: FunctionComponent = observer(() => {
       >
         <DepositModal
           chainName={chainStore.current.chainName}
-          bech32Address={accountInfo.bech32Address}
+          address={
+            isEvm ? accountInfo.ethereumHexAddress : accountInfo.bech32Address
+          }
           isDepositOpen={isDepositModalOpen}
           setIsDepositOpen={setIsDepositModalOpen}
         />

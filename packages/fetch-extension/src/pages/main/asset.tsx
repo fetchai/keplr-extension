@@ -73,13 +73,16 @@ const EmptyState = ({
   const { chainStore, accountStore } = useStore();
   // const [pubKey, setPubKey] = useState("");
   const [isDepositOpen, setIsDepositOpen] = useState(false);
-  const [bech32Address, setBech32Address] = useState("");
+  const [address, setAddress] = useState("");
   const [walletStatus, setWalletStatus] = useState<WalletStatus>();
   // const [loading, setLoading] = useState(true);
   useEffect(() => {
+    const isEvm = chainStore.current.features?.includes("evm") ?? false;
     const accountInfo = accountStore.getAccount(chainId);
     setWalletStatus(accountInfo.walletStatus);
-    setBech32Address(accountInfo.bech32Address);
+    setAddress(
+      isEvm ? accountInfo.ethereumHexAddress : accountInfo.bech32Address
+    );
   }, [chainId, accountStore, chainStore]);
 
   // TODO(!!!): Commented out this code, seems like the handling here needs a bit
@@ -125,7 +128,7 @@ const EmptyState = ({
     <div className={styleAsset["emptyState"]}>
       <DepositModal
         chainName={chainName}
-        bech32Address={bech32Address}
+        address={address}
         isDepositOpen={isDepositOpen}
         setIsDepositOpen={setIsDepositOpen}
       />
@@ -138,7 +141,7 @@ const EmptyState = ({
       <button
         onClick={async (e) => {
           e.preventDefault();
-          await copyAddress(bech32Address);
+          await copyAddress(address);
           setIsDepositOpen(true);
         }}
       >

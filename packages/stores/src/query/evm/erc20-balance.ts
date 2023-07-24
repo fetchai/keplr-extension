@@ -45,7 +45,7 @@ export class ObservableQueryErc20Balance extends ObservableJsonRPCQuery<string> 
     );
   }
 
-  protected canFetch(): boolean {
+  protected override canFetch(): boolean {
     return super.canFetch() && this.bech32Address !== "";
   }
 }
@@ -81,12 +81,12 @@ export class ObservableQueryErc20BalanceInner extends ObservableQueryBalanceInne
   }
 
   // This method doesn't have the role because the fetching is actually exeucnted in the `ObservableQueryErc20Balance`.
-  protected canFetch(): boolean {
+  protected override canFetch(): boolean {
     return false;
   }
 
   @override
-  *fetch() {
+  override *fetch() {
     yield this.queryErc20Balance.fetch();
   }
 

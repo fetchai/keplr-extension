@@ -14779,8 +14779,8 @@ __metadata:
 
 "alt-sign-in@file:./noop-alt-sign-in::locator=%40keplr-wallet%2Ffetch-extension%40workspace%3Apackages%2Ffetch-extension":
   version: 0.0.1
-  resolution: "alt-sign-in@file:./noop-alt-sign-in#./noop-alt-sign-in::hash=dea13a&locator=%40keplr-wallet%2Ffetch-extension%40workspace%3Apackages%2Ffetch-extension"
-  checksum: c99d28c08881cf105839d34193d02c8e3abb4cc45c24230c232a4e8f2d0fc31aa4bcace780d35f4f1419d8a66388e7f6837018adfc254ccc0c38f2f22683296c
+  resolution: "alt-sign-in@file:./noop-alt-sign-in#./noop-alt-sign-in::hash=ebe0ba&locator=%40keplr-wallet%2Ffetch-extension%40workspace%3Apackages%2Ffetch-extension"
+  checksum: ee829bc78fdeed53012a8b4a397e8fd93226368f2aa058a7a1936e85c4c6c6dcc81bc57bad422684bf3813b4a4feefb32a531105a316b768cec962d208998a1b
   languageName: node
   linkType: hard
 

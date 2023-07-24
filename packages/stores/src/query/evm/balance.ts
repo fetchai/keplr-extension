@@ -35,7 +35,7 @@ export class ObservableQueryEvmNativeBalance extends ObservableJsonRPCQuery<stri
     );
   }
 
-  protected canFetch(): boolean {
+  protected override canFetch(): boolean {
     return super.canFetch() && this.bech32Address !== "";
   }
 }
@@ -70,24 +70,24 @@ export class ObservableQueryEvmNativeBalanceInner extends ObservableQueryBalance
   }
 
   // This method doesn't have the role because the fetching is actually exeucnted in the `ObservableQueryCw20Balance`.
-  protected canFetch(): boolean {
+  protected override canFetch(): boolean {
     return false;
   }
 
-  get isFetching(): boolean {
+  override get isFetching(): boolean {
     return this.queryNativeBalance.isFetching;
   }
 
-  get error() {
+  override get error() {
     return this.queryNativeBalance.error;
   }
 
-  get response() {
+  override get response() {
     return this.queryNativeBalance.response;
   }
 
   @override
-  *fetch() {
+  override *fetch() {
     yield this.queryNativeBalance.fetch();
   }
 
