@@ -5,7 +5,26 @@
   "workspaces": {
     "packages": [
       "packages/*"
+    ],
+    "nohoist": [
+      "**/@react-native-*/**",
+      "**/react-native",
+      "**/react-native/**",
+      "**/*-react-native",
+      "**/react-native-*",
+      "**/@react-navigation/**",
+      "**/expo-*",
+      "**/@unimodules/**",
+      "**/unimodules-*",
+      "**/native-base",
+      "**/@react-native-async-storage/async-storage",
+      "**/@ledgerhq/react-native-hw-transport-ble",
+      "**/jetifier",
+      "**/@bugsnag/**"
     ]
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -63,7 +82,9 @@
     "@babel/preset-typescript": "^7.22.5",
     "@octokit/core": "^3.5.1",
     "@types/filesystem": "^0.0.32",
+    "@types/firefox-webext-browser": "^111.0.1",
     "@types/jest": "^29.5.3",
+    "@types/long": "^4.0.1",
     "@types/node": "^18.13.0",
     "@types/react": "^16.14.4",
     "@types/react-dom": "^16.9.11",
