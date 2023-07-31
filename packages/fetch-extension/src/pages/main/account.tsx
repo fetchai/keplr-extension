@@ -1,20 +1,37 @@
-import React, { FunctionComponent, useCallback } from "react";
-
 import { Address } from "@components/address";
-
-import styleAccount from "./account.module.scss";
-
+import { useNotification } from "@components/notification";
+import { ToolTip } from "@components/tooltip";
+import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { observer } from "mobx-react-lite";
-import { ToolTip } from "@components/tooltip";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useIntl } from "react-intl";
-import { useNotification } from "@components/notification";
+import { useNavigate } from "react-router";
+import { Button } from "reactstrap";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { getPrimaryDomain } from "../../name-service/fns-apis";
 import { useStore } from "../../stores";
-import { KeplrError } from "@keplr-wallet/router";
+import styleAccount from "./account.module.scss";
+import { TooltipForDomainNames } from "../fetch-name-service/domain-details";
 
 export const AccountView: FunctionComponent = observer(() => {
-  const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
+  const navigate = useNavigate();
+  const {
+    accountStore,
+    chainStore,
+    queriesStore,
+    uiConfigStore,
+    analyticsStore,
+  } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const current = chainStore.current;
+  const [domain, setDomain] = useState<string>();
+  const [isDomainloading, setIsDomainloading] = useState<boolean>(true);
 
   const icnsPrimaryName = (() => {
     if (
@@ -57,6 +74,25 @@ export const AccountView: FunctionComponent = observer(() => {
     },
     [accountInfo.walletStatus, notification, intl]
   );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsDomainloading(true);
+      try {
+        const { domain }: any = await getPrimaryDomain(
+          current.chainId,
+          accountInfo.bech32Address
+        );
+        setDomain(domain);
+      } catch (error) {
+        console.error("Error fetching domains:", error);
+        setDomain(undefined);
+      }
+      setIsDomainloading(false);
+    };
+    setDomain(undefined);
+    fetchData();
+  }, [accountInfo.bech32Address, current.chainId]);
 
   return (
     <div>
@@ -178,6 +214,46 @@ export const AccountView: FunctionComponent = observer(() => {
             <div style={{ flex: 1 }} />
           </div>
         )}
+      {[CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(current.chainId) && (
+        <div
+          className={styleAccount["containerAccount"]}
+          style={{ marginTop: "5px" }}
+        >
+          <div style={{ flex: 1 }} />
+          {isDomainloading ? (
+            <i className="fas fa-spinner fa-spin" style={{ margin: "10px" }} />
+          ) : !!domain ? (
+            <div
+              style={{ margin: "10px" }}
+              className={styleAccount["address"]}
+              onClick={() => {
+                analyticsStore.logEvent("Your domains opened", {
+                  chainId: current.chainId,
+                });
+                navigate("/fetch-name-service/yourDomain");
+              }}
+            >
+              <i className="fas fa-link" />
+              {TooltipForDomainNames({ domainName: domain })}
+            </div>
+          ) : (
+            <Button
+              color="primary"
+              size="sm"
+              style={{ margin: "10px" }}
+              onClick={() => {
+                analyticsStore.logEvent("Your domains opened", {
+                  chainId: current.chainId,
+                });
+                navigate("/fetch-name-service/yourDomain");
+              }}
+            >
+              <i className="fas fa-link" /> Link .FET domain
+            </Button>
+          )}
+          <div style={{ flex: 1 }} />
+        </div>
+      )}
     </div>
   );
 });
