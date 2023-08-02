@@ -5,6 +5,7 @@ import { ObservableQueryEvmNativeBalanceRegistry } from "./balance";
 import { DeepReadonly } from "utility-types";
 import { ObservableQueryERC20Metadata } from "./erc20-info";
 import { ObservableQueryErc20BalanceRegistry } from "./erc20-balance";
+import { ObservableQueryNativeFetEthBrige } from "./native-fet-bridge";
 
 export interface EvmQueries {
   evm: EvmQueriesImpl;
@@ -32,6 +33,7 @@ export const EvmQueries = {
 
 export class EvmQueriesImpl {
   public readonly queryErc20Metadata: DeepReadonly<ObservableQueryERC20Metadata>;
+  public readonly queryNativeFetBridge: DeepReadonly<ObservableQueryNativeFetEthBrige>;
 
   constructor(
     base: QueriesSetBase,
@@ -50,6 +52,11 @@ export class EvmQueriesImpl {
     this.queryErc20Metadata = new ObservableQueryERC20Metadata(
       kvStore,
       chainId,
+      chainGetter
+    );
+
+    this.queryNativeFetBridge = new ObservableQueryNativeFetEthBrige(
+      kvStore,
       chainGetter
     );
   }

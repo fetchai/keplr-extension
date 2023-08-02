@@ -58,6 +58,55 @@ export const EmbedChainInfos: ChainInfo[] = [
     govUrl: "https://fetchstation.azoyalabs.com/mainnet/governance/",
   },
   {
+    rpc: "https://mainnet.infura.io/v3/f40158f0c03842f5a18e409ffe09192c",
+    rest: "https://mainnet.infura.io/v3/f40158f0c03842f5a18e409ffe09192c/",
+    chainId: "1",
+    chainName: "Ethereum",
+
+    stakeCurrency: {
+      coinDenom: "ETH",
+      coinMinimalDenom: "eth",
+      coinDecimals: 18,
+      coinGeckoId: "ethereum",
+    },
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("fetch"),
+    currencies: [
+      {
+        coinDenom: "ETH",
+        coinMinimalDenom: "eth",
+        coinDecimals: 18,
+        coinGeckoId: "ethereum",
+      },
+      // {
+      // coinDenom: "USDT",
+      // coinMinimalDenom: "erc20:0x55d398326f99059fF775485246999027B3197955:Tether USD",
+      // coinDecimals: 18,
+      // coinGeckoId: "binancecoin",
+      // contractAddress: "0x55d398326f99059fF775485246999027B3197955",
+      // type: "erc20"
+      // },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "ETH",
+        coinMinimalDenom: "eth",
+        coinDecimals: 18,
+        coinGeckoId: "ethereum",
+        gasPriceStep: {
+          low: 3000000000,
+          average: 3000000000,
+          high: 3000000000,
+        },
+      },
+    ],
+    features: ["evm"],
+    // walletUrlForStaking: "https://browse-bnbhub.bnb.ai/validators",
+    // govUrl: "https://bnbstation.azoyalabs.com/mainnet/governance/",
+  },
+  {
     rpc: "https://bsc-dataseed.binance.org",
     rest: "https://bsc-dataseed.binance.org/",
     chainId: "56",
