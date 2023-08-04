@@ -44,14 +44,6 @@ export const getDomainPrice = async (chainId: string, domain: string) => {
   return domainPrice;
 };
 
-export const getDomainsByOwner = async (chainId: string, address: string) => {
-  const queryClient = await createFNSClient(chainId);
-  const { domains } = await queryClient.getAllDomainsOwnedBy({
-    owner: address,
-  });
-  return { domains };
-};
-
 export const getDomainsByBeneficiery = async (
   chainId: string,
   address: string
