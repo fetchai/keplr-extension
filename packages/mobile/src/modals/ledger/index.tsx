@@ -125,19 +125,17 @@ export const LedgerGranterModal: FunctionComponent<{
     >([]);
     const [errorOnListen, setErrorOnListen] = useState<string | undefined>();
 
-    const [
-      permissionStatus,
-      setPermissionStatus,
-    ] = useState<BLEPermissionGrantStatus>(() => {
-      if (Platform.OS === "android") {
-        // If android, there is need to request the permission.
-        // You should ask for the permission on next effect.
-        return BLEPermissionGrantStatus.NotInit;
-      } else {
-        // If not android, there is no need to request the permission
-        return BLEPermissionGrantStatus.Granted;
-      }
-    });
+    const [permissionStatus, setPermissionStatus] =
+      useState<BLEPermissionGrantStatus>(() => {
+        if (Platform.OS === "android") {
+          // If android, there is need to request the permission.
+          // You should ask for the permission on next effect.
+          return BLEPermissionGrantStatus.NotInit;
+        } else {
+          // If not android, there is no need to request the permission
+          return BLEPermissionGrantStatus.Granted;
+        }
+      });
 
     useEffect(() => {
       const listener = (state: AppStateStatus) => {

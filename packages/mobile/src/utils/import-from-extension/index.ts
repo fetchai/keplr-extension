@@ -127,9 +127,8 @@ export async function registerExportedAddressBooks(
   for (const chainId of Object.keys(addressBooks)) {
     const addressBook = addressBooks[chainId]!;
 
-    const addressBookConfig = addressBookConfigMap.getAddressBookConfig(
-      chainId
-    );
+    const addressBookConfig =
+      addressBookConfigMap.getAddressBookConfig(chainId);
 
     await addressBookConfig.waitLoaded();
 

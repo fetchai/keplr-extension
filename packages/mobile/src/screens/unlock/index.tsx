@@ -6,7 +6,11 @@ import React, {
   useState,
 } from "react";
 import { Dimensions, Image, StatusBar, StyleSheet, View } from "react-native";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { observer } from "mobx-react-lite";
 import { useStyle, useStyleThemeController } from "../../styles";
 import * as SplashScreen from "expo-splash-screen";
@@ -108,9 +112,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   const [isSplashEnd, setIsSplashEnd] = useState(false);
 
-  const [animatedContinuityEffectOpacity] = useState(
-    () => new Animated.Value(1)
-  );
+  const animatedContinuityEffectOpacity = useSharedValue(1);
 
   const navigateToHomeOnce = useRef(false);
   const navigateToHome = useCallback(async () => {
@@ -143,15 +145,14 @@ export const UnlockScreen: FunctionComponent = observer(() => {
         autoBiometryStatus === AutoBiomtricStatus.FAILED)
     ) {
       setTimeout(() => {
-        Animated.timing(animatedContinuityEffectOpacity, {
-          toValue: 0,
+        animatedContinuityEffectOpacity.value = withTiming(0, {
           duration: 600,
           easing: Easing.ease,
-        }).start();
+        });
       }, 700);
     }
   }, [
-    animatedContinuityEffectOpacity,
+    animatedContinuityEffectOpacity.value,
     autoBiometryStatus,
     isSplashEnd,
     keyRingStore.status,
@@ -279,7 +280,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
         style={StyleSheet.flatten([
           style.flatten(["absolute-fill"]),
           {
-            opacity: animatedContinuityEffectOpacity,
+            opacity: animatedContinuityEffectOpacity.value,
           },
         ])}
         pointerEvents={isSplashEnd ? "none" : "auto"}

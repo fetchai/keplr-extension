@@ -35,9 +35,10 @@ export const AccountCard: FunctionComponent<{
   );
   const delegated = queryDelegated.total;
 
-  const queryUnbonding = queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryUnbonding =
+    queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
   const unbonding = queryUnbonding.total;
 
   const stakedSum = delegated.add(unbonding);

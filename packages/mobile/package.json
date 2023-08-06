@@ -82,9 +82,13 @@
     "lottie-ios": "^4.2.0",
     "lottie-react-native": "^5.1.6",
     "metro-config": "^0.77.0",
+    "mobx": "^6.1.7",
+    "mobx-react-lite": "^3.2.0",
+    "mobx-utils": "^6.0.3",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
+    "react": "18.0.0",
     "react-hook-form": "^7.43.1",
     "react-intl": "^6.2.8",
     "react-native": "^0.72.3",
@@ -133,12 +137,6 @@
     "react-native-svg-transformer": "^1.1.0",
     "react-test-renderer": "^18.0.0",
     "tinyify": "^4.0.0"
-  },
-  "peerDependencies": {
-    "mobx": "^6",
-    "mobx-react-lite": "^3",
-    "mobx-utils": "^6",
-    "react": "^16.8.0 || ^17 || ^18"
   },
   "jest": {
     "preset": "react-native",

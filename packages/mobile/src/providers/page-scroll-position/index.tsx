@@ -8,9 +8,8 @@ export interface PageScrollPosition {
   releaseScrollYValueOf(key: string): void;
 }
 
-export const PageScrollPositionContext = React.createContext<PageScrollPosition | null>(
-  null
-);
+export const PageScrollPositionContext =
+  React.createContext<PageScrollPosition | null>(null);
 
 export const PageScrollPositionProvider: FunctionComponent = ({ children }) => {
   const [bucket, setBucket] = useState<{

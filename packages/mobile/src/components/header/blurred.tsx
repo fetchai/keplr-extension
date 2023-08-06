@@ -45,21 +45,17 @@ const getBlurredHeaderScreenOptionsPreset = (
   };
 };
 
-export const HeaderOnGradientScreenOptionsPreset = getBlurredHeaderScreenOptionsPreset(
-  "gradient"
-);
+export const HeaderOnGradientScreenOptionsPreset =
+  getBlurredHeaderScreenOptionsPreset("gradient");
 
-export const HeaderOnSecondaryScreenOptionsPreset = getBlurredHeaderScreenOptionsPreset(
-  "secondary"
-);
+export const HeaderOnSecondaryScreenOptionsPreset =
+  getBlurredHeaderScreenOptionsPreset("secondary");
 
-export const HeaderAtSecondaryScreenOptionsPreset = getBlurredHeaderScreenOptionsPreset(
-  "at-secondary"
-);
+export const HeaderAtSecondaryScreenOptionsPreset =
+  getBlurredHeaderScreenOptionsPreset("at-secondary");
 
-export const HeaderOnTertiaryScreenOptionsPreset = getBlurredHeaderScreenOptionsPreset(
-  "tertiary"
-);
+export const HeaderOnTertiaryScreenOptionsPreset =
+  getBlurredHeaderScreenOptionsPreset("tertiary");
 
 export const TransparentHeaderOptionsPreset = {
   headerTitleAlign: "center" as "left" | "center",

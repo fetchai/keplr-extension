@@ -74,9 +74,9 @@ export const BlurredBottomTabBar: FunctionComponent<
   );
 };
 
-const AndroidAlternativeBlurredBottomTabBar: FunctionComponent<BottomTabBarProps> = (
-  props
-) => {
+const AndroidAlternativeBlurredBottomTabBar: FunctionComponent<
+  BottomTabBarProps
+> = (props) => {
   return (
     <View
       style={{

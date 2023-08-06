@@ -571,10 +571,11 @@ export class WalletConnectStore extends WalletConnectManager {
 
       const keplr = this.createKeplrAPI(client.session.key);
 
-      const permittedChains = await this.permissionStore.getOriginPermittedChains(
-        WCMessageRequester.getVirtualSessionURL(client.session.key),
-        getBasicAccessPermissionType()
-      );
+      const permittedChains =
+        await this.permissionStore.getOriginPermittedChains(
+          WCMessageRequester.getVirtualSessionURL(client.session.key),
+          getBasicAccessPermissionType()
+        );
 
       for (const chain of permittedChains) {
         const key = keyForChainCache[chain] ?? (await keplr.getKey(chain));

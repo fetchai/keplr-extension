@@ -15,8 +15,10 @@ export const Toggle: FunctionComponent<{
 }> = ({ on, onChange }) => {
   const style = useStyle();
 
-  const offColor = style.flatten(["color-white", "dark:color-platinum-50"])
-    .color;
+  const offColor = style.flatten([
+    "color-white",
+    "dark:color-platinum-50",
+  ]).color;
   const offBackgroundColor = style.flatten([
     "color-gray-100",
     "dark:color-platinum-500",

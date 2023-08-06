@@ -21,6 +21,8 @@ import {
   IBCCurrencyRegsitrar,
   PermissionStore,
   ChainSuggestStore,
+  ObservableQueryBase,
+  DeferInitialQueryController,
 } from "@keplr-wallet/stores";
 import { AsyncKVStore } from "../common";
 import { APP_PORT } from "@keplr-wallet/router";
@@ -114,10 +116,14 @@ export class RootStore {
       CommunityChainInfoRepo
     );
 
+    ObservableQueryBase.experimentalDeferInitialQueryController =
+      new DeferInitialQueryController();
+
     this.chainStore = new ChainStore(
+      new AsyncKVStore("store_chain_config"),
       EmbedChainInfos,
       new RNMessageRequesterInternal(),
-      new AsyncKVStore("store_chains")
+      ObservableQueryBase.experimentalDeferInitialQueryController
     );
 
     this.keyRingStore = new KeyRingStore(
@@ -290,26 +296,28 @@ export class RootStore {
       this.interactionStore
     );
 
-    this.ibcCurrencyRegistrar = new IBCCurrencyRegsitrar<ChainInfoWithCoreTypes>(
-      new AsyncKVStore("store_test_ibc_currency_registrar"),
-      24 * 3600 * 1000,
-      this.chainStore,
-      this.accountStore,
-      this.queriesStore,
-      this.queriesStore
-    );
+    this.ibcCurrencyRegistrar =
+      new IBCCurrencyRegsitrar<ChainInfoWithCoreTypes>(
+        new AsyncKVStore("store_test_ibc_currency_registrar"),
+        24 * 3600 * 1000,
+        this.chainStore,
+        this.accountStore,
+        this.queriesStore,
+        this.queriesStore
+      );
 
     this.gravityBridgeCurrencyRegistrar = new GravityBridgeCurrencyRegsitrar(
       new AsyncKVStore("store_gravity_bridge_currency_registrar"),
       this.chainStore,
       this.queriesStore
     );
-    this.axelarEVMBridgeCurrencyRegistrar = new AxelarEVMBridgeCurrencyRegistrar<ChainInfoWithCoreTypes>(
-      new AsyncKVStore("store_axelar_evm_bridge_currency_registrar"),
-      this.chainStore,
-      this.queriesStore,
-      "ethereum"
-    );
+    this.axelarEVMBridgeCurrencyRegistrar =
+      new AxelarEVMBridgeCurrencyRegistrar<ChainInfoWithCoreTypes>(
+        new AsyncKVStore("store_axelar_evm_bridge_currency_registrar"),
+        this.chainStore,
+        this.queriesStore,
+        "ethereum"
+      );
 
     router.listen(APP_PORT);
 

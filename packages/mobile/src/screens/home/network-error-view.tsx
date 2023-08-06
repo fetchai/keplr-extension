@@ -28,9 +28,10 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
   const queryDelegated = queries.cosmos.queryDelegations.getQueryBech32Address(
     account.bech32Address
   );
-  const queryUnbonding = queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryUnbonding =
+    queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
 
   const style = useStyle();
 

@@ -1,101 +1,45 @@
-import {
-  action,
-  computed,
-  flow,
-  makeObservable,
-  observable,
-  override,
-  runInAction,
-} from "mobx";
+import { observable, action, computed, makeObservable, flow } from "mobx";
 
 import {
   ChainInfoInner,
   ChainStore as BaseChainStore,
+  DeferInitialQueryController,
+  ObservableQuery,
 } from "@keplr-wallet/stores";
 
+import { ChainInfo } from "@keplr-wallet/types";
 import {
   ChainInfoWithCoreTypes,
   GetChainInfosMsg,
   RemoveSuggestedChainInfoMsg,
   TryUpdateChainMsg,
+  SetChainEndpointsMsg,
+  ResetChainEndpointsMsg,
 } from "@keplr-wallet/background";
-import { BACKGROUND_PORT, MessageRequester } from "@keplr-wallet/router";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+
+import { MessageRequester } from "@keplr-wallet/router";
 import { KVStore, toGenerator } from "@keplr-wallet/common";
-import { AppChainInfo } from "../../config";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
-import { Vibration } from "react-native";
-import { stableSort } from "../../utils/stable-sort";
 
-class ObservableKVStore<Value> {
-  @observable.ref
-  protected _value: Value | undefined;
-
-  constructor(
-    protected readonly kvStore: KVStore,
-    protected readonly _key: string,
-    protected readonly storeOptions: {
-      onInit?: () => void;
-    } = {}
-  ) {
-    makeObservable(this);
-
-    this.init();
-  }
-
-  async init() {
-    const value = await this.kvStore.get<Value>(this.key);
-    runInAction(() => {
-      this._value = value;
-    });
-
-    if (this.storeOptions.onInit) {
-      this.storeOptions.onInit();
-    }
-  }
-
-  get key(): string {
-    return this._key;
-  }
-
-  get value(): Value | undefined {
-    return this._value;
-  }
-
-  async setValue(value: Value | undefined) {
-    runInAction(() => {
-      this._value = value;
-    });
-
-    await this.kvStore.set(this.key, value);
-  }
-}
-
-export class ChainStore extends BaseChainStore<
-  ChainInfoWithCoreTypes & AppChainInfo
-> {
+export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
   @observable
-  protected selectedChainId: string;
+  protected _selectedChainId: string;
 
   @observable
   protected _isInitializing: boolean = false;
   protected deferChainIdSelect: string = "";
 
-  protected chainInfoInUIConfig: ObservableKVStore<{
-    // Any chains that's not disabled is classified as an enabled chain.
-    // This array manages the sorting order of enabled chain(anything not in the disabledChains) used in the UI.
-    // Anything not included in neither sortedEnabledChains and disabledChains would go to the very end of enabled chains in the UI.
-    // Array of chain identifiers
-    sortedEnabledChains: string[];
-    // This array is what actually controls the enabled and disabled chains.
-    // This array also controls the sorting order of the disabled chains showed in the UI.
-    // Array of chain identifiers
+  @observable
+  protected chainInfoInUIConfig: {
     disabledChains: string[];
-  }>;
+  };
 
   constructor(
-    protected readonly embedChainInfos: AppChainInfo[],
+    protected readonly kvStore: KVStore,
+    embedChainInfos: ChainInfo[],
     protected readonly requester: MessageRequester,
-    protected readonly kvStore: KVStore
+    protected readonly deferInitialQueryController: DeferInitialQueryController
   ) {
     super(
       embedChainInfos.map((chainInfo) => {
@@ -108,28 +52,11 @@ export class ChainStore extends BaseChainStore<
       })
     );
 
-    this.selectedChainId = embedChainInfos[0].chainId;
-    this.chainInfoInUIConfig = new ObservableKVStore(
-      kvStore,
-      "chain_info_in_ui_config",
-      {
-        onInit: () => {
-          if (!this.chainInfoInUIConfig.value) {
-            this.chainInfoInUIConfig.setValue({
-              sortedEnabledChains: this.chainInfos
-                .filter((chainInfo) => !chainInfo.raw.hideInUI)
-                .map((chainInfo) => {
-                  const chainIdentifier = ChainIdHelper.parse(
-                    chainInfo.chainId
-                  );
-                  return chainIdentifier.identifier;
-                }),
-              disabledChains: [],
-            });
-          }
-        },
-      }
-    );
+    this._selectedChainId = embedChainInfos[0].chainId;
+
+    this.chainInfoInUIConfig = {
+      disabledChains: [],
+    };
 
     makeObservable(this);
 
@@ -147,226 +74,82 @@ export class ChainStore extends BaseChainStore<
 
   @computed
   get chainInfosWithUIConfig() {
-    return this.enabledChainInfosInUI
-      .map((chainInfo) => {
+    return this.chainInfos.map((chainInfo) => {
+      if (this.disabledChainInfosInUI.includes(chainInfo)) {
+        return {
+          chainInfo,
+          disabled: true,
+        };
+      } else {
         return {
           chainInfo,
           disabled: false,
         };
-      })
-      .concat(
-        this.disabledChainInfosInUI.map((chainInfo) => {
-          return {
-            chainInfo,
-            disabled: true,
-          };
-        })
-      );
+      }
+    });
   }
 
   @computed
   protected get enabledChainInfosInUI() {
-    const chainSortInfo: Record<string, number | undefined> =
-      this.chainInfoInUIConfig.value?.sortedEnabledChains.reduce<
-        Record<string, number | undefined>
-      >((previous, current, index) => {
-        previous[current] = index;
-        return previous;
-      }, {}) ?? {};
-
-    const disabledChainsMap: Record<string, boolean | undefined> =
-      this.chainInfoInUIConfig.value?.disabledChains.reduce<
-        Record<string, boolean | undefined>
-      >((previous, current) => {
-        previous[current] = true;
-        return previous;
-      }, {}) ?? {};
-
-    const chainSortFn = (
-      chainInfo1: ChainInfoInner,
-      chainInfo2: ChainInfoInner
-    ): number => {
-      const chainIdentifier1 = ChainIdHelper.parse(chainInfo1.chainId);
-      const chainIdentifier2 = ChainIdHelper.parse(chainInfo2.chainId);
-
-      const index1 = chainSortInfo[chainIdentifier1.identifier];
-      const index2 = chainSortInfo[chainIdentifier2.identifier];
-
-      if (index1 == null) {
-        if (index2 == null) {
-          return 0;
-        } else {
-          return 1;
-        }
-      }
-      if (index2 == null) {
-        return -1;
-      }
-
-      return index1 < index2 ? -1 : 1;
-    };
-
-    return stableSort(
-      this.chainInfos
-        .filter((chainInfo) => !chainInfo.raw.hideInUI)
-        .filter(
-          (chainInfo) =>
-            !disabledChainsMap[
-              ChainIdHelper.parse(chainInfo.chainId).identifier
-            ]
-        ),
-      chainSortFn
+    return this.chainInfos.filter(
+      (chainInfo) =>
+        !this.chainInfoInUIConfig.disabledChains.includes(
+          ChainIdHelper.parse(chainInfo.chainId).identifier
+        )
     );
   }
 
   @computed
-  protected get disabledChainInfosInUI() {
-    const chainSortInfo: Record<string, number | undefined> =
-      this.chainInfoInUIConfig.value?.disabledChains.reduce<
-        Record<string, number | undefined>
-      >((previous, current, index) => {
-        previous[current] = index;
-        return previous;
-      }, {}) ?? {};
-
-    const disabledChainsMap: Record<string, boolean | undefined> =
-      this.chainInfoInUIConfig.value?.disabledChains.reduce<
-        Record<string, boolean | undefined>
-      >((previous, current) => {
-        previous[current] = true;
-        return previous;
-      }, {}) ?? {};
-
-    const chainSortFn = (
-      chainInfo1: ChainInfoInner,
-      chainInfo2: ChainInfoInner
-    ): number => {
-      const chainIdentifier1 = ChainIdHelper.parse(chainInfo1.chainId);
-      const chainIdentifier2 = ChainIdHelper.parse(chainInfo2.chainId);
-
-      const index1 = chainSortInfo[chainIdentifier1.identifier];
-      const index2 = chainSortInfo[chainIdentifier2.identifier];
-
-      if (index1 == null) {
-        if (index2 == null) {
-          return 0;
-        } else {
-          return 1;
-        }
-      }
-      if (index2 == null) {
-        return -1;
-      }
-
-      return index1 < index2 ? -1 : 1;
-    };
-
-    return stableSort(
-      this.chainInfos
-        .filter((chainInfo) => !chainInfo.raw.hideInUI)
-        .filter(
-          (chainInfo) =>
-            disabledChainsMap[ChainIdHelper.parse(chainInfo.chainId).identifier]
-        ),
-      chainSortFn
+  get disabledChainInfosInUI() {
+    return this.chainInfos.filter((chainInfo) =>
+      this.chainInfoInUIConfig.disabledChains.includes(
+        ChainIdHelper.parse(chainInfo.chainId).identifier
+      )
     );
   }
 
-  setChainInfosInUIOrder(chainIds: string[]) {
-    chainIds = chainIds.map(
-      (chainId) => ChainIdHelper.parse(chainId).identifier
-    );
-
-    const enabledChainsMap: Record<
-      string,
-      boolean | undefined
-    > = this.enabledChainInfosInUI.reduce<Record<string, boolean | undefined>>(
-      (previous, current) => {
-        previous[ChainIdHelper.parse(current.chainId).identifier] = true;
-        return previous;
-      },
-      {}
-    );
-
-    const disabledChainsMap: Record<
-      string,
-      boolean | undefined
-    > = this.disabledChainInfosInUI.reduce<Record<string, boolean | undefined>>(
-      (previous, current) => {
-        previous[ChainIdHelper.parse(current.chainId).identifier] = true;
-        return previous;
-      },
-      {}
-    );
-
-    // No need to wait
-    this.chainInfoInUIConfig.setValue({
-      sortedEnabledChains: chainIds.filter(
-        (chainIdentifier) => enabledChainsMap[chainIdentifier]
-      ),
-      disabledChains: chainIds.filter(
-        (chainIdentifier) => disabledChainsMap[chainIdentifier]
-      ),
-    });
-  }
-
-  toggleChainInfoInUI(chainId: string) {
+  @flow
+  *toggleChainInfoInUI(chainId: string) {
     chainId = ChainIdHelper.parse(chainId).identifier;
+    let disableChainIds = [];
 
-    if (this.chainInfoInUIConfig.value) {
-      const i = this.chainInfoInUIConfig.value.disabledChains.indexOf(chainId);
-      if (i >= 0) {
-        const disabledChains = this.chainInfoInUIConfig.value.disabledChains.slice();
-        disabledChains.splice(i, 1);
+    if (this.chainInfoInUIConfig.disabledChains.includes(chainId)) {
+      disableChainIds = this.chainInfoInUIConfig.disabledChains.filter(
+        (chain) => chain !== chainId
+      );
+    } else {
+      if (this.enabledChainInfosInUI.length === 1) {
+        // Can't turn off all chains.
+        return;
+      }
 
-        // No need to wait
-        this.chainInfoInUIConfig.setValue({
-          sortedEnabledChains: [
-            ...this.chainInfoInUIConfig.value.sortedEnabledChains,
-            chainId,
-          ],
-          disabledChains: disabledChains,
-        });
-      } else {
-        const chainInfosInUI = this.chainInfosInUI;
-        if (chainInfosInUI.length === 1) {
-          // Can't turn off all chain.
-          Vibration.vibrate();
-          return;
-        }
+      disableChainIds = [...this.chainInfoInUIConfig.disabledChains, chainId];
+    }
 
-        if (ChainIdHelper.parse(this.current.chainId).identifier === chainId) {
-          // If user wants to turn off the selected chain,
-          // change the selected chain.
-          const other = chainInfosInUI.find(
-            (chainInfo) =>
-              ChainIdHelper.parse(chainInfo.chainId).identifier !== chainId
-          );
-          if (other) {
-            this.selectChain(other.chainId);
-            // No need to wait
-            this.saveLastViewChainId();
-          }
-        }
+    yield this.kvStore.set<{ disabledChains: string[] }>(
+      "extension_chainInfoInUIConfig",
+      {
+        disabledChains: disableChainIds,
+      }
+    );
 
-        const sortedEnabledChains = this.chainInfoInUIConfig.value.sortedEnabledChains.slice();
-        const i = this.chainInfoInUIConfig.value.sortedEnabledChains.indexOf(
-          chainId
-        );
-        if (i >= 0) {
-          sortedEnabledChains.splice(i, 1);
-        }
+    this.chainInfoInUIConfig.disabledChains = disableChainIds;
 
-        // No need to wait
-        this.chainInfoInUIConfig.setValue({
-          sortedEnabledChains,
-          disabledChains: [
-            chainId,
-            ...this.chainInfoInUIConfig.value.disabledChains,
-          ],
-        });
+    if (ChainIdHelper.parse(this.current.chainId).identifier === chainId) {
+      const other = this.chainInfosInUI.find(
+        (chainInfo) =>
+          ChainIdHelper.parse(chainInfo.chainId).identifier !== chainId
+      );
+
+      if (other) {
+        this.selectChain(other.chainId);
+        this.saveLastViewChainId();
       }
     }
+  }
+
+  get selectedChainId(): string {
+    return this._selectedChainId;
   }
 
   @action
@@ -374,21 +157,24 @@ export class ChainStore extends BaseChainStore<
     if (this._isInitializing) {
       this.deferChainIdSelect = chainId;
     }
-    this.selectedChainId = chainId;
+    this._selectedChainId = chainId;
   }
 
   @computed
-  get current(): ChainInfoWithCoreTypes {
-    if (this.hasChain(this.selectedChainId)) {
-      return this.getChain(this.selectedChainId).raw;
+  get current(): ChainInfoInner<ChainInfoWithCoreTypes> {
+    if (this.hasChain(this._selectedChainId)) {
+      return this.getChain(this._selectedChainId);
     }
 
-    return this.chainInfos[0].raw;
+    return this.chainInfos[0];
   }
 
-  async saveLastViewChainId() {
-    // Save last view chain id to kv store
-    await this.kvStore.set<string>("last_view_chain_id", this.selectedChainId);
+  @flow
+  *saveLastViewChainId() {
+    yield this.kvStore.set<string>(
+      "extension_last_view_chain_id",
+      this._selectedChainId
+    );
   }
 
   @flow
@@ -396,9 +182,10 @@ export class ChainStore extends BaseChainStore<
     this._isInitializing = true;
     yield this.getChainInfosFromBackground();
 
-    // Get last view chain id from kv store
+    this.deferInitialQueryController.ready();
+
     const lastViewChainId = yield* toGenerator(
-      this.kvStore.get<string>("last_view_chain_id")
+      this.kvStore.get<string>("extension_last_view_chain_id")
     );
 
     if (!this.deferChainIdSelect) {
@@ -412,10 +199,21 @@ export class ChainStore extends BaseChainStore<
       this.selectChain(this.deferChainIdSelect);
       this.deferChainIdSelect = "";
     }
+
+    const chainInfoUI = yield* toGenerator(
+      this.kvStore.get<{ disabledChains: string[] }>(
+        "extension_chainInfoInUIConfig"
+      )
+    );
+
+    if (chainInfoUI) {
+      this.chainInfoInUIConfig.disabledChains =
+        chainInfoUI.disabledChains ?? [];
+    }
   }
 
   @flow
-  *getChainInfosFromBackground() {
+  protected *getChainInfosFromBackground() {
     const msg = new GetChainInfosMsg();
     const result = yield* toGenerator(
       this.requester.sendMessage(BACKGROUND_PORT, msg)
@@ -444,45 +242,31 @@ export class ChainStore extends BaseChainStore<
     }
   }
 
-  @override
-  protected setChainInfos(
-    chainInfos: (ChainInfoWithCoreTypes & AppChainInfo)[]
+  @flow
+  *setChainEndpoints(
+    chainId: string,
+    rpc: string | undefined,
+    rest: string | undefined
   ) {
-    super.setChainInfos(
-      chainInfos.map((chainInfo) => {
-        let hideInUI: boolean;
-
-        // When viewed only by typing, `this.embedChainInfos` is not nullable.
-        // However, the `setChainInfos` method is executed in the super() call of the constructor,
-        // and the field of the class cannot be set before the super() call of the constructor.
-        // A strange problem arises here.
-        // Typescript doesn't detect this issue at build time.
-        // Anyway, `this.embedChainInfos` is undefined when the parent class is being created.
-        // There is a problem in the long run because the logic below cannot be grasped by TypeScript.
-        // But for now, it is solved in a simple way.
-        // If `this.embedChainInfos` is undefined, it is before creation is complete,
-        // and chainInfos should be embedded chain infos.
-        // TODO: Modify the logic below so that typescript can fully understand it at build time.
-        if (this.embedChainInfos) {
-          const embedChainInfo = this.embedChainInfos.find(
-            (c) =>
-              ChainIdHelper.parse(c.chainId).identifier ===
-              ChainIdHelper.parse(chainInfo.chainId).identifier
-          );
-          if (embedChainInfo) {
-            hideInUI = !!embedChainInfo.hideInUI;
-          } else {
-            hideInUI = true;
-          }
-        } else {
-          hideInUI = !!chainInfo.hideInUI;
-        }
-
-        return {
-          ...chainInfo,
-          hideInUI,
-        };
-      })
+    const msg = new SetChainEndpointsMsg(chainId, rpc, rest);
+    const newChainInfos = yield* toGenerator(
+      this.requester.sendMessage(BACKGROUND_PORT, msg)
     );
+
+    this.setChainInfos(newChainInfos);
+
+    ObservableQuery.refreshAllObserved();
+  }
+
+  @flow
+  *resetChainEndpoints(chainId: string) {
+    const msg = new ResetChainEndpointsMsg(chainId);
+    const newChainInfos = yield* toGenerator(
+      this.requester.sendMessage(BACKGROUND_PORT, msg)
+    );
+
+    this.setChainInfos(newChainInfos);
+
+    ObservableQuery.refreshAllObserved();
   }
 }

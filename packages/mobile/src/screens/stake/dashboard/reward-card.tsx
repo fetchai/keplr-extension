@@ -20,9 +20,10 @@ export const MyRewardCard: FunctionComponent<{
     account.bech32Address
   );
 
-  const pendingStakableReward = queries.cosmos.queryRewards.getQueryBech32Address(
-    account.bech32Address
-  ).stakableReward;
+  const pendingStakableReward =
+    queries.cosmos.queryRewards.getQueryBech32Address(
+      account.bech32Address
+    ).stakableReward;
 
   const apy = queries.cosmos.queryInflation.inflation;
 
@@ -78,12 +79,12 @@ export const MyRewardCard: FunctionComponent<{
             mode="light"
             containerStyle={style.flatten(["min-width-72"])}
             onPress={async () => {
-              const validatorAddresses = queryReward.getDescendingPendingRewardValidatorAddresses(
-                8
-              );
-              const tx = account.cosmos.makeWithdrawDelegationRewardTx(
-                validatorAddresses
-              );
+              const validatorAddresses =
+                queryReward.getDescendingPendingRewardValidatorAddresses(8);
+              const tx =
+                account.cosmos.makeWithdrawDelegationRewardTx(
+                  validatorAddresses
+                );
 
               setIsSendingTx(true);
 

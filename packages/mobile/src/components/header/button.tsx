@@ -5,10 +5,9 @@ import { useStyle } from "../../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { HeaderBackButtonIcon } from "./icon";
 
-export const HeaderLeftButton: FunctionComponent<StackHeaderLeftButtonProps> = ({
-  children,
-  onPress,
-}) => {
+export const HeaderLeftButton: FunctionComponent<
+  StackHeaderLeftButtonProps
+> = ({ children, onPress }) => {
   const style = useStyle();
 
   return (
@@ -40,9 +39,9 @@ export const HeaderRightButton: FunctionComponent<{
     </View>
   );
 };
-export const HeaderLeftBackButton: FunctionComponent<StackHeaderLeftButtonProps> = (
-  props
-) => {
+export const HeaderLeftBackButton: FunctionComponent<
+  StackHeaderLeftButtonProps
+> = (props) => {
   return (
     <React.Fragment>
       {props.canGoBack ? (

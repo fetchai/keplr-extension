@@ -111,14 +111,11 @@ const useTorusGoogleSignIn = (): {
             network: "mainnet",
             proxyAddress: "0x638646503746d5456209e33a2ff5e3226d698bea",
           });
-          const {
-            torusNodeEndpoints,
-            torusNodePub,
-            torusIndexes,
-          } = await nodeDetailManager.getNodeDetails({
-            verifier: "chainapsis-google",
-            verifierId: email.toLowerCase(),
-          });
+          const { torusNodeEndpoints, torusNodePub, torusIndexes } =
+            await nodeDetailManager.getNodeDetails({
+              verifier: "chainapsis-google",
+              verifierId: email.toLowerCase(),
+            });
 
           const torus = new Torus();
 
@@ -216,14 +213,11 @@ const useTorusAppleSignIn = (): {
           network: "mainnet",
           proxyAddress: "0x638646503746d5456209e33a2ff5e3226d698bea",
         });
-        const {
-          torusNodeEndpoints,
-          torusNodePub,
-          torusIndexes,
-        } = await nodeDetailManager.getNodeDetails({
-          verifier: "chainapsis-apple",
-          verifierId: sub,
-        });
+        const { torusNodeEndpoints, torusNodePub, torusIndexes } =
+          await nodeDetailManager.getNodeDetails({
+            verifier: "chainapsis-apple",
+            verifierId: sub,
+          });
 
         const torus = new Torus();
 

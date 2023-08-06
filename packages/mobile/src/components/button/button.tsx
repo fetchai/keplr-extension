@@ -167,23 +167,29 @@ export const Button: FunctionComponent<{
         return style.get(`color-${baseColor}-500` as any).color;
       case "light":
         if (color === "primary") {
-          return (style.flatten([
-            `color-${baseColor}-200`,
-            "dark:color-platinum-600",
-          ] as any) as any).color;
+          return (
+            style.flatten([
+              `color-${baseColor}-200`,
+              "dark:color-platinum-600",
+            ] as any) as any
+          ).color;
         }
         return style.get(`color-${baseColor}-200` as any).color;
       default:
         if (color === "primary") {
-          return (style.flatten([
-            `color-${baseColor}-100`,
-            "dark:color-platinum-300",
-          ] as any) as any).color;
+          return (
+            style.flatten([
+              `color-${baseColor}-100`,
+              "dark:color-platinum-300",
+            ] as any) as any
+          ).color;
         }
-        return (style.flatten([
-          `color-${baseColor}-100`,
-          `dark:color-${baseColor}-600`,
-        ] as any) as any).color;
+        return (
+          style.flatten([
+            `color-${baseColor}-100`,
+            `dark:color-${baseColor}-600`,
+          ] as any) as any
+        ).color;
     }
   })();
 
@@ -196,15 +202,19 @@ export const Button: FunctionComponent<{
       const baseColor = color === "primary" ? "blue" : "red";
 
       if (color === "primary") {
-        return (style.flatten([
-          `color-${baseColor}-200`,
-          "dark:color-platinum-300",
-        ] as any) as any).color;
+        return (
+          style.flatten([
+            `color-${baseColor}-200`,
+            "dark:color-platinum-300",
+          ] as any) as any
+        ).color;
       }
-      return (style.flatten([
-        `color-${baseColor}-200`,
-        `dark:color-${baseColor}-600`,
-      ] as any) as any).color;
+      return (
+        style.flatten([
+          `color-${baseColor}-200`,
+          `dark:color-${baseColor}-600`,
+        ] as any) as any
+      ).color;
     }
 
     if (mode === "light" && color === "primary") {

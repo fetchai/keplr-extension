@@ -294,12 +294,8 @@ export const GovernanceVoteModal: FunctionComponent<{
   smartNavigation: ReturnType<typeof useSmartNavigation>;
 }> = registerModal(
   observer(({ proposalId, close, smartNavigation }) => {
-    const {
-      chainStore,
-      accountStore,
-      queriesStore,
-      analyticsStore,
-    } = useStore();
+    const { chainStore, accountStore, queriesStore, analyticsStore } =
+      useStore();
 
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);

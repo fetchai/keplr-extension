@@ -21,9 +21,8 @@ export type ModalTransition = {
   durationSetOnExternal: Animated.Value<number>;
 };
 
-export const ModalTransisionContext = React.createContext<ModalTransition | null>(
-  null
-);
+export const ModalTransisionContext =
+  React.createContext<ModalTransition | null>(null);
 
 export const ModalTransisionProvider: FunctionComponent = ({ children }) => {
   const [state] = useState(() => {

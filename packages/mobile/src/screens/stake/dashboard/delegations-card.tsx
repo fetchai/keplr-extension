@@ -24,9 +24,10 @@ export const DelegationsCard: FunctionComponent<{
     account.bech32Address
   ).total;
 
-  const queryDelegations = queries.cosmos.queryDelegations.getQueryBech32Address(
-    account.bech32Address
-  );
+  const queryDelegations =
+    queries.cosmos.queryDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
   const delegations = queryDelegations.delegations;
 
   const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(

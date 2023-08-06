@@ -50,10 +50,8 @@ export const CardModal: FunctionComponent<{
   const style = useStyle();
   const safeAreaInsets = useSafeAreaInsets();
 
-  const [
-    softwareKeyboardBottomPadding,
-    setSoftwareKeyboardBottomPadding,
-  ] = useState(0);
+  const [softwareKeyboardBottomPadding, setSoftwareKeyboardBottomPadding] =
+    useState(0);
 
   useEffect(() => {
     const onKeyboarFrame = (e: KeyboardEvent) => {

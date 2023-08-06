@@ -14,9 +14,10 @@ export const StakingDashboardScreen: FunctionComponent = () => {
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
 
-  const unbondings = queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
-    account.bech32Address
-  ).unbondingBalances;
+  const unbondings =
+    queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+      account.bech32Address
+    ).unbondingBalances;
 
   return (
     <PageWithScrollView backgroundMode="gradient">

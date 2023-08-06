@@ -37,12 +37,10 @@ export const MyRewardCard: FunctionComponent<{
           .upperCase(true)
           .toString()}
         onPress={async () => {
-          const validatorAddresses = queryReward.getDescendingPendingRewardValidatorAddresses(
-            8
-          );
-          const tx = account.cosmos.makeWithdrawDelegationRewardTx(
-            validatorAddresses
-          );
+          const validatorAddresses =
+            queryReward.getDescendingPendingRewardValidatorAddresses(8);
+          const tx =
+            account.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
 
           setIsSendingTx(true);
 

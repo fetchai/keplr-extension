@@ -58,10 +58,9 @@ export class DefinitionKebabCase {
   }
 }
 
-export type DefinitionsWithThemes<T extends ReadonlyArray<string>, S> = S &
-  {
-    [K in keyof S as `${T[number]}:${string & K}`]: Partial<S[K]>;
-  };
+export type DefinitionsWithThemes<T extends ReadonlyArray<string>, S> = S & {
+  [K in keyof S as `${T[number]}:${string & K}`]: Partial<S[K]>;
+};
 
 export class StyleBuilder<
   Themes extends ReadonlyArray<string>,
@@ -294,7 +293,7 @@ export class StyleBuilder<
     }
     for (const definition of conditionalDefinitions) {
       if (definition && definition !== true) {
-        styles.push(this.get<D, K>((definition as unknown) as K));
+        styles.push(this.get<D, K>(definition as unknown as K));
       }
     }
     return StyleSheet.flatten(styles);
@@ -413,30 +412,26 @@ export class StyleBuilder<
               case "left":
                 segment.read();
                 return {
-                  borderLeftWidth: this.currentConfig.borderWidths[
-                    segment.flush()
-                  ],
+                  borderLeftWidth:
+                    this.currentConfig.borderWidths[segment.flush()],
                 };
               case "right":
                 segment.read();
                 return {
-                  borderRightWidth: this.currentConfig.borderWidths[
-                    segment.flush()
-                  ],
+                  borderRightWidth:
+                    this.currentConfig.borderWidths[segment.flush()],
                 };
               case "top":
                 segment.read();
                 return {
-                  borderTopWidth: this.currentConfig.borderWidths[
-                    segment.flush()
-                  ],
+                  borderTopWidth:
+                    this.currentConfig.borderWidths[segment.flush()],
                 };
               case "bottom":
                 segment.read();
                 return {
-                  borderBottomWidth: this.currentConfig.borderWidths[
-                    segment.flush()
-                  ],
+                  borderBottomWidth:
+                    this.currentConfig.borderWidths[segment.flush()],
                 };
             }
 
@@ -450,16 +445,14 @@ export class StyleBuilder<
                 switch (segment.read()) {
                   case "left": {
                     return {
-                      borderTopLeftRadius: this.currentConfig.borderRadiuses[
-                        segment.flush()
-                      ],
+                      borderTopLeftRadius:
+                        this.currentConfig.borderRadiuses[segment.flush()],
                     };
                   }
                   case "right": {
                     return {
-                      borderTopRightRadius: this.currentConfig.borderRadiuses[
-                        segment.flush()
-                      ],
+                      borderTopRightRadius:
+                        this.currentConfig.borderRadiuses[segment.flush()],
                     };
                   }
                 }
@@ -469,24 +462,22 @@ export class StyleBuilder<
                 switch (segment.read()) {
                   case "left": {
                     return {
-                      borderBottomLeftRadius: this.currentConfig.borderRadiuses[
-                        segment.flush()
-                      ],
+                      borderBottomLeftRadius:
+                        this.currentConfig.borderRadiuses[segment.flush()],
                     };
                   }
                   case "right": {
                     return {
-                      borderBottomRightRadius: this.currentConfig
-                        .borderRadiuses[segment.flush()],
+                      borderBottomRightRadius:
+                        this.currentConfig.borderRadiuses[segment.flush()],
                     };
                   }
                 }
                 throw new Error(`Failed to get style of ${definition}`);
             }
 
-            const borderRadius = this.currentConfig.borderRadiuses[
-              segment.flush()
-            ];
+            const borderRadius =
+              this.currentConfig.borderRadiuses[segment.flush()];
             return {
               borderTopLeftRadius: borderRadius,
               borderTopRightRadius: borderRadius,

@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { FunctionComponent, useEffect, useRef } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import { Text, View } from "react-native";
 import {
   BIP44HDPath,
@@ -9,10 +9,7 @@ import {
 import {
   DrawerActions,
   NavigationContainer,
-  NavigationContainerRef,
   useNavigation,
-  DefaultTheme,
-  DarkTheme,
 } from "@react-navigation/native";
 import { useStore } from "./stores";
 import { observer } from "mobx-react-lite";
@@ -29,7 +26,7 @@ import {
 } from "./screens/governance";
 import {
   createDrawerNavigator,
-  useIsDrawerOpen,
+  useDrawerStatus,
 } from "@react-navigation/drawer";
 import { DrawerContent } from "./components/drawer";
 import { useStyle } from "./styles";
@@ -99,7 +96,6 @@ import {
   HeaderWalletConnectIcon,
 } from "./components/header/icon";
 import { BlurredBottomTabBar } from "./components/bottom-tabbar";
-import { UnlockScreen } from "./screens/unlock";
 import { KeplrVersionScreen } from "./screens/setting/screens/version";
 import {
   SettingAddTokenScreen,
@@ -119,227 +115,226 @@ import {
   JunoswapWebpageScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
+import { UnlockScreen } from "./screens/unlock";
 //import Bugsnag from "@bugsnag/react-native";
 
-const {
-  SmartNavigatorProvider,
-  useSmartNavigation,
-} = createSmartNavigatorProvider(
-  new SmartNavigator({
-    "Register.Intro": {
-      upperScreenName: "Register",
-    },
-    "Register.NewUser": {
-      upperScreenName: "Register",
-    },
-    "Register.NotNewUser": {
-      upperScreenName: "Register",
-    },
-    "Register.NewMnemonic": {
-      upperScreenName: "Register",
-    },
-    "Register.VerifyMnemonic": {
-      upperScreenName: "Register",
-    },
-    "Register.RecoverMnemonic": {
-      upperScreenName: "Register",
-    },
-    "Register.NewLedger": {
-      upperScreenName: "Register",
-    },
-    "Register.TorusSignIn": {
-      upperScreenName: "Register",
-    },
-    "Register.ImportFromExtension.Intro": {
-      upperScreenName: "Register",
-    },
-    "Register.ImportFromExtension": {
-      upperScreenName: "Register",
-    },
-    "Register.ImportFromExtension.SetPassword": {
-      upperScreenName: "Register",
-    },
-    "Register.End": {
-      upperScreenName: "Register",
-    },
-    Home: {
-      upperScreenName: "Main",
-    },
-    Send: {
-      upperScreenName: "Others",
-    },
-    Tokens: {
-      upperScreenName: "Others",
-    },
-    Camera: {
-      upperScreenName: "Others",
-    },
-    ManageWalletConnect: {
-      upperScreenName: "Others",
-    },
-    "Staking.Dashboard": {
-      upperScreenName: "Others",
-    },
-    "Validator.Details": {
-      upperScreenName: "Others",
-    },
-    "Validator.List": {
-      upperScreenName: "Others",
-    },
-    Delegate: {
-      upperScreenName: "Others",
-    },
-    Undelegate: {
-      upperScreenName: "Others",
-    },
-    Redelegate: {
-      upperScreenName: "Others",
-    },
-    Governance: {
-      upperScreenName: "Others",
-    },
-    "Governance Details": {
-      upperScreenName: "Others",
-    },
-    Setting: {
-      upperScreenName: "Settings",
-    },
-    SettingSelectAccount: {
-      upperScreenName: "Settings",
-    },
-    "Setting.ViewPrivateData": {
-      upperScreenName: "Settings",
-    },
-    "Setting.Version": {
-      upperScreenName: "Settings",
-    },
-    "Setting.ChainList": {
-      upperScreenName: "ChainList",
-    },
-    "Setting.AddToken": {
-      upperScreenName: "Others",
-    },
-    "Setting.ManageTokens": {
-      upperScreenName: "Others",
-    },
-    AddressBook: {
-      upperScreenName: "AddressBooks",
-    },
-    AddAddressBook: {
-      upperScreenName: "AddressBooks",
-    },
-    Result: {
-      upperScreenName: "Others",
-    },
-    TxPendingResult: {
-      upperScreenName: "Others",
-    },
-    TxSuccessResult: {
-      upperScreenName: "Others",
-    },
-    TxFailedResult: {
-      upperScreenName: "Others",
-    },
-    "Web.Intro": {
-      upperScreenName: "Web",
-    },
-    "Web.Osmosis": {
-      upperScreenName: "Web",
-    },
-    "Web.OsmosisFrontier": {
-      upperScreenName: "Web",
-    },
-    "Web.Stargaze": {
-      upperScreenName: "Web",
-    },
-    "Web.Umee": {
-      upperScreenName: "Web",
-    },
-    "Web.Junoswap": {
-      upperScreenName: "Web",
-    },
-  }).withParams<{
-    "Register.NewMnemonic": {
-      registerConfig: RegisterConfig;
-    };
-    "Register.VerifyMnemonic": {
-      registerConfig: RegisterConfig;
-      newMnemonicConfig: NewMnemonicConfig;
-      bip44HDPath: BIP44HDPath;
-    };
-    "Register.RecoverMnemonic": {
-      registerConfig: RegisterConfig;
-    };
-    "Register.NewLedger": {
-      registerConfig: RegisterConfig;
-    };
-    "Register.TorusSignIn": {
-      registerConfig: RegisterConfig;
-      type: "google" | "apple";
-    };
-    "Register.ImportFromExtension.Intro": {
-      registerConfig: RegisterConfig;
-    };
-    "Register.ImportFromExtension": {
-      registerConfig: RegisterConfig;
-    };
-    "Register.ImportFromExtension.SetPassword": {
-      registerConfig: RegisterConfig;
-      exportKeyRingDatas: ExportKeyRingData[];
-      addressBooks: { [chainId: string]: AddressBookData[] | undefined };
-    };
-    "Register.End": {
-      password?: string;
-    };
-    Send: {
-      chainId?: string;
-      currency?: string;
-      recipient?: string;
-    };
-    "Validator.Details": {
-      validatorAddress: string;
-    };
-    "Validator.List": {
-      validatorSelector?: (validatorAddress: string) => void;
-    };
-    Delegate: {
-      validatorAddress: string;
-    };
-    Undelegate: {
-      validatorAddress: string;
-    };
-    Redelegate: {
-      validatorAddress: string;
-    };
-    "Governance Details": {
-      proposalId: string;
-    };
-    "Setting.ViewPrivateData": {
-      privateData: string;
-      privateDataType: string;
-    };
-    AddressBook: {
-      recipientConfig?: IRecipientConfig;
-      memoConfig?: IMemoConfig;
-    };
-    AddAddressBook: {
-      chainId: string;
-      addressBookConfig: AddressBookConfig;
-    };
-    TxPendingResult: {
-      chainId?: string;
-      txHash: string;
-    };
-    TxSuccessResult: {
-      chainId?: string;
-      txHash: string;
-    };
-    TxFailedResult: {
-      chainId?: string;
-      txHash: string;
-    };
-  }>()
-);
+const { SmartNavigatorProvider, useSmartNavigation } =
+  createSmartNavigatorProvider(
+    new SmartNavigator({
+      "Register.Intro": {
+        upperScreenName: "Register",
+      },
+      "Register.NewUser": {
+        upperScreenName: "Register",
+      },
+      "Register.NotNewUser": {
+        upperScreenName: "Register",
+      },
+      "Register.NewMnemonic": {
+        upperScreenName: "Register",
+      },
+      "Register.VerifyMnemonic": {
+        upperScreenName: "Register",
+      },
+      "Register.RecoverMnemonic": {
+        upperScreenName: "Register",
+      },
+      "Register.NewLedger": {
+        upperScreenName: "Register",
+      },
+      "Register.TorusSignIn": {
+        upperScreenName: "Register",
+      },
+      "Register.ImportFromExtension.Intro": {
+        upperScreenName: "Register",
+      },
+      "Register.ImportFromExtension": {
+        upperScreenName: "Register",
+      },
+      "Register.ImportFromExtension.SetPassword": {
+        upperScreenName: "Register",
+      },
+      "Register.End": {
+        upperScreenName: "Register",
+      },
+      Home: {
+        upperScreenName: "Main",
+      },
+      Send: {
+        upperScreenName: "Others",
+      },
+      Tokens: {
+        upperScreenName: "Others",
+      },
+      Camera: {
+        upperScreenName: "Others",
+      },
+      ManageWalletConnect: {
+        upperScreenName: "Others",
+      },
+      "Staking.Dashboard": {
+        upperScreenName: "Others",
+      },
+      "Validator.Details": {
+        upperScreenName: "Others",
+      },
+      "Validator.List": {
+        upperScreenName: "Others",
+      },
+      Delegate: {
+        upperScreenName: "Others",
+      },
+      Undelegate: {
+        upperScreenName: "Others",
+      },
+      Redelegate: {
+        upperScreenName: "Others",
+      },
+      Governance: {
+        upperScreenName: "Others",
+      },
+      "Governance Details": {
+        upperScreenName: "Others",
+      },
+      Setting: {
+        upperScreenName: "Settings",
+      },
+      SettingSelectAccount: {
+        upperScreenName: "Settings",
+      },
+      "Setting.ViewPrivateData": {
+        upperScreenName: "Settings",
+      },
+      "Setting.Version": {
+        upperScreenName: "Settings",
+      },
+      "Setting.ChainList": {
+        upperScreenName: "ChainList",
+      },
+      "Setting.AddToken": {
+        upperScreenName: "Others",
+      },
+      "Setting.ManageTokens": {
+        upperScreenName: "Others",
+      },
+      AddressBook: {
+        upperScreenName: "AddressBooks",
+      },
+      AddAddressBook: {
+        upperScreenName: "AddressBooks",
+      },
+      Result: {
+        upperScreenName: "Others",
+      },
+      TxPendingResult: {
+        upperScreenName: "Others",
+      },
+      TxSuccessResult: {
+        upperScreenName: "Others",
+      },
+      TxFailedResult: {
+        upperScreenName: "Others",
+      },
+      "Web.Intro": {
+        upperScreenName: "Web",
+      },
+      "Web.Osmosis": {
+        upperScreenName: "Web",
+      },
+      "Web.OsmosisFrontier": {
+        upperScreenName: "Web",
+      },
+      "Web.Stargaze": {
+        upperScreenName: "Web",
+      },
+      "Web.Umee": {
+        upperScreenName: "Web",
+      },
+      "Web.Junoswap": {
+        upperScreenName: "Web",
+      },
+    }).withParams<{
+      "Register.NewMnemonic": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.VerifyMnemonic": {
+        registerConfig: RegisterConfig;
+        newMnemonicConfig: NewMnemonicConfig;
+        bip44HDPath: BIP44HDPath;
+      };
+      "Register.RecoverMnemonic": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.NewLedger": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.TorusSignIn": {
+        registerConfig: RegisterConfig;
+        type: "google" | "apple";
+      };
+      "Register.ImportFromExtension.Intro": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.ImportFromExtension": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.ImportFromExtension.SetPassword": {
+        registerConfig: RegisterConfig;
+        exportKeyRingDatas: ExportKeyRingData[];
+        addressBooks: { [chainId: string]: AddressBookData[] | undefined };
+      };
+      "Register.End": {
+        password?: string;
+      };
+      Send: {
+        chainId?: string;
+        currency?: string;
+        recipient?: string;
+      };
+      "Validator.Details": {
+        validatorAddress: string;
+      };
+      "Validator.List": {
+        validatorSelector?: (validatorAddress: string) => void;
+      };
+      Delegate: {
+        validatorAddress: string;
+      };
+      Undelegate: {
+        validatorAddress: string;
+      };
+      Redelegate: {
+        validatorAddress: string;
+      };
+      "Governance Details": {
+        proposalId: string;
+      };
+      "Setting.ViewPrivateData": {
+        privateData: string;
+        privateDataType: string;
+      };
+      AddressBook: {
+        recipientConfig?: IRecipientConfig;
+        memoConfig?: IMemoConfig;
+      };
+      AddAddressBook: {
+        chainId: string;
+        addressBookConfig: AddressBookConfig;
+      };
+      TxPendingResult: {
+        chainId?: string;
+        txHash: string;
+      };
+      TxSuccessResult: {
+        chainId?: string;
+        txHash: string;
+      };
+      TxFailedResult: {
+        chainId?: string;
+        txHash: string;
+      };
+    }>()
+  );
 
 export { useSmartNavigation };
 
@@ -873,7 +868,7 @@ export const MainTabNavigation: FunctionComponent = () => {
   const navigation = useNavigation();
 
   const focusedScreen = useFocusedScreen();
-  const isDrawerOpen = useIsDrawerOpen();
+  const isDrawerOpen = useDrawerStatus() === "open";
 
   useEffect(() => {
     // When the focused screen is not "Home" screen and the drawer is open,
@@ -1016,6 +1011,7 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
   return (
     <Drawer.Navigator
       drawerType="slide"
+      useLegacyImplementation={false}
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         // If the focused screen is not "Home" screen,
@@ -1053,19 +1049,23 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
 // })();
 
 export const AppNavigation: FunctionComponent = observer(() => {
-  const { keyRingStore, analyticsStore } = useStore();
+  const { keyRingStore } = useStore();
 
-  const navigationRef = useRef<NavigationContainerRef | null>(null);
-  const routeNameRef = useRef<string | null>(null);
+  //const navigationRef = useRef<NavigationContainerRef | null>(null);
+  //const routeNameRef = useRef<string | null>(null);
 
-  const style = useStyle();
+  //const style = useStyle();
 
   return (
     <PageScrollPositionProvider>
       <FocusedScreenProvider>
+        {/* <View>
+          <Text>Hello Hemant</Text>
+        </View> */}
+
         <SmartNavigatorProvider>
           {/*<BugsnagNavigationContainer*/}
-            ref={navigationRef}
+          {/* ref={navigationRef}
             theme={style.theme === "dark" ? DarkTheme : DefaultTheme}
             onReady={() => {
               const routerName = navigationRef.current?.getCurrentRoute();
@@ -1088,7 +1088,8 @@ export const AppNavigation: FunctionComponent = observer(() => {
                 routeNameRef.current = currentRouteName;
               }
             }}
-          >
+          > */}
+          <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
                 keyRingStore.status !== KeyRingStatus.UNLOCKED
@@ -1114,6 +1115,7 @@ export const AppNavigation: FunctionComponent = observer(() => {
               />
               <Stack.Screen name="ChainList" component={ChainListStackScreen} />
             </Stack.Navigator>
+          </NavigationContainer>
           {/*</BugsnagNavigationContainer>*/}
           {/* <ModalsRenderer /> */}
         </SmartNavigatorProvider>

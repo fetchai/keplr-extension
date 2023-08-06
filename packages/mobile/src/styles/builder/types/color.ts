@@ -27,32 +27,27 @@ export type StyleBuilderColorDefinitions<
   [K in keyof Colors as `color-${string & K}`]: {
     color: string;
   };
-} &
-  {
-    [K in keyof Colors as `color-${string & K}@${string &
-      MultipleOfFiveAlphas}`]: {
-      color: string;
-    };
-  } &
-  {
-    [K in keyof Colors as `background-color-${string & K}`]: {
-      backgroundColor: string;
-    };
-  } &
-  {
-    [K in keyof Colors as `background-color-${string & K}@${string &
-      MultipleOfFiveAlphas}`]: {
-      backgroundColor: string;
-    };
-  } &
-  {
-    [K in keyof Colors as `border-color-${string & K}`]: {
-      borderColor: string;
-    };
-  } &
-  {
-    [K in keyof Colors as `border-color-${string & K}@${string &
-      MultipleOfFiveAlphas}`]: {
-      borderColor: string;
-    };
+} & {
+  [K in keyof Colors as `color-${string & K}@${string &
+    MultipleOfFiveAlphas}`]: {
+    color: string;
   };
+} & {
+  [K in keyof Colors as `background-color-${string & K}`]: {
+    backgroundColor: string;
+  };
+} & {
+  [K in keyof Colors as `background-color-${string & K}@${string &
+    MultipleOfFiveAlphas}`]: {
+    backgroundColor: string;
+  };
+} & {
+  [K in keyof Colors as `border-color-${string & K}`]: {
+    borderColor: string;
+  };
+} & {
+  [K in keyof Colors as `border-color-${string & K}@${string &
+    MultipleOfFiveAlphas}`]: {
+    borderColor: string;
+  };
+};

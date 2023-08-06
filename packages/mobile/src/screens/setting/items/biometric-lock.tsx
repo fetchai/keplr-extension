@@ -17,9 +17,8 @@ export const SettingBiometricLockItem: FunctionComponent<{
     when failing to check the password to turn off by the biometry.
     This is mainly used to give the chance to the user when the biometry information changed after turning on the biometry sign-in.
    */
-  const [isTurnOffBiometryFallback, setIsTurnOffBiometryFallback] = useState(
-    false
-  );
+  const [isTurnOffBiometryFallback, setIsTurnOffBiometryFallback] =
+    useState(false);
 
   return (
     <React.Fragment>

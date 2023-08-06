@@ -46,13 +46,10 @@ export const CameraScreen: FunctionComponent = observer(() => {
   );
 
   const [isSelectChainModalOpen, setIsSelectChainModalOpen] = useState(false);
-  const [isAddressQRCodeModalOpen, setIsAddressQRCodeModalOpen] = useState(
-    false
-  );
-  const [
-    showingAddressQRCodeChainId,
-    setShowingAddressQRCodeChainId,
-  ] = useState(chainStore.current.chainId);
+  const [isAddressQRCodeModalOpen, setIsAddressQRCodeModalOpen] =
+    useState(false);
+  const [showingAddressQRCodeChainId, setShowingAddressQRCodeChainId] =
+    useState(chainStore.current.chainId);
 
   const registerConfig = useRegisterConfig(keyRingStore, []);
 
@@ -103,9 +100,8 @@ export const CameraScreen: FunctionComponent = observer(() => {
                     smartNavigation.navigateSmart("Home", {});
                   }
                 } else {
-                  const sharedData = parseQRCodeDataForImportFromExtension(
-                    data
-                  );
+                  const sharedData =
+                    parseQRCodeDataForImportFromExtension(data);
 
                   const improted = await importFromExtension(
                     sharedData,

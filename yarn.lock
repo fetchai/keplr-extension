@@ -34509,10 +34509,14 @@ __metadata:
     lottie-react-native: ^5.1.6
     metro-config: ^0.77.0
     metro-react-native-babel-preset: ^0.70.3
+    mobx: ^6.1.7
+    mobx-react-lite: ^3.2.0
+    mobx-utils: ^6.0.3
     os-browserify: ^0.3.0
     path-browserify: ^1.0.1
     pod-install: ^0.1.38
     process: ^0.11.10
+    react: 18.0.0
     react-hook-form: ^7.43.1
     react-intl: ^6.2.8
     react-native: ^0.72.3
@@ -34543,11 +34547,6 @@ __metadata:
     text-encoding: ^0.7.0
     tinyify: ^4.0.0
     utility-types: ^3.10.0
-  peerDependencies:
-    mobx: ^6
-    mobx-react-lite: ^3
-    mobx-utils: ^6
-    react: ^16.8.0 || ^17 || ^18
   languageName: unknown
   linkType: soft
 
@@ -40234,24 +40233,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.1":
-  version: 17.0.1
-  resolution: "react@npm:17.0.1"
+"react@npm:18.0.0":
+  version: 18.0.0
+  resolution: "react@npm:18.0.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: 83b9df9529a2b489f00a4eaa608fc7d55518b258e046c100344ae068713e43ae64e477a140f87e38cfe75489bcfd26d27fce5818f89f4ec41bdbda7ead4bb426
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
+  checksum: 293020b96536b3c7113ee57ca5c990a3f25649d1751b1c7a3aabd16dff0691fe9f1eed1206616d0906d05933536052037340a0c8d0941ff870b0eb469a2f975b
   languageName: node
   linkType: hard
 

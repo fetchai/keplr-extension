@@ -69,9 +69,9 @@ export const useInjectedSourceCode = () => {
 
   useEffect(() => {
     if (Platform.OS === "ios") {
-      RNFS.readFile(
-        `${RNFS.MainBundlePath}/injected-provider.bundle.js`
-      ).then((r) => setCode(r));
+      RNFS.readFile(`${RNFS.MainBundlePath}/injected-provider.bundle.js`).then(
+        (r) => setCode(r)
+      );
     } else {
       RNFS.readFileAssets("injected-provider.bundle.js").then((r) =>
         setCode(r)

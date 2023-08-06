@@ -20,7 +20,8 @@ import FastImage from "react-native-fast-image";
 import { BorderlessButton } from "react-native-gesture-handler";
 import Svg, { Path } from "react-native-svg";
 
-export type DrawerContentProps = DrawerContentComponentProps<DrawerContentOptions>;
+export type DrawerContentProps =
+  DrawerContentComponentProps<DrawerContentOptions>;
 
 export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
   (props) => {
