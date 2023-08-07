@@ -10,6 +10,7 @@ import { useStore } from "../../stores";
 import { IBCTransferView } from "../main/ibc-transfer";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
+import { ANSView } from "@components/ans-view";
 export const MorePage: FunctionComponent = () => {
   const { chainStore } = useStore();
   return (
@@ -37,6 +38,13 @@ export const MorePage: FunctionComponent = () => {
         <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <FNSView />
+          </CardBody>
+        </Card>
+      )}
+      {Object.keys(FNS_CONFIG).includes(chainStore.current.chainId) && (
+        <Card className={classnames(style["card"], "shadow")}>
+          <CardBody>
+            <ANSView />
           </CardBody>
         </Card>
       )}
