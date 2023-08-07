@@ -37,6 +37,7 @@ import {
   ICNSInteractionStore,
   ICNSQueries,
   GeneralPermissionStore,
+  ANSQueries,
 } from "@keplr-wallet/stores";
 import {
   KeplrETCQueries,
@@ -82,7 +83,8 @@ export class RootStore {
       SecretQueries,
       OsmosisQueries,
       KeplrETCQueries,
-      ICNSQueries
+      ICNSQueries,
+      ANSQueries
     ]
   >;
   public readonly accountStore: AccountStore<
@@ -206,7 +208,8 @@ export class RootStore {
       KeplrETCQueries.use({
         ethereumURL: EthereumEndpoint,
       }),
-      ICNSQueries.use()
+      ICNSQueries.use(),
+      ANSQueries.use()
     );
 
     this.accountStore = new AccountStore(
