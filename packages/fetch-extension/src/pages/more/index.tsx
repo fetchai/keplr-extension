@@ -12,6 +12,7 @@ import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { CHAINS } from "../../config.axl-brdige.var";
 import { AXLView } from "@components/axl-view";
+import { ANSView } from "@components/ans-view";
 
 export const MorePage: FunctionComponent = () => {
   const { chainStore } = useStore();
@@ -48,7 +49,6 @@ export const MorePage: FunctionComponent = () => {
           </CardBody>
         </Card>
       )}
-
       {isAxlViewVisible &&
         !AxlBrdigeDisabledChainIds.includes(chainStore.current.chainId) && (
           <Card className={classnames(style["card"], "shadow")}>
@@ -57,6 +57,13 @@ export const MorePage: FunctionComponent = () => {
             </CardBody>
           </Card>
         )}
+      {Object.keys(FNS_CONFIG).includes(chainStore.current.chainId) && (
+        <Card className={classnames(style["card"], "shadow")}>
+          <CardBody>
+            <ANSView />
+          </CardBody>
+        </Card>
+      )}
     </HeaderLayout>
   );
 };

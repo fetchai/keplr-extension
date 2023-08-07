@@ -31,3 +31,6 @@ export interface ContractState {
 export interface PublicDomains {
   public_domains: string[];
 }
+export interface ValidateAddress {
+  is_valid: boolean;
+}

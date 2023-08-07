@@ -202,6 +202,42 @@ export const FNS_CONFIG: {
   },
 };
 
+export const ANS_CONFIG: {
+  [key: string]: {
+    network: "mainnet" | "testnet";
+    rpc: string;
+    contractAddress: string;
+    validateAgentAddressContract: string;
+    isEditable: boolean;
+  };
+} = {
+  [CHAIN_ID_DORADO]: {
+    network: "testnet",
+    rpc: "https://rpc-dorado.fetch.ai:443",
+    contractAddress:
+      "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+    validateAgentAddressContract:
+      "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+    isEditable: true,
+  },
+  [CHAIN_ID_FETCHHUB]: {
+    network: "mainnet",
+    rpc: "https://rpc-fetchhub.fetch.ai:443",
+    contractAddress:
+      "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+    validateAgentAddressContract:
+      "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+    isEditable: true,
+  },
+};
+
+export const ANS_CONTRACT_ADDRESS =
+  "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l";
+export const ANS_TRNSX_AMOUNT = {
+  denom: "atestfet",
+  amount: "5000000000000000",
+};
+
 export const TRANSACTION_APPROVED = "Transaction approved";
 export const TRANSACTION_SENT = "Transaction sent";
 export const TRANSACTION_SIGNED = "Transaction signed";
