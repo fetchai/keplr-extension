@@ -1,19 +1,12 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
-import Animated, { Easing } from "react-native-reanimated";
+// import Animated, { Easing } from "react-native-reanimated";
 import { AlertIcon, RefreshIcon } from "../../components/icon";
 import { useStyle } from "../../styles";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-import { useSpinAnimated } from "../../components/spinner";
 import { ObservableQuery } from "@keplr-wallet/stores";
 
 export const NetworkErrorView: FunctionComponent = observer(() => {
@@ -35,13 +28,13 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const extraHeight = 32;
+  // const extraHeight = 32;
 
   const netInfo = useNetInfo();
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [, setIsOpen] = useState(false);
   const [isRefreshable, setIsRefreshable] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -95,7 +88,7 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
   ]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const spinAnimated = useSpinAnimated(isRefreshing);
+  // const spinAnimated = useSpinAnimated(isRefreshing);
 
   useEffect(() => {
     if (isRefreshing) {
@@ -114,62 +107,63 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
     queryUnbonding.isFetching,
   ]);
 
-  const [childLayout, setChildLayout] = useState<{
-    width: number;
-    height: number;
-  }>({
-    width: 0,
-    height: 0,
-  });
+  // const [childLayout, setChildLayout] = useState<{
+  //   width: number;
+  //   height: number;
+  // }>({
+  //   width: 0,
+  //   height: 0,
+  // });
 
-  const [animatedValue] = useState(() => new Animated.Value(0));
+  // const [animatedValue] = useState(() => new Animated.Value(0));
 
-  useEffect(() => {
-    if (isOpen) {
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: 500,
-        easing: Easing.out(Easing.cubic),
-      }).start();
-    } else {
-      Animated.timing(animatedValue, {
-        toValue: 0,
-        duration: 330,
-        easing: Easing.out(Easing.sin),
-      }).start();
-    }
-  }, [animatedValue, isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     Animated.timing(animatedValue, {
+  //       toValue: 1,
+  //       duration: 500,
+  //       easing: Easing.out(Easing.cubic),
+  //     }).start();
+  //   } else {
+  //     Animated.timing(animatedValue, {
+  //       toValue: 0,
+  //       duration: 330,
+  //       easing: Easing.out(Easing.sin),
+  //     }).start();
+  //   }
+  // }, [animatedValue, isOpen]);
 
-  const animatedHeight = useMemo(() => {
-    return animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, childLayout.height + extraHeight],
-    });
-  }, [animatedValue, childLayout.height]);
+  // const animatedHeight = useMemo(() => {
+  //   return animatedValue.interpolate({
+  //     inputRange: [0, 1],
+  //     outputRange: [0, childLayout.height + extraHeight],
+  //   });
+  // }, [animatedValue, childLayout.height]);
 
   return (
-    <Animated.View
+    <View
       style={{
         overflow: "hidden",
-        height: animatedHeight,
+        // height: animatedHeight,
         justifyContent: "center",
       }}
     >
       <View
-        style={style.flatten([
-          "flex-row",
-          "items-center",
-          "background-color-red-50@95%",
-          "dark:background-color-red-500@40%",
-          "padding-left-26",
-          "padding-right-24",
-          "height-80",
-        ])}
-        onLayout={(e) => {
-          setChildLayout(e.nativeEvent.layout);
-        }}
+      // style={style.flatten([
+      //   "flex-row",
+      //   "items-center",
+      //   "background-color-red-50@95%",
+      //   "dark:background-color-red-500@40%",
+      //   "padding-left-26",
+      //   "padding-right-24",
+      //   "height-80",
+      // ])}
+      // onLayout={(e) => {
+      //   // setChildLayout(e.nativeEvent.layout);
+      // }}
       >
-        <View style={style.flatten(["margin-right-16"])}>
+        {/* style={style.flatten(["margin-right-16"])} */}
+        <View>
           <AlertIcon
             color={style.flatten(["color-red-400", "dark:color-red-300"]).color}
             size={24}
@@ -194,17 +188,17 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
               setIsRefreshing(true);
               ObservableQuery.refreshAllObservedIfError();
             }}
-            style={style.flatten([
-              "background-color-red-100",
-              "justify-center",
-              "items-center",
-              "width-32",
-              "height-32",
-              "border-radius-64",
-              "margin-left-16",
-            ])}
+            // style={style.flatten([
+            //   "background-color-red-100",
+            //   "justify-center",
+            //   "items-center",
+            //   "width-32",
+            //   "height-32",
+            //   "border-radius-64",
+            //   "margin-left-16",
+            // ])}
           >
-            <Animated.View
+            {/* <Animated.View
               style={{
                 transform: [
                   {
@@ -212,12 +206,12 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
                   },
                 ],
               }}
-            >
-              <RefreshIcon color={style.get("color-red-300").color} size={24} />
-            </Animated.View>
+            > */}
+            <RefreshIcon color={style.get("color-red-300").color} size={24} />
+            {/* </Animated.View> */}
           </TouchableOpacity>
         ) : null}
       </View>
-    </Animated.View>
+    </View>
   );
 });

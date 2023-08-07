@@ -1,23 +1,22 @@
 import React, {
   FunctionComponent,
-  useEffect,
+  // useEffect,
   useMemo,
   useRef,
-  useState,
+  // useState,
 } from "react";
 import {
   ScrollViewProps,
   View,
   Animated as NativeAnimated,
+  Text,
 } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import Animated, { Easing } from "react-native-reanimated";
-import { stableSort } from "../../utils/stable-sort";
+// import Animated, { Easing } from "react-native-reanimated";
 import { useStyle } from "../../styles";
 
 interface MemoizedItem<Item extends { key: string }> {
   item: Item;
-  virtualIndex: Animated.Value<number>;
+  virtualIndex: any;
 }
 
 export interface FixedHeightSortableListProps<Item extends { key: string }>
@@ -27,7 +26,7 @@ export interface FixedHeightSortableListProps<Item extends { key: string }>
   renderItem: (
     item: Item,
     anims: {
-      readonly isDragging: Animated.Value<number>;
+      readonly isDragging: any;
       readonly onGestureEvent: (...args: any[]) => void;
     }
   ) => React.ReactElement | null;
@@ -77,10 +76,10 @@ export function FixedHeightSortableList<Item extends { key: string }>(
 ) {
   const {
     data,
-    renderItem,
+    // renderItem,
     itemHeight,
     onDragEnd,
-    dividerIndex = -1,
+    // dividerIndex = -1,
     delegateOnGestureEventToItemView = false,
     gapTop = 0,
     gapBottom = 0,
@@ -92,21 +91,21 @@ export function FixedHeightSortableList<Item extends { key: string }>(
 
   // It is hard to handle multi touch.
   // So, prevent multi touch by using this.
-  const [draggingGlobalLock] = useState(() => new Animated.Value(0));
+  // const [draggingGlobalLock] = useState(() => new Animated.Value(0));
 
-  const [virtualDividerIndex] = useState(
-    () => new Animated.Value(dividerIndex)
-  );
+  // const [virtualDividerIndex] = useState(
+  //   () => new Animated.Value(dividerIndex)
+  // );
 
-  useEffect(() => {
-    virtualDividerIndex.setValue(dividerIndex);
-  }, [dividerIndex, virtualDividerIndex]);
+  // useEffect(() => {
+  //   virtualDividerIndex.setValue(dividerIndex);
+  // }, [dividerIndex, virtualDividerIndex]);
 
   const memoizationMap = useRef<
     Map<
       string,
       {
-        virtualIndex: Animated.Value<number>;
+        virtualIndex: any;
       }
     >
   >(new Map());
@@ -135,7 +134,7 @@ export function FixedHeightSortableList<Item extends { key: string }>(
           memoizedData.virtualIndex.setValue(index);
         } else {
           memoizedData = {
-            virtualIndex: new Animated.Value(index),
+            virtualIndex: 1,
           };
           memoizationMap.current.set(item.key, memoizedData);
         }
@@ -159,128 +158,123 @@ export function FixedHeightSortableList<Item extends { key: string }>(
   const onDragEndRef = useRef(onDragEnd);
   onDragEndRef.current = onDragEnd;
 
-  const procMemoization = useRef<
-    | {
-        onItemMove: any;
-        onDragEnd: any;
-        keys: string;
-      }
-    | undefined
-  >(undefined);
+  // const procMemoization = useRef<
+  //   | {
+  //       onItemMove: any;
+  //       onDragEnd: any;
+  //       keys: string;
+  //     }
+  //   | undefined
+  // >(undefined);
 
-  const procs = useMemo(() => {
-    const keys = memoizedItems.map((item) => item.item.key).join(",");
+  // const procs = useMemo(() => {
+  //   const keys = memoizedItems.map((item) => item.item.key).join(",");
 
-    if (procMemoization.current && procMemoization.current.keys === keys) {
-      return {
-        onItemMove: procMemoization.current.onItemMove,
-        onDragEnd: procMemoization.current.onDragEnd,
-      };
-    } else {
-      const onItemMoveProc = Animated.proc(
-        (before: Animated.Value<number>, after: Animated.Value<number>) =>
-          Animated.block([
-            ...memoizedItems.map((item) => {
-              return [
-                Animated.cond(Animated.not(Animated.eq(before, after)), [
-                  Animated.cond(
-                    Animated.eq(before, item.virtualIndex),
-                    [
-                      Animated.set(item.virtualIndex, after),
-                      Animated.cond(Animated.lessThan(item.virtualIndex, 0), [
-                        Animated.set(item.virtualIndex, 0),
-                      ]),
-                      Animated.cond(
-                        Animated.greaterOrEq(
-                          item.virtualIndex,
-                          memoizedItems.length
-                        ),
-                        [
-                          Animated.set(
-                            item.virtualIndex,
-                            memoizedItems.length - 1
-                          ),
-                        ]
-                      ),
-                    ],
-                    [
-                      Animated.cond(
-                        Animated.lessThan(Animated.sub(before, after), 0),
-                        [
-                          Animated.cond(
-                            Animated.and(
-                              Animated.greaterThan(item.virtualIndex, before),
-                              Animated.lessOrEq(item.virtualIndex, after)
-                            ),
-                            [
-                              Animated.set(
-                                item.virtualIndex,
-                                Animated.sub(item.virtualIndex, 1)
-                              ),
-                            ]
-                          ),
-                        ],
-                        [
-                          Animated.cond(
-                            Animated.and(
-                              Animated.lessThan(item.virtualIndex, before),
-                              Animated.greaterOrEq(item.virtualIndex, after)
-                            ),
-                            [
-                              Animated.set(
-                                item.virtualIndex,
-                                Animated.add(item.virtualIndex, 1)
-                              ),
-                            ]
-                          ),
-                        ]
-                      ),
-                    ]
-                  ),
-                ]),
-              ];
-            }),
-          ])
-      );
-
-      const onDragEndCallback = (indexs: readonly number[]) => {
-        const keysWithIndex = memoizedItems.map((item, i) => {
-          return {
-            key: item.item.key,
-            index: indexs[i],
-          };
-        });
-
-        const sorted = stableSort(keysWithIndex, (a, b) => {
-          if (a.index === b.index) {
-            return 0;
-          }
-
-          return a.index < b.index ? -1 : 1;
-        }).map(({ key }) => key);
-
-        onDragEndRef.current(sorted);
-      };
-
-      const onDragEndProc = Animated.proc(() =>
-        Animated.block([
-          Animated.call(
-            memoizedItems.map((item) => item.virtualIndex),
-            onDragEndCallback
-          ),
-        ])
-      );
-      procMemoization.current = {
-        keys,
-        onItemMove: onItemMoveProc,
-        onDragEnd: onDragEndProc,
-      };
-      return {
-        onItemMove: procMemoization.current.onItemMove,
-        onDragEnd: procMemoization.current.onDragEnd,
-      };
-    }
-  }, [memoizedItems]);
+  //   if (procMemoization.current && procMemoization.current.keys === keys) {
+  //     return {
+  //       onItemMove: procMemoization.current.onItemMove,
+  //       onDragEnd: procMemoization.current.onDragEnd,
+  //     };
+  //   } else {
+  //     // const onItemMoveProc = Animated.proc(
+  //     //   (before: Animated.Value<number>, after: Animated.Value<number>) =>
+  //     //     Animated.block([
+  //     //       ...memoizedItems.map((item) => {
+  //     //         return [
+  //     //           Animated.cond(Animated.not(Animated.eq(before, after)), [
+  //     //             Animated.cond(
+  //     //               Animated.eq(before, item.virtualIndex),
+  //     //               [
+  //     //                 Animated.set(item.virtualIndex, after),
+  //     //                 Animated.cond(Animated.lessThan(item.virtualIndex, 0), [
+  //     //                   Animated.set(item.virtualIndex, 0),
+  //     //                 ]),
+  //     //                 Animated.cond(
+  //     //                   Animated.greaterOrEq(
+  //     //                     item.virtualIndex,
+  //     //                     memoizedItems.length
+  //     //                   ),
+  //     //                   [
+  //     //                     Animated.set(
+  //     //                       item.virtualIndex,
+  //     //                       memoizedItems.length - 1
+  //     //                     ),
+  //     //                   ]
+  //     //                 ),
+  //     //               ],
+  //     //               [
+  //     //                 Animated.cond(
+  //     //                   Animated.lessThan(Animated.sub(before, after), 0),
+  //     //                   [
+  //     //                     Animated.cond(
+  //     //                       Animated.and(
+  //     //                         Animated.greaterThan(item.virtualIndex, before),
+  //     //                         Animated.lessOrEq(item.virtualIndex, after)
+  //     //                       ),
+  //     //                       [
+  //     //                         Animated.set(
+  //     //                           item.virtualIndex,
+  //     //                           Animated.sub(item.virtualIndex, 1)
+  //     //                         ),
+  //     //                       ]
+  //     //                     ),
+  //     //                   ],
+  //     //                   [
+  //     //                     Animated.cond(
+  //     //                       Animated.and(
+  //     //                         Animated.lessThan(item.virtualIndex, before),
+  //     //                         Animated.greaterOrEq(item.virtualIndex, after)
+  //     //                       ),
+  //     //                       [
+  //     //                         Animated.set(
+  //     //                           item.virtualIndex,
+  //     //                           Animated.add(item.virtualIndex, 1)
+  //     //                         ),
+  //     //                       ]
+  //     //                     ),
+  //     //                   ]
+  //     //                 ),
+  //     //               ]
+  //     //             ),
+  //     //           ]),
+  //     //         ];
+  //     //       }),
+  //     //     ])
+  //     // );
+  //     // const onDragEndCallback = (indexs: readonly number[]) => {
+  //     //   const keysWithIndex = memoizedItems.map((item, i) => {
+  //     //     return {
+  //     //       key: item.item.key,
+  //     //       index: indexs[i],
+  //     //     };
+  //     //   });
+  //     //   const sorted = stableSort(keysWithIndex, (a, b) => {
+  //     //     if (a.index === b.index) {
+  //     //       return 0;
+  //     //     }
+  //     //     return a.index < b.index ? -1 : 1;
+  //     //   }).map(({ key }) => key);
+  //     //   onDragEndRef.current(sorted);
+  //     // };
+  //     // const onDragEndProc = Animated.proc(() =>
+  //     //   Animated.block([
+  //     //     Animated.call(
+  //     //       memoizedItems.map((item) => item.virtualIndex),
+  //     //       onDragEndCallback
+  //     //     ),
+  //     //   ])
+  //     // );
+  //     // procMemoization.current = {
+  //     //   keys,
+  //     //   onItemMove: onItemMoveProc,
+  //     //   onDragEnd: onDragEndProc,
+  //     // };
+  //     // return {
+  //     //   onItemMove: procMemoization.current.onItemMove,
+  //     //   onDragEnd: procMemoization.current.onDragEnd,
+  //     // };
+  //   }
+  // }, [memoizedItems]);
 
   return (
     <NativeAnimated.ScrollView
@@ -302,25 +296,25 @@ export function FixedHeightSortableList<Item extends { key: string }>(
             key={key}
             {...rest}
             itemHeight={itemHeight}
-            procOnItemMove={procs.onItemMove}
-            procOnDragEnd={procs.onDragEnd}
+            // procOnItemMove={procs.onItemMove}
+            // procOnDragEnd={procs.onDragEnd}
             delegateOnGestureEventToItemView={delegateOnGestureEventToItemView}
             gapTop={gapTop}
           >
             <FixedHeightSortableListItem
-              itemHeight={itemHeight}
-              procOnItemMove={procs.onItemMove}
-              procOnDragEnd={procs.onDragEnd}
-              delegateOnGestureEventToItemView={
-                delegateOnGestureEventToItemView
-              }
-              gapTop={gapTop}
-              // Belows no need to be under `MemoizedChildrenRenderer`
-              virtualIndex={memoizedItem.virtualIndex}
-              virtualDividerIndex={virtualDividerIndex}
-              draggingGlobalLock={draggingGlobalLock}
-              renderItem={renderItem}
-              item={memoizedItem.item}
+            // itemHeight={itemHeight}
+            // // procOnItemMove={procs.onItemMove}
+            // // procOnDragEnd={procs.onDragEnd}
+            // delegateOnGestureEventToItemView={
+            //   delegateOnGestureEventToItemView
+            // }
+            // gapTop={gapTop}
+            // // Belows no need to be under `MemoizedChildrenRenderer`
+            // // virtualIndex={memoizedItem.virtualIndex}
+            // // virtualDividerIndex={virtualDividerIndex}
+            // // draggingGlobalLock={draggingGlobalLock}
+            // renderItem={renderItem}
+            // item={memoizedItem.item}
             />
           </MemoizedChildrenRenderer>
         );
@@ -336,286 +330,292 @@ const MemoizedChildrenRenderer: FunctionComponent<any> = React.memo((props) => {
   return children;
 });
 
-const usePreviousDiff = (initialValue: number) => {
-  const [previous] = useState(() => new Animated.Value<number>(initialValue));
+// const usePreviousDiff = (initialValue: number) => {
+//   // const [previous] = useState(() => new Animated.Value<number>(initialValue));
 
-  return useMemo(() => {
-    return {
-      set: (value: Animated.Adaptable<number>) => Animated.set(previous, value),
-      diff: (value: Animated.Adaptable<number>) =>
-        Animated.cond(
-          Animated.defined(previous),
-          Animated.sub(value, previous),
-          value
-        ),
-      previous,
-    };
-  }, [previous]);
-};
+//   // return useMemo(() => {
+//   //   return {
+//   //     set: (value: Animated.Adaptable<number>) => Animated.set(previous, value),
+//   //     diff: (value: Animated.Adaptable<number>) =>
+//   //       Animated.cond(
+//   //         Animated.defined(previous),
+//   //         Animated.sub(value, previous),
+//   //         value
+//   //       ),
+//   //     previous,
+//   //   };
+//   // }, [previous]);
+// };
 
 const FixedHeightSortableListItem: FunctionComponent<{
-  itemHeight: number;
-  virtualIndex: Animated.Value<number>;
-  virtualDividerIndex: Animated.Value<number>;
-  draggingGlobalLock: Animated.Value<number>;
-  procOnItemMove: any;
-  procOnDragEnd: any;
-  delegateOnGestureEventToItemView: boolean;
+  // itemHeight: number;
+  // // virtualIndex: Animated.Value<number>;
+  // // virtualDividerIndex: Animated.Value<number>;
+  // // draggingGlobalLock: Animated.Value<number>;
+  // procOnItemMove: any;
+  // procOnDragEnd: any;
+  // delegateOnGestureEventToItemView: boolean;
+  // item: any;
+  // renderItem: FixedHeightSortableListProps<any>["renderItem"];
+  // gapTop: number;
+}> = (
+  {
+    // itemHeight,
+    // // virtualIndex,
+    // // virtualDividerIndex,
+    // // draggingGlobalLock,
+    // procOnItemMove,
+    // procOnDragEnd,
+    // delegateOnGestureEventToItemView,
+    // item,
+    // renderItem,
+    // gapTop,
+  }
+) => {
+  // const [animatedState] = useState(() => {
+  //   return {
+  //     clock: new Animated.Clock(),
+  //     finished: new Animated.Value(0),
+  //     position: new Animated.Value<number>(undefined),
+  //     time: new Animated.Value(0),
+  //     frameTime: new Animated.Value(0),
+  //   };
+  // });
 
-  item: any;
-  renderItem: FixedHeightSortableListProps<any>["renderItem"];
-  gapTop: number;
-}> = ({
-  itemHeight,
-  virtualIndex,
-  virtualDividerIndex,
-  draggingGlobalLock,
-  procOnItemMove,
-  procOnDragEnd,
-  delegateOnGestureEventToItemView,
-  item,
-  renderItem,
-  gapTop,
-}) => {
-  const [animatedState] = useState(() => {
-    return {
-      clock: new Animated.Clock(),
-      finished: new Animated.Value(0),
-      position: new Animated.Value<number>(undefined),
-      time: new Animated.Value(0),
-      frameTime: new Animated.Value(0),
-    };
-  });
+  // const [isDragging] = useState(() => new Animated.Value(0));
+  // const [zIndexAdditionOnTransition] = useState(() => new Animated.Value(0));
+  // const [currentDraggingIndex] = useState(() => new Animated.Value(0));
 
-  const [isDragging] = useState(() => new Animated.Value(0));
-  const [zIndexAdditionOnTransition] = useState(() => new Animated.Value(0));
-  const [currentDraggingIndex] = useState(() => new Animated.Value(0));
+  // const translateYDiff = usePreviousDiff(0);
+  // const virtualIndexDiff = usePreviousDiff(-1);
 
-  const translateYDiff = usePreviousDiff(0);
-  const virtualIndexDiff = usePreviousDiff(-1);
+  // const onGestureEvent = useMemo(() => {
+  //   return Animated.event([
+  //     {
+  //       nativeEvent: ({
+  //         translationY,
+  //         state,
+  //       }: {
+  //         translationY: number;
+  //         state: number;
+  //       }) => {
+  //         return Animated.block([
+  //           Animated.cond(
+  //             // Check that the state is BEGEN or ACTIVE.
+  //             Animated.or(Animated.eq(state, 2), Animated.eq(state, 4)),
+  //             [
+  //               Animated.cond(
+  //                 Animated.and(
+  //                   Animated.eq(isDragging, 0),
+  //                   Animated.and(
+  //                     Animated.not(Animated.clockRunning(animatedState.clock)),
+  //                     Animated.eq(draggingGlobalLock, 0)
+  //                   )
+  //                 ),
+  //                 [
+  //                   Animated.debug("start dragging", virtualIndex),
+  //                   Animated.set(isDragging, 1),
+  //                   Animated.set(draggingGlobalLock, 1),
+  //                   Animated.set(zIndexAdditionOnTransition, 10000000),
+  //                   Animated.set(currentDraggingIndex, virtualIndex),
+  //                 ]
+  //               ),
+  //             ],
+  //             [
+  //               Animated.cond(Animated.greaterThan(isDragging, 0), [
+  //                 Animated.debug("stop dragging", virtualIndex),
+  //                 Animated.set(isDragging, 0),
+  //                 Animated.set(draggingGlobalLock, 0),
+  //                 Animated.set(translateYDiff.previous, 0),
+  //                 Animated.set(animatedState.finished, 0),
+  //                 Animated.set(animatedState.time, 0),
+  //                 Animated.set(animatedState.frameTime, 0),
+  //                 Animated.cond(
+  //                   Animated.not(Animated.clockRunning(animatedState.clock)),
+  //                   Animated.startClock(animatedState.clock)
+  //                 ),
+  //                 procOnDragEnd(),
+  //               ]),
+  //             ]
+  //           ),
+  //           Animated.cond(
+  //             Animated.greaterThan(isDragging, 0),
+  //             [
+  //               Animated.cond(
+  //                 Animated.eq(translateYDiff.previous, 0),
+  //                 [
+  //                   Animated.set(
+  //                     animatedState.position,
+  //                     Animated.add(animatedState.position, translationY)
+  //                   ),
+  //                 ],
+  //                 [
+  //                   Animated.set(
+  //                     animatedState.position,
+  //                     Animated.add(
+  //                       animatedState.position,
+  //                       translateYDiff.diff(translationY)
+  //                     )
+  //                   ),
+  //                 ]
+  //               ),
+  //               translateYDiff.set(translationY),
+  //             ],
+  //             [Animated.set(translateYDiff.previous, 0)]
+  //           ),
+  //         ]);
+  //       },
+  //     },
+  //   ]);
+  // }, [
+  //   animatedState.clock,
+  //   animatedState.finished,
+  //   animatedState.frameTime,
+  //   animatedState.position,
+  //   animatedState.time,
+  //   currentDraggingIndex,
+  //   draggingGlobalLock,
+  //   isDragging,
+  //   procOnDragEnd,
+  //   translateYDiff,
+  //   virtualIndex,
+  //   zIndexAdditionOnTransition,
+  // ]);
 
-  const onGestureEvent = useMemo(() => {
-    return Animated.event([
-      {
-        nativeEvent: ({
-          translationY,
-          state,
-        }: {
-          translationY: number;
-          state: number;
-        }) => {
-          return Animated.block([
-            Animated.cond(
-              // Check that the state is BEGEN or ACTIVE.
-              Animated.or(Animated.eq(state, 2), Animated.eq(state, 4)),
-              [
-                Animated.cond(
-                  Animated.and(
-                    Animated.eq(isDragging, 0),
-                    Animated.and(
-                      Animated.not(Animated.clockRunning(animatedState.clock)),
-                      Animated.eq(draggingGlobalLock, 0)
-                    )
-                  ),
-                  [
-                    Animated.debug("start dragging", virtualIndex),
-                    Animated.set(isDragging, 1),
-                    Animated.set(draggingGlobalLock, 1),
-                    Animated.set(zIndexAdditionOnTransition, 10000000),
-                    Animated.set(currentDraggingIndex, virtualIndex),
-                  ]
-                ),
-              ],
-              [
-                Animated.cond(Animated.greaterThan(isDragging, 0), [
-                  Animated.debug("stop dragging", virtualIndex),
-                  Animated.set(isDragging, 0),
-                  Animated.set(draggingGlobalLock, 0),
-                  Animated.set(translateYDiff.previous, 0),
-                  Animated.set(animatedState.finished, 0),
-                  Animated.set(animatedState.time, 0),
-                  Animated.set(animatedState.frameTime, 0),
-                  Animated.cond(
-                    Animated.not(Animated.clockRunning(animatedState.clock)),
-                    Animated.startClock(animatedState.clock)
-                  ),
-                  procOnDragEnd(),
-                ]),
-              ]
-            ),
-            Animated.cond(
-              Animated.greaterThan(isDragging, 0),
-              [
-                Animated.cond(
-                  Animated.eq(translateYDiff.previous, 0),
-                  [
-                    Animated.set(
-                      animatedState.position,
-                      Animated.add(animatedState.position, translationY)
-                    ),
-                  ],
-                  [
-                    Animated.set(
-                      animatedState.position,
-                      Animated.add(
-                        animatedState.position,
-                        translateYDiff.diff(translationY)
-                      )
-                    ),
-                  ]
-                ),
-                translateYDiff.set(translationY),
-              ],
-              [Animated.set(translateYDiff.previous, 0)]
-            ),
-          ]);
-        },
-      },
-    ]);
-  }, [
-    animatedState.clock,
-    animatedState.finished,
-    animatedState.frameTime,
-    animatedState.position,
-    animatedState.time,
-    currentDraggingIndex,
-    draggingGlobalLock,
-    isDragging,
-    procOnDragEnd,
-    translateYDiff,
-    virtualIndex,
-    zIndexAdditionOnTransition,
-  ]);
+  // const positionY = useMemo(() => {
+  //   return Animated.block([
+  //     Animated.cond(Animated.not(Animated.defined(animatedState.position)), [
+  //       Animated.set(
+  //         animatedState.position,
+  //         Animated.add(Animated.multiply(itemHeight, virtualIndex), gapTop)
+  //       ),
+  //     ]),
 
-  const positionY = useMemo(() => {
-    return Animated.block([
-      Animated.cond(Animated.not(Animated.defined(animatedState.position)), [
-        Animated.set(
-          animatedState.position,
-          Animated.add(Animated.multiply(itemHeight, virtualIndex), gapTop)
-        ),
-      ]),
+  //     Animated.cond(
+  //       Animated.eq(isDragging, 0),
+  //       [
+  //         Animated.cond(Animated.greaterOrEq(virtualIndexDiff.previous, 0), [
+  //           Animated.cond(
+  //             Animated.not(Animated.eq(virtualIndexDiff.diff(virtualIndex), 0)),
+  //             [
+  //               Animated.set(
+  //                 zIndexAdditionOnTransition,
+  //                 Animated.multiply(
+  //                   10000,
+  //                   Animated.abs(virtualIndexDiff.diff(virtualIndex))
+  //                 )
+  //               ),
+  //               Animated.set(animatedState.finished, 0),
+  //               Animated.set(animatedState.time, 0),
+  //               Animated.set(animatedState.frameTime, 0),
+  //               Animated.cond(
+  //                 Animated.not(Animated.clockRunning(animatedState.clock)),
+  //                 Animated.startClock(animatedState.clock)
+  //               ),
+  //             ]
+  //           ),
+  //         ]),
 
-      Animated.cond(
-        Animated.eq(isDragging, 0),
-        [
-          Animated.cond(Animated.greaterOrEq(virtualIndexDiff.previous, 0), [
-            Animated.cond(
-              Animated.not(Animated.eq(virtualIndexDiff.diff(virtualIndex), 0)),
-              [
-                Animated.set(
-                  zIndexAdditionOnTransition,
-                  Animated.multiply(
-                    10000,
-                    Animated.abs(virtualIndexDiff.diff(virtualIndex))
-                  )
-                ),
-                Animated.set(animatedState.finished, 0),
-                Animated.set(animatedState.time, 0),
-                Animated.set(animatedState.frameTime, 0),
-                Animated.cond(
-                  Animated.not(Animated.clockRunning(animatedState.clock)),
-                  Animated.startClock(animatedState.clock)
-                ),
-              ]
-            ),
-          ]),
+  //         Animated.timing(animatedState.clock, animatedState, {
+  //           duration: 350,
+  //           toValue: Animated.add(
+  //             Animated.multiply(itemHeight, virtualIndex),
+  //             gapTop
+  //           ),
+  //           easing: Easing.out(Easing.cubic),
+  //         }),
 
-          Animated.timing(animatedState.clock, animatedState, {
-            duration: 350,
-            toValue: Animated.add(
-              Animated.multiply(itemHeight, virtualIndex),
-              gapTop
-            ),
-            easing: Easing.out(Easing.cubic),
-          }),
+  //         Animated.cond(animatedState.finished, [
+  //           Animated.stopClock(animatedState.clock),
+  //           Animated.set(zIndexAdditionOnTransition, 0),
+  //         ]),
+  //       ],
+  //       [
+  //         Animated.set(
+  //           currentDraggingIndex,
+  //           Animated.floor(
+  //             Animated.divide(
+  //               Animated.add(
+  //                 Animated.sub(animatedState.position, gapTop),
+  //                 itemHeight / 2
+  //               ),
+  //               itemHeight
+  //             )
+  //           )
+  //         ),
+  //         Animated.cond(Animated.greaterThan(virtualDividerIndex, 0), [
+  //           Animated.cond(
+  //             Animated.lessThan(virtualIndex, virtualDividerIndex),
+  //             [
+  //               Animated.cond(
+  //                 Animated.greaterOrEq(
+  //                   currentDraggingIndex,
+  //                   virtualDividerIndex
+  //                 ),
+  //                 [
+  //                   Animated.set(
+  //                     currentDraggingIndex,
+  //                     Animated.sub(virtualDividerIndex, 1)
+  //                   ),
+  //                 ]
+  //               ),
+  //             ],
+  //             [
+  //               Animated.cond(
+  //                 Animated.lessThan(currentDraggingIndex, virtualDividerIndex),
+  //                 [Animated.set(currentDraggingIndex, virtualDividerIndex)]
+  //               ),
+  //             ]
+  //           ),
+  //         ]),
+  //         Animated.cond(
+  //           Animated.not(Animated.eq(virtualIndex, currentDraggingIndex)),
+  //           [procOnItemMove(virtualIndex, currentDraggingIndex)]
+  //         ),
+  //       ]
+  //     ),
 
-          Animated.cond(animatedState.finished, [
-            Animated.stopClock(animatedState.clock),
-            Animated.set(zIndexAdditionOnTransition, 0),
-          ]),
-        ],
-        [
-          Animated.set(
-            currentDraggingIndex,
-            Animated.floor(
-              Animated.divide(
-                Animated.add(
-                  Animated.sub(animatedState.position, gapTop),
-                  itemHeight / 2
-                ),
-                itemHeight
-              )
-            )
-          ),
-          Animated.cond(Animated.greaterThan(virtualDividerIndex, 0), [
-            Animated.cond(
-              Animated.lessThan(virtualIndex, virtualDividerIndex),
-              [
-                Animated.cond(
-                  Animated.greaterOrEq(
-                    currentDraggingIndex,
-                    virtualDividerIndex
-                  ),
-                  [
-                    Animated.set(
-                      currentDraggingIndex,
-                      Animated.sub(virtualDividerIndex, 1)
-                    ),
-                  ]
-                ),
-              ],
-              [
-                Animated.cond(
-                  Animated.lessThan(currentDraggingIndex, virtualDividerIndex),
-                  [Animated.set(currentDraggingIndex, virtualDividerIndex)]
-                ),
-              ]
-            ),
-          ]),
-          Animated.cond(
-            Animated.not(Animated.eq(virtualIndex, currentDraggingIndex)),
-            [procOnItemMove(virtualIndex, currentDraggingIndex)]
-          ),
-        ]
-      ),
+  //     virtualIndexDiff.set(virtualIndex),
+  //     animatedState.position,
+  //   ]);
+  // }, [
+  //   animatedState,
+  //   currentDraggingIndex,
+  //   gapTop,
+  //   isDragging,
+  //   itemHeight,
+  //   procOnItemMove,
+  //   virtualDividerIndex,
+  //   virtualIndex,
+  //   virtualIndexDiff,
+  //   zIndexAdditionOnTransition,
+  // ]);
 
-      virtualIndexDiff.set(virtualIndex),
-      animatedState.position,
-    ]);
-  }, [
-    animatedState,
-    currentDraggingIndex,
-    gapTop,
-    isDragging,
-    itemHeight,
-    procOnItemMove,
-    virtualDividerIndex,
-    virtualIndex,
-    virtualIndexDiff,
-    zIndexAdditionOnTransition,
-  ]);
-
+  // return (
+  //   <PanGestureHandler
+  //     enabled={!delegateOnGestureEventToItemView}
+  //     onGestureEvent={onGestureEvent}
+  //     onHandlerStateChange={onGestureEvent}
+  //   >
+  //     <Animated.View
+  //       style={{
+  //         position: "absolute",
+  //         height: itemHeight,
+  //         width: "100%",
+  //         top: positionY,
+  //         zIndex: Animated.add(virtualIndex, zIndexAdditionOnTransition),
+  //       }}
+  //     >
+  //       {renderItem(item, {
+  //         isDragging,
+  //         onGestureEvent,
+  //       })}
+  //     </Animated.View>
+  //   </PanGestureHandler>
+  // );
   return (
-    <PanGestureHandler
-      enabled={!delegateOnGestureEventToItemView}
-      onGestureEvent={onGestureEvent}
-      onHandlerStateChange={onGestureEvent}
-    >
-      <Animated.View
-        style={{
-          position: "absolute",
-          height: itemHeight,
-          width: "100%",
-          top: positionY,
-          zIndex: Animated.add(virtualIndex, zIndexAdditionOnTransition),
-        }}
-      >
-        {renderItem(item, {
-          isDragging,
-          onGestureEvent,
-        })}
-      </Animated.View>
-    </PanGestureHandler>
+    <View>
+      <Text>List</Text>
+    </View>
   );
 };

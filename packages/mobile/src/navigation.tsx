@@ -115,7 +115,7 @@ import {
   JunoswapWebpageScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
-import { UnlockScreen } from "./screens/unlock";
+// import { UnlockScreen } from "./screens/unlock";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -362,9 +362,8 @@ const HomeScreenHeaderLeft: FunctionComponent = observer(() => {
             style.flatten(["color-blue-400", "dark:color-platinum-300"]).color
           }
         />
-        <Text style={style.flatten(["h4", "color-text-high", "margin-left-4"])}>
-          {chainStore.current.chainName}
-        </Text>
+        {/* style={style.flatten(["h4", "color-text-high", "margin-left-4"])} */}
+        <Text>{chainStore.current.chainName}</Text>
       </View>
     </HeaderLeftButton>
   );
@@ -420,9 +419,9 @@ export const MainNavigation: FunctionComponent = () => {
     <Stack.Navigator
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
       }}
       initialRouteName="Home"
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -447,9 +446,9 @@ export const RegisterNavigation: FunctionComponent = () => {
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerMode: "screen",
       }}
       initialRouteName="Register.Intro"
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -560,8 +559,8 @@ export const OtherNavigation: FunctionComponent = () => {
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerMode: "screen",
       }}
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -731,8 +730,8 @@ export const SettingStackScreen: FunctionComponent = () => {
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerMode: "screen",
       }}
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -790,8 +789,8 @@ export const AddressBookStackScreen: FunctionComponent = () => {
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerMode: "screen",
       }}
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -821,8 +820,8 @@ export const ChainListStackScreen: FunctionComponent = () => {
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerMode: "screen",
       }}
-      headerMode="screen"
     >
       <Stack.Screen
         options={{
@@ -842,8 +841,8 @@ export const WebNavigation: FunctionComponent = () => {
       initialRouteName="Web.Intro"
       screenOptions={{
         ...WebpageScreenScreenOptionsPreset,
+        headerMode: "screen",
       }}
-      headerMode="screen"
     >
       <Stack.Screen
         options={{ headerShown: false }}
@@ -1017,7 +1016,7 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
         // If the focused screen is not "Home" screen,
         // disable the gesture to open drawer.
         swipeEnabled: focused.name === "Home",
-        gestureEnabled: focused.name === "Home",
+        // gestureEnabled: focused.name === "Home",
       }}
       overlayColor={
         style.flatten(["color-gray-700@50%", "dark:color-gray-700@75%"]).color
@@ -1099,10 +1098,10 @@ export const AppNavigation: FunctionComponent = observer(() => {
               screenOptions={{
                 headerShown: false,
                 ...TransitionPresets.SlideFromRightIOS,
+                headerMode: "screen",
               }}
-              headerMode="screen"
             >
-              <Stack.Screen name="Unlock" component={UnlockScreen} />
+              {/* <Stack.Screen name="Unlock" component={UnlockScreen} /> */}
               <Stack.Screen
                 name="MainTabDrawer"
                 component={MainTabNavigationWithDrawer}
