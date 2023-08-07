@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import style from "./style.module.scss";
 import { useNavigate } from "react-router-dom";
 import searchButton from "@assets/icon/search.png";
-import arrowIcon from "@assets/icon/send-token.png";
 
 export const SearchInput = () => {
   const navigate = useNavigate();
@@ -88,7 +87,11 @@ export const SearchInput = () => {
         }
       >
         Register{" "}
-        <img src={arrowIcon} className={style["registerIcon"]} alt="" />
+        <img
+          src={require("@assets/svg/arrow-right.svg")}
+          className={style["registerIcon"]}
+          alt=""
+        />
       </button>
     </React.Fragment>
   );
