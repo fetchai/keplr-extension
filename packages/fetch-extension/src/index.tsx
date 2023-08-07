@@ -102,6 +102,9 @@ import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
 import { FetchnameService } from "./pages/fetch-name-service";
 import { DomainDetails } from "./pages/fetch-name-service/domain-details";
+import { AgentNameService } from "./pages/agent-name-service";
+import { AgentDomainDetails } from "./pages/agent-name-service/domain-details";
+import { RegisterAgentDomains } from "./pages/agent-name-service/register-new";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -254,6 +257,18 @@ ReactDOM.render(
                       <Route
                         path="/fetch-name-service/domain-details/:domain"
                         element={<DomainDetails />}
+                      />
+                      <Route
+                        path="/agent-name-service"
+                        element={<AgentNameService />}
+                      />
+                      <Route
+                        path="/agent-name-service/domain-details/:domain"
+                        element={<AgentDomainDetails />}
+                      />
+                      <Route
+                        path="/agent-name-service/register-new/"
+                        element={<RegisterAgentDomains />}
                       />
                       <Route
                         path="/setting/set-keyring"
