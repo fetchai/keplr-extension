@@ -26,11 +26,11 @@ export const WCAppLogoAndName: FunctionComponent<{
       <WCAppLogo
         peerMeta={peerMeta}
         logoStyle={StyleSheet.flatten([
-          style.flatten(["margin-bottom-16"]),
+          style.flatten(["margin-bottom-16"]) as ImageStyle,
           logoStyle,
         ])}
         altLogoStyle={StyleSheet.flatten([
-          style.flatten(["margin-bottom-16"]),
+          style.flatten(["margin-bottom-16"]) as ViewStyle,
           altLogoStyle,
         ])}
       />

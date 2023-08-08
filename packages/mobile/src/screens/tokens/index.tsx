@@ -77,7 +77,7 @@ export const TokensScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView backgroundMode="gradient">
       {tokens.length > 0 ? (
-        <Card style={style.flatten(["padding-bottom-14"])}>
+        <Card style={style.flatten(["padding-bottom-14"]) as ViewStyle}>
           {tokens.map((token) => {
             return (
               <TokenItem
@@ -125,7 +125,7 @@ export const TokenItem: FunctionComponent<{
           "items-center",
           "padding-x-card-horizontal",
           "padding-y-14",
-        ]),
+        ]) as ViewStyle,
         containerStyle,
       ])}
       onPress={() => {
@@ -135,24 +135,32 @@ export const TokenItem: FunctionComponent<{
       }}
     >
       <TokenSymbol
-        style={style.flatten(["margin-right-12"])}
+        style={style.flatten(["margin-right-12"]) as ViewStyle}
         size={44}
         chainInfo={chainInfo}
         currency={balance.currency}
       />
       <View>
         <Text
-          style={style.flatten([
-            "subtitle3",
-            "color-text-low",
-            "margin-bottom-4",
-            "uppercase",
-          ])}
+          style={
+            style.flatten([
+              "subtitle3",
+              "color-text-low",
+              "margin-bottom-4",
+              "uppercase",
+            ]) as ViewStyle
+          }
         >
           {balance.currency.coinDenom}
         </Text>
         <Text
-          style={style.flatten(["h5", "color-text-high", "max-width-240"])}
+          style={
+            style.flatten([
+              "h5",
+              "color-text-high",
+              "max-width-240",
+            ]) as ViewStyle
+          }
           numberOfLines={1}
           ellipsizeMode="tail"
         >

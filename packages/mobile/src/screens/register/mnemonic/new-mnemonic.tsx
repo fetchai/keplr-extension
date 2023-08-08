@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { RouteProp, useIsFocused, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
@@ -69,17 +69,19 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       {/* Mock for flexible margin top */}
-      <View style={style.flatten(["max-height-32", "flex-1"])} />
+      <View style={style.flatten(["max-height-32", "flex-1"]) as ViewStyle} />
       <Text
-        style={style.flatten([
-          "h5",
-          "color-text-middle",
-          "margin-bottom-4",
-          "text-center",
-        ])}
+        style={
+          style.flatten([
+            "h5",
+            "color-text-middle",
+            "margin-bottom-4",
+            "text-center",
+          ]) as ViewStyle
+        }
       >
         Backup your mnemonic securely
       </Text>
@@ -93,7 +95,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
           return (
             <TextInput
               label="Wallet nickname"
-              containerStyle={style.flatten(["padding-bottom-6"])}
+              containerStyle={style.flatten(["padding-bottom-6"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -186,7 +188,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["flex-1"])} />
       <Button text="Next" size="large" onPress={submit} />
       {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });
@@ -218,18 +220,20 @@ const WordsCard: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten([
-        "margin-top-14",
-        "margin-bottom-16",
-        "padding-24",
-        "padding-x-28",
-        "padding-bottom-12",
-        "background-color-white",
-        "dark:background-color-platinum-700",
-        "border-radius-8",
-        "flex-row",
-        "flex-wrap",
-      ])}
+      style={
+        style.flatten([
+          "margin-top-14",
+          "margin-bottom-16",
+          "padding-24",
+          "padding-x-28",
+          "padding-bottom-12",
+          "background-color-white",
+          "dark:background-color-platinum-700",
+          "border-radius-8",
+          "flex-row",
+          "flex-wrap",
+        ]) as ViewStyle
+      }
     >
       {words.map((word, i) => {
         return (
@@ -241,7 +245,7 @@ const WordsCard: FunctionComponent<{
           />
         );
       })}
-      <View style={style.flatten(["width-full"])}>
+      <View style={style.flatten(["width-full"]) as ViewStyle}>
         <Button
           textStyle={style.flatten(
             ["text-button1", "color-blue-400", "dark:color-platinum-50"],
@@ -250,7 +254,7 @@ const WordsCard: FunctionComponent<{
           mode="text"
           {...(isTimedOut && {
             rightIcon: (
-              <View style={style.flatten(["margin-left-8"])}>
+              <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
                 <CheckIcon />
               </View>
             ),

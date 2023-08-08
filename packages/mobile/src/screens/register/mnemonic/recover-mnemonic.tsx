@@ -7,7 +7,7 @@ import { useStyle } from "../../../styles";
 import { useSmartNavigation } from "../../../navigation";
 import { Controller, useForm } from "react-hook-form";
 import { TextInput } from "../../../components/input";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import { Button } from "../../../components/button";
 import Clipboard from "expo-clipboard";
 import { useStore } from "../../../stores";
@@ -129,7 +129,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <Controller
         control={control}
@@ -171,16 +171,15 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
               returnKeyType="next"
               multiline={true}
               numberOfLines={4}
-              inputContainerStyle={style.flatten([
-                "padding-x-20",
-                "padding-y-16",
-              ])}
+              inputContainerStyle={
+                style.flatten(["padding-x-20", "padding-y-16"]) as ViewStyle
+              }
               bottomInInputContainer={
                 <View style={style.flatten(["flex-row"])}>
                   <View style={style.flatten(["flex-1"])} />
                   <Button
-                    containerStyle={style.flatten(["height-36"])}
-                    style={style.flatten(["padding-x-12"])}
+                    containerStyle={style.flatten(["height-36"]) as ViewStyle}
+                    style={style.flatten(["padding-x-12"]) as ViewStyle}
                     mode="text"
                     text="Paste"
                     onPress={async () => {
@@ -226,7 +225,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
           return (
             <TextInput
               label="Wallet nickname"
-              containerStyle={style.flatten(["padding-bottom-6"])}
+              containerStyle={style.flatten(["padding-bottom-6"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -319,7 +318,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["flex-1"])} />
       <Button text="Next" size="large" loading={isCreating} onPress={submit} />
       {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

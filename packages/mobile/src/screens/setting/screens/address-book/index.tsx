@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "../../../../components/page";
 import { useStyle } from "../../../../styles";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useSmartNavigation } from "../../../../navigation";
 import {
   IMemoConfig,
@@ -97,17 +97,19 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
 
   return addressBookConfig.addressBookDatas.length > 0 ? (
     <PageWithScrollView backgroundMode="secondary">
-      <View style={style.flatten(["height-card-gap"])} />
+      <View style={style.flatten(["height-card-gap"]) as ViewStyle} />
       {addressBookConfig.addressBookDatas.map((data, i) => {
         return (
           <React.Fragment key={i.toString()}>
             <AddressBookItem
-              style={style.flatten([
-                "background-color-white",
-                "dark:background-color-platinum-600",
-                "padding-x-18",
-                "padding-y-14",
-              ])}
+              style={
+                style.flatten([
+                  "background-color-white",
+                  "dark:background-color-platinum-600",
+                  "padding-x-18",
+                  "padding-y-14",
+                ]) as ViewStyle
+              }
               enabled={isInTransaction}
               onPress={() => {
                 if (isInTransaction) {
@@ -125,21 +127,25 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
               >
                 <View>
                   <Text
-                    style={style.flatten([
-                      "subtitle2",
-                      "color-text-middle",
-                      "margin-bottom-4",
-                    ])}
+                    style={
+                      style.flatten([
+                        "subtitle2",
+                        "color-text-middle",
+                        "margin-bottom-4",
+                      ]) as ViewStyle
+                    }
                   >
                     {data.name}
                   </Text>
                   {data.memo ? (
                     <Text
-                      style={style.flatten([
-                        "body3",
-                        "color-text-low",
-                        "margin-bottom-4",
-                      ])}
+                      style={
+                        style.flatten([
+                          "body3",
+                          "color-text-low",
+                          "margin-bottom-4",
+                        ]) as ViewStyle
+                      }
                     >
                       {data.memo}
                     </Text>
@@ -155,7 +161,12 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  style={style.flatten(["padding-left-8", "padding-y-12"])}
+                  style={
+                    style.flatten([
+                      "padding-left-8",
+                      "padding-y-12",
+                    ]) as ViewStyle
+                  }
                   onPress={async () => {
                     if (
                       await confirmModal.confirm({
@@ -184,11 +195,13 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
             </AddressBookItem>
             {addressBookConfig.addressBookDatas.length - 1 !== i ? (
               <View
-                style={style.flatten([
-                  "height-1",
-                  "background-color-gray-50",
-                  "dark:background-color-platinum-500",
-                ])}
+                style={
+                  style.flatten([
+                    "height-1",
+                    "background-color-gray-50",
+                    "dark:background-color-platinum-500",
+                  ]) as ViewStyle
+                }
               />
             ) : null}
           </React.Fragment>
@@ -203,7 +216,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
     >
       <View style={style.flatten(["flex-1"])} />
       <View style={style.flatten(["justify-center", "items-center"])}>
-        <View style={style.flatten(["margin-bottom-21"])}>
+        <View style={style.flatten(["margin-bottom-21"]) as ViewStyle}>
           <AddressBookIcon
             color={
               style.flatten(["color-gray-200", "dark:color-platinum-300"]).color
@@ -221,7 +234,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
           Address book is empty
         </Text>
       </View>
-      <View style={style.flatten(["margin-top-68", "flex-1"])} />
+      <View style={style.flatten(["margin-top-68", "flex-1"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

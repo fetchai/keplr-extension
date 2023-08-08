@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { Dec } from "@keplr-wallet/unit";
 import { UnbondingCard } from "./unbonding-card";
+import { ViewStyle } from "react-native";
 
 export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -44,12 +45,14 @@ export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView backgroundMode="gradient">
       <ValidatorDetailsCard
-        containerStyle={style.flatten(["margin-y-card-gap"])}
+        containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
         validatorAddress={validatorAddress}
       />
       {staked.toDec().gt(new Dec(0)) ? (
         <DelegatedCard
-          containerStyle={style.flatten(["margin-bottom-card-gap"])}
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
           validatorAddress={validatorAddress}
         />
       ) : null}

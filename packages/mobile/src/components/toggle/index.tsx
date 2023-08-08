@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   View,
+  ViewStyle,
 } from "react-native";
 import { useStyle } from "../../styles";
 
@@ -84,38 +85,44 @@ export const Toggle: FunctionComponent<{
           onChange(!on);
         }}
       >
-        <View style={style.flatten(["padding-y-6", "padding-x-8"])}>
+        <View
+          style={style.flatten(["padding-y-6", "padding-x-8"]) as ViewStyle}
+        >
           <Animated.View
-            style={StyleSheet.flatten([
-              style.flatten([
-                "relative",
-                "margin-y-12",
-                "width-34",
-                "height-18",
-                "border-radius-64",
-                "flex-row",
-                "items-center",
-              ]),
-              {
-                backgroundColor,
-              },
-            ])}
-          >
-            <Animated.View
-              style={StyleSheet.flatten([
+            style={
+              StyleSheet.flatten([
                 style.flatten([
-                  "absolute",
-                  "width-24",
-                  "height-24",
-                  "border-width-1",
+                  "relative",
+                  "margin-y-12",
+                  "width-34",
+                  "height-18",
                   "border-radius-64",
+                  "flex-row",
+                  "items-center",
                 ]),
                 {
-                  backgroundColor: color,
-                  borderColor: borderColorForAndroid,
-                  transform: [{ translateX: ballLeft }],
+                  backgroundColor,
                 },
-              ])}
+              ]) as ViewStyle
+            }
+          >
+            <Animated.View
+              style={
+                StyleSheet.flatten([
+                  style.flatten([
+                    "absolute",
+                    "width-24",
+                    "height-24",
+                    "border-width-1",
+                    "border-radius-64",
+                  ]),
+                  {
+                    backgroundColor: color,
+                    borderColor: borderColorForAndroid,
+                    transform: [{ translateX: ballLeft }],
+                  },
+                ]) as ViewStyle
+              }
             />
           </Animated.View>
         </View>
@@ -129,27 +136,31 @@ export const Toggle: FunctionComponent<{
         }}
       >
         <Animated.View
-          style={StyleSheet.flatten([
-            style.flatten([
-              "width-54",
-              "height-30",
-              "border-radius-64",
-              "flex-row",
-              "items-center",
-            ]),
-            {
-              backgroundColor,
-            },
-          ])}
+          style={
+            StyleSheet.flatten([
+              style.flatten([
+                "width-54",
+                "height-30",
+                "border-radius-64",
+                "flex-row",
+                "items-center",
+              ]),
+              {
+                backgroundColor,
+              },
+            ]) as ViewStyle
+          }
         >
           <Animated.View
-            style={StyleSheet.flatten([
-              style.flatten(["width-24", "height-24", "border-radius-64"]),
-              {
-                backgroundColor: color,
-                transform: [{ translateX: ballLeft }],
-              },
-            ])}
+            style={
+              StyleSheet.flatten([
+                style.flatten(["width-24", "height-24", "border-radius-64"]),
+                {
+                  backgroundColor: color,
+                  transform: [{ translateX: ballLeft }],
+                },
+              ]) as ViewStyle
+            }
           />
         </Animated.View>
       </TouchableWithoutFeedback>

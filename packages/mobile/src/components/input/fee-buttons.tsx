@@ -1,5 +1,12 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { StyleSheet, Text, TextStyle, View, ViewProps } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewProps,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "../../styles";
 import { observer } from "mobx-react-lite";
 import { action, makeObservable, observable } from "mobx";
@@ -136,19 +143,21 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
     ) => React.ReactElement = (label, price, amount, selected, onPress) => {
       return (
         <RectButton
-          style={style.flatten(
-            [
-              "flex-1",
-              "items-center",
-              "padding-y-14",
-              "background-color-white",
-              "dark:background-color-platinum-700",
-            ],
-            [
-              selected && "background-color-blue-100",
-              selected && "dark:background-color-platinum-400",
-            ]
-          )}
+          style={
+            style.flatten(
+              [
+                "flex-1",
+                "items-center",
+                "padding-y-14",
+                "background-color-white",
+                "dark:background-color-platinum-700",
+              ],
+              [
+                selected && "background-color-blue-100",
+                selected && "dark:background-color-platinum-400",
+              ]
+            ) as ViewStyle
+          }
           rippleColor={
             style.flatten(["color-blue-100", "dark:color-platinum-300"]).color
           }
@@ -167,35 +176,39 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
           </Text>
           {price ? (
             <Text
-              style={style.flatten(
-                [
-                  "padding-top-2",
-                  "h7",
-                  "color-gray-300",
-                  "dark:color-platinum-400",
-                ],
-                [
-                  selected && "color-blue-300",
-                  selected && "dark:color-platinum-100",
-                ]
-              )}
+              style={
+                style.flatten(
+                  [
+                    "padding-top-2",
+                    "h7",
+                    "color-gray-300",
+                    "dark:color-platinum-400",
+                  ],
+                  [
+                    selected && "color-blue-300",
+                    selected && "dark:color-platinum-100",
+                  ]
+                ) as ViewStyle
+              }
             >
               {price.toString()}
             </Text>
           ) : null}
           <Text
-            style={style.flatten(
-              [
-                "padding-top-2",
-                "text-caption1",
-                "color-gray-200",
-                "dark:color-platinum-500",
-              ],
-              [
-                selected && "color-blue-200",
-                selected && "dark:color-platinum-200",
-              ]
-            )}
+            style={
+              style.flatten(
+                [
+                  "padding-top-2",
+                  "text-caption1",
+                  "color-gray-200",
+                  "dark:color-platinum-500",
+                ],
+                [
+                  selected && "color-blue-200",
+                  selected && "dark:color-platinum-200",
+                ]
+              ) as ViewStyle
+            }
           >
             {amount.maxDecimals(6).trim(true).separator("").toString()}
           </Text>
@@ -206,13 +219,17 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
     return (
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-bottom-28"]),
+          style.flatten(["padding-bottom-28"]) as ViewStyle,
           containerStyle,
         ])}
       >
         <Text
           style={StyleSheet.flatten([
-            style.flatten(["subtitle3", "color-text-label", "margin-bottom-3"]),
+            style.flatten([
+              "subtitle3",
+              "color-text-label",
+              "margin-bottom-3",
+            ]) as ViewStyle,
             labelStyle,
           ])}
         >
@@ -241,11 +258,13 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             }
           )}
           <View
-            style={style.flatten([
-              "width-1",
-              "background-color-gray-100@20%",
-              "dark:background-color-platinum-600@50%",
-            ])}
+            style={
+              style.flatten([
+                "width-1",
+                "background-color-gray-100@20%",
+                "dark:background-color-platinum-600@50%",
+              ]) as ViewStyle
+            }
           />
           {renderButton(
             "Average",
@@ -257,11 +276,13 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             }
           )}
           <View
-            style={style.flatten([
-              "width-1",
-              "background-color-gray-100@20%",
-              "dark:background-color-platinum-600@50%",
-            ])}
+            style={
+              style.flatten([
+                "width-1",
+                "background-color-gray-100@20%",
+                "dark:background-color-platinum-600@50%",
+              ]) as ViewStyle
+            }
           />
           {renderButton(
             "High",
@@ -276,13 +297,15 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
         {isFeeLoading ? (
           <View>
             <View
-              style={style.flatten([
-                "absolute",
-                "height-16",
-                "justify-center",
-                "margin-top-2",
-                "margin-left-4",
-              ])}
+              style={
+                style.flatten([
+                  "absolute",
+                  "height-16",
+                  "justify-center",
+                  "margin-top-2",
+                  "margin-left-4",
+                ]) as ViewStyle
+              }
             >
               <LoadingSpinner
                 size={14}
@@ -301,7 +324,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                   "color-red-400",
                   "margin-top-2",
                   "margin-left-4",
-                ]),
+                ]) as ViewStyle,
                 errorLabelStyle,
               ])}
             >

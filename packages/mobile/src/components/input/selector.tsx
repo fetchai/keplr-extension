@@ -37,39 +37,45 @@ export const SelectorModal: FunctionComponent<{
       if (selected) {
         return (
           <View
-            style={style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-blue-400",
-              "dark:background-color-blue-300",
-              "items-center",
-              "justify-center",
-            ])}
+            style={
+              style.flatten([
+                "width-24",
+                "height-24",
+                "border-radius-32",
+                "background-color-blue-400",
+                "dark:background-color-blue-300",
+                "items-center",
+                "justify-center",
+              ]) as ViewStyle
+            }
           >
             <View
-              style={style.flatten([
-                "width-12",
-                "height-12",
-                "border-radius-32",
-                "background-color-white",
-              ])}
+              style={
+                style.flatten([
+                  "width-12",
+                  "height-12",
+                  "border-radius-32",
+                  "background-color-white",
+                ]) as ViewStyle
+              }
             />
           </View>
         );
       } else {
         return (
           <View
-            style={style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-white",
-              "dark:background-color-platinum-600",
-              "border-width-1",
-              "border-color-gray-100",
-              "dark:border-color-platinum-300",
-            ])}
+            style={
+              style.flatten([
+                "width-24",
+                "height-24",
+                "border-radius-32",
+                "background-color-white",
+                "dark:background-color-platinum-600",
+                "border-width-1",
+                "border-color-gray-100",
+                "dark:border-color-platinum-300",
+              ]) as ViewStyle
+            }
           />
         );
       }
@@ -104,7 +110,7 @@ export const SelectorModal: FunctionComponent<{
     };
 
     return (
-      <View style={style.flatten(["padding-page"])}>
+      <View style={style.flatten(["padding-page"]) as ViewStyle}>
         <View
           style={style.flatten([
             "border-radius-8",
@@ -126,21 +132,23 @@ export const SelectorModal: FunctionComponent<{
               return (
                 <RectButton
                   key={item.key}
-                  style={style.flatten(
-                    [
-                      "height-64",
-                      "padding-left-36",
-                      "padding-right-28",
-                      "flex-row",
-                      "items-center",
-                      "justify-between",
-                    ],
-                    [
-                      item.key === selectedKey && "background-color-blue-50",
-                      item.key === selectedKey &&
-                        "dark:background-color-platinum-500",
-                    ]
-                  )}
+                  style={
+                    style.flatten(
+                      [
+                        "height-64",
+                        "padding-left-36",
+                        "padding-right-28",
+                        "flex-row",
+                        "items-center",
+                        "justify-between",
+                      ],
+                      [
+                        item.key === selectedKey && "background-color-blue-50",
+                        item.key === selectedKey &&
+                          "dark:background-color-platinum-500",
+                      ]
+                    ) as ViewStyle
+                  }
                   onPress={() => {
                     setSelectedKey(item.key);
                     if (!modalPersistent) {
@@ -267,13 +275,17 @@ export const SelectorButtonWithoutModal: FunctionComponent<{
   return (
     <View
       style={StyleSheet.flatten([
-        style.flatten(["padding-bottom-28"]),
+        style.flatten(["padding-bottom-28"]) as ViewStyle,
         containerStyle,
       ])}
     >
       <Text
         style={StyleSheet.flatten([
-          style.flatten(["subtitle3", "color-text-label", "margin-bottom-3"]),
+          style.flatten([
+            "subtitle3",
+            "color-text-label",
+            "margin-bottom-3",
+          ]) as ViewStyle,
           labelStyle,
         ])}
       >
@@ -296,7 +308,7 @@ export const SelectorButtonWithoutModal: FunctionComponent<{
               isFocused ? "border-color-blue-400" : undefined,
               isFocused ? "dark:border-color-platinum-100" : undefined,
             ]
-          ),
+          ) as ViewStyle,
           selectorContainerStyle,
         ])}
         onPress={onPress}
@@ -311,7 +323,7 @@ export const SelectorButtonWithoutModal: FunctionComponent<{
                 "padding-0",
               ],
               [!selected && "color-gray-400", !selected && "color-platinum-200"]
-            ),
+            ) as ViewStyle,
             textStyle,
           ])}
         >

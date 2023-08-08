@@ -6,6 +6,7 @@ import { useStore } from "../../stores";
 import { ObservableQueryProposal } from "@keplr-wallet/stores";
 import { Card, CardDivider } from "../../components/card";
 import { useStyle } from "../../styles";
+import { ViewStyle } from "react-native";
 
 export const GovernanceScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore } = useStore();
@@ -39,13 +40,16 @@ export const GovernanceScreen: FunctionComponent = observer(() => {
         return (
           <React.Fragment>
             <Card
-              style={style.flatten(
-                [],
-                [
-                  index === 0 && "margin-top-card-gap",
-                  index === section.data.length - 1 && "margin-bottom-card-gap",
-                ]
-              )}
+              style={
+                style.flatten(
+                  [],
+                  [
+                    index === 0 && "margin-top-card-gap",
+                    index === section.data.length - 1 &&
+                      "margin-bottom-card-gap",
+                  ]
+                ) as ViewStyle
+              }
             >
               <GovernanceCardBody proposalId={item.id} />
               {index === section.data.length - 1 ? null : <CardDivider />}

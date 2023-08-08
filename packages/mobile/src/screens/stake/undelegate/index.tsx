@@ -6,7 +6,7 @@ import { useStyle } from "../../../styles";
 import { useUndelegateTxConfig } from "@keplr-wallet/hooks";
 import { PageWithScrollView } from "../../../components/page";
 import { AmountInput, FeeButtons, MemoInput } from "../../../components/input";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { Button } from "../../../components/button";
 import { Card, CardBody, CardDivider } from "../../../components/card";
 import { Staking } from "@keplr-wallet/stores";
@@ -88,21 +88,23 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView
       backgroundMode="tertiary"
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
       contentContainerStyle={style.get("flex-grow-1")}
     >
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <Card
-        style={style.flatten([
-          "margin-bottom-12",
-          "border-radius-8",
-          "dark:background-color-platinum-500",
-        ])}
+        style={
+          style.flatten([
+            "margin-bottom-12",
+            "border-radius-8",
+            "dark:background-color-platinum-500",
+          ]) as ViewStyle
+        }
       >
         <CardBody>
           <View style={style.flatten(["flex-row", "items-center"])}>
             <ValidatorThumbnail
-              style={style.flatten(["margin-right-12"])}
+              style={style.flatten(["margin-right-12"]) as ViewStyle}
               size={36}
               url={validatorThumbnail}
             />
@@ -111,11 +113,13 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
             </Text>
           </View>
           <CardDivider
-            style={style.flatten([
-              "margin-x-0",
-              "margin-top-8",
-              "margin-bottom-15",
-            ])}
+            style={
+              style.flatten([
+                "margin-x-0",
+                "margin-top-8",
+                "margin-bottom-15",
+              ]) as ViewStyle
+            }
           />
           <View style={style.flatten(["flex-row", "items-center"])}>
             <Text style={style.flatten(["subtitle2", "color-text-middle"])}>
@@ -193,7 +197,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

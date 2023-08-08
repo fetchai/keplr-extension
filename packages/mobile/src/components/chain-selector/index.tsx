@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { registerModal } from "../../modals/base";
 import { CardModal } from "../../modals/card";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
@@ -23,10 +23,10 @@ export const ChainSelectorModal: FunctionComponent<{
     return (
       <CardModal
         title="Select Chain"
-        childrenContainerStyle={style.flatten(["padding-0"])}
+        childrenContainerStyle={style.flatten(["padding-0"]) as ViewStyle}
       >
         <ScrollView
-          style={style.flatten(["max-height-600"])}
+          style={style.flatten(["max-height-600"]) as ViewStyle}
           indicatorStyle={style.theme === "dark" ? "white" : "black"}
         >
           {chainIds.map((chainId) => {
@@ -41,26 +41,30 @@ export const ChainSelectorModal: FunctionComponent<{
             return (
               <RectButton
                 key={chainId}
-                style={style.flatten([
-                  "padding-x-20",
-                  "padding-y-15",
-                  "flex-row",
-                  "items-center",
-                ])}
+                style={
+                  style.flatten([
+                    "padding-x-20",
+                    "padding-y-15",
+                    "flex-row",
+                    "items-center",
+                  ]) as ViewStyle
+                }
                 onPress={() => {
                   onSelectChain(chainId);
                 }}
               >
                 <View
-                  style={style.flatten([
-                    "width-40",
-                    "height-40",
-                    "border-radius-64",
-                    "items-center",
-                    "justify-center",
-                    "background-color-blue-400",
-                    "margin-right-12",
-                  ])}
+                  style={
+                    style.flatten([
+                      "width-40",
+                      "height-40",
+                      "border-radius-64",
+                      "items-center",
+                      "justify-center",
+                      "background-color-blue-400",
+                      "margin-right-12",
+                    ]) as ViewStyle
+                  }
                 >
                   {chainImage ? (
                     <FastImage

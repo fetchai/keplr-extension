@@ -5,6 +5,7 @@ import { useStyle } from "../../../styles";
 import { PasswordInputModal } from "../../../modals/password-input/modal";
 import { useStore } from "../../../stores";
 import { useNavigation } from "@react-navigation/native";
+import { ViewStyle } from "react-native";
 
 export const SettingRemoveAccountItem: FunctionComponent<{
   topBorder?: boolean;
@@ -24,7 +25,7 @@ export const SettingRemoveAccountItem: FunctionComponent<{
         onPress={() => {
           setIsOpenModal(true);
         }}
-        containerStyle={style.flatten(["margin-top-16"])}
+        containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
         labelStyle={style.flatten(["subtitle1", "color-red-400"])}
         style={style.flatten([
           "justify-center",

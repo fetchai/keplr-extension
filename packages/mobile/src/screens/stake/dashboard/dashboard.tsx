@@ -5,6 +5,7 @@ import { DelegationsCard } from "./delegations-card";
 import { UndelegationsCard } from "./undelegations-card";
 import { useStyle } from "../../../styles";
 import { useStore } from "../../../stores";
+import { ViewStyle } from "react-native";
 
 export const StakingDashboardScreen: FunctionComponent = () => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -21,13 +22,17 @@ export const StakingDashboardScreen: FunctionComponent = () => {
 
   return (
     <PageWithScrollView backgroundMode="gradient">
-      <MyRewardCard containerStyle={style.flatten(["margin-y-card-gap"])} />
+      <MyRewardCard
+        containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
+      />
       <DelegationsCard
-        containerStyle={style.flatten(["margin-bottom-card-gap"])}
+        containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
       />
       {unbondings.length > 0 ? (
         <UndelegationsCard
-          containerStyle={style.flatten(["margin-bottom-card-gap"])}
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
         />
       ) : null}
     </PageWithScrollView>

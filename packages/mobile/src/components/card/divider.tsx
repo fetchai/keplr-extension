@@ -15,7 +15,7 @@ export const CardDivider: FunctionComponent<{
           "margin-x-card-horizontal",
           "background-color-gray-200@40%",
           "dark:background-color-platinum-400@40%",
-        ]),
+        ]) as ViewStyle,
         propStyle,
       ])}
     />

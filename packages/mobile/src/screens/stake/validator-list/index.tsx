@@ -2,7 +2,7 @@ import React, { FunctionComponent, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { PageWithSectionList } from "../../../components/page";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { Staking } from "@keplr-wallet/stores";
 import { useStyle } from "../../../styles";
 import { SelectorModal, TextInput } from "../../../components/input";
@@ -148,37 +148,49 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
         }}
         ItemSeparatorComponent={() => (
           <View
-            style={style.flatten([
-              "height-1",
-              "background-color-gray-50",
-              "dark:background-color-platinum-500",
-            ])}
+            style={
+              style.flatten([
+                "height-1",
+                "background-color-gray-50",
+                "dark:background-color-platinum-500",
+              ]) as ViewStyle
+            }
           />
         )}
         renderSectionHeader={() => {
           return (
             <View>
               <View
-                style={style.flatten(["absolute", "width-full", "height-full"])}
-              >
-                <View
-                  style={style.flatten([
+                style={
+                  style.flatten([
+                    "absolute",
                     "width-full",
                     "height-full",
-                    "background-color-background-secondary",
-                  ])}
+                  ]) as ViewStyle
+                }
+              >
+                <View
+                  style={
+                    style.flatten([
+                      "width-full",
+                      "height-full",
+                      "background-color-background-secondary",
+                    ]) as ViewStyle
+                  }
                 />
               </View>
               <View
-                style={style.flatten([
-                  "padding-x-20",
-                  "padding-top-12",
-                  "padding-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "padding-x-20",
+                    "padding-top-12",
+                    "padding-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 <TextInput
                   placeholder="Search"
-                  containerStyle={style.flatten(["padding-0"])}
+                  containerStyle={style.flatten(["padding-0"]) as ViewStyle}
                   inputContainerStyle={style.flatten([
                     "dark:background-color-platinum-500",
                     "dark:border-width-0",
@@ -191,25 +203,36 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
                     setSearch(text);
                   }}
                   paragraph={
-                    <View style={style.flatten(["flex-row", "margin-top-12"])}>
+                    <View
+                      style={
+                        style.flatten([
+                          "flex-row",
+                          "margin-top-12",
+                        ]) as ViewStyle
+                      }
+                    >
                       <View style={style.flatten(["flex-1"])} />
                       <RectButton
-                        style={style.flatten([
-                          "flex-row",
-                          "items-center",
-                          "padding-x-2",
-                        ])}
+                        style={
+                          style.flatten([
+                            "flex-row",
+                            "items-center",
+                            "padding-x-2",
+                          ]) as ViewStyle
+                        }
                         onPress={() => {
                           setIsSortModalOpen(true);
                         }}
                       >
                         <Text
-                          style={style.flatten([
-                            "text-overline",
-                            "color-text-low",
-                            "margin-right-4",
-                            "uppercase",
-                          ])}
+                          style={
+                            style.flatten([
+                              "text-overline",
+                              "color-text-low",
+                              "margin-right-4",
+                              "uppercase",
+                            ]) as ViewStyle
+                          }
                         >
                           {sortItem.label}
                         </Text>
@@ -260,13 +283,15 @@ const ValidatorItem: FunctionComponent<{
 
   return validator ? (
     <RectButton
-      style={style.flatten([
-        "flex-row",
-        "background-color-white",
-        "dark:background-color-platinum-600",
-        "height-72",
-        "items-center",
-      ])}
+      style={
+        style.flatten([
+          "flex-row",
+          "background-color-white",
+          "dark:background-color-platinum-600",
+          "height-72",
+          "items-center",
+        ]) as ViewStyle
+      }
       onPress={() => {
         if (onSelectValidator) {
           onSelectValidator(validatorAddress);
@@ -279,19 +304,31 @@ const ValidatorItem: FunctionComponent<{
       }}
     >
       <View
-        style={style.flatten(["items-center", "width-40", "margin-left-4"])}
+        style={
+          style.flatten([
+            "items-center",
+            "width-40",
+            "margin-left-4",
+          ]) as ViewStyle
+        }
       >
         <Text style={style.flatten(["body3", "color-text-middle"])}>
           {index + 1}
         </Text>
       </View>
       <ValidatorThumbnail
-        style={style.flatten(["margin-right-8"])}
+        style={style.flatten(["margin-right-8"]) as ViewStyle}
         size={40}
         url={bondedValidators.getValidatorThumbnail(validator.operator_address)}
       />
       <Text
-        style={style.flatten(["h6", "color-text-middle", "max-width-160"])}
+        style={
+          style.flatten([
+            "h6",
+            "color-text-middle",
+            "max-width-160",
+          ]) as ViewStyle
+        }
         numberOfLines={1}
         ellipsizeMode="tail"
       >
@@ -322,7 +359,11 @@ const ValidatorItem: FunctionComponent<{
             .toString()}
         </Text>
       ) : null}
-      <View style={style.flatten(["margin-left-12", "margin-right-20"])}>
+      <View
+        style={
+          style.flatten(["margin-left-12", "margin-right-20"]) as ViewStyle
+        }
+      >
         <RightArrowIcon height={14} color={style.get("color-text-low").color} />
       </View>
     </RectButton>

@@ -11,7 +11,7 @@ import { SettingRemoveAccountItem } from "./items/remove-account";
 import { canShowPrivateData } from "./screens/view-private-data";
 import { SettingViewPrivateDataItem } from "./items/view-private-data";
 import { useStyle } from "../../styles";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { SettingThemeItem } from "./items/theme";
 
 export const SettingScreen: FunctionComponent = observer(() => {
@@ -78,7 +78,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       />
       <SettingRemoveAccountItem topBorder={true} />
       {/* Mock element for padding bottom */}
-      <View style={style.get("height-16")} />
+      <View style={style.get("height-16") as ViewStyle} />
     </PageWithScrollViewInBottomTabView>
   );
 });

@@ -10,7 +10,10 @@ export const CardBody: FunctionComponent<{
   return (
     <View
       style={StyleSheet.flatten([
-        style.flatten(["padding-x-card-horizontal", "padding-y-card-vertical"]),
+        style.flatten([
+          "padding-x-card-horizontal",
+          "padding-y-card-vertical",
+        ]) as ViewStyle,
         propStyle,
       ])}
     >

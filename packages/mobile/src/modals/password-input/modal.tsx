@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { registerModal } from "../base";
-import { Text } from "react-native";
+import { Text, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { CardModal } from "../card";
 import { TextInput } from "../../components/input";
@@ -42,11 +42,13 @@ export const PasswordInputModal: FunctionComponent<{
     return (
       <CardModal title={title}>
         <Text
-          style={style.flatten([
-            "body2",
-            "color-text-middle",
-            "margin-bottom-32",
-          ])}
+          style={
+            style.flatten([
+              "body2",
+              "color-text-middle",
+              "margin-bottom-32",
+            ]) as ViewStyle
+          }
         >
           {paragraph || "Enter your password to continue"}
         </Text>

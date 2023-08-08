@@ -3,7 +3,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { PageWithView } from "../../components/page";
-import { Text, View, Animated, StyleSheet } from "react-native";
+import { Text, View, Animated, StyleSheet, ViewStyle } from "react-native";
 import { Button } from "../../components/button";
 import { useStyle } from "../../styles";
 import { useSmartNavigation } from "../../navigation";
@@ -83,12 +83,14 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
       </View>
       <View style={style.flatten(["flex-3"])} />
       <View
-        style={style.flatten([
-          "width-122",
-          "height-122",
-          "justify-center",
-          "items-center",
-        ])}
+        style={
+          style.flatten([
+            "width-122",
+            "height-122",
+            "justify-center",
+            "items-center",
+          ]) as ViewStyle
+        }
       >
         {/*<LottieView*/}
         {/*  source={require("../../assets/lottie/pangpare.json")}*/}
@@ -117,18 +119,20 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
               },
             ]}
             progress={successAnimProgress}
-            style={style.flatten(["width-160"])}
+            style={style.flatten(["width-160"]) as ViewStyle}
           />
         </View>
       </View>
 
       <Text
-        style={style.flatten([
-          "h2",
-          "color-text-high",
-          "margin-top-82",
-          "margin-bottom-32",
-        ])}
+        style={
+          style.flatten([
+            "h2",
+            "color-text-high",
+            "margin-top-82",
+            "margin-bottom-32",
+          ]) as ViewStyle
+        }
       >
         Transaction successful
       </Text>
@@ -137,7 +141,7 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
          set the explicit height to upper view*/}
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-x-36"]),
+          style.flatten(["padding-x-36"]) as ViewStyle,
           {
             height: style.get("body2").lineHeight * 3,
             overflow: "visible",
@@ -153,9 +157,15 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
       </View>
 
       <View
-        style={style.flatten(["padding-x-48", "height-116", "margin-top-58"])}
+        style={
+          style.flatten([
+            "padding-x-48",
+            "height-116",
+            "margin-top-58",
+          ]) as ViewStyle
+        }
       >
-        <View style={style.flatten(["flex-row", "width-full"])}>
+        <View style={style.flatten(["flex-row", "width-full"]) as ViewStyle}>
           <Button
             containerStyle={style.flatten(["flex-1"])}
             size="large"
@@ -167,12 +177,12 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
         </View>
         {chainInfo.raw.txExplorer ? (
           <Button
-            containerStyle={style.flatten(["margin-top-16"])}
+            containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
             size="default"
             text={`View on ${chainInfo.raw.txExplorer.name}`}
             mode="text"
             rightIcon={(color) => (
-              <View style={style.flatten(["margin-left-8"])}>
+              <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
                 <RightArrowIcon color={color} height={12} />
               </View>
             )}

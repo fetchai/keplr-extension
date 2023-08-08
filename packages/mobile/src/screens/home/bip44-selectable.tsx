@@ -4,7 +4,7 @@ import { useStore } from "../../stores";
 import { KeyRingStatus } from "@keplr-wallet/background";
 import { LoadingScreenModal } from "../../providers/loading-screen/modal";
 import { Dec } from "@keplr-wallet/unit";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { registerModal } from "../../modals/base";
 import { CardModal } from "../../modals/card";
 import { useStyle } from "../../styles";
@@ -179,29 +179,31 @@ export const BIP44SelectableModal: FunctionComponent<{
           return (
             <RectButton
               key={selectable.bech32Address}
-              style={style.flatten(
-                [
-                  "padding-20",
-                  "background-color-white",
-                  "dark:background-color-platinum-600",
-                  "border-radius-8",
-                  "border-width-1",
-                  "dark:border-width-2",
-                  "border-color-gray-100",
-                  "dark:border-color-platinum-500",
-                  "margin-bottom-12",
-                ],
-                [
-                  selectedIndex === i && "border-color-blue-400",
-                  selectedIndex === i && "dark:background-color-platinum-500",
-                ]
-              )}
+              style={
+                style.flatten(
+                  [
+                    "padding-20",
+                    "background-color-white",
+                    "dark:background-color-platinum-600",
+                    "border-radius-8",
+                    "border-width-1",
+                    "dark:border-width-2",
+                    "border-color-gray-100",
+                    "dark:border-color-platinum-500",
+                    "margin-bottom-12",
+                  ],
+                  [
+                    selectedIndex === i && "border-color-blue-400",
+                    selectedIndex === i && "dark:background-color-platinum-500",
+                  ]
+                ) as ViewStyle
+              }
               onPress={() => {
                 setSelectedIndex(i);
               }}
             >
               <View style={style.flatten(["flex-row", "items-center"])}>
-                <View style={style.flatten(["margin-right-16"])}>
+                <View style={style.flatten(["margin-right-16"]) as ViewStyle}>
                   <WalletIcon
                     color={style.get("color-text-middle").color}
                     height={44}
@@ -209,11 +211,13 @@ export const BIP44SelectableModal: FunctionComponent<{
                 </View>
                 <View>
                   <Text
-                    style={style.flatten([
-                      "subtitle3",
-                      "color-text-low",
-                      "margin-bottom-4",
-                    ])}
+                    style={
+                      style.flatten([
+                        "subtitle3",
+                        "color-text-low",
+                        "margin-bottom-4",
+                      ]) as ViewStyle
+                    }
                   >{`m/44'/${selectable.path.coinType}'`}</Text>
                   <Text style={style.flatten(["body2", "color-text-high"])}>
                     {Bech32Address.shortenAddress(selectable.bech32Address, 26)}
@@ -221,19 +225,23 @@ export const BIP44SelectableModal: FunctionComponent<{
                 </View>
               </View>
               <View
-                style={style.flatten([
-                  "height-1",
-                  "background-color-gray-100",
-                  "dark:background-color-platinum-500",
-                  "margin-y-16",
-                ])}
+                style={
+                  style.flatten([
+                    "height-1",
+                    "background-color-gray-100",
+                    "dark:background-color-platinum-500",
+                    "margin-y-16",
+                  ]) as ViewStyle
+                }
               />
               <View
-                style={style.flatten([
-                  "flex-row",
-                  "items-center",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "flex-row",
+                    "items-center",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 <Text style={style.flatten(["subtitle2", "color-text-middle"])}>
                   Balance
@@ -267,7 +275,7 @@ export const BIP44SelectableModal: FunctionComponent<{
         <Button
           size="large"
           text="Select Account"
-          containerStyle={style.flatten(["margin-top-12"])}
+          containerStyle={style.flatten(["margin-top-12"]) as ViewStyle}
           disabled={selectedIndex < 0}
           onPress={() => {
             keyRingStore.setKeyStoreCoinType(

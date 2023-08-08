@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
@@ -14,14 +14,16 @@ export const WCGoBackToBrowserModal: FunctionComponent<{
 
     return (
       <CardModal
-        childrenContainerStyle={style.flatten([
-          "padding-top-24",
-          "padding-bottom-40",
-          "padding-x-0",
-        ])}
+        childrenContainerStyle={
+          style.flatten([
+            "padding-top-24",
+            "padding-bottom-40",
+            "padding-x-0",
+          ]) as ViewStyle
+        }
       >
         <View style={style.flatten(["items-center"])}>
-          <View style={style.flatten(["margin-bottom-20"])}>
+          <View style={style.flatten(["margin-bottom-20"]) as ViewStyle}>
             <Svg width="42" height="42" fill="none" viewBox="0 0 42 42">
               <Circle
                 cx="21"

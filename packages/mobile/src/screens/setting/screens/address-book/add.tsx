@@ -8,7 +8,7 @@ import {
   useRecipientConfig,
 } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStore } from "../../../../stores";
 import {
   AddressInput,
@@ -49,9 +49,9 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <TextInput
         label="Nickname"
         value={name}
@@ -87,7 +87,7 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

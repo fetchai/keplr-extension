@@ -7,7 +7,7 @@ import { useSmartNavigation } from "../../../navigation";
 import { Controller, useForm } from "react-hook-form";
 import { PageWithScrollView } from "../../../components/page";
 import { TextInput } from "../../../components/input";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStore } from "../../../stores";
 import { Button } from "../../../components/button";
 import { BIP44AdvancedButton, useBIP44Option } from "../bip44";
@@ -88,7 +88,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <Controller
         control={control}
@@ -99,7 +99,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
           return (
             <TextInput
               label="Wallet nickname"
-              containerStyle={style.flatten(["padding-bottom-6"])}
+              containerStyle={style.flatten(["padding-bottom-6"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -192,7 +192,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["flex-1"])} />
       <Button text="Next" size="large" loading={isCreating} onPress={submit} />
       {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

@@ -5,7 +5,7 @@ import { CoinUtils, Coin } from "@keplr-wallet/unit";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
 import yaml from "js-yaml";
 import { CoinPrimitive } from "@keplr-wallet/stores";
-import { Text } from "react-native";
+import { Text, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -532,7 +532,7 @@ export const WasmExecutionMsgView: FunctionComponent<{
   }, [accountStore, chainStore, chainStore.current.chainId, msg]);
 
   return (
-    <Text style={style.flatten(["margin-top-8"])}>
+    <Text style={style.flatten(["margin-top-8"]) as ViewStyle}>
       <Text>{`\n${detailsMsg}`}</Text>
       {warningMsg ? (
         <Text style={style.flatten(["color-red-200"])}>{warningMsg}</Text>

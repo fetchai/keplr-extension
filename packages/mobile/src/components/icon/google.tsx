@@ -2,8 +2,8 @@ import React, { FunctionComponent } from "react";
 import Svg, { Path } from "react-native-svg";
 
 export const GoogleIcon: FunctionComponent<{
-  width?: number | string;
-  height?: number | string;
+  width?: number;
+  height?: number;
 }> = ({ width = 21, height = 20 }) => {
   return (
     <Svg

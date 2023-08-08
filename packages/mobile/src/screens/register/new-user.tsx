@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { useHeaderHeight } from "@react-navigation/stack";
+import { useHeaderHeight } from '@react-navigation/elements';
 import { PageWithScrollView } from "../../components/page";
 import { GoogleIcon, AppleIcon } from "../../components/icon";
 import { useStyle } from "../../styles";
@@ -10,6 +10,7 @@ import {
   Platform,
   StyleSheet,
   Image,
+  ViewStyle,
 } from "react-native";
 import { Button } from "../../components/button";
 import { useSmartNavigation } from "../../navigation";
@@ -36,7 +37,7 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
       backgroundMode="gradient"
       contentContainerStyle={style.get("flex-grow-1")}
       style={StyleSheet.flatten([
-        style.flatten(["padding-x-42"]),
+        style.flatten(["padding-x-42"]) as ViewStyle,
         {
           paddingTop:
             Dimensions.get("window").height * 0.22 - actualHeightHeight,
@@ -45,7 +46,13 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
       ])}
     >
       <View
-        style={style.flatten(["flex-grow-1", "items-center", "padding-x-18"])}
+        style={
+          style.flatten([
+            "flex-grow-1",
+            "items-center",
+            "padding-x-18",
+          ]) as ViewStyle
+        }
       >
         <Image
           source={
@@ -63,15 +70,24 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
       </View>
       {Platform.OS === "ios" ? (
         <Button
-          containerStyle={style.flatten([
-            "margin-bottom-20",
-            "border-width-1",
-            "border-color-gray-50",
-            "dark:border-color-platinum-400",
-          ])}
+          containerStyle={
+            style.flatten([
+              "margin-bottom-20",
+              "border-width-1",
+              "border-color-gray-50",
+              "dark:border-color-platinum-400",
+            ]) as ViewStyle
+          }
           text="Sign in with Apple"
           leftIcon={
-            <View style={style.flatten(["margin-right-6", "margin-bottom-4"])}>
+            <View
+              style={
+                style.flatten([
+                  "margin-right-6",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
+            >
               <AppleIcon />
             </View>
           }
@@ -94,10 +110,10 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
         />
       ) : null}
       <Button
-        containerStyle={style.flatten(["margin-bottom-20"])}
+        containerStyle={style.flatten(["margin-bottom-20"]) as ViewStyle}
         text="Sign in with Google"
         leftIcon={
-          <View style={style.flatten(["margin-right-6"])}>
+          <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
             <GoogleIcon />
           </View>
         }
@@ -114,11 +130,13 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
         }}
       />
       <Text
-        style={style.flatten([
-          "margin-bottom-20",
-          "text-center",
-          "color-text-low",
-        ])}
+        style={
+          style.flatten([
+            "margin-bottom-20",
+            "text-center",
+            "color-text-low",
+          ]) as ViewStyle
+        }
       >
         Powered by Web3Auth
       </Text>

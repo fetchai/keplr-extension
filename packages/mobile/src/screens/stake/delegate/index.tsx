@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "../../../components/page";
 import { useStyle } from "../../../styles";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStore } from "../../../stores";
 import { useDelegateTxConfig } from "@keplr-wallet/hooks";
 import { AmountInput, FeeButtons, MemoInput } from "../../../components/input";
@@ -63,10 +63,10 @@ export const DelegateScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView
       backgroundMode="tertiary"
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
       contentContainerStyle={style.get("flex-grow-1")}
     >
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       {/*
         // The recipient validator is selected by the route params, so no need to show the address input.
         <AddressInput
@@ -132,7 +132,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

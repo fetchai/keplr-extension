@@ -91,7 +91,7 @@ export const MyRewardCard: FunctionComponent<{
         }
         buttonText="Claim"
         buttonMode="light"
-        buttonContainerStyle={style.flatten(["min-width-72"])}
+        buttonContainerStyle={style.flatten(["min-width-72"]) as ViewStyle}
         buttonDisabled={
           !account.isReadyToSendMsgs ||
           stakingReward.toDec().equals(new Dec(0)) ||

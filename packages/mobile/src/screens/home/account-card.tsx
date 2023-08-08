@@ -62,15 +62,25 @@ export const AccountCard: FunctionComponent<{
 
   return (
     <Card style={containerStyle}>
-      <CardBody style={style.flatten(["padding-bottom-0"])}>
+      <CardBody style={style.flatten(["padding-bottom-0"]) as ViewStyle}>
         <View style={style.flatten(["flex", "items-center"])}>
           <Text
-            style={style.flatten(["h4", "color-text-high", "margin-bottom-8"])}
+            style={
+              style.flatten([
+                "h4",
+                "color-text-high",
+                "margin-bottom-8",
+              ]) as ViewStyle
+            }
           >
             {account.name || "..."}
           </Text>
           <AddressCopyable address={account.bech32Address} maxCharacters={22} />
-          <View style={style.flatten(["margin-top-28", "margin-bottom-16"])}>
+          <View
+            style={
+              style.flatten(["margin-top-28", "margin-bottom-16"]) as ViewStyle
+            }
+          >
             <DoubleDoughnutChart data={data} />
             <View
               style={style.flatten([
@@ -80,11 +90,13 @@ export const AccountCard: FunctionComponent<{
               ])}
             >
               <Text
-                style={style.flatten([
-                  "subtitle2",
-                  "color-text-middle",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "subtitle2",
+                    "color-text-middle",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 Total Balance
               </Text>
@@ -113,28 +125,32 @@ export const AccountCard: FunctionComponent<{
         </View>
       </CardBody>
       <NetworkErrorView />
-      <CardBody style={style.flatten(["padding-top-16"])}>
-        <View style={style.flatten(["flex", "items-center"])}>
+      <CardBody style={style.flatten(["padding-top-16"]) as ViewStyle}>
+        <View style={style.flatten(["flex", "items-center"]) as ViewStyle}>
           <View
-            style={style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-28",
-            ])}
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-28",
+              ]) as ViewStyle
+            }
           >
             <TokenSymbol
               size={44}
               chainInfo={chainStore.current}
               currency={chainStore.current.stakeCurrency}
             />
-            <View style={style.flatten(["margin-left-12"])}>
+            <View style={style.flatten(["margin-left-12"]) as ViewStyle}>
               <Text
-                style={style.flatten([
-                  "subtitle3",
-                  "color-blue-400",
-                  "dark:color-platinum-200",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "subtitle3",
+                    "color-blue-400",
+                    "dark:color-platinum-200",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 Available
               </Text>
@@ -146,7 +162,7 @@ export const AccountCard: FunctionComponent<{
             <Button
               text="Send"
               size="small"
-              containerStyle={style.flatten(["min-width-72"])}
+              containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
               disabled={stakable.toDec().lte(new Dec(0))}
               onPress={() => {
                 smartNavigation.navigateSmart("Send", {
@@ -156,21 +172,25 @@ export const AccountCard: FunctionComponent<{
             />
           </View>
           <View
-            style={style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-8",
-            ])}
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-8",
+              ]) as ViewStyle
+            }
           >
             <StakedTokenSymbol size={44} />
-            <View style={style.flatten(["margin-left-12"])}>
+            <View style={style.flatten(["margin-left-12"]) as ViewStyle}>
               <Text
-                style={style.flatten([
-                  "subtitle3",
-                  "color-blue-400",
-                  "dark:color-platinum-200",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "subtitle3",
+                    "color-blue-400",
+                    "dark:color-platinum-200",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 Staking
               </Text>
@@ -183,7 +203,7 @@ export const AccountCard: FunctionComponent<{
               text="Stake"
               mode="light"
               size="small"
-              containerStyle={style.flatten(["min-width-72"])}
+              containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
               disabled={stakable.toDec().lte(new Dec(0))}
               onPress={() => {
                 smartNavigation.navigateSmart("Validator.List", {});

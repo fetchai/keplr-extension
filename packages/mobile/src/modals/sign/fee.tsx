@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { IFeeConfig, IGasConfig, NotLoadedFeeError } from "@keplr-wallet/hooks";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStore } from "../../stores";
 import { useStyle } from "../../styles";
 import { CoinPretty, Dec } from "@keplr-wallet/unit";
@@ -96,9 +96,15 @@ export const FeeInSign: FunctionComponent<{
         feeConfig={feeConfig}
         gasConfig={gasConfig}
       />
-      <View style={style.flatten(["padding-bottom-28"])}>
+      <View style={style.flatten(["padding-bottom-28"]) as ViewStyle}>
         <View
-          style={style.flatten(["flex-row", "items-center", "margin-bottom-4"])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "margin-bottom-4",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["subtitle3", "color-text-middle"])}>
             Fee
@@ -126,7 +132,7 @@ export const FeeInSign: FunctionComponent<{
               {fee.trim(true).toString()}
             </Text>
             {canFeeEditable ? (
-              <View style={style.flatten(["margin-left-6"])}>
+              <View style={style.flatten(["margin-left-6"]) as ViewStyle}>
                 <RightArrowIcon
                   color={style.get("color-blue-400").color}
                   height={12}
@@ -138,13 +144,15 @@ export const FeeInSign: FunctionComponent<{
         {isFeeLoading ? (
           <View>
             <View
-              style={style.flatten([
-                "absolute",
-                "height-16",
-                "justify-center",
-                "margin-top-2",
-                "margin-left-4",
-              ])}
+              style={
+                style.flatten([
+                  "absolute",
+                  "height-16",
+                  "justify-center",
+                  "margin-top-2",
+                  "margin-left-4",
+                ]) as ViewStyle
+              }
             >
               <LoadingSpinner
                 size={14}
@@ -156,13 +164,15 @@ export const FeeInSign: FunctionComponent<{
         {!isFeeLoading && errorText ? (
           <View>
             <Text
-              style={style.flatten([
-                "absolute",
-                "text-caption1",
-                "color-red-400",
-                "margin-top-2",
-                "margin-left-4",
-              ])}
+              style={
+                style.flatten([
+                  "absolute",
+                  "text-caption1",
+                  "color-red-400",
+                  "margin-top-2",
+                  "margin-left-4",
+                ]) as ViewStyle
+              }
             >
               {errorText}
             </Text>

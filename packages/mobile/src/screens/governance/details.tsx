@@ -39,41 +39,47 @@ export const TallyVoteInfoView: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten(
-        [
-          "height-56",
-          "padding-8",
-          "border-radius-4",
-          "border-width-1",
-          "border-color-gray-50",
-          "dark:border-color-platinum-500",
-        ],
-        [
-          highlight && "background-color-blue-50",
-          highlight && "border-color-blue-50",
-          highlight && "dark:background-color-platinum-700",
-          highlight && "dark:border-color-platinum-700",
-        ]
-      )}
+      style={
+        style.flatten(
+          [
+            "height-56",
+            "padding-8",
+            "border-radius-4",
+            "border-width-1",
+            "border-color-gray-50",
+            "dark:border-color-platinum-500",
+          ],
+          [
+            highlight && "background-color-blue-50",
+            highlight && "border-color-blue-50",
+            highlight && "dark:background-color-platinum-700",
+            highlight && "dark:border-color-platinum-700",
+          ]
+        ) as ViewStyle
+      }
     >
-      <View style={style.flatten(["flex-row", "height-full"])}>
+      <View style={style.flatten(["flex-row", "height-full"]) as ViewStyle}>
         <View
-          style={style.flatten(
-            [
-              "width-4",
-              "background-color-blue-100",
-              "dark:background-color-platinum-500",
-              "margin-right-8",
-            ],
-            [highlight && "background-color-blue-400"]
-          )}
+          style={
+            style.flatten(
+              [
+                "width-4",
+                "background-color-blue-100",
+                "dark:background-color-platinum-500",
+                "margin-right-8",
+              ],
+              [highlight && "background-color-blue-400"]
+            ) as ViewStyle
+          }
         />
         <View style={style.flatten(["justify-center"])}>
           <Text
-            style={style.flatten(
-              ["text-caption1", "color-text-low", "margin-bottom-2"],
-              [highlight && "color-text-high"]
-            )}
+            style={
+              style.flatten(
+                ["text-caption1", "color-text-low", "margin-bottom-2"],
+                [highlight && "color-text-high"]
+              ) as ViewStyle
+            }
           >
             {text}
           </Text>
@@ -122,11 +128,13 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
       {proposal ? (
         <View style={containerStyle}>
           <View
-            style={style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-8",
-            ])}
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-8",
+              ]) as ViewStyle
+            }
           >
             <Text
               style={style.flatten(["h6", "color-text-high"])}
@@ -135,20 +143,28 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
             <GovernanceProposalStatusChip status={proposal.proposalStatus} />
           </View>
           <Text
-            style={style.flatten(["h6", "color-text-high", "margin-bottom-16"])}
+            style={
+              style.flatten([
+                "h6",
+                "color-text-high",
+                "margin-bottom-16",
+              ]) as ViewStyle
+            }
             // Text selection is only supported well in android.
             // In IOS, the whole text would be selected, this process is somewhat strange, so it is disabled in IOS.
             selectable={Platform.OS === "android"}
           >
             {proposal.title}
           </Text>
-          <View style={style.flatten(["margin-bottom-12"])}>
+          <View style={style.flatten(["margin-bottom-12"]) as ViewStyle}>
             <View
-              style={style.flatten([
-                "flex-row",
-                "items-center",
-                "margin-bottom-6",
-              ])}
+              style={
+                style.flatten([
+                  "flex-row",
+                  "items-center",
+                  "margin-bottom-6",
+                ]) as ViewStyle
+              }
             >
               <Text style={style.flatten(["h7", "color-text-middle"])}>
                 Turnout
@@ -162,32 +178,40 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                 .toString()}%`}</Text>
             </View>
             <View
-              style={style.flatten([
-                "height-8",
-                "background-color-gray-50",
-                "dark:background-color-platinum-500",
-                "border-radius-32",
-                "overflow-hidden",
-              ])}
+              style={
+                style.flatten([
+                  "height-8",
+                  "background-color-gray-50",
+                  "dark:background-color-platinum-500",
+                  "border-radius-32",
+                  "overflow-hidden",
+                ]) as ViewStyle
+              }
             >
               <View
-                style={StyleSheet.flatten([
-                  style.flatten([
-                    "height-8",
-                    "background-color-blue-400",
-                    "border-radius-32",
-                  ]),
-                  {
-                    width: `${parseFloat(
-                      proposal.turnout.toDec().toString(1)
-                    )}%`,
-                  },
-                ])}
+                style={
+                  StyleSheet.flatten([
+                    style.flatten([
+                      "height-8",
+                      "background-color-blue-400",
+                      "border-radius-32",
+                    ]),
+                    {
+                      width: `${parseFloat(
+                        proposal.turnout.toDec().toString(1)
+                      )}%`,
+                    },
+                  ]) as ViewStyle
+                }
               />
             </View>
           </View>
-          <View style={style.flatten(["margin-bottom-24"])}>
-            <View style={style.flatten(["flex-row", "margin-bottom-8"])}>
+          <View style={style.flatten(["margin-bottom-24"]) as ViewStyle}>
+            <View
+              style={
+                style.flatten(["flex-row", "margin-bottom-8"]) as ViewStyle
+              }
+            >
               <View style={style.flatten(["flex-1"])}>
                 <TallyVoteInfoView
                   vote="yes"
@@ -195,7 +219,7 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                   highlight={voted === "Yes"}
                 />
               </View>
-              <View style={style.flatten(["width-12"])} />
+              <View style={style.flatten(["width-12"]) as ViewStyle} />
               <View style={style.flatten(["flex-1"])}>
                 <TallyVoteInfoView
                   vote="no"
@@ -212,7 +236,7 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                   highlight={voted === "NoWithVeto"}
                 />
               </View>
-              <View style={style.flatten(["width-12"])} />
+              <View style={style.flatten(["width-12"]) as ViewStyle} />
               <View style={style.flatten(["flex-1"])}>
                 <TallyVoteInfoView
                   vote="abstain"
@@ -222,7 +246,9 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
               </View>
             </View>
           </View>
-          <View style={style.flatten(["flex-row", "margin-bottom-24"])}>
+          <View
+            style={style.flatten(["flex-row", "margin-bottom-24"]) as ViewStyle}
+          >
             <View style={style.flatten(["flex-1"])}>
               <Text style={style.flatten(["h7", "color-text-middle"])}>
                 Voting Start
@@ -253,11 +279,13 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
             </View>
           </View>
           <Text
-            style={style.flatten([
-              "h7",
-              "color-text-middle",
-              "margin-bottom-4",
-            ])}
+            style={
+              style.flatten([
+                "h7",
+                "color-text-middle",
+                "margin-bottom-4",
+              ]) as ViewStyle
+            }
           >
             Description
           </Text>
@@ -312,39 +340,45 @@ export const GovernanceVoteModal: FunctionComponent<{
       if (selected) {
         return (
           <View
-            style={style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-blue-400",
-              "dark:background-color-blue-300",
-              "items-center",
-              "justify-center",
-            ])}
+            style={
+              style.flatten([
+                "width-24",
+                "height-24",
+                "border-radius-32",
+                "background-color-blue-400",
+                "dark:background-color-blue-300",
+                "items-center",
+                "justify-center",
+              ]) as ViewStyle
+            }
           >
             <View
-              style={style.flatten([
-                "width-12",
-                "height-12",
-                "border-radius-32",
-                "background-color-white",
-              ])}
+              style={
+                style.flatten([
+                  "width-12",
+                  "height-12",
+                  "border-radius-32",
+                  "background-color-white",
+                ]) as ViewStyle
+              }
             />
           </View>
         );
       } else {
         return (
           <View
-            style={style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-white",
-              "dark:background-color-platinum-600",
-              "border-width-1",
-              "border-color-gray-100",
-              "dark:border-color-platinum-300",
-            ])}
+            style={
+              style.flatten([
+                "width-24",
+                "height-24",
+                "border-radius-32",
+                "background-color-white",
+                "dark:background-color-platinum-600",
+                "border-width-1",
+                "border-color-gray-100",
+                "dark:border-color-platinum-300",
+              ]) as ViewStyle
+            }
           />
         );
       }
@@ -353,7 +387,7 @@ export const GovernanceVoteModal: FunctionComponent<{
     const [isSendingTx, setIsSendingTx] = useState(false);
 
     return (
-      <View style={style.flatten(["padding-page"])}>
+      <View style={style.flatten(["padding-page"]) as ViewStyle}>
         <View
           style={style.flatten([
             "border-radius-8",
@@ -363,20 +397,22 @@ export const GovernanceVoteModal: FunctionComponent<{
           ])}
         >
           <RectButton
-            style={style.flatten(
-              [
-                "height-64",
-                "padding-left-36",
-                "padding-right-28",
-                "flex-row",
-                "items-center",
-                "justify-between",
-              ],
-              [
-                vote === "Yes" && "background-color-blue-50",
-                vote === "Yes" && "dark:background-color-platinum-500",
-              ]
-            )}
+            style={
+              style.flatten(
+                [
+                  "height-64",
+                  "padding-left-36",
+                  "padding-right-28",
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                ],
+                [
+                  vote === "Yes" && "background-color-blue-50",
+                  vote === "Yes" && "dark:background-color-platinum-500",
+                ]
+              ) as ViewStyle
+            }
             onPress={() => setVote("Yes")}
           >
             <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
@@ -385,20 +421,22 @@ export const GovernanceVoteModal: FunctionComponent<{
             {renderBall(vote === "Yes")}
           </RectButton>
           <RectButton
-            style={style.flatten(
-              [
-                "height-64",
-                "padding-left-36",
-                "padding-right-28",
-                "flex-row",
-                "items-center",
-                "justify-between",
-              ],
-              [
-                vote === "No" && "background-color-blue-50",
-                vote === "No" && "dark:background-color-platinum-500",
-              ]
-            )}
+            style={
+              style.flatten(
+                [
+                  "height-64",
+                  "padding-left-36",
+                  "padding-right-28",
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                ],
+                [
+                  vote === "No" && "background-color-blue-50",
+                  vote === "No" && "dark:background-color-platinum-500",
+                ]
+              ) as ViewStyle
+            }
             onPress={() => setVote("No")}
           >
             <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
@@ -407,20 +445,22 @@ export const GovernanceVoteModal: FunctionComponent<{
             {renderBall(vote === "No")}
           </RectButton>
           <RectButton
-            style={style.flatten(
-              [
-                "height-64",
-                "padding-left-36",
-                "padding-right-28",
-                "flex-row",
-                "items-center",
-                "justify-between",
-              ],
-              [
-                vote === "NoWithVeto" && "background-color-blue-50",
-                vote === "NoWithVeto" && "dark:background-color-platinum-500",
-              ]
-            )}
+            style={
+              style.flatten(
+                [
+                  "height-64",
+                  "padding-left-36",
+                  "padding-right-28",
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                ],
+                [
+                  vote === "NoWithVeto" && "background-color-blue-50",
+                  vote === "NoWithVeto" && "dark:background-color-platinum-500",
+                ]
+              ) as ViewStyle
+            }
             onPress={() => setVote("NoWithVeto")}
           >
             <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
@@ -429,20 +469,22 @@ export const GovernanceVoteModal: FunctionComponent<{
             {renderBall(vote === "NoWithVeto")}
           </RectButton>
           <RectButton
-            style={style.flatten(
-              [
-                "height-64",
-                "padding-left-36",
-                "padding-right-28",
-                "flex-row",
-                "items-center",
-                "justify-between",
-              ],
-              [
-                vote === "Abstain" && "background-color-blue-50",
-                vote === "Abstain" && "dark:background-color-platinum-500",
-              ]
-            )}
+            style={
+              style.flatten(
+                [
+                  "height-64",
+                  "padding-left-36",
+                  "padding-right-28",
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                ],
+                [
+                  vote === "Abstain" && "background-color-blue-50",
+                  vote === "Abstain" && "dark:background-color-platinum-500",
+                ]
+              ) as ViewStyle
+            }
             onPress={() => setVote("Abstain")}
           >
             <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
@@ -452,7 +494,7 @@ export const GovernanceVoteModal: FunctionComponent<{
           </RectButton>
         </View>
         <Button
-          containerStyle={style.flatten(["margin-top-12"])}
+          containerStyle={style.flatten(["margin-top-12"]) as ViewStyle}
           text="Vote"
           size="large"
           disabled={vote === "Unspecified" || !account.isReadyToSendMsgs}
@@ -562,7 +604,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
       backgroundMode="gradient"
       fixed={
         <View
-          style={style.flatten(["flex-1", "padding-page"])}
+          style={style.flatten(["flex-1", "padding-page"]) as ViewStyle}
           pointerEvents="box-none"
         >
           <View style={style.flatten(["flex-1"])} pointerEvents="box-none" />
@@ -585,7 +627,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
         proposalId={proposalId}
         smartNavigation={smartNavigation}
       />
-      <Card style={style.flatten(["margin-top-card-gap"])}>
+      <Card style={style.flatten(["margin-top-card-gap"]) as ViewStyle}>
         <GovernanceDetailsCardBody
           proposalId={proposalId}
           containerStyle={(() => {

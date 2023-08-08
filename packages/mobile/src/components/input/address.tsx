@@ -117,13 +117,15 @@ export const AddressInput: FunctionComponent<
             isICNSfetching ? (
               <View>
                 <View
-                  style={style.flatten([
-                    "absolute",
-                    "height-16",
-                    "justify-center",
-                    "margin-top-2",
-                    "margin-left-4",
-                  ])}
+                  style={
+                    style.flatten([
+                      "absolute",
+                      "height-16",
+                      "justify-center",
+                      "margin-top-2",
+                      "margin-left-4",
+                    ]) as ViewStyle
+                  }
                 >
                   <LoadingSpinner
                     size={14}
@@ -142,14 +144,16 @@ export const AddressInput: FunctionComponent<
         inputRight={
           disableAddressBook ? null : (
             <View
-              style={style.flatten([
-                "height-1",
-                "overflow-visible",
-                "justify-center",
-              ])}
+              style={
+                style.flatten([
+                  "height-1",
+                  "overflow-visible",
+                  "justify-center",
+                ]) as ViewStyle
+              }
             >
               <TouchableOpacity
-                style={style.flatten(["padding-4"])}
+                style={style.flatten(["padding-4"]) as ViewStyle}
                 onPress={() => {
                   smartNavigation.navigateSmart("AddressBook", {
                     recipientConfig,
@@ -170,7 +174,7 @@ export const AddressInput: FunctionComponent<
         }
         autoCorrect={false}
         autoCapitalize="none"
-        autoCompleteType="off"
+        autoComplete="off"
       />
     );
   }

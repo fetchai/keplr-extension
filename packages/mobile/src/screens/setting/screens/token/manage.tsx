@@ -29,7 +29,7 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView backgroundMode="secondary">
       {tokensOf.tokens.length > 0 ? (
-        <Card style={style.flatten(["padding-bottom-14"])}>
+        <Card style={style.flatten(["padding-bottom-14"]) as ViewStyle}>
           {tokensOf.tokens.map((token) => {
             const balance = queryBalances.getBalanceFromCurrency(token);
 
@@ -85,29 +85,37 @@ export const ManageTokenItem: FunctionComponent<{
           "items-center",
           "padding-x-card-horizontal",
           "padding-y-14",
-        ]),
+        ]) as ViewStyle,
         containerStyle,
       ])}
     >
       <TokenSymbol
-        style={style.flatten(["margin-right-12"])}
+        style={style.flatten(["margin-right-12"]) as ViewStyle}
         size={44}
         chainInfo={chainInfo}
         currency={balance.currency}
       />
       <View>
         <Text
-          style={style.flatten([
-            "subtitle3",
-            "color-text-low",
-            "margin-bottom-4",
-            "uppercase",
-          ])}
+          style={
+            style.flatten([
+              "subtitle3",
+              "color-text-low",
+              "margin-bottom-4",
+              "uppercase",
+            ]) as ViewStyle
+          }
         >
           {balance.currency.coinDenom}
         </Text>
         <Text
-          style={style.flatten(["h5", "color-text-middle", "max-width-240"])}
+          style={
+            style.flatten([
+              "h5",
+              "color-text-middle",
+              "max-width-240",
+            ]) as ViewStyle
+          }
           numberOfLines={1}
           ellipsizeMode="tail"
         >

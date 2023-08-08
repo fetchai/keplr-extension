@@ -28,7 +28,7 @@ export const AddressCopyable: FunctionComponent<{
           "dark:background-color-platinum-500",
           "flex-row",
           "items-center",
-        ]),
+        ]) as ViewStyle,
         propStyle,
       ])}
       onPress={() => {
@@ -52,10 +52,10 @@ export const AddressCopyable: FunctionComponent<{
       >
         {Bech32Address.shortenAddress(address, maxCharacters)}
       </Text>
-      <View style={style.flatten(["margin-left-4", "width-20"])}>
+      <View style={style.flatten(["margin-left-4", "width-20"]) as ViewStyle}>
         {isTimedOut ? (
-          <View style={style.flatten(["margin-left-2"])}>
-            <View style={style.flatten(["width-20", "height-20"])}>
+          <View style={style.flatten(["margin-left-2"]) as ViewStyle}>
+            <View style={style.flatten(["width-20", "height-20"]) as ViewStyle}>
               <View
                 style={StyleSheet.flatten([
                   style.flatten(["absolute", "justify-center", "items-center"]),
@@ -93,7 +93,7 @@ export const AddressCopyable: FunctionComponent<{
                   autoPlay
                   speed={2}
                   loop={false}
-                  style={style.flatten(["width-58", "height-58"])}
+                  style={style.flatten(["width-58", "height-58"]) as ViewStyle}
                 />
               </View>
             </View>

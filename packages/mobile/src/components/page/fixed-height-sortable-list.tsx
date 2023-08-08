@@ -5,7 +5,13 @@ import {
 } from "../fixed-height-sortable-list";
 import { useStyle } from "../../styles";
 import { usePageRegisterScrollYValue, useSetFocusedScreen } from "./utils";
-import { Animated, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+  Animated,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { BackgroundMode, ScreenBackground } from "./background";
 
 export function PageWithFixedHeightSortableList<Item extends { key: string }>(
@@ -35,7 +41,11 @@ export function PageWithFixedHeightSortableList<Item extends { key: string }>(
       <ContainerElement style={style.get("flex-1")}>
         <FixedHeightSortableList
           style={StyleSheet.flatten([
-            style.flatten(["flex-1", "padding-0", "overflow-visible"]),
+            style.flatten([
+              "flex-1",
+              "padding-0",
+              "overflow-visible",
+            ]) as ViewStyle,
             propStyle,
           ])}
           onScroll={Animated.event(

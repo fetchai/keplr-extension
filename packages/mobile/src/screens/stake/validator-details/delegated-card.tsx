@@ -33,16 +33,24 @@ export const DelegatedCard: FunctionComponent<{
     <Card style={containerStyle}>
       <CardBody>
         <Text
-          style={style.flatten([
-            "h4",
-            "color-text-highest",
-            "margin-bottom-12",
-          ])}
+          style={
+            style.flatten([
+              "h4",
+              "color-text-highest",
+              "margin-bottom-12",
+            ]) as ViewStyle
+          }
         >
           My Staking
         </Text>
         <View
-          style={style.flatten(["flex-row", "items-center", "margin-bottom-4"])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "margin-bottom-4",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["subtitle2", "color-text-middle"])}>
             Staked
@@ -53,11 +61,13 @@ export const DelegatedCard: FunctionComponent<{
           </Text>
         </View>
         <View
-          style={style.flatten([
-            "flex-row",
-            "items-center",
-            "margin-bottom-12",
-          ])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "margin-bottom-12",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["subtitle2", "color-text-middle"])}>
             Rewards
@@ -76,7 +86,7 @@ export const DelegatedCard: FunctionComponent<{
               smartNavigation.navigateSmart("Redelegate", { validatorAddress });
             }}
           />
-          <View style={style.flatten(["width-card-gap"])} />
+          <View style={style.flatten(["width-card-gap"]) as ViewStyle} />
           <Button
             containerStyle={style.flatten(["flex-1"])}
             text="Unstake"

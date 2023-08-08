@@ -57,14 +57,18 @@ export const TextInput = React.forwardRef<
   return (
     <View
       style={StyleSheet.flatten([
-        style.flatten(["padding-bottom-28"]),
+        style.flatten(["padding-bottom-28"]) as ViewStyle,
         containerStyle,
       ])}
     >
       {label ? (
         <Text
           style={StyleSheet.flatten([
-            style.flatten(["subtitle3", "color-text-label", "margin-bottom-3"]),
+            style.flatten([
+              "subtitle3",
+              "color-text-label",
+              "margin-bottom-3",
+            ]) as ViewStyle,
             labelStyle,
           ])}
         >
@@ -95,7 +99,7 @@ export const TextInput = React.forwardRef<
               !(props.editable ?? true) && "background-color-gray-50",
               !(props.editable ?? true) && "dark:background-color-platinum-500",
             ]
-          ),
+          ) as ViewStyle,
           inputContainerStyle,
         ])}
       >
@@ -167,7 +171,7 @@ export const TextInput = React.forwardRef<
                   "dark:color-blue-300",
                   "margin-top-2",
                   "margin-left-4",
-                ]),
+                ]) as ViewStyle,
                 errorLabelStyle,
               ])}
             >
@@ -188,7 +192,7 @@ export const TextInput = React.forwardRef<
                 "color-red-400",
                 "margin-top-2",
                 "margin-left-4",
-              ]),
+              ]) as ViewStyle,
               errorLabelStyle,
             ])}
           >

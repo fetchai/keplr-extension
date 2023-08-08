@@ -2,7 +2,7 @@ import { createStyleProvider } from "./builder";
 import { EnumTextTransform, EnumTextDecorationLine } from "./builder/types";
 import { PixelRatio, Platform, StatusBarStyle } from "react-native";
 import { getPlatformFontWeight } from "./builder/utils";
-import { BlurViewProperties } from "@react-native-community/blur";
+import { BlurViewProps } from "@react-native-community/blur";
 
 function handleImageHighRes(image: any, highResImage: any): any {
   if (PixelRatio.get() >= 2) {
@@ -296,7 +296,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
 
         "header-on-gradient-screen": {
           blurOnIOS: {
-            type: "light" as BlurViewProperties["blurType"],
+            type: "light" as BlurViewProps["blurType"],
             amount: 30,
             reducedTransparencyFallbackColor: "white",
             minOpacity: 0.4,
@@ -309,7 +309,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         },
         "header-on-secondary-screen": {
           blurOnIOS: {
-            type: "light" as BlurViewProperties["blurType"],
+            type: "light" as BlurViewProps["blurType"],
             amount: 30,
             reducedTransparencyFallbackColor: "white",
             minOpacity: 0.4,
@@ -322,7 +322,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         },
         "header-at-secondary-screen": {
           blurOnIOS: {
-            type: "light" as BlurViewProperties["blurType"],
+            type: "light" as BlurViewProps["blurType"],
             amount: 30,
             reducedTransparencyFallbackColor: "white",
             minOpacity: 0.4,
@@ -335,7 +335,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         },
         "header-on-tertiary-screen": {
           blurOnIOS: {
-            type: "light" as BlurViewProperties["blurType"],
+            type: "light" as BlurViewProps["blurType"],
             amount: 30,
             reducedTransparencyFallbackColor: "white",
             minOpacity: 0.4,
@@ -347,7 +347,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           background: BackgroundColors["background-tertiary"],
         },
 
-        "blurred-tabbar-blur-type": "light" as BlurViewProperties["blurType"],
+        "blurred-tabbar-blur-type": "light" as BlurViewProps["blurType"],
         "blurred-tabbar-blur-amount": 40,
         "blurred-tabbar-reducedTransparencyFallbackColor": "white",
         "blurred-tabbar-top-border": ColorPalette["gray-50"],
@@ -672,7 +672,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
 
           "header-on-gradient-screen": {
             blurOnIOS: {
-              type: "dark" as BlurViewProperties["blurType"],
+              type: "dark" as BlurViewProps["blurType"],
               amount: 40,
               reducedTransparencyFallbackColor: "black",
               minOpacity: 0.2,
@@ -685,7 +685,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           },
           "header-on-secondary-screen": {
             blurOnIOS: {
-              type: "dark" as BlurViewProperties["blurType"],
+              type: "dark" as BlurViewProps["blurType"],
               amount: 40,
               reducedTransparencyFallbackColor: "black",
               minOpacity: 0.2,
@@ -698,7 +698,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           },
           "header-at-secondary-screen": {
             blurOnIOS: {
-              type: "dark" as BlurViewProperties["blurType"],
+              type: "dark" as BlurViewProps["blurType"],
               amount: 40,
               reducedTransparencyFallbackColor: "black",
               minOpacity: 0.2,
@@ -711,7 +711,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           },
           "header-on-tertiary-screen": {
             blurOnIOS: {
-              type: "dark" as BlurViewProperties["blurType"],
+              type: "dark" as BlurViewProps["blurType"],
               amount: 40,
               reducedTransparencyFallbackColor: "black",
               minOpacity: 0.2,
@@ -723,7 +723,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             background: DarkThemeBackgroundColors["background-tertiary"],
           },
 
-          "blurred-tabbar-blur-type": "dark" as BlurViewProperties["blurType"],
+          "blurred-tabbar-blur-type": "dark" as BlurViewProps["blurType"],
           "blurred-tabbar-blur-amount": 50,
           "blurred-tabbar-reducedTransparencyFallbackColor": "black",
           "blurred-tabbar-top-border": ColorPalette["platinum-500"],

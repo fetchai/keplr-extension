@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { RNCamera } from "react-native-camera";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useStyle } from "../../styles";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CloseIcon } from "../icon";
 import Svg, { Path } from "react-native-svg";
@@ -50,18 +50,20 @@ export const FullScreenCameraView: FunctionComponent<
               }}
             >
               <View
-                style={style.flatten([
-                  "width-38",
-                  "height-38",
-                  "border-radius-64",
-                  "background-color-blue-100",
-                  "dark:background-color-platinum-500",
-                  "opacity-90",
-                  "margin-top-8",
-                  "margin-right-16",
-                  "items-center",
-                  "justify-center",
-                ])}
+                style={
+                  style.flatten([
+                    "width-38",
+                    "height-38",
+                    "border-radius-64",
+                    "background-color-blue-100",
+                    "dark:background-color-platinum-500",
+                    "opacity-90",
+                    "margin-top-8",
+                    "margin-right-16",
+                    "items-center",
+                    "justify-center",
+                  ]) as ViewStyle
+                }
               >
                 <CloseIcon
                   size={28}
@@ -94,14 +96,16 @@ export const FullScreenCameraView: FunctionComponent<
               ])}
             >
               <View
-                style={style.flatten([
-                  "padding-x-32",
-                  "padding-top-48",
-                  "padding-bottom-31",
-                  "background-color-card",
-                  "border-radius-8",
-                  "items-center",
-                ])}
+                style={
+                  style.flatten([
+                    "padding-x-32",
+                    "padding-top-48",
+                    "padding-bottom-31",
+                    "background-color-card",
+                    "border-radius-8",
+                    "items-center",
+                  ]) as ViewStyle
+                }
               >
                 <LoadingSpinner
                   size={42}
@@ -111,11 +115,13 @@ export const FullScreenCameraView: FunctionComponent<
                   }
                 />
                 <Text
-                  style={style.flatten([
-                    "subtitle1",
-                    "color-text-low",
-                    "margin-top-34",
-                  ])}
+                  style={
+                    style.flatten([
+                      "subtitle1",
+                      "color-text-low",
+                      "margin-top-34",
+                    ]) as ViewStyle
+                  }
                 >
                   Loading...
                 </Text>

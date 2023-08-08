@@ -59,7 +59,7 @@ export const RectButton: FunctionComponent<
     flexShrink,
     flexWrap,
     backgroundColor,
-    ...restStyle
+    // ...restStyle
   } = propStyle ?? {};
 
   return (
@@ -96,7 +96,7 @@ export const RectButton: FunctionComponent<
       }}
     >
       <NativeRectButton
-        style={restStyle}
+        // style={restStyle}
         rippleColor={
           rippleColor || style.get("color-rect-button-default-ripple").color
         }

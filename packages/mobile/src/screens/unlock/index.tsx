@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, View } from "react-native";
+import { Image, ImageStyle, StyleSheet, View, ViewStyle } from "react-native";
 // import Animated, {
 //   Easing,
 //   useSharedValue,
@@ -364,11 +364,11 @@ export const SplashContinuityEffectView: FunctionComponent<{
   // const backgroundClippingAnimationDuration = 700;
   // const backgroundAnimationDuration = 900;
   // const backgroundAnimationDelay = 300;
-
+  //
   // const expectedLogoSize = logoSize
   //   ? logoSize.height * (Dimensions.get("window").width / logoSize.width)
   //   : 0;
-
+  //
   // const expectedBorderRadius = expectedLogoSize / 4.45;
 
   // Animated.useCode(() => {
@@ -523,55 +523,57 @@ export const SplashContinuityEffectView: FunctionComponent<{
         ])}
       >
         <View
-        // style={StyleSheet.flatten([
-        //   style.flatten([
-        //     "width-full",
-        //     "height-full",
-        //     "overflow-hidden",
-        //     "items-center",
-        //     "justify-center",
-        //   ]),
-        //   {
-        //     width: backgroundClippingWidth.position.interpolate({
-        //       inputRange: [0, 1],
-        //       outputRange: [Dimensions.get("window").width, expectedLogoSize],
-        //     }),
-        //     height: backgroundClippingHeight.position.interpolate({
-        //       inputRange: [0, 1],
-        //       outputRange: [
-        //         Dimensions.get("window").height +
-        //           (StatusBar.currentHeight ?? 0),
-        //         expectedLogoSize,
-        //       ],
-        //     }),
-        //     borderRadius: backgroundClippingRadius.position.interpolate({
-        //       inputRange: [0, 1],
-        //       outputRange: [0, expectedBorderRadius],
-        //     }),
-        //   },
-        // ])}
+          style={StyleSheet.flatten([
+            style.flatten([
+              "width-full",
+              "height-full",
+              "overflow-hidden",
+              "items-center",
+              "justify-center",
+            ]) as ViewStyle,
+            // {
+            //   width: backgroundClippingWidth.position.interpolate({
+            //     inputRange: [0, 1],
+            //     outputRange: [Dimensions.get("window").width, expectedLogoSize],
+            //   }),
+            //   height: backgroundClippingHeight.position.interpolate({
+            //     inputRange: [0, 1],
+            //     outputRange: [
+            //       Dimensions.get("window").height +
+            //         (StatusBar.currentHeight ?? 0),
+            //       expectedLogoSize,
+            //     ],
+            //   }),
+            //   borderRadius: backgroundClippingRadius.position.interpolate({
+            //     inputRange: [0, 1],
+            //     outputRange: [0, expectedBorderRadius],
+            //   }),
+            // },
+          ])}
         >
           <Image
-            // style={StyleSheet.flatten([
-            //   style.flatten(["width-full", "height-full"]),
-            //   {
-            //     width: backgroundWidth.position.interpolate({
-            //       inputRange: [0, 1],
-            //       outputRange: [
-            //         Dimensions.get("window").width,
-            //         expectedLogoSize,
-            //       ],
-            //     }),
-            //     height: backgroundHeight.position.interpolate({
-            //       inputRange: [0, 1],
-            //       outputRange: [
-            //         Dimensions.get("window").height +
-            //           (StatusBar.currentHeight ?? 0),
-            //         expectedLogoSize,
-            //       ],
-            //     }),
-            //   },
-            // ])}
+            style={
+              //StyleSheet.flatten([
+              style.flatten(["width-full", "height-full"]) as ImageStyle
+              // {
+              //   width: backgroundWidth.position.interpolate({
+              //     inputRange: [0, 1],
+              //     outputRange: [
+              //       Dimensions.get("window").width,
+              //       expectedLogoSize,
+              //     ],
+              //   }),
+              //   height: backgroundHeight.position.interpolate({
+              //     inputRange: [0, 1],
+              //     outputRange: [
+              //       Dimensions.get("window").height +
+              //         (StatusBar.currentHeight ?? 0),
+              //       expectedLogoSize,
+              //     ],
+              //   }),
+              // },
+              //  ])
+            }
             source={require("../../assets/logo/splash-screen-only-background.png")}
             resizeMode="stretch"
             fadeDuration={0}
@@ -589,7 +591,7 @@ export const SplashContinuityEffectView: FunctionComponent<{
         ])}
       >
         <Image
-          // style={style.flatten(["width-full", "height-full"])}
+          style={style.flatten(["width-full", "height-full"]) as ImageStyle}
           source={require("../../assets/logo/splash-screen-only-k.png")}
           resizeMode="contain"
           fadeDuration={0}

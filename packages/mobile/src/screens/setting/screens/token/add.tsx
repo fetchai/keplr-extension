@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { PageWithScrollView } from "../../../../components/page";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStyle } from "../../../../styles";
 import { Button } from "../../../../components/button";
 import { AddressInput, TextInput } from "../../../../components/input";
@@ -29,9 +29,9 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <AddressInput
         label="Contract Address"
         recipientConfig={recipientConfig}
@@ -74,7 +74,7 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

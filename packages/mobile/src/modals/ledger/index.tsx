@@ -9,6 +9,7 @@ import {
   Platform,
   Text,
   View,
+  ViewStyle,
 } from "react-native";
 import { useStyle } from "../../styles";
 import { useStore } from "../../stores";
@@ -247,15 +248,17 @@ export const LedgerGranterModal: FunctionComponent<{
         title="Pair Hardware Wallet"
         right={
           isFinding ? (
-            <View style={style.flatten(["margin-left-8"])}>
+            <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
               {/* Styling trick for positioning in the middle without occupying space */}
               <View
-                style={style.flatten([
-                  "absolute",
-                  "height-1",
-                  "flex-row",
-                  "items-center",
-                ])}
+                style={
+                  style.flatten([
+                    "absolute",
+                    "height-1",
+                    "flex-row",
+                    "items-center",
+                  ]) as ViewStyle
+                }
               >
                 <LoadingSpinner
                   size={20}
@@ -300,8 +303,10 @@ export const LedgerGranterModal: FunctionComponent<{
           BLEPermissionGrantStatus.FailedAndRetry ? (
           <LedgerErrorView text="Keplr doesn't have permission to use bluetooth">
             <Button
-              containerStyle={style.flatten(["margin-top-16"])}
-              textStyle={style.flatten(["margin-x-8", "normal-case"])}
+              containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
+              textStyle={
+                style.flatten(["margin-x-8", "normal-case"]) as ViewStyle
+              }
               text="Open app setting"
               size="small"
               onPress={() => {
@@ -332,11 +337,13 @@ const LedgerErrorView: FunctionComponent<{
       <AlertIcon size={100} color={style.get("color-red-400").color} />
       <Text style={style.flatten(["h4", "color-red-400"])}>Error</Text>
       <Text
-        style={style.flatten([
-          "subtitle3",
-          "color-text-middle",
-          "margin-top-16",
-        ])}
+        style={
+          style.flatten([
+            "subtitle3",
+            "color-text-middle",
+            "margin-top-16",
+          ]) as ViewStyle
+        }
       >
         {text}
       </Text>
@@ -391,14 +398,14 @@ const LedgerNanoBLESelector: FunctionComponent<{
 
   return (
     <RectButton
-      style={style.flatten(["padding-y-12"])}
+      style={style.flatten(["padding-y-12"]) as ViewStyle}
       onPress={async () => {
         if (await testLedgerConnection()) {
           onCanResume();
         }
       }}
     >
-      <View style={style.flatten(["min-height-44"])}>
+      <View style={style.flatten(["min-height-44"]) as ViewStyle}>
         <Text style={style.flatten(["h5", "color-text-middle"])}>{name}</Text>
         {isConnecting ? (
           <Text style={style.flatten(["subtitle3", "color-text-low"])}>

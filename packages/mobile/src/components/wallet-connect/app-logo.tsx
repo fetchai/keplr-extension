@@ -25,7 +25,7 @@ export const WCAppLogo: FunctionComponent<{
   return logoUrl ? (
     <FastImage
       style={StyleSheet.flatten([
-        style.flatten(["width-44", "height-44"]),
+        style.flatten(["width-44", "height-44"]) as ImageStyle,
         logoStyle,
       ])}
       resizeMode={FastImage.resizeMode.contain}
@@ -45,7 +45,7 @@ export const WCAppLogo: FunctionComponent<{
           "items-center",
           "background-color-gray-200",
           "dark:background-color-platinum-300",
-        ]),
+        ]) as ViewStyle,
         altLogoStyle,
       ])}
     >

@@ -64,19 +64,23 @@ export const UndelegationsCard: FunctionComponent<{
             <React.Fragment key={unbondingIndex}>
               <View
                 key={unbonding.validatorAddress}
-                style={style.flatten(
-                  ["padding-y-28"],
-                  [isLastUnbondingIndex && "padding-bottom-8"]
-                )}
+                style={
+                  style.flatten(
+                    ["padding-y-28"],
+                    [isLastUnbondingIndex && "padding-bottom-8"]
+                  ) as ViewStyle
+                }
               >
                 <View style={style.flatten(["flex-row", "items-center"])}>
                   <ValidatorThumbnail size={44} url={thumbnail} />
                   <Text
-                    style={style.flatten([
-                      "margin-left-16",
-                      "h6",
-                      "color-text-middle",
-                    ])}
+                    style={
+                      style.flatten([
+                        "margin-left-16",
+                        "h6",
+                        "color-text-middle",
+                      ]) as ViewStyle
+                    }
                   >
                     {validator?.description.moniker ?? "..."}
                   </Text>
@@ -135,14 +139,16 @@ export const UndelegationsCard: FunctionComponent<{
                   return (
                     <View
                       key={i.toString()}
-                      style={style.flatten(["padding-top-24"])}
+                      style={style.flatten(["padding-top-24"]) as ViewStyle}
                     >
                       <View
-                        style={style.flatten([
-                          "flex-row",
-                          "items-center",
-                          "margin-bottom-8",
-                        ])}
+                        style={
+                          style.flatten([
+                            "flex-row",
+                            "items-center",
+                            "margin-bottom-8",
+                          ]) as ViewStyle
+                        }
                       >
                         <Text
                           style={style.flatten([
@@ -172,13 +178,15 @@ export const UndelegationsCard: FunctionComponent<{
               </View>
               {!isLastUnbondingIndex && (
                 <View
-                  style={StyleSheet.flatten([
-                    style.flatten([
-                      "height-1",
-                      "background-color-gray-200",
-                      "dark:background-color-platinum-400",
-                    ]),
-                  ])}
+                  style={
+                    StyleSheet.flatten([
+                      style.flatten([
+                        "height-1",
+                        "background-color-gray-200",
+                        "dark:background-color-platinum-400",
+                      ]),
+                    ]) as ViewStyle
+                  }
                 />
               )}
             </React.Fragment>

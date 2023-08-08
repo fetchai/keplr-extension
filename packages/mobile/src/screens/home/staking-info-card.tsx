@@ -37,9 +37,17 @@ export const StakingInfoCard: FunctionComponent<{
           smartNavigation.navigateSmart("Staking.Dashboard", {});
         }}
       />
-      <CardBody style={style.flatten(["padding-top-card-vertical-half"])}>
+      <CardBody
+        style={style.flatten(["padding-top-card-vertical-half"]) as ViewStyle}
+      >
         <View
-          style={style.flatten(["flex-row", "items-end", "margin-bottom-8"])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-end",
+              "margin-bottom-8",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["body2", "color-text-high"])}>
             Total staked

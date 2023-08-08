@@ -11,11 +11,13 @@ export const SettingSectionTitle: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten([
-        "padding-x-20",
-        "padding-top-16",
-        "padding-bottom-4",
-      ])}
+      style={
+        style.flatten([
+          "padding-x-20",
+          "padding-top-16",
+          "padding-bottom-4",
+        ]) as ViewStyle
+      }
     >
       <Text
         style={style.flatten(["text-caption1", "color-text-low", "uppercase"])}
@@ -106,7 +108,7 @@ export const SettingItem: FunctionComponent<{
               "height-1",
               "background-color-gray-50",
               "dark:background-color-platinum-500@75%",
-            ]),
+            ]) as ViewStyle,
             borderColor ? { backgroundColor: borderColor } : {},
           ])}
         />
@@ -121,7 +123,7 @@ export const SettingItem: FunctionComponent<{
               "padding-x-20",
               "flex-row",
               "items-center",
-            ]),
+            ]) as ViewStyle,
             propStyle,
           ])}
           onPress={onPress}
@@ -141,7 +143,7 @@ export const SettingItem: FunctionComponent<{
               "padding-x-20",
               "flex-row",
               "items-center",
-            ]),
+            ]) as ViewStyle,
             propStyle,
           ])}
         >
@@ -154,7 +156,7 @@ export const SettingItem: FunctionComponent<{
             "height-1",
             "background-color-gray-50",
             "dark:background-color-platinum-500@75%",
-          ]),
+          ]) as ViewStyle,
           borderColor ? { backgroundColor: borderColor } : {},
         ])}
       />
@@ -171,7 +173,13 @@ export const RightArrow: FunctionComponent<{
     <React.Fragment>
       {paragraph ? (
         <Text
-          style={style.flatten(["body1", "color-text-low", "margin-right-16"])}
+          style={
+            style.flatten([
+              "body1",
+              "color-text-low",
+              "margin-right-16",
+            ]) as ViewStyle
+          }
         >
           {paragraph}
         </Text>

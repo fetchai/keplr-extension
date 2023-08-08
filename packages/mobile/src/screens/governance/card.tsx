@@ -5,7 +5,7 @@ import { useStyle } from "../../styles";
 import { Governance, ObservableQueryProposal } from "@keplr-wallet/stores";
 import { Chip } from "../../components/chip";
 import { CardBody } from "../../components/card";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { LoadingSpinner } from "../../components/spinner";
 import { useIntl } from "react-intl";
 import { dateToLocalString } from "./utils";
@@ -140,13 +140,17 @@ export const GovernanceCardBody: FunctionComponent<{
   })();
 
   return (
-    <CardBody style={style.flatten(["padding-0", "overflow-hidden"])}>
+    <CardBody
+      style={style.flatten(["padding-0", "overflow-hidden"]) as ViewStyle}
+    >
       {proposal ? (
         <RectButton
-          style={style.flatten([
-            "padding-x-card-horizontal",
-            "padding-y-card-vertical",
-          ])}
+          style={
+            style.flatten([
+              "padding-x-card-horizontal",
+              "padding-y-card-vertical",
+            ]) as ViewStyle
+          }
           onPress={() => {
             navigation.navigateSmart("Governance Details", {
               proposalId: proposal.id,
@@ -154,11 +158,13 @@ export const GovernanceCardBody: FunctionComponent<{
           }}
         >
           <View
-            style={style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-8",
-            ])}
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-8",
+              ]) as ViewStyle
+            }
           >
             <Text
               style={style.flatten(["h5", "color-text-high"])}
@@ -166,7 +172,7 @@ export const GovernanceCardBody: FunctionComponent<{
             <View style={style.flatten(["flex-1"])} />
             <GovernanceProposalStatusChip status={proposal.proposalStatus} />
           </View>
-          <View style={style.flatten(["margin-bottom-8"])}>
+          <View style={style.flatten(["margin-bottom-8"]) as ViewStyle}>
             <Text style={style.flatten(["h6", "color-text-high"])}>
               {proposal.title}
             </Text>
@@ -187,11 +193,13 @@ export const GovernanceCardBody: FunctionComponent<{
         </RectButton>
       ) : (
         <View
-          style={style.flatten([
-            "height-governance-card-body-placeholder",
-            "justify-center",
-            "items-center",
-          ])}
+          style={
+            style.flatten([
+              "height-governance-card-body-placeholder",
+              "justify-center",
+              "items-center",
+            ]) as ViewStyle
+          }
         >
           <LoadingSpinner
             color={style.get("color-loading-spinner").color}

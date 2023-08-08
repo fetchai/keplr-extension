@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { PageWithScrollView } from "../../../components/page";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { WordChip } from "../../../components/mnemonic";
 import { Button } from "../../../components/button";
@@ -85,16 +85,18 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <Text
-        style={style.flatten([
-          "h5",
-          "color-text-middle",
-          "margin-top-32",
-          "margin-bottom-4",
-          "text-center",
-        ])}
+        style={
+          style.flatten([
+            "h5",
+            "color-text-middle",
+            "margin-top-32",
+            "margin-bottom-4",
+            "text-center",
+          ]) as ViewStyle
+        }
       >
         Backup your mnemonic seed securely.
       </Text>
@@ -172,7 +174,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
         }}
       />
       {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });
@@ -186,20 +188,22 @@ const WordButton: FunctionComponent<{
 
   return (
     <RectButton
-      style={style.flatten(
-        [
-          "background-color-blue-400",
-          "padding-x-12",
-          "padding-y-4",
-          "margin-right-12",
-          "margin-bottom-12",
-          "border-radius-8",
-        ],
-        [
-          used && "background-color-blue-100",
-          used && "dark:background-color-platinum-300",
-        ]
-      )}
+      style={
+        style.flatten(
+          [
+            "background-color-blue-400",
+            "padding-x-12",
+            "padding-y-4",
+            "margin-right-12",
+            "margin-bottom-12",
+            "border-radius-8",
+          ],
+          [
+            used && "background-color-blue-100",
+            used && "dark:background-color-platinum-300",
+          ]
+        ) as ViewStyle
+      }
       onPress={onPress}
     >
       <Text style={style.flatten(["subtitle2", "color-white"])}>{word}</Text>
@@ -218,17 +222,19 @@ const WordsCard: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten([
-        "margin-top-14",
-        "margin-bottom-20",
-        "padding-y-24",
-        "padding-x-28",
-        "background-color-white",
-        "dark:background-color-platinum-700",
-        "border-radius-8",
-        "flex-row",
-        "flex-wrap",
-      ])}
+      style={
+        style.flatten([
+          "margin-top-14",
+          "margin-bottom-20",
+          "padding-y-24",
+          "padding-x-28",
+          "background-color-white",
+          "dark:background-color-platinum-700",
+          "border-radius-8",
+          "flex-row",
+          "flex-wrap",
+        ]) as ViewStyle
+      }
     >
       {wordSet.map((word, i) => {
         return (

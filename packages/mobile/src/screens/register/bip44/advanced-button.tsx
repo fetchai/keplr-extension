@@ -10,7 +10,7 @@ import { Button } from "../../../components/button";
 import { useStyle } from "../../../styles";
 import { registerModal } from "../../../modals/base";
 import { CardModal } from "../../../modals/card";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { TextInput } from "../../../components/input";
 
 export const BIP44AdvancedButton: FunctionComponent<{
@@ -28,7 +28,7 @@ export const BIP44AdvancedButton: FunctionComponent<{
         bip44Option={bip44Option}
       />
       <Button
-        containerStyle={style.flatten(["margin-bottom-16"])}
+        containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
         text="Advanced"
         mode="text"
         size="small"
@@ -92,27 +92,33 @@ export const BIP44SelectModal: FunctionComponent<{
     return (
       <CardModal title="HD Derivation Path">
         <Text
-          style={style.flatten([
-            "body2",
-            "color-text-middle",
-            "margin-bottom-18",
-          ])}
+          style={
+            style.flatten([
+              "body2",
+              "color-text-middle",
+              "margin-bottom-18",
+            ]) as ViewStyle
+          }
         >
           Set custom address derivation path by modifying the indexes below:
         </Text>
         <View
-          style={style.flatten([
-            "flex-row",
-            "items-center",
-            "margin-bottom-16",
-          ])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "margin-bottom-16",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["body2", "color-text-middle"])}>{`m/44’/${
             bip44Option.coinType ?? "-"
           }’`}</Text>
           <TextInput
             value={account.value}
-            containerStyle={style.flatten(["min-width-58", "padding-bottom-0"])}
+            containerStyle={
+              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
+            }
             style={style.flatten(["text-right"])}
             keyboardType="number-pad"
             onChangeText={account.setValue}
@@ -120,7 +126,9 @@ export const BIP44SelectModal: FunctionComponent<{
           <Text>’/</Text>
           <TextInput
             value={change.value}
-            containerStyle={style.flatten(["min-width-58", "padding-bottom-0"])}
+            containerStyle={
+              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
+            }
             style={style.flatten(["text-right"])}
             keyboardType="number-pad"
             onChangeText={change.setValue}
@@ -128,7 +136,9 @@ export const BIP44SelectModal: FunctionComponent<{
           <Text>/</Text>
           <TextInput
             value={index.value}
-            containerStyle={style.flatten(["min-width-58", "padding-bottom-0"])}
+            containerStyle={
+              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
+            }
             style={style.flatten(["text-right"])}
             keyboardType="number-pad"
             onChangeText={index.setValue}
@@ -136,11 +146,13 @@ export const BIP44SelectModal: FunctionComponent<{
         </View>
         {change.isValid && !isChangeZeroOrOne ? (
           <Text
-            style={style.flatten([
-              "text-caption2",
-              "color-red-400",
-              "margin-bottom-8",
-            ])}
+            style={
+              style.flatten([
+                "text-caption2",
+                "color-red-400",
+                "margin-bottom-8",
+              ]) as ViewStyle
+            }
           >
             Change should be 0 or 1
           </Text>

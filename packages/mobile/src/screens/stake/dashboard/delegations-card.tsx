@@ -66,26 +66,30 @@ export const DelegationsCard: FunctionComponent<{
 
   return (
     <Card style={containerStyle}>
-      <CardBody style={style.flatten(["padding-bottom-28"])}>
+      <CardBody style={style.flatten(["padding-bottom-28"]) as ViewStyle}>
         <Text
-          style={style.flatten([
-            "h4",
-            "color-text-highest",
-            "margin-bottom-28",
-          ])}
+          style={
+            style.flatten([
+              "h4",
+              "color-text-highest",
+              "margin-bottom-28",
+            ]) as ViewStyle
+          }
         >
           My Staking
         </Text>
         <View style={style.flatten(["flex-row", "items-center"])}>
           <StakedTokenSymbol size={44} />
-          <View style={style.flatten(["margin-left-16"])}>
+          <View style={style.flatten(["margin-left-16"]) as ViewStyle}>
             <Text
-              style={style.flatten([
-                "subtitle3",
-                "color-blue-400",
-                "dark:color-platinum-200",
-                "margin-bottom-4",
-              ])}
+              style={
+                style.flatten([
+                  "subtitle3",
+                  "color-blue-400",
+                  "dark:color-platinum-200",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
             >
               Staked
             </Text>
@@ -97,7 +101,7 @@ export const DelegationsCard: FunctionComponent<{
           <Button
             text="Stake"
             size="small"
-            containerStyle={style.flatten(["min-width-72"])}
+            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
             onPress={() => {
               smartNavigation.navigateSmart("Validator.List", {});
             }}
@@ -106,7 +110,9 @@ export const DelegationsCard: FunctionComponent<{
       </CardBody>
       {delegations && delegations.length > 0 && <CardDivider />}
       {delegations && delegations.length > 0 && (
-        <CardBody style={style.flatten(["padding-x-0", "padding-y-14"])}>
+        <CardBody
+          style={style.flatten(["padding-x-0", "padding-y-14"]) as ViewStyle}
+        >
           {delegations.map((del) => {
             const val = validatorsMap.get(del.delegation.validator_address);
             if (!val) {
@@ -125,12 +131,14 @@ export const DelegationsCard: FunctionComponent<{
             return (
               <RectButton
                 key={del.delegation.validator_address}
-                style={style.flatten([
-                  "flex-row",
-                  "items-center",
-                  "padding-x-20",
-                  "padding-y-14",
-                ])}
+                style={
+                  style.flatten([
+                    "flex-row",
+                    "items-center",
+                    "padding-x-20",
+                    "padding-y-14",
+                  ]) as ViewStyle
+                }
                 onPress={() => {
                   smartNavigation.navigateSmart("Validator.Details", {
                     validatorAddress: del.delegation.validator_address,
@@ -138,16 +146,18 @@ export const DelegationsCard: FunctionComponent<{
                 }}
               >
                 <ValidatorThumbnail
-                  style={style.flatten(["margin-right-16"])}
+                  style={style.flatten(["margin-right-16"]) as ViewStyle}
                   size={40}
                   url={thumbnail}
                 />
                 <Text
-                  style={style.flatten([
-                    "h6",
-                    "color-text-middle",
-                    "max-width-160",
-                  ])}
+                  style={
+                    style.flatten([
+                      "h6",
+                      "color-text-middle",
+                      "max-width-160",
+                    ]) as ViewStyle
+                  }
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -155,11 +165,13 @@ export const DelegationsCard: FunctionComponent<{
                 </Text>
                 <View style={style.flatten(["flex-1"])} />
                 <Text
-                  style={style.flatten([
-                    "body1",
-                    "color-text-low",
-                    "margin-right-12",
-                  ])}
+                  style={
+                    style.flatten([
+                      "body1",
+                      "color-text-low",
+                      "margin-right-12",
+                    ]) as ViewStyle
+                  }
                 >
                   {amount.maxDecimals(4).trim(true).shrink(true).toString()}
                 </Text>

@@ -81,7 +81,11 @@ export const PageWithScrollView = forwardRef<
             }
           }}
           style={StyleSheet.flatten([
-            style.flatten(["flex-1", "padding-0", "overflow-visible"]),
+            style.flatten([
+              "flex-1",
+              "padding-0",
+              "overflow-visible",
+            ]) as ViewStyle,
             propStyle,
           ])}
           keyboardOpeningTime={0}
@@ -99,7 +103,13 @@ export const PageWithScrollView = forwardRef<
           {...restProps}
         />
         <View
-          style={style.flatten(["absolute", "width-full", "height-full"])}
+          style={
+            style.flatten([
+              "absolute",
+              "width-full",
+              "height-full",
+            ]) as ViewStyle
+          }
           pointerEvents="box-none"
         >
           {fixed}

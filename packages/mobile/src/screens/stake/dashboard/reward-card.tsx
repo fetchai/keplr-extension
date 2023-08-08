@@ -36,22 +36,26 @@ export const MyRewardCard: FunctionComponent<{
     <Card style={containerStyle}>
       <CardBody>
         <Text
-          style={style.flatten([
-            "body3",
-            "color-text-middle",
-            "margin-bottom-12",
-          ])}
+          style={
+            style.flatten([
+              "body3",
+              "color-text-middle",
+              "margin-bottom-12",
+            ]) as ViewStyle
+          }
         >
           My Pending Rewards
         </Text>
         <View style={style.flatten(["flex-row", "items-end"])}>
           <View>
             <Text
-              style={style.flatten([
-                "h3",
-                "color-text-high",
-                "margin-bottom-20",
-              ])}
+              style={
+                style.flatten([
+                  "h3",
+                  "color-text-high",
+                  "margin-bottom-20",
+                ]) as ViewStyle
+              }
             >
               {pendingStakableReward
                 .shrink(true)
@@ -77,7 +81,7 @@ export const MyRewardCard: FunctionComponent<{
             size="small"
             text="Claim"
             mode="light"
-            containerStyle={style.flatten(["min-width-72"])}
+            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
             onPress={async () => {
               const validatorAddresses =
                 queryReward.getDescendingPendingRewardValidatorAddresses(8);

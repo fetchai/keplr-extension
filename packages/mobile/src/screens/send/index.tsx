@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
 import { useStore } from "../../stores";
 import { PageWithScrollView } from "../../components/page";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import {
   AddressInput,
   AmountInput,
@@ -84,9 +84,9 @@ export const SendScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <AddressInput
         label="Recipient"
         recipientConfig={sendConfigs.recipientConfig}
@@ -147,7 +147,7 @@ export const SendScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

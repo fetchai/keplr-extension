@@ -14,7 +14,7 @@ export const Card: FunctionComponent<{
           "width-full",
           "background-color-card",
           "overflow-hidden",
-        ]),
+        ]) as ViewStyle,
         propStyle,
       ])}
     >

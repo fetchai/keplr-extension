@@ -271,7 +271,7 @@ export const Button: FunctionComponent<{
             "items-center",
             "height-full",
             "padding-x-8",
-          ]),
+          ]) as ViewStyle,
           buttonStyle,
         ])}
         onPress={onPress}
@@ -281,10 +281,12 @@ export const Button: FunctionComponent<{
         activeOpacity={propUnderlayColor ? 1 : color === "primary" ? 0.3 : 0.2}
       >
         <View
-          style={style.flatten(
-            ["height-1", "justify-center"],
-            [loading && "opacity-transparent"]
-          )}
+          style={
+            style.flatten(
+              ["height-1", "justify-center"],
+              [loading && "opacity-transparent"]
+            ) as ViewStyle
+          }
         >
           <View>
             {isValidElement(leftIcon) || !leftIcon
@@ -306,10 +308,12 @@ export const Button: FunctionComponent<{
           {text}
         </Text>
         <View
-          style={style.flatten(
-            ["height-1", "justify-center"],
-            [loading && "opacity-transparent"]
-          )}
+          style={
+            style.flatten(
+              ["height-1", "justify-center"],
+              [loading && "opacity-transparent"]
+            ) as ViewStyle
+          }
         >
           <View>
             {isValidElement(rightIcon) || !rightIcon

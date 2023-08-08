@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { BackHandler, Platform } from "react-native";
+import { BackHandler, Platform, ViewStyle } from "react-native";
 import WebView, { WebViewMessageEvent } from "react-native-webview";
 import { useStyle } from "../../../../styles";
 import { Keplr } from "@keplr-wallet/provider";
@@ -42,7 +42,7 @@ class SuggestChainReceiverKeplr extends Keplr {
     super(version, mode, requester);
   }
 
-  async experimentalSuggestChain(chainInfo: ChainInfo): Promise<void> {
+  override async experimentalSuggestChain(chainInfo: ChainInfo): Promise<void> {
     // deep copy
     const mutableChainInfo = JSON.parse(
       JSON.stringify(chainInfo)
@@ -263,7 +263,7 @@ export const WebpageScreen: FunctionComponent<
   return (
     <PageWithViewInBottomTabView
       backgroundMode={null}
-      style={style.flatten(["padding-0"])}
+      style={style.flatten(["padding-0"]) as ViewStyle}
     >
       <WebViewStateContext.Provider
         value={{

@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { useSmartNavigation } from "../../navigation";
 import { Button } from "../../components/button";
-import { Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View, ViewStyle } from "react-native";
 import { ChainSelectorModal } from "../../components/chain-selector";
 import { registerModal } from "../../modals/base";
 import { CardModal } from "../../modals/card";
@@ -151,12 +151,14 @@ export const CameraScreen: FunctionComponent = observer(() => {
             text="Show my QR code"
             mode="light"
             size="large"
-            containerStyle={style.flatten([
-              "margin-top-64",
-              "border-radius-64",
-              "opacity-90",
-            ])}
-            style={style.flatten(["padding-x-52"])}
+            containerStyle={
+              style.flatten([
+                "margin-top-64",
+                "border-radius-64",
+                "opacity-90",
+              ]) as ViewStyle
+            }
+            style={style.flatten(["padding-x-52"]) as ViewStyle}
             onPress={() => {
               setIsSelectChainModalOpen(true);
             }}
@@ -200,13 +202,15 @@ export const AddressQRCodeModal: FunctionComponent<{
       <CardModal title="Scan QR code">
         <View style={style.flatten(["items-center"])}>
           <AddressCopyable address={account.bech32Address} maxCharacters={22} />
-          <View style={style.flatten(["margin-y-32"])}>
+          <View style={style.flatten(["margin-y-32"]) as ViewStyle}>
             {account.bech32Address ? (
               <View
-                style={style.flatten([
-                  "padding-8",
-                  "dark:background-color-white",
-                ])}
+                style={
+                  style.flatten([
+                    "padding-8",
+                    "dark:background-color-white",
+                  ]) as ViewStyle
+                }
               >
                 <QRCode size={200} value={account.bech32Address} />
               </View>

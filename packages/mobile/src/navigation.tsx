@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FunctionComponent, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import {
   BIP44HDPath,
   ExportKeyRingData,
@@ -115,7 +115,7 @@ import {
   JunoswapWebpageScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
-// import { UnlockScreen } from "./screens/unlock";
+import { UnlockScreen } from "./screens/unlock";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -362,8 +362,17 @@ const HomeScreenHeaderLeft: FunctionComponent = observer(() => {
             style.flatten(["color-blue-400", "dark:color-platinum-300"]).color
           }
         />
-        {/* style={style.flatten(["h4", "color-text-high", "margin-left-4"])} */}
-        <Text>{chainStore.current.chainName}</Text>
+        <Text
+          style={
+            style.flatten([
+              "h4",
+              "color-text-high",
+              "margin-left-4",
+            ]) as ViewStyle
+          }
+        >
+          {chainStore.current.chainName}
+        </Text>
       </View>
     </HeaderLeftButton>
   );
@@ -964,17 +973,15 @@ export const MainTabNavigation: FunctionComponent = () => {
             />
           </View>
         ),
-      })}
-      tabBarOptions={{
-        activeTintColor: style.flatten([
+        tabBarActiveTintColor: style.flatten([
           "color-blue-400",
           "dark:color-platinum-50",
         ]).color,
-        inactiveTintColor: style.flatten([
+        tabBarInactiveTintColor: style.flatten([
           "color-gray-200",
           "dark:color-platinum-300",
         ]).color,
-        style: {
+        tabBarStyle: {
           borderTopWidth: 0.5,
           borderTopColor: style.get("blurred-tabbar-top-border"),
           backgroundColor: style.get("color-blurred-tabbar-background").color,
@@ -984,7 +991,7 @@ export const MainTabNavigation: FunctionComponent = () => {
           paddingRight: 30,
         },
         showLabel: false,
-      }}
+      })}
       tabBar={(props) => (
         <BlurredBottomTabBar {...props} enabledScreens={["Home"]} />
       )}
@@ -1009,18 +1016,19 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
 
   return (
     <Drawer.Navigator
-      drawerType="slide"
       useLegacyImplementation={false}
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
+        drawerType: "slide",
         // If the focused screen is not "Home" screen,
         // disable the gesture to open drawer.
         swipeEnabled: focused.name === "Home",
         // gestureEnabled: focused.name === "Home",
+        overlayColor: style.flatten([
+          "color-gray-700@50%",
+          "dark:color-gray-700@75%",
+        ]).color,
       }}
-      overlayColor={
-        style.flatten(["color-gray-700@50%", "dark:color-gray-700@75%"]).color
-      }
       gestureHandlerProps={{
         hitSlop: {},
       }}
@@ -1058,10 +1066,6 @@ export const AppNavigation: FunctionComponent = observer(() => {
   return (
     <PageScrollPositionProvider>
       <FocusedScreenProvider>
-        {/* <View>
-          <Text>Hello Hemant</Text>
-        </View> */}
-
         <SmartNavigatorProvider>
           {/*<BugsnagNavigationContainer*/}
           {/* ref={navigationRef}
@@ -1101,7 +1105,7 @@ export const AppNavigation: FunctionComponent = observer(() => {
                 headerMode: "screen",
               }}
             >
-              {/* <Stack.Screen name="Unlock" component={UnlockScreen} /> */}
+              <Stack.Screen name="Unlock" component={UnlockScreen} />
               <Stack.Screen
                 name="MainTabDrawer"
                 component={MainTabNavigationWithDrawer}

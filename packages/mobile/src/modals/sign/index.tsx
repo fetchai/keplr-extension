@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { useStore } from "../../stores";
 import { MemoInput } from "../../components/input";
@@ -166,12 +166,14 @@ export const SignModal: FunctionComponent<{
               </Msg>
               {msgs.length - 1 !== i ? (
                 <View
-                  style={style.flatten([
-                    "height-1",
-                    "background-color-gray-50",
-                    "dark:background-color-platinum-400",
-                    "margin-x-16",
-                  ])}
+                  style={
+                    style.flatten([
+                      "height-1",
+                      "background-color-gray-50",
+                      "dark:background-color-platinum-400",
+                      "margin-x-16",
+                    ]) as ViewStyle
+                  }
                 />
               ) : null}
             </View>
@@ -194,12 +196,14 @@ export const SignModal: FunctionComponent<{
               </Msg>
               {msgs.length - 1 !== i ? (
                 <View
-                  style={style.flatten([
-                    "height-1",
-                    "background-color-gray-50",
-                    "dark:background-color-platinum-400",
-                    "margin-x-16",
-                  ])}
+                  style={
+                    style.flatten([
+                      "height-1",
+                      "background-color-gray-50",
+                      "dark:background-color-platinum-400",
+                      "margin-x-16",
+                    ]) as ViewStyle
+                  }
                 />
               ) : null}
             </View>
@@ -214,12 +218,12 @@ export const SignModal: FunctionComponent<{
       <CardModal title="Confirm Transaction">
         {wcSession ? (
           <WCAppLogoAndName
-            containerStyle={style.flatten(["margin-y-14"])}
+            containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
             peerMeta={wcSession.peerMeta}
           />
         ) : null}
-        <View style={style.flatten(["margin-bottom-16"])}>
-          <Text style={style.flatten(["margin-bottom-3"])}>
+        <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
+          <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
             <Text style={style.flatten(["subtitle3", "color-blue-400"])}>
               {`${msgs.length.toString()} `}
             </Text>
@@ -237,11 +241,13 @@ export const SignModal: FunctionComponent<{
             ])}
           >
             <ScrollView
-              style={style.flatten([
-                "max-height-214",
-                "background-color-white",
-                "dark:background-color-platinum-500",
-              ])}
+              style={
+                style.flatten([
+                  "max-height-214",
+                  "background-color-white",
+                  "dark:background-color-platinum-500",
+                ]) as ViewStyle
+              }
               persistentScrollbar={true}
               indicatorStyle={style.theme === "dark" ? "white" : "black"}
             >

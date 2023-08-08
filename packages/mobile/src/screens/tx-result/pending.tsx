@@ -3,7 +3,7 @@ import { RouteProp, useIsFocused, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { PageWithView } from "../../components/page";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ViewStyle } from "react-native";
 import { Button } from "../../components/button";
 import { useStyle } from "../../styles";
 import { useSmartNavigation } from "../../navigation";
@@ -95,14 +95,16 @@ export const TxPendingResultScreen: FunctionComponent = observer(() => {
       </View>
       <View style={style.flatten(["flex-3"])} />
       <View
-        style={style.flatten([
-          "width-122",
-          "height-122",
-          "border-width-8",
-          "border-color-blue-400",
-          "dark:border-color-blue-300",
-          "border-radius-64",
-        ])}
+        style={
+          style.flatten([
+            "width-122",
+            "height-122",
+            "border-width-8",
+            "border-color-blue-400",
+            "dark:border-color-blue-300",
+            "border-radius-64",
+          ]) as ViewStyle
+        }
       >
         <View
           style={{
@@ -134,18 +136,20 @@ export const TxPendingResultScreen: FunctionComponent = observer(() => {
             ]}
             autoPlay
             loop
-            style={style.flatten(["width-160"])}
+            style={style.flatten(["width-160"]) as ViewStyle}
           />
         </View>
       </View>
 
       <Text
-        style={style.flatten([
-          "h2",
-          "color-text-high",
-          "margin-top-82",
-          "margin-bottom-32",
-        ])}
+        style={
+          style.flatten([
+            "h2",
+            "color-text-high",
+            "margin-top-82",
+            "margin-bottom-32",
+          ]) as ViewStyle
+        }
       >
         Transaction pending
       </Text>
@@ -153,13 +157,15 @@ export const TxPendingResultScreen: FunctionComponent = observer(() => {
       {/* To match the height of text with other tx result screens,
          set the explicit height to upper view*/}
       <View
-        style={StyleSheet.flatten([
-          style.flatten(["padding-x-66"]),
-          {
-            height: style.get("body2").lineHeight * 3,
-            overflow: "visible",
-          },
-        ])}
+        style={
+          StyleSheet.flatten([
+            style.flatten(["padding-x-66"]),
+            {
+              height: style.get("body2").lineHeight * 3,
+              overflow: "visible",
+            },
+          ]) as ViewStyle
+        }
       >
         <Text style={style.flatten(["body2", "text-center", "color-text-low"])}>
           Transaction has been broadcasted to the blockchain and pending
@@ -168,21 +174,23 @@ export const TxPendingResultScreen: FunctionComponent = observer(() => {
       </View>
 
       <View
-        style={style.flatten([
-          "padding-x-48",
-          "height-116",
-          "margin-top-58",
-          "justify-center",
-        ])}
+        style={
+          style.flatten([
+            "padding-x-48",
+            "height-116",
+            "margin-top-58",
+            "justify-center",
+          ]) as ViewStyle
+        }
       >
-        <View style={style.flatten(["flex-row", "width-full"])}>
+        <View style={style.flatten(["flex-row", "width-full"]) as ViewStyle}>
           <Button
             containerStyle={style.flatten(["flex-1"])}
             size="default"
             text="Go to homescreen"
             mode="text"
             rightIcon={(color) => (
-              <View style={style.flatten(["margin-left-8"])}>
+              <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
                 <RightArrowIcon color={color} height={12} />
               </View>
             )}

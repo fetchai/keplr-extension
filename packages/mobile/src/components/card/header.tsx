@@ -36,20 +36,32 @@ export const CardHeaderWithButton: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten([
-        "flex",
-        "flex-row",
-        "items-center",
-        "padding-x-card-horizontal",
-        "padding-y-card-vertical",
-      ])}
+      style={
+        style.flatten([
+          "flex",
+          "flex-row",
+          "items-center",
+          "padding-x-card-horizontal",
+          "padding-y-card-vertical",
+        ]) as ViewStyle
+      }
     >
-      {icon && <View style={style.flatten(["margin-right-12"])}>{icon}</View>}
+      {icon && (
+        <View style={style.flatten(["margin-right-12"]) as ViewStyle}>
+          {icon}
+        </View>
+      )}
       <View style={style.flatten(["flex", "justify-center"])}>
         <Text style={style.flatten(["h5", "color-text-highest"])}>{title}</Text>
         {paragraph ? (
           <Text
-            style={style.flatten(["body2", "color-text-low", "margin-top-4"])}
+            style={
+              style.flatten([
+                "body2",
+                "color-text-low",
+                "margin-top-4",
+              ]) as ViewStyle
+            }
           >
             {paragraph}
           </Text>
@@ -82,10 +94,15 @@ export const CardHeader: FunctionComponent<{
 
   return (
     <View
-      style={StyleSheet.flatten([
-        style.flatten(["padding-x-card-horizontal", "padding-y-card-vertical"]),
-        containerStyle,
-      ])}
+      style={
+        StyleSheet.flatten([
+          style.flatten([
+            "padding-x-card-horizontal",
+            "padding-y-card-vertical",
+          ]),
+          containerStyle,
+        ]) as ViewStyle
+      }
     >
       <Text style={style.flatten(["h4", "color-text-highest"])}>{title}</Text>
     </View>
@@ -103,14 +120,16 @@ export const CardHeaderFullButton: FunctionComponent<{
 
   return (
     <RectButton
-      style={StyleSheet.flatten([
-        style.flatten([
-          "padding-x-card-horizontal",
-          "padding-top-card-vertical",
-          "padding-bottom-card-vertical-half",
-        ]),
-        containerStyle,
-      ])}
+      style={
+        StyleSheet.flatten([
+          style.flatten([
+            "padding-x-card-horizontal",
+            "padding-top-card-vertical",
+            "padding-bottom-card-vertical-half",
+          ]),
+          containerStyle,
+        ]) as ViewStyle
+      }
       onPress={onPress}
     >
       <View style={style.flatten(["flex", "flex-row", "items-center"])}>
@@ -118,12 +137,14 @@ export const CardHeaderFullButton: FunctionComponent<{
         <View style={style.flatten(["flex-1"])} />
         {buttonText ? (
           <Text
-            style={style.flatten([
-              "text-button2",
-              "color-gray-200",
-              "dark:color-platinum-300",
-              "margin-right-8",
-            ])}
+            style={
+              style.flatten([
+                "text-button2",
+                "color-gray-200",
+                "dark:color-platinum-300",
+                "margin-right-8",
+              ]) as ViewStyle
+            }
           >
             {buttonText}
           </Text>

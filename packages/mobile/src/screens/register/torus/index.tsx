@@ -7,7 +7,7 @@ import { useSmartNavigation } from "../../../navigation";
 import { Controller, useForm } from "react-hook-form";
 import { PageWithScrollView } from "../../../components/page";
 import { TextInput } from "../../../components/input";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { Button } from "../../../components/button";
 import * as WebBrowser from "expo-web-browser";
 import { Buffer } from "buffer/";
@@ -353,7 +353,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="tertiary"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <Controller
         control={control}
@@ -461,7 +461,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         disabled={!privateKey || !email}
       />
       {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"])} />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

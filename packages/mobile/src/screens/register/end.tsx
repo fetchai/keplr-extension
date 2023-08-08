@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { PageWithView } from "../../components/page";
 import { useStyle } from "../../styles";
-import { View, Text } from "react-native";
+import { View, Text, ViewStyle } from "react-native";
 import { Button } from "../../components/button";
 import { useSmartNavigation } from "../../navigation";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -50,7 +50,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
   return (
     <PageWithView
       backgroundMode="gradient"
-      style={style.flatten(["padding-x-42"])}
+      style={style.flatten(["padding-x-42"]) as ViewStyle}
     >
       <View style={style.get("flex-8")} />
       <View style={style.flatten(["items-center"])}>
@@ -61,24 +61,38 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         )}
 
         <Text
-          style={style.flatten(["h2", "color-text-middle", "margin-top-8"])}
+          style={
+            style.flatten([
+              "h2",
+              "color-text-middle",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
         >
           You’re all set!
         </Text>
         <Text
-          style={style.flatten([
-            "subtitle1",
-            "color-text-low",
-            "text-center",
-            "margin-top-10",
-          ])}
+          style={
+            style.flatten([
+              "subtitle1",
+              "color-text-low",
+              "text-center",
+              "margin-top-10",
+            ]) as ViewStyle
+          }
         >
           Your cosmic interchain journey now begins.
         </Text>
       </View>
       {password && keychainStore.isBiometrySupported ? (
         <View
-          style={style.flatten(["flex-row", "margin-top-58", "items-center"])}
+          style={
+            style.flatten([
+              "flex-row",
+              "margin-top-58",
+              "items-center",
+            ]) as ViewStyle
+          }
         >
           <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
             Enable Biometric
@@ -91,7 +105,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         </View>
       ) : null}
       <Button
-        containerStyle={style.flatten(["margin-top-44"])}
+        containerStyle={style.flatten(["margin-top-44"]) as ViewStyle}
         size="large"
         text="Done"
         loading={isLoading}

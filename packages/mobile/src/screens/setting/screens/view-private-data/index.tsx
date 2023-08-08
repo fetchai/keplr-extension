@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../../styles";
 import { CheckIcon } from "../../../../components/icon";
 import { Button } from "../../../../components/button";
@@ -59,18 +59,20 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode="secondary"
-      style={style.flatten(["padding-x-page"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <View
-        style={style.flatten([
-          "margin-top-24",
-          "padding-top-24",
-          "padding-bottom-12",
-          "padding-x-24",
-          "border-radius-8",
-          "background-color-card",
-          "dark:background-color-platinum-600",
-        ])}
+        style={
+          style.flatten([
+            "margin-top-24",
+            "padding-top-24",
+            "padding-bottom-12",
+            "padding-x-24",
+            "border-radius-8",
+            "background-color-card",
+            "dark:background-color-platinum-600",
+          ]) as ViewStyle
+        }
       >
         <View style={style.flatten(["flex-row", "flex-wrap"])}>
           {privateDataType === "mnemonic" ? (
@@ -79,17 +81,19 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
             })
           ) : (
             <Text
-              style={style.flatten([
-                "h6",
-                "margin-bottom-30",
-                "color-text-high",
-              ])}
+              style={
+                style.flatten([
+                  "h6",
+                  "margin-bottom-30",
+                  "color-text-high",
+                ]) as ViewStyle
+              }
             >
               {words}
             </Text>
           )}
         </View>
-        <View style={style.flatten(["width-full"])}>
+        <View style={style.flatten(["width-full"]) as ViewStyle}>
           <Button
             textStyle={style.flatten(
               ["text-button1", "color-blue-400", "dark:color-platinum-50"],
@@ -98,7 +102,7 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
             mode="text"
             {...(isTimedOut && {
               rightIcon: (
-                <View style={style.flatten(["margin-left-8"])}>
+                <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
                   <CheckIcon />
                 </View>
               ),

@@ -30,12 +30,12 @@ export const TokensCard: FunctionComponent<{
 
   return (
     <View style={containerStyle}>
-      <Card style={style.flatten(["padding-bottom-14"])}>
+      <Card style={style.flatten(["padding-bottom-14"]) as ViewStyle}>
         <CardHeader
-          containerStyle={style.flatten(["padding-bottom-6"])}
+          containerStyle={style.flatten(["padding-bottom-6"]) as ViewStyle}
           title="Token"
         />
-        <CardBody style={style.flatten(["padding-0"])}>
+        <CardBody style={style.flatten(["padding-0"]) as ViewStyle}>
           {tokens.map((token) => {
             return (
               <TokenItem
@@ -48,7 +48,7 @@ export const TokensCard: FunctionComponent<{
         </CardBody>
       </Card>
       <RectButton
-        style={style.flatten(["items-center", "padding-y-11"])}
+        style={style.flatten(["items-center", "padding-y-11"]) as ViewStyle}
         onPress={() => {
           smartNavigation.navigateSmart("Tokens", {});
         }}

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { useHeaderHeight } from "@react-navigation/stack";
+import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useStyle } from "../../../../styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebViewState } from "../context";
@@ -107,7 +107,11 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
     >
       <View
         style={StyleSheet.flatten([
-          style.flatten(["width-full", "items-center", "justify-center"]),
+          style.flatten([
+            "width-full",
+            "items-center",
+            "justify-center",
+          ]) as ViewStyle,
           {
             height: actualHeaderHeight,
           },
@@ -115,14 +119,16 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
       >
         {/* Name and refresh icon on center */}
         <RectButton
-          style={style.flatten([
-            "flex-row",
-            "items-center",
-            "border-radius-4",
-            "padding-left-12",
-            "padding-right-10",
-            "padding-y-5",
-          ])}
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "border-radius-4",
+              "padding-left-12",
+              "padding-right-10",
+              "padding-y-5",
+            ]) as ViewStyle
+          }
           onPress={() => {
             if (webViewState.webView) {
               webViewState.webView.reload();
@@ -130,7 +136,13 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
           }}
         >
           <Text
-            style={style.flatten(["h4", "color-text-middle", "margin-right-8"])}
+            style={
+              style.flatten([
+                "h4",
+                "color-text-middle",
+                "margin-right-8",
+              ]) as ViewStyle
+            }
           >
             {webViewState.name}
           </Text>
@@ -150,7 +162,7 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
               "width-full",
               "flex-row",
               "items-center",
-            ]),
+            ]) as ViewStyle,
             {
               left: 0,
               height: actualHeaderHeight,
@@ -159,11 +171,13 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
           pointerEvents="box-none"
         >
           <RectButton
-            style={style.flatten([
-              "border-radius-4",
-              "padding-4",
-              "margin-left-20",
-            ])}
+            style={
+              style.flatten([
+                "border-radius-4",
+                "padding-4",
+                "margin-left-20",
+              ]) as ViewStyle
+            }
             rippleColor={
               style.flatten(["color-blue-50", "dark:color-platinum-300"]).color
             }
@@ -184,11 +198,13 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
             />
           </RectButton>
           <RectButton
-            style={style.flatten([
-              "border-radius-4",
-              "padding-4",
-              "margin-left-8",
-            ])}
+            style={
+              style.flatten([
+                "border-radius-4",
+                "padding-4",
+                "margin-left-8",
+              ]) as ViewStyle
+            }
             rippleColor={
               style.flatten(["color-blue-50", "dark:color-platinum-300"]).color
             }
@@ -208,11 +224,13 @@ export const OnScreenWebpageScreenHeader: FunctionComponent = () => {
           </RectButton>
           <View style={style.get("flex-1")} />
           <RectButton
-            style={style.flatten([
-              "border-radius-4",
-              "padding-4",
-              "margin-right-20",
-            ])}
+            style={
+              style.flatten([
+                "border-radius-4",
+                "padding-4",
+                "margin-right-20",
+              ]) as ViewStyle
+            }
             rippleColor={
               style.flatten(["color-blue-50", "dark:color-platinum-300"]).color
             }

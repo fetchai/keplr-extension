@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { Button } from "../../components/button";
 import { useStore } from "../../stores";
@@ -36,10 +36,14 @@ export const WalletConnectApprovalModal: FunctionComponent<{
     return (
       <CardModal title="Wallet Connect">
         <WCAppLogoAndName
-          containerStyle={style.flatten(["margin-y-20"])}
+          containerStyle={style.flatten(["margin-y-20"]) as ViewStyle}
           peerMeta={session.peerMeta}
         />
-        <Text style={style.flatten(["margin-bottom-40", "text-center"])}>
+        <Text
+          style={
+            style.flatten(["margin-bottom-40", "text-center"]) as ViewStyle
+          }
+        >
           <Text
             style={style.flatten(["body1", "color-text-low", "font-semibold"])}
           >
@@ -64,7 +68,7 @@ export const WalletConnectApprovalModal: FunctionComponent<{
               permissionStore.reject(id);
             }}
           />
-          <View style={style.get("width-page-pad")} />
+          <View style={style.get("width-page-pad") as ViewStyle} />
           <Button
             containerStyle={style.get("flex-1")}
             text="Approve"

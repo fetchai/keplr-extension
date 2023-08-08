@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 
 export const WordChip: FunctionComponent<{
@@ -15,21 +15,23 @@ export const WordChip: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten(
-        [
-          "padding-x-12",
-          "padding-y-4",
-          "border-radius-8",
-          "background-color-white",
-          "dark:background-color-platinum-700",
-          "border-width-2",
-          "border-color-blue-400",
-          "dark:border-color-platinum-500",
-          "margin-right-12",
-          "margin-bottom-16",
-        ],
-        [empty && "border-color-blue-100", dashedBorder && "border-dashed"]
-      )}
+      style={
+        style.flatten(
+          [
+            "padding-x-12",
+            "padding-y-4",
+            "border-radius-8",
+            "background-color-white",
+            "dark:background-color-platinum-700",
+            "border-width-2",
+            "border-color-blue-400",
+            "dark:border-color-platinum-500",
+            "margin-right-12",
+            "margin-bottom-16",
+          ],
+          [empty && "border-color-blue-100", dashedBorder && "border-dashed"]
+        ) as ViewStyle
+      }
     >
       <Text
         style={style.flatten(

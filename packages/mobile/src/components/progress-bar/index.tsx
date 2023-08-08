@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import React, { FunctionComponent } from "react";
 import { useStyle } from "../../styles";
 
@@ -9,13 +9,15 @@ export const ProgressBar: FunctionComponent<{
 
   return (
     <View
-      style={style.flatten([
-        "height-8",
-        "background-color-gray-50",
-        "dark:background-color-platinum-500",
-        "border-radius-32",
-        "overflow-hidden",
-      ])}
+      style={
+        style.flatten([
+          "height-8",
+          "background-color-gray-50",
+          "dark:background-color-platinum-500",
+          "border-radius-32",
+          "overflow-hidden",
+        ]) as ViewStyle
+      }
     >
       <View
         style={StyleSheet.flatten([
@@ -23,7 +25,7 @@ export const ProgressBar: FunctionComponent<{
             "height-8",
             "background-color-blue-400",
             "border-radius-32",
-          ]),
+          ]) as ViewStyle,
           {
             width: `${progress}%`,
           },

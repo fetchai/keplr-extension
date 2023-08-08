@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { PageWithScrollView } from "../../../components/page";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { Button } from "../../../components/button";
 import { useSmartNavigation } from "../../../navigation";
@@ -100,7 +100,7 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
       <PageWithScrollView
         backgroundMode="tertiary"
         contentContainerStyle={style.get("flex-grow-1")}
-        style={style.flatten(["padding-x-page"])}
+        style={style.flatten(["padding-x-page"]) as ViewStyle}
       >
         <Controller
           control={control}
@@ -174,7 +174,7 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
           onPress={submit}
         />
         {/* Mock element for bottom padding */}
-        <View style={style.flatten(["height-page-pad"])} />
+        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </PageWithScrollView>
     );
   }

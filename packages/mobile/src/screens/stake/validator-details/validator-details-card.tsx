@@ -54,14 +54,16 @@ export const ValidatorDetailsCard: FunctionComponent<{
       {validator ? (
         <CardBody>
           <View
-            style={style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-16",
-            ])}
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-16",
+              ]) as ViewStyle
+            }
           >
             <ValidatorThumbnail
-              style={style.flatten(["margin-right-12"])}
+              style={style.flatten(["margin-right-12"]) as ViewStyle}
               size={44}
               url={thumbnail}
             />
@@ -69,14 +71,18 @@ export const ValidatorDetailsCard: FunctionComponent<{
               {validator.description.moniker}
             </Text>
           </View>
-          <View style={style.flatten(["flex-row", "margin-bottom-12"])}>
+          <View
+            style={style.flatten(["flex-row", "margin-bottom-12"]) as ViewStyle}
+          >
             <View style={style.flatten(["flex-1"])}>
               <Text
-                style={style.flatten([
-                  "h6",
-                  "color-text-middle",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "h6",
+                    "color-text-middle",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 Commission
               </Text>
@@ -92,11 +98,13 @@ export const ValidatorDetailsCard: FunctionComponent<{
             </View>
             <View style={style.flatten(["flex-1"])}>
               <Text
-                style={style.flatten([
-                  "h6",
-                  "color-text-middle",
-                  "margin-bottom-4",
-                ])}
+                style={
+                  style.flatten([
+                    "h6",
+                    "color-text-middle",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
               >
                 Voting Power
               </Text>
@@ -110,13 +118,15 @@ export const ValidatorDetailsCard: FunctionComponent<{
               </Text>
             </View>
           </View>
-          <View style={style.flatten(["margin-bottom-14"])}>
+          <View style={style.flatten(["margin-bottom-14"]) as ViewStyle}>
             <Text
-              style={style.flatten([
-                "h6",
-                "color-text-middle",
-                "margin-bottom-4",
-              ])}
+              style={
+                style.flatten([
+                  "h6",
+                  "color-text-middle",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
             >
               Description
             </Text>

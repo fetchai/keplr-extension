@@ -68,11 +68,13 @@ export const AmountInput: FunctionComponent<{
         }}
         inputRight={
           <View
-            style={style.flatten([
-              "height-1",
-              "overflow-visible",
-              "justify-center",
-            ])}
+            style={
+              style.flatten([
+                "height-1",
+                "overflow-visible",
+                "justify-center",
+              ]) as ViewStyle
+            }
           >
             <Button
               text="MAX"
@@ -84,16 +86,18 @@ export const AmountInput: FunctionComponent<{
                 }
               })()}
               size="small"
-              style={style.flatten(["padding-x-5", "padding-y-3"])}
-              containerStyle={style.flatten(
-                ["height-24", "border-radius-4"],
-                [
-                  !amountConfig.fraction &&
-                    "dark:background-color-platinum-500",
-                  amountConfig.fraction === 1 &&
-                    "dark:background-color-platinum-600",
-                ]
-              )}
+              style={style.flatten(["padding-x-5", "padding-y-3"]) as ViewStyle}
+              containerStyle={
+                style.flatten(
+                  ["height-24", "border-radius-4"],
+                  [
+                    !amountConfig.fraction &&
+                      "dark:background-color-platinum-500",
+                    amountConfig.fraction === 1 &&
+                      "dark:background-color-platinum-600",
+                  ]
+                ) as ViewStyle
+              }
               textStyle={style.flatten(
                 ["normal-case", "text-caption2"],
                 [

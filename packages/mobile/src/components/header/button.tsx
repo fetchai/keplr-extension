@@ -14,7 +14,7 @@ export const HeaderLeftButton: FunctionComponent<
     <View style={style.flatten(["absolute"])}>
       <TouchableOpacity
         onPress={onPress}
-        style={StyleSheet.flatten([style.flatten(["padding-10"])])}
+        style={StyleSheet.flatten([style.flatten(["padding-10"])]) as ViewStyle}
       >
         {children}
       </TouchableOpacity>
@@ -32,7 +32,7 @@ export const HeaderRightButton: FunctionComponent<{
     <View style={StyleSheet.flatten([style.flatten(["absolute"]), propStyle])}>
       <TouchableOpacity
         onPress={onPress}
-        style={StyleSheet.flatten([style.flatten(["padding-10"])])}
+        style={StyleSheet.flatten([style.flatten(["padding-10"])]) as ViewStyle}
       >
         {children}
       </TouchableOpacity>

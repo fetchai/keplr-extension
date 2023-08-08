@@ -160,9 +160,12 @@ export async function registerExportedKeyRingDatas(
   // So, there is no need to wait.
   // In fact, at this point, restore is complete.
   for (const keyStore of keyRingStore.multiKeyStoreInfo) {
-    if (keyStore.meta && keyStore.meta.exportKeyRingDataDuplicationCheckKey) {
+    if (
+      keyStore.meta &&
+      keyStore.meta["exportKeyRingDataDuplicationCheckKey"]
+    ) {
       duplicationCheck.set(
-        keyStore.meta.exportKeyRingDataDuplicationCheckKey,
+        keyStore.meta["exportKeyRingDataDuplicationCheckKey"],
         true
       );
     }

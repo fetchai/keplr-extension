@@ -11,7 +11,7 @@ import {
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { RectButton } from "../rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -51,24 +51,38 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
           }}
         >
           <View
-            style={style.flatten(["items-center", "height-50", "flex-row"])}
+            style={
+              style.flatten([
+                "items-center",
+                "height-50",
+                "flex-row",
+              ]) as ViewStyle
+            }
           >
             <Text
-              style={style.flatten(["h3", "color-text-high", "margin-left-24"])}
+              style={
+                style.flatten([
+                  "h3",
+                  "color-text-high",
+                  "margin-left-24",
+                ]) as ViewStyle
+              }
             >
               Networks
             </Text>
             <View style={style.get("flex-1")} />
             <View
-              style={style.flatten([
-                "height-1",
-                "justify-center",
-                "items-center",
-                "margin-right-12",
-              ])}
+              style={
+                style.flatten([
+                  "height-1",
+                  "justify-center",
+                  "items-center",
+                  "margin-right-12",
+                ]) as ViewStyle
+              }
             >
               <BorderlessButton
-                style={style.flatten(["padding-4"])}
+                style={style.flatten(["padding-4"]) as ViewStyle}
                 rippleColor={
                   style.get("color-rect-button-default-ripple").color
                 }
@@ -101,12 +115,14 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                   chainStore.saveLastViewChainId();
                   navigation.dispatch(DrawerActions.closeDrawer());
                 }}
-                style={style.flatten([
-                  "flex-row",
-                  "height-84",
-                  "items-center",
-                  "padding-x-20",
-                ])}
+                style={
+                  style.flatten([
+                    "flex-row",
+                    "height-84",
+                    "items-center",
+                    "padding-x-20",
+                  ]) as ViewStyle
+                }
                 activeOpacity={style.theme === "dark" ? 0.5 : 1}
                 underlayColor={
                   style.flatten(["color-gray-50", "dark:color-platinum-500"])
@@ -114,19 +130,21 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 }
               >
                 <View
-                  style={style.flatten(
-                    [
-                      "width-44",
-                      "height-44",
-                      "border-radius-64",
-                      "items-center",
-                      "justify-center",
-                      "background-color-gray-100",
-                      "dark:background-color-platinum-500",
-                      "margin-right-16",
-                    ],
-                    [selected && "background-color-blue-400"]
-                  )}
+                  style={
+                    style.flatten(
+                      [
+                        "width-44",
+                        "height-44",
+                        "border-radius-64",
+                        "items-center",
+                        "justify-center",
+                        "background-color-gray-100",
+                        "dark:background-color-platinum-500",
+                        "margin-right-16",
+                      ],
+                      [selected && "background-color-blue-400"]
+                    ) as ViewStyle
+                  }
                 >
                   {chainInfo.raw.chainSymbolImageUrl ? (
                     <FastImage

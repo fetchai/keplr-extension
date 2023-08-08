@@ -32,7 +32,11 @@ export const UnbondingCard: FunctionComponent<{
         <Text style={style.flatten(["h4", "color-text-highest"])}>
           My Unstaking
         </Text>
-        <View style={style.flatten(["padding-top-4", "padding-bottom-8"])}>
+        <View
+          style={
+            style.flatten(["padding-top-4", "padding-bottom-8"]) as ViewStyle
+          }
+        >
           {unbonding.entries.map((entry, i) => {
             const remainingText = (() => {
               const current = new Date().getTime();
@@ -81,14 +85,16 @@ export const UnbondingCard: FunctionComponent<{
             return (
               <View
                 key={i.toString()}
-                style={style.flatten(["padding-top-24"])}
+                style={style.flatten(["padding-top-24"]) as ViewStyle}
               >
                 <View
-                  style={style.flatten([
-                    "flex-row",
-                    "items-center",
-                    "margin-bottom-8",
-                  ])}
+                  style={
+                    style.flatten([
+                      "flex-row",
+                      "items-center",
+                      "margin-bottom-8",
+                    ]) as ViewStyle
+                  }
                 >
                   <Text
                     style={style.flatten(["subtitle2", "color-text-middle"])}

@@ -26,19 +26,21 @@ export const WebScreen: FunctionComponent = () => {
       backgroundMode="gradient"
       contentContainerStyle={style.get("flex-grow-1")}
       style={StyleSheet.flatten([
-        style.flatten(["padding-x-20"]),
+        style.flatten(["padding-x-20"]) as ViewStyle,
         {
           marginTop: safeAreaInsets.top,
         },
       ])}
     >
       <Text
-        style={style.flatten([
-          "h3",
-          "color-text-high",
-          "margin-top-44",
-          "margin-bottom-20",
-        ])}
+        style={
+          style.flatten([
+            "h3",
+            "color-text-high",
+            "margin-top-44",
+            "margin-bottom-20",
+          ]) as ViewStyle
+        }
       >
         Discover Apps
       </Text>
@@ -161,7 +163,7 @@ export const WebpageImageButton: FunctionComponent<{
           "background-color-gray-100@50%",
           "dark:background-color-platinum-500@50%",
           "margin-bottom-16",
-        ]),
+        ]) as ViewStyle,
         {
           height,
         },
@@ -199,7 +201,11 @@ export const WebpageImageButton: FunctionComponent<{
       <View style={style.flatten(["absolute-fill"])}>
         <RectButton
           style={StyleSheet.flatten([
-            style.flatten(["flex-row", "items-center", "padding-x-38"]),
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "padding-x-38",
+            ]) as ViewStyle,
             { height },
           ])}
           activeOpacity={0.2}

@@ -58,7 +58,11 @@ export const PageWithSectionList: FunctionComponent<
       >
         <AnimatedKeyboardAwareSectionList
           style={StyleSheet.flatten([
-            style.flatten(["flex-1", "padding-0", "overflow-visible"]),
+            style.flatten([
+              "flex-1",
+              "padding-0",
+              "overflow-visible",
+            ]) as ViewStyle,
             propStyle,
           ])}
           keyboardOpeningTime={0}

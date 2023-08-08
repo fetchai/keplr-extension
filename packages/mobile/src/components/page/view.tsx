@@ -1,5 +1,11 @@
 import React, { FunctionComponent } from "react";
-import { SafeAreaView, ViewProps, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  ViewProps,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "../../styles";
 import { useSetFocusedScreen } from "./utils";
 import { BackgroundMode, ScreenBackground } from "./background";
@@ -28,7 +34,11 @@ export const PageWithView: FunctionComponent<
         <SafeAreaView style={style.get("flex-1")}>
           <View
             style={StyleSheet.flatten([
-              style.flatten(["flex-1", "padding-0", "overflow-visible"]),
+              style.flatten([
+                "flex-1",
+                "padding-0",
+                "overflow-visible",
+              ]) as ViewStyle,
               propStyle,
             ])}
             {...restProps}
@@ -37,7 +47,11 @@ export const PageWithView: FunctionComponent<
       ) : (
         <View
           style={StyleSheet.flatten([
-            style.flatten(["flex-1", "padding-0", "overflow-visible"]),
+            style.flatten([
+              "flex-1",
+              "padding-0",
+              "overflow-visible",
+            ]) as ViewStyle,
             propStyle,
           ])}
           {...restProps}
