@@ -30,7 +30,13 @@ export class ObservableQueryDomainPriceInner extends ObservableCosmwasmContractC
     if (!this.response || !this.response.data.result) {
       return {};
     }
-    return this.response.data.is_valid_domain;
+    return this.response.data.result;
+  }
+  get price(): any {
+    if (!this.response || !this.response.data.result.Success.pricing) {
+      return {};
+    }
+    return this.response.data.result.Success.pricing;
   }
 }
 

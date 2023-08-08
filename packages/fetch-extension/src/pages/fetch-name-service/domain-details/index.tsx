@@ -4,18 +4,11 @@ import { formatDomain } from "@utils/format";
 import React, {
   FunctionComponent,
   useCallback,
-  useEffect,
   useState,
+  useEffect,
 } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FNS_CONFIG } from "../../../config.ui.var";
-import {
-  getBeneficiaryAddress,
-  getDomainData,
-  getDomainPrice,
-  getDomainStatus,
-  getPrimaryDomain,
-} from "../../../name-service/fns-apis";
 import { HeaderLayout } from "../../../new-layouts";
 import { useStore } from "../../../stores";
 import { BuyOrBid } from "./buy-or-bid";
@@ -47,11 +40,13 @@ export const TooltipForDomainNames = ({
     <div>{formatDomain(domainName)}</div>
   );
 };
+
 const tabs = [
   { tabName: "properties", displayName: "Properties" },
   { tabName: "bids", displayName: "Bids" },
   { tabName: "activities", displayName: "Activities" },
 ];
+
 const properties = [
   "address",
   "email",
@@ -61,116 +56,127 @@ const properties = [
   "background",
 ];
 
+const getDomainStatus = (domain_status: any, sender: string) => {
+  let isMinted = false;
+  let isOwned = false;
+
+  try {
+    if (domain_status) {
+      if (
+        typeof domain_status === "object" &&
+        domain_status.Owned.owner === sender
+      ) {
+        isMinted = true;
+        isOwned = true;
+      } else if (
+        typeof domain_status === "object" &&
+        domain_status.Owned.owner !== sender
+      ) {
+        isMinted = true;
+        isOwned = false;
+      } else if (
+        typeof domain_status === "string" &&
+        domain_status === "Available"
+      ) {
+        isMinted = false;
+        isOwned = false;
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching domain data:", error);
+  }
+
+  return { isMinted, isOwned };
+};
+
+const getMessageForInProgressTx = (type: string) => {
+  switch (type) {
+    case "mint":
+      return "Mint Transaction in Progress";
+    case "setPrimary":
+      return "Transaction to make domain Primary in Progress";
+    case "updateDomain":
+      return "Transaction to update domain Details in Progress";
+    default:
+      return "Transaction In Progress";
+  }
+};
+
 export const DomainDetails: FunctionComponent = observer(() => {
   const domainName = useLocation().pathname.split("/")[3];
   const navigate = useNavigate();
-  const { accountStore, chainStore } = useStore();
+  const { accountStore, chainStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const sender = accountInfo.bech32Address;
   const [domainData, setDomainData] = useState<any>({});
   const [oldDomainData, setOldDomainData] = useState<any>({});
-  const [domainPrice, setDomainPrice] = useState<any>(null);
-  const [isMinted, setIsMinted] = useState<any>(null);
-  const [isAssigned, setIsAssigned] = useState(false);
-  const [isPrimary, setIsPrimary] = useState(false);
-  const [isOwned, setIsOwned] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState("Loading Domain Info");
-  const [showPopup, _setShowPopup] = useState(false);
+  let domainPrice: any = {};
+  let isAssigned: any = false;
+  let isPrimary: boolean = false;
+  const [message, setMessage] = useState<string>("Loading Domain Info");
+  const [showPopup, setShowPopup] = useState(false);
   const [activeTab, _setActiveTab] = useState("properties");
+  const {
+    queryPrimaryDomain,
+    queryDomainStatus,
+    queryBeneficiaryAddress,
+    queryDomainData,
+    queryDomainPrice,
+  } = queriesStore.get(current.chainId).fns;
+
+  const { beneficiaryAddress } = queryBeneficiaryAddress.getQueryContract(
+    FNS_CONFIG[current.chainId].contractAddress,
+    domainName
+  );
+  if (beneficiaryAddress === sender) isAssigned = true;
+  const { primaryDomain } = queryPrimaryDomain.getQueryContract(
+    FNS_CONFIG[current.chainId].contractAddress,
+    accountInfo.bech32Address
+  );
+  if (primaryDomain === domainName) isPrimary = true;
+
+  const { domain_data, isFetching: isDomainDataFetching } =
+    queryDomainData.getQueryContract(
+      FNS_CONFIG[current.chainId].contractAddress,
+      domainName
+    );
 
   useEffect(() => {
-    const checkIsAssigned = async () => {
-      const beneficiery = await getBeneficiaryAddress(
-        current.chainId,
-        domainName
-      );
-      if (beneficiery.address === sender) {
-        setIsAssigned(true);
-      }
-    };
-    const checkIsPrimary = async () => {
-      const primaryDomain = await getPrimaryDomain(current.chainId, sender);
-      if (primaryDomain.domain === domainName) {
-        setIsPrimary(true);
-      }
-    };
-    const fetchDomainData = async () => {
-      try {
-        setMessage("Loading Domain Info");
-        const fetchedDomainData = await getDomainData(
-          current.chainId,
-          domainName
-        );
-        setDomainData(fetchedDomainData.domain_data || {});
-        setOldDomainData(fetchedDomainData.domain_data || {});
-        const isDomainMinted = await getDomainStatus(
-          current.chainId,
-          domainName
-        );
-        const fetchDomainPrice = await getDomainPrice(
-          current.chainId,
-          domainName
-        );
-        setDomainPrice(fetchDomainPrice);
-        const domainStatus = isDomainMinted?.domain_status;
-        if (domainStatus) {
-          if (
-            typeof domainStatus === "object" &&
-            domainStatus.Owned.owner === sender
-          ) {
-            setIsMinted(true);
-            setIsOwned(true);
-          } else if (
-            typeof domainStatus === "object" &&
-            domainStatus.Owned.owner !== sender
-          ) {
-            setIsMinted(true);
-            setIsOwned(false);
-          } else if (
-            typeof domainStatus === "string" &&
-            domainStatus === "Available"
-          ) {
-            setIsMinted(false);
-            setIsOwned(false);
-          }
-        }
-        setIsLoading(false);
-      } catch (error) {
-        setMessage("Error fetching domain data");
-        console.error("Error fetching domain data:", error);
-      }
-    };
-    setIsLoading(true);
-    if (accountInfo.txTypeInProgress.includes(domainName)) {
-      const type = accountInfo.txTypeInProgress.split(":")[0];
-      switch (type) {
-        case "mint":
-          setMessage("Mint Transaction in Progress");
-          break;
-        case "setPrimary":
-          setMessage("Transaction to make domain Primary in Progress");
-          break;
-        case "updateDomain":
-          setMessage("Transaction to update domain Details in Progress");
-          break;
-        default:
-          setMessage("Transaction In Progress");
-          break;
-      }
-    } else {
-      checkIsAssigned();
-      checkIsPrimary();
-      fetchDomainData();
-    }
-  }, [accountInfo.txTypeInProgress, current.chainId, domainName, sender]);
+    setDomainData(domain_data || {});
+    setOldDomainData(domain_data || {});
+  }, [domain_data]);
+
+  const { domain_status } = queryDomainStatus.getQueryContract(
+    FNS_CONFIG[current.chainId].contractAddress,
+    domainName
+  );
+
+  const { isMinted: fetchedIsMinted, isOwned: fetchedIsOwned } =
+    getDomainStatus(domain_status, sender);
+
+  const { price } = queryDomainPrice.getQueryContract(
+    FNS_CONFIG[current.chainId].contractAddress,
+    domainName
+  );
+  domainPrice = price || {};
 
   const handleTabChange = (tabName: string) => {
     if (tabName === "properties")
       navigate("/fetch-name-service/domain-details/" + domainName);
     else window.open("https://www.fetns.domains/domains/" + domainName);
   };
+
+  useEffect(() => {
+    if (accountInfo.txTypeInProgress.includes(domainName)) {
+      const type = accountInfo.txTypeInProgress.split(":")[0];
+      setMessage(getMessageForInProgressTx(type));
+      setShowPopup(true);
+    } else {
+      setShowPopup(false);
+    }
+  }, [accountInfo.txTypeInProgress, domainName]);
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -190,7 +196,7 @@ export const DomainDetails: FunctionComponent = observer(() => {
       }
       showBottomMenu={true}
     >
-      {isLoading ? (
+      {isDomainDataFetching ? (
         <div className={style["loader"]}>
           {message}{" "}
           {!message.includes("Error") && (
@@ -211,25 +217,25 @@ export const DomainDetails: FunctionComponent = observer(() => {
               <TooltipForDomainNames domainName={domainName.toUpperCase()} />
             </div>
           )}
-
           <div className={style["availability"]}>
-            {isMinted ? (isOwned ? "OWNED" : "BUY") : "AVAILABLE"}
+            {fetchedIsMinted ? (fetchedIsOwned ? "OWNED" : "BUY") : "AVAILABLE"}
           </div>
           <div className={style["description"]}>
             <textarea
-              disabled={!isOwned || !FNS_CONFIG[current.chainId].isEditable}
-              value={domainData.description || ""}
+              disabled={
+                !fetchedIsOwned || !FNS_CONFIG[current.chainId].isEditable
+              }
+              value={domainData.description}
               style={{
-                width: "330px",
                 backgroundColor: "transparent",
                 borderColor: "transparent",
                 color: "white",
-                textAlign: "center",
                 resize: "none",
+                textAlign: "center",
               }}
               onDragStart={(e) => e.preventDefault()}
               placeholder={
-                isOwned
+                fetchedIsOwned
                   ? "Click to edit description"
                   : "Description hasn't been set"
               }
@@ -240,10 +246,10 @@ export const DomainDetails: FunctionComponent = observer(() => {
                   description: e.target.value,
                 });
               }}
-            />{" "}
+            />
           </div>
         </div>
-        {isOwned && !domainData.address && (
+        {fetchedIsOwned && !domainData.address && (
           <div className={style["beneficiaryHelp"]}>
             &#128161; Assign a beneficiary address to make the domain point to
             it.
@@ -256,11 +262,13 @@ export const DomainDetails: FunctionComponent = observer(() => {
               <div className={style["domainInfo"]} key={property}>
                 <div className={style["keys"]}>{property}</div>
                 <input
-                  disabled={!isOwned || !FNS_CONFIG[current.chainId].isEditable}
+                  disabled={
+                    !fetchedIsOwned || !FNS_CONFIG[current.chainId].isEditable
+                  }
                   className={style["values"]}
                   value={domainData[property]}
                   onDragStart={(e) => e.preventDefault()}
-                  placeholder={isOwned ? "Click to edit" : "Not Set"}
+                  placeholder={fetchedIsOwned ? "Click to edit" : "Not Set"}
                   onChange={(e) => {
                     setDomainData({
                       ...domainData,
@@ -271,19 +279,18 @@ export const DomainDetails: FunctionComponent = observer(() => {
               </div>
             ))}
         </div>
-
-        {!isLoading &&
-          (isOwned || isAssigned ? (
+        {!isDomainDataFetching &&
+          (fetchedIsOwned || isAssigned ? (
             <Update
               domainName={domainName}
               domainPrice={domainPrice}
               domainData={domainData}
-              isOwned={isOwned}
+              isOwned={fetchedIsOwned}
               isAssigned={isAssigned}
               isPrimary={isPrimary}
               oldDomainData={oldDomainData}
             />
-          ) : isMinted && !isOwned && !isAssigned ? (
+          ) : fetchedIsMinted && !fetchedIsOwned && !isAssigned ? (
             <BuyOrBid domainName={domainName} />
           ) : (
             <Mint domainPrice={domainPrice} domainName={domainName} />

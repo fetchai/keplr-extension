@@ -11,10 +11,10 @@ export class ObservableQueryDomainsByBeneficiaryInner extends ObservableCosmwasm
     chainId: string,
     chainGetter: ChainGetter,
     protected override readonly contractAddress: string,
-    protected readonly domain: string
+    protected readonly address: string
   ) {
     super(kvStore, chainId, chainGetter, contractAddress, {
-      reverse_look_up: { target: domain },
+      reverse_look_up: { target: address },
     });
   }
 
@@ -48,10 +48,10 @@ export class ObservableQueryDomainsByBeneficiary extends ObservableChainQueryMap
 
   getQueryContract(
     contractAddress: string,
-    domain: string
+    address: string
   ): ObservableQueryDomainsByBeneficiaryInner {
     return this.get(
-      `${contractAddress}/${domain}`
+      `${contractAddress}/${address}`
     ) as ObservableQueryDomainsByBeneficiaryInner;
   }
 }

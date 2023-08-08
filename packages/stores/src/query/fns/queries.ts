@@ -7,7 +7,7 @@ import { ObservableQueryDomainData } from "./domain-data";
 import { ObservableQueryDomainStatus } from "./domain-status";
 import { ObservableQueryPrimaryDomain } from "./primary-domain";
 import { ObservableQueryDomainPrice } from "./domain-price";
-import { ObservableQueryBeneficiaryAddress } from "./get-beneficiary-address";
+import { ObservableQueryBeneficiaryAddress } from "./beneficiary-by-domain";
 import { ObservableQueryDomainsByBeneficiary } from "./domains-by-beneficiary";
 export interface FNSQueries {
   fns: FNSQueriesImpl;

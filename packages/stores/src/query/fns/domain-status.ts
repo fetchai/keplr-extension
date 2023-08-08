@@ -26,6 +26,16 @@ export class ObservableQueryDomainStatusInner extends ObservableCosmwasmContract
 
     return this.response.data.domain_status;
   }
+  get registrationTime(): any {
+    if (
+      !this.response ||
+      !this.response.data.domain_status.Owned.registration_time
+    ) {
+      return {};
+    }
+
+    return this.response.data.domain_status.Owned.registration_time;
+  }
 }
 
 export class ObservableQueryDomainStatus extends ObservableChainQueryMap<DomainStatus> {
