@@ -132,6 +132,7 @@ export const Mint: React.FC<MintProps> = ({ domainPrice, domainName }) => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <button onClick={handleCancelButtonClick}>Cancel</button>
               <button
+                className={style["continue"]}
                 onClick={handleContinueButtonClick}
                 disabled={mintingPrice === "Not Available" || isTxnInProgress}
               >
