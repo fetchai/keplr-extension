@@ -26,6 +26,7 @@ import { useUnmount } from "../../hooks";
 import Svg, { Path } from "react-native-svg";
 import { Button } from "../../components/button";
 
+//Todo
 const AlertIcon: FunctionComponent<{
   size: number;
   color: string;
@@ -92,7 +93,7 @@ export const LedgerGranterModal: FunctionComponent<{
         ledgerInitStore.abortAll();
       }
     });
-
+    //observeState
     useEffect(() => {
       const subscription = bleManager.onStateChange((newState) => {
         if (newState === State.PoweredOn) {
@@ -149,10 +150,10 @@ export const LedgerGranterModal: FunctionComponent<{
         }
       };
 
-      AppState.addEventListener("change", listener);
+      const callback = AppState.addEventListener("change", listener);
 
       return () => {
-        AppState.removeEventListener("change", listener);
+        callback.remove();
       };
     }, [permissionStatus]);
 
@@ -164,9 +165,9 @@ export const LedgerGranterModal: FunctionComponent<{
       ) {
         if (Platform.OS === "android") {
           PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
           ).then((granted) => {
-            if (granted == PermissionsAndroid.RESULTS.GRANTED) {
+            if (granted == PermissionsAndroid.RESULTS["GRANTED"]) {
               setPermissionStatus(BLEPermissionGrantStatus.Granted);
             } else {
               setPermissionStatus(BLEPermissionGrantStatus.Failed);

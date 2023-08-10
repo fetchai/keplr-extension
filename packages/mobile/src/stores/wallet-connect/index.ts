@@ -248,7 +248,7 @@ export abstract class WalletConnectManager {
   protected createKeplrAPI(sessionId: string) {
     return new Keplr(
       // TODO: Set version
-      "",
+      "0.12.12",
       "core",
       new WCMessageRequester(RNRouterBackground.EventEmitter, sessionId)
     );

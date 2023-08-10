@@ -11,8 +11,8 @@ import { View, ViewStyle } from "react-native";
 import { Button } from "../../../components/button";
 import * as WebBrowser from "expo-web-browser";
 import { Buffer } from "buffer/";
-import NodeDetailManager from "@toruslabs/fetch-node-details";
-import Torus from "@toruslabs/torus.js";
+import FetchNodeDetails from "@toruslabs/fetch-node-details";
+import TorusUtils from "@toruslabs/torus.js";
 import { useLoadingScreen } from "../../../providers/loading-screen";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { useStore } from "../../../stores";
@@ -107,31 +107,26 @@ const useTorusGoogleSignIn = (): {
 
           const { email } = userInfo;
 
-          const nodeDetailManager = new NodeDetailManager({
+          const fetchNodeDetails = new FetchNodeDetails();
+          const torus = new TorusUtils({
             network: "mainnet",
-            proxyAddress: "0x638646503746d5456209e33a2ff5e3226d698bea",
-          });
+            clientId: "0x638646503746d5456209e33a2ff5e3226d698bea",
+          }); // get your Client ID from Web3Auth Dashboard
+
+          const verifier = "fetch-google";
+          const verifierId = email.toLowerCase();
           const { torusNodeEndpoints, torusNodePub, torusIndexes } =
-            await nodeDetailManager.getNodeDetails({
-              verifier: "chainapsis-google",
-              verifierId: email.toLowerCase(),
-            });
-
-          const torus = new Torus();
-
+            await fetchNodeDetails.getNodeDetails({ verifier, verifierId });
           const response = await torus.getPublicAddress(
             torusNodeEndpoints,
             torusNodePub,
-            {
-              verifier: "chainapsis-google",
-              verifierId: email.toLowerCase(),
-            },
-            true
+            { verifier, verifierId }
           );
+
           const data = await torus.retrieveShares(
             torusNodeEndpoints,
             torusIndexes,
-            "chainapsis-google",
+            "fetch-google",
             {
               verifier_id: email.toLowerCase(),
             },
@@ -209,31 +204,25 @@ const useTorusAppleSignIn = (): {
           throw new Error("Subject is not provided");
         }
 
-        const nodeDetailManager = new NodeDetailManager({
+        const fetchNodeDetails = new FetchNodeDetails();
+        const torus = new TorusUtils({
           network: "mainnet",
-          proxyAddress: "0x638646503746d5456209e33a2ff5e3226d698bea",
-        });
+          clientId: "0x638646503746d5456209e33a2ff5e3226d698bea",
+        }); // get your Client ID from Web3Auth Dashboard
+        const verifier = "fetch-apple";
+        const verifierId = "sub";
         const { torusNodeEndpoints, torusNodePub, torusIndexes } =
-          await nodeDetailManager.getNodeDetails({
-            verifier: "chainapsis-apple",
-            verifierId: sub,
-          });
-
-        const torus = new Torus();
-
+          await fetchNodeDetails.getNodeDetails({ verifier, verifierId });
         const response = await torus.getPublicAddress(
           torusNodeEndpoints,
           torusNodePub,
-          {
-            verifier: "chainapsis-apple",
-            verifierId: sub,
-          },
-          true
+          { verifier, verifierId }
         );
+
         const data = await torus.retrieveShares(
           torusNodeEndpoints,
           torusIndexes,
-          "chainapsis-apple",
+          "fetch-apple",
           {
             verifier_id: sub,
           },

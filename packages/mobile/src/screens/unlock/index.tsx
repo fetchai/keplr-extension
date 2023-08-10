@@ -110,7 +110,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   const navigation = useNavigation();
 
-  const [isSplashEnd] = useState(false);
+  const [isSplashEnd] = useState(true);
 
   // const animatedContinuityEffectOpacity = useSharedValue(1);
 

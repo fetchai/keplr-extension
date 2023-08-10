@@ -11,6 +11,7 @@ import { StyleBuilder } from "./builder";
 import { Appearance, AppState, Platform } from "react-native";
 import { DeepPartial } from "utility-types";
 import { AsyncKVStore } from "../../common";
+import { NativeEventSubscription } from "react-native/Libraries/EventEmitter/RCTNativeAppEventEmitter";
 
 const createStyleContext = <
   Themes extends ReadonlyArray<string>,
@@ -160,17 +161,19 @@ export const createStyleProvider = <
           setIsDarkMode(Appearance.getColorScheme() === "dark");
         };
 
-        Appearance.addChangeListener(listener);
+        const callback = Appearance.addChangeListener(listener);
         // On android, appearance's listener not work.
         // So, just check the color scheme whenever app get focused.
+        let callbackAndroid: NativeEventSubscription;
         if (Platform.OS === "android") {
-          AppState.addEventListener("focus", listener);
+          callbackAndroid = AppState.addEventListener("focus", listener);
         }
 
         return () => {
-          Appearance.removeChangeListener(listener);
-          if (Platform.OS === "android") {
-            AppState.removeEventListener("focus", listener);
+          callback.remove();
+
+          if (Platform.OS === "android" && callbackAndroid != null) {
+            callbackAndroid.remove();
           }
         };
       }, [isInitializing, isAutomatic]);

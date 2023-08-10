@@ -7,18 +7,21 @@ import {
 import { AsyncKVStore } from "../common";
 import scrypt from "react-native-scrypt";
 import { Buffer } from "buffer/";
-import TransportBLE from "@ledgerhq/react-native-hw-transport-ble";
+
+//import TransportBLE from "@ledgerhq/react-native-hw-transport-ble";
 import { getRandomBytesAsync } from "../common";
+
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
 import { CommunityChainInfoRepo, EmbedChainInfos } from "../config";
-import {
-  getLastUsedLedgerDeviceId,
-  setLastUsedLedgerDeviceId,
-} from "../utils/ledger";
+// import {
+//   getLastUsedLedgerDeviceId,
+//   setLastUsedLedgerDeviceId,
+// } from "../utils/ledger";
 
 const router = new RNRouterBackground(RNEnv.produceEnv);
 
+// Todo
 init(
   router,
   (prefix: string) => new AsyncKVStore(prefix),
@@ -61,26 +64,26 @@ init(
     },
   },
   {
-    defaultMode: "ble",
-    transportIniters: {
-      ble: async (deviceId?: string) => {
-        const lastDeviceId = await getLastUsedLedgerDeviceId();
-
-        if (!deviceId && !lastDeviceId) {
-          throw new Error("Device id is empty");
-        }
-
-        if (!deviceId) {
-          deviceId = lastDeviceId;
-        }
-
-        if (deviceId && deviceId !== lastDeviceId) {
-          await setLastUsedLedgerDeviceId(deviceId);
-        }
-
-        return await TransportBLE.open(deviceId);
-      },
-    },
+    // defaultMode: "ble",
+    // transportIniters: {
+    //   ble: async (deviceId?: string) => {
+    //     const lastDeviceId = await getLastUsedLedgerDeviceId();
+    //
+    //     if (!deviceId && !lastDeviceId) {
+    //       throw new Error("Device id is empty");
+    //     }
+    //
+    //     if (!deviceId) {
+    //       deviceId = lastDeviceId;
+    //     }
+    //
+    //     if (deviceId && deviceId !== lastDeviceId) {
+    //       await setLastUsedLedgerDeviceId(deviceId);
+    //     }
+    //
+    //     return await TransportBLE.open(deviceId);
+    //   },
+    // },
   },
   {
     suggestChain: {

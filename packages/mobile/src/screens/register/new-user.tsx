@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from "@react-navigation/elements";
 import { PageWithScrollView } from "../../components/page";
 import { GoogleIcon, AppleIcon } from "../../components/icon";
 import { useStyle } from "../../styles";

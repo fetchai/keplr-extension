@@ -9,6 +9,8 @@ import {
 import {
   DrawerActions,
   NavigationContainer,
+  NavigationProp,
+  ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
 import { useStore } from "./stores";
@@ -116,6 +118,7 @@ import {
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
 import { UnlockScreen } from "./screens/unlock";
+import * as SplashScreen from "expo-splash-screen";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -347,7 +350,7 @@ const HomeScreenHeaderLeft: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
     <HeaderLeftButton
@@ -383,7 +386,7 @@ const HomeScreenHeaderRight: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
     <React.Fragment>
@@ -449,6 +452,16 @@ export const MainNavigation: FunctionComponent = () => {
 
 export const RegisterNavigation: FunctionComponent = () => {
   const style = useStyle();
+  async function hideSplashScreen() {
+    console.log("Hide Splash screen");
+    await SplashScreen.hideAsync();
+  }
+
+  useEffect(() => {
+    (async () => {
+      await hideSplashScreen();
+    })();
+  }, []);
 
   return (
     <Stack.Navigator
@@ -561,7 +574,7 @@ export const RegisterNavigation: FunctionComponent = () => {
 export const OtherNavigation: FunctionComponent = () => {
   const style = useStyle();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
     <Stack.Navigator
@@ -730,7 +743,7 @@ export const OtherNavigation: FunctionComponent = () => {
 export const SettingStackScreen: FunctionComponent = () => {
   const style = useStyle();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const { analyticsStore } = useStore();
 
@@ -873,7 +886,7 @@ export const WebNavigation: FunctionComponent = () => {
 export const MainTabNavigation: FunctionComponent = () => {
   const style = useStyle();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
@@ -1014,6 +1027,17 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
 
   const focused = useFocusedScreen();
 
+  //Todo remove when done
+  async function hideSplashScreen() {
+    console.log("Hide Splash screen");
+    await SplashScreen.hideAsync();
+  }
+
+  useEffect(() => {
+    (async () => {
+      await hideSplashScreen();
+    })();
+  }, []);
   return (
     <Drawer.Navigator
       useLegacyImplementation={false}
@@ -1028,9 +1052,6 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
           "color-gray-700@50%",
           "dark:color-gray-700@75%",
         ]).color,
-      }}
-      gestureHandlerProps={{
-        hitSlop: {},
       }}
     >
       <Drawer.Screen name="MainTab" component={MainTabNavigation} />
@@ -1095,8 +1116,9 @@ export const AppNavigation: FunctionComponent = observer(() => {
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
+              //Unlock
                 keyRingStore.status !== KeyRingStatus.UNLOCKED
-                  ? "Unlock"
+                  ? "MainTabDrawer"
                   : "MainTabDrawer"
               }
               screenOptions={{

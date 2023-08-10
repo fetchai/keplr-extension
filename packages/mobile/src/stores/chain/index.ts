@@ -127,7 +127,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     }
 
     yield this.kvStore.set<{ disabledChains: string[] }>(
-      "extension_chainInfoInUIConfig",
+      "chainInfoInUIConfig",
       {
         disabledChains: disableChainIds,
       }
@@ -171,10 +171,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
   @flow
   *saveLastViewChainId() {
-    yield this.kvStore.set<string>(
-      "extension_last_view_chain_id",
-      this._selectedChainId
-    );
+    yield this.kvStore.set<string>("last_view_chain_id", this._selectedChainId);
   }
 
   @flow
@@ -185,7 +182,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     this.deferInitialQueryController.ready();
 
     const lastViewChainId = yield* toGenerator(
-      this.kvStore.get<string>("extension_last_view_chain_id")
+      this.kvStore.get<string>("last_view_chain_id")
     );
 
     if (!this.deferChainIdSelect) {
@@ -201,9 +198,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     }
 
     const chainInfoUI = yield* toGenerator(
-      this.kvStore.get<{ disabledChains: string[] }>(
-        "extension_chainInfoInUIConfig"
-      )
+      this.kvStore.get<{ disabledChains: string[] }>("chainInfoInUIConfig")
     );
 
     if (chainInfoUI) {
@@ -213,7 +208,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
   }
 
   @flow
-  protected *getChainInfosFromBackground() {
+  public *getChainInfosFromBackground() {
     const msg = new GetChainInfosMsg();
     const result = yield* toGenerator(
       this.requester.sendMessage(BACKGROUND_PORT, msg)

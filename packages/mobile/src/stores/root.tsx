@@ -152,7 +152,7 @@ export class RootStore {
       SecretQueries.use({
         apiGetter: async () => {
           // TOOD: Set version for Keplr API
-          return new Keplr("", "core", new RNMessageRequesterInternal());
+          return new Keplr("0.12.12", "core", new RNMessageRequesterInternal());
         },
       }),
       KeplrETCQueries.use({
@@ -176,7 +176,11 @@ export class RootStore {
           autoInit: true,
           getKeplr: async () => {
             // TOOD: Set version for Keplr API
-            return new Keplr("", "core", new RNMessageRequesterInternal());
+            return new Keplr(
+              "0.12.12",
+              "core",
+              new RNMessageRequesterInternal()
+            );
           },
         };
       },

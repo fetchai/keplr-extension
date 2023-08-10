@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../../stores";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../../styles";
 import { Toggle } from "../../../../components/toggle";
 import FastImage from "react-native-fast-image";
@@ -11,6 +11,7 @@ import Svg, { Path } from "react-native-svg";
 import { PageWithFixedHeightSortableList } from "../../../../components/page/fixed-height-sortable-list";
 // import Animated, { Easing } from "react-native-reanimated";
 
+//Todo
 export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
 
@@ -21,29 +22,24 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
       backgroundMode="secondary"
       contentContainerStyle={style.get("flex-grow-1")}
       itemHeight={84}
-      data={chainStore.chainInfosWithUIConfig.map(
-        ({ chainInfo, disabled }, index) => {
-          return {
-            key: chainInfo.chainId,
-            isFirst: index === 0,
-            isLast: index === chainStore.chainInfosWithUIConfig.length - 1,
-            chainId: chainInfo.chainId,
-            chainName: chainInfo.chainName,
-            chainSymbolImageUrl: chainInfo.raw.chainSymbolImageUrl,
-            disabled,
-          };
-        }
-      )}
-      dividerIndex={chainStore.chainInfosWithUIConfig.findIndex(
-        ({ disabled }) => disabled
-      )}
+      data={chainStore.chainInfosInUI.map((chainInfo, index) => {
+        return {
+          key: chainInfo.chainId,
+          isFirst: index === 0,
+          isLast: index === chainStore.chainInfosInUI.length - 1,
+          chainId: chainInfo.chainId,
+          chainName: chainInfo.chainName,
+          chainSymbolImageUrl: chainInfo.raw.chainSymbolImageUrl,
+        };
+      })}
       delegateOnGestureEventToItemView={true}
-      onDragEnd={(keys) => {
-        chainStore.setChainInfosInUIOrder(keys);
+      onDragEnd={(_) => {
+        // chainStore.enabledChainInfosInUI(keys);
       }}
       renderItem={(item, anims) => {
         return (
           <SettingChainListScreenElement
+            disabled={false}
             {...item}
             isDragging={anims.isDragging}
             onGestureEvent={anims.onGestureEvent}
@@ -86,7 +82,7 @@ export const SettingChainListScreenElement: FunctionComponent<{
   onGestureEvent: (...args: any[]) => void;
 }> = observer(
   ({
-    // isLast,
+    isLast,
     chainId,
     chainName,
     chainSymbolImageUrl,
@@ -142,15 +138,17 @@ export const SettingChainListScreenElement: FunctionComponent<{
 
     return (
       <View
-      // style={style.flatten(
-      //   ["flex-row", "height-84", "items-center"],
-      //   [
-      //     !isLast && "border-solid",
-      //     !isLast && "border-width-bottom-1",
-      //     !isLast && "border-color-gray-50",
-      //     !isLast && "dark:border-color-platinum-500",
-      //   ]
-      // )}
+        style={
+          style.flatten(
+            ["flex-row", "height-84", "items-center"],
+            [
+              !isLast && "border-solid",
+              !isLast && "border-width-bottom-1",
+              !isLast && "border-color-gray-50",
+              !isLast && "dark:border-color-platinum-500",
+            ]
+          ) as ViewStyle
+        }
       >
         <View
           style={StyleSheet.flatten([
@@ -177,14 +175,16 @@ export const SettingChainListScreenElement: FunctionComponent<{
           onHandlerStateChange={onGestureEvent}
         >
           <View
-          // style={style.flatten([
-          //   "height-64",
-          //   "margin-left-8",
-          //   "padding-left-10",
-          //   "padding-right-10",
-          //   "justify-center",
-          //   "items-center",
-          // ])}
+            style={
+              style.flatten([
+                "height-64",
+                "margin-left-8",
+                "padding-left-10",
+                "padding-right-10",
+                "justify-center",
+                "items-center",
+              ]) as ViewStyle
+            }
           >
             <Svg width="17" height="10" fill="none" viewBox="0 0 17 10">
               <Path
@@ -200,20 +200,22 @@ export const SettingChainListScreenElement: FunctionComponent<{
           </View>
         </PanGestureHandler>
         <View
-        // style={style.flatten(
-        //   [
-        //     "width-40",
-        //     "height-40",
-        //     "border-radius-64",
-        //     "items-center",
-        //     "justify-center",
-        //     "background-color-blue-400",
-        //   ],
-        //   [
-        //     disabled && "background-color-gray-100",
-        //     disabled && "dark:background-color-platinum-500",
-        //   ]
-        // )}
+          style={
+            style.flatten(
+              [
+                "width-40",
+                "height-40",
+                "border-radius-64",
+                "items-center",
+                "justify-center",
+                "background-color-blue-400",
+              ],
+              [
+                disabled && "background-color-gray-100",
+                disabled && "dark:background-color-platinum-500",
+              ]
+            ) as ViewStyle
+          }
         >
           {chainSymbolImageUrl ? (
             <FastImage
@@ -236,10 +238,8 @@ export const SettingChainListScreenElement: FunctionComponent<{
             {chainName}
           </Text>
         </View>
-        {/* style={style.get("flex-1")}  */}
-        <View />
-        {/* style={style.flatten(["margin-right-20"])} */}
-        <View>
+        <View style={style.get("flex-1")} />
+        <View style={style.flatten(["margin-right-20"]) as ViewStyle}>
           <Toggle
             on={!disabled}
             onChange={() => {

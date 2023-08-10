@@ -1,45 +1,46 @@
 import React, { FunctionComponent, useEffect } from "react";
-import { RouteProp, useRoute } from "@react-navigation/native";
+//import { RouteProp, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
+//import { useStore } from "../../stores";
 import { PageWithView } from "../../components/page";
 import { Text, View, Animated, StyleSheet, ViewStyle } from "react-native";
 import { Button } from "../../components/button";
 import { useStyle } from "../../styles";
 import { useSmartNavigation } from "../../navigation";
-import { RightArrowIcon } from "../../components/icon";
+//import { RightArrowIcon } from "../../components/icon";
 import LottieView from "lottie-react-native";
-import * as WebBrowser from "expo-web-browser";
+//import * as WebBrowser from "expo-web-browser";
 import { SimpleGradient } from "../../components/svg";
 
+// Todo
 export const TxSuccessResultScreen: FunctionComponent = observer(() => {
-  const { chainStore } = useStore();
+  //const { chainStore } = useStore();
   const [successAnimProgress] = React.useState(new Animated.Value(0));
   const [pangpareAnimProgress] = React.useState(new Animated.Value(0));
 
-  const route = useRoute<
-    RouteProp<
-      Record<
-        string,
-        {
-          chainId?: string;
-          // Hex encoded bytes.
-          txHash: string;
-        }
-      >,
-      string
-    >
-  >();
+  // const route = useRoute<
+  //   RouteProp<
+  //     Record<
+  //       string,
+  //       {
+  //         chainId?: string;
+  //         // Hex encoded bytes.
+  //         txHash: string;
+  //       }
+  //     >,
+  //     string
+  //   >
+  // >();
 
-  const chainId = route.params.chainId
-    ? route.params.chainId
-    : chainStore.current.chainId;
-  const txHash = route.params.txHash;
+  // const chainId = route.params.chainId
+  //   ? route.params.chainId
+  //   : chainStore.current.chainId;
+  // const txHash = route.params.txHash;
 
   const style = useStyle();
   const smartNavigation = useSmartNavigation();
 
-  const chainInfo = chainStore.getChain(chainId);
+  // const chainInfo = chainStore.getChain(chainId);
 
   useEffect(() => {
     const animateLottie = () => {
@@ -175,29 +176,29 @@ export const TxSuccessResultScreen: FunctionComponent = observer(() => {
             }}
           />
         </View>
-        {chainInfo.raw.txExplorer ? (
-          <Button
-            containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
-            size="default"
-            text={`View on ${chainInfo.raw.txExplorer.name}`}
-            mode="text"
-            rightIcon={(color) => (
-              <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
-                <RightArrowIcon color={color} height={12} />
-              </View>
-            )}
-            onPress={() => {
-              if (chainInfo.raw.txExplorer) {
-                WebBrowser.openBrowserAsync(
-                  chainInfo.raw.txExplorer.txUrl.replace(
-                    "{txHash}",
-                    txHash.toUpperCase()
-                  )
-                );
-              }
-            }}
-          />
-        ) : null}
+        {/*{chainInfo.raw.txExplorer ? (*/}
+        {/*  <Button*/}
+        {/*    containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}*/}
+        {/*    size="default"*/}
+        {/*    text={`View on ${chainInfo.raw.txExplorer.name}`}*/}
+        {/*    mode="text"*/}
+        {/*    rightIcon={(color) => (*/}
+        {/*      <View style={style.flatten(["margin-left-8"]) as ViewStyle}>*/}
+        {/*        <RightArrowIcon color={color} height={12} />*/}
+        {/*      </View>*/}
+        {/*    )}*/}
+        {/*    onPress={() => {*/}
+        {/*      if (chainInfo.raw.txExplorer) {*/}
+        {/*        WebBrowser.openBrowserAsync(*/}
+        {/*          chainInfo.raw.txExplorer.txUrl.replace(*/}
+        {/*            "{txHash}",*/}
+        {/*            txHash.toUpperCase()*/}
+        {/*          )*/}
+        {/*        );*/}
+        {/*      }*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*) : null}*/}
       </View>
       <View style={style.flatten(["flex-2"])} />
     </PageWithView>

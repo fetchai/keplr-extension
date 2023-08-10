@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useStyle } from "../../../../styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebViewState } from "../context";
