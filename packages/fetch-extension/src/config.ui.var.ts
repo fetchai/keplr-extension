@@ -196,6 +196,7 @@ export const ANS_CONFIG: {
     network: "mainnet" | "testnet";
     rpc: string;
     contractAddress: string;
+    validateAgentAddressContract: string;
     isEditable: boolean;
   };
 } = {
@@ -204,6 +205,8 @@ export const ANS_CONFIG: {
     rpc: "https://rpc-dorado.fetch.ai:443",
     contractAddress:
       "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+    validateAgentAddressContract:
+      "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
   },
   [CHAIN_ID_FETCHHUB]: {
@@ -211,6 +214,8 @@ export const ANS_CONFIG: {
     rpc: "https://rpc-fetchhub.fetch.ai:443",
     contractAddress:
       "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+    validateAgentAddressContract:
+      "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
   },
 };

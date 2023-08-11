@@ -16,7 +16,6 @@
   flex-shrink: 0;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  justify-content: space-between;
   margin: 12px;
 }
 .searchInput {
@@ -24,6 +23,7 @@
   background: transparent;
   border: none;
   font-size: 14px;
+  width: 148px;
 }
 .searchInput::placeholder {
   color: #fff;
@@ -50,6 +50,9 @@
   right: 24px;
   border: none;
   cursor: pointer;
+}
+.registerButton:disabled {
+  cursor: not-allowed;
 }
 .rejectButton {
   color: var(--red-red-400, #d38989);
@@ -120,7 +123,9 @@
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.2);
 }
-
+.permissionsMessage{
+  color: white;
+}
 .detailsTable {
   margin-left: 12px;
   display: inline-flex;
@@ -139,4 +144,18 @@
   padding-top: 18px;
   padding-bottom: 18px;
   width: 100%;
+}
+
+.dropdown {
+  height: 20px;
+  width: 80px;
+}
+.dropdown-toggle {
+  height: 20px;
+  width: 80px;
+  padding: 2px;
+  font-size: 10px;
+}
+.dropdown:disabled {
+  cursor: not-allowed;
 }
