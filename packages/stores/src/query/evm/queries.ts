@@ -3,9 +3,13 @@ import { ChainGetter } from "../../common";
 import { KVStore } from "@keplr-wallet/common";
 import { ObservableQueryEvmNativeBalanceRegistry } from "./balance";
 import { DeepReadonly } from "utility-types";
-import { ObservableQueryERC20Metadata } from "./erc20-info";
+import {
+  ObservableQueryERC20Allowance,
+  ObservableQueryERC20Metadata,
+} from "./erc20-info";
 import { ObservableQueryErc20BalanceRegistry } from "./erc20-balance";
 import { ObservableQueryNativeFetEthBrige } from "./native-fet-bridge";
+import { ObservableQueryGasFees } from "./eth-gas-fees";
 
 export interface EvmQueries {
   evm: EvmQueriesImpl;
@@ -34,6 +38,8 @@ export const EvmQueries = {
 export class EvmQueriesImpl {
   public readonly queryErc20Metadata: DeepReadonly<ObservableQueryERC20Metadata>;
   public readonly queryNativeFetBridge: DeepReadonly<ObservableQueryNativeFetEthBrige>;
+  public readonly queryERC20Allowance: DeepReadonly<ObservableQueryERC20Allowance>;
+  public readonly queryEthGasFees: DeepReadonly<ObservableQueryGasFees>;
 
   constructor(
     base: QueriesSetBase,
@@ -59,5 +65,13 @@ export class EvmQueriesImpl {
       kvStore,
       chainGetter
     );
+
+    this.queryERC20Allowance = new ObservableQueryERC20Allowance(
+      kvStore,
+      chainId,
+      chainGetter
+    );
+
+    this.queryEthGasFees = new ObservableQueryGasFees(kvStore);
   }
 }

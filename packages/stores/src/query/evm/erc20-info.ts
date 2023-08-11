@@ -8,6 +8,7 @@ import {
   erc20MetadataInterface,
 } from "../../common";
 import { Erc20ContractTokenInfo } from "./types";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export class ObservableQueryERC20MetadataName extends ObservableJsonRPCQuery<string> {
   constructor(kvStore: KVStore, ethereumURL: string, contractAddress: string) {
@@ -214,5 +215,90 @@ export class ObservableQueryERC20Metadata extends HasMapStore<ObservableQueryERC
 
   getQueryContract(contractAddress: string): ObservableQueryERC20MetadataInner {
     return super.get(contractAddress);
+  }
+}
+
+export class ObservableQueryERC20AllowanceInner extends ObservableJsonRPCQuery<string> {
+  constructor(
+    kvStore: KVStore,
+    chainGetter: ChainGetter,
+    chainId: string,
+    contractAddress: string,
+    protected readonly bech32Address: string,
+    spender: string
+  ) {
+    const instance = Axios.create({
+      ...{
+        baseURL: chainGetter.getChain(chainId).rpc,
+      },
+    });
+
+    super(kvStore, instance, "", "eth_call", [
+      {
+        to: contractAddress,
+        data: erc20MetadataInterface.encodeFunctionData("allowance", [
+          bech32Address
+            ? Bech32Address.fromBech32(
+                bech32Address,
+                chainGetter.getChain(chainId).bech32Config.bech32PrefixAccAddr
+              ).toHex(true)
+            : "",
+          spender,
+        ]),
+      },
+      "latest",
+    ]);
+
+    makeObservable(this);
+  }
+
+  protected override canFetch(): boolean {
+    return super.canFetch() && this.bech32Address !== "";
+  }
+
+  @computed
+  get allowance(): string | undefined {
+    if (!this.response) {
+      return undefined;
+    }
+
+    try {
+      return erc20MetadataInterface.decodeFunctionResult(
+        "allowance",
+        this.response.data
+      )[0];
+    } catch (e) {
+      console.log(e);
+    }
+    return undefined;
+  }
+}
+
+export class ObservableQueryERC20Allowance extends HasMapStore<ObservableQueryERC20AllowanceInner> {
+  constructor(
+    protected readonly kvStore: KVStore,
+    protected readonly chainId: string,
+    protected readonly chainGetter: ChainGetter
+  ) {
+    super((contractAddressAndSpender) => {
+      const [contractAddress, bech32address, spender] =
+        contractAddressAndSpender.split("-");
+      return new ObservableQueryERC20AllowanceInner(
+        this.kvStore,
+        chainGetter,
+        chainId,
+        contractAddress,
+        bech32address,
+        spender
+      );
+    });
+  }
+
+  getQueryAllowance(
+    bech32address: string,
+    spender: string,
+    contractAddress: string
+  ): ObservableQueryERC20AllowanceInner {
+    return super.get(`${contractAddress}-${bech32address}-${spender}`);
   }
 }

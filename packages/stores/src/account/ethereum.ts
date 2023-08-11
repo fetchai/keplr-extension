@@ -1,6 +1,10 @@
 import { AccountSetBaseSuper, WalletStatus } from "./base";
-import { CosmwasmQueries, IQueriesStore, QueriesSetBase } from "../query";
-import { ChainGetter, erc20MetadataInterface } from "../common";
+import { EvmQueries, IQueriesStore, QueriesSetBase } from "../query";
+import {
+  ChainGetter,
+  erc20MetadataInterface,
+  nativeFetBridgeInterface,
+} from "../common";
 import { DenomHelper } from "@keplr-wallet/common";
 import { Dec, DecUtils } from "@keplr-wallet/unit";
 import {
@@ -29,7 +33,7 @@ export interface EthereumAccount {
 
 export const EthereumAccount = {
   use(options: {
-    queriesStore: IQueriesStore<CosmwasmQueries>;
+    queriesStore: IQueriesStore<EvmQueries>;
   }): (
     base: AccountSetBaseSuper & CosmosAccount,
     chainGetter: ChainGetter,
@@ -55,7 +59,7 @@ export class EthereumAccountImpl {
     protected readonly base: AccountSetBaseSuper & CosmosAccount,
     protected readonly chainGetter: ChainGetter,
     protected readonly chainId: string,
-    protected readonly queriesStore: IQueriesStore<CosmwasmQueries>
+    protected readonly queriesStore: IQueriesStore<EvmQueries>
   ) {
     this.base.registerMakeSendTokenFn(this.processMakeSendTokenTx.bind(this));
   }
@@ -287,7 +291,7 @@ export class EthereumAccountImpl {
       jsonrpc: "2.0",
       id: "1",
       method: "eth_getTransactionCount",
-      params: [this.base.ethereumHexAddress, "pending"],
+      params: [this.base.ethereumHexAddress, "latest"],
     });
 
     if (!(txCountResult.data && txCountResult.data.result)) {
@@ -332,7 +336,80 @@ export class EthereumAccountImpl {
     return result.data.result as string;
   }
 
-  protected get queries(): DeepReadonly<QueriesSetBase & CosmwasmQueries> {
+  makeApprovalTx(amount: string, spender: string, currency: AppCurrency) {
+    if (new DenomHelper(currency.coinMinimalDenom).type !== "erc20") {
+      throw new Error("Currency needs to be erc20");
+    }
+
+    const actualAmount = `0x${(() => {
+      let dec = new Dec(amount);
+      dec = dec.mul(DecUtils.getPrecisionDec(currency.coinDecimals));
+      return dec.truncate().toBigNumber().toString(16);
+    })()}`;
+
+    return this.makeEthereumTx(
+      "approval",
+      {
+        from: this.base.ethereumHexAddress,
+        to: new DenomHelper(currency.coinMinimalDenom).contractAddress,
+        data: erc20MetadataInterface.encodeFunctionData("approve", [
+          spender,
+          actualAmount,
+        ]),
+      },
+      (tx: TransactionReceipt) => {
+        if (tx.status && tx.status === 1) {
+          // After succeeding to send token, refresh the allowance.
+          const queryAllowance =
+            this.queries.evm.queryERC20Allowance.getQueryAllowance(
+              this.base.bech32Address,
+              spender,
+              new DenomHelper(currency.coinMinimalDenom).contractAddress
+            );
+
+          if (queryAllowance) {
+            queryAllowance.fetch();
+          }
+        }
+      }
+    );
+  }
+
+  makeNativeBridgeTx(amount: string, recipient: string) {
+    const actualAmount = `0x${(() => {
+      let dec = new Dec(amount);
+      dec = dec.mul(DecUtils.getPrecisionDec(18));
+      return dec.truncate().toBigNumber().toString(16);
+    })()}`;
+
+    return this.makeEthereumTx(
+      "nativeBridgeSend",
+      {
+        from: this.base.ethereumHexAddress,
+        to: "0x947872ad4d95e89E513d7202550A810aC1B626cC",
+        data: nativeFetBridgeInterface.encodeFunctionData("swap", [
+          actualAmount,
+          recipient,
+        ]),
+      },
+      (tx: TransactionReceipt) => {
+        if (tx.status && tx.status === 1) {
+          // After succeeding to send token, refresh the balance.
+          const queryBalance = this.queries.queryBalances
+            .getQueryBech32Address(this.base.bech32Address)
+            .balances.find((bal) => {
+              return bal.currency.coinDenom === "FET";
+            });
+
+          if (queryBalance) {
+            queryBalance.fetch();
+          }
+        }
+      }
+    );
+  }
+
+  protected get queries(): DeepReadonly<QueriesSetBase & EvmQueries> {
     return this.queriesStore.get(this.chainId);
   }
 }

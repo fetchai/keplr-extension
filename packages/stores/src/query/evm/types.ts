@@ -15,3 +15,18 @@ export interface EthBridgeStatus {
   reverseAggLimit: string;
   reverseAggLimitCap: string;
 }
+
+export interface EtherscanGasFeeResponse {
+  status: string;
+  result: {
+    SafeGasPrice: string;
+    ProposeGasPrice: string;
+    FastGasPrice: string;
+  };
+}
+
+export interface EthGasFeeInfo {
+  low: string;
+  average: string;
+  high: string;
+}

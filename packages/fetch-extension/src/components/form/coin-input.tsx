@@ -20,6 +20,7 @@ import {
   NegativeAmountError,
   InsufficientAmountError,
   IAmountConfig,
+  BridgeAmountError,
 } from "@keplr-wallet/hooks";
 import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -92,6 +93,8 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             return intl.formatMessage({
               id: "input.amount.error.insufficient",
             });
+          case BridgeAmountError:
+            return error.message;
           default:
             return intl.formatMessage({ id: "input.amount.error.unknown" });
         }

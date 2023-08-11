@@ -96,9 +96,9 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDecimals: 18,
         coinGeckoId: "ethereum",
         gasPriceStep: {
-          low: 3000000000,
-          average: 3000000000,
-          high: 3000000000,
+          low: 40000000000,
+          average: 40000000000,
+          high: 40000000000,
         },
       },
     ],
