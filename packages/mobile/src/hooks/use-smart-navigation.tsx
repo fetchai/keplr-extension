@@ -1,4 +1,6 @@
 import {
+  NavigationProp,
+  ParamListBase,
   StackActions,
   useNavigation,
   useRoute,
@@ -25,7 +27,7 @@ export class SmartNavigator<
 
   navigateSmart<ScreenName extends keyof Config>(
     route: ReturnType<typeof useRoute>,
-    navigation: ReturnType<typeof useNavigation>,
+    navigation: NavigationProp<ParamListBase>,
     screenName: ScreenName,
     params: Params[ScreenName] extends void ? undefined : Params[ScreenName]
   ): void {
@@ -53,7 +55,7 @@ export class SmartNavigator<
 
   pushSmart<ScreenName extends keyof Config>(
     route: ReturnType<typeof useRoute>,
-    navigation: ReturnType<typeof useNavigation>,
+    navigation: NavigationProp<ReactNavigation.RootParamList>,
     screenName: ScreenName,
     params: Params[ScreenName] extends void ? undefined : Params[ScreenName]
   ): void {
@@ -85,7 +87,7 @@ export class SmartNavigator<
 
   replaceSmart<ScreenName extends keyof Config>(
     route: ReturnType<typeof useRoute>,
-    navigation: ReturnType<typeof useNavigation>,
+    navigation: NavigationProp<ReactNavigation.RootParamList>,
     screenName: ScreenName,
     params: Params[ScreenName] extends void ? undefined : Params[ScreenName]
   ): void {
@@ -128,7 +130,9 @@ export const createSmartNavigatorProvider = <
   navigator: SmartNavigator<Params, Config>
 ): {
   SmartNavigatorProvider: FunctionComponent;
-  useSmartNavigation: () => ReturnType<typeof useNavigation> & {
+  useSmartNavigation: () => NavigationProp<
+    ReactNavigation.RootParamList | ParamListBase | any
+  > & {
     navigateSmart: <ScreenName extends keyof Config>(
       screenName: ScreenName,
       params: Params[ScreenName] extends void ? undefined : Params[ScreenName]
@@ -169,7 +173,7 @@ export const createSmartNavigatorProvider = <
         ) => {
           navigator.navigateSmart(
             nativeRoute,
-            nativeNavigation,
+            nativeNavigation as any,
             screenName,
             params
           );

@@ -1116,7 +1116,7 @@ export const AppNavigation: FunctionComponent = observer(() => {
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
-              //Unlock
+                //Unlock
                 keyRingStore.status !== KeyRingStatus.UNLOCKED
                   ? "MainTabDrawer"
                   : "MainTabDrawer"
