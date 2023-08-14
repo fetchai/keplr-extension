@@ -25,6 +25,9 @@
   font-size: 14px;
   width: 148px;
 }
+.searchInput:disabled {
+  cursor: not-allowed;
+}
 .searchInput::placeholder {
   color: #fff;
 }
@@ -78,7 +81,7 @@
 }
 .domainTakenText {
   color: var(--red-red-400, #d38989);
-  margin: 12px;
+  margin-left: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -123,7 +126,7 @@
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.2);
 }
-.permissionsMessage{
+.permissionsMessage {
   color: white;
 }
 .detailsTable {
