@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { Text, View } from "react-native";
-// import Animated, { Easing } from "react-native-reanimated";
+import { Text, View, ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import { AlertIcon, RefreshIcon } from "../../components/icon";
 import { useStyle } from "../../styles";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -9,6 +9,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { ObservableQuery } from "@keplr-wallet/stores";
 
+// Todo network animation
 export const NetworkErrorView: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
 
@@ -34,18 +35,18 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  const [, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [isRefreshable, setIsRefreshable] = useState(true);
   const [message, setMessage] = useState("");
 
   const prevNetworkIsConnected = useRef(true);
   useEffect(() => {
     if (!networkIsConnected) {
-      setIsOpen(true);
+      //setIsOpen(true);
       setMessage("No internet connection");
       setIsRefreshable(false);
     } else {
-      setIsOpen(false);
+      // setIsOpen(false);
 
       // If the network is recovered.
       if (!prevNetworkIsConnected.current) {
@@ -63,6 +64,7 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
       const error =
         queryStakable.error || queryDelegated.error || queryUnbonding.error;
 
+      debugger;
       if (error) {
         const errorData = error.data as { error?: string } | undefined;
         const message = (() => {
@@ -73,11 +75,11 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
           return error.message || "Unknown error";
         })();
 
-        setIsOpen(true);
+        // setIsOpen(true);
         setMessage(message);
         setIsRefreshable(true);
       } else {
-        setIsOpen(false);
+        // setIsOpen(false);
       }
     }
   }, [
@@ -115,55 +117,52 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
   //   height: 0,
   // });
 
-  // const [animatedValue] = useState(() => new Animated.Value(0));
+  // const animatedValue = useSharedValue(0);
 
   // useEffect(() => {
   //   if (isOpen) {
-  //     Animated.timing(animatedValue, {
-  //       toValue: 1,
-  //       duration: 500,
-  //       easing: Easing.out(Easing.cubic),
-  //     }).start();
+  //     withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) });
   //   } else {
-  //     Animated.timing(animatedValue, {
-  //       toValue: 0,
-  //       duration: 330,
-  //       easing: Easing.out(Easing.sin),
-  //     }).start();
+  //     withTiming(0, { duration: 330, easing: Easing.out(Easing.sin) });
   //   }
-  // }, [animatedValue, isOpen]);
+  // }, [isOpen]);
 
   // const animatedHeight = useMemo(() => {
-  //   return animatedValue.interpolate({
-  //     inputRange: [0, 1],
-  //     outputRange: [0, childLayout.height + extraHeight],
-  //   });
-  // }, [animatedValue, childLayout.height]);
+  //   return interpolate(
+  //     animatedValue.value,
+  //     [0, 1],
+  //     [0, childLayout.height + extraHeight]
+  //   );
+  // }, [childLayout.height]);
 
   return (
-    <View
+    <Animated.View
       style={{
         overflow: "hidden",
-        // height: animatedHeight,
+        //height: animatedHeight,
         justifyContent: "center",
       }}
     >
       <View
-      // style={style.flatten([
-      //   "flex-row",
-      //   "items-center",
-      //   "background-color-red-50@95%",
-      //   "dark:background-color-red-500@40%",
-      //   "padding-left-26",
-      //   "padding-right-24",
-      //   "height-80",
-      // ])}
-      // onLayout={(e) => {
-      //   // setChildLayout(e.nativeEvent.layout);
-      // }}
+        style={
+          style.flatten([
+            "flex-row",
+            "items-center",
+            "background-color-red-50@95%",
+            "dark:background-color-red-500@40%",
+            "padding-left-26",
+            "padding-right-24",
+            "height-80",
+          ]) as ViewStyle
+        }
+        // onLayout={(e) => {
+        //   setChildLayout({
+        //     width: e.nativeEvent.layout.width,
+        //     height: e.nativeEvent.layout.height,
+        //   });
+        // }}
       >
-        {/* style={style.flatten(["margin-right-16"])} */}
-        <View>
+        <View style={style.flatten(["margin-right-16"]) as ViewStyle}>
           <AlertIcon
             color={style.flatten(["color-red-400", "dark:color-red-300"]).color}
             size={24}
@@ -188,30 +187,32 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
               setIsRefreshing(true);
               ObservableQuery.refreshAllObservedIfError();
             }}
-            // style={style.flatten([
-            //   "background-color-red-100",
-            //   "justify-center",
-            //   "items-center",
-            //   "width-32",
-            //   "height-32",
-            //   "border-radius-64",
-            //   "margin-left-16",
-            // ])}
+            style={
+              style.flatten([
+                "background-color-red-100",
+                "justify-center",
+                "items-center",
+                "width-32",
+                "height-32",
+                "border-radius-64",
+                "margin-left-16",
+              ]) as ViewStyle
+            }
           >
-            {/* <Animated.View
-              style={{
-                transform: [
-                  {
-                    rotate: spinAnimated,
-                  },
-                ],
-              }}
-            > */}
-            <RefreshIcon color={style.get("color-red-300").color} size={24} />
-            {/* </Animated.View> */}
+            <Animated.View
+            // style={{
+            //   transform: [
+            //     {
+            //       rotate: spinAnimated,
+            //     },
+            //   ],
+            // }}
+            >
+              <RefreshIcon color={style.get("color-red-300").color} size={24} />
+            </Animated.View>
           </TouchableOpacity>
         ) : null}
       </View>
-    </View>
+    </Animated.View>
   );
 });

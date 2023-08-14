@@ -8,8 +8,8 @@ import React, {
 import { Image, ImageStyle, StyleSheet, View, ViewStyle } from "react-native";
 // import Animated, {
 //   Easing,
-//   useSharedValue,
 //   withTiming,
+//   useSharedValue,
 // } from "react-native-reanimated";
 import { observer } from "mobx-react-lite";
 import { useStyle, useStyleThemeController } from "../../styles";
@@ -236,7 +236,9 @@ export const UnlockScreen: FunctionComponent = observer(() => {
         >
           <View style={style.get("flex-5")} />
           <Image
-            // style={StyleSheet.flatten([style.flatten(["width-full"])])}
+            style={
+              StyleSheet.flatten([style.flatten(["width-full"])]) as ImageStyle
+            }
             fadeDuration={0}
             resizeMode="contain"
             source={
@@ -246,10 +248,9 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             }
           />
           <View style={style.get("flex-3")} />
-          {/* style={style.flatten(["padding-x-page"])} */}
-          <View>
+          <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
             <TextInput
-              // containerStyle={style.flatten(["padding-bottom-40"])}
+              containerStyle={style.flatten(["padding-bottom-40"]) as ViewStyle}
               label="Password"
               returnKeyType="done"
               secureTextEntry={true}
@@ -266,7 +267,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             />
             {keychainStore.isBiometryOn ? (
               <Button
-                // containerStyle={style.flatten(["margin-top-40"])}
+                containerStyle={style.flatten(["margin-top-40"]) as ViewStyle}
                 text="Use Biometric Authentication"
                 mode="text"
                 loading={isBiometricLoading}
@@ -277,21 +278,21 @@ export const UnlockScreen: FunctionComponent = observer(() => {
           <View style={style.get("flex-7")} />
         </KeyboardAwareScrollView>
       </View>
-      {/* <Animated.View
-        style={StyleSheet.flatten([
-          style.flatten(["absolute-fill"]),
-          {
-            opacity: animatedContinuityEffectOpacity.value,
-          },
-        ])}
-        pointerEvents={isSplashEnd ? "none" : "auto"}
-      >
-        <SplashContinuityEffectView
-          onAnimationEnd={() => {
-            setIsSplashEnd(true);
-          }}
-        />
-      </Animated.View> */}
+      {/*<Animated.View*/}
+      {/*  style={StyleSheet.flatten([*/}
+      {/*    style.flatten(["absolute-fill"]) as ViewStyle,*/}
+      {/*    {*/}
+      {/*      opacity: animatedContinuityEffectOpacity.value,*/}
+      {/*    },*/}
+      {/*  ])}*/}
+      {/*  pointerEvents={isSplashEnd ? "none" : "auto"}*/}
+      {/*>*/}
+      {/*  <SplashContinuityEffectView*/}
+      {/*    onAnimationEnd={() => {*/}
+      {/*      setIsSplashEnd(true);*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</Animated.View>*/}
     </React.Fragment>
   );
 });
@@ -299,10 +300,10 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 // const useAnimationState = () => {
 //   return useState(() => {
 //     return {
-//       finished: new Animated.Value<number>(0),
-//       position: new Animated.Value<number>(0),
-//       time: new Animated.Value<number>(0),
-//       frameTime: new Animated.Value<number>(0),
+//       finished: useSharedValue(0),
+//       position: useSharedValue(0),
+//       time: useSharedValue(0),
+//       frameTime: useSharedValue(0),
 //     };
 //   })[0];
 // };
@@ -327,19 +328,19 @@ export const SplashContinuityEffectView: FunctionComponent<{
 
   // const [animation] = useState(() => {
   //   return {
-  //     isStarted: new Animated.Value<number>(0),
+  //     isStarted: useSharedValue(0),
   //     backgroundClock: new Animated.Clock(),
   //     backgroundClippingClock: new Animated.Clock(),
-
-  //     backgroundDone: new Animated.Value(0),
-  //     backgroundClippingDone: new Animated.Value(0),
+  //
+  //     backgroundDone: useSharedValue(0),
+  //     backgroundClippingDone: useSharedValue(0),
   //   };
   // });
-
+  //
   // const backgroundClippingWidth = useAnimationState();
   // const backgroundClippingHeight = useAnimationState();
   // const backgroundClippingRadius = useAnimationState();
-
+  //
   // const backgroundDelay = useAnimationState();
   // const backgroundWidth = useAnimationState();
   // const backgroundHeight = useAnimationState();
@@ -351,7 +352,7 @@ export const SplashContinuityEffectView: FunctionComponent<{
       (async () => {
         await hideSplashScreen();
 
-        // animation.isStarted.setValue(1);
+        // animation.isStarted.value = 1;
       })();
     }
   }, [

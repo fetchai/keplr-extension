@@ -10,14 +10,14 @@ export const SVGLoadingIcon: FunctionComponent<{
     <Svg width={size} height={size} fill="none" viewBox="0 0 17 17">
       <Circle cx="8.5" cy="1.5" r="1.5" fill={color} />
       <Circle cx="8.5" cy="15.5" r="1.5" fill={color} opacity="0.4" />
-      {/* <CircLoadingSpinner
+      <Circle
         cx="15.5"
         cy="8.5"
         r="1.5"
         fill={color}
         opacity="0.1"
         transform="rotate(90 15.5 8.5)"
-      /> */}
+      />
       <Circle
         cx="1.5"
         cy="8.5"

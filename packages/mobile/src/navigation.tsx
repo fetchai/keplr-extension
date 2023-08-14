@@ -118,7 +118,6 @@ import {
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
 import { UnlockScreen } from "./screens/unlock";
-import * as SplashScreen from "expo-splash-screen";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -438,7 +437,6 @@ export const MainNavigation: FunctionComponent = () => {
       <Stack.Screen
         options={{
           ...HeaderOnGradientScreenOptionsPreset,
-
           headerTitle: "",
           headerLeft: () => <HomeScreenHeaderLeft />,
           headerRight: () => <HomeScreenHeaderRight />,
@@ -452,16 +450,6 @@ export const MainNavigation: FunctionComponent = () => {
 
 export const RegisterNavigation: FunctionComponent = () => {
   const style = useStyle();
-  async function hideSplashScreen() {
-    console.log("Hide Splash screen");
-    await SplashScreen.hideAsync();
-  }
-
-  useEffect(() => {
-    (async () => {
-      await hideSplashScreen();
-    })();
-  }, []);
 
   return (
     <Stack.Navigator
@@ -1027,17 +1015,6 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
 
   const focused = useFocusedScreen();
 
-  //Todo remove when done
-  async function hideSplashScreen() {
-    console.log("Hide Splash screen");
-    await SplashScreen.hideAsync();
-  }
-
-  useEffect(() => {
-    (async () => {
-      await hideSplashScreen();
-    })();
-  }, []);
   return (
     <Drawer.Navigator
       useLegacyImplementation={false}
@@ -1116,31 +1093,33 @@ export const AppNavigation: FunctionComponent = observer(() => {
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
-                //Unlock
-                keyRingStore.status !== KeyRingStatus.UNLOCKED
-                  ? "MainTabDrawer"
-                  : "MainTabDrawer"
-              }
-              screenOptions={{
-                headerShown: false,
-                ...TransitionPresets.SlideFromRightIOS,
-                headerMode: "screen",
-              }}
-            >
-              <Stack.Screen name="Unlock" component={UnlockScreen} />
-              <Stack.Screen
-                name="MainTabDrawer"
-                component={MainTabNavigationWithDrawer}
-              />
-              <Stack.Screen name="Register" component={RegisterNavigation} />
-              <Stack.Screen name="Others" component={OtherNavigation} />
-              <Stack.Screen
-                name="AddressBooks"
-                component={AddressBookStackScreen}
-              />
-              <Stack.Screen name="ChainList" component={ChainListStackScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
+                    keyRingStore.status !== KeyRingStatus.UNLOCKED
+                    ? "Unlock"
+                    : "MainTabDrawer"
+                }
+                screenOptions={{
+                  headerShown: false,
+                  ...TransitionPresets.SlideFromRightIOS,
+                  headerMode: "screen",
+                }}
+              >
+                <Stack.Screen name="Unlock" component={UnlockScreen} />
+                <Stack.Screen
+                  name="MainTabDrawer"
+                  component={MainTabNavigationWithDrawer}
+                />
+                <Stack.Screen name="Register" component={RegisterNavigation} />
+                <Stack.Screen name="Others" component={OtherNavigation} />
+                <Stack.Screen
+                  name="AddressBooks"
+                  component={AddressBookStackScreen}
+                />
+                <Stack.Screen
+                  name="ChainList"
+                  component={ChainListStackScreen}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
           {/*</BugsnagNavigationContainer>*/}
           {/* <ModalsRenderer /> */}
         </SmartNavigatorProvider>

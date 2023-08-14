@@ -19,6 +19,7 @@ export class RNRouterBase extends Router {
   protected attachHandler(): void {
     this.eventEmitter.addListener("message", this.onMessage);
   }
+
   protected detachHandler(): void {
     this.eventEmitter.removeListener("message", this.onMessage);
   }

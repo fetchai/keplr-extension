@@ -22,7 +22,7 @@ import { CommunityChainInfoRepo, EmbedChainInfos } from "../config";
 const router = new RNRouterBackground(RNEnv.produceEnv);
 
 // Todo
-init(
+const { initFn } = init(
   router,
   (prefix: string) => new AsyncKVStore(prefix),
   new RNMessageRequesterInternalToUI(),
@@ -92,4 +92,4 @@ init(
   }
 );
 
-router.listen(BACKGROUND_PORT);
+router.listen(BACKGROUND_PORT, initFn);

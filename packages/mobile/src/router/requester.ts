@@ -1,5 +1,8 @@
-import { Message, MessageRequester, Result } from "@keplr-wallet/router";
-import { JSONUint8Array } from "@keplr-wallet/router";
+import {
+  Message,
+  MessageRequester,
+  JSONUint8Array,
+} from "@keplr-wallet/router";
 import EventEmitter from "eventemitter3";
 import { RNRouterBackground, RNRouterUI } from "./rn-router";
 
@@ -36,7 +39,7 @@ export class RNMessageRequesterBase implements MessageRequester {
       throw new Error("There is no router to send");
     }
 
-    const result: Result = JSONUint8Array.unwrap(
+    const result = JSONUint8Array.unwrap(
       await new Promise((resolve) => {
         this.eventEmitter.emit("message", {
           message: {
@@ -53,7 +56,6 @@ export class RNMessageRequesterBase implements MessageRequester {
         });
       })
     );
-
     if (!result) {
       throw new Error("Null result");
     }
