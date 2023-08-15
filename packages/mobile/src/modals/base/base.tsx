@@ -1,15 +1,11 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  // useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useStyle } from "../../styles";
 // import Animated, { Easing } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useModalTransision } from "./transition";
 // import {
 //   DefaultAcceleration,
@@ -97,26 +93,24 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
   useEffect(() => {
     switch (align) {
       case "top":
-        transition.startY.setValue(
-          -((layout?.height ?? 0) + (disableSafeArea ? 0 : safeAreaInsets.top))
+        transition.startY = -(
+          (layout?.height ?? 0) + (disableSafeArea ? 0 : safeAreaInsets.top)
         );
         break;
       case "center":
-        transition.startY.setValue(
+        transition.startY =
           (containerLayout ? containerLayout.height / 2 : 0) +
-            (layout ? layout.height / 2 : 0)
-        );
+          (layout ? layout.height / 2 : 0);
         break;
       case "bottom":
-        transition.startY.setValue(
-          (layout?.height ?? 0) + (disableSafeArea ? 0 : safeAreaInsets.bottom)
-        );
+        transition.startY =
+          (layout?.height ?? 0) + (disableSafeArea ? 0 : safeAreaInsets.bottom);
         break;
     }
 
     if (layout && containerLayout) {
       // Initialization is complete.
-      transition.isInitialized.setValue(1);
+      transition.isInitialized = 1;
     }
   }, [
     align,
@@ -131,9 +125,9 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      transition.isOpen.setValue(1);
+      transition.isOpen = 1;
     } else {
-      transition.isOpen.setValue(-1);
+      transition.isOpen = -1;
     }
   }, [isOpen, transition.isOpen]);
 

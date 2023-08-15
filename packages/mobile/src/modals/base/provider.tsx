@@ -13,7 +13,6 @@ import { observer } from "mobx-react-lite";
 import { ModalBase } from "./base";
 import { ModalContext, useModalState } from "./hooks";
 import { useStyle } from "../../styles";
-// import Animated from "react-native-reanimated";
 import { ModalTransisionProvider } from "./transition";
 import { BlurView } from "@react-native-community/blur";
 
@@ -275,51 +274,6 @@ const ModalBackdrop: FunctionComponent = () => {
   const style = useStyle();
 
   const modal = useModalState();
-  // const modalTransition = useModalTransision();
-
-  // const opacity = useMemo(() => {
-  //   if (modal.transparentBackdrop) {
-  //     return 0;
-  //   }
-
-  //   const maxOpacity =
-  //     modal.backdropMaxOpacity == null ? 1 : modal.backdropMaxOpacity;
-
-  //   return Animated.block([
-  //     Animated.cond(
-  //       Animated.and(
-  //         modalTransition.isInitialized,
-  //         Animated.greaterThan(Animated.abs(modalTransition.startY), 0)
-  //       ),
-  //       [
-  //         Animated.multiply(
-  //           Animated.min(
-  //             Animated.multiply(
-  //               Animated.sub(
-  //                 1,
-  //                 Animated.divide(
-  //                   Animated.abs(modalTransition.translateY),
-  //                   Animated.abs(modalTransition.startY)
-  //                 )
-  //               ),
-  //               6 / 5
-  //             ),
-  //             1
-  //           ),
-  //           maxOpacity
-  //         ),
-  //       ],
-  //       new Animated.Value(0)
-  //     ),
-  //   ]);
-  // }, [
-  //   modal.backdropMaxOpacity,
-  //   modal.transparentBackdrop,
-  //   modalTransition.isInitialized,
-  //   modalTransition.startY,
-  //   modalTransition.translateY,
-  // ]);
-
   const blurBackdropOnIOS = modal.blurBackdropOnIOS && Platform.OS === "ios";
 
   return (
@@ -340,9 +294,6 @@ const ModalBackdrop: FunctionComponent = () => {
                   !blurBackdropOnIOS && "dark:background-color-gray-700@75%",
                 ]
               ),
-              // {
-              //   opacity,
-              // },
             ])}
           >
             {blurBackdropOnIOS ? (

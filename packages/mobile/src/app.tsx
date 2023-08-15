@@ -12,6 +12,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LoadingScreenProvider } from "./providers/loading-screen";
 import * as SplashScreen from "expo-splash-screen";
 import { ConfirmModalProvider } from "./providers/confirm-modal";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 //import Bugsnag from "@bugsnag/react-native";
 
 if (Platform.OS === "android") {
@@ -141,6 +142,10 @@ export const App: FunctionComponent = () => {
   //     </ErrorBoundary>
   //   );
   // } else {
-  return <CodePushAppBody />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <CodePushAppBody />
+    </GestureHandlerRootView>
+  );
   //}
 };

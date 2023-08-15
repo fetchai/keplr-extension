@@ -127,7 +127,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     }
 
     yield this.kvStore.set<{ disabledChains: string[] }>(
-      "chainInfoInUIConfig",
+      "chain_info_in_ui_config",
       {
         disabledChains: disableChainIds,
       }
@@ -198,7 +198,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     }
 
     const chainInfoUI = yield* toGenerator(
-      this.kvStore.get<{ disabledChains: string[] }>("chainInfoInUIConfig")
+      this.kvStore.get<{ disabledChains: string[] }>("chain_info_in_ui_config")
     );
 
     if (chainInfoUI) {

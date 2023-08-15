@@ -890,6 +890,8 @@ export const MainTabNavigation: FunctionComponent = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
+        title: "",
         tabBarIcon: ({ color }) => {
           const size = 24;
 
@@ -1029,6 +1031,7 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
           "color-gray-700@50%",
           "dark:color-gray-700@75%",
         ]).color,
+        headerShown: false
       }}
     >
       <Drawer.Screen name="MainTab" component={MainTabNavigation} />

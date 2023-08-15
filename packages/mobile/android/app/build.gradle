@@ -111,7 +111,7 @@ android {
     namespace = "com.chainapsis.keplr"
 
     defaultConfig {
-        applicationId "com.chainapsis.keplr"
+        applicationId "com.fetchai.fetchwallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

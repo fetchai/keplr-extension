@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Text, View, ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
 import { AlertIcon, RefreshIcon } from "../../components/icon";
 import { useStyle } from "../../styles";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -8,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { ObservableQuery } from "@keplr-wallet/stores";
+import Animated from "react-native-reanimated";
 
 // Todo network animation
 export const NetworkErrorView: FunctionComponent = observer(() => {
@@ -64,7 +64,6 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
       const error =
         queryStakable.error || queryDelegated.error || queryUnbonding.error;
 
-      debugger;
       if (error) {
         const errorData = error.data as { error?: string } | undefined;
         const message = (() => {

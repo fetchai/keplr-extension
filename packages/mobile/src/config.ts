@@ -6,14 +6,6 @@ export const CoinGeckoAPIEndPoint = "https://api.coingecko.com/api/v3";
 export const EthereumEndpoint =
   "https://mainnet.infura.io/v3/eeb00e81cdb2410098d5a270eff9b341";
 
-export interface AppChainInfo extends ChainInfo {
-  readonly hideInUI?: boolean;
-  readonly txExplorer?: {
-    readonly name: string;
-    readonly txUrl: string;
-  };
-}
-
 export const EmbedChainInfos: ChainInfo[] = [
   {
     rpc: "https://rpc-fetchhub.fetch-ai.com",
@@ -110,6 +102,11 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go"],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/atom.png",
+    txExplorer: {
+      name: "Mintscan",
+      txUrl: "https://www.mintscan.io/cosmos/txs/{txHash}",
+    },
   },
   {
     rpc: "https://rpc-osmosis.keplr.app",
@@ -166,6 +163,11 @@ export const EmbedChainInfos: ChainInfo[] = [
       "wasmd_0.24+",
       "osmosis-txfees",
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/osmo.png",
+    txExplorer: {
+      name: "Mintscan",
+      txUrl: "https://www.mintscan.io/osmosis/txs/{txHash}",
+    },
   },
   {
     rpc: "https://rpc-secret.keplr.app",
@@ -217,6 +219,8 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["secretwasm", "ibc-go", "ibc-transfer"],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/secret.png",
   },
   {
     rpc: "https://rpc-akash.keplr.app",
@@ -257,6 +261,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinGeckoId: "akash-network",
       },
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/akash.png",
     features: ["ibc-transfer"],
   },
   {
@@ -358,6 +363,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/crypto-org.png",
     features: ["ibc-transfer"],
   },
   {
@@ -404,6 +411,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/starname.png",
     features: ["ibc-transfer"],
   },
   {
@@ -870,6 +879,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/sifchain.png",
     features: [],
   },
   {
@@ -969,6 +980,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/iris.png",
     features: ["ibc-transfer", "ibc-go"],
   },
   {
@@ -1015,6 +1027,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/regen.png",
     features: ["ibc-go", "ibc-transfer"],
   },
   {
@@ -1071,6 +1084,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/persistence.png",
     features: ["ibc-transfer", "ibc-go"],
   },
   {
@@ -1117,6 +1132,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/sentinel.png",
     features: ["ibc-transfer"],
   },
   {
@@ -1155,6 +1172,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDecimals: 6,
       },
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ixo.png",
     features: ["ibc-transfer"],
   },
   {
@@ -1278,6 +1296,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         },
       },
     ],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ngm.png",
     features: ["ibc-transfer"],
   },
   {
@@ -1340,6 +1359,8 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-go"],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/agoric.png",
   },
   {
     rpc: "https://rpc-cyber.keplr.app",
@@ -1460,6 +1481,11 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["cosmwasm", "ibc-transfer", "ibc-go", "wasmd_0.24+"],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/juno.png",
+    txExplorer: {
+      name: "Mintscan",
+      txUrl: "https://www.mintscan.io/juno/txs/{txHash}",
+    },
   },
   {
     rpc: "https://rpc-stargaze.keplr.app",
@@ -1501,6 +1527,12 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go"],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/stargaze.png",
+    txExplorer: {
+      name: "Mintscan",
+      txUrl: "https://www.mintscan.io/stargaze/txs/{txHash}",
+    },
   },
   {
     rpc: "https://rpc-axelar.keplr.app",
@@ -1655,6 +1687,8 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go", "axelar-evm-bridge"],
+    chainSymbolImageUrl:
+      "https://dhj8dql1kzq2v.cloudfront.net/white/axelar.png",
   },
   {
     rpc: "https://rpc-sommelier.keplr.app",
@@ -1696,6 +1730,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go"],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/somm.png",
   },
   {
     rpc: "https://rpc-umee.keplr.app",
@@ -1739,6 +1774,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go"],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/umee.png",
   },
   {
     rpc: "https://rpc-gravity-bridge.keplr.app",
@@ -1797,6 +1833,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["ibc-transfer", "ibc-go"],
+    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/grav.png",
   },
   {
     rpc: "https://rpc-tgrade.keplr.app",
