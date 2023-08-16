@@ -248,7 +248,7 @@ export const ModalRenderer: FunctionComponent<{
         <ModalBackdrop />
         <ModalBase
           align={modal.options.align}
-          isOpen={modal.isOpen}
+          isOpen={modal.props.isOpen}
           onOpenTransitionEnd={() => {
             setIsOpenTransitioning(false);
           }}
@@ -272,17 +272,27 @@ export const ModalRenderer: FunctionComponent<{
 
 const ModalBackdrop: FunctionComponent = () => {
   const style = useStyle();
+  const [closeBackdrop, setCloseBackdrop] = useState<boolean>(false);
 
   const modal = useModalState();
   const blurBackdropOnIOS = modal.blurBackdropOnIOS && Platform.OS === "ios";
 
+  useEffect(() => {
+    if (modal.isOpen === false) {
+      setCloseBackdrop(true);
+    } else {
+      setCloseBackdrop(false);
+    }
+  }, [modal.isOpen]);
+
   return (
     <React.Fragment>
-      {!modal.disableBackdrop ? (
+      {!modal.disableBackdrop && !closeBackdrop ? (
         <TouchableWithoutFeedback
           disabled={modal.disableClosingOnBackdropPress}
           onPress={() => {
             modal.close();
+            setCloseBackdrop(true);
           }}
         >
           <View

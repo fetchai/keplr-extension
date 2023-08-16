@@ -66,6 +66,7 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
   openTransitionRef.current = onOpenTransitionEnd;
   const closeTransitionRef = useRef(onCloseTransitionEnd);
   closeTransitionRef.current = onCloseTransitionEnd;
+  const [opacity, setOpacity] = useState<number>(0);
 
   const [containerLayout, setContainerLayout] = useState<
     | {
@@ -122,14 +123,15 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
     transition.startY,
     transition.isInitialized,
   ]);
-
   useEffect(() => {
     if (isOpen) {
       transition.isOpen = 1;
+      setOpacity(1);
     } else {
       transition.isOpen = -1;
+      setOpacity(0);
     }
-  }, [isOpen, transition.isOpen]);
+  }, [isOpen]);
 
   // const previousDiff = usePreviousDiff();
   // const [openCallbackOnce] = useState(() => new Animated.Value(0));
@@ -522,10 +524,10 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
               setLayout(e.nativeEvent.layout);
             }}
             style={StyleSheet.flatten([
-              // {
-              //   transform: [{ translateY }],
-              //   opacity,
-              // },
+              {
+                // transform: [{ translateY }],
+                opacity,
+              },
               containerStyle,
             ])}
           >
@@ -552,10 +554,10 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
               setLayout(e.nativeEvent.layout);
             }}
             style={StyleSheet.flatten([
-              // {
-              //   transform: [{ translateY }],
-              //   opacity,
-              // },
+              {
+                // transform: [{ translateY }],
+                opacity,
+              },
               containerStyle,
             ])}
           >
