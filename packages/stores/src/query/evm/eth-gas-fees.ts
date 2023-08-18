@@ -13,7 +13,7 @@ export class ObservableQueryGasFees extends ObservableQuery<EtherscanGasFeeRespo
     });
 
     super(kvStore, instance, "/api?module=gastracker&action=gasoracle", {
-      fetchingInterval: 6000, // 6 seconds
+      fetchingInterval: 30000, // 30 seconds
     });
 
     makeObservable(this);

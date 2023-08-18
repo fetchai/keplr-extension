@@ -53,3 +53,19 @@
   background-color: rgb(223, 223, 223);
   margin-bottom: 20px;
 }
+
+.loaderScreen {
+  text-align: center;
+  position: relative;
+  top: 45%;
+}
+
+.addressSelector {
+  overflow-wrap: anywhere;
+  font-size: small;
+  margin-top: -15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #555555;
+}

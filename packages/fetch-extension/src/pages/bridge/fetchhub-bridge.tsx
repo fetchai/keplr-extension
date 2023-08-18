@@ -8,6 +8,7 @@ import {
   AddressInput,
   CoinInput,
   FeeButtons,
+  Input,
   MemoInput,
 } from "@components/form";
 import { useGasSimulator, useNativeBridgeConfig } from "@keplr-wallet/hooks";
@@ -16,7 +17,10 @@ import { useNotification } from "@components/notification";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 
-export const FetchhubBridge: FunctionComponent = observer(() => {
+export const FetchhubBridge: FunctionComponent<{
+  limit: string;
+  fee?: string;
+}> = observer(({ limit, fee }) => {
   const navigate = useNavigate();
   const intl = useIntl();
 
@@ -90,7 +94,7 @@ export const FetchhubBridge: FunctionComponent = observer(() => {
         nativeBridgeConfig.recipientConfig.recipient
       );
 
-      tx.send(
+      await tx.send(
         nativeBridgeConfig.feeConfig.toStdFee(),
         nativeBridgeConfig.memoConfig.memo,
         {
@@ -128,18 +132,6 @@ export const FetchhubBridge: FunctionComponent = observer(() => {
             navigate("/");
           },
         }
-        // {
-        //   onBroadcasted: () => {
-        //     analyticsStore.logEvent("Send token tx broadCasted", {
-        //       chainId: chainStore.current.chainId,
-        //       chainName: chainStore.current.chainName,
-        //       feeType: nativeBridgeConfig.feeConfig.feeType,
-        //       isIbc: true,
-        //       toChainId,
-        //       toChainName,
-        //     });
-        //   },
-        // }
       );
     } catch (e) {
       navigate("/", { replace: true });
@@ -158,6 +150,9 @@ export const FetchhubBridge: FunctionComponent = observer(() => {
 
   return (
     <form className={style["formContainer"]}>
+      <div className={style["bridgeLimit"]}>
+        Native to ERC20 Limit: {limit} FET
+      </div>
       <div className={style["formInnerContainer"]}>
         <AddressInput
           label={intl.formatMessage({
@@ -203,8 +198,20 @@ export const FetchhubBridge: FunctionComponent = observer(() => {
             id: "send.input.amount",
           })}
           amountConfig={nativeBridgeConfig.amountConfig}
+          dropdownDisabled
         />
         <div style={{ flex: 1 }} />
+        {fee && (
+          <div>
+            <Input
+              label="Bridging fee"
+              readOnly
+              disabled
+              value={`${fee} FET`}
+            />
+            <div style={{ flex: 1 }} />
+          </div>
+        )}
         <FeeButtons
           label={intl.formatMessage({
             id: "send.input.fee",

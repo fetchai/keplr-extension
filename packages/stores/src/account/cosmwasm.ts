@@ -329,7 +329,7 @@ export class CosmwasmAccountImpl {
 
     return this.makeExecuteContractTx(
       "nativeBridgeSend",
-      "fetch1qxxlalvsdjd07p07y3rc5fu6ll8k4tmetpha8n",
+      this.queries.cosmwasm.queryNativeFetBridge.nativeBridgeAddress,
       {
         swap: { destination: recipient },
       },

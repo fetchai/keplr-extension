@@ -38,6 +38,7 @@ export interface CoinInputProps {
   disableAllBalance?: boolean;
 
   overrideSelectableCurrencies?: AppCurrency[];
+  dropdownDisabled?: boolean;
 }
 
 export const CoinInput: FunctionComponent<CoinInputProps> = observer(
@@ -47,6 +48,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     label,
     disableAllBalance,
     overrideSelectableCurrencies,
+    dropdownDisabled,
   }) => {
     const intl = useIntl();
 
@@ -129,8 +131,9 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             className={classnames(styleCoinInput["tokenSelector"])}
             isOpen={isOpenTokenSelector}
             toggle={() => setIsOpenTokenSelector((value) => !value)}
+            disabled={dropdownDisabled}
           >
-            <DropdownToggle caret>
+            <DropdownToggle caret disabled={dropdownDisabled}>
               {amountConfig.sendCurrency.coinDenom}
             </DropdownToggle>
             <DropdownMenu>

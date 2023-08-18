@@ -80,14 +80,17 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDecimals: 18,
         coinGeckoId: "ethereum",
       },
-      // {
-      // coinDenom: "USDT",
-      // coinMinimalDenom: "erc20:0x55d398326f99059fF775485246999027B3197955:Tether USD",
-      // coinDecimals: 18,
-      // coinGeckoId: "binancecoin",
-      // contractAddress: "0x55d398326f99059fF775485246999027B3197955",
-      // type: "erc20"
-      // },
+      {
+        coinDenom: "FET",
+        coinMinimalDenom:
+          "erc20:0xaea46A60368A7bD060eec7DF8CBa43b7EF41Ad85:Fetch.ai",
+        coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
+        contractAddress: "0xaea46A60368A7bD060eec7DF8CBa43b7EF41Ad85",
+        type: "erc20",
+        coinImageUrl:
+          "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
+      },
     ],
     feeCurrencies: [
       {

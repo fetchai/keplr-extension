@@ -29,16 +29,18 @@ export class ObservableQueryBridgeStatus extends ObservableCosmwasmContractChain
 export class ObservableQueryNativeFetCosmosBridge {
   protected readonly _queryRPCStatus: ObservableQueryRPCStatus;
   protected readonly _queryBridgeStatus: ObservableQueryBridgeStatus;
+  protected readonly _nativeBridgeAddress: string;
 
   constructor(kvStore: KVStore, chainGetter: ChainGetter) {
-    const contractAddress = "fetch1qxxlalvsdjd07p07y3rc5fu6ll8k4tmetpha8n";
     const chainId = "fetchhub-4";
+
+    this._nativeBridgeAddress = "fetch1qxxlalvsdjd07p07y3rc5fu6ll8k4tmetpha8n";
 
     this._queryBridgeStatus = new ObservableQueryBridgeStatus(
       kvStore,
       chainGetter,
       chainId,
-      contractAddress
+      this._nativeBridgeAddress
     );
 
     this._queryRPCStatus = new ObservableQueryRPCStatus(
@@ -46,6 +48,10 @@ export class ObservableQueryNativeFetCosmosBridge {
       chainId,
       chainGetter
     );
+  }
+
+  get nativeBridgeAddress(): string {
+    return this._nativeBridgeAddress;
   }
 
   get status(): NativeBridgeStatus | undefined {

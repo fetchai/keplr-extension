@@ -386,7 +386,7 @@ export class EthereumAccountImpl {
       "nativeBridgeSend",
       {
         from: this.base.ethereumHexAddress,
-        to: "0x947872ad4d95e89E513d7202550A810aC1B626cC",
+        to: this.queries.evm.queryNativeFetBridge.nativeBridgeAddress,
         data: nativeFetBridgeInterface.encodeFunctionData("swap", [
           actualAmount,
           recipient,

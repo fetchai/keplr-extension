@@ -85,70 +85,74 @@ export class ObservableQueryNativeFetEthBrige {
   protected readonly _queryReverseAggLimit: ObservableQueryByFunction;
   protected readonly _queryReverseAggLimitCap: ObservableQueryByFunction;
   protected readonly _queryLatestBlock: ObservableQueryLatestBlock;
+  protected readonly _nativeBridgeAddress: string;
 
   constructor(kvStore: KVStore, chainGetter: ChainGetter) {
     const ethereumURL = chainGetter.getChain("1").rpc;
-    const evmBridgeContractAddress =
-      "0x947872ad4d95e89E513d7202550A810aC1B626cC";
+    this._nativeBridgeAddress = "0x947872ad4d95e89E513d7202550A810aC1B626cC";
 
     this._querySwapMin = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getSwapMin"
     );
     this._querySwapMax = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getSwapMax"
     );
     this._queryPausedSince = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getPausedSinceBlockPublicApi"
     );
     this._queryPausedRelayerSince = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getPausedSinceBlockRelayerApi"
     );
     this._querySupply = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getSupply"
     );
     this._queryFee = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getSwapFee"
     );
     this._queryCap = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getCap"
     );
     this._queryReverseAggLimit = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getReverseAggregatedAllowance"
     );
     this._queryReverseAggLimitCap = new ObservableQueryByFunction(
       kvStore,
       ethereumURL,
-      evmBridgeContractAddress,
+      this._nativeBridgeAddress,
       "getReverseAggregatedAllowanceApproverCap"
     );
     this._queryLatestBlock = new ObservableQueryLatestBlock(
       kvStore,
       ethereumURL
     );
+  }
+
+  get nativeBridgeAddress(): string {
+    return this._nativeBridgeAddress;
   }
 
   get swapMin(): string | undefined {

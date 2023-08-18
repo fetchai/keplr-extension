@@ -111,6 +111,30 @@ export const AddTokenPage: FunctionComponent = observer(() => {
     });
   };
 
+  const currencyAlreadyAdded = chainStore.current.currencies.find(
+    (currency) => {
+      return (
+        "contractAddress" in currency &&
+        currency.contractAddress.toLowerCase() === contractAddress.toLowerCase()
+      );
+    }
+  )
+    ? "Currency already added"
+    : undefined;
+
+  const queryError =
+    contractAddress.length &&
+    (form.formState.errors.contractAddress
+      ? form.formState.errors.contractAddress.message
+      : tokenInfo == null
+      ? (queryContractInfo.error?.data as any)?.error ||
+        queryContractInfo.error?.message
+      : undefined)
+      ? "Invalid address"
+      : undefined;
+
+  const isError = currencyAlreadyAdded || queryError;
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -245,8 +269,8 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             required: "Contract address is required",
             validate: (value: string): string | undefined => {
               try {
-                if (isEvm && isAddress(value)) {
-                  return;
+                if (isEvm) {
+                  return isAddress(value) ? undefined : "Invalid Address";
                 }
 
                 Bech32Address.validate(
@@ -258,14 +282,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
               }
             },
           })}
-          error={
-            form.formState.errors.contractAddress
-              ? form.formState.errors.contractAddress.message
-              : tokenInfo == null
-              ? (queryContractInfo.error?.data as any)?.error ||
-                queryContractInfo.error?.message
-              : undefined
-          }
+          error={isError}
           text={
             queryContractInfo.isFetching && contractAddress.length ? (
               <i className="fas fa-spinner fa-spin" />
@@ -337,7 +354,11 @@ export const AddTokenPage: FunctionComponent = observer(() => {
         <Button
           type="submit"
           color="primary"
-          disabled={tokenInfo == null || !accountInfo.isReadyToSendMsgs}
+          disabled={
+            isError !== undefined ||
+            tokenInfo == null ||
+            !accountInfo.isReadyToSendMsgs
+          }
           data-loading={accountInfo.isSendingMsg === "createSecret20ViewingKey"}
         >
           <FormattedMessage id="setting.token.add.button.submit" />

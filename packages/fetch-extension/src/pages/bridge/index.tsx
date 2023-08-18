@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import style from "./style.module.scss";
 import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
@@ -6,7 +7,6 @@ import { EthereumBridge } from "./ethereum-bridge";
 import { FetchhubBridge } from "./fetchhub-bridge";
 import { HeaderLayout } from "@layouts/header-layout";
 import { Dec, IntPretty } from "@keplr-wallet/unit";
-import style from "./style.module.scss";
 
 export const BridgePage: FunctionComponent = observer(() => {
   const { chainStore, queriesStore } = useStore();
@@ -38,7 +38,6 @@ export const BridgePage: FunctionComponent = observer(() => {
     : true;
 
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
-
   return (
     <HeaderLayout
       showChainName={true}
@@ -48,26 +47,27 @@ export const BridgePage: FunctionComponent = observer(() => {
       }}
     >
       {isLoading ? (
-        <p
-          style={{
-            textAlign: "center",
-            position: "relative",
-            top: "45%",
-          }}
-        >
+        <p className={style["loaderScreen"]}>
           Fetching Bridge details <i className="fa fa-spinner fa-spin fa-fw" />{" "}
         </p>
       ) : isError ? (
-        <p>Error fetching bridge details, please try later </p>
+        <p className={style["loaderScreen"]}>
+          Error fetching bridge details, please try later{" "}
+        </p>
       ) : isPaused ? (
-        <p> Bridge is currently paused. Please try again later </p>
+        <p className={style["loaderScreen"]}>
+          {" "}
+          Bridge is currently paused. Please try again later{" "}
+        </p>
       ) : (!isEvm && isFetCapReached) || (isEvm && isEvmCapReached) ? (
-        <p> Bridge cap reached. Please try again later </p>
+        <p className={style["loaderScreen"]}>
+          {" "}
+          Bridge cap reached. Please try again later{" "}
+        </p>
       ) : isEvm ? (
         <div>
-          <div className={style["bridgeLimit"]}>
-            ERC20 to Native Limit:{" "}
-            {new IntPretty(
+          <EthereumBridge
+            limit={new IntPretty(
               minDec(
                 new Dec(bridgeFetQuery.status.supply),
                 new Dec(bridgeEvmQuery.status.cap).sub(
@@ -76,16 +76,25 @@ export const BridgePage: FunctionComponent = observer(() => {
               ).quoTruncate(new Dec(1e18))
             )
               .maxDecimals(0)
-              .toString()}{" "}
-            FET
-          </div>
-          <EthereumBridge />
+              .toString()}
+            fee={
+              bridgeFetQuery.status.fee &&
+              new Dec(bridgeFetQuery.status.fee).isPositive()
+                ? new IntPretty(
+                    new Dec(bridgeFetQuery.status.fee).quoTruncate(
+                      new Dec(1e18)
+                    )
+                  )
+                    .maxDecimals(0)
+                    .toString()
+                : undefined
+            }
+          />
         </div>
       ) : (
         <div>
-          <div className={style["bridgeLimit"]}>
-            Native to ERC20 Limit:{" "}
-            {new IntPretty(
+          <FetchhubBridge
+            limit={new IntPretty(
               minDec(
                 new Dec(bridgeEvmQuery.status.supply),
                 new Dec(bridgeFetQuery.status.cap).sub(
@@ -94,10 +103,20 @@ export const BridgePage: FunctionComponent = observer(() => {
               ).quoTruncate(new Dec(1e18))
             )
               .maxDecimals(0)
-              .toString()}{" "}
-            FET
-          </div>
-          <FetchhubBridge />
+              .toString()}
+            fee={
+              bridgeEvmQuery.status.fee &&
+              new Dec(bridgeEvmQuery.status.fee).isPositive()
+                ? new IntPretty(
+                    new Dec(bridgeEvmQuery.status.fee).quoTruncate(
+                      new Dec(1e18)
+                    )
+                  )
+                    .maxDecimals(0)
+                    .toString()
+                : undefined
+            }
+          />
         </div>
       )}
     </HeaderLayout>

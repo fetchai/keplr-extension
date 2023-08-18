@@ -162,30 +162,31 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
           );
            */
 
-          icons.push(
-            <i
-              key="trash"
-              className="fas fa-trash-alt"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={async (e) => {
-                e.preventDefault();
+          cosmwasmToken.coinDenom !== "FET" &&
+            icons.push(
+              <i
+                key="trash"
+                className="fas fa-trash-alt"
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={async (e) => {
+                  e.preventDefault();
 
-                if (
-                  await confirm.confirm({
-                    paragraph: intl.formatMessage({
-                      id: "setting.token.manage.confirm.remove-token",
-                    }),
-                  })
-                ) {
-                  await tokensStore
-                    .getTokensOf(chainStore.current.chainId)
-                    .removeToken(cosmwasmToken);
-                }
-              }}
-            />
-          );
+                  if (
+                    await confirm.confirm({
+                      paragraph: intl.formatMessage({
+                        id: "setting.token.manage.confirm.remove-token",
+                      }),
+                    })
+                  ) {
+                    await tokensStore
+                      .getTokensOf(chainStore.current.chainId)
+                      .removeToken(cosmwasmToken);
+                  }
+                }}
+              />
+            );
 
           return (
             <PageButton
@@ -196,7 +197,8 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
               title={cosmwasmToken.coinDenom}
               paragraph={Bech32Address.shortenAddress(
                 cosmwasmToken.contractAddress,
-                30
+                30,
+                cosmwasmToken.type === "erc20"
               )}
               icons={icons}
             />

@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router";
 
 import style from "./style.module.scss";
 import { Button } from "reactstrap";
-import { AddressInput, CoinInput, FeeButtons } from "@components/form";
+import { AddressInput, CoinInput, FeeButtons, Input } from "@components/form";
 import {
   IAmountConfig,
   IFeeConfig,
@@ -24,11 +24,13 @@ import queryString from "querystring";
 
 import { BigNumber } from "@ethersproject/bignumber";
 
-export const EthereumBridge: FunctionComponent = observer(() => {
+export const EthereumBridge: FunctionComponent<{
+  limit: string;
+  fee?: string;
+}> = observer(({ limit, fee }) => {
   const [phase, setPhase] = useState<"configure" | "approve" | "bridge">(
     "configure"
   );
-  const [approvalAmount, setApprovalAmount] = useState<string>("0");
 
   let search = useLocation().search;
   if (search.startsWith("?")) {
@@ -63,13 +65,7 @@ export const EthereumBridge: FunctionComponent = observer(() => {
 
   if (accountInfo.txTypeInProgress === "nativeBridgeSend") {
     return (
-      <p
-        style={{
-          textAlign: "center",
-          position: "relative",
-          top: "45%",
-        }}
-      >
+      <p className={style["loaderScreen"]}>
         Bridging in progress <i className="fa fa-spinner fa-spin fa-fw" />{" "}
       </p>
     );
@@ -82,8 +78,9 @@ export const EthereumBridge: FunctionComponent = observer(() => {
           amountConfig={nativeBridgeConfig.amountConfig}
           recipientConfig={nativeBridgeConfig.recipientConfig}
           memoConfig={nativeBridgeConfig.memoConfig}
-          setApprovalAmount={setApprovalAmount}
           setPhase={setPhase}
+          limit={limit}
+          fee={fee}
         />
       ) : null}
       {phase === "approve" ? (
@@ -92,7 +89,6 @@ export const EthereumBridge: FunctionComponent = observer(() => {
           recipientConfig={nativeBridgeConfig.recipientConfig}
           feeConfig={nativeBridgeConfig.feeConfig}
           gasConfig={nativeBridgeConfig.gasConfig}
-          approvalAmount={approvalAmount}
           currency={nativeBridgeConfig.amountConfig.sendCurrency}
         />
       ) : null}
@@ -113,18 +109,13 @@ export const Configure: FunctionComponent<{
   amountConfig: IAmountConfig;
   recipientConfig: IRecipientConfig;
   memoConfig: IMemoConfig;
-  setApprovalAmount: React.Dispatch<React.SetStateAction<string>>;
   setPhase: React.Dispatch<
     React.SetStateAction<"configure" | "approve" | "bridge">
   >;
+  limit: string;
+  fee?: string;
 }> = observer(
-  ({
-    amountConfig,
-    recipientConfig,
-    memoConfig,
-    setApprovalAmount,
-    setPhase,
-  }) => {
+  ({ amountConfig, recipientConfig, memoConfig, setPhase, limit, fee }) => {
     const intl = useIntl();
 
     const { chainStore, queriesStore, accountStore } = useStore();
@@ -136,8 +127,11 @@ export const Configure: FunctionComponent<{
       .get(chainStore.current.chainId)
       .evm.queryERC20Allowance.getQueryAllowance(
         accountInfo.bech32Address,
-        "0x947872ad4d95e89E513d7202550A810aC1B626cC",
-        "0xaea46A60368A7bD060eec7DF8CBa43b7EF41Ad85"
+        queriesStore.get(chainStore.current.chainId).evm.queryNativeFetBridge
+          .nativeBridgeAddress,
+        "contractAddress" in amountConfig.sendCurrency
+          ? amountConfig.sendCurrency.contractAddress
+          : ""
       );
 
     const isValid =
@@ -149,6 +143,9 @@ export const Configure: FunctionComponent<{
 
     return (
       <form className={style["formContainer"]}>
+        <div className={style["bridgeLimit"]}>
+          ERC20 to Native Limit: {limit} FET
+        </div>
         <div className={style["formInnerContainer"]}>
           <AddressInput
             label={intl.formatMessage({
@@ -159,15 +156,7 @@ export const Configure: FunctionComponent<{
             value={""}
           />
           <div
-            style={{
-              overflowWrap: "anywhere",
-              fontSize: "small",
-              marginTop: "-15px",
-              marginBottom: "15px",
-              cursor: "pointer",
-              textDecoration: "underline",
-              color: "#555555",
-            }}
+            className={style["addressSelector"]}
             onClick={(e) => {
               e.preventDefault();
               recipientConfig.setRawRecipient(
@@ -186,9 +175,20 @@ export const Configure: FunctionComponent<{
               id: "send.input.amount",
             })}
             amountConfig={amountConfig}
+            dropdownDisabled
           />
           <div style={{ flex: 1 }} />
-
+          {fee && (
+            <div>
+              <Input
+                label="Bridging fee"
+                readOnly
+                disabled
+                value={`${fee} FET`}
+              />
+              <div style={{ flex: 1 }} />
+            </div>
+          )}
           <Button
             type="submit"
             color="primary"
@@ -217,18 +217,12 @@ export const Configure: FunctionComponent<{
                 return setPhase("bridge");
               }
 
-              const toApproveAmount = amountToBridge.sub(currentAllowance);
-              let approvalAmountInFET = new Dec(toApproveAmount.toString());
-              approvalAmountInFET = approvalAmountInFET.quo(
-                DecUtils.getTenExponentNInPrecisionRange(currencyDecimals)
-              );
-              setApprovalAmount(approvalAmountInFET.toString());
               setPhase("approve");
             }}
           >
             {accountInfo.txTypeInProgress === "approval" ? (
               <p style={{ marginBottom: 0 }}>
-                Allowance in progress{" "}
+                Approve txn in progress{" "}
                 <i className="fa fa-spinner fa-spin fa-fw" />
               </p>
             ) : (
@@ -246,17 +240,9 @@ export const Approve: FunctionComponent<{
   recipientConfig: IRecipientConfig;
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
-  approvalAmount: string;
   currency: AppCurrency;
 }> = observer(
-  ({
-    amountConfig,
-    recipientConfig,
-    feeConfig,
-    gasConfig,
-    approvalAmount,
-    currency,
-  }) => {
+  ({ amountConfig, recipientConfig, feeConfig, gasConfig, currency }) => {
     const intl = useIntl();
     const notification = useNotification();
 
@@ -264,7 +250,7 @@ export const Approve: FunctionComponent<{
 
     const navigate = useNavigate();
 
-    const { chainStore, priceStore, accountStore } = useStore();
+    const { chainStore, priceStore, accountStore, queriesStore } = useStore();
 
     const approveGasSimulator = useGasSimulator(
       new ExtensionKVStore("gas-simulator.native-bridge.approve"),
@@ -278,7 +264,8 @@ export const Approve: FunctionComponent<{
           .getAccount(chainStore.current.chainId)
           .ethereum.makeApprovalTx(
             amountConfig.amount,
-            "0x947872ad4d95e89E513d7202550A810aC1B626cC",
+            queriesStore.get(chainStore.current.chainId).evm
+              .queryNativeFetBridge.nativeBridgeAddress,
             currency
           );
       }
@@ -286,11 +273,16 @@ export const Approve: FunctionComponent<{
 
     return (
       <form className={style["formContainer"]}>
+        <h2>Approve</h2>
         <div className={style["formInnerContainer"]}>
-          <p>
-            Need to approve additional{" "}
-            {new IntPretty(approvalAmount).maxDecimals(2).toString()}
-          </p>
+          <div style={{ marginBottom: "20px" }}>
+            Allow the bridge contract to spend{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {new IntPretty(amountConfig.amount).trim(true).toString()} FET
+            </span>{" "}
+            on your behalf.
+          </div>
+
           <FeeButtons
             label={intl.formatMessage({
               id: "send.input.fee",
@@ -309,16 +301,19 @@ export const Approve: FunctionComponent<{
             onClick={async (e) => {
               e.preventDefault();
 
-              const stdFee = feeConfig.toStdFee();
+              try {
+                const stdFee = feeConfig.toStdFee();
 
-              await accountStore
-                .getAccount(chainStore.current.chainId)
-                .ethereum.makeApprovalTx(
-                  amountConfig.amount,
-                  "0x947872ad4d95e89E513d7202550A810aC1B626cC",
-                  currency
-                )
-                .send(
+                const tx = accountStore
+                  .getAccount(chainStore.current.chainId)
+                  .ethereum.makeApprovalTx(
+                    amountConfig.amount,
+                    queriesStore.get(chainStore.current.chainId).evm
+                      .queryNativeFetBridge.nativeBridgeAddress,
+                    currency
+                  );
+
+                await tx.send(
                   stdFee,
                   "",
                   {
@@ -358,35 +353,22 @@ export const Approve: FunctionComponent<{
                       );
                     },
                   }
-
-                  // (tx) => {
-                  //   if (tx.status && tx.status === 1) {
-                  //     notification.push({
-                  //       placement: "top-center",
-                  //       type: "success",
-                  //       duration: 2,
-                  //       content: "Approval Successful",
-                  //       canDelete: true,
-                  //       transition: {
-                  //         duration: 0.25,
-                  //       },
-                  //     });
-                  //   } else {
-                  //     notification.push({
-                  //       placement: "top-center",
-                  //       type: "danger",
-                  //       duration: 2,
-                  //       content: "Approval Failed, try again",
-                  //       canDelete: true,
-                  //       transition: {
-                  //         duration: 0.25,
-                  //       },
-                  //     });
-                  //   }
-                  //   gasConfig.setGas(0);
-                  //   navigate(`/bridge?defaultRecipient=${recipientConfig.recipient}&defaultAmount=${amountConfig.amount}`);
-                  // }
                 );
+              } catch (e) {
+                navigate(
+                  `/bridge?defaultRecipient=${recipientConfig.recipient}&defaultAmount=${amountConfig.amount}`
+                );
+                notification.push({
+                  placement: "top-center",
+                  type: "danger",
+                  duration: 2,
+                  content: `Approval Failed: ${e.message}`,
+                  canDelete: true,
+                  transition: {
+                    duration: 0.25,
+                  },
+                });
+              }
             }}
           >
             <FormattedMessage id="ibc.transfer.next" />
@@ -428,10 +410,16 @@ export const Bridge: FunctionComponent<{
 
   return (
     <form className={style["formContainer"]}>
+      <h2>Bridge</h2>
       <div className={style["formInnerContainer"]}>
-        <p>
-          Bridging {new IntPretty(bridgeAmount).maxDecimals(2).toString()}{" "}
-          {currency.coinDenom} to {recipient}
+        <p style={{ overflowWrap: "break-word" }}>
+          Sending{" "}
+          <span style={{ fontWeight: "bold" }}>
+            {new IntPretty(bridgeAmount).trim(true).toString()}{" "}
+            {currency.coinDenom}
+          </span>{" "}
+          to <span style={{ fontWeight: "bold" }}>{recipient}</span> on Fetch
+          network.
         </p>
         <FeeButtons
           label={intl.formatMessage({
@@ -451,12 +439,14 @@ export const Bridge: FunctionComponent<{
           onClick={async (e) => {
             e.preventDefault();
 
-            const stdFee = feeConfig.toStdFee();
+            try {
+              const stdFee = feeConfig.toStdFee();
 
-            await accountStore
-              .getAccount(chainStore.current.chainId)
-              .ethereum.makeNativeBridgeTx(bridgeAmount, recipient)
-              .send(
+              const tx = accountStore
+                .getAccount(chainStore.current.chainId)
+                .ethereum.makeNativeBridgeTx(bridgeAmount, recipient);
+
+              await tx.send(
                 stdFee,
                 "",
                 {
@@ -494,33 +484,22 @@ export const Bridge: FunctionComponent<{
                     navigate(`/bridge`);
                   },
                 }
-                // (tx) => {
-                //   if (tx.status && tx.status === 1) {
-                //     notification.push({
-                //       placement: "top-center",
-                //       type: "success",
-                //       duration: 2,
-                //       content: "Bridging Successful",
-                //       canDelete: true,
-                //       transition: {
-                //         duration: 0.25,
-                //       },
-                //     });
-                //   } else {
-                //     notification.push({
-                //       placement: "top-center",
-                //       type: "danger",
-                //       duration: 2,
-                //       content: "Bridging Failed",
-                //       canDelete: true,
-                //       transition: {
-                //         duration: 0.25,
-                //       },
-                //     });
-                //   }
-                //   navigate('/');
-                // }
               );
+            } catch (e) {
+              navigate(
+                `/bridge?defaultRecipient=${recipient}&defaultAmount=${bridgeAmount}`
+              );
+              notification.push({
+                placement: "top-center",
+                type: "danger",
+                duration: 2,
+                content: `Bridge Failed: ${e.message}`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
+              });
+            }
           }}
         >
           <FormattedMessage id="ibc.transfer.next" />
