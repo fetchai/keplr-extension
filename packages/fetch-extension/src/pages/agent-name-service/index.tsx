@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { ANS_CONFIG } from "../../config.ui.var";
@@ -7,13 +7,39 @@ import { HeaderLayout } from "../../new-layouts";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 
+interface FetchedDomain {
+  domain_name: string;
+  permissions: string;
+}
+
 export const AgentNameService = observer(() => {
   const navigate = useNavigate();
-  const { chainStore, queriesStore } = useStore();
+  const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
-  const { queryPublicDomains } = queriesStore.get(current.chainId).ans;
-  const { isFetching, publicDomains } = queryPublicDomains.getQueryContract(
-    ANS_CONFIG[current.chainId].contractAddress
+  const account = accountStore.getAccount(current.chainId);
+  const [fetchedDomains, setFetchedDomains] = useState<FetchedDomain[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const fetchDomains = await fetch(
+          `${ANS_CONFIG[current.chainId].domainsUrl}${account.bech32Address}`
+        );
+        const response = await fetchDomains.json();
+        setFetchedDomains(response as FetchedDomain[]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    init();
+  }, [account.bech32Address, current.chainId]);
+
+  // Filter out domains with "none" permissions
+  const filteredDomains = fetchedDomains.filter(
+    (domain) => domain.permissions !== "none"
   );
 
   return (
@@ -35,22 +61,19 @@ export const AgentNameService = observer(() => {
       showBottomMenu={true}
     >
       <div className={style["allDomains"]}>
-        {isFetching ? (
-          <div className={style["loader"]}>
-            Loading Agent Domains
-            <i className="fas fa-spinner fa-spin ml-2" />
-          </div>
-        ) : publicDomains?.length === 0 ? (
+        {isLoading ? (
+          <div className={style["loader"]}>Loading...</div>
+        ) : filteredDomains.length === 0 ? (
           <div className={style["loader"]}>No Domains Available</div>
         ) : (
-          publicDomains?.map((domain: string, index: any) => (
+          filteredDomains.map((domain, index) => (
             <Link
-              to={`/agent-name-service/domain-details/${domain}`}
+              to={`/agent-name-service/domain-details/${domain.domain_name}`}
               className={style["domainCard"]}
               key={index}
             >
               <div className={style["domainDetails"]}>
-                <div>{domain}</div>
+                <div>{domain.domain_name}</div>
                 <img
                   className={style["arrowIcon"]}
                   src={require("@assets/svg/arrow-right-outline.svg")}

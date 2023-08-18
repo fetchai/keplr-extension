@@ -198,6 +198,8 @@ export const ANS_CONFIG: {
     contractAddress: string;
     validateAgentAddressContract: string;
     isEditable: boolean;
+    domainsUrl: string;
+    domainDetailsUrl: string;
   };
 } = {
   [CHAIN_ID_DORADO]: {
@@ -208,6 +210,8 @@ export const ANS_CONFIG: {
     validateAgentAddressContract:
       "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
+    domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
+    domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
   },
   [CHAIN_ID_FETCHHUB]: {
     network: "mainnet",
@@ -217,6 +221,8 @@ export const ANS_CONFIG: {
     validateAgentAddressContract:
       "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
+    domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
+    domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
   },
 };
 
