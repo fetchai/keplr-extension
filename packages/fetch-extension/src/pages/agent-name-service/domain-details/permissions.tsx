@@ -1,35 +1,58 @@
 import React, { useState, useEffect } from "react";
 import style from "../style.module.scss";
-import { useNavigate } from "react-router";
-import { getDomainOwners } from "../../../name-service/ans-api";
+import { useLocation, useNavigate } from "react-router";
+import { useStore } from "../../../stores";
+import { ANS_CONFIG } from "../../../config.ui.var";
+import { formatAddressInANS } from "@utils/format";
 
 export const Permissions = () => {
   const [activeInnerTab, setActiveInnerTab] = useState("Owners");
-  const [ownerArray, setOwnerArray] = useState<any>();
-  const [writerArray, setWriterArray] = useState<any>();
+  const [ownerArray, setOwnerArray] = useState<string[]>([]);
+  const [writerArray, setWriterArray] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const domainName = useLocation().pathname.split("/")[3];
+
   const navigate = useNavigate();
-  const handleInnerTabChange = (tabName: any) => {
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const account = accountStore.getAccount(current.chainId);
+
+  const handleInnerTabChange = (tabName: string) => {
     setActiveInnerTab(tabName);
   };
 
   const handleCancelOnClick = () => {
     console.log("Cancel clicked", ownerArray);
   };
+
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
 
-      const ownerResult: any = await getDomainOwners();
-      setOwnerArray(ownerResult);
-
-      const writerResult: any = await getDomainOwners();
-      setWriterArray(writerResult);
-
-      setIsLoading(false);
+      try {
+        const owners: string[] = [];
+        const writers: string[] = [];
+        const fetchDomains = await fetch(
+          `${ANS_CONFIG[current.chainId].domainDetailsUrl}${domainName}`
+        );
+        const response = await fetchDomains.json();
+        response.forEach((domain: any) => {
+          if (domain.permissions === "admin") {
+            owners.push(domain.account_address);
+          } else if (domain.permissions === "writer") {
+            writers.push(domain.account_address);
+          }
+        });
+        setOwnerArray(owners);
+        setWriterArray(writers);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    getData();
-  }, []);
+    fetchData();
+  }, [domainName]);
 
   return (
     <div>
@@ -66,40 +89,56 @@ export const Permissions = () => {
             Loading Owners..
             <i className="fas fa-spinner fa-spin ml-2" />
           </div>
-        ) : ownerArray ? (
-          activeInnerTab === "Owners" &&
-          ownerArray.map((domains: any, index: any) => (
-            <div className={style["domainCard"]} key={index}>
-              <div className={style["domainDetails"]}>
-                <div className={style["agentDomainData"]}>
-                  {domains.current && (
-                    <div className={style["currentWallet"]}>
-                      {domains.current === true ? "CURRENT WALLET" : null}
-                    </div>
-                  )}
-                  {domains.address}
-                </div>
-                <div
-                  onClick={handleCancelOnClick}
-                  className={style["cancel"]}
-                  style={{ width: "12px", height: "18px" }}
-                >
-                  X
-                </div>
-              </div>
-            </div>
-          ))
-        ) : null}
-        {!isLoading && writerArray
-          ? activeInnerTab === "Writers" &&
-            writerArray.map((domains: any, index: any) => (
+        ) : activeInnerTab === "Owners" ? (
+          ownerArray.length > 0 ? (
+            ownerArray.map((address: string, index: number) => (
               <div className={style["domainCard"]} key={index}>
                 <div className={style["domainDetails"]}>
-                  <div>{domains.address}</div>
+                  <div className={style["agentDomainData"]}>
+                    {address === account.bech32Address && (
+                      <div className={style["currentWallet"]}>
+                        CURRENT WALLET
+                      </div>
+                    )}
+                    {formatAddressInANS(address)}
+                  </div>
+                  <div
+                    onClick={handleCancelOnClick}
+                    className={style["cancel"]}
+                    style={{ width: "12px", height: "18px" }}
+                  >
+                    X
+                  </div>
+                </div>{" "}
+              </div>
+            ))
+          ) : (
+            <div className={style["loader"]} style={{ top: "180px" }}>
+              No Owners Available
+            </div>
+          )
+        ) : activeInnerTab === "Writers" ? (
+          writerArray.length > 0 ? (
+            writerArray.map((address: string, index: number) => (
+              <div className={style["domainCard"]} key={index}>
+                <div className={style["domainDetails"]}>
+                  <div className={style["agentDomainData"]}>
+                    {address === account.bech32Address && (
+                      <div className={style["currentWallet"]}>
+                        CURRENT WALLET
+                      </div>
+                    )}
+                    {formatAddressInANS(address)}
+                  </div>
                 </div>
               </div>
             ))
-          : null}
+          ) : (
+            <div className={style["loader"]} style={{ top: "180px" }}>
+              No Writers Available
+            </div>
+          )
+        ) : null}
       </div>
     </div>
   );

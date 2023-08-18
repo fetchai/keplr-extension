@@ -9,12 +9,14 @@ import style from "./style.module.scss";
 
 interface DomainDropdownProps {
   publicDomains: string[];
-  onSelectDomain: (selectedDomain: string) => void;
+  selectedPublicDomain: string;
+  setSelectedPublicDomain: (selectedDomain: string) => void;
 }
 
-const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
+export const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
   publicDomains,
-  onSelectDomain,
+  selectedPublicDomain,
+  setSelectedPublicDomain,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => {
@@ -22,7 +24,7 @@ const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
   };
 
   const handleDomainSelection = (selectedDomain: string) => {
-    onSelectDomain(selectedDomain);
+    setSelectedPublicDomain(selectedDomain);
     toggleDropdown();
   };
 
@@ -33,10 +35,10 @@ const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
       toggle={toggleDropdown}
     >
       <DropdownToggle className={style["dropdown-toggle"]} caret>
-        suffix
+        {selectedPublicDomain}
       </DropdownToggle>
       {dropdownOpen && (
-        <DropdownMenu>
+        <DropdownMenu style={{ minWidth: "40px" }}>
           {publicDomains.map((domain, index) => (
             <DropdownItem
               key={index}
@@ -50,5 +52,3 @@ const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
     </Dropdown>
   );
 };
-
-export default PublicDomainDropdown;

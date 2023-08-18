@@ -47,11 +47,10 @@ export const registerDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   agent_address: any,
   domain: string,
-  amount: any,
   notification: ContextProps
 ) => {
   const tx = account.cosmwasm.makeExecuteContractTx(
-    `register:${domain}`,
+    `executeWasm`,
     ANS_CONTRACT_ADDRESS,
     {
       register: {
@@ -59,20 +58,16 @@ export const registerDomain = async (
         agent_address,
       },
     },
-    [amount]
+    []
   );
-  await executeTxn(tx, amount, notification);
+  await executeTxn(tx, notification);
 };
 
-const executeTxn = async (
-  tx: MakeTxResponse,
-  amount: any,
-  notification: ContextProps
-) => {
+const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
   const gasResponse = await tx.simulate();
   await tx.send(
     {
-      amount: [amount],
+      amount: [],
       gas: Math.floor(gasResponse.gasUsed * 1.5).toString(),
     },
     "",

@@ -211,6 +211,7 @@ export const ANS_CONFIG: {
     isEditable: boolean;
     domainsUrl: string;
     domainDetailsUrl: string;
+    agentsUrl: string;
   };
 } = {
   [CHAIN_ID_DORADO]: {
@@ -223,6 +224,7 @@ export const ANS_CONFIG: {
     isEditable: true,
     domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
     domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
+    agentsUrl: "http://localhost:8001/v1/almanac/agents/",
   },
   [CHAIN_ID_FETCHHUB]: {
     network: "mainnet",
@@ -234,6 +236,7 @@ export const ANS_CONFIG: {
     isEditable: true,
     domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
     domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
+    agentsUrl: "http://localhost:8001/v1/almanac/agents/",
   },
 };
 
