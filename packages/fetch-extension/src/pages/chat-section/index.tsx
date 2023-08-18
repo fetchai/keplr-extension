@@ -19,10 +19,12 @@ import { Menu } from "../main/menu";
 import { ChatActionsDropdown } from "@components/chat-actions-dropdown";
 import { ChatsViewSection } from "./chats-view-section";
 import { UserNameSection } from "./username-section";
+import { arrayify } from "@ethersproject/bytes";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export const ChatSection: FunctionComponent = () => {
   const targetAddress = useLocation().pathname.split("/")[2];
-
+  // todo to get name this target add must be hex in evm case
   const blockedUsers = useSelector(userBlockedAddresses);
   const user = useSelector(userDetails);
 
@@ -32,8 +34,8 @@ export const ChatSection: FunctionComponent = () => {
   const [action, setAction] = useState("");
   const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
   const current = chainStore.current;
+  const isEvm = current.features?.includes("evm") ?? false;
   const accountInfo = accountStore.getAccount(current.chainId);
-
   // address book values
   const ibcTransferConfigs = useIBCTransferConfig(
     chainStore,
@@ -71,7 +73,13 @@ export const ChatSection: FunctionComponent = () => {
   const contactName = (addresses: any) => {
     let val = "";
     for (let i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == targetAddress) {
+      if (
+        (isEvm
+          ? new Bech32Address(arrayify(addresses[i].address)).toBech32(
+              current.bech32Config.bech32PrefixAccAddr
+            )
+          : addresses[i].address) == targetAddress
+      ) {
         val = addresses[i].name;
       }
     }
@@ -95,6 +103,7 @@ export const ChatSection: FunctionComponent = () => {
         current.chainId,
         targetAddress
       );
+
       setTargetPubKey(pubAddr?.publicKey || "");
     };
     setPublicAddress();
@@ -102,7 +111,12 @@ export const ChatSection: FunctionComponent = () => {
 
   const isNewUser = (): boolean => {
     const addressExists = addresses.find(
-      (item: any) => item.address === targetAddress
+      (item: any) =>
+        (isEvm
+          ? new Bech32Address(arrayify(item.address)).toBech32(
+              current.bech32Config.bech32PrefixAccAddr
+            )
+          : item.address) === targetAddress
     );
     return !Boolean(addressExists);
   };

@@ -44,6 +44,7 @@ import { addMemberEvent } from "@utils/group-events";
 import { ToolTip } from "@components/tooltip";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
+import { arrayify } from "@ethersproject/bytes";
 
 export const AddMember: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ export const AddMember: FunctionComponent = observer(() => {
     analyticsStore,
   } = useStore();
   const current = chainStore.current;
+  const isEvm = current.features?.includes("evm") ?? false;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
   // address book values
@@ -197,7 +199,11 @@ export const AddMember: FunctionComponent = observer(() => {
       const pubAddr = await fetchPublicKey(
         user.accessToken,
         current.chainId,
-        contactAddress
+        isEvm && contactAddress !== walletAddress
+          ? new Bech32Address(arrayify(contactAddress)).toBech32(
+              current.bech32Config.bech32PrefixAccAddr
+            )
+          : contactAddress
       );
       if (pubAddr && pubAddr.publicKey) {
         let encryptedSymmetricKey = "";
@@ -332,14 +338,24 @@ export const AddMember: FunctionComponent = observer(() => {
               />
             )}
             {addresses.map((address: NameAddress) => {
-              return (
-                <ChatMember
-                  address={address}
-                  key={address["address"]}
-                  isSelected={isMemberExist(address["address"])}
-                  onIconClick={() => handleAddRemoveMember(address["address"])}
-                />
-              );
+              if (
+                (isEvm
+                  ? new Bech32Address(arrayify(address["address"])).toBech32(
+                      current.bech32Config.bech32PrefixAccAddr
+                    )
+                  : address["address"]) !== walletAddress
+              ) {
+                return (
+                  <ChatMember
+                    address={address}
+                    key={address["address"]}
+                    isSelected={isMemberExist(address["address"])}
+                    onIconClick={() =>
+                      handleAddRemoveMember(address["address"])
+                    }
+                  />
+                );
+              }
             })}
           </div>
           {addresses.length === 0 && !randomAddress && (

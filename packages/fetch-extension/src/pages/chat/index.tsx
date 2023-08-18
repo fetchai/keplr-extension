@@ -51,6 +51,7 @@ const ChatView = () => {
   const chatSubscriptionActive = useSelector(userChatSubscriptionActive);
   const { chainStore, accountStore, queriesStore, uiConfigStore } = useStore();
   const current = chainStore.current;
+  // const isEvm = current.features?.includes("evm") ?? false;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(
     chainStore.current.chainId
@@ -156,7 +157,6 @@ const ChatView = () => {
       try {
         const res = await getJWT(current.chainId, AUTH_SERVER);
         store.dispatch(setAccessToken(res));
-
         const pubKey = await fetchPublicKey(
           res,
           current.chainId,

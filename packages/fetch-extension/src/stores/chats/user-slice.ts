@@ -1,6 +1,10 @@
 import { NotificationSetup } from "@notificationTypes";
 import { createSlice } from "@reduxjs/toolkit";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import {
+  CHAIN_ID_DORADO,
+  CHAIN_ID_FETCHHUB,
+  CHAIN_ID_BSC,
+} from "../../config.ui.var";
 
 export interface WalletConfig {
   notiphyWhitelist: string[] | undefined;
@@ -28,7 +32,7 @@ const initialState = {
   },
   showAgentDisclaimer: true,
   hasFET: false,
-  enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO],
+  enabledChainIds: [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO, CHAIN_ID_BSC],
 };
 
 export const userSlice = createSlice({

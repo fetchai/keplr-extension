@@ -6,6 +6,7 @@ import { fromBase64, fromHex, toBase64, toHex } from "@cosmjs/encoding";
 import { getPubKey, registerPubKey } from "./memorandum-client";
 import { MESSAGE_CHANNEL_ID } from "./constants";
 import { PrivacySetting, PubKey } from "./types";
+import { EthSignType } from "@keplr-wallet/types";
 
 export class MessagingService {
   // map of target address vs target public key
@@ -70,6 +71,10 @@ export class MessagingService {
     privacySetting: PrivacySetting,
     chatReadReceiptSetting?: boolean
   ): Promise<PubKey> {
+    const _chainFeatures = (
+      await this.keyRingService.chainsService.getChainInfo(chainId)
+    ).features;
+    const isEvm = _chainFeatures ? _chainFeatures[0] == "evm" : false;
     const sk = await this.getPrivateKey(env, chainId);
     const privateKey = new PrivateKey(Buffer.from(sk));
     const pubKey = toHex(privateKey.publicKey.compressed);
@@ -113,13 +118,25 @@ export class MessagingService {
           memo: "",
         };
 
+        let _para;
+
+        if (isEvm) {
+          _para = {
+            ethSignType: EthSignType.MESSAGE,
+          };
+        } else {
+          _para = {
+            isADR36WithString: true,
+          };
+        }
+
         const signData = await this.keyRingService.requestSignAmino(
           env,
           "",
           chainId,
           address,
           signDoc,
-          { isADR36WithString: true }
+          _para
         );
 
         signature = signData.signature;

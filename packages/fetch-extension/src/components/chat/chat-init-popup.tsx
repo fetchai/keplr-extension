@@ -29,9 +29,7 @@ export const ChatInitPopup = ({
 
   const { chainStore, accountStore, analyticsStore } = useStore();
   const current = chainStore.current;
-  const walletAddress = accountStore.getAccount(
-    chainStore.current.chainId
-  ).bech32Address;
+  const walletAddress = accountStore.getAccount(current.chainId).bech32Address;
 
   const navigate = useNavigate();
   // address book values

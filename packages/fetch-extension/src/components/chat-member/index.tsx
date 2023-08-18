@@ -10,6 +10,8 @@ import { fetchPublicKey } from "@utils/fetch-public-key";
 import { userDetails } from "@chatStore/user-slice";
 import { useSelector } from "react-redux";
 import { useStore } from "../../stores";
+import { arrayify } from "@ethersproject/bytes";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export const ChatMember = (props: {
   address: NameAddress;
@@ -33,7 +35,7 @@ export const ChatMember = (props: {
   const user = useSelector(userDetails);
   const { chainStore } = useStore();
   const current = chainStore.current;
-
+  const isEvm = current.features?.includes("evm") ?? false;
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,7 +45,11 @@ export const ChatMember = (props: {
         const pubKey = await fetchPublicKey(
           user.accessToken,
           current.chainId,
-          address
+          isEvm && name !== "You"
+            ? new Bech32Address(arrayify(address)).toBech32(
+                current.bech32Config.bech32PrefixAccAddr
+              )
+            : address
         );
         if (!pubKey || !pubKey.publicKey || !(pubKey.publicKey.length > 0))
           setIsActive(false);
@@ -111,10 +117,14 @@ export const ChatMember = (props: {
       {...(isActive && { onClick: onClick })}
     >
       <div className={style["initials"]}>
-        {ReactHtmlParser(
-          jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
-            .outerHTML
-        )}
+        {isEvm
+          ? ReactHtmlParser(
+              jazzicon(24, parseInt(address.toString(), 16)).outerHTML
+            )
+          : ReactHtmlParser(
+              jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
+                .outerHTML
+            )}
       </div>
       <div className={style["memberInner"]}>
         <div className={style["name"]}>{formatAddress(name)}</div>

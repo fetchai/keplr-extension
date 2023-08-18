@@ -20,6 +20,8 @@ import { getJWT } from "@utils/auth";
 import { fetchPublicKey } from "@utils/fetch-public-key";
 import { PageButton } from "../page-button";
 import style from "./style.module.scss";
+import { arrayify } from "@ethersproject/bytes";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export const ChatSettings: FunctionComponent = observer(() => {
   // const language = useLanguage();
@@ -50,7 +52,15 @@ export const ChatSettings: FunctionComponent = observer(() => {
       const res = await getJWT(current.chainId, AUTH_SERVER);
       store.dispatch(setAccessToken(res));
 
-      const pubKey = await fetchPublicKey(res, current.chainId, walletAddress);
+      const isEvm = current.features?.includes("evm") ?? false;
+      const bech32Ad = new Bech32Address(arrayify(walletAddress)).toBech32(
+        current.bech32Config.bech32PrefixAccAddr
+      );
+      const pubKey = await fetchPublicKey(
+        res,
+        current.chainId,
+        isEvm ? bech32Ad : walletAddress
+      );
       store.dispatch(setMessagingPubKey(pubKey));
       setPrivacySetting(pubKey?.privacySetting || PrivacySetting.Everybody);
 

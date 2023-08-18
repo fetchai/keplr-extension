@@ -8,6 +8,11 @@ import chevronLeft from "@assets/icon/chevron-left.png";
 import moreIcon from "@assets/icon/more-grey.png";
 import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
+import { arrayify } from "@ethersproject/bytes";
+import { Bech32Address } from "@keplr-wallet/cosmos";
+import { getAddress } from "@ethersproject/address";
+import { fromBech32, toHex } from "@cosmjs/encoding";
 
 export const UserNameSection = ({
   handleDropDown,
@@ -19,13 +24,22 @@ export const UserNameSection = ({
   const navigate = useNavigate();
   const notification = useNotification();
   const intl = useIntl();
+  const { chainStore } = useStore();
+  const current = chainStore.current;
+  const isEvm = current.features?.includes("evm") ?? false;
 
   const userName = useLocation().pathname.split("/")[2];
 
   const contactName = (addresses: any) => {
     let val = "";
     for (let i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == userName) {
+      if (
+        (isEvm
+          ? new Bech32Address(arrayify(addresses[i].address)).toBech32(
+              current.bech32Config.bech32PrefixAccAddr
+            )
+          : addresses[i].address) == userName
+      ) {
         val = addresses[i].name;
       }
     }
@@ -33,7 +47,9 @@ export const UserNameSection = ({
   };
 
   const copyAddress = async (address: string) => {
-    await navigator.clipboard.writeText(address);
+    await navigator.clipboard.writeText(
+      isEvm ? getAddress(toHex(fromBech32(address).data)) : address
+    );
     notification.push({
       placement: "top-center",
       type: "success",

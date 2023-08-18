@@ -15,6 +15,8 @@ import { useStore } from "../../../stores";
 import { ChatGroupUser } from "./chat-group-user";
 import { ChatUser } from "./chat-user";
 import style from "../style.module.scss";
+import { fromBech32, toHex } from "@cosmjs/encoding";
+import { getAddress } from "@ethersproject/address";
 
 export const GroupsHistory: React.FC<{
   chainId: string;
@@ -28,6 +30,7 @@ export const GroupsHistory: React.FC<{
   const [loadingGroups, setLoadingGroups] = useState(false);
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
+  const isEvm = current.features?.includes("evm") ?? false;
   const accountInfo = accountStore.getAccount(current.chainId);
 
   //Scrolling Logic
@@ -115,7 +118,9 @@ export const GroupsHistory: React.FC<{
         .filter((contact) => filterGroups(contact))
         .map((contact, index) => {
           // translate the contact address into the address book name if it exists
-          const contactAddressBookName = addresses[contact];
+          const contactAddressBookName = isEvm
+            ? addresses[getAddress(toHex(fromBech32(contact).data))]
+            : addresses[contact];
 
           if (groups[contact].isDm)
             return (

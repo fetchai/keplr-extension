@@ -1,4 +1,5 @@
 import { fromBech32 } from "@cosmjs/encoding";
+import { arrayify } from "@ethersproject/bytes";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -30,15 +31,19 @@ import { resetNewGroup } from "@chatStore/new-group-slice";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { AGENT_ADDRESS } from "../../config.ui.var";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
+import { isAddress } from "@ethersproject/address";
 
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
   const user = useSelector(userDetails);
   const { chainStore, analyticsStore } = useStore();
   const { name, address } = props.address;
+
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const current = chainStore.current;
+  const isEvm = current.features?.includes("evm") ?? false;
+
   useEffect(() => {
     const isUserActive = async () => {
       try {
@@ -79,10 +84,14 @@ const NewUser = (props: { address: NameAddress }) => {
       {...(isActive && { onClick: handleClick })}
     >
       <div className={style["initials"]}>
-        {ReactHtmlParser(
-          jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
-            .outerHTML
-        )}
+        {isEvm
+          ? ReactHtmlParser(
+              jazzicon(24, parseInt(address.toString(), 16)).outerHTML
+            )
+          : ReactHtmlParser(
+              jazzicon(24, parseInt(fromBech32(address).data.toString(), 16))
+                .outerHTML
+            )}
       </div>
       <div className={style["messageInner"]}>
         <div className={style["name"]}>{formatAddress(name)}</div>
@@ -119,6 +128,7 @@ export const NewChat: FunctionComponent = observer(() => {
   } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
+  const isEvm = current.features?.includes("evm") ?? false;
   const walletAddress = accountInfo.bech32Address;
   // address book values
   const ibcTransferConfigs = useIBCTransferConfig(
@@ -183,14 +193,20 @@ export const NewChat: FunctionComponent = observer(() => {
     ) {
       try {
         //check if searchedVal is valid address
-        Bech32Address.validate(
-          searchedVal,
-          chainStore.current.bech32Config.bech32PrefixAccAddr
-        );
+        console.log("validating bech32");
+        try {
+          Bech32Address.validate(
+            searchedVal,
+            chainStore.current.bech32Config.bech32PrefixAccAddr
+          );
+        } catch (error) {
+          console.log(error);
+        }
         const address: NameAddress = {
           name: formatAddress(searchedVal),
           address: searchedVal,
         };
+
         setRandomAddress(address);
         setAddresses([]);
         // setAddresses([address]);
@@ -249,17 +265,19 @@ export const NewChat: FunctionComponent = observer(() => {
             You can search your contacts or paste any valid {current.chainName}{" "}
             address to start a conversation.
             <br /> or <br />
-            <button
-              className={style["button"]}
-              onClick={() => {
-                store.dispatch(resetNewGroup());
-                navigate({
-                  pathname: "/chat/group-chat/create",
-                });
-              }}
-            >
-              Create new group chat
-            </button>
+            {!isEvm && (
+              <button
+                className={style["button"]}
+                onClick={() => {
+                  store.dispatch(resetNewGroup());
+                  navigate({
+                    pathname: "/chat/group-chat/create",
+                  });
+                }}
+              >
+                Create new group chat
+              </button>
+            )}
             <br />
             <button
               className={style["button"]}
@@ -292,7 +310,17 @@ export const NewChat: FunctionComponent = observer(() => {
               />
             </div>
             {addresses.map((address: NameAddress) => {
-              return <NewUser address={address} key={address["address"]} />;
+              try {
+                isEvm && isAddress(address["address"])
+                  ? (address["address"] = new Bech32Address(
+                      arrayify(address["address"])
+                    ).toBech32(current.bech32Config.bech32PrefixAccAddr))
+                  : "";
+              } catch (error) {
+                console.error(error);
+              }
+              if (address["address"] !== walletAddress)
+                return <NewUser address={address} key={address["address"]} />;
             })}
           </div>
           {addresses.length === 0 && (
