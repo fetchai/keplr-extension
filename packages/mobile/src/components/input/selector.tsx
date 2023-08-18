@@ -24,6 +24,7 @@ export const SelectorModal: FunctionComponent<{
   modalPersistent?: boolean;
 }> = registerModal(
   ({
+    isOpen,
     close,
     items,
     selectedKey,
@@ -108,6 +109,10 @@ export const SelectorModal: FunctionComponent<{
         }
       }
     };
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <View style={style.flatten(["padding-page"]) as ViewStyle}>

@@ -15,10 +15,14 @@ export const ChainSelectorModal: FunctionComponent<{
   chainIds: string[];
   onSelectChain: (chainId: string) => void;
 }> = registerModal(
-  observer(({ chainIds, onSelectChain }) => {
+  observer(({ chainIds, onSelectChain, isOpen }) => {
     const { chainStore } = useStore();
 
     const style = useStyle();
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal

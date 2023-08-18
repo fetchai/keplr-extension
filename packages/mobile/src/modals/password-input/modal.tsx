@@ -17,7 +17,7 @@ export const PasswordInputModal: FunctionComponent<{
    */
   onEnterPassword: (password: string) => Promise<void>;
 }> = registerModal(
-  ({ close, title, paragraph, onEnterPassword }) => {
+  ({ close, title, paragraph, onEnterPassword, isOpen }) => {
     const style = useStyle();
 
     const [password, setPassword] = useState("");
@@ -38,6 +38,10 @@ export const PasswordInputModal: FunctionComponent<{
         setIsLoading(false);
       }
     };
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal title={title}>

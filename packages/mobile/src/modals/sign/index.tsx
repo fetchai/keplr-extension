@@ -30,7 +30,7 @@ export const SignModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
 }> = registerModal(
-  observer(() => {
+  observer(({ isOpen }) => {
     const {
       chainStore,
       accountStore,
@@ -213,6 +213,10 @@ export const SignModal: FunctionComponent<{
         return null;
       }
     })();
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal title="Confirm Transaction">

@@ -21,7 +21,10 @@ const FeeButtonsModal: FunctionComponent<{
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
 }> = registerModal(
-  observer(({ close, feeConfig, gasConfig }) => {
+  observer(({ close, feeConfig, gasConfig, isOpen }) => {
+    if (!isOpen) {
+      return null;
+    }
     return (
       <CardModal title="Set Fee">
         <FeeButtons
