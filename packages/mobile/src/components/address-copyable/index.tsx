@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, ViewStyle, View } from "react-native";
 import { useStyle } from "../../styles";
 import { Bech32Address } from "@keplr-wallet/cosmos";
-import Clipboard from "expo-clipboard";
+import * as Clipboard from "expo-clipboard";
 import { RectButton } from "../rect-button";
 import { CopyIcon } from "../icon";
 import { useSimpleTimer } from "../../hooks";
@@ -31,8 +31,8 @@ export const AddressCopyable: FunctionComponent<{
         ]) as ViewStyle,
         propStyle,
       ])}
-      onPress={() => {
-        Clipboard.setString(address);
+      onPress={async () => {
+        await Clipboard.setStringAsync(address);
         setTimer(2000);
       }}
       rippleColor={

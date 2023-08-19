@@ -7,7 +7,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { ObservableQuery } from "@keplr-wallet/stores";
-import Animated from "react-native-reanimated";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 // Todo network animation
 export const NetworkErrorView: FunctionComponent = observer(() => {
@@ -29,24 +35,24 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  // const extraHeight = 32;
+  const extraHeight = 32;
 
   const netInfo = useNetInfo();
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isRefreshable, setIsRefreshable] = useState(true);
   const [message, setMessage] = useState("");
 
   const prevNetworkIsConnected = useRef(true);
   useEffect(() => {
     if (!networkIsConnected) {
-      //setIsOpen(true);
+      setIsOpen(true);
       setMessage("No internet connection");
       setIsRefreshable(false);
     } else {
-      // setIsOpen(false);
+      setIsOpen(false);
 
       // If the network is recovered.
       if (!prevNetworkIsConnected.current) {
@@ -74,11 +80,11 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
           return error.message || "Unknown error";
         })();
 
-        // setIsOpen(true);
+        setIsOpen(true);
         setMessage(message);
         setIsRefreshable(true);
       } else {
-        // setIsOpen(false);
+        setIsOpen(false);
       }
     }
   }, [
@@ -108,40 +114,44 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
     queryUnbonding.isFetching,
   ]);
 
-  // const [childLayout, setChildLayout] = useState<{
-  //   width: number;
-  //   height: number;
-  // }>({
-  //   width: 0,
-  //   height: 0,
-  // });
+  const [childLayout, setChildLayout] = useState<{
+    width: number;
+    height: number;
+  }>({
+    width: 0,
+    height: 0,
+  });
 
-  // const animatedValue = useSharedValue(0);
+  const animatedValue = useSharedValue(0);
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) });
-  //   } else {
-  //     withTiming(0, { duration: 330, easing: Easing.out(Easing.sin) });
-  //   }
-  // }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      animatedValue.value = withTiming(1, {
+        duration: 500,
+        easing: Easing.out(Easing.cubic),
+      });
+    } else {
+      animatedValue.value = withTiming(0, {
+        duration: 330,
+        easing: Easing.out(Easing.sin),
+      });
+    }
+  }, [isOpen, animatedValue]);
 
-  // const animatedHeight = useMemo(() => {
-  //   return interpolate(
-  //     animatedValue.value,
-  //     [0, 1],
-  //     [0, childLayout.height + extraHeight]
-  //   );
-  // }, [childLayout.height]);
+  const animatedHeight = useDerivedValue(() => {
+    return withTiming(animatedValue.value * (childLayout.height + extraHeight));
+  });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      overflow: "hidden",
+      height: animatedHeight.value,
+      justifyContent: "center",
+    };
+  });
 
   return (
-    <Animated.View
-      style={{
-        overflow: "hidden",
-        //height: animatedHeight,
-        justifyContent: "center",
-      }}
-    >
+    <Animated.View style={animatedStyle}>
       <View
         style={
           style.flatten([
@@ -154,12 +164,12 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
             "height-80",
           ]) as ViewStyle
         }
-        // onLayout={(e) => {
-        //   setChildLayout({
-        //     width: e.nativeEvent.layout.width,
-        //     height: e.nativeEvent.layout.height,
-        //   });
-        // }}
+        onLayout={(e) => {
+          setChildLayout({
+            width: e.nativeEvent.layout.width,
+            height: e.nativeEvent.layout.height,
+          });
+        }}
       >
         <View style={style.flatten(["margin-right-16"]) as ViewStyle}>
           <AlertIcon

@@ -9,7 +9,7 @@ import { CheckIcon } from "../../../components/icon";
 import { useStyle } from "../../../styles";
 import { WordChip } from "../../../components/mnemonic";
 import { Button } from "../../../components/button";
-import Clipboard from "expo-clipboard";
+import * as Clipboard from "expo-clipboard";
 import { TextInput } from "../../../components/input";
 import { Controller, useForm } from "react-hook-form";
 import { useSmartNavigation } from "../../../navigation";
@@ -260,8 +260,8 @@ const WordsCard: FunctionComponent<{
             ),
           })}
           text="Copy to clipboard"
-          onPress={() => {
-            Clipboard.setString(words.join(" "));
+          onPress={async () => {
+            await Clipboard.setStringAsync(words.join(" "));
             setTimer(3000);
           }}
         />

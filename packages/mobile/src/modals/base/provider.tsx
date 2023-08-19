@@ -15,6 +15,7 @@ import { ModalContext, useModalState } from "./hooks";
 import { useStyle } from "../../styles";
 import { ModalTransisionProvider } from "./transition";
 import { BlurView } from "@react-native-community/blur";
+import Animated from "react-native-reanimated";
 
 export interface ModalOptions {
   readonly align?: "top" | "center" | "bottom";
@@ -278,7 +279,7 @@ const ModalBackdrop: FunctionComponent = () => {
   const blurBackdropOnIOS = modal.blurBackdropOnIOS && Platform.OS === "ios";
 
   useEffect(() => {
-    if (modal.isOpen === false) {
+    if (!modal.isOpen) {
       setCloseBackdrop(true);
     } else {
       setCloseBackdrop(false);
@@ -295,7 +296,7 @@ const ModalBackdrop: FunctionComponent = () => {
             setCloseBackdrop(true);
           }}
         >
-          <View
+          <Animated.View
             style={StyleSheet.flatten([
               style.flatten(
                 ["absolute-fill"],
@@ -314,7 +315,7 @@ const ModalBackdrop: FunctionComponent = () => {
                 reducedTransparencyFallbackColor="black"
               />
             ) : null}
-          </View>
+          </Animated.View>
         </TouchableWithoutFeedback>
       ) : null}
     </React.Fragment>

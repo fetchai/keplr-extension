@@ -12,7 +12,6 @@ import { canShowPrivateData } from "./screens/view-private-data";
 import { SettingViewPrivateDataItem } from "./items/view-private-data";
 import { useStyle } from "../../styles";
 import { View, ViewStyle } from "react-native";
-import { SettingThemeItem } from "./items/theme";
 
 export const SettingScreen: FunctionComponent = observer(() => {
   const { chainStore, keychainStore, keyRingStore, tokensStore } = useStore();
@@ -58,7 +57,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
           }}
         />
       ) : null}
-      <SettingThemeItem />
+      {/*<SettingThemeItem />*/}
       <SettingSectionTitle title="Security" />
       {canShowPrivateData(keyRingStore.keyRingType) && (
         <SettingViewPrivateDataItem topBorder={true} />
@@ -70,7 +69,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       ) : null}
       <SettingSectionTitle title="Others" />
       <SettingItem
-        label="Keplr version"
+        label="Fetch Wallet version"
         topBorder={true}
         onPress={() => {
           smartNavigation.navigateSmart("Setting.Version", {});

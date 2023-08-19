@@ -5,7 +5,7 @@ import { PageWithScrollViewInBottomTabView } from "../../../../components/page";
 import { KeyStoreItem, KeyStoreSectionTitle } from "../../components";
 import Svg, { Path } from "react-native-svg";
 import { useStyle } from "../../../../styles";
-// import { useLoadingScreen } from "../../../../providers/loading-screen";
+import { useLoadingScreen } from "../../../../providers/loading-screen";
 import {
   MultiKeyStoreInfoElem,
   MultiKeyStoreInfoWithSelectedElem,
@@ -125,17 +125,16 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
     );
   }, [keyRingStore.multiKeyStoreInfo]);
 
-  // const loadingScreen = useLoadingScreen();
+  const loadingScreen = useLoadingScreen();
 
   const selectKeyStore = async (
     keyStore: MultiKeyStoreInfoWithSelectedElem
   ) => {
     const index = keyRingStore.multiKeyStoreInfo.indexOf(keyStore);
     if (index >= 0) {
-      // TODO: Check the loder issue
-      // await loadingScreen.openAsync();
+      loadingScreen.setIsLoading(true);
       await keyRingStore.changeKeyRing(index);
-      // loadingScreen.setIsLoading(false);
+      loadingScreen.setIsLoading(false);
 
       smartNavigation.navigateSmart("Home", {});
     }

@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useStyle } from "../../styles";
-// import Animated, { Easing } from "react-native-reanimated";
 import { useModalTransision } from "./transition";
 // import {
 //   DefaultAcceleration,
@@ -500,7 +500,7 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
   // ]);
 
   return (
-    <View
+    <Animated.View
       style={style.flatten(["absolute-fill", "overflow-visible"])}
       pointerEvents="box-none"
     >
@@ -519,7 +519,7 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
             setContainerLayout(e.nativeEvent.layout);
           }}
         >
-          <View
+          <Animated.View
             onLayout={(e) => {
               setLayout(e.nativeEvent.layout);
             }}
@@ -532,10 +532,10 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
             ])}
           >
             {children}
-          </View>
+          </Animated.View>
         </SafeAreaView>
       ) : (
-        <View
+        <Animated.View
           style={style.flatten(
             ["flex-1", "overflow-visible"],
             [
@@ -563,8 +563,8 @@ export const ModalBase: FunctionComponent<ModalBaseProps> = ({
           >
             {children}
           </View>
-        </View>
+        </Animated.View>
       )}
-    </View>
+    </Animated.View>
   );
 };

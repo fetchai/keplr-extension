@@ -39,17 +39,15 @@ export const LoadingScreenProvider: FunctionComponent = ({ children }) => {
       value={{ isLoading, setIsLoading, openAsync }}
     >
       {children}
-      {isLoading ? (
-        <LoadingScreenModal
-          isOpen={true}
-          close={() => {
-            // noop
-          }}
-          onOpenComplete={() => {
-            events.emit("open");
-          }}
-        />
-      ) : null}
+      <LoadingScreenModal
+        isOpen={isLoading}
+        close={() => {
+          // noop
+        }}
+        onOpenComplete={() => {
+          events.emit("open");
+        }}
+      />
     </LoadingScreenContext.Provider>
   );
 };

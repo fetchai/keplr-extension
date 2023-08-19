@@ -5,7 +5,6 @@ import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStore } from "../../stores";
 import { useStyle } from "../../styles";
 import { AddressCopyable } from "../../components/address-copyable";
-import { DoubleDoughnutChart } from "../../components/svg";
 import { Button } from "../../components/button";
 import { LoadingSpinner } from "../../components/spinner";
 import { StakedTokenSymbol, TokenSymbol } from "../../components/token-symbol";
@@ -53,12 +52,12 @@ export const AccountCard: FunctionComponent<{
   // But as a design decision, we should start with no gray ring behind it.
   // Therefore, in order not to display the gray ring behind it initially (from unloaded data),
   // when the balance response is not loaded, it is treated as undefined.
-  const data: [number, number] | undefined = queryStakable.response
-    ? [
-        parseFloat(stakable.toDec().toString()),
-        parseFloat(stakedSum.toDec().toString()),
-      ]
-    : undefined;
+  // const data: [number, number] | undefined = queryStakable.response
+  //   ? [
+  //       parseFloat(stakable.toDec().toString()),
+  //       parseFloat(stakedSum.toDec().toString()),
+  //     ]
+  //   : undefined;
 
   return (
     <Card style={containerStyle}>
@@ -81,7 +80,8 @@ export const AccountCard: FunctionComponent<{
               style.flatten(["margin-top-28", "margin-bottom-16"]) as ViewStyle
             }
           >
-            <DoubleDoughnutChart data={data} />
+            {/*<DoubleDoughnutChart data={data} />*/}
+            <View style={styles.circle} />
             <View
               style={style.flatten([
                 "absolute-fill",
@@ -214,4 +214,16 @@ export const AccountCard: FunctionComponent<{
       </CardBody>
     </Card>
   );
+});
+
+const styles = StyleSheet.create({
+  circle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderColor: "#F2F2F7",
+    borderWidth: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

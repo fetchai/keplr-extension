@@ -57,8 +57,8 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
         <Image
           source={
             style.theme === "dark"
-              ? require("../../assets/logo/keplr-logo-dark-mode.png")
-              : require("../../assets/logo/keplr-logo.png")
+              ? require("../../assets/logo/logo.png")
+              : require("../../assets/logo/logo.png")
           }
           style={{
             height: 90,

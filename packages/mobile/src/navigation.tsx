@@ -1031,7 +1031,7 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
           "color-gray-700@50%",
           "dark:color-gray-700@75%",
         ]).color,
-        headerShown: false
+        headerShown: false,
       }}
     >
       <Drawer.Screen name="MainTab" component={MainTabNavigation} />
@@ -1096,33 +1096,30 @@ export const AppNavigation: FunctionComponent = observer(() => {
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
-                    keyRingStore.status !== KeyRingStatus.UNLOCKED
-                    ? "Unlock"
-                    : "MainTabDrawer"
-                }
-                screenOptions={{
-                  headerShown: false,
-                  ...TransitionPresets.SlideFromRightIOS,
-                  headerMode: "screen",
-                }}
-              >
-                <Stack.Screen name="Unlock" component={UnlockScreen} />
-                <Stack.Screen
-                  name="MainTabDrawer"
-                  component={MainTabNavigationWithDrawer}
-                />
-                <Stack.Screen name="Register" component={RegisterNavigation} />
-                <Stack.Screen name="Others" component={OtherNavigation} />
-                <Stack.Screen
-                  name="AddressBooks"
-                  component={AddressBookStackScreen}
-                />
-                <Stack.Screen
-                  name="ChainList"
-                  component={ChainListStackScreen}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
+                keyRingStore.status !== KeyRingStatus.UNLOCKED
+                  ? "Unlock"
+                  : "MainTabDrawer"
+              }
+              screenOptions={{
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+                headerMode: "screen",
+              }}
+            >
+              <Stack.Screen name="Unlock" component={UnlockScreen} />
+              <Stack.Screen
+                name="MainTabDrawer"
+                component={MainTabNavigationWithDrawer}
+              />
+              <Stack.Screen name="Register" component={RegisterNavigation} />
+              <Stack.Screen name="Others" component={OtherNavigation} />
+              <Stack.Screen
+                name="AddressBooks"
+                component={AddressBookStackScreen}
+              />
+              <Stack.Screen name="ChainList" component={ChainListStackScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
           {/*</BugsnagNavigationContainer>*/}
           {/* <ModalsRenderer /> */}
         </SmartNavigatorProvider>
