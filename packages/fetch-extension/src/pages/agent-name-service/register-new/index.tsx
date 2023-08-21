@@ -1,14 +1,14 @@
+import searchButton from "@assets/icon/search.png";
+import { useNotification } from "@components/notification";
+import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import style from "./style.module.scss";
+import { useNavigate } from "react-router";
+import { ANS_CONFIG } from "../../../config.ui.var";
+import { registerDomain } from "../../../name-service/ans-api";
 import { HeaderLayout } from "../../../new-layouts";
 import { useStore } from "../../../stores";
-import { useNavigate } from "react-router";
-import searchButton from "@assets/icon/search.png";
-import PublicDomainDropdown from "./public-domains-dropdown";
-import { registerDomain } from "../../../name-service/ans-api";
-import { useNotification } from "@components/notification";
-import { ANS_CONFIG, ANS_TRNSX_AMOUNT } from "../../../config.ui.var";
-import { observer } from "mobx-react-lite";
+import { PublicDomainDropdown } from "./public-domains-dropdown";
+import style from "./style.module.scss";
 
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -17,6 +17,7 @@ export const RegisterAgentDomains = observer(() => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
+  const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
   const notification = useNotification();
   const {
     queryPublicDomains,
@@ -24,12 +25,18 @@ export const RegisterAgentDomains = observer(() => {
     queryDomainRecord,
     queryVaildateAgentAddress,
   } = queriesStore.get(current.chainId).ans;
+
   const { publicDomains = [] } = queryPublicDomains.getQueryContract(
     ANS_CONFIG[current.chainId].contractAddress
   );
+
   let domainAvailablityMessage;
   let domainAvailablity = false;
+
   function checkDomainRegistration(domain: string) {
+    if (!searchValue.endsWith(`.${selectedPublicDomain}`))
+      domain = `${searchValue}.${selectedPublicDomain}`;
+
     const currentChainId = current.chainId;
     const contractAddress = ANS_CONFIG[currentChainId].contractAddress;
     const parts = domain.split(".");
@@ -38,12 +45,23 @@ export const RegisterAgentDomains = observer(() => {
     if (parts.length === 2) {
       permissionsQueryDomain = domain;
       statusQueryDomain = domain;
+      const { isAvailable } = queryDomainRecord.getQueryContract(
+        contractAddress,
+        statusQueryDomain
+      );
+      if (isAvailable) {
+        domainAvailablityMessage = `The domain is available`;
+        domainAvailablity = true;
+      } else {
+        domainAvailablityMessage = `The domain is not available`;
+        domainAvailablity = false;
+      }
+      return;
     } else if (parts.length > 2) {
       permissionsQueryDomain = parts.slice(parts.length - 2).join(".");
       statusQueryDomain = parts.slice(0, parts.length - 1).join(".");
     } else {
       domainAvailablityMessage = `Invalid domain`;
-
       return;
     }
     const { permissions } = queryPermissions.getQueryContract(
@@ -69,6 +87,7 @@ export const RegisterAgentDomains = observer(() => {
       domainAvailablity = false;
     }
   }
+
   checkDomainRegistration(searchValue);
 
   const handleInputChange = (e: any) => {
@@ -87,11 +106,13 @@ export const RegisterAgentDomains = observer(() => {
 
   const handleRegisterClick = async () => {
     try {
+      let domain = searchValue;
+      if (!searchValue.endsWith(`.${selectedPublicDomain}`))
+        domain = `${searchValue}.${selectedPublicDomain}`;
       await registerDomain(
         account,
         agentAddressSearchValue,
-        searchValue,
-        ANS_TRNSX_AMOUNT,
+        domain,
         notification
       );
       navigate("/agent-name-service");
@@ -110,9 +131,7 @@ export const RegisterAgentDomains = observer(() => {
       navigate("/agent-name-service");
     }
   };
-  const handleDomainSelect = (selectedDomain: string) => {
-    setSearchValue(`${searchValue}.${selectedDomain}`);
-  };
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -160,7 +179,8 @@ export const RegisterAgentDomains = observer(() => {
         />
         <PublicDomainDropdown
           publicDomains={publicDomains}
-          onSelectDomain={handleDomainSelect}
+          selectedPublicDomain={selectedPublicDomain}
+          setSelectedPublicDomain={setSelectedPublicDomain}
         />
       </div>
       {!domainAvailablity && searchValue !== "" && (
