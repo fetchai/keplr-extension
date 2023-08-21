@@ -17,6 +17,7 @@ export const Addresses = observer(() => {
   );
   let agentaddressofDomain: any[] = [];
   if (record !== undefined) {
+    console.log(record);
     agentaddressofDomain = record.records[0].agent_address.records;
   }
 

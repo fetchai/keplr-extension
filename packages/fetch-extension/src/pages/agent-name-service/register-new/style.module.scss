@@ -150,14 +150,17 @@
 }
 
 .dropdown {
-  height: 20px;
+  height: 30px;
   width: 80px;
 }
 .dropdown-toggle {
-  height: 20px;
+  height: 30px;
   width: 80px;
-  padding: 2px;
+  padding: 10px;
+  justify-content: space-between;
   font-size: 10px;
+  display: flex;
+  align-items: center;
 }
 .dropdown:disabled {
   cursor: not-allowed;

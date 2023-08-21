@@ -26,8 +26,10 @@ export const AgentNameService = observer(() => {
         const fetchDomains = await fetch(
           `${ANS_CONFIG[current.chainId].domainsUrl}${account.bech32Address}`
         );
-        const response = await fetchDomains.json();
-        setFetchedDomains(response as FetchedDomain[]);
+        const response: FetchedDomain[] = await fetchDomains.json();
+        setFetchedDomains(
+          response.filter((domain) => domain.permissions !== "none")
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

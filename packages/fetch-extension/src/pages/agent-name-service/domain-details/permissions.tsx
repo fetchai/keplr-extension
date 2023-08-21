@@ -96,7 +96,9 @@ export const Permissions = () => {
                 <div className={style["domainDetails"]}>
                   <div className={style["agentDomainData"]}>
                     {address === account.bech32Address && (
-                      <div className={style["currentWallet"]}>CURRENT WALLET</div>
+                      <div className={style["currentWallet"]}>
+                        CURRENT WALLET
+                      </div>
                     )}
                     {formatAddressInANS(address)}
                   </div>
@@ -111,7 +113,7 @@ export const Permissions = () => {
               </div>
             ))
           ) : (
-            <div className={style["loader"]} style={{ top: "150px" }}>
+            <div className={style["loader"]} style={{ top: "180px" }}>
               No Owners Available
             </div>
           )
@@ -120,12 +122,19 @@ export const Permissions = () => {
             writerArray.map((address: string, index: number) => (
               <div className={style["domainCard"]} key={index}>
                 <div className={style["domainDetails"]}>
-                  <div>{formatAddressInANS(address)}</div>
+                  <div className={style["agentDomainData"]}>
+                    {address === account.bech32Address && (
+                      <div className={style["currentWallet"]}>
+                        CURRENT WALLET
+                      </div>
+                    )}
+                    {formatAddressInANS(address)}
+                  </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className={style["loader"]} style={{ top: "150px" }}>
+            <div className={style["loader"]} style={{ top: "180px" }}>
               No Writers Available
             </div>
           )
