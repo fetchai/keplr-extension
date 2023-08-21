@@ -21,11 +21,12 @@ export const ConfirmModalContext = React.createContext<ConfirmModal | null>(
 
 export const ConfirmModalProvider: FunctionComponent = ({ children }) => {
   const [waitingConfirms, setWaitingConfirms] = useState<
-    (ConfirmModalContextProps & {
+    ConfirmModalContextProps & {
       key: string;
       resolver: (result: boolean) => void;
-    })[]
-  >([]);
+    }
+  >();
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   const onSelectConfirm = (
     confirm: ConfirmModalContextProps & {
@@ -35,16 +36,9 @@ export const ConfirmModalProvider: FunctionComponent = ({ children }) => {
     yes: boolean
   ) => {
     return () => {
-      const selectedIndex = waitingConfirms.findIndex(
-        (waiting) => waiting.key === confirm.key
-      );
-      if (selectedIndex >= 0) {
-        const selected = waitingConfirms[selectedIndex];
-        selected.resolver(yes);
-        const confirms = waitingConfirms.slice();
-        confirms.splice(selectedIndex, 1);
-        setWaitingConfirms(confirms);
-      }
+      confirm.resolver(yes);
+      setWaitingConfirms(confirm);
+      setOpenModal(false);
     };
   };
 
@@ -53,36 +47,31 @@ export const ConfirmModalProvider: FunctionComponent = ({ children }) => {
       value={{
         confirm(props: ConfirmModalContextProps): Promise<boolean> {
           return new Promise<boolean>((resolve) => {
-            const key = waitingConfirms.length.toString();
-            const confirms = waitingConfirms.slice();
-
-            confirms.push({
+            const confirms = {
               ...props,
-              key,
+              key: "0",
               resolver: resolve,
-            });
-
+            };
             setWaitingConfirms(confirms);
+            setOpenModal(true);
           });
         },
       }}
     >
       {children}
-      {waitingConfirms.map((confirm) => {
-        return (
-          <ConfirmModal
-            key={confirm.key}
-            isOpen={true}
-            close={onSelectConfirm(confirm, false)}
-            onSelectYes={onSelectConfirm(confirm, true)}
-            onSelectNo={onSelectConfirm(confirm, false)}
-            title={confirm.title}
-            paragraph={confirm.paragraph}
-            yesButtonText={confirm.yesButtonText}
-            noButtonText={confirm.noButtonText}
-          />
-        );
-      })}
+      {waitingConfirms ? (
+        <ConfirmModal
+          key={waitingConfirms.key}
+          isOpen={openModal}
+          close={onSelectConfirm(waitingConfirms, false)}
+          onSelectYes={onSelectConfirm(waitingConfirms, true)}
+          onSelectNo={onSelectConfirm(waitingConfirms, false)}
+          title={waitingConfirms.title}
+          paragraph={waitingConfirms.paragraph}
+          yesButtonText={waitingConfirms.yesButtonText}
+          noButtonText={waitingConfirms.noButtonText}
+        />
+      ) : null}
     </ConfirmModalContext.Provider>
   );
 };

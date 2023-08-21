@@ -30,6 +30,7 @@ export const PasswordInputModal: FunctionComponent<{
       try {
         await onEnterPassword(password);
         setIsInvalidPassword(false);
+        setPassword("");
         close();
       } catch (e) {
         console.log(e);

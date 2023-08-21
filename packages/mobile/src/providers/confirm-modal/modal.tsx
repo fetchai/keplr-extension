@@ -18,6 +18,7 @@ export const ConfirmModal: FunctionComponent<{
   onSelectNo: () => void;
 }> = registerModal(
   ({
+    isOpen,
     close,
     title,
     paragraph,
@@ -27,6 +28,9 @@ export const ConfirmModal: FunctionComponent<{
     onSelectNo,
   }) => {
     const style = useStyle();
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <View style={style.flatten(["padding-page"]) as ViewStyle}>
