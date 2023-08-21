@@ -48,6 +48,7 @@ export const ColorPalette = {
   "green-400": "#2DD98F",
   "green-500": "#22AC71",
   "green-600": "#136844",
+  staking: "#11cdef",
 
   "red-50": "#FFF7F8",
   "red-100": "#FFD8E0",
@@ -818,6 +819,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
 
           "rect-button-default-ripple": ColorPalette["platinum-400"],
           "rect-button-default-underlay": ColorPalette["platinum-400"],
+          staking: ColorPalette["staking"],
         },
         opacities: {
           "blurred-tabbar": 0.5,

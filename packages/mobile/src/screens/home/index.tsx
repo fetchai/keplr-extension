@@ -132,11 +132,11 @@ export const HomeScreen: FunctionComponent = observer(() => {
       <AccountCard
         containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
       />
-      {/* There is a reason to use TokensCardRenderIfTokenExists. Check the comments on TokensCardRenderIfTokenExists */}
-      <TokensCardRenderIfTokenExists />
       <MyRewardCard
         containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
       />
+      {/* There is a reason to use TokensCardRenderIfTokenExists. Check the comments on TokensCardRenderIfTokenExists */}
+      <TokensCardRenderIfTokenExists />
       <StakingInfoCard
         containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
       />

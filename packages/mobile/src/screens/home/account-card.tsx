@@ -11,6 +11,7 @@ import { StakedTokenSymbol, TokenSymbol } from "../../components/token-symbol";
 import { useSmartNavigation } from "../../navigation";
 import { NetworkErrorView } from "./network-error-view";
 import { Dec } from "@keplr-wallet/unit";
+import { DoubleDoughnutChart } from "../../components/svg";
 
 export const AccountCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -52,12 +53,12 @@ export const AccountCard: FunctionComponent<{
   // But as a design decision, we should start with no gray ring behind it.
   // Therefore, in order not to display the gray ring behind it initially (from unloaded data),
   // when the balance response is not loaded, it is treated as undefined.
-  // const data: [number, number] | undefined = queryStakable.response
-  //   ? [
-  //       parseFloat(stakable.toDec().toString()),
-  //       parseFloat(stakedSum.toDec().toString()),
-  //     ]
-  //   : undefined;
+  const data: [number, number] | undefined = queryStakable.response
+    ? [
+        parseFloat(stakable.toDec().toString()),
+        parseFloat(stakedSum.toDec().toString()),
+      ]
+    : [0, 0];
 
   return (
     <Card style={containerStyle}>
@@ -80,8 +81,7 @@ export const AccountCard: FunctionComponent<{
               style.flatten(["margin-top-28", "margin-bottom-16"]) as ViewStyle
             }
           >
-            {/*<DoubleDoughnutChart data={data} />*/}
-            <View style={styles.circle} />
+            <DoubleDoughnutChart data={data} />
             <View
               style={style.flatten([
                 "absolute-fill",
@@ -186,7 +186,7 @@ export const AccountCard: FunctionComponent<{
                 style={
                   style.flatten([
                     "subtitle3",
-                    "color-blue-400",
+                    "color-staking",
                     "dark:color-platinum-200",
                     "margin-bottom-4",
                   ]) as ViewStyle
@@ -214,16 +214,4 @@ export const AccountCard: FunctionComponent<{
       </CardBody>
     </Card>
   );
-});
-
-const styles = StyleSheet.create({
-  circle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderColor: "#F2F2F7",
-    borderWidth: 14,
-    justifyContent: "center",
-    alignItems: "center",
-  },
 });
