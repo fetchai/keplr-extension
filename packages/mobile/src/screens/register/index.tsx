@@ -11,7 +11,7 @@ import { useStore } from "../../stores";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const RegisterIntroScreen: FunctionComponent = observer(() => {
-  const { keyRingStore } = useStore();
+  const { keyRingStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
@@ -61,7 +61,13 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
         text="Create a new wallet"
         size="large"
         onPress={() => {
-          smartNavigation.navigateSmart("Register.NewUser", {
+          // smartNavigation.navigateSmart("Register.NewUser", {
+          //   registerConfig,
+          // });
+          analyticsStore.logEvent("Create account started", {
+            registerType: "seed",
+          });
+          smartNavigation.navigateSmart("Register.NewMnemonic", {
             registerConfig,
           });
         }}
@@ -78,6 +84,9 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
         }}
       />
       <Button
+        containerStyle={{
+          display: "none",
+        }}
         text="Import Ledger Nano X"
         size="large"
         mode="text"

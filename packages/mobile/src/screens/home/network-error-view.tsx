@@ -15,7 +15,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-// Todo network animation
 export const NetworkErrorView: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
 

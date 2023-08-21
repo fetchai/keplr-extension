@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { RNCamera } from "react-native-camera";
+import { Camera, CameraProps } from "expo-camera";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useStyle } from "../../styles";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
@@ -9,34 +9,25 @@ import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LoadingSpinner } from "../spinner";
 
-export const FullScreenCameraView: FunctionComponent<
-  React.ComponentProps<typeof RNCamera> & {
-    containerBottom?: React.ReactElement;
-    isLoading?: boolean;
-  }
-> = (props) => {
+interface CameraProp extends CameraProps {
+  containerBottom?: React.ReactElement;
+  isLoading?: boolean;
+}
+
+export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
   const style = useStyle();
 
   const navigation = useNavigation();
 
   const isFocused = useIsFocused();
 
-  const {
-    children,
-    containerBottom,
-    isLoading,
-    style: propStyle,
-    ...rest
-  } = props;
+  const { children, containerBottom, isLoading, ...rest } = props;
 
   return (
     <React.Fragment>
       {isFocused ? (
-        <RNCamera
-          style={StyleSheet.flatten([
-            style.flatten(["absolute-fill"]),
-            propStyle,
-          ])}
+        <Camera
+          style={StyleSheet.flatten([style.flatten(["absolute-fill"])])}
           {...rest}
         />
       ) : null}

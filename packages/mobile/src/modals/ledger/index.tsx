@@ -302,7 +302,7 @@ export const LedgerGranterModal: FunctionComponent<{
           </React.Fragment>
         ) : permissionStatus === BLEPermissionGrantStatus.Failed ||
           BLEPermissionGrantStatus.FailedAndRetry ? (
-          <LedgerErrorView text="Keplr doesn't have permission to use bluetooth">
+          <LedgerErrorView text="Fetch doesn't have permission to use bluetooth">
             <Button
               containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
               textStyle={

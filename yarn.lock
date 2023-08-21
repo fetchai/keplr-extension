@@ -9095,6 +9095,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@koale/useworker@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@koale/useworker@npm:4.0.2"
+  dependencies:
+    dequal: ^1.0.0
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 5d0894979ca9f24db747df21e0ded53b7ee24f9db4cf714a18f9f9bab79af538554cc5915fe8bd7e89560a1abfac036679b9985bbfdd3f4ddc9d820c1b676c9b
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/cryptoassets@npm:^6.33.0":
   version: 6.33.0
   resolution: "@ledgerhq/cryptoassets@npm:6.33.0"
@@ -22434,6 +22445,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dequal@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "dequal@npm:1.0.1"
+  checksum: 92a80c10ec52c256e306ef44c6640f0f2451edfba795b314aec90ee2770930f472c95e8f438b2fb80b0060033d0b5589f2ccb243c0ddd3e9a427c0faa92035c3
+  languageName: node
+  linkType: hard
+
 "dequal@npm:^2.0.0, dequal@npm:^2.0.3":
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
@@ -24810,6 +24828,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:^12.5.3":
+  version: 12.6.1
+  resolution: "expo-barcode-scanner@npm:12.6.1"
+  dependencies:
+    expo-image-loader: ~4.3.0
+  peerDependencies:
+    expo: "*"
+  checksum: b5c2b6e7a8c6cf60d760185a61590ca6ed89878191a9302359a5f8cd218c9a20010aa472cb0504ad4bd355974b72a1a8b0072a7e862a2069e9b5d536e9ee67fc
+  languageName: node
+  linkType: hard
+
+"expo-camera@npm:^13.4.2":
+  version: 13.5.1
+  resolution: "expo-camera@npm:13.5.1"
+  dependencies:
+    "@koale/useworker": ^4.0.2
+    invariant: ^2.2.4
+  peerDependencies:
+    expo: "*"
+  checksum: 41fecd995c777a884a409ad8b77f6379e15646b96be899abbcb3d3ab29a55f6182de1d0e716f4cf2ee6b41c663081cd038149e9363762acd68393ed2271b3b1f
+  languageName: node
+  linkType: hard
+
 "expo-clipboard@npm:^4.3.0":
   version: 4.3.0
   resolution: "expo-clipboard@npm:4.3.0"
@@ -24861,6 +24902,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 3eff92ba5c62de5f37cfdfd86a5daf1d448e4f3e82a9ff401b4c4da1c4e5a7241da26edf32fb049763147e442d74ae8b4575b7e5a4ae0d935750c6d3f70f4355
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~4.3.0":
+  version: 4.3.0
+  resolution: "expo-image-loader@npm:4.3.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 0440ac80a7b2331cdfd0db88aac0ba2fe61689e6347e2c6bedba6bf3220b95410c724ac9004252486870b582fc36d47d4bff008bba7052dcee2830256950974f
   languageName: node
   linkType: hard
 
@@ -34495,6 +34545,8 @@ __metadata:
     eventemitter3: ^4.0.7
     expo: ^49.0.3
     expo-apple-authentication: ^6.1.0
+    expo-barcode-scanner: ^12.5.3
+    expo-camera: ^13.4.2
     expo-clipboard: ^4.3.0
     expo-crypto: ^12.4.1
     expo-splash-screen: ^0.20.4
@@ -34521,7 +34573,6 @@ __metadata:
     react-intl: ^6.2.8
     react-native: ^0.72.3
     react-native-ble-plx: ^2.0.3
-    react-native-camera: ^4.2.1
     react-native-code-push: ^8.0.2
     react-native-crypto-polyfill: "file:./crypto-polyfill"
     react-native-device-info: ^10.8.0
@@ -39601,15 +39652,6 @@ __metadata:
   version: 2.0.3
   resolution: "react-native-ble-plx@npm:2.0.3"
   checksum: 84dba90a18feadb578fb5ffeec0d4d02ea7e8e1315bd66939d7aa9f26e22c57e898672a745bb11749beabfb5c1c06bc5c30371147404d2422f9486ac04e1d9ae
-  languageName: node
-  linkType: hard
-
-"react-native-camera@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "react-native-camera@npm:4.2.1"
-  dependencies:
-    prop-types: ^15.6.2
-  checksum: 0e84ce657774694d1cc49395c43a8f2caabc03df36aa77aacfb5c797ad8cfe0368f4807deccc54e82ff2b193e8c2d1ce7ad504eedf7a9fc4719b38e39958a804
   languageName: node
   linkType: hard
 

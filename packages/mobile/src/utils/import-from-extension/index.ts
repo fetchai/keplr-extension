@@ -185,7 +185,7 @@ export async function registerExportedKeyRingDatas(
       continue;
     }
 
-    const name = exportKeyRingData.meta["name"] || "Keplr Account";
+    const name = exportKeyRingData.meta["name"] || "Fetch Account";
     if (exportKeyRingData.type === "mnemonic") {
       await registerConfig.createMnemonic(
         name,

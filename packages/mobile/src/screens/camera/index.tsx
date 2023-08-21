@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useCallback, useState } from "react";
-import { RNCamera } from "react-native-camera";
 import { useStyle } from "../../styles";
 import { PageWithView } from "../../components/page";
 import { observer } from "mobx-react-lite";
@@ -23,6 +22,8 @@ import {
 import { AddressBookConfigMap, useRegisterConfig } from "@keplr-wallet/hooks";
 import { AsyncKVStore } from "../../common";
 import { useFocusEffect } from "@react-navigation/native";
+import { CameraType } from "expo-camera/src/Camera.types";
+import { BarCodeScanner } from "expo-barcode-scanner";
 
 export const CameraScreen: FunctionComponent = observer(() => {
   const { chainStore, walletConnectStore, keyRingStore } = useStore();
@@ -60,11 +61,12 @@ export const CameraScreen: FunctionComponent = observer(() => {
   return (
     <PageWithView disableSafeArea={true} backgroundMode={null}>
       <FullScreenCameraView
-        type={RNCamera.Constants.Type.back}
-        barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-        captureAudio={false}
+        type={CameraType.back}
+        barCodeScannerSettings={{
+          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+        }}
         isLoading={isLoading}
-        onBarCodeRead={async ({ data }) => {
+        onBarCodeScanned={async ({ data }) => {
           if (!isLoading && !isCompleted) {
             setIsLoading(true);
 

@@ -1,4 +1,14 @@
 {
   "name": "mobile",
-  "displayName": "mobile"
+  "displayName": "mobile",
+  "expo": {
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Fetch Wallet to access your camera."
+        }
+      ]
+    ]
+  }
 }

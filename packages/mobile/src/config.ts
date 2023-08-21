@@ -1175,130 +1175,130 @@ export const EmbedChainInfos: ChainInfo[] = [
     chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ixo.png",
     features: ["ibc-transfer"],
   },
-  {
-    rpc: "https://rpc-emoney.keplr.app",
-    rest: "https://lcd-emoney.keplr.app",
-    chainId: "emoney-3",
-    chainName: "e-Money",
-    stakeCurrency: {
-      coinDenom: "NGM",
-      coinMinimalDenom: "ungm",
-      coinDecimals: 6,
-      coinGeckoId: "e-money",
-    },
-    walletUrl:
-      process.env["NODE_ENV"] === "production"
-        ? "https://wallet.keplr.app/chains/e-money"
-        : "http://localhost:8080/chains/e-money",
-    walletUrlForStaking:
-      process.env["NODE_ENV"] === "production"
-        ? "https://wallet.keplr.app/chains/e-money"
-        : "http://localhost:8080/chains/e-money",
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("emoney"),
-    currencies: [
-      {
-        coinDenom: "NGM",
-        coinMinimalDenom: "ungm",
-        coinDecimals: 6,
-        coinGeckoId: "e-money",
-      },
-      {
-        coinDenom: "EEUR",
-        coinMinimalDenom: "eeur",
-        coinDecimals: 6,
-        coinGeckoId: "e-money-eur",
-      },
-      {
-        coinDenom: "EDKK",
-        coinMinimalDenom: "edkk",
-        coinDecimals: 6,
-      },
-      {
-        coinDenom: "ESEK",
-        coinMinimalDenom: "esek",
-        coinDecimals: 6,
-      },
-      {
-        coinDenom: "ENOK",
-        coinMinimalDenom: "enok",
-        coinDecimals: 6,
-      },
-      {
-        coinDenom: "ECHF",
-        coinMinimalDenom: "echf",
-        coinDecimals: 6,
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "NGM",
-        coinMinimalDenom: "ungm",
-        coinDecimals: 6,
-        coinGeckoId: "e-money",
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-      {
-        coinDenom: "EEUR",
-        coinMinimalDenom: "eeur",
-        coinDecimals: 6,
-        coinGeckoId: "e-money-eur",
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-      {
-        coinDenom: "ECHF",
-        coinMinimalDenom: "echf",
-        coinDecimals: 6,
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-      {
-        coinDenom: "ESEK",
-        coinMinimalDenom: "esek",
-        coinDecimals: 6,
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-      {
-        coinDenom: "ENOK",
-        coinMinimalDenom: "enok",
-        coinDecimals: 6,
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-      {
-        coinDenom: "EDKK",
-        coinMinimalDenom: "edkk",
-        coinDecimals: 6,
-        gasPriceStep: {
-          low: 1,
-          average: 1,
-          high: 1,
-        },
-      },
-    ],
-    chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ngm.png",
-    features: ["ibc-transfer"],
-  },
+  // {
+  //   rpc: "https://rpc-emoney.keplr.app",
+  //   rest: "https://lcd-emoney.keplr.app",
+  //   chainId: "emoney-3",
+  //   chainName: "e-Money",
+  //   stakeCurrency: {
+  //     coinDenom: "NGM",
+  //     coinMinimalDenom: "ungm",
+  //     coinDecimals: 6,
+  //     coinGeckoId: "e-money",
+  //   },
+  //   walletUrl:
+  //     process.env["NODE_ENV"] === "production"
+  //       ? "https://wallet.keplr.app/chains/e-money"
+  //       : "http://localhost:8080/chains/e-money",
+  //   walletUrlForStaking:
+  //     process.env["NODE_ENV"] === "production"
+  //       ? "https://wallet.keplr.app/chains/e-money"
+  //       : "http://localhost:8080/chains/e-money",
+  //   bip44: {
+  //     coinType: 118,
+  //   },
+  //   bech32Config: Bech32Address.defaultBech32Config("emoney"),
+  //   currencies: [
+  //     {
+  //       coinDenom: "NGM",
+  //       coinMinimalDenom: "ungm",
+  //       coinDecimals: 6,
+  //       coinGeckoId: "e-money",
+  //     },
+  //     {
+  //       coinDenom: "EEUR",
+  //       coinMinimalDenom: "eeur",
+  //       coinDecimals: 6,
+  //       coinGeckoId: "e-money-eur",
+  //     },
+  //     {
+  //       coinDenom: "EDKK",
+  //       coinMinimalDenom: "edkk",
+  //       coinDecimals: 6,
+  //     },
+  //     {
+  //       coinDenom: "ESEK",
+  //       coinMinimalDenom: "esek",
+  //       coinDecimals: 6,
+  //     },
+  //     {
+  //       coinDenom: "ENOK",
+  //       coinMinimalDenom: "enok",
+  //       coinDecimals: 6,
+  //     },
+  //     {
+  //       coinDenom: "ECHF",
+  //       coinMinimalDenom: "echf",
+  //       coinDecimals: 6,
+  //     },
+  //   ],
+  //   feeCurrencies: [
+  //     {
+  //       coinDenom: "NGM",
+  //       coinMinimalDenom: "ungm",
+  //       coinDecimals: 6,
+  //       coinGeckoId: "e-money",
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //     {
+  //       coinDenom: "EEUR",
+  //       coinMinimalDenom: "eeur",
+  //       coinDecimals: 6,
+  //       coinGeckoId: "e-money-eur",
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //     {
+  //       coinDenom: "ECHF",
+  //       coinMinimalDenom: "echf",
+  //       coinDecimals: 6,
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //     {
+  //       coinDenom: "ESEK",
+  //       coinMinimalDenom: "esek",
+  //       coinDecimals: 6,
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //     {
+  //       coinDenom: "ENOK",
+  //       coinMinimalDenom: "enok",
+  //       coinDecimals: 6,
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //     {
+  //       coinDenom: "EDKK",
+  //       coinMinimalDenom: "edkk",
+  //       coinDecimals: 6,
+  //       gasPriceStep: {
+  //         low: 1,
+  //         average: 1,
+  //         high: 1,
+  //       },
+  //     },
+  //   ],
+  //   chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ngm.png",
+  //   features: ["ibc-transfer"],
+  // },
   {
     rpc: "https://rpc-agoric.keplr.app",
     rest: "https://lcd-agoric.keplr.app",

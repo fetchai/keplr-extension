@@ -45,7 +45,7 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
               ]) as ViewStyle
             }
           >
-            Import from Keplr Extension
+            Import from Fetch Extension
           </Text>
           <Text
             style={
@@ -58,7 +58,7 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
               ]) as ViewStyle
             }
           >
-            {`Import your account(s) by going to\n‘Settings > Link Fetch Mobile’ on Keplr Extension and scanning the QR code`}
+            {`Import your account(s) by going to\n‘Settings > Link Fetch Mobile’ on Fetch Extension and scanning the QR code`}
           </Text>
           <Text
             style={

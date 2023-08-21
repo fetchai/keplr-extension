@@ -35,7 +35,7 @@ export const SettingSelectAccountItem: FunctionComponent = observer(() => {
           style.flatten(["margin-right-2"]) as ViewStyle
         }
         label={
-          selected ? selected.meta?.["name"] || "Keplr Account" : "No Account"
+          selected ? selected.meta?.["name"] || "Fetch Account" : "No Account"
         }
         paragraph={selected ? getKeyStoreParagraph(selected) : undefined}
         right={<RightArrow />}

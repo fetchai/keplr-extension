@@ -153,7 +153,7 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
               return (
                 <KeyStoreItem
                   key={i.toString()}
-                  label={keyStore.meta?.["name"] || "Keplr Account"}
+                  label={keyStore.meta?.["name"] || "Fetch Account"}
                   paragraph={getKeyStoreParagraph(keyStore)}
                   topBorder={i === 0}
                   bottomBorder={keyStores.length - 1 !== i}

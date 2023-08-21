@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
 import { FullScreenCameraView } from "../../../components/camera";
-import { RNCamera } from "react-native-camera";
 import { useSmartNavigation } from "../../../navigation";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
@@ -17,6 +16,8 @@ import {
   registerExportedKeyRingDatas,
 } from "../../../utils/import-from-extension";
 import { AsyncKVStore } from "../../../common";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import { CameraType } from "expo-camera/src/Camera.types";
 
 export * from "./intro";
 export * from "./set-password";
@@ -63,7 +64,7 @@ export const ImportFromExtensionScreen: FunctionComponent = observer(() => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onBarCodeRead = async ({ data }: { data: string }) => {
+  const onBarCodeScanned = async ({ data }: { data: string }) => {
     if (isLoading) {
       return;
     }
@@ -126,10 +127,11 @@ export const ImportFromExtensionScreen: FunctionComponent = observer(() => {
 
   return (
     <FullScreenCameraView
-      type={RNCamera.Constants.Type.back}
-      barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-      captureAudio={false}
-      onBarCodeRead={onBarCodeRead}
+      type={CameraType.back}
+      barCodeScannerSettings={{
+        barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+      }}
+      onBarCodeScanned={onBarCodeScanned}
       isLoading={isLoading}
     />
   );

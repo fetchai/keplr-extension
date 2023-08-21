@@ -50,7 +50,7 @@ export const WalletConnectApprovalModal: FunctionComponent<{
             {appName}
           </Text>
           <Text style={style.flatten(["body1", "color-text-low"])}>
-            {" is requesting to connect to your Keplr account on "}
+            {" is requesting to connect to your Fetch account on "}
           </Text>
           <Text
             style={style.flatten(["body1", "color-text-low", "font-semibold"])}
