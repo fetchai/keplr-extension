@@ -1,0 +1,159 @@
+.allDomains {
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10%;
+  font-weight: 500;
+  font-family: monospace;
+}
+.loader {
+  color: white;
+  font-size: small;
+  text-align: center;
+  height: 55%;
+  width: 100%;
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  left: 0px;
+}
+
+.domainCard {
+  color: black;
+}
+
+.margin {
+  margin-top: 2.5%;
+  margin-bottom: 2.5%;
+}
+.arrowIcon {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(200%)
+    contrast(100%);
+  width: 18px;
+  height: 18px;
+}
+.domainDetails {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 12px;
+  font-size: 14px;
+  display: flex;
+  padding: 16px;
+  align-items: center;
+  gap: 24px;
+  align-self: stretch;
+  border-radius: 12px;
+}
+.domainDetails:hover {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  background: linear-gradient(
+    90deg,
+    rgba(125, 92, 255, 0.3) 0%,
+    rgba(245, 131, 100, 0.3) 100%
+  );
+  box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.3),
+    6px 6px 32px 0px rgba(243, 95, 73, 0.15);
+}
+.domainDetails:focus-within {
+  border-color: #9075ff;
+  box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.2),
+    6px 6px 32px 0px rgba(243, 95, 73, 0.3);
+}
+
+.detailsWrapper {
+  display: flex;
+  gap: 16px;
+}
+.currentWallet {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  padding: 2px 6px;
+  align-items: center;
+  gap: 8px;
+  width: 125px;
+  color: #fff;
+  border-radius: 4px;
+  background: rgba(176, 190, 206, 0.3);
+}
+.tabContainer {
+  display: flex;
+  margin-top: 31px;
+  margin-bottom: 36px;
+  padding: 0px 0px 0px 7px;
+  align-items: center;
+}
+.innerTab {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  align-items: center;
+  width: 253px;
+}
+.active {
+  border: none;
+  font-size: 26px;
+  font-weight: 400;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.inactive {
+  border: none;
+  border: none;
+  font-size: 26px;
+  font-weight: 400;
+  background: transparent;
+  opacity: 0.4;
+  color: #fff;
+  cursor: pointer;
+}
+.add {
+  cursor: pointer;
+  border: none;
+  display: flex;
+  height: 24px;
+  padding: 6px 12px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 100px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 24px;
+}
+.add:hover {
+  box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.8),
+    6px 6px 32px 0px rgba(243, 95, 73, 0.8);
+}
+.expired {
+  display: flex;
+  padding: 2px 6px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  background: rgba(176, 190, 206, 0.3);
+  font-size: 12px;
+}
+.agentDomainData {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 246px;
+}
+.domainCard .cancel {
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.domainCard:hover .cancel {
+  visibility: visible;
+}
+.rightRenderer {
+  color: white;
+  cursor: pointer;
+}
