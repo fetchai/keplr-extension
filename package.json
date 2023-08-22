@@ -109,6 +109,5 @@
   "dependencies": {
     "@azoyalabs/fns-client": "0.0.3",
     "@cosmjs/cosmwasm-stargate": "^0.31.0"
-  },
-  "packageManager": "yarn@3.4.1"
+  }
 }
