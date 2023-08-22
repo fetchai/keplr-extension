@@ -18,6 +18,7 @@ import style from "./style.module.scss";
 import { Update } from "./update";
 import { observer } from "mobx-react-lite";
 import { Tab } from "@new-components/tab";
+import { TXN_TYPE, properties, tabs } from "./constants";
 
 export const TooltipForDomainNames = ({
   domainName,
@@ -40,21 +41,6 @@ export const TooltipForDomainNames = ({
     <div>{formatDomain(domainName)}</div>
   );
 };
-
-const tabs = [
-  { tabName: "properties", displayName: "Properties" },
-  { tabName: "bids", displayName: "Bids" },
-  { tabName: "activities", displayName: "Activities" },
-];
-
-const properties = [
-  "address",
-  "email",
-  "github",
-  "website",
-  "twitter",
-  "background",
-];
 
 const getDomainStatus = (domain_status: any, sender: string) => {
   let isMinted = false;
@@ -91,11 +77,11 @@ const getDomainStatus = (domain_status: any, sender: string) => {
 
 const getMessageForInProgressTx = (type: string) => {
   switch (type) {
-    case "mint":
+    case TXN_TYPE.MINT:
       return "Mint Transaction in Progress";
-    case "setPrimary":
+    case TXN_TYPE.SET_PRIMARY:
       return "Transaction to make domain Primary in Progress";
-    case "updateDomain":
+    case TXN_TYPE.UPDATE_DOMAIN:
       return "Transaction to update domain Details in Progress";
     default:
       return "Transaction In Progress";
@@ -164,7 +150,7 @@ export const DomainDetails: FunctionComponent = observer(() => {
   const handleTabChange = (tabName: string) => {
     if (tabName === "properties")
       navigate("/fetch-name-service/domain-details/" + domainName);
-    else window.open("https://www.fetns.domains/domains/" + domainName);
+    else window.open(`https://www.fetns.domains/domains/${domainName}`);
   };
 
   useEffect(() => {
