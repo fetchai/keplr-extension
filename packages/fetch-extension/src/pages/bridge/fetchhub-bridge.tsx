@@ -28,6 +28,7 @@ export const FetchhubBridge: FunctionComponent<{
     chainStore,
     accountStore,
     queriesStore,
+    keyRingStore,
     // uiConfigStore,
     // analyticsStore,
     priceStore,
@@ -164,26 +165,28 @@ export const FetchhubBridge: FunctionComponent<{
           // disabled={!isChannelSet}
           value={""}
         />
-        <div
-          style={{
-            overflowWrap: "anywhere",
-            fontSize: "small",
-            marginTop: "-15px",
-            marginBottom: "15px",
-            cursor: "pointer",
-            textDecoration: "underline",
-            color: "#555555",
-          }}
-          onClick={(e) => {
-            e.preventDefault();
-            nativeBridgeConfig.recipientConfig.setRawRecipient(
-              accountStore.getAccount("1").ethereumHexAddress
-            );
-          }}
-        >
-          Bridge to your Ethereum address:{" "}
-          {accountStore.getAccount("1").ethereumHexAddress}
-        </div>
+        {keyRingStore.keyRingType !== "ledger" && (
+          <div
+            style={{
+              overflowWrap: "anywhere",
+              fontSize: "small",
+              marginTop: "-15px",
+              marginBottom: "15px",
+              cursor: "pointer",
+              textDecoration: "underline",
+              color: "#555555",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              nativeBridgeConfig.recipientConfig.setRawRecipient(
+                accountStore.getAccount("1").ethereumHexAddress
+              );
+            }}
+          >
+            Bridge to your Ethereum address:{" "}
+            {accountStore.getAccount("1").ethereumHexAddress}
+          </div>
+        )}
         <MemoInput
           label={intl.formatMessage({
             id: "send.input.memo",
