@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
 import style from "../style.module.scss";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { useStore } from "../../../stores";
 import { ANS_CONFIG } from "../../../config.ui.var";
 import { formatAddressInANS } from "@utils/format";
-
+import { PermissionsPopup } from "./permissions-popup";
 export const Permissions = () => {
   const [activeInnerTab, setActiveInnerTab] = useState("Owners");
   const [ownerArray, setOwnerArray] = useState<string[]>([]);
   const [writerArray, setWriterArray] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const domainName = useLocation().pathname.split("/")[3];
 
-  const navigate = useNavigate();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const account = accountStore.getAccount(current.chainId);
 
+  const handleOpenPopup = () => {
+    setIsPopupOpen(true);
+    console.log(isPopupOpen);
+  };
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
   const handleInnerTabChange = (tabName: string) => {
     setActiveInnerTab(tabName);
   };
@@ -76,8 +83,9 @@ export const Permissions = () => {
           </button>
         </div>{" "}
         <button
-          disabled
-          onClick={() => navigate("/agent-name-service/register-new")}
+          onClick={() => {
+            handleOpenPopup();
+          }}
           className={style["add"]}
         >
           +
@@ -139,6 +147,12 @@ export const Permissions = () => {
             </div>
           )
         ) : null}
+        {isPopupOpen && (
+          <PermissionsPopup
+            handleCancel={handleClosePopup}
+            InnerTabName={activeInnerTab}
+          />
+        )}
       </div>
     </div>
   );
