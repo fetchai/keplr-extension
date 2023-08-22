@@ -51,9 +51,12 @@ export class ChainUpdaterService {
         })(),
         currencies: (() => {
           const currencies = chainInfo.currencies ?? [];
+          const currencyMinimalDenoms = currencies.map(
+            (c) => c.coinMinimalDenom
+          );
 
           for (const f of updatedChainInfo.currencies ?? []) {
-            if (!currencies.includes(f)) {
+            if (!currencyMinimalDenoms.includes(f.coinMinimalDenom)) {
               currencies.push(f);
             }
           }
@@ -90,9 +93,13 @@ export class ChainUpdaterService {
             }
 
             const currencies = chainInfo.currencies ?? [];
-            for (const add of local.currencies) {
-              if (!currencies.includes(add)) {
-                currencies.push(add);
+            const currencyMinimalDenoms = currencies.map(
+              (c) => c.coinMinimalDenom
+            );
+
+            for (const curr of local.currencies) {
+              if (!currencyMinimalDenoms.includes(curr.coinMinimalDenom)) {
+                currencies.push(curr);
               }
             }
 
