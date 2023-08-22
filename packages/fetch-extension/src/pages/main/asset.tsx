@@ -212,6 +212,8 @@ export const AssetView: FunctionComponent = observer(() => {
     (currency: AppCurrency) => currency.coinMinimalDenom === "uusdc"
   );
 
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+
   const stakable = (() => {
     if (isNoble && hasUSDC) {
       return balanceQuery.getBalanceFromCurrency(hasUSDC);
@@ -299,6 +301,17 @@ export const AssetView: FunctionComponent = observer(() => {
                 ? totalPrice.toString()
                 : total.shrink(true).trim(true).maxDecimals(6).toString()}
             </div>
+            {isEvm && totalPrice && (
+              <div
+                // className={styleAsset["big"]}
+                style={{
+                  marginTop: "-20px",
+                  // marginBottom: "20px",
+                }}
+              >
+                {stakable.shrink(true).maxDecimals(6).toString()}
+              </div>
+            )}
             <div className={styleAsset["indicatorIcon"]}>
               <Fragment>
                 {balanceStakableQuery.isFetching ? (
@@ -321,41 +334,14 @@ export const AssetView: FunctionComponent = observer(() => {
               </Fragment>
             </div>
           </div>
-          <ProgressBar width={300} data={data} />
+          {!isEvm && <ProgressBar width={300} data={data} />}
         </div>
-        <div className={styleAsset["legendContainer"]}>
-          <div className={styleAsset["legend"]}>
-            <div className={styleAsset["label"]} style={{ color: "#3B82F6" }}>
-              <FormattedMessage id="main.account.chart.available-balance" />
-            </div>
-            <div style={{ minWidth: "16px" }} />
-            <div
-              className={styleAsset["value"]}
-              style={{
-                color: "#525f7f",
-              }}
-            >
-              {stakable.shrink(true).maxDecimals(6).toString()}
-            </div>
-          </div>
-          <div className={styleAsset["legend"]}>
-            <div className={styleAsset["label"]} style={{ color: "#11cdef" }}>
-              <FormattedMessage id="main.account.chart.staked-balance" />
-            </div>
-            <div style={{ minWidth: "16px" }} />
-            <div
-              className={styleAsset["value"]}
-              style={{
-                color: "#525f7f",
-              }}
-            >
-              {stakedSum.shrink(true).maxDecimals(6).toString()}
-            </div>
-          </div>
-          {isNoble && hasUSDC ? null : (
+
+        {!isEvm && (
+          <div className={styleAsset["legendContainer"]}>
             <div className={styleAsset["legend"]}>
-              <div className={styleAsset["label"]} style={{ color: "#D43BF6" }}>
-                <FormattedMessage id="main.account.chart.reward-balance" />
+              <div className={styleAsset["label"]} style={{ color: "#3B82F6" }}>
+                <FormattedMessage id="main.account.chart.available-balance" />
               </div>
               <div style={{ minWidth: "16px" }} />
               <div
@@ -364,11 +350,44 @@ export const AssetView: FunctionComponent = observer(() => {
                   color: "#525f7f",
                 }}
               >
-                {stakableReward.shrink(true).maxDecimals(6).toString()}
+                {stakable.shrink(true).maxDecimals(6).toString()}
               </div>
             </div>
-          )}
-        </div>
+            <div className={styleAsset["legend"]}>
+              <div className={styleAsset["label"]} style={{ color: "#11cdef" }}>
+                <FormattedMessage id="main.account.chart.staked-balance" />
+              </div>
+              <div style={{ minWidth: "16px" }} />
+              <div
+                className={styleAsset["value"]}
+                style={{
+                  color: "#525f7f",
+                }}
+              >
+                {stakedSum.shrink(true).maxDecimals(6).toString()}
+              </div>
+            </div>
+            {isNoble && hasUSDC ? null : (
+              <div className={styleAsset["legend"]}>
+                <div
+                  className={styleAsset["label"]}
+                  style={{ color: "#D43BF6" }}
+                >
+                  <FormattedMessage id="main.account.chart.reward-balance" />
+                </div>
+                <div style={{ minWidth: "16px" }} />
+                <div
+                  className={styleAsset["value"]}
+                  style={{
+                    color: "#525f7f",
+                  }}
+                >
+                  {stakableReward.shrink(true).maxDecimals(6).toString()}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <TxButtonView />
       <hr className={styleAsset["hr"]} />

@@ -49,6 +49,17 @@ export class ChainUpdaterService {
 
           return features;
         })(),
+        currencies: (() => {
+          const currencies = chainInfo.currencies ?? [];
+
+          for (const f of updatedChainInfo.currencies ?? []) {
+            if (!currencies.includes(f)) {
+              currencies.push(f);
+            }
+          }
+
+          return currencies;
+        })(),
         beta: origin.beta,
       };
     }
@@ -72,6 +83,20 @@ export class ChainUpdaterService {
             }
 
             return features;
+          })(),
+          currencies: (() => {
+            if (!local.currencies) {
+              return chainInfo.currencies;
+            }
+
+            const currencies = chainInfo.currencies ?? [];
+            for (const add of local.currencies) {
+              if (!currencies.includes(add)) {
+                currencies.push(add);
+              }
+            }
+
+            return currencies;
           })(),
         },
       };

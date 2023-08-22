@@ -29,7 +29,7 @@ export class ObservableQueryEvmNativeBalance extends ObservableJsonRPCQuery<stri
               bech32Address,
               chainGetter.getChain(chainId).bech32Config.bech32PrefixAccAddr
             ).toHex(true)
-          : "",
+          : "0x0000000000000000000000000000000000000000",
         "latest",
       ]
     );

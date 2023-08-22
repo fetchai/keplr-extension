@@ -40,7 +40,8 @@ export const BridgePage: FunctionComponent = observer(() => {
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
   return (
     <HeaderLayout
-      showChainName={true}
+      showChainName={false}
+      alternativeTitle={"Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
         navigate(-1);

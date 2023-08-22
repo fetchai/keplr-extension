@@ -242,7 +242,7 @@ export class ObservableQueryERC20AllowanceInner extends ObservableJsonRPCQuery<s
                 bech32Address,
                 chainGetter.getChain(chainId).bech32Config.bech32PrefixAccAddr
               ).toHex(true)
-            : "",
+            : "0x0000000000000000000000000000000000000000",
           spender,
         ]),
       },

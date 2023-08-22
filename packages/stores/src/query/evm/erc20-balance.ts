@@ -37,7 +37,7 @@ export class ObservableQueryErc20Balance extends ObservableJsonRPCQuery<string> 
                   bech32Address,
                   chainGetter.getChain(chainId).bech32Config.bech32PrefixAccAddr
                 ).toHex(true)
-              : "",
+              : "0x0000000000000000000000000000000000000000",
           ]),
         },
         "latest",
