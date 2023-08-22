@@ -29,12 +29,16 @@ export const FetchhubBridge: FunctionComponent<{
     accountStore,
     queriesStore,
     keyRingStore,
-    // uiConfigStore,
-    // analyticsStore,
+    analyticsStore,
     priceStore,
   } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const notification = useNotification();
+
+  analyticsStore.logEvent("Native bridge page opened", {
+    chainId: chainStore.current.chainId,
+    chainName: chainStore.current.chainName,
+  });
 
   const nativeBridgeConfig = useNativeBridgeConfig(
     chainStore,
@@ -105,6 +109,10 @@ export const FetchhubBridge: FunctionComponent<{
         {
           onBroadcasted() {
             navigate("/bridge");
+            analyticsStore.logEvent("Bridge token tx broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+            });
           },
           onFulfill(tx) {
             if (tx.code == null || tx.code === 0) {

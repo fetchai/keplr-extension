@@ -41,8 +41,13 @@ export const EthereumBridge: FunctionComponent<{
     defaultAmount: string | undefined;
   };
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+
+  analyticsStore.logEvent("Native bridge page opened", {
+    chainId: chainStore.current.chainId,
+    chainName: chainStore.current.chainName,
+  });
 
   const nativeBridgeConfig = useNativeBridgeConfig(
     chainStore,
@@ -250,7 +255,13 @@ export const Approve: FunctionComponent<{
 
     const navigate = useNavigate();
 
-    const { chainStore, priceStore, accountStore, queriesStore } = useStore();
+    const {
+      chainStore,
+      priceStore,
+      accountStore,
+      queriesStore,
+      analyticsStore,
+    } = useStore();
 
     const approveGasSimulator = useGasSimulator(
       new ExtensionKVStore("gas-simulator.native-bridge.approve"),
@@ -351,6 +362,13 @@ export const Approve: FunctionComponent<{
                       navigate(
                         `/bridge?defaultRecipient=${recipientConfig.recipient}&defaultAmount=${amountConfig.amount}`
                       );
+                      analyticsStore.logEvent(
+                        "Bridge token approval tx broadcasted",
+                        {
+                          chainId: chainStore.current.chainId,
+                          chainName: chainStore.current.chainName,
+                        }
+                      );
                     },
                   }
                 );
@@ -392,7 +410,7 @@ export const Bridge: FunctionComponent<{
   const navigate = useNavigate();
   const notification = useNotification();
 
-  const { chainStore, priceStore, accountStore } = useStore();
+  const { chainStore, priceStore, accountStore, analyticsStore } = useStore();
 
   const bridgeGasSimulator = useGasSimulator(
     new ExtensionKVStore("gas-simulator.native-bridge.bridge"),
@@ -482,6 +500,10 @@ export const Bridge: FunctionComponent<{
                   },
                   onBroadcasted() {
                     navigate(`/bridge`);
+                    analyticsStore.logEvent("Bridge token tx broadcasted", {
+                      chainId: chainStore.current.chainId,
+                      chainName: chainStore.current.chainName,
+                    });
                   },
                 }
               );
