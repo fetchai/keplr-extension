@@ -63,6 +63,28 @@ export const registerDomain = async (
   await executeTxn(tx, notification);
 };
 
+export const updateDomainPermissions = async (
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  owner: any,
+  domain: string,
+  permissions: string,
+  notification: ContextProps
+) => {
+  const tx = account.cosmwasm.makeExecuteContractTx(
+    `executeWasm`,
+    ANS_CONTRACT_ADDRESS,
+    {
+      update_ownership: {
+        domain,
+        owner: { address: { address: owner } },
+        permissions,
+      },
+    },
+    []
+  );
+  await executeTxn(tx, notification);
+};
+
 const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
   const gasResponse = await tx.simulate();
   await tx.send(

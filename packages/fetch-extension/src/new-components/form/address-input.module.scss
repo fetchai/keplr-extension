@@ -1,0 +1,81 @@
+@import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/functions";
+@import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/mixins";
+@import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/variables";
+
+.fullModal {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  &:global(.modal-content) {
+    box-shadow: none;
+  }
+}
+
+.input {
+  color: #fff;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+}
+
+.input:focus {
+  color: #fff;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+}
+
+.input::placeholder {
+  color: #fff;
+}
+
+.input-group {
+  display: flex;
+  height: 56px;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  justify-content: space-between;
+  &:hover {
+    border-color: #9075ff;
+    box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.2),
+      6px 6px 32px 0px rgba(243, 95, 73, 0.3);
+  }
+  &:focus-within {
+    border-color: #9075ff;
+    box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.2),
+      6px 6px 32px 0px rgba(243, 95, 73, 0.3);
+  }
+}
+
+.addressBookButton {
+  background: white;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-width: 0;
+
+  box-shadow: $input-alternative-box-shadow !important;
+
+  &:hover {
+    box-shadow: $input-focus-alternative-box-shadow !important;
+  }
+}
+.errorText {
+  color: #fb8c72;
+  font-size: 12px;
+  margin: 3px;
+}
+
+.infoText {
+  color: grey;
+  font-size: 12px;
+  margin: 3px;
+}

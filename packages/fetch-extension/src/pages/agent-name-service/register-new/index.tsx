@@ -43,11 +43,9 @@ export const RegisterAgentDomains = observer(() => {
     let permissionsQueryDomain;
     let statusQueryDomain;
     if (parts.length === 2) {
-      permissionsQueryDomain = domain;
-      statusQueryDomain = domain;
       const { isAvailable } = queryDomainRecord.getQueryContract(
         contractAddress,
-        statusQueryDomain
+        domain
       );
       if (isAvailable) {
         domainAvailablityMessage = `The domain is available`;
@@ -60,31 +58,31 @@ export const RegisterAgentDomains = observer(() => {
     } else if (parts.length > 2) {
       permissionsQueryDomain = parts.slice(parts.length - 2).join(".");
       statusQueryDomain = parts.slice(0, parts.length - 1).join(".");
-    } else {
-      domainAvailablityMessage = `Invalid domain`;
-      return;
-    }
-    const { permissions } = queryPermissions.getQueryContract(
-      contractAddress,
-      account.bech32Address,
-      permissionsQueryDomain
-    );
-
-    if (permissions === "admin") {
-      const { isAvailable } = queryDomainRecord.getQueryContract(
+      const { permissions } = queryPermissions.getQueryContract(
         contractAddress,
-        statusQueryDomain
+        account.bech32Address,
+        permissionsQueryDomain
       );
-      if (isAvailable) {
-        domainAvailablityMessage = `The domain is available`;
-        domainAvailablity = true;
+
+      if (permissions === "admin") {
+        const { isAvailable } = queryDomainRecord.getQueryContract(
+          contractAddress,
+          statusQueryDomain
+        );
+        if (isAvailable) {
+          domainAvailablityMessage = `The domain is available`;
+          domainAvailablity = true;
+        } else {
+          domainAvailablityMessage = `The domain is not available`;
+          domainAvailablity = false;
+        }
       } else {
-        domainAvailablityMessage = `The domain is not available`;
+        domainAvailablityMessage = `You do not own the domain`;
         domainAvailablity = false;
       }
     } else {
-      domainAvailablityMessage = `You do not own the domain`;
-      domainAvailablity = false;
+      domainAvailablityMessage = `Invalid domain`;
+      return;
     }
   }
 
