@@ -321,7 +321,7 @@ export const GovernanceVoteModal: FunctionComponent<{
   // So need to get the props from the parent.
   smartNavigation: ReturnType<typeof useSmartNavigation>;
 }> = registerModal(
-  observer(({ proposalId, close, smartNavigation }) => {
+  observer(({ proposalId, close, smartNavigation, isOpen }) => {
     const { chainStore, accountStore, queriesStore, analyticsStore } =
       useStore();
 
@@ -385,6 +385,10 @@ export const GovernanceVoteModal: FunctionComponent<{
     };
 
     const [isSendingTx, setIsSendingTx] = useState(false);
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <View style={style.flatten(["padding-page"]) as ViewStyle}>
@@ -518,7 +522,7 @@ export const GovernanceVoteModal: FunctionComponent<{
                   // Therefore, the failure is expected. If the simulation fails, simply use the default value.
                   console.log(e);
                 }
-
+                close();
                 await tx.send(
                   { amount: [], gas: gas.toString() },
                   "",
@@ -537,7 +541,6 @@ export const GovernanceVoteModal: FunctionComponent<{
                     },
                   }
                 );
-                close();
               } catch (e) {
                 if (e?.message === "Request rejected") {
                   return;
