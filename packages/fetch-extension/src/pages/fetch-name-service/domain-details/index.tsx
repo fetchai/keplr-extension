@@ -1,24 +1,23 @@
 import domainImage from "@assets/icon/domain-image.png";
 import { ToolTip } from "@components/tooltip";
+import { Tab } from "@new-components/tab";
 import { formatDomain } from "@utils/format";
+import { observer } from "mobx-react-lite";
 import React, {
   FunctionComponent,
   useCallback,
-  useState,
   useEffect,
+  useState,
 } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FNS_CONFIG } from "../../../config.ui.var";
 import { HeaderLayout } from "../../../new-layouts";
 import { useStore } from "../../../stores";
 import { BuyOrBid } from "./buy-or-bid";
+import { TXN_TYPE, properties, tabs } from "./constants";
 import { Mint } from "./mint";
-import { MessagePopup } from "./popup";
 import style from "./style.module.scss";
 import { Update } from "./update";
-import { observer } from "mobx-react-lite";
-import { Tab } from "@new-components/tab";
-import { TXN_TYPE, properties, tabs } from "./constants";
 
 export const TooltipForDomainNames = ({
   domainName,
@@ -95,13 +94,15 @@ export const DomainDetails: FunctionComponent = observer(() => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const sender = accountInfo.bech32Address;
+
   const [domainData, setDomainData] = useState<any>({});
   const [oldDomainData, setOldDomainData] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(false);
+
   let domainPrice: any = {};
   let isAssigned: any = false;
   let isPrimary: boolean = false;
   const [message, setMessage] = useState<string>("Loading Domain Info");
-  const [showPopup, setShowPopup] = useState(false);
   const [activeTab, _setActiveTab] = useState("properties");
   const {
     queryPrimaryDomain,
@@ -157,9 +158,9 @@ export const DomainDetails: FunctionComponent = observer(() => {
     if (accountInfo.txTypeInProgress.includes(domainName)) {
       const type = accountInfo.txTypeInProgress.split(":")[0];
       setMessage(getMessageForInProgressTx(type));
-      setShowPopup(true);
+      setIsLoading(true);
     } else {
-      setShowPopup(false);
+      setIsLoading(false);
     }
   }, [accountInfo.txTypeInProgress, domainName]);
 
@@ -182,7 +183,7 @@ export const DomainDetails: FunctionComponent = observer(() => {
       }
       showBottomMenu={true}
     >
-      {isDomainDataFetching ? (
+      {isLoading || isDomainDataFetching ? (
         <div className={style["loader"]}>
           {message}{" "}
           {!message.includes("Error") && (
@@ -282,7 +283,6 @@ export const DomainDetails: FunctionComponent = observer(() => {
             <Mint domainPrice={domainPrice} domainName={domainName} />
           ))}
       </div>
-      {showPopup && <MessagePopup message={message} />}
     </HeaderLayout>
   );
 });

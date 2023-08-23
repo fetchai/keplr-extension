@@ -126,7 +126,7 @@ export const Update: React.FC<UpdateProps> = ({
       )}
       {isOwned && (
         <span className={style["mint"]}>
-          {isTxnInProgress || deepCompare(parsedDomainData, oldDomainData) ? (
+          {deepCompare(parsedDomainData, oldDomainData) ? (
             <ToolTip
               tooltip="Update is disabled since data hasn't changed."
               trigger="hover"
@@ -141,10 +141,7 @@ export const Update: React.FC<UpdateProps> = ({
                     ? handleUpdate
                     : handleClick
                 }
-                disabled={
-                  isTxnInProgress ||
-                  deepCompare(parsedDomainData, oldDomainData)
-                }
+                disabled={deepCompare(parsedDomainData, oldDomainData)}
               >
                 <span className={style["domainName"]}>Update</span>
               </button>
@@ -157,9 +154,7 @@ export const Update: React.FC<UpdateProps> = ({
                   ? handleUpdate
                   : handleClick
               }
-              disabled={
-                isTxnInProgress || deepCompare(domainData, oldDomainData)
-              }
+              disabled={isTxnInProgress}
             >
               <span className={style["domainName"]}>Update</span>
             </button>
