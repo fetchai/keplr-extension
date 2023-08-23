@@ -3,7 +3,7 @@ import { KVStore } from "@keplr-wallet/common";
 import { ChainGetter } from "../../common";
 import { computed } from "mobx";
 import { ObservableChainQueryMap } from "../chain-query";
-import { DomainData } from "./types";
+import { DomainData, DomainDataType } from "./types";
 
 export class ObservableQueryDomainDataInner extends ObservableCosmwasmContractChainQuery<DomainData> {
   constructor(
@@ -19,12 +19,8 @@ export class ObservableQueryDomainDataInner extends ObservableCosmwasmContractCh
   }
 
   @computed
-  get domain_data(): any {
-    if (!this.response || !this.response.data.domain_data) {
-      return {};
-    }
-
-    return this.response.data.domain_data;
+  get domain_data(): DomainDataType | undefined {
+    return this.response?.data?.domain_data;
   }
 }
 

@@ -3,7 +3,7 @@ import { KVStore } from "@keplr-wallet/common";
 import { ChainGetter } from "../../common";
 import { computed } from "mobx";
 import { ObservableChainQueryMap } from "../chain-query";
-import { DomainPrice } from "./types";
+import { DomainPrice, DomainPriceResult, DomainPriceType } from "./types";
 
 export class ObservableQueryDomainPriceInner extends ObservableCosmwasmContractChainQuery<DomainPrice> {
   constructor(
@@ -26,17 +26,11 @@ export class ObservableQueryDomainPriceInner extends ObservableCosmwasmContractC
     return this.response.data.is_valid_domain;
   }
 
-  get result(): any {
-    if (!this.response || !this.response.data.result) {
-      return {};
-    }
-    return this.response.data.result;
+  get result(): DomainPriceResult | undefined {
+    return this.response?.data?.result;
   }
-  get price(): any {
-    if (!this.response || !this.response.data.result.Success.pricing) {
-      return {};
-    }
-    return this.response.data.result.Success.pricing;
+  get price(): DomainPriceType | undefined {
+    return this.response?.data?.result?.Success?.pricing;
   }
 }
 

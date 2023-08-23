@@ -3,23 +3,44 @@ export interface DomainsOwnedBy {
   owner: string;
 }
 
-export interface DomainData {
-  domain_data: {
-    address: string;
-    avatar: string;
-    background: string;
-    description: string;
-    email: string;
-    github: string;
-    twitter: string;
-    website: string;
+export interface DomainDataType {
+  address: string;
+  avatar: string;
+  background: string;
+  description: string;
+  email: string;
+  github: string;
+  twitter: string;
+  website: string;
+}
+
+export interface DomainPriceType {
+  amount: string;
+  denom: string;
+}
+
+export interface DomainPriceResult {
+  Success: {
+    normalized_domain: string;
+    pricing: DomainPriceType;
+    can_register: boolean;
   };
 }
 
-export interface DomainStatus {
-  domain_status: {
-    Owned: { is_renewable: string; owner: string; registration_time: string };
+export interface OwnedDomainStatus {
+  Owned: {
+    is_renewable: boolean;
+    owner: string;
+    registration_time: string;
   };
+}
+
+export interface DomainData {
+  domain_data: DomainDataType;
+}
+
+export interface DomainStatus {
+  domain_status: OwnedDomainStatus | string;
 }
 
 export interface PrimaryDomain {
@@ -28,13 +49,7 @@ export interface PrimaryDomain {
 
 export interface DomainPrice {
   is_valid_domain: boolean;
-  result: {
-    Success: {
-      can_register: boolean;
-      normalized_domain: string;
-      pricing: { denom: string; amount: string };
-    };
-  };
+  result: DomainPriceResult;
 }
 export interface BeneficiaryAddress {
   address: string;

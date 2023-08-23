@@ -20,19 +20,11 @@ export class ObservableQueryAllDomainsOwnedByInner extends ObservableCosmwasmCon
 
   @computed
   get domains(): string[] {
-    if (!this.response || !this.response.data.domains) {
-      return [];
-    }
-
-    return this.response.data.domains;
+    return this.response?.data?.domains || [];
   }
 
   get ownerAddress(): string {
-    if (!this.response || !this.response.data) {
-      return "";
-    }
-
-    return this.response.data.owner;
+    return this.response?.data?.owner || "";
   }
 }
 

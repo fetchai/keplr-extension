@@ -3,7 +3,7 @@ import { KVStore } from "@keplr-wallet/common";
 import { ChainGetter } from "../../common";
 import { computed } from "mobx";
 import { ObservableChainQueryMap } from "../chain-query";
-import { DomainStatus } from "./types";
+import { DomainStatus, OwnedDomainStatus } from "./types";
 
 export class ObservableQueryDomainStatusInner extends ObservableCosmwasmContractChainQuery<DomainStatus> {
   constructor(
@@ -19,22 +19,13 @@ export class ObservableQueryDomainStatusInner extends ObservableCosmwasmContract
   }
 
   @computed
-  get domain_status(): any {
-    if (!this.response || !this.response.data.domain_status) {
-      return {};
-    }
-
-    return this.response.data.domain_status;
+  get domain_status(): OwnedDomainStatus | string {
+    return this.response?.data?.domain_status || "";
   }
-  get registrationTime(): any {
-    if (
-      !this.response ||
-      !this.response.data.domain_status.Owned.registration_time
-    ) {
-      return {};
-    }
-
-    return this.response.data.domain_status.Owned.registration_time;
+  get registrationTime(): string {
+    if (!this.domain_status || typeof this.domain_status === "string")
+      return "";
+    return this.domain_status?.Owned?.registration_time;
   }
 }
 
