@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import style from "../style.module.scss";
-import { useLocation } from "react-router";
+import { formatAddressInANS } from "@utils/format";
+import { observer } from "mobx-react-lite";
+import React, { useEffect, useState } from "react";
 import { ANS_CONFIG } from "../../../config.ui.var";
 import { useStore } from "../../../stores";
-import { observer } from "mobx-react-lite";
-import { formatAddressInANS } from "@utils/format";
+import style from "../style.module.scss";
 
-export const Addresses = observer(() => {
-  const domainName = useLocation().pathname.split("/")[3];
+export const Addresses = observer(({ domainName }: { domainName: string }) => {
   const { chainStore, queriesStore } = useStore();
   const current = chainStore.current;
   const { queryDomainRecord } = queriesStore.get(current.chainId).ans;
@@ -15,14 +13,10 @@ export const Addresses = observer(() => {
     ANS_CONFIG[current.chainId].contractAddress,
     domainName
   );
-  let agentaddressofDomain: any[] = [];
-  if (record !== undefined) {
-    console.log(record);
-    agentaddressofDomain = record.records[0].agent_address.records;
-  }
 
   const [fetchedDetailsOfAgentAddresses, setFetchedDetailsOfAgentAddresses] =
     useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAgentDetails = async () => {
@@ -35,29 +29,51 @@ export const Addresses = observer(() => {
         fetchedDetails.push(agentDetails);
       }
       setFetchedDetailsOfAgentAddresses(fetchedDetails);
-      console.log(fetchedDetailsOfAgentAddresses);
+      setIsLoading(false);
     };
-
+    let agentaddressofDomain: any[] = [];
+    if (record !== undefined && record.records.length) {
+      agentaddressofDomain = record.records[0].agent_address.records;
+    }
     if (agentaddressofDomain.length > 0) {
       fetchAgentDetails();
+    } else {
+      setIsLoading(false);
     }
-  }, [domainName, agentaddressofDomain, current.chainId]);
+  }, [domainName, current.chainId, record]);
+
+  if (isLoading) {
+    return (
+      <div className={style["loader"]}>
+        Loading agents <i className="fas fa-spinner fa-spin ml-2" />
+      </div>
+    );
+  }
 
   return (
     <div>
-      {fetchedDetailsOfAgentAddresses.map((domains, index) => (
-        <div className={style["domainCard"]} key={index}>
-          <div
-            style={{ display: "flex", gap: "16px" }}
-            className={style["domainDetails"]}
-          >
-            <div>{formatAddressInANS(domains.address)}</div>
-            {domains.status !== "active" ? (
-              <div className={style["expired"]}>EXPIRED</div>
-            ) : null}
-          </div>
+      {fetchedDetailsOfAgentAddresses.length ? (
+        fetchedDetailsOfAgentAddresses.map((domains, index) => {
+          const isExpired = new Date(domains.expiry).getTime() < Date.now();
+          return (
+            <div className={style["domainCard"]} key={index}>
+              <div
+                style={{ display: "flex", gap: "16px" }}
+                className={style["domainDetails"]}
+              >
+                <div>{formatAddressInANS(domains.address)}</div>
+                {isExpired ? (
+                  <div className={style["expired"]}>EXPIRED</div>
+                ) : null}
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div style={{ textAlign: "center", color: "white" }}>
+          No Agents Available
         </div>
-      ))}
+      )}
     </div>
   );
 });

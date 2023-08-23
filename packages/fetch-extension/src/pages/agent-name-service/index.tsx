@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { ANS_CONFIG } from "../../config.ui.var";
 import { HeaderLayout } from "../../new-layouts";
@@ -14,6 +14,7 @@ interface FetchedDomain {
 
 export const AgentNameService = observer(() => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const account = accountStore.getAccount(current.chainId);
@@ -62,15 +63,22 @@ export const AgentNameService = observer(() => {
       }}
       showBottomMenu={true}
     >
+      {state?.disclaimer && (
+        <div className={style["beneficiaryHelp"]}>
+          &#128161; {state.disclaimer}
+        </div>
+      )}
       <div className={style["allDomains"]}>
         {isLoading ? (
-          <div className={style["loader"]}>Loading...</div>
+          <div className={style["loader"]}>
+            Loading domains <i className="fas fa-spinner fa-spin ml-2" />
+          </div>
         ) : filteredDomains.length === 0 ? (
           <div className={style["loader"]}>No Domains Available</div>
         ) : (
           filteredDomains.map((domain, index) => (
             <Link
-              to={`/agent-name-service/domain-details/${domain.domain_name}`}
+              to={`/agent-name-service/domain-details/${domain.domain_name}/owner`}
               className={style["domainCard"]}
               key={index}
             >

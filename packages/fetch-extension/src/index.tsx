@@ -273,7 +273,7 @@ ReactDOM.render(
                         element={<AgentNameService />}
                       />
                       <Route
-                        path="/agent-name-service/domain-details/:domain"
+                        path="/agent-name-service/domain-details/:domain/:tab"
                         element={<AgentDomainDetails />}
                       />
                       <Route

@@ -1,75 +1,52 @@
-import React, { useMemo } from "react";
-import style from "./style.module.scss";
+import { useNotification } from "@components/notification";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { useNavigate } from "react-router";
 import { updateDomainPermissions } from "../../../../name-service/ans-api";
 import { useStore } from "../../../../stores";
-import { useNotification } from "@components/notification";
-import { useNavigate } from "react-router";
-import { useSendTxConfig } from "@keplr-wallet/hooks";
-import { AddressInput } from "@new-components/form/address-input";
-import { observer } from "mobx-react-lite";
+import style from "./style.module.scss";
+import { formatAddress } from "@utils/format";
 
-export const PermissionsPopup = observer(
+export const ConfirmationPopup = observer(
   ({
     handleCancel,
     permission,
     domain,
+    address,
     setIsTrnsxLoading,
-    setIsPopupOpen,
   }: {
     handleCancel?: any;
     permission: string;
     domain: string;
+    address?: string;
     setIsTrnsxLoading: any;
-    setIsPopupOpen: any;
   }) => {
-    const { chainStore, accountStore, queriesStore } = useStore();
+    const { chainStore, accountStore } = useStore();
     const notification = useNotification();
     const current = chainStore.current;
     const navigate = useNavigate();
     const account = accountStore.getAccount(current.chainId);
-    const sendConfigs = useSendTxConfig(
-      chainStore,
-      queriesStore,
-      accountStore,
-      current.chainId,
-      account.bech32Address,
-      {
-        allowHexAddressOnEthermint: true,
-        computeTerraClassicTax: true,
-      }
-    );
-
-    const error = sendConfigs.recipientConfig.error;
-    const errorText: boolean | undefined = useMemo(() => {
-      if (error) {
-        if (error.constructor) {
-          return true;
-        }
-      }
-      return false;
-    }, [error]);
 
     const handlePermission = async () => {
       try {
         setIsTrnsxLoading(true);
-        setIsPopupOpen(false);
         await updateDomainPermissions(
           account,
-          sendConfigs.recipientConfig.recipient,
+          address,
           domain,
-          permission == "owner" ? "admin" : permission,
+          "deny",
           notification
         );
-        setIsTrnsxLoading(false);
         navigate(`/agent-name-service/domain-details/${domain}/${permission}`, {
           state: {
             disclaimer:
               "Changes in domain permission can take upto 5 mins to take effect.",
           },
         });
+        setIsTrnsxLoading(false);
       } catch (err) {
         setIsTrnsxLoading(false);
-        console.error("Error updating permission:", err);
+        console.error("Error updating permissions:", err);
         notification.push({
           placement: "top-center",
           type: "warning",
@@ -86,16 +63,14 @@ export const PermissionsPopup = observer(
 
     return (
       <React.Fragment>
-        <div className={style["popupCard"]}>
-          <h3 style={{ color: "white" }}>Add {permission}</h3>
-
-          <AddressInput
-            recipientConfig={sendConfigs.recipientConfig}
-            memoConfig={sendConfigs.memoConfig}
-            label={""}
-            value={""}
-            className={style["searchContainer"]}
-          />
+        <div
+          className={style["popupCard"]}
+          style={{ display: !address ? "none" : "" }}
+        >
+          <h4 style={{ color: "white" }}>
+            Are you sure you want to revoke {permission} permission from{" "}
+            {formatAddress(address || "")}?
+          </h4>
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {handleCancel && (
@@ -104,16 +79,15 @@ export const PermissionsPopup = observer(
                 type="button"
                 onClick={handleCancel}
               >
-                cancel
+                Cancel
               </button>
             )}
             <button
               style={{ marginTop: "10px", width: "99.41px", display: "flow" }}
               type="button"
-              disabled={!!errorText}
               onClick={() => handlePermission()}
             >
-              Add
+              Revoke
             </button>
           </div>
         </div>

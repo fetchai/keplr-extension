@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
-import style from "./style.module.scss";
-import { useLocation } from "react-router";
-import { useStore } from "../../../../stores";
-import { ANS_CONFIG } from "../../../../config.ui.var";
-import { PermissionsPopup } from "../permissions-popup";
 import { observer } from "mobx-react-lite";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { ANS_CONFIG } from "../../../../config.ui.var";
+import { useStore } from "../../../../stores";
+import { PermissionsPopup } from "../permissions-popup";
 import { AddressList } from "./address-list";
+import style from "./style.module.scss";
+
 interface PermissionsProps {
   setIsTrnsxLoading: any;
+  tabName?: string;
 }
 export const Permissions: React.FC<PermissionsProps> = observer(
-  ({ setIsTrnsxLoading }) => {
-    const [activeInnerTab, setActiveInnerTab] = useState("owner");
+  ({ setIsTrnsxLoading, tabName }) => {
+    const [activeInnerTab, setActiveInnerTab] = useState(tabName || "owner");
     const [owners, setOwners] = useState<string[]>([]);
     const [writers, setWriters] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const domainName = useLocation().pathname.split("/")[3];
+    const { state, pathname } = useLocation();
+    const domainName = pathname.split("/")[3];
 
     const { chainStore, accountStore } = useStore();
     const current = chainStore.current;
@@ -94,6 +97,11 @@ export const Permissions: React.FC<PermissionsProps> = observer(
           </button>
         </div>
         <div>
+          {state?.disclaimer && (
+            <div className={style["beneficiaryHelp"]}>
+              &#128161; {state.disclaimer}
+            </div>
+          )}
           {isLoading ? (
             <div className={style["loader"]} style={{ top: "150px" }}>
               Loading Owners..
@@ -104,10 +112,13 @@ export const Permissions: React.FC<PermissionsProps> = observer(
               <AddressList
                 domain={domainName}
                 addresses={owners}
+                setIsTrnsxLoading={setIsTrnsxLoading}
                 isAdmin={owners.some((owner) => owner == account.bech32Address)}
               />
             ) : (
-              <div>No Owners Available</div>
+              <div style={{ textAlign: "center", color: "white" }}>
+                No Owners Available
+              </div>
             )
           ) : activeInnerTab === "writer" ? (
             writers.length > 0 ? (
@@ -115,6 +126,7 @@ export const Permissions: React.FC<PermissionsProps> = observer(
                 domain={domainName}
                 addresses={writers}
                 isWriter={true}
+                setIsTrnsxLoading={setIsTrnsxLoading}
                 isAdmin={owners.some((owner) => owner == account.bech32Address)}
               />
             ) : (

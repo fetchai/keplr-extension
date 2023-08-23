@@ -46,11 +46,11 @@ export const RegisterAgentDomains = observer(() => {
     let permissionsQueryDomain;
     let statusQueryDomain;
     if (parts.length === 2) {
-      const { isAvailable } = queryDomainRecord.getQueryContract(
+      const { isAvailable, record } = queryDomainRecord.getQueryContract(
         contractAddress,
         domain
       );
-      if (isAvailable) {
+      if (isAvailable && !record) {
         domainAvailablityMessage = `The domain is available`;
         domainAvailablity = true;
       } else {
@@ -117,8 +117,13 @@ export const RegisterAgentDomains = observer(() => {
         domain,
         notification
       );
-      navigate("/agent-name-service/register-new");
       setIsRegisterInProgress(false);
+      navigate(`/agent-name-service`, {
+        state: {
+          disclaimer:
+            "New Domain additions can take upto 5 mins to take effect.",
+        },
+      });
     } catch (err) {
       setIsRegisterInProgress(false);
       console.error("Error minting domain:", err);
@@ -234,6 +239,7 @@ export const RegisterAgentDomains = observer(() => {
           className={style["searchInput"]}
           placeholder="Enter Agent Address"
           type="text"
+          style={{ width: "244px" }}
           value={agentAddressSearchValue}
           onChange={handleAgentAddressInputChange}
           disabled={!domainAvailablity || searchValue === ""}

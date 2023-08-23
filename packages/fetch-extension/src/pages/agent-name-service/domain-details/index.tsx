@@ -12,6 +12,7 @@ const tabs = [
 
 export const AgentDomainDetails = () => {
   const domainName = useLocation().pathname.split("/")[3];
+  const tabName = useLocation().pathname.split("/")[4];
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState(tabs[0].tabName);
@@ -26,12 +27,12 @@ export const AgentDomainDetails = () => {
       canChangeChainInfo={false}
       alternativeTitle={domainName}
       onBackButton={() => {
-        navigate("/agent-name-service");
+        navigate("/more");
       }}
       showBottomMenu={true}
     >
       {isTrnsxLoading ? (
-        <div className={style["loader"]}>
+        <div className={style["loader"]} style={{ zIndex: 300 }}>
           Loading Transaction
           <i className="fas fa-spinner fa-spin ml-2" />
         </div>
@@ -39,9 +40,9 @@ export const AgentDomainDetails = () => {
       <Tab tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
       {activeTab === "permissions" ? (
-        <Permissions setIsTrnsxLoading={setIsTrnsxLoading} />
+        <Permissions setIsTrnsxLoading={setIsTrnsxLoading} tabName={tabName} />
       ) : (
-        <Addresses />
+        <Addresses domainName={domainName} />
       )}
     </HeaderLayout>
   );
