@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router";
 import { HeaderLayout } from "../../../new-layouts";
 import { Permissions } from "./permissions";
 import { Addresses } from "./addresses";
-
+import style from "../../fetch-name-service/domain-details/style.module.scss";
 const tabs = [
   { tabName: "permissions", displayName: "Permissions" },
   { tabName: "addresses", displayName: "Addresses" },
@@ -15,6 +15,7 @@ export const AgentDomainDetails = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState(tabs[0].tabName);
+  const [isTrnsxLoading, setIsTrnsxLoading] = useState(false);
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName);
   };
@@ -29,9 +30,19 @@ export const AgentDomainDetails = () => {
       }}
       showBottomMenu={true}
     >
+      {isTrnsxLoading ? (
+        <div className={style["loader"]}>
+          Loading Transaction
+          <i className="fas fa-spinner fa-spin ml-2" />
+        </div>
+      ) : null}
       <Tab tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {activeTab === "permissions" ? <Permissions /> : <Addresses />}
+      {activeTab === "permissions" ? (
+        <Permissions setIsTrnsxLoading={setIsTrnsxLoading} />
+      ) : (
+        <Addresses />
+      )}
     </HeaderLayout>
   );
 };

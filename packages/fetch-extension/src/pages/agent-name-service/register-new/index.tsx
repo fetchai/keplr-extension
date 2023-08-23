@@ -9,6 +9,7 @@ import { HeaderLayout } from "../../../new-layouts";
 import { useStore } from "../../../stores";
 import { PublicDomainDropdown } from "./public-domains-dropdown";
 import style from "./style.module.scss";
+import style2 from "../../fetch-name-service/domain-details/style.module.scss";
 
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -18,6 +19,8 @@ export const RegisterAgentDomains = observer(() => {
   const [searchValue, setSearchValue] = useState("");
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
   const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
+  const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
+
   const notification = useNotification();
   const {
     queryPublicDomains,
@@ -105,6 +108,7 @@ export const RegisterAgentDomains = observer(() => {
   const handleRegisterClick = async () => {
     try {
       let domain = searchValue;
+      setIsRegisterInProgress(true);
       if (!searchValue.endsWith(`.${selectedPublicDomain}`))
         domain = `${searchValue}.${selectedPublicDomain}`;
       await registerDomain(
@@ -113,8 +117,10 @@ export const RegisterAgentDomains = observer(() => {
         domain,
         notification
       );
-      navigate("/agent-name-service");
+      navigate("/agent-name-service/register-new");
+      setIsRegisterInProgress(false);
     } catch (err) {
+      setIsRegisterInProgress(false);
       console.error("Error minting domain:", err);
       notification.push({
         placement: "top-center",
@@ -126,7 +132,7 @@ export const RegisterAgentDomains = observer(() => {
           duration: 0.25,
         },
       });
-      navigate("/agent-name-service");
+      navigate("/agent-name-service/register-new");
     }
   };
 
@@ -140,6 +146,12 @@ export const RegisterAgentDomains = observer(() => {
       }}
       showBottomMenu={true}
     >
+      {isRegisterInProgress ? (
+        <div className={style2["loader"]}>
+          Loading Register Transaction
+          <i className="fas fa-spinner fa-spin ml-2" />
+        </div>
+      ) : null}
       <div className={style["registerTitle"]}>Register new domain</div>
       <div
         className={style["searchContainer"]}

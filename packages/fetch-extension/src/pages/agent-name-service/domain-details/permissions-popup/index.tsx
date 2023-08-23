@@ -13,10 +13,14 @@ export const PermissionsPopup = observer(
     handleCancel,
     permission,
     domain,
+    setIsTrnsxLoading,
+    setIsPopupOpen,
   }: {
     handleCancel?: any;
     permission: string;
     domain: string;
+    setIsTrnsxLoading: any;
+    setIsPopupOpen: any;
   }) => {
     const { chainStore, accountStore, queriesStore } = useStore();
     const notification = useNotification();
@@ -47,6 +51,8 @@ export const PermissionsPopup = observer(
 
     const handlePermission = async () => {
       try {
+        setIsTrnsxLoading(true);
+        setIsPopupOpen(false);
         await updateDomainPermissions(
           account,
           sendConfigs.recipientConfig.recipient,
@@ -54,8 +60,10 @@ export const PermissionsPopup = observer(
           permission == "owner" ? "admin" : permission,
           notification
         );
-        navigate("/agent-name-service");
+        setIsTrnsxLoading(false);
+        navigate(`/agent-name-service/domain-details/${domain}`);
       } catch (err) {
+        setIsTrnsxLoading(false);
         console.error("Error minting domain:", err);
         notification.push({
           placement: "top-center",
@@ -67,7 +75,7 @@ export const PermissionsPopup = observer(
             duration: 0.25,
           },
         });
-        navigate("/agent-name-service");
+        navigate(`/agent-name-service/domain-details/${domain}`);
       }
     };
 
