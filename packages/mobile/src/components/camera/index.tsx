@@ -8,6 +8,7 @@ import { CloseIcon } from "../icon";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LoadingSpinner } from "../spinner";
+import { CameraPermissionView } from "./camera-permission-view";
 
 interface CameraProp extends CameraProps {
   containerBottom?: React.ReactElement;
@@ -22,6 +23,18 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
   const isFocused = useIsFocused();
 
   const { children, containerBottom, isLoading, ...rest } = props;
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  if (!permission) {
+    // Camera permissions are still loading
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return <CameraPermissionView onPress={requestPermission} />;
+  }
 
   return (
     <React.Fragment>

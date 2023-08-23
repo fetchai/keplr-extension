@@ -2544,8 +2544,22 @@ export const EmbedChainInfos: ChainInfo[] = [
   },
 ];
 
-export const AmplitudeApiKey = "dbcaf47e30aae5b712bda7f892b2f0c4";
+/// Todo add keys before release
+const PROD_AMPLITUDE_API_KEY = "8ffb806f9895cdaad44b7064c32de22d";
+const DEV_AMPLITUDE_API_KEY = "5b216672b6a6837d421731d5ba7b7e08";
+const PROD_AUTH_CLIENT_ID =
+  "BLmLGgKz8JrJ4_wvxPfXqkUA5wRGtRmRlzU5tqdRAfjh4et2m0cl3U_uBvRD0mdikvuWk7lBpDD7hgJDnyldgPg";
+const DEV_AUTH_CLIENT_ID =
+  "BAh-2tkRIasP3vSnrB8iBOoHd1mrqidsxVDWt5owtaxTFeNnUjePWv4t8YfE3K0i6DGM2qMGYd_prY18TPrm340";
+export const AmplitudeApiKey =
+  process.env["NODE_ENV"] === "production"
+    ? PROD_AMPLITUDE_API_KEY
+    : DEV_AMPLITUDE_API_KEY;
 
+export const AuthApiKey =
+  process.env["NODE_ENV"] === "production"
+    ? PROD_AUTH_CLIENT_ID
+    : DEV_AUTH_CLIENT_ID;
 export const CommunityChainInfoRepo = {
   organizationName: "chainapsis",
   repoName: "keplr-chain-registry",
