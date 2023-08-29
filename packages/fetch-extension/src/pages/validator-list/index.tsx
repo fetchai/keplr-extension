@@ -1,14 +1,14 @@
 import searchIcon from "@assets/icon/search.png";
 import { Staking } from "@keplr-wallet/stores";
+import { CoinPretty } from "@keplr-wallet/unit";
 import { HeaderLayout } from "@layouts/header-layout";
-import classnames from "classnames";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-import { ValidatorCard } from "./validator-card";
-import { CoinPretty } from "@keplr-wallet/unit";
+import { ValidatorsList } from "./validators";
+import { MyValidatorsList } from "./my-validators";
 
 type ValidatorData = Staking.Validator & { amount: CoinPretty };
 
@@ -23,6 +23,7 @@ export const ValidatorList: FunctionComponent = observer(() => {
   );
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState<string>();
+  const [selectedTab, setSelectedTab] = useState<string>("validator");
   const { chainStore, queriesStore, accountStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
   const account = accountStore.getAccount(chainStore.current.chainId);
@@ -62,10 +63,6 @@ export const ValidatorList: FunctionComponent = observer(() => {
     fetchValidators();
   }, [queries.cosmos.queryValidators, queryDelegations]);
 
-  const sortValidators = (a: ValidatorData, b: ValidatorData) => {
-    return parseFloat(b.delegator_shares) - parseFloat(a.delegator_shares);
-  };
-
   const handleFilterValidators = (searchValue: string) => {
     const filteredValidators = Object.values(validators).filter((validator) =>
       searchValue?.trim().length
@@ -88,9 +85,29 @@ export const ValidatorList: FunctionComponent = observer(() => {
       alternativeTitle="Stake"
       onBackButton={() => navigate("/")}
     >
-      <p className={classnames("h2", "my-0", "font-weight-normal")}>
-        Validators
-      </p>
+      <div className={style["tabList"]}>
+        <div
+          className={style["tab"]}
+          style={{
+            borderBottom: selectedTab == "validator" ? "2px solid #D43BF6" : "",
+            color: selectedTab == "validator" ? "#D43BF6" : "#000000",
+          }}
+          onClick={() => setSelectedTab("validator")}
+        >
+          Validators
+        </div>
+
+        <div
+          className={style["tab"]}
+          style={{
+            borderBottom: selectedTab == "myStake" ? "2px solid #3B82F6" : "",
+            color: selectedTab == "myStake" ? "#3B82F6" : "#000000",
+          }}
+          onClick={() => setSelectedTab("myStake")}
+        >
+          My Stake
+        </div>
+      </div>
       <div className={style["searchContainer"]}>
         <div className={style["searchBox"]}>
           <img draggable={false} src={searchIcon} alt="search" />
@@ -102,8 +119,7 @@ export const ValidatorList: FunctionComponent = observer(() => {
           />
         </div>
       </div>
-
-      {loading ? (
+      {loading && (
         <div
           style={{
             textAlign: "center",
@@ -118,18 +134,13 @@ export const ValidatorList: FunctionComponent = observer(() => {
           <br />
           Loading Validators
         </div>
-      ) : filteredValidators.length ? (
-        filteredValidators
-          .sort((a, b) => sortValidators(a, b))
-          .map((validator: ValidatorData) => (
-            <ValidatorCard
-              validator={validator}
-              chainID={chainStore.current.chainId}
-              key={validator.operator_address}
-            />
-          ))
-      ) : (
-        <div style={{ textAlign: "center" }}>No Validators Found</div>
+      )}
+
+      {!loading && selectedTab === "validator" && (
+        <ValidatorsList filteredValidators={filteredValidators} />
+      )}
+      {!loading && selectedTab === "myStake" && (
+        <MyValidatorsList filteredValidators={filteredValidators} />
       )}
     </HeaderLayout>
   );
