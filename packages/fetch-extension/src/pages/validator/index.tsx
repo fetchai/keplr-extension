@@ -8,6 +8,7 @@ import { ValidatorDetails } from "./validator-details";
 import { observer } from "mobx-react-lite";
 import { Stake } from "./stake";
 import { Unstake } from "./unstake";
+import { Transfer } from "./transfer";
 
 export const Validator: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -106,11 +107,37 @@ export const Validator: FunctionComponent = observer(() => {
             >
               Unstake
             </div>
+            <div
+              className={style["tab"]}
+              style={{
+                borderBottom:
+                  operation == "transfer" ? "2px solid #D43BF6" : "",
+                color: operation == "transfer" ? "#D43BF6" : "#000000",
+              }}
+              onClick={() =>
+                navigate(`/validators/${validatorAddress}/transfer`)
+              }
+            >
+              Tranfer
+            </div>
           </div>
-          {operation == "stake" ? (
+          {operation == "stake" && (
             <Stake validatorAddress={validatorAddress} />
-          ) : (
+          )}
+          {operation == "unstake" && (
             <Unstake validatorAddress={validatorAddress} />
+          )}
+          {operation == "transfer" && (
+            <Transfer
+              validatorAddress={validatorAddress}
+              validatorsList={[
+                ...bondedValidators.validators,
+                ...unbondedValidators.validators,
+                ...unbondingValidators.validators,
+              ].filter(
+                (validator) => validator.operator_address != validatorAddress
+              )}
+            />
           )}
         </div>
       </div>
