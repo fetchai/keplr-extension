@@ -29,7 +29,7 @@ export * from "./permission";
 export * from "./phishing-list";
 export * from "./auto-lock-account";
 export * from "./analytics";
-export * from "./init-extension";
+// export * from "./init-extension";
 
 import { KVStore } from "@keplr-wallet/common";
 import { ChainInfo } from "@keplr-wallet/types";

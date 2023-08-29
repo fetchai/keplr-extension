@@ -23,6 +23,7 @@ import { TokensCard } from "./tokens-card";
 import { usePrevious } from "../../hooks";
 import { BIP44Selectable } from "./bip44-selectable";
 import { useFocusEffect } from "@react-navigation/native";
+import { Dec } from "@keplr-wallet/unit";
 
 export const HomeScreen: FunctionComponent = observer(() => {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -41,6 +42,26 @@ export const HomeScreen: FunctionComponent = observer(() => {
     chainStoreIsInitializing,
     true
   );
+
+  const account = accountStore.getAccount(chainStore.current.chainId);
+  const queries = queriesStore.get(chainStore.current.chainId);
+
+  const queryStakable = queries.queryBalances.getQueryBech32Address(
+    account.bech32Address
+  ).stakable;
+  const stakable = queryStakable.balance;
+  const queryDelegated = queries.cosmos.queryDelegations.getQueryBech32Address(
+    account.bech32Address
+  );
+  const queryUnbonding =
+    queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
+  const delegated = queryDelegated.total;
+  const unbonding = queryUnbonding.total;
+
+  const stakedSum = delegated.add(unbonding);
+  const total = stakable.add(stakedSum);
 
   const checkAndUpdateChainInfo = useCallback(() => {
     if (!chainStoreIsInitializing) {
@@ -93,9 +114,6 @@ export const HomeScreen: FunctionComponent = observer(() => {
   }, [chainStore.current.chainId]);
 
   const onRefresh = React.useCallback(async () => {
-    const account = accountStore.getAccount(chainStore.current.chainId);
-    const queries = queriesStore.get(chainStore.current.chainId);
-
     // Because the components share the states related to the queries,
     // fetching new query responses here would make query responses on all other components also refresh.
 
@@ -132,17 +150,31 @@ export const HomeScreen: FunctionComponent = observer(() => {
       <AccountCard
         containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
       />
-      <MyRewardCard
-        containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
-      />
+      {total.toDec().gt(new Dec(0)) ? (
+        <MyRewardCard
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+        />
+      ) : null}
+
       {/* There is a reason to use TokensCardRenderIfTokenExists. Check the comments on TokensCardRenderIfTokenExists */}
       <TokensCardRenderIfTokenExists />
-      <StakingInfoCard
-        containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
-      />
-      <GovernanceCard
-        containerStyle={style.flatten(["margin-bottom-card-gap"]) as ViewStyle}
-      />
+      {total.toDec().gt(new Dec(0)) ? (
+        <StakingInfoCard
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+        />
+      ) : null}
+
+      {total.toDec().gt(new Dec(0)) ? (
+        <GovernanceCard
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+        />
+      ) : null}
     </PageWithScrollViewInBottomTabView>
   );
 });

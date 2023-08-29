@@ -13,7 +13,7 @@ import {
   ExtensionRouter,
 } from "@keplr-wallet/router-extension";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { init, initExtension, ScryptParams } from "@keplr-wallet/background";
+import { init, ScryptParams } from "@keplr-wallet/background";
 import scrypt from "scrypt-js";
 import { Buffer } from "buffer/";
 
@@ -29,10 +29,10 @@ router.addGuard(ExtensionGuards.checkMessageIsInternal);
 
 const {
   initFn,
-  storeCreator,
-  chainsService,
-  keyRingService,
-  permissionService,
+  // storeCreator,
+  // chainsService,
+  // keyRingService,
+  // permissionService,
 } = init(
   router,
   (prefix: string) => new ExtensionKVStore(prefix),
@@ -74,13 +74,13 @@ const {
   }
 );
 
-initExtension(
-  router,
-  storeCreator,
-  chainsService,
-  keyRingService,
-  permissionService
-);
+// initExtension(
+//   router,
+//   storeCreator,
+//   chainsService,
+//   keyRingService,
+//   permissionService
+// );
 
 router.listen(BACKGROUND_PORT, initFn);
 
