@@ -16,6 +16,7 @@ export const Addresses = observer(({ domainName }: { domainName: string }) => {
 
   const [fetchedDetailsOfAgentAddresses, setFetchedDetailsOfAgentAddresses] =
     useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAgentDetails = async () => {
@@ -28,6 +29,7 @@ export const Addresses = observer(({ domainName }: { domainName: string }) => {
         fetchedDetails.push(agentDetails);
       }
       setFetchedDetailsOfAgentAddresses(fetchedDetails);
+      setIsLoading(false);
     };
     let agentaddressofDomain: any[] = [];
     if (record !== undefined) {
@@ -37,6 +39,14 @@ export const Addresses = observer(({ domainName }: { domainName: string }) => {
       fetchAgentDetails();
     }
   }, [domainName, current.chainId, record]);
+
+  if (isLoading) {
+    return (
+      <div className={style["loader"]}>
+        Loading agents <i className="fas fa-spinner fa-spin ml-2" />
+      </div>
+    );
+  }
 
   return (
     <div>

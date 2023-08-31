@@ -211,9 +211,9 @@ export const ANS_CONFIG: {
     validateAgentAddressContract:
       "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
-    domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
-    domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
-    agentsUrl: "http://localhost:8001/v1/almanac/agents/",
+    domainsUrl: "https://staging.agentverse.ai/v1/almanac/search/domains/",
+    domainDetailsUrl: "https://staging.agentverse.ai/v1/almanac/search/domain_details/",
+    agentsUrl: "https://staging.agentverse.ai/v1/almanac/agents/",
   },
   [CHAIN_ID_FETCHHUB]: {
     network: "mainnet",
@@ -223,9 +223,9 @@ export const ANS_CONFIG: {
     validateAgentAddressContract:
       "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
     isEditable: true,
-    domainsUrl: "http://localhost:8001/v1/almanac/search/domains/",
-    domainDetailsUrl: "http://localhost:8001/v1/almanac/search/domain_details/",
-    agentsUrl: "http://localhost:8001/v1/almanac/agents/",
+    domainsUrl: "https://staging.agentverse.ai/v1/almanac/search/domains/",
+    domainDetailsUrl: "https://staging.agentverse.ai/v1/almanac/search/domain_details/",
+    agentsUrl: "https://staging.agentverse.ai/v1/almanac/agents/",
   },
 };
 

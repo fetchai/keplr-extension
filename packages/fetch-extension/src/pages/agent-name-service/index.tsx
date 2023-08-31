@@ -70,7 +70,9 @@ export const AgentNameService = observer(() => {
       )}
       <div className={style["allDomains"]}>
         {isLoading ? (
-          <div className={style["loader"]}>Loading...</div>
+          <div className={style["loader"]}>
+            Loading domains <i className="fas fa-spinner fa-spin ml-2" />
+          </div>
         ) : filteredDomains.length === 0 ? (
           <div className={style["loader"]}>No Domains Available</div>
         ) : (

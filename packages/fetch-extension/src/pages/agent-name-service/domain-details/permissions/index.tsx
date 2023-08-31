@@ -116,7 +116,9 @@ export const Permissions: React.FC<PermissionsProps> = observer(
                 isAdmin={owners.some((owner) => owner == account.bech32Address)}
               />
             ) : (
-              <div>No Owners Available</div>
+              <div style={{ textAlign: "center", color: "white" }}>
+                No Owners Available
+              </div>
             )
           ) : activeInnerTab === "writer" ? (
             writers.length > 0 ? (
