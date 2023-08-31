@@ -118,7 +118,7 @@ export const Validator: FunctionComponent = observer(() => {
                 navigate(`/validators/${validatorAddress}/transfer`)
               }
             >
-              Tranfer
+              Transfer
             </div>
           </div>
           {operation == "stake" && (

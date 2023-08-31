@@ -147,8 +147,20 @@ export const Transfer: FunctionComponent<{
           toggle={() => setShowDropdown((value) => !value)}
           style={{ float: "right" }}
         >
-          <DropdownToggle caret style={{ boxShadow: "none" }}>
-            {selectedValidator.description.moniker}
+          <DropdownToggle
+            caret
+            style={{ boxShadow: "none", paddingRight: "0px" }}
+          >
+            <span
+              style={{
+                width: "175px",
+                wordBreak: "break-all",
+                overflow: "hidden",
+                display: "inline-flex",
+              }}
+            >
+              {selectedValidator.description.moniker}
+            </span>
           </DropdownToggle>
 
           <DropdownMenu>

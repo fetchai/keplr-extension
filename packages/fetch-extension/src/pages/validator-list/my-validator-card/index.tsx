@@ -56,8 +56,9 @@ export const MyValidatorCard = ({
       <div className={styleValidators["row"]}>
         <div className={styleValidators["col"]}>
           <span className={styleValidators["label"]}>Staked</span>
-          <span>
+          <span style={{ textTransform: "none" }}>
             {shortenMintingNumber(validator.amount.toDec().toString(), 0)}
+            {validator.amount.currency.coinDenom}
           </span>
         </div>
         <div className={styleValidators["col"]}>
