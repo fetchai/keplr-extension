@@ -6,11 +6,16 @@ import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
+import { MyValidatorsList } from "./my-validators";
 import style from "./style.module.scss";
 import { ValidatorsList } from "./validators";
-import { MyValidatorsList } from "./my-validators";
 
 type ValidatorData = Staking.Validator & { amount: CoinPretty };
+
+enum ValidatorOperation {
+  VALIDATOR = "validator",
+  MY_STAKE = "myStake",
+}
 
 export const ValidatorList: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -89,10 +94,16 @@ export const ValidatorList: FunctionComponent = observer(() => {
         <div
           className={style["tab"]}
           style={{
-            borderBottom: selectedTab == "validator" ? "2px solid #D43BF6" : "",
-            color: selectedTab == "validator" ? "#D43BF6" : "#000000",
+            borderBottom:
+              selectedTab == ValidatorOperation.VALIDATOR
+                ? "2px solid #D43BF6"
+                : "",
+            color:
+              selectedTab == ValidatorOperation.VALIDATOR
+                ? "#D43BF6"
+                : "#000000",
           }}
-          onClick={() => setSelectedTab("validator")}
+          onClick={() => setSelectedTab(ValidatorOperation.VALIDATOR)}
         >
           Validators
         </div>
@@ -100,10 +111,16 @@ export const ValidatorList: FunctionComponent = observer(() => {
         <div
           className={style["tab"]}
           style={{
-            borderBottom: selectedTab == "myStake" ? "2px solid #3B82F6" : "",
-            color: selectedTab == "myStake" ? "#3B82F6" : "#000000",
+            borderBottom:
+              selectedTab == ValidatorOperation.MY_STAKE
+                ? "2px solid #3B82F6"
+                : "",
+            color:
+              selectedTab == ValidatorOperation.MY_STAKE
+                ? "#3B82F6"
+                : "#000000",
           }}
-          onClick={() => setSelectedTab("myStake")}
+          onClick={() => setSelectedTab(ValidatorOperation.MY_STAKE)}
         >
           My Stake
         </div>
@@ -136,10 +153,10 @@ export const ValidatorList: FunctionComponent = observer(() => {
         </div>
       )}
 
-      {!loading && selectedTab === "validator" && (
+      {!loading && selectedTab === ValidatorOperation.VALIDATOR && (
         <ValidatorsList filteredValidators={filteredValidators} />
       )}
-      {!loading && selectedTab === "myStake" && (
+      {!loading && selectedTab === ValidatorOperation.MY_STAKE && (
         <MyValidatorsList filteredValidators={filteredValidators} />
       )}
     </HeaderLayout>
