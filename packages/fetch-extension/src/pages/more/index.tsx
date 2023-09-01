@@ -5,7 +5,7 @@ import { HeaderLayout } from "@layouts/index";
 import classnames from "classnames";
 import React, { FunctionComponent } from "react";
 import { Card, CardBody } from "reactstrap";
-import { FNS_CONFIG } from "../../config.ui.var";
+import { ANS_CONFIG, FNS_CONFIG } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import { IBCTransferView } from "../main/ibc-transfer";
 import { Menu } from "../main/menu";
@@ -41,7 +41,7 @@ export const MorePage: FunctionComponent = () => {
           </CardBody>
         </Card>
       )}
-      {Object.keys(FNS_CONFIG).includes(chainStore.current.chainId) && (
+      {Object.keys(ANS_CONFIG).includes(chainStore.current.chainId) && (
         <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <ANSView />
