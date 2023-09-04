@@ -251,6 +251,13 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
                     </View>
                   }
                 />
+                {data.length === 0 ? (
+                  <View style={style.flatten(["margin-top-30"]) as ViewStyle}>
+                    <Text style={style.flatten(["text-center"]) as ViewStyle}>
+                      No results found
+                    </Text>
+                  </View>
+                ) : null}
               </View>
             </View>
           );

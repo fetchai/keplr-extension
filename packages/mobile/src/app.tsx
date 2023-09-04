@@ -70,7 +70,7 @@ const ThemeStatusBar: FunctionComponent = () => {
   return (
     <StatusBar
       translucent={true}
-      backgroundColor="#FFFFFF00"
+      backgroundColor="#fff"
       barStyle={style.get("status-bar-style")}
     />
   );

@@ -190,13 +190,13 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       keyRingStore.status === KeyRingStatus.EMPTY
     ) {
       (async () => {
-        await hideSplashScreen();
         routeToRegisterOnce.current = true;
         navigation.dispatch(
           StackActions.replace("Register", {
             screen: "Register.Intro",
           })
         );
+        hideSplashScreen();
       })();
     }
   }, [keyRingStore.status, navigation]);

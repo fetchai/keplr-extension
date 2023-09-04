@@ -63,7 +63,15 @@ export const AccountCard: FunctionComponent<{
   return (
     <Card style={containerStyle}>
       <CardBody style={style.flatten(["padding-bottom-0"]) as ViewStyle}>
-        <View style={style.flatten(["flex", "items-center"])}>
+        <View
+          style={
+            style.flatten([
+              "flex",
+              "items-center",
+              "margin-bottom-20",
+            ]) as ViewStyle
+          }
+        >
           <Text
             style={
               style.flatten([
