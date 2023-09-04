@@ -67,8 +67,8 @@ export const Validator: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={operation.toLocaleUpperCase()}
-      onBackButton={() => navigate("/validators")}
+      alternativeTitle={operation}
+      onBackButton={() => navigate(-1)}
     >
       <div className={style["stakeContainer"]}>
         {validator && (
@@ -151,6 +151,7 @@ export const Validator: FunctionComponent = observer(() => {
           {operation == ValidatorOperation.TRANSFER && (
             <Transfer
               validatorAddress={validatorAddress}
+              balance={amount}
               validatorsList={[
                 ...bondedValidators.validators,
                 ...unbondedValidators.validators,

@@ -4,7 +4,7 @@ import { CoinPretty } from "@keplr-wallet/unit";
 import { HeaderLayout } from "@layouts/header-layout";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import { MyValidatorsList } from "./my-validators";
 import style from "./style.module.scss";
@@ -19,7 +19,8 @@ enum ValidatorOperation {
 
 export const ValidatorList: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const operation = location.pathname.split("/")[2];
   const [validators, setValidators] = useState<{
     [key in string]: ValidatorData;
   }>({});
@@ -28,7 +29,6 @@ export const ValidatorList: FunctionComponent = observer(() => {
   );
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState<string>();
-  const [selectedTab, setSelectedTab] = useState<string>("validator");
   const { chainStore, queriesStore, accountStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
   const account = accountStore.getAccount(chainStore.current.chainId);
@@ -95,15 +95,15 @@ export const ValidatorList: FunctionComponent = observer(() => {
           className={style["tab"]}
           style={{
             borderBottom:
-              selectedTab == ValidatorOperation.VALIDATOR
+              operation == ValidatorOperation.VALIDATOR
                 ? "2px solid #D43BF6"
                 : "",
             color:
-              selectedTab == ValidatorOperation.VALIDATOR
-                ? "#D43BF6"
-                : "#000000",
+              operation == ValidatorOperation.VALIDATOR ? "#D43BF6" : "#000000",
           }}
-          onClick={() => setSelectedTab(ValidatorOperation.VALIDATOR)}
+          onClick={() =>
+            navigate(`/validators/${ValidatorOperation.VALIDATOR}`)
+          }
         >
           Validators
         </div>
@@ -112,15 +112,13 @@ export const ValidatorList: FunctionComponent = observer(() => {
           className={style["tab"]}
           style={{
             borderBottom:
-              selectedTab == ValidatorOperation.MY_STAKE
+              operation == ValidatorOperation.MY_STAKE
                 ? "2px solid #3B82F6"
                 : "",
             color:
-              selectedTab == ValidatorOperation.MY_STAKE
-                ? "#3B82F6"
-                : "#000000",
+              operation == ValidatorOperation.MY_STAKE ? "#3B82F6" : "#000000",
           }}
-          onClick={() => setSelectedTab(ValidatorOperation.MY_STAKE)}
+          onClick={() => navigate(`/validators/${ValidatorOperation.MY_STAKE}`)}
         >
           My Stake
         </div>
@@ -153,10 +151,10 @@ export const ValidatorList: FunctionComponent = observer(() => {
         </div>
       )}
 
-      {!loading && selectedTab === ValidatorOperation.VALIDATOR && (
+      {!loading && operation === ValidatorOperation.VALIDATOR && (
         <ValidatorsList filteredValidators={filteredValidators} />
       )}
-      {!loading && selectedTab === ValidatorOperation.MY_STAKE && (
+      {!loading && operation === ValidatorOperation.MY_STAKE && (
         <MyValidatorsList filteredValidators={filteredValidators} />
       )}
     </HeaderLayout>

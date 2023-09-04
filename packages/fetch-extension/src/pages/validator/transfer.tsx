@@ -25,11 +25,13 @@ import {
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Staking } from "@keplr-wallet/stores";
+import { CoinPretty } from "@keplr-wallet/unit";
 
 export const Transfer: FunctionComponent<{
   validatorAddress: string;
   validatorsList: Staking.Validator[];
-}> = observer(({ validatorAddress, validatorsList }) => {
+  balance: CoinPretty;
+}> = observer(({ validatorAddress, validatorsList, balance }) => {
   const navigate = useNavigate();
   const { chainStore, accountStore, queriesStore } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
@@ -49,11 +51,6 @@ export const Transfer: FunctionComponent<{
 
   const intl = useIntl();
   const error = amountConfig.error;
-
-  const balance = queriesStore
-    .get(amountConfig.chainId)
-    .cosmos.queryDelegations.getQueryBech32Address(amountConfig.sender)
-    .getDelegationTo(validatorAddress);
 
   const errorText: string | undefined = useMemo(() => {
     if (error) {
@@ -148,6 +145,7 @@ export const Transfer: FunctionComponent<{
           style={{ float: "right" }}
         >
           <DropdownToggle
+            className={style["dropdown"]}
             caret
             style={{ boxShadow: "none", paddingRight: "0px" }}
           >
@@ -157,6 +155,7 @@ export const Transfer: FunctionComponent<{
                 wordBreak: "break-all",
                 overflow: "hidden",
                 display: "inline-flex",
+                justifyContent: "space-around",
               }}
             >
               {selectedValidator.description.moniker}
@@ -191,7 +190,7 @@ export const Transfer: FunctionComponent<{
 
               amountConfig.toggleIsMax();
             }}
-          >{`Balance: ${balance.trim(true).maxDecimals(18).toString()}`}</div>
+          >{`Staked: ${balance.trim(true).maxDecimals(6).toString()}`}</div>
         </Label>
         <Input
           className="form-control-alternative"
