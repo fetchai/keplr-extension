@@ -67,7 +67,7 @@ export const Validator: FunctionComponent = observer(() => {
     <HeaderLayout
       showChainName={false}
       canChangeChainInfo={false}
-      alternativeTitle={operation}
+      alternativeTitle={operation.toLocaleUpperCase()}
       onBackButton={() => navigate(-1)}
     >
       <div className={style["stakeContainer"]}>
