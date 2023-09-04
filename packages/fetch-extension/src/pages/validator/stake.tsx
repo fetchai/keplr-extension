@@ -77,6 +77,37 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
     }, [intl, error]);
 
     const notification = useNotification();
+
+    const txnResult = {
+      onBroadcasted: () => {
+        notification.push({
+          type: "primary",
+          placement: "top-center",
+          duration: 2,
+          content: `Transaction broadcasted`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      },
+      onFulfill: (tx: any) => {
+        const istxnSuccess = tx.code ? false : true;
+        notification.push({
+          type: istxnSuccess ? "success" : "danger",
+          placement: "top-center",
+          duration: 5,
+          content: istxnSuccess
+            ? `Transaction Completed`
+            : `Transaction Failed`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+        navigate("/stake-complete/" + validatorAddress);
+      },
+    };
     const stakeClicked = async () => {
       try {
         await account.cosmos.sendDelegateMsg(
@@ -85,33 +116,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
           memoConfig.memo,
           feeConfig.toStdFee(),
           undefined,
-          {
-            onBroadcasted: () => {
-              notification.push({
-                type: "primary",
-                placement: "top-center",
-                duration: 2,
-                content: `Transaction broadcasted`,
-                canDelete: true,
-                transition: {
-                  duration: 0.25,
-                },
-              });
-            },
-            onFulfill: () => {
-              notification.push({
-                type: "success",
-                placement: "top-center",
-                duration: 5,
-                content: `Transaction Completed`,
-                canDelete: true,
-                transition: {
-                  duration: 0.25,
-                },
-              });
-              navigate("/stake-complete/" + validatorAddress);
-            },
-          }
+          txnResult
         );
       } catch (e) {
         notification.push({
