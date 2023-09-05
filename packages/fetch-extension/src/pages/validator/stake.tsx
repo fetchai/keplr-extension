@@ -99,25 +99,19 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
           duration: 5,
           content: istxnSuccess
             ? `Transaction Completed`
-            : `Transaction Failed`,
+            : `Transaction Failed: ${tx.log}`,
           canDelete: true,
           transition: {
             duration: 0.25,
           },
         });
-        navigate("/stake-complete/" + validatorAddress);
       },
     };
     const stakeClicked = async () => {
       try {
-        await account.cosmos.sendDelegateMsg(
-          amountConfig.amount,
-          validatorAddress,
-          memoConfig.memo,
-          feeConfig.toStdFee(),
-          undefined,
-          txnResult
-        );
+        await account.cosmos
+          .makeDelegateTx(amountConfig.amount, validatorAddress)
+          .send(feeConfig.toStdFee(), memoConfig.memo, undefined, txnResult);
       } catch (e) {
         notification.push({
           type: "danger",
@@ -129,6 +123,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
             duration: 0.25,
           },
         });
+      } finally {
         navigate("/", { replace: true });
       }
     };

@@ -90,26 +90,22 @@ export const Unstake: FunctionComponent<{
         type: istxnSuccess ? "success" : "danger",
         placement: "top-center",
         duration: 5,
-        content: istxnSuccess ? `Transaction Completed` : `Transaction Failed`,
+        content: istxnSuccess
+          ? `Transaction Completed`
+          : `Transaction Failed: ${tx.log}`,
         canDelete: true,
         transition: {
           duration: 0.25,
         },
       });
-      navigate("/stake-complete/" + validatorAddress);
     },
   };
 
   const stakeClicked = async () => {
     try {
-      await account.cosmos.sendUndelegateMsg(
-        amountConfig.amount,
-        validatorAddress,
-        memoConfig.memo,
-        feeConfig.toStdFee(),
-        undefined,
-        txnResult
-      );
+      await account.cosmos
+        .makeUndelegateTx(amountConfig.amount, validatorAddress)
+        .send(feeConfig.toStdFee(), memoConfig.memo, undefined, txnResult);
     } catch (e) {
       notification.push({
         type: "danger",
@@ -121,6 +117,7 @@ export const Unstake: FunctionComponent<{
           duration: 0.25,
         },
       });
+    } finally {
       navigate("/", { replace: true });
     }
   };

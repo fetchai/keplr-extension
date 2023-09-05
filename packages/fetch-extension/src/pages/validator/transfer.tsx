@@ -101,27 +101,25 @@ export const Transfer: FunctionComponent<{
         type: istxnSuccess ? "success" : "danger",
         placement: "top-center",
         duration: 5,
-        content: istxnSuccess ? `Transaction Completed` : `Transaction Failed`,
+        content: istxnSuccess
+          ? `Transaction Completed`
+          : `Transaction Failed: ${tx.log}`,
         canDelete: true,
         transition: {
           duration: 0.25,
         },
       });
-      navigate("/stake-complete/" + selectedValidator.operator_address);
     },
   };
   const stakeClicked = async () => {
     try {
-      await account.cosmos.sendBeginRedelegateMsg(
-        amountConfig.amount,
-        validatorAddress,
-        selectedValidator.operator_address,
-        memoConfig.memo,
-        feeConfig.toStdFee(),
-        undefined,
-        txnResult
-      );
-      navigate("/stake-complete/" + selectedValidator.operator_address);
+      await account.cosmos
+        .makeBeginRedelegateTx(
+          amountConfig.amount,
+          validatorAddress,
+          selectedValidator.operator_address
+        )
+        .send(feeConfig.toStdFee(), memoConfig.memo, undefined, txnResult);
     } catch (e) {
       notification.push({
         type: "danger",
@@ -133,6 +131,7 @@ export const Transfer: FunctionComponent<{
           duration: 0.25,
         },
       });
+    } finally {
       navigate("/", { replace: true });
     }
   };
