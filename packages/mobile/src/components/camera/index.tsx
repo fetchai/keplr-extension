@@ -1,8 +1,15 @@
 import React, { FunctionComponent } from "react";
-import { Camera, CameraProps } from "expo-camera";
+import { Camera, CameraProps, PermissionStatus } from "expo-camera";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useStyle } from "../../styles";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CloseIcon } from "../icon";
 import Svg, { Path } from "react-native-svg";
@@ -26,6 +33,14 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
+  const handleOpenSettings = () => {
+    if (Platform.OS === "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      Linking.openSettings();
+    }
+  };
+
   if (!permission) {
     // Camera permissions are still loading
     return <View />;
@@ -33,7 +48,19 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
 
   if (!permission.granted) {
     // Camera permissions are not granted yet
-    return <CameraPermissionView onPress={requestPermission} />;
+    return (
+      <CameraPermissionView
+        onPress={async () => {
+          const permissionStatus = await requestPermission();
+          if (
+            !permission?.granted &&
+            permissionStatus.status === PermissionStatus.DENIED
+          ) {
+            handleOpenSettings();
+          }
+        }}
+      />
+    );
   }
 
   return (
