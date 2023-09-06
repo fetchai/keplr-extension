@@ -294,5 +294,6 @@ export const SignModal: FunctionComponent<{
   {
     disableSafeArea: true,
     blurBackdropOnIOS: true,
+    disableClosingOnBackdropPress: true,
   }
 );

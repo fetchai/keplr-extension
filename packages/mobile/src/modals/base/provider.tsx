@@ -140,13 +140,13 @@ AppState.addEventListener("change", (state) => {
 
 export const ModalsProvider: FunctionComponent = observer(({ children }) => {
   const hasOpenedModal =
-    globalModalRendererState.modals.find((modal) => modal.isOpen) != null;
-
+    globalModalRendererState.modals.find((modal) => modal?.props?.isOpen) !=
+    null;
   useEffect(() => {
     if (hasOpenedModal) {
       const handler = () => {
         const openedModals = globalModalRendererState.modals.filter(
-          (modal) => modal.isOpen
+          (modal) => modal.props.isOpen
         );
         // The topmost modal can be closed by the back button if this modal can be closed by pressing the backdrop.
         if (openedModals.length > 0) {
@@ -290,7 +290,7 @@ const ModalBackdrop: FunctionComponent = () => {
     <React.Fragment>
       {!modal.disableBackdrop && !closeBackdrop ? (
         <TouchableWithoutFeedback
-          disabled={modal.disableClosingOnBackdropPress}
+          // disabled={modal.disableClosingOnBackdropPress}
           onPress={() => {
             modal.close();
             setCloseBackdrop(true);

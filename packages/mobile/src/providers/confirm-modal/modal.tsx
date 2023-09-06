@@ -98,5 +98,6 @@ export const ConfirmModal: FunctionComponent<{
   },
   {
     align: "center",
+    disableClosingOnBackdropPress: true,
   }
 );

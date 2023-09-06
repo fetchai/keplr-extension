@@ -47,6 +47,7 @@ const FeeButtonsModal: FunctionComponent<{
   {
     disableSafeArea: true,
     backdropMaxOpacity: 0.5,
+    disableClosingOnBackdropPress: true,
   }
 );
 

@@ -193,12 +193,16 @@ export const AddressQRCodeModal: FunctionComponent<{
   close: () => void;
   chainId: string;
 }> = registerModal(
-  observer(({ chainId }) => {
+  observer(({ chainId, isOpen }) => {
     const { accountStore } = useStore();
 
     const account = accountStore.getAccount(chainId);
 
     const style = useStyle();
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal title="Scan QR code">

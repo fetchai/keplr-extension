@@ -178,6 +178,9 @@ export const SelectorModal: FunctionComponent<{
         </View>
       </View>
     );
+  },
+  {
+    disableClosingOnBackdropPress: true,
   }
 );
 

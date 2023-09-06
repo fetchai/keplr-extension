@@ -11,7 +11,7 @@ import {
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import { StyleSheet, Text, View, ViewStyle, StatusBar } from "react-native";
 import { useStyle } from "../../styles";
 import { RectButton } from "../rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -44,7 +44,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
           ]),
         ])}
         contentContainerStyle={{
-          paddingTop: 5,
+          paddingTop: StatusBar.currentHeight,
         }}
         {...rest}
       >
