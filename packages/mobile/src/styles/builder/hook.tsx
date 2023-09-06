@@ -209,7 +209,7 @@ export const createStyleProvider = <
         const builder = new StyleBuilder(config, themeConfigs);
 
         if (isDarkMode) {
-          builder.setTheme("dark");
+          //builder.setTheme("dark");
         }
 
         return builder;
