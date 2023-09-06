@@ -40,6 +40,7 @@ export const TokenSymbol: FunctionComponent<{
 
   currency: AppCurrency;
   chainInfo: {
+    [x: string]: any;
     stakeCurrency: Currency;
   };
   size: number;
@@ -56,6 +57,9 @@ export const TokenSymbol: FunctionComponent<{
 
   const isStakeCurrency =
     currency.coinMinimalDenom === chainInfo.stakeCurrency.coinMinimalDenom;
+
+  const currencyImageUrl =
+    chainInfo?.["_chainInfo"]?.chainSymbolImageUrl ?? currency.coinImageUrl;
 
   const deterministicNumber = useMemo(() => {
     const bytes = Hash.sha256(Buffer.from(currency.coinMinimalDenom));
@@ -99,7 +103,7 @@ export const TokenSymbol: FunctionComponent<{
         propStyle,
       ])}
     >
-      {currency.coinImageUrl ? (
+      {currencyImageUrl ? (
         <FastImage
           style={{
             width: size * imageScale,
@@ -107,7 +111,7 @@ export const TokenSymbol: FunctionComponent<{
           }}
           resizeMode={FastImage.resizeMode.contain}
           source={{
-            uri: currency.coinImageUrl,
+            uri: currencyImageUrl,
           }}
         />
       ) : (

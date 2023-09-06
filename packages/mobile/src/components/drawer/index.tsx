@@ -43,6 +43,9 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
             "dark:background-color-platinum-600",
           ]),
         ])}
+        contentContainerStyle={{
+          paddingTop: 5,
+        }}
         {...rest}
       >
         <View

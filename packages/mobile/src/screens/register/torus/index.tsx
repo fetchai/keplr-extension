@@ -9,242 +9,109 @@ import { PageWithScrollView } from "../../../components/page";
 import { TextInput } from "../../../components/input";
 import { View, ViewStyle } from "react-native";
 import { Button } from "../../../components/button";
+import Web3Auth, {
+  LOGIN_PROVIDER,
+  OPENLOGIN_NETWORK,
+} from "@web3auth/react-native-sdk";
+import * as SecureStore from "expo-secure-store";
 import * as WebBrowser from "expo-web-browser";
+import Constants, { AppOwnership } from "expo-constants";
+import * as Linking from "expo-linking";
 import { Buffer } from "buffer/";
-import FetchNodeDetails from "@toruslabs/fetch-node-details";
-import TorusUtils from "@toruslabs/torus.js";
 import { useLoadingScreen } from "../../../providers/loading-screen";
-import * as AppleAuthentication from "expo-apple-authentication";
 import { useStore } from "../../../stores";
+import { LOGIN_PROVIDER_TYPE } from "@toruslabs/openlogin-utils/dist/types/interfaces";
+import { AuthApiKey } from "../../../config"; // for using ethers.js
 
+const isEnvDevelopment = process.env["NODE_ENV"] !== "production";
+const scheme = "fetchWallet";
+const resolvedRedirectUrl =
+  Constants.appOwnership === AppOwnership.Expo ||
+  Constants.appOwnership === AppOwnership.Guest
+    ? Linking.createURL("web3auth", {})
+    : Linking.createURL("web3auth", { scheme });
+console.log("Hey", resolvedRedirectUrl);
+const web3auth = new Web3Auth(WebBrowser, SecureStore, {
+  clientId: AuthApiKey,
+  network: isEnvDevelopment
+    ? OPENLOGIN_NETWORK.TESTNET
+    : OPENLOGIN_NETWORK.CYAN,
+  useCoreKitKey: false,
+});
 interface FormData {
   name: string;
   password: string;
   confirmPassword: string;
 }
 
-const useTorusGoogleSignIn = (): {
-  privateKey: Uint8Array | undefined;
-  email: string | undefined;
-} => {
-  const [privateKey, setPrivateKey] = useState<Uint8Array | undefined>();
-  const [email, setEmail] = useState<string | undefined>();
-
-  const loadingScreen = useLoadingScreen();
-  const naviagtion = useNavigation();
-
-  useEffect(() => {
-    loadingScreen.setIsLoading(true);
-
-    (async () => {
-      try {
-        const nonce: string = Math.floor(Math.random() * 10000).toString();
-        const state = encodeURIComponent(
-          Buffer.from(
-            JSON.stringify({
-              instanceId: nonce,
-              redirectToOpener: false,
-            })
-          ).toString("base64")
-        );
-
-        const finalUrl = new URL(
-          "https://accounts.google.com/o/oauth2/v2/auth"
-        );
-        finalUrl.searchParams.append("response_type", "token id_token");
-        finalUrl.searchParams.append(
-          "client_id",
-          "413984222848-8r7u4ip9i6htppalo6jopu5qbktto6mi.apps.googleusercontent.com"
-        );
-        finalUrl.searchParams.append("state", state);
-        finalUrl.searchParams.append("scope", "profile email openid");
-        finalUrl.searchParams.append("nonce", nonce);
-        finalUrl.searchParams.append("prompt", "consent select_account");
-        finalUrl.searchParams.append(
-          "redirect_uri",
-          "https://oauth.keplr.app/google.html"
-        );
-
-        const result = await WebBrowser.openAuthSessionAsync(
-          finalUrl.href,
-          "app.keplr.oauth://"
-        );
-        if (result.type !== "success") {
-          throw new Error("Failed to get the oauth");
-        }
-
-        if (!result.url.startsWith("app.keplr.oauth://google#")) {
-          throw new Error("Invalid redirection");
-        }
-
-        const redirectedUrl = new URL(result.url);
-        const paramsString = redirectedUrl.hash;
-        const searchParams = new URLSearchParams(
-          paramsString.startsWith("#") ? paramsString.slice(1) : paramsString
-        );
-        if (state !== searchParams.get("state")) {
-          throw new Error("State doesn't match");
-        }
-        const idToken = searchParams.get("id_token");
-        const accessToken = searchParams.get("access_token");
-
-        const userResponse = await fetch(
-          "https://www.googleapis.com/userinfo/v2/me",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken || idToken}`,
-            },
-          }
-        );
-
-        if (userResponse.ok) {
-          const userInfo: {
-            picture: string;
-            email: string;
-            name: string;
-          } = await userResponse.json();
-
-          const { email } = userInfo;
-
-          const fetchNodeDetails = new FetchNodeDetails();
-          const torus = new TorusUtils({
-            network: "mainnet",
-            clientId: "0x638646503746d5456209e33a2ff5e3226d698bea",
-          }); // get your Client ID from Web3Auth Dashboard
-
-          const verifier = "fetch-google";
-          const verifierId = email.toLowerCase();
-          const { torusNodeEndpoints, torusNodePub, torusIndexes } =
-            await fetchNodeDetails.getNodeDetails({ verifier, verifierId });
-          const response = await torus.getPublicAddress(
-            torusNodeEndpoints,
-            torusNodePub,
-            { verifier, verifierId }
-          );
-
-          const data = await torus.retrieveShares(
-            torusNodeEndpoints,
-            torusIndexes,
-            "fetch-google",
-            {
-              verifier_id: email.toLowerCase(),
-            },
-            (idToken || accessToken) as string
-          );
-          if (typeof response === "string")
-            throw new Error("must use extended pub key");
-          if (
-            data.ethAddress.toLowerCase() !== response.address.toLowerCase()
-          ) {
-            throw new Error("data ethAddress does not match response address");
-          }
-
-          setPrivateKey(Buffer.from(data.privKey.toString(), "hex"));
-          setEmail(email);
-        } else {
-          throw new Error("Failed to fetch user data");
-        }
-      } catch (e) {
-        console.log(e);
-        naviagtion.goBack();
-      } finally {
-        loadingScreen.setIsLoading(false);
-      }
-    })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return {
-    privateKey,
-    email,
-  };
-};
-
 // CONTRACT: Only supported on IOS
-const useTorusAppleSignIn = (): {
+const useWeb3AuthSignIn = (
+  type: LOGIN_PROVIDER_TYPE
+): {
   privateKey: Uint8Array | undefined;
   email: string | undefined;
 } => {
   const [privateKey, setPrivateKey] = useState<Uint8Array | undefined>();
   const [email, setEmail] = useState<string | undefined>();
-
   const loadingScreen = useLoadingScreen();
-  const naviagtion = useNavigation();
+  const navigation = useNavigation();
+
+  const login = async () => {
+    try {
+      loadingScreen.setIsLoading(true);
+      if (!web3auth) {
+        console.log("Web3auth not initialized");
+        return;
+      }
+
+      console.log("Logging in");
+      await web3auth.login({
+        loginProvider: type,
+        redirectUrl: resolvedRedirectUrl,
+        mfaLevel: "default",
+        curve: "secp256k1",
+      });
+      console.log(`Logged in ${web3auth.privKey}`);
+      if (web3auth.privKey) {
+        setEmail(web3auth.userInfo()?.email);
+        setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
+        await logout();
+      }
+    } catch (e: any) {
+      console.log(e.message);
+      navigation.goBack();
+    } finally {
+      loadingScreen.setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    if (!web3auth) {
+      console.log("Web3auth not initialized");
+      return;
+    }
+
+    console.log("Logging out");
+    await web3auth.logout();
+
+    if (!web3auth.privKey) {
+      setEmail(undefined);
+      setPrivateKey(undefined);
+    }
+  };
 
   useEffect(() => {
-    loadingScreen.setIsLoading(true);
-
-    (async () => {
-      try {
-        const credential = await AppleAuthentication.signInAsync({
-          requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
-        });
-
-        if (!credential.identityToken) {
-          throw new Error("Token is not provided");
-        }
-
-        const identityTokenSplit = credential.identityToken.split(".");
-        if (identityTokenSplit.length !== 3) {
-          throw new Error("Invalid token");
-        }
-
-        const payload = JSON.parse(
-          Buffer.from(identityTokenSplit[1], "base64").toString()
-        );
-
-        const email = payload.email as string | undefined;
-        if (!email) {
-          throw new Error("Email is not provided");
-        }
-        const sub = payload.sub as string | undefined;
-        if (!sub) {
-          throw new Error("Subject is not provided");
-        }
-
-        const fetchNodeDetails = new FetchNodeDetails();
-        const torus = new TorusUtils({
-          network: "mainnet",
-          clientId: "0x638646503746d5456209e33a2ff5e3226d698bea",
-        }); // get your Client ID from Web3Auth Dashboard
-        const verifier = "fetch-apple";
-        const verifierId = "sub";
-        const { torusNodeEndpoints, torusNodePub, torusIndexes } =
-          await fetchNodeDetails.getNodeDetails({ verifier, verifierId });
-        const response = await torus.getPublicAddress(
-          torusNodeEndpoints,
-          torusNodePub,
-          { verifier, verifierId }
-        );
-
-        const data = await torus.retrieveShares(
-          torusNodeEndpoints,
-          torusIndexes,
-          "fetch-apple",
-          {
-            verifier_id: sub,
-          },
-          credential.identityToken
-        );
-        if (typeof response === "string")
-          throw new Error("must use extended pub key");
-        if (data.ethAddress.toLowerCase() !== response.address.toLowerCase()) {
-          throw new Error("data ethAddress does not match response address");
-        }
-
-        setPrivateKey(Buffer.from(data.privKey.toString(), "hex"));
-        setEmail(email);
-      } catch (e) {
-        console.log(e);
-        naviagtion.goBack();
-      } finally {
-        loadingScreen.setIsLoading(false);
+    const init = async () => {
+      await web3auth.init();
+      if (web3auth?.privKey) {
+        setEmail(web3auth.userInfo()?.email);
+        setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
+        await logout();
+      } else {
+        await login();
       }
-    })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    init();
   }, []);
 
   return {
@@ -287,11 +154,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
 
   // Below uses the hook conditionally.
   // This is a silly way, but `route.params.type` never changed in the logic.
-  const { privateKey, email } =
-    route.params.type === "apple"
-      ? useTorusAppleSignIn()
-      : useTorusGoogleSignIn();
-
+  const { privateKey, email } = useWeb3AuthSignIn(
+    route.params.type === "apple" ? LOGIN_PROVIDER.APPLE : LOGIN_PROVIDER.GOOGLE
+  );
   const {
     control,
     handleSubmit,

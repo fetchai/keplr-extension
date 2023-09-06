@@ -125,7 +125,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                   "items-center",
                 ])}
               >
-                <View>
+                <View style={{ maxWidth: "85%" }}>
                   <Text
                     style={
                       style.flatten([

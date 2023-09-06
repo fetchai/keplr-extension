@@ -1,7 +1,21 @@
 {
   "name": "mobile",
-  "displayName": "mobile",
+  "displayName": "Fetch Wallet",
   "expo": {
+    "name": "Fetch Wallet",
+    "slug": "Fetch Wallet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "fetchWallet",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.chainapsis.keplr"
+    },
+    "android": {
+      "package": "com.chainapsis.keplr"
+    },
     "plugins": [
       [
         "expo-camera",

@@ -1,13 +1,21 @@
 import React, { FunctionComponent } from "react";
-import { Camera, CameraProps } from "expo-camera";
+import { Camera, CameraProps, PermissionStatus } from "expo-camera";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useStyle } from "../../styles";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CloseIcon } from "../icon";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LoadingSpinner } from "../spinner";
+import { CameraPermissionView } from "./camera-permission-view";
 
 interface CameraProp extends CameraProps {
   containerBottom?: React.ReactElement;
@@ -22,6 +30,38 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
   const isFocused = useIsFocused();
 
   const { children, containerBottom, isLoading, ...rest } = props;
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  const handleOpenSettings = () => {
+    if (Platform.OS === "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      Linking.openSettings();
+    }
+  };
+
+  if (!permission) {
+    // Camera permissions are still loading
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return (
+      <CameraPermissionView
+        onPress={async () => {
+          const permissionStatus = await requestPermission();
+          if (
+            !permission?.granted &&
+            permissionStatus.status === PermissionStatus.DENIED
+          ) {
+            handleOpenSettings();
+          }
+        }}
+      />
+    );
+  }
 
   return (
     <React.Fragment>

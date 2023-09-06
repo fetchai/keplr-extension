@@ -118,25 +118,27 @@ export const ValidatorDetailsCard: FunctionComponent<{
               </Text>
             </View>
           </View>
-          <View style={style.flatten(["margin-bottom-14"]) as ViewStyle}>
-            <Text
-              style={
-                style.flatten([
-                  "h6",
-                  "color-text-middle",
-                  "margin-bottom-4",
-                ]) as ViewStyle
-              }
-            >
-              Description
-            </Text>
-            <Text
-              style={style.flatten(["body3", "color-text-middle"])}
-              selectable={true}
-            >
-              {validator.description.details}
-            </Text>
-          </View>
+          {validator.description.details ? (
+            <View style={style.flatten(["margin-bottom-14"]) as ViewStyle}>
+              <Text
+                style={
+                  style.flatten([
+                    "h6",
+                    "color-text-middle",
+                    "margin-bottom-4",
+                  ]) as ViewStyle
+                }
+              >
+                Description
+              </Text>
+              <Text
+                style={style.flatten(["body3", "color-text-middle"])}
+                selectable={true}
+              >
+                {validator.description.details}
+              </Text>
+            </View>
+          ) : null}
           <Button
             text="Stake"
             onPress={() => {
