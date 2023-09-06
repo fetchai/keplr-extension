@@ -88,13 +88,13 @@ const getMessageForInProgressTx = (type: string) => {
 };
 
 export const DomainDetails: FunctionComponent = observer(() => {
-  const domainName = useLocation().pathname.split("/")[3];
+  const domain = useLocation().pathname.split("/")[3];
   const navigate = useNavigate();
   const { accountStore, chainStore, queriesStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const sender = accountInfo.bech32Address;
-
+  const [domainName, setDomainName] = useState<string>(domain);
   const [domainData, setDomainData] = useState<any>({});
   const [oldDomainData, setOldDomainData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -155,14 +155,16 @@ export const DomainDetails: FunctionComponent = observer(() => {
   };
 
   useEffect(() => {
-    if (accountInfo.txTypeInProgress.includes(domainName)) {
+    if (accountInfo.txTypeInProgress.includes(domain)) {
       const type = accountInfo.txTypeInProgress.split(":")[0];
       setMessage(getMessageForInProgressTx(type));
       setIsLoading(true);
+      setDomainName("");
     } else {
+      setDomainName(domain);
       setIsLoading(false);
     }
-  }, [accountInfo.txTypeInProgress, domainName]);
+  }, [accountInfo.txTypeInProgress, domain]);
 
   return (
     <HeaderLayout
