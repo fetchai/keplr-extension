@@ -139,12 +139,14 @@ const executeTxn = async (
     {},
     {
       onFulfill: (tx: any) => {
-        console.log(tx);
+        const istxnSuccess = tx.code ? false : true;
         notification.push({
+          type: istxnSuccess ? "success" : "danger",
           placement: "top-center",
-          type: "success",
-          duration: 2,
-          content: `Transaction Successful!`,
+          duration: 5,
+          content: istxnSuccess
+            ? `Transaction Completed`
+            : `Transaction Failed`,
           canDelete: true,
           transition: {
             duration: 0.25,
