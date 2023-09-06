@@ -27,7 +27,13 @@ const router = new ExtensionRouter(ExtensionEnv.produceEnv);
 router.addGuard(ExtensionGuards.checkOriginIsValid);
 router.addGuard(ExtensionGuards.checkMessageIsInternal);
 
-const { initFn } = init(
+const {
+  initFn,
+  // storeCreator,
+  // chainsService,
+  // keyRingService,
+  // permissionService,
+} = init(
   router,
   (prefix: string) => new ExtensionKVStore(prefix),
   new ContentScriptMessageRequester(),
@@ -67,6 +73,14 @@ const { initFn } = init(
     },
   }
 );
+
+// initExtension(
+//   router,
+//   storeCreator,
+//   chainsService,
+//   keyRingService,
+//   permissionService
+// );
 
 router.listen(BACKGROUND_PORT, initFn);
 

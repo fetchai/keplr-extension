@@ -115,6 +115,7 @@ import {
   StargazeWebpageScreen,
   UmeeWebpageScreen,
   JunoswapWebpageScreen,
+  FetchhubScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
 import { UnlockScreen } from "./screens/unlock";
@@ -254,6 +255,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       },
       "Web.Junoswap": {
         upperScreenName: "Web",
+      },
+      Fetchhub: {
+        upperScreenName: "Main",
       },
     }).withParams<{
       "Register.NewMnemonic": {
@@ -443,6 +447,14 @@ export const MainNavigation: FunctionComponent = () => {
         }}
         name="Home"
         component={HomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
       />
     </Stack.Navigator>
   );

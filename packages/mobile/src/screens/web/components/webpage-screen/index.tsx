@@ -128,7 +128,7 @@ export const WebpageScreen: FunctionComponent<
   const [keplr] = useState(
     () =>
       new SuggestChainReceiverKeplr(
-        "0.10.10",
+        "0.12.12",
         "core",
         new RNMessageRequesterExternal(() => {
           if (!webviewRef.current) {
