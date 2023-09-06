@@ -450,10 +450,8 @@ export const MainNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnGradientScreenOptionsPreset,
-          headerTitle: "",
-          headerLeft: () => <HomeScreenHeaderLeft />,
-          headerRight: () => <HomeScreenHeaderRight />,
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
         }}
         name="Fetchhub"
         component={FetchhubScreen}

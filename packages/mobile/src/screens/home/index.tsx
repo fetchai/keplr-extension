@@ -11,6 +11,7 @@ import {
   AppStateStatus,
   RefreshControl,
   ScrollView,
+  View,
   ViewStyle,
 } from "react-native";
 import { useStore } from "../../stores";
@@ -151,29 +152,25 @@ export const HomeScreen: FunctionComponent = observer(() => {
         containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
       />
       {total.toDec().gt(new Dec(0)) ? (
-        <MyRewardCard
-          containerStyle={
-            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-          }
-        />
-      ) : null}
-
-      {/* There is a reason to use TokensCardRenderIfTokenExists. Check the comments on TokensCardRenderIfTokenExists */}
-      <TokensCardRenderIfTokenExists />
-      {total.toDec().gt(new Dec(0)) ? (
-        <StakingInfoCard
-          containerStyle={
-            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-          }
-        />
-      ) : null}
-
-      {total.toDec().gt(new Dec(0)) ? (
-        <GovernanceCard
-          containerStyle={
-            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-          }
-        />
+        <View>
+          <MyRewardCard
+            containerStyle={
+              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+            }
+          />
+          {/* There is a reason to use TokensCardRenderIfTokenExists. Check the comments on TokensCardRenderIfTokenExists */}
+          <TokensCardRenderIfTokenExists />
+          <StakingInfoCard
+            containerStyle={
+              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+            }
+          />
+          <GovernanceCard
+            containerStyle={
+              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+            }
+          />
+        </View>
       ) : null}
     </PageWithScrollViewInBottomTabView>
   );

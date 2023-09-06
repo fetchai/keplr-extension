@@ -12,7 +12,6 @@ import { useSmartNavigation } from "../../navigation";
 import { NetworkErrorView } from "./network-error-view";
 import { Dec } from "@keplr-wallet/unit";
 import { DoubleDoughnutChart } from "../../components/svg";
-import WalletImg from "../../components/icon/wallet.png";
 import { AddressQRCodeModal } from "../camera";
 
 export const AccountCard: FunctionComponent<{
@@ -65,7 +64,7 @@ export const AccountCard: FunctionComponent<{
     : [0, 0];
 
   const showBuyButton = () => {
-    return ["fetchhub-4"].includes(chainStore.current.chainId);
+    return false; //["fetchhub-4"].includes(chainStore.current.chainId);
   };
 
   return (
@@ -156,7 +155,10 @@ export const AccountCard: FunctionComponent<{
                 </Text>
               </View>
               <View style={style.flatten(["items-center", "justify-center"])}>
-                <Image style={{ height: 150, width: 150 }} source={WalletImg} />
+                <Image
+                  style={{ height: 150, width: 150 }}
+                  source={require("../../assets/image/wallet.png")}
+                />
               </View>
               <View style={style.flatten(["margin-20"]) as ViewStyle}>
                 <Text
