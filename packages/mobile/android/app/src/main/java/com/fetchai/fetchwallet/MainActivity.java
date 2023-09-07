@@ -1,4 +1,4 @@
-package com.chainapsis.keplr;
+package com.fetchai.fetchwallet;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

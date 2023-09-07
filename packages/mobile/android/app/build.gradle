@@ -103,10 +103,10 @@ def reactNativeArchitectures() {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    namespace = "com.chainapsis.keplr"
+    namespace = "com.fetchai.fetchwallet"
 
     defaultConfig {
-        applicationId "com.chainapsis.keplr"
+        applicationId "com.fetchai.fetchwallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

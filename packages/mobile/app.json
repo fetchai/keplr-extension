@@ -3,7 +3,7 @@
   "displayName": "Fetch Wallet",
   "expo": {
     "name": "Fetch Wallet",
-    "slug": "Fetch Wallet",
+    "slug": "fetchWallet",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "fetchWallet",
@@ -11,10 +11,10 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.chainapsis.keplr"
+      "bundleIdentifier": "com.fetchai.fetchwallet"
     },
     "android": {
-      "package": "com.chainapsis.keplr"
+      "package": "com.fetchai.fetchwallet"
     },
     "plugins": [
       [

@@ -1,4 +1,4 @@
-package com.chainapsis.keplr;
+package com.fetchai.fetchwallet;
 
 import android.content.res.Configuration;
 import androidx.annotation.NonNull;
