@@ -203,7 +203,7 @@ export const ANS_CONFIG: {
     agentsUrl: string;
   };
 } =
-  process.env.NODE_ENV == "production"
+  process.env.NODE_ENV === "production"
     ? {}
     : {
         [CHAIN_ID_DORADO]: {
