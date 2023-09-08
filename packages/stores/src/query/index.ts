@@ -8,3 +8,5 @@ export * from "./secret-wasm";
 export * from "./osmosis";
 export * from "./icns";
 export * from "./ans";
+export * from "./fns";
+export * from "./evm";

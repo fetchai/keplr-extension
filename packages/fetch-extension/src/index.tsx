@@ -105,6 +105,7 @@ import { DomainDetails } from "./pages/fetch-name-service/domain-details";
 import { AgentNameService } from "./pages/agent-name-service";
 import { AgentDomainDetails } from "./pages/agent-name-service/domain-details";
 import { RegisterAgentDomains } from "./pages/agent-name-service/register-new";
+import { BridgePage } from "./pages/bridge";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -212,6 +213,7 @@ ReactDOM.render(
                         path="/ibc-transfer"
                         element={<IBCTransferPage />}
                       />
+                      <Route path="/bridge" element={<BridgePage />} />
                       <Route path="/setting" element={<SettingPage />} />
                       <Route
                         path="/keystone/import-pubkey"
@@ -389,7 +391,10 @@ ReactDOM.render(
                         path="/setting/chat/readRecipt"
                         element={<ReadRecipt />}
                       />
-                      <Route path="/validators" element={<ValidatorList />} />
+                      <Route
+                        path="/validators/:operation"
+                        element={<ValidatorList />}
+                      />
                       <Route
                         path="/validators/:validator_address/:operation"
                         element={<Validator />}
