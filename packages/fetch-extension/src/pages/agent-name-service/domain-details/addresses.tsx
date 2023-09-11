@@ -32,11 +32,13 @@ export const Addresses = observer(({ domainName }: { domainName: string }) => {
       setIsLoading(false);
     };
     let agentaddressofDomain: any[] = [];
-    if (record !== undefined) {
+    if (record !== undefined && record.records.length) {
       agentaddressofDomain = record.records[0].agent_address.records;
     }
     if (agentaddressofDomain.length > 0) {
       fetchAgentDetails();
+    } else {
+      setIsLoading(false);
     }
   }, [domainName, current.chainId, record]);
 
@@ -50,22 +52,28 @@ export const Addresses = observer(({ domainName }: { domainName: string }) => {
 
   return (
     <div>
-      {fetchedDetailsOfAgentAddresses.map((domains, index) => {
-        const isExpired = new Date(domains.expiry).getTime() < Date.now();
-        return (
-          <div className={style["domainCard"]} key={index}>
-            <div
-              style={{ display: "flex", gap: "16px" }}
-              className={style["domainDetails"]}
-            >
-              <div>{formatAddressInANS(domains.address)}</div>
-              {isExpired ? (
-                <div className={style["expired"]}>EXPIRED</div>
-              ) : null}
+      {fetchedDetailsOfAgentAddresses.length ? (
+        fetchedDetailsOfAgentAddresses.map((domains, index) => {
+          const isExpired = new Date(domains.expiry).getTime() < Date.now();
+          return (
+            <div className={style["domainCard"]} key={index}>
+              <div
+                style={{ display: "flex", gap: "16px" }}
+                className={style["domainDetails"]}
+              >
+                <div>{formatAddressInANS(domains.address)}</div>
+                {isExpired ? (
+                  <div className={style["expired"]}>EXPIRED</div>
+                ) : null}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <div style={{ textAlign: "center", color: "white" }}>
+          No Agents Available
+        </div>
+      )}
     </div>
   );
 });

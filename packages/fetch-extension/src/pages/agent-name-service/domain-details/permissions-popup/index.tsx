@@ -69,7 +69,7 @@ export const PermissionsPopup = observer(
         });
       } catch (err) {
         setIsTrnsxLoading(false);
-        console.error("Error minting domain:", err);
+        console.error("Error updating permission:", err);
         notification.push({
           placement: "top-center",
           type: "warning",

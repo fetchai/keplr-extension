@@ -76,7 +76,7 @@ export const updateDomainPermissions = async (
     {
       update_ownership: {
         domain,
-        owner: { address: { address: owner } },
+        owner,
         permissions,
       },
     },
