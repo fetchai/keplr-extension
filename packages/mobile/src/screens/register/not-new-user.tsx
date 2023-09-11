@@ -69,84 +69,78 @@ export const RegisterNotNewUserScreen: FunctionComponent = observer(() => {
           fadeDuration={0}
         />
       </View>
-      <View
-        style={{
-          display: "none",
-        }}
-      >
-        {Platform.OS === "ios" ? (
-          <Button
-            containerStyle={
-              style.flatten([
-                "margin-bottom-20",
-                "border-width-1",
-                "border-color-gray-50",
-                "dark:border-color-platinum-400",
-              ]) as ViewStyle
-            }
-            text="Sign in with Apple"
-            leftIcon={
-              <View
-                style={
-                  style.flatten([
-                    "margin-right-6",
-                    "margin-bottom-4",
-                  ]) as ViewStyle
-                }
-              >
-                <AppleIcon />
-              </View>
-            }
-            style={style.flatten(["background-color-white"])}
-            textStyle={style.flatten(["color-black"])}
-            underlayColor={
-              style.flatten(["color-gray-50", "dark:color-gray-100"]).color
-            }
-            size="large"
-            mode="light"
-            onPress={() => {
-              analyticsStore.logEvent("OAuth sign in started", {
-                registerType: "apple",
-              });
-              smartNavigation.navigateSmart("Register.TorusSignIn", {
-                registerConfig,
-                type: "apple",
-              });
-            }}
-          />
-        ) : null}
+      {Platform.OS === "ios" ? (
         <Button
-          containerStyle={style.flatten(["margin-bottom-20"]) as ViewStyle}
-          text="Sign in with Google"
+          containerStyle={
+            style.flatten([
+              "margin-bottom-20",
+              "border-width-1",
+              "border-color-gray-50",
+              "dark:border-color-platinum-400",
+            ]) as ViewStyle
+          }
+          text="Sign in with Apple"
           leftIcon={
-            <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
-              <GoogleIcon />
+            <View
+              style={
+                style.flatten([
+                  "margin-right-6",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
+            >
+              <AppleIcon />
             </View>
+          }
+          style={style.flatten(["background-color-white"])}
+          textStyle={style.flatten(["color-black"])}
+          underlayColor={
+            style.flatten(["color-gray-50", "dark:color-gray-100"]).color
           }
           size="large"
           mode="light"
           onPress={() => {
             analyticsStore.logEvent("OAuth sign in started", {
-              registerType: "google",
+              registerType: "apple",
             });
             smartNavigation.navigateSmart("Register.TorusSignIn", {
               registerConfig,
-              type: "google",
+              type: "apple",
             });
           }}
         />
-        <Text
-          style={
-            style.flatten([
-              "margin-bottom-20",
-              "text-center",
-              "color-text-low",
-            ]) as ViewStyle
-          }
-        >
-          Powered by Web3Auth
-        </Text>
-      </View>
+      ) : null}
+      <Button
+        containerStyle={style.flatten(["margin-bottom-20"]) as ViewStyle}
+        text="Sign in with Google"
+        leftIcon={
+          <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
+            <GoogleIcon />
+          </View>
+        }
+        size="large"
+        mode="light"
+        onPress={() => {
+          analyticsStore.logEvent("OAuth sign in started", {
+            registerType: "google",
+          });
+          smartNavigation.navigateSmart("Register.TorusSignIn", {
+            registerConfig,
+            type: "google",
+          });
+        }}
+      />
+      <Text
+        style={
+          style.flatten([
+            "margin-bottom-20",
+            "text-center",
+            "color-text-low",
+          ]) as ViewStyle
+        }
+      >
+        Powered by Web3Auth
+      </Text>
       <Button
         containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
         text="Import existing wallet"

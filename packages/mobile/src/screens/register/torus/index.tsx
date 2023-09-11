@@ -24,7 +24,7 @@ import { LOGIN_PROVIDER_TYPE } from "@toruslabs/openlogin-utils/dist/types/inter
 import { AuthApiKey } from "../../../config"; // for using ethers.js
 
 const isEnvDevelopment = process.env["NODE_ENV"] !== "production";
-const scheme = "fetchWallet";
+const scheme = "keplrwallet";
 const resolvedRedirectUrl =
   Constants.appOwnership === AppOwnership.Expo ||
   Constants.appOwnership === AppOwnership.Guest
@@ -75,7 +75,6 @@ const useWeb3AuthSignIn = (
       if (web3auth.privKey) {
         setEmail(web3auth.userInfo()?.email);
         setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
-        await logout();
       }
     } catch (e: any) {
       console.log(e.message);
@@ -85,28 +84,12 @@ const useWeb3AuthSignIn = (
     }
   };
 
-  const logout = async () => {
-    if (!web3auth) {
-      console.log("Web3auth not initialized");
-      return;
-    }
-
-    console.log("Logging out");
-    await web3auth.logout();
-
-    if (!web3auth.privKey) {
-      setEmail(undefined);
-      setPrivateKey(undefined);
-    }
-  };
-
   useEffect(() => {
     const init = async () => {
       await web3auth.init();
       if (web3auth?.privKey) {
         setEmail(web3auth.userInfo()?.email);
         setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
-        await logout();
       } else {
         await login();
       }
@@ -118,6 +101,16 @@ const useWeb3AuthSignIn = (
     privateKey,
     email,
   };
+};
+
+const logoutWeb3Auth = async () => {
+  if (!web3auth) {
+    console.log("Web3auth not initialized");
+    return;
+  }
+
+  console.log("Logging out");
+  await web3auth.logout();
 };
 
 export const TorusSignInScreen: FunctionComponent = observer(() => {
@@ -200,6 +193,8 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
     } catch (e) {
       console.log(e);
       setIsCreating(false);
+    } finally {
+      await logoutWeb3Auth();
     }
   });
 
