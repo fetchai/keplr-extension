@@ -47,19 +47,31 @@ export const registerDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   agent_address: any,
   domain: string,
-  notification: ContextProps
+  notification: ContextProps,
+  approval_token?: string
 ) => {
+  const registerData: {
+    domain: string;
+    agent_address: any;
+    approval_token?: string;
+  } = {
+    domain,
+    agent_address,
+  };
+
+  if (approval_token !== undefined) {
+    registerData.approval_token = approval_token;
+  }
+
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
     ANS_CONTRACT_ADDRESS,
     {
-      register: {
-        domain,
-        agent_address,
-      },
+      register: registerData,
     },
     []
   );
+
   await executeTxn(tx, notification);
 };
 

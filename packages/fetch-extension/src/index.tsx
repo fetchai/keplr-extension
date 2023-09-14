@@ -106,7 +106,7 @@ import { BridgePage } from "./pages/bridge";
 import { AgentNameService } from "./pages/agent-name-service";
 import { AgentDomainDetails } from "./pages/agent-name-service/domain-details";
 import { RegisterAgentDomains } from "./pages/agent-name-service/register-new";
-
+import { VerifyDomain } from "./pages/agent-name-service/register-new/verify-domain";
 window.keplr = new Keplr(
   manifest.version,
   "core",
@@ -271,6 +271,10 @@ ReactDOM.render(
                       <Route
                         path="/agent-name-service/register-new/"
                         element={<RegisterAgentDomains />}
+                      />
+                      <Route
+                        path="/agent-name-service/register-new/verify-domain"
+                        element={<VerifyDomain />}
                       />
                       <Route
                         path="/setting/set-keyring"

@@ -10,6 +10,12 @@ import { useStore } from "../../../stores";
 import { PublicDomainDropdown } from "./public-domains-dropdown";
 import style from "./style.module.scss";
 import style2 from "../../fetch-name-service/domain-details/style.module.scss";
+import {
+  makeArbitrarySignDoc,
+  encodeLengthPrefixed,
+  makeVerificationString,
+} from "@utils/ans-v2-utils";
+import { createHash } from "crypto";
 
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -20,6 +26,8 @@ export const RegisterAgentDomains = observer(() => {
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
   const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
+  const [selectedWebVersion, setSelectedWebVersion] = useState("web3");
+  let signDoc: any;
 
   const notification = useNotification();
   const {
@@ -36,6 +44,17 @@ export const RegisterAgentDomains = observer(() => {
   let domainAvailablityMessage;
   let domainAvailablity = false;
 
+  function generateDomainDigest(domain: string, address: any) {
+    const hasher = createHash("sha256");
+    hasher.update(encodeLengthPrefixed(domain));
+    hasher.update(encodeLengthPrefixed(address));
+    return hasher.digest();
+  }
+
+  function makeDomainSignDoc(signerAddress: any, domain: any) {
+    const digest = generateDomainDigest(domain, signerAddress);
+    return makeArbitrarySignDoc(signerAddress, digest, current.chainId);
+  }
   function checkDomainRegistration(domain: string) {
     if (!searchValue.endsWith(`.${selectedPublicDomain}`))
       domain = `${searchValue}.${selectedPublicDomain}`;
@@ -108,9 +127,34 @@ export const RegisterAgentDomains = observer(() => {
   const handleRegisterClick = async () => {
     try {
       let domain = searchValue;
+      let verificationString;
       setIsRegisterInProgress(true);
       if (!searchValue.endsWith(`.${selectedPublicDomain}`))
         domain = `${searchValue}.${selectedPublicDomain}`;
+      if (selectedWebVersion === "web2") {
+        console.log("account", account.bech32Address);
+        signDoc = makeDomainSignDoc(account.bech32Address, domain);
+        const signedTxResponse = await window.keplr?.signAmino(
+          current.chainId,
+          account.bech32Address,
+          signDoc
+        );
+        if (signedTxResponse && signedTxResponse.signature) {
+          verificationString = makeVerificationString(
+            signedTxResponse.signature.signature,
+            account.pubKey
+          );
+          console.log("Verification String:", verificationString);
+        }
+        navigate("/agent-name-service/register-new/verify-domain", {
+          state: {
+            domainName: domain,
+            agentName: agentAddressSearchValue,
+            verificationString: verificationString,
+          },
+        });
+        return;
+      }
       await registerDomain(
         account,
         agentAddressSearchValue,
@@ -157,7 +201,27 @@ export const RegisterAgentDomains = observer(() => {
           <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       ) : null}
-      <div className={style["registerTitle"]}>Register new domain</div>
+      <div className={style["title"]}>Register new domain</div>
+      <div className={style["radioContainer"]}>
+        <label className={style["radioButton"]}>
+          <input
+            type="radio"
+            value="web3"
+            checked={selectedWebVersion === "web3"}
+            onChange={() => setSelectedWebVersion("web3")}
+          />
+          Web3
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="web2"
+            checked={selectedWebVersion === "web2"}
+            onChange={() => setSelectedWebVersion("web2")}
+          />
+          Web2
+        </label>
+      </div>
       <div
         className={style["searchContainer"]}
         style={{
