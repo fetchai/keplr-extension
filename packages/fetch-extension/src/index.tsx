@@ -106,7 +106,7 @@ import { BridgePage } from "./pages/bridge";
 import { AgentNameService } from "./pages/agent-name-service";
 import { AgentDomainDetails } from "./pages/agent-name-service/domain-details";
 import { RegisterAgentDomains } from "./pages/agent-name-service/register-new";
-import { VerifyDomain } from "./pages/agent-name-service/register-new/verify-domain";
+import { VerifyDomain } from "./pages/agent-name-service/register-new/web2/verify-domain";
 window.keplr = new Keplr(
   manifest.version,
   "core",

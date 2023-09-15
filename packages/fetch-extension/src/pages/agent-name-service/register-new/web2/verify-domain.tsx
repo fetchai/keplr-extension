@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { HeaderLayout } from "../../../new-layouts";
+import { HeaderLayout } from "../../../../new-layouts";
 import { useNavigate, useLocation } from "react-router";
-import style from "./style.module.scss";
-import { TooltipForDomainNames } from "../../fetch-name-service/domain-details";
+import style from "../style.module.scss";
+import { TooltipForDomainNames } from "../../../fetch-name-service/domain-details";
 import { useNotification } from "@components/notification";
 
 export const VerifyDomain = () => {
@@ -11,11 +11,11 @@ export const VerifyDomain = () => {
   const notification = useNotification();
   const { domainName, agentName, verificationString } = location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
-
   const handleVerifyClick = async () => {
     try {
+      //wip
     } catch (error) {
-      console.error("Error minting domain:", error);
+      console.error("Error verifying domain:", error);
       notification.push({
         placement: "top-center",
         type: "warning",
@@ -26,7 +26,7 @@ export const VerifyDomain = () => {
           duration: 0.25,
         },
       });
-      navigate("/agent-name-service/register-new");
+      // navigate("/agent-name-service/register-new");
     }
     setisVerified(false);
   };
@@ -48,8 +48,6 @@ export const VerifyDomain = () => {
       window.removeEventListener("unload", handleUnload);
     };
   }, [handleUnload]);
-
-
 
   const copyVerificationString = useCallback(
     async (verificationString) => {
