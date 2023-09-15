@@ -2,13 +2,17 @@ import LottieView from "lottie-react-native";
 import { PageWithView } from "../page";
 import { Button } from "../button";
 import { useStyle } from "../../styles";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import { StatusBar, StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { FunctionComponent } from "react";
+import { HeaderLeftButton } from "../header";
+import { HeaderBackButtonIcon } from "../header/icon";
+import { useNavigation } from "@react-navigation/native";
 
 export const CameraPermissionView: FunctionComponent<{
   onPress?: () => void;
 }> = ({ onPress }) => {
   const style = useStyle();
+  const navigation = useNavigation();
 
   return (
     <PageWithView
@@ -16,6 +20,22 @@ export const CameraPermissionView: FunctionComponent<{
       disableSafeArea
       style={style.flatten(["flex-grow-1", "items-center"])}
     >
+      <View
+        style={{
+          position: "absolute",
+          zIndex: 100,
+          top: StatusBar.currentHeight,
+          left: 8,
+        }}
+      >
+        <HeaderLeftButton
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <HeaderBackButtonIcon />
+        </HeaderLeftButton>
+      </View>
       <View style={style.flatten(["flex-3"])} />
       <View style={style.flatten(["width-300", "height-400"]) as ViewStyle}>
         <View
