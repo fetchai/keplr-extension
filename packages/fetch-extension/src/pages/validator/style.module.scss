@@ -115,6 +115,15 @@
 .dropdown:hover {
   background: aliceblue !important;
 }
+.rewards {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: bold;
+}
+.values {
+  color: #3b82f6;
+}
 
 @keyframes pathRect {
   25% {

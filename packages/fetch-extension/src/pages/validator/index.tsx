@@ -62,7 +62,12 @@ export const Validator: FunctionComponent = observer(() => {
     unbondingValidators,
     unbondedValidators,
   ]);
-
+  const inflation = queries.cosmos.queryInflation;
+  const { inflation: ARR, isFetching } = inflation;
+  const validatorCom: any = validator?.commission.commission_rates.rate;
+  const APR = parseInt(ARR.maxDecimals(4).toString()) * (1 - validatorCom);
+  const EstReward =
+    (APR * parseInt(amount.maxDecimals(4).trim(true).toString())) / 100;
   return (
     <HeaderLayout
       showChainName={false}
@@ -87,6 +92,32 @@ export const Validator: FunctionComponent = observer(() => {
               }}
             >
               {amount.maxDecimals(4).trim(true).toString()}
+            </div>
+          </div>
+          <div>
+            <div className={style["rewards"]} style={{ marginTop: "10px" }}>
+              <div>APR</div>
+              <div>
+                {!isFetching ? (
+                  <div className={style["values"]}> {APR}%</div>
+                ) : (
+                  <span style={{ fontSize: "14px" }}>
+                    <i className="fas fa-spinner fa-spin" />
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className={style["rewards"]}>
+              <div>Est Reward (Yr)</div>
+              <div>
+                {!isFetching ? (
+                  <div className={style["values"]}> {EstReward} FET</div>
+                ) : (
+                  <span style={{ fontSize: "14px" }}>
+                    <i className="fas fa-spinner fa-spin" />
+                  </span>
+                )}{" "}
+              </div>
             </div>
           </div>
           <div className={style["tabList"]}>
@@ -139,7 +170,7 @@ export const Validator: FunctionComponent = observer(() => {
                 navigate(`/validators/${validatorAddress}/transfer`)
               }
             >
-              Transfer
+              Redelegate
             </div>
           </div>
           {operation == ValidatorOperation.STAKE && (
