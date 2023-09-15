@@ -9,6 +9,7 @@ import style from "./style.module.scss";
 import { Transfer } from "./transfer";
 import { Unstake } from "./unstake";
 import { ValidatorDetails } from "./validator-details";
+import { Dec } from "@keplr-wallet/unit";
 
 enum ValidatorOperation {
   STAKE = "stake",
@@ -64,10 +65,17 @@ export const Validator: FunctionComponent = observer(() => {
   ]);
   const inflation = queries.cosmos.queryInflation;
   const { inflation: ARR, isFetching } = inflation;
-  const validatorCom: any = validator?.commission.commission_rates.rate;
-  const APR = parseInt(ARR.maxDecimals(4).toString()) * (1 - validatorCom);
-  const EstReward =
-    (APR * parseInt(amount.maxDecimals(4).trim(true).toString())) / 100;
+  const validatorCom: any = parseFloat(
+    validator?.commission.commission_rates.rate || "0"
+  );
+  const APR = ARR.mul(new Dec(1 - validatorCom));
+  const EstReward = amount.mul(APR).quo(new Dec(100));
+  console.log({
+    ARR: ARR.toString(),
+    validatorCom,
+    APR: APR.toString(),
+    EstReward: EstReward.toString(),
+  });
   return (
     <HeaderLayout
       showChainName={false}
@@ -99,7 +107,10 @@ export const Validator: FunctionComponent = observer(() => {
               <div>APR</div>
               <div>
                 {!isFetching ? (
-                  <div className={style["values"]}> {APR}%</div>
+                  <div className={style["values"]}>
+                    {" "}
+                    {APR.maxDecimals(2).trim(true).toString()}%
+                  </div>
                 ) : (
                   <span style={{ fontSize: "14px" }}>
                     <i className="fas fa-spinner fa-spin" />
@@ -111,7 +122,9 @@ export const Validator: FunctionComponent = observer(() => {
               <div>Est Reward (Yr)</div>
               <div>
                 {!isFetching ? (
-                  <div className={style["values"]}> {EstReward} FET</div>
+                  <div className={style["values"]}>
+                    {EstReward.maxDecimals(4).trim(true).toString()}
+                  </div>
                 ) : (
                   <span style={{ fontSize: "14px" }}>
                     <i className="fas fa-spinner fa-spin" />
