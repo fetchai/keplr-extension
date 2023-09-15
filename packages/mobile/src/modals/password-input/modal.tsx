@@ -79,6 +79,6 @@ export const PasswordInputModal: FunctionComponent<{
   },
   {
     disableSafeArea: true,
-    disableClosingOnBackdropPress: true,
+    // disableClosingOnBackdropPress: true,
   }
 );

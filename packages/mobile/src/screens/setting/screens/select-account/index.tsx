@@ -166,8 +166,10 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                     ) : undefined
                   }
                   onPress={async () => {
-                    analyticsStore.logEvent("Account changed");
-                    await selectKeyStore(keyStore);
+                    if (!keyStore?.selected) {
+                      analyticsStore.logEvent("Account changed");
+                      await selectKeyStore(keyStore);
+                    }
                   }}
                 />
               );

@@ -180,7 +180,7 @@ export const SelectorModal: FunctionComponent<{
     );
   },
   {
-    disableClosingOnBackdropPress: true,
+    // disableClosingOnBackdropPress: true,
   }
 );
 

@@ -138,10 +138,8 @@ export const UnlockScreen: FunctionComponent = observer(() => {
   }, [autoBiometryStatus, navigation]);
 
   useEffect(() => {
-    (async () => {
-      await hideSplashScreen();
-    })();
-  }, []);
+    if (keyRingStore.status === KeyRingStatus.LOCKED) hideSplashScreen();
+  }, [keyRingStore.status]);
 
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -196,6 +194,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             screen: "Register.Intro",
           })
         );
+        await delay(1000);
         hideSplashScreen();
       })();
     }
@@ -209,6 +208,12 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       })();
     }
   }, [keyRingStore.status, navigateToHome]);
+
+  if (
+    [KeyRingStatus.EMPTY, KeyRingStatus.NOTLOADED].includes(keyRingStore.status)
+  ) {
+    return null;
+  }
 
   return (
     <React.Fragment>
