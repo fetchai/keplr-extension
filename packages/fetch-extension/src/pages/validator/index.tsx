@@ -40,7 +40,10 @@ export const Validator: FunctionComponent = observer(() => {
     queries.cosmos.queryDelegations.getQueryBech32Address(
       account.bech32Address
     );
-  const { validator, amount } = useMemo(() => {
+  const queryRewards = queries.cosmos.queryRewards.getQueryBech32Address(
+    account.bech32Address
+  );
+  const { validator, amount, rewards } = useMemo(() => {
     const amount = queryDelegations.getDelegationTo(validatorAddress);
     const validator =
       bondedValidators.getValidator(validatorAddress) ||
@@ -50,10 +53,11 @@ export const Validator: FunctionComponent = observer(() => {
       bondedValidators.getValidatorThumbnail(validatorAddress) ||
       unbondingValidators.getValidatorThumbnail(validatorAddress) ||
       unbondedValidators.getValidatorThumbnail(validatorAddress);
-
+    const rewards = queryRewards.getRewardsOf(validatorAddress);
     return {
       validator,
       thumbnail,
+      rewards,
       amount: amount,
     };
   }, [
@@ -62,6 +66,7 @@ export const Validator: FunctionComponent = observer(() => {
     bondedValidators,
     unbondingValidators,
     unbondedValidators,
+    queryRewards,
   ]);
   const inflation = queries.cosmos.queryInflation;
   const { inflation: ARR, isFetching } = inflation;
@@ -69,13 +74,7 @@ export const Validator: FunctionComponent = observer(() => {
     validator?.commission.commission_rates.rate || "0"
   );
   const APR = ARR.mul(new Dec(1 - validatorCom));
-  const EstReward = amount.mul(APR).quo(new Dec(100));
-  console.log({
-    ARR: ARR.toString(),
-    validatorCom,
-    APR: APR.toString(),
-    EstReward: EstReward.toString(),
-  });
+  console.log(validator);
   return (
     <HeaderLayout
       showChainName={false}
@@ -119,11 +118,11 @@ export const Validator: FunctionComponent = observer(() => {
               </div>
             </div>
             <div className={style["rewards"]}>
-              <div>Est Reward (Yr)</div>
+              <div>Earned Rewards</div>
               <div>
                 {!isFetching ? (
                   <div className={style["values"]}>
-                    {EstReward.maxDecimals(4).trim(true).toString()}
+                    {rewards[0]?.maxDecimals(4).toString()}
                   </div>
                 ) : (
                   <span style={{ fontSize: "14px" }}>
