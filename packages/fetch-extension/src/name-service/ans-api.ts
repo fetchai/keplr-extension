@@ -1,5 +1,5 @@
 import { ContextProps } from "@components/notification";
-import { agentDomainNames, ownerAddresses, writerAddresses } from "./constants";
+import { toBase64 } from "@cosmjs/encoding";
 import {
   AccountSetBase,
   CosmosAccount,
@@ -7,41 +7,9 @@ import {
   MakeTxResponse,
   SecretAccount,
 } from "@keplr-wallet/stores";
+import { generateUUID } from "@utils/auth";
+import axios from "axios";
 import { ANS_CONTRACT_ADDRESS } from "../config.ui.var";
-
-export const getYourAgentDomains = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = agentDomainNames.map((domainObj) => domainObj.domain);
-      resolve(domains);
-    }, 1000);
-  });
-};
-
-export const getDomainOwners = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = ownerAddresses.map((domainObj) => domainObj);
-      resolve(domains);
-    }, 1000);
-  });
-};
-export const getDomainWriters = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = writerAddresses.map((domainObj) => domainObj);
-      resolve(domains);
-    }, 1000);
-  });
-};
-export const getAllAgentDomains = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = agentDomainNames.map((domainObj) => domainObj.domain);
-      resolve(domains);
-    }, 1000);
-  });
-};
 
 export const registerDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
@@ -95,6 +63,40 @@ export const updateDomainPermissions = async (
     []
   );
   await executeTxn(tx, notification);
+};
+
+export const verifyDomain = async (
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  chainId: string,
+  domain: string
+) => {
+  const pubkeyBuffer = Buffer.from(account.pubKey as any, "hex");
+  const payload = {
+    domain,
+    address: account.bech32Address,
+    public_key: pubkeyBuffer.toString("base64"),
+    chain_id: chainId,
+  };
+  const payloadBuffer = new Buffer(JSON.stringify(payload));
+
+  const response = await axios.post(
+    "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+    {
+      version: 1,
+      sender:
+        "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+      target:
+        "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+      session: generateUUID(), //??
+      schema_digest:
+        "model:a830ecadac9ea969c7062b316043fed2212ef1c3cc628d533d67673cf8cfb486",
+      signature: "",
+      protocol_digest: null,
+      nonce: null,
+      payload: toBase64(payloadBuffer),
+    }
+  );
+  console.log(response);
 };
 
 const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {

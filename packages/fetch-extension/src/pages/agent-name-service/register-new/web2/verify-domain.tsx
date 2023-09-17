@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
 import { TooltipForDomainNames } from "../../../fetch-name-service/domain-details";
 import { useNotification } from "@components/notification";
+import { verifyDomain } from "../../../../name-service/ans-api";
+import { useStore } from "../../../../stores";
 
 export const VerifyDomain = () => {
   const navigate = useNavigate();
@@ -11,9 +13,13 @@ export const VerifyDomain = () => {
   const notification = useNotification();
   const { domainName, agentName, verificationString } = location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
+  const { chainStore, accountStore } = useStore();
+  const current = chainStore.current;
+  const account = accountStore.getAccount(current.chainId);
+
   const handleVerifyClick = async () => {
     try {
-      //wip
+      verifyDomain(account, current.chainId, domainName);
     } catch (error) {
       console.error("Error verifying domain:", error);
       notification.push({
