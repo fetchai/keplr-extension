@@ -13,6 +13,7 @@ import { NetworkErrorView } from "./network-error-view";
 import { Dec } from "@keplr-wallet/unit";
 import { DoubleDoughnutChart } from "../../components/svg";
 import { AddressQRCodeModal } from "../camera";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const AccountCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -24,6 +25,9 @@ export const AccountCard: FunctionComponent<{
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -184,6 +188,7 @@ export const AccountCard: FunctionComponent<{
                   <Button
                     text="Buy"
                     size="large"
+                    disabled={!networkIsConnected}
                     onPress={() => smartNavigation.pushSmart("Fetchhub", {})}
                   />
                 </View>
@@ -232,7 +237,9 @@ export const AccountCard: FunctionComponent<{
                 text="Send"
                 size="small"
                 containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
-                disabled={stakable.toDec().lte(new Dec(0))}
+                disabled={
+                  !networkIsConnected || stakable.toDec().lte(new Dec(0))
+                }
                 onPress={() => {
                   smartNavigation.navigateSmart("Send", {
                     currency: chainStore.current.stakeCurrency.coinMinimalDenom,
@@ -273,7 +280,9 @@ export const AccountCard: FunctionComponent<{
                 mode="light"
                 size="small"
                 containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
-                disabled={stakable.toDec().lte(new Dec(0))}
+                disabled={
+                  !networkIsConnected || stakable.toDec().lte(new Dec(0))
+                }
                 onPress={() => {
                   smartNavigation.navigateSmart("Validator.List", {});
                 }}

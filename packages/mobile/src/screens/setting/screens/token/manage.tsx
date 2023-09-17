@@ -148,10 +148,10 @@ export const ManageTokenItem: FunctionComponent<{
           onPress={async () => {
             if (
               await confirmModal.confirm({
-                title: "Disable this token?",
+                title: "Delete this token?",
                 paragraph:
                   "You won't see this token in your wallet until it is added again",
-                yesButtonText: "Disable",
+                yesButtonText: "Delete",
                 noButtonText: "Cancel",
               })
             ) {

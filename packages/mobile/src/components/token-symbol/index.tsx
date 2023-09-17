@@ -41,6 +41,7 @@ export const TokenSymbol: FunctionComponent<{
   currency: AppCurrency;
   chainInfo: {
     [x: string]: any;
+    chainName: string;
     stakeCurrency: Currency;
   };
   size: number;
@@ -116,7 +117,7 @@ export const TokenSymbol: FunctionComponent<{
         />
       ) : (
         <VectorCharacter
-          char={currency.coinDenom[0]}
+          char={chainInfo.chainName[0]}
           height={Math.floor(size * 0.35)}
           color="white"
         />

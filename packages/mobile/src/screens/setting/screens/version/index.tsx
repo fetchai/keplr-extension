@@ -6,7 +6,7 @@ import codePush from "react-native-code-push";
 import { codeBundleId } from "../../../../../bugsnag.env";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-export const KeplrVersionScreen: FunctionComponent = () => {
+export const FetchVersionScreen: FunctionComponent = () => {
   const [appVersion] = useState(() => DeviceInfo.getVersion());
   const [buildNumber] = useState(() => DeviceInfo.getBuildNumber());
   // "undefined" means that it is on fetching,
@@ -14,12 +14,12 @@ export const KeplrVersionScreen: FunctionComponent = () => {
   const [currentCodeVersion, setCurrentCodeVersion] = useState<
     string | undefined
   >(undefined);
-  const [latestCodeVersion, setLatestCodeVersion] = useState<
+  /* const [latestCodeVersion, setLatestCodeVersion] = useState<
     string | undefined
   >(undefined);
   const [pendingCodeVersion, setPendingCodeVersion] = useState<
     string | undefined
-  >(undefined);
+  >(undefined);*/
 
   useEffect(() => {
     codePush.getUpdateMetadata(codePush.UpdateState.RUNNING).then((update) => {
@@ -30,7 +30,7 @@ export const KeplrVersionScreen: FunctionComponent = () => {
       }
     });
 
-    codePush.getUpdateMetadata(codePush.UpdateState.LATEST).then((update) => {
+    /*codePush.getUpdateMetadata(codePush.UpdateState.LATEST).then((update) => {
       if (update) {
         setLatestCodeVersion(update.label);
       } else {
@@ -44,7 +44,7 @@ export const KeplrVersionScreen: FunctionComponent = () => {
       } else {
         setPendingCodeVersion("");
       }
-    });
+    });*/
   }, []);
 
   const parseVersion = (version: string | undefined) => {
@@ -100,7 +100,7 @@ export const KeplrVersionScreen: FunctionComponent = () => {
       {codeBundleId ? (
         <SettingItem label="Code Bundle ID" paragraph={codeBundleId} />
       ) : null}
-      <SettingSectionTitle title="Remote" />
+      {/* <SettingSectionTitle title="Remote" />
       <SettingItem
         label="Latest Code Version"
         paragraph={parseVersion(latestCodeVersion)}
@@ -109,7 +109,7 @@ export const KeplrVersionScreen: FunctionComponent = () => {
       <SettingItem
         label="Pending Code Version"
         paragraph={parseVersion(pendingCodeVersion)}
-      />
+      />*/}
     </PageWithScrollViewInBottomTabView>
   );
 };

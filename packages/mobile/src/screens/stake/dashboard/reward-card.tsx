@@ -7,6 +7,7 @@ import { useStyle } from "../../../styles";
 import { Button } from "../../../components/button";
 import { Dec } from "@keplr-wallet/unit";
 import { useSmartNavigation } from "../../../navigation";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const MyRewardCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -31,7 +32,9 @@ export const MyRewardCard: FunctionComponent<{
   const smartNavigation = useSmartNavigation();
 
   const [isSendingTx, setIsSendingTx] = useState(false);
-
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
   return (
     <Card style={containerStyle}>
       <CardBody>
@@ -135,6 +138,7 @@ export const MyRewardCard: FunctionComponent<{
               }
             }}
             disabled={
+              !networkIsConnected ||
               !account.isReadyToSendMsgs ||
               pendingStakableReward.toDec().equals(new Dec(0)) ||
               queryReward.pendingRewardValidatorAddresses.length === 0

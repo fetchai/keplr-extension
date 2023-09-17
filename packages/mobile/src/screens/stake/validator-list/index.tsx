@@ -66,12 +66,12 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
       case "Name":
         data.sort((val1, val2) => {
           if (!val1.description.moniker) {
-            return 1;
-          }
-          if (!val2.description.moniker) {
             return -1;
           }
-          return val1.description.moniker > val2.description.moniker ? -1 : 1;
+          if (!val2.description.moniker) {
+            return 1;
+          }
+          return val1.description.moniker > val2.description.moniker ? 1 : -1;
         });
         break;
       case "Voting Power":

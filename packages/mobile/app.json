@@ -3,10 +3,10 @@
   "displayName": "Fetch Wallet",
   "expo": {
     "name": "Fetch Wallet",
-    "slug": "fetchWallet",
+    "slug": "FetchWallet",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "fetchWallet",
+    "scheme": "fetchwallet",
     "assetBundlePatterns": [
       "**/*"
     ],

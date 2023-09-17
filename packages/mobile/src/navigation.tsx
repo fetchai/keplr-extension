@@ -98,7 +98,7 @@ import {
   HeaderWalletConnectIcon,
 } from "./components/header/icon";
 import { BlurredBottomTabBar } from "./components/bottom-tabbar";
-import { KeplrVersionScreen } from "./screens/setting/screens/version";
+import { FetchVersionScreen } from "./screens/setting/screens/version";
 import {
   SettingAddTokenScreen,
   SettingManageTokensScreen,
@@ -441,7 +441,7 @@ export const MainNavigation: FunctionComponent = () => {
       <Stack.Screen
         options={{
           ...HeaderOnGradientScreenOptionsPreset,
-          headerTitle: "",
+          title: "",
           headerLeft: () => <HomeScreenHeaderLeft />,
           headerRight: () => <HomeScreenHeaderRight />,
         }}
@@ -797,7 +797,7 @@ export const SettingStackScreen: FunctionComponent = () => {
           title: "Version",
         }}
         name="Setting.Version"
-        component={KeplrVersionScreen}
+        component={FetchVersionScreen}
       />
     </Stack.Navigator>
   );

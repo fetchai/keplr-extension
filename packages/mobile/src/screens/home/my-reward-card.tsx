@@ -7,6 +7,7 @@ import { Dec } from "@keplr-wallet/unit";
 import { ViewStyle } from "react-native";
 import { useStore } from "../../stores";
 import { useSmartNavigation } from "../../navigation";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const MyRewardCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -25,6 +26,9 @@ export const MyRewardCard: FunctionComponent<{
   const stakingReward = queryReward.stakableReward;
 
   const [isSendingTx, setIsSendingTx] = useState(false);
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   return (
     <Card style={containerStyle}>
@@ -93,6 +97,7 @@ export const MyRewardCard: FunctionComponent<{
         buttonMode="light"
         buttonContainerStyle={style.flatten(["min-width-72"]) as ViewStyle}
         buttonDisabled={
+          !networkIsConnected ||
           !account.isReadyToSendMsgs ||
           stakingReward.toDec().equals(new Dec(0)) ||
           queryReward.pendingRewardValidatorAddresses.length === 0

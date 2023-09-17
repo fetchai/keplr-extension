@@ -7,7 +7,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-export const useSpinAnimated = () => {
+export const useSpinAnimated = (isRefreshing: boolean = true) => {
   const spin = useSharedValue(0);
 
   // Define the animation configuration
@@ -25,7 +25,9 @@ export const useSpinAnimated = () => {
 
   // Trigger the initial animation
   useMemo(() => {
-    startSpin();
+    if (isRefreshing) {
+      startSpin();
+    }
   }, []);
 
   // Define the animated style

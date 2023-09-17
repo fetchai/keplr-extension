@@ -24,13 +24,13 @@ import { LOGIN_PROVIDER_TYPE } from "@toruslabs/openlogin-utils/dist/types/inter
 import { AuthApiKey } from "../../../config"; // for using ethers.js
 
 const isEnvDevelopment = process.env["NODE_ENV"] !== "production";
-const scheme = "keplrwallet";
+const scheme = "fetchwallet";
 const resolvedRedirectUrl =
   Constants.appOwnership === AppOwnership.Expo ||
   Constants.appOwnership === AppOwnership.Guest
     ? Linking.createURL("web3auth", {})
     : Linking.createURL("web3auth", { scheme });
-console.log("Hey", resolvedRedirectUrl);
+
 const web3auth = new Web3Auth(WebBrowser, SecureStore, {
   clientId: AuthApiKey,
   network: isEnvDevelopment

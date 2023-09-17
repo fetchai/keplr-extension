@@ -14,6 +14,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useSpinAnimated } from "../../components/spinner";
 
 export const NetworkErrorView: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
@@ -94,7 +95,7 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
   ]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // const spinAnimated = useSpinAnimated(isRefreshing);
+  const spinAnimated = useSpinAnimated(isRefreshing);
 
   useEffect(() => {
     if (isRefreshing) {
@@ -207,15 +208,7 @@ export const NetworkErrorView: FunctionComponent = observer(() => {
               ]) as ViewStyle
             }
           >
-            <Animated.View
-            // style={{
-            //   transform: [
-            //     {
-            //       rotate: spinAnimated,
-            //     },
-            //   ],
-            // }}
-            >
+            <Animated.View style={spinAnimated}>
               <RefreshIcon color={style.get("color-red-300").color} size={24} />
             </Animated.View>
           </TouchableOpacity>
