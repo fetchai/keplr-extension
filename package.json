@@ -110,21 +110,26 @@
     "node-gyp": "^9.3.1",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.4",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "semver": "^7.3.5",
     "ts-jest": "^29.1.1",
     "typescript": "^4.9.5",
     "zx": "^4.2.0"
   },
   "resolutions": {
-    "react": "18.0.0",
+    "react": "18.2.0",
     "@types/react": "^16.14.4",
     "@types/react-dom": "^16.9.11",
     "@iov/crypto": "2.1.0",
     "axios": "^0.27.2",
     "libsodium": "file:./etc/noop",
     "libsodium-wrappers": "file:./etc/noop",
-    "node-sass": "file:./etc/noop"
+    "node-sass": "file:./etc/noop",
+    "@ethereumjs/common": "2.6.2"
+  },
+  "dependencies": {
+    "@azoyalabs/fns-client": "0.0.3",
+    "@cosmjs/cosmwasm-stargate": "^0.31.0"
   }
 }

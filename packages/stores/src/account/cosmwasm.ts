@@ -217,7 +217,7 @@ export class CosmwasmAccountImpl {
 
   makeExecuteContractTx(
     // This arg can be used to override the type of sending tx if needed.
-    type: keyof CosmwasmMsgOpts | "unknown" = "executeWasm",
+    type: string | keyof CosmwasmMsgOpts | "unknown" = "executeWasm",
     contractAddress: string,
     // eslint-disable-next-line @typescript-eslint/ban-types
     obj: object,
@@ -317,6 +317,42 @@ export class CosmwasmAccountImpl {
       },
       signOptions,
       onTxEvents
+    );
+  }
+
+  makeNativeBridgeTx(amount: string, recipient: string) {
+    const actualAmount = (() => {
+      let dec = new Dec(amount);
+      dec = dec.mul(DecUtils.getPrecisionDec(18));
+      return dec.truncate().toString();
+    })();
+
+    return this.makeExecuteContractTx(
+      "nativeBridgeSend",
+      this.queries.cosmwasm.queryNativeFetBridge.nativeBridgeAddress,
+      {
+        swap: { destination: recipient },
+      },
+      [
+        {
+          denom: "afet",
+          amount: actualAmount,
+        },
+      ],
+      (tx) => {
+        if (tx.code == null || tx.code === 0) {
+          // After succeeding to send token, refresh the balance.
+          const queryBalance = this.queries.queryBalances
+            .getQueryBech32Address(this.base.bech32Address)
+            .balances.find((bal) => {
+              return bal.currency.coinDenom === "FET";
+            });
+
+          if (queryBalance) {
+            queryBalance.fetch();
+          }
+        }
+      }
     );
   }
 

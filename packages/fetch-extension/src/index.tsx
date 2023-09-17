@@ -100,6 +100,9 @@ import { ActivityPage } from "./pages/activity";
 import { Proposals } from "./pages/proposals";
 import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
+import { FetchnameService } from "./pages/fetch-name-service";
+import { DomainDetails } from "./pages/fetch-name-service/domain-details";
+import { BridgePage } from "./pages/bridge";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -109,9 +112,9 @@ window.keplr = new Keplr(
 
 // Make sure that icon file will be included in bundle
 require("@assets/logo-256.svg");
-require("./public/assets/icon/icon-16.png");
-require("./public/assets/icon/icon-48.png");
-require("./public/assets/icon/icon-128.png");
+require("@assets/icon/icon-16.png");
+require("@assets/icon/icon-48.png");
+require("@assets/icon/icon-128.png");
 
 configure({
   enforceActions: "always", // Make mobx to strict mode.
@@ -207,6 +210,7 @@ ReactDOM.render(
                         path="/ibc-transfer"
                         element={<IBCTransferPage />}
                       />
+                      <Route path="/bridge" element={<BridgePage />} />
                       <Route path="/setting" element={<SettingPage />} />
                       <Route
                         path="/keystone/import-pubkey"
@@ -244,6 +248,14 @@ ReactDOM.render(
                       <Route
                         path="/setting/export-to-mobile"
                         element={<ExportToMobilePage />}
+                      />
+                      <Route
+                        path="/fetch-name-service/:tab"
+                        element={<FetchnameService />}
+                      />
+                      <Route
+                        path="/fetch-name-service/domain-details/:domain"
+                        element={<DomainDetails />}
                       />
                       <Route
                         path="/setting/set-keyring"
@@ -364,7 +376,10 @@ ReactDOM.render(
                         path="/setting/chat/readRecipt"
                         element={<ReadRecipt />}
                       />
-                      <Route path="/validators" element={<ValidatorList />} />
+                      <Route
+                        path="/validators/:operation"
+                        element={<ValidatorList />}
+                      />
                       <Route
                         path="/validators/:validator_address/:operation"
                         element={<Validator />}

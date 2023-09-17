@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 
-import styleMenu from "./menu.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
+import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
@@ -44,7 +44,10 @@ export const Menu: FunctionComponent = observer(() => {
         <FormattedMessage id="main.menu.guide" />
       </a>
       {(chainStore.current.features ?? []).find(
-        (feature) => feature === "cosmwasm" || feature === "secretwasm"
+        (feature) =>
+          feature === "cosmwasm" ||
+          feature === "secretwasm" ||
+          feature === "evm"
       ) ? (
         <div
           className={styleMenu["item"]}
@@ -58,7 +61,10 @@ export const Menu: FunctionComponent = observer(() => {
         </div>
       ) : null}
       {(chainStore.current.features ?? []).find(
-        (feature) => feature === "cosmwasm" || feature === "secretwasm"
+        (feature) =>
+          feature === "cosmwasm" ||
+          feature === "secretwasm" ||
+          feature === "evm"
       ) ? (
         <div
           className={styleMenu["item"]}
