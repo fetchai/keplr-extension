@@ -77,7 +77,6 @@ export const Validator: FunctionComponent = observer(() => {
     validator?.commission.commission_rates.rate || "0"
   );
   const APR = ARR.mul(new Dec(1 - validatorCom));
-  console.log(rewards);
 
   const handleClaim = async () => {
     await account.cosmos.sendWithdrawDelegationRewardMsgs(
@@ -138,7 +137,6 @@ export const Validator: FunctionComponent = observer(() => {
               <div>
                 {!isFetching ? (
                   <div className={style["values"]}>
-                    {" "}
                     {APR.maxDecimals(2).trim(true).toString()}%
                   </div>
                 ) : (
