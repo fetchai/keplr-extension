@@ -66,7 +66,7 @@ export const ValidatorDetails = ({
       )}
       <div className={styleValidators["details"]}>
         <div className={styleValidators["col"]}>
-          <span className={styleValidators["label"]}>Rate</span>
+          <span className={styleValidators["label"]}>Commission Rate</span>
           <span>
             {commisionRate}% ({maxCommisionRate}% Max)
           </span>
@@ -88,6 +88,11 @@ export const ValidatorDetails = ({
       >
         View in Explorer for more Details
       </a>
+      {validator.jailed && (
+        <div className={styleValidators["jailed"]}>
+          This validator is currently jailed. Redelegate your tokens.
+        </div>
+      )}
     </div>
   );
 };
