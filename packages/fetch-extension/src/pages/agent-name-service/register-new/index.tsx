@@ -113,6 +113,7 @@ export const RegisterAgentDomains = observer(() => {
       if (!searchValue.endsWith(`.${selectedPublicDomain}`))
         domain = `${searchValue}.${selectedPublicDomain}`;
       await registerDomain(
+        current.chainId,
         account,
         agentAddressSearchValue,
         domain,

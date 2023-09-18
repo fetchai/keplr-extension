@@ -54,6 +54,7 @@ export const PermissionsPopup = observer(
         setIsTrnsxLoading(true);
         setIsPopupOpen(false);
         await updateDomainPermissions(
+          current.chainId,
           account,
           sendConfigs.recipientConfig.recipient,
           domain,

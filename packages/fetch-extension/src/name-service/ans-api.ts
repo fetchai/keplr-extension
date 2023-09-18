@@ -9,12 +9,13 @@ import {
 } from "@keplr-wallet/stores";
 import { generateUUID } from "@utils/auth";
 import axios from "axios";
-import { ANS_CONTRACT_ADDRESS } from "../config.ui.var";
+import { ANS_CONFIG } from "../config.ui.var";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { SignMessagingPayload } from "@keplr-wallet/background/build/messaging";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 
 export const registerDomain = async (
+  chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   agent_address: any,
   domain: string,
@@ -36,7 +37,7 @@ export const registerDomain = async (
 
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
-    ANS_CONTRACT_ADDRESS,
+    ANS_CONFIG[chainId].contractAddress,
     {
       register: registerData,
     },
@@ -47,6 +48,7 @@ export const registerDomain = async (
 };
 
 export const updateDomainPermissions = async (
+  chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   owner: any,
   domain: string,
@@ -55,7 +57,7 @@ export const updateDomainPermissions = async (
 ) => {
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
-    ANS_CONTRACT_ADDRESS,
+    ANS_CONFIG[chainId].contractAddress,
     {
       update_ownership: {
         domain,
