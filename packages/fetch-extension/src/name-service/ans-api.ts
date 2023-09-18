@@ -1,5 +1,5 @@
 import { ContextProps } from "@components/notification";
-import { toBase64 } from "@cosmjs/encoding";
+import { toBase64, toBech32 } from "@cosmjs/encoding";
 import {
   AccountSetBase,
   CosmosAccount,
@@ -10,6 +10,9 @@ import {
 import { generateUUID } from "@utils/auth";
 import axios from "axios";
 import { ANS_CONTRACT_ADDRESS } from "../config.ui.var";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { SignMessagingPayload } from "@keplr-wallet/background/build/messaging";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 
 export const registerDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
@@ -70,30 +73,45 @@ export const verifyDomain = async (
   chainId: string,
   domain: string
 ) => {
-  const pubkeyBuffer = Buffer.from(account.pubKey as any, "hex");
-  const payload = {
+  const sender = toBech32("agent", account.pubKey); //length fix is needed
+  const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
+
+  const payloadJson = {
     domain,
-    address: account.bech32Address,
-    public_key: pubkeyBuffer.toString("base64"),
+    address: sender,
+    public_key: toBase64(account.pubKey),
     chain_id: chainId,
   };
-  const payloadBuffer = new Buffer(JSON.stringify(payload));
+  const payload = toBase64(Buffer.from(JSON.stringify(payloadJson)));
+
+  const requester = new InExtensionMessageRequester();
+  const signature = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new SignMessagingPayload(chainId, payload)
+  );
+  // const signature = toBech32("sig", Buffer.from(payload));
 
   const response = await axios.post(
     "https://oracle.sandbox-london-b.fetch-ai.com/submit",
     {
       version: 1,
-      sender:
-        "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+      sender,
       target:
         "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
-      session: generateUUID(), //??
+      session: generateUUID(),
       schema_digest:
         "model:a830ecadac9ea969c7062b316043fed2212ef1c3cc628d533d67673cf8cfb486",
-      signature: "",
+      signature,
       protocol_digest: null,
       nonce: null,
-      payload: toBase64(payloadBuffer),
+      payload,
+      expires,
+    },
+    {
+      headers: {
+        "content-type": "application/json",
+        "x-uagents-connection": "sync",
+      },
     }
   );
   console.log(response);
