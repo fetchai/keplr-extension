@@ -10,7 +10,8 @@ import { useStore } from "../../../stores";
 import { PublicDomainDropdown } from "./public-domains-dropdown";
 import style from "./style.module.scss";
 import style2 from "../../fetch-name-service/domain-details/style.module.scss";
-
+import { Web2 } from "./web2";
+import { AgentAddressInput } from "./agent-input";
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -20,6 +21,7 @@ export const RegisterAgentDomains = observer(() => {
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
   const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
+  const [selectedWebVersion, setSelectedWebVersion] = useState("web3");
 
   const notification = useNotification();
   const {
@@ -88,7 +90,6 @@ export const RegisterAgentDomains = observer(() => {
       return;
     }
   }
-
   checkDomainRegistration(searchValue);
 
   const handleInputChange = (e: any) => {
@@ -112,6 +113,7 @@ export const RegisterAgentDomains = observer(() => {
       if (!searchValue.endsWith(`.${selectedPublicDomain}`))
         domain = `${searchValue}.${selectedPublicDomain}`;
       await registerDomain(
+        current.chainId,
         account,
         agentAddressSearchValue,
         domain,
@@ -157,117 +159,105 @@ export const RegisterAgentDomains = observer(() => {
           <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       ) : null}
-      <div className={style["registerTitle"]}>Register new domain</div>
-      <div
-        className={style["searchContainer"]}
-        style={{
-          border:
-            !domainAvailablity &&
-            searchValue !== "" &&
-            searchValue.includes(".")
-              ? "1px solid var(--red-red-400, #D38989)"
-              : "1px solid rgba(255, 255, 255, 0.4)",
-        }}
-      >
-        {isLoading ? (
-          <i
-            style={{ color: "white", width: "10px" }}
-            className="fas fa-spinner fa-spin ml-2"
+      <div className={style["title"]}>Register new domain</div>
+      <div className={style["radioContainer"]}>
+        <label className={style["radioButton"]}>
+          <input
+            type="radio"
+            value="web3"
+            checked={selectedWebVersion === "web3"}
+            onChange={() => setSelectedWebVersion("web3")}
           />
-        ) : searchValue === "" ? (
-          <img src={searchButton} className={style["searchIcon"]} alt="" />
-        ) : !domainAvailablity ? (
-          <div className={style["domainTakenIcon"]}>!</div>
-        ) : (
-          <img
-            src={require("@assets/svg/agent-domain-available.svg")}
-            className={style["availableIcon"]}
-            alt=""
+          Web3
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="web2"
+            checked={selectedWebVersion === "web2"}
+            onChange={() => setSelectedWebVersion("web2")}
           />
-        )}
-        <input
-          className={style["searchInput"]}
-          placeholder="Search a domain"
-          type="text"
-          value={searchValue}
-          onChange={handleInputChange}
-        />
-        <PublicDomainDropdown
-          publicDomains={publicDomains}
-          selectedPublicDomain={selectedPublicDomain}
-          setSelectedPublicDomain={setSelectedPublicDomain}
-        />
+          Web2
+        </label>
       </div>
-      {!domainAvailablity && searchValue !== "" && (
-        <div
-          style={{ position: "absolute", top: "283px" }}
-          className={style["domainTakenText"]}
-        >
-          <div className={style["domainTakenIcon2"]}>!</div>
-          {domainAvailablityMessage}
-        </div>
-      )}
-      <div
-        className={style["searchContainer"]}
-        style={{
-          border:
-            !isValidAgentAddress && agentAddressSearchValue !== ""
-              ? "1px solid var(--red-red-400, #D38989)"
-              : "1px solid rgba(255, 255, 255, 0.4)",
-          position: "absolute",
-          top: "315px",
-        }}
-      >
-        {" "}
-        {isLoading ? (
-          <i
-            style={{ color: "white", width: "10px" }}
-            className="fas fa-spinner fa-spin ml-2"
+      {selectedWebVersion === "web3" ? (
+        <div>
+          <div
+            className={style["searchContainer"]}
+            style={{
+              border:
+                !domainAvailablity &&
+                searchValue !== "" &&
+                searchValue.includes(".")
+                  ? "1px solid var(--red-red-400, #D38989)"
+                  : "1px solid rgba(255, 255, 255, 0.4)",
+            }}
+          >
+            {isLoading ? (
+              <i
+                style={{ color: "white", width: "10px" }}
+                className="fas fa-spinner fa-spin ml-2"
+              />
+            ) : searchValue === "" ? (
+              <img src={searchButton} className={style["searchIcon"]} alt="" />
+            ) : !domainAvailablity ? (
+              <div className={style["domainTakenIcon"]}>!</div>
+            ) : (
+              <img
+                src={require("@assets/svg/agent-domain-available.svg")}
+                className={style["availableIcon"]}
+                alt=""
+              />
+            )}
+            <input
+              className={style["searchInput"]}
+              placeholder="Search a domain"
+              type="text"
+              value={searchValue}
+              onChange={handleInputChange}
+            />
+            <PublicDomainDropdown
+              publicDomains={publicDomains}
+              selectedPublicDomain={selectedPublicDomain}
+              setSelectedPublicDomain={setSelectedPublicDomain}
+            />
+          </div>
+          {!domainAvailablity && searchValue !== "" && (
+            <div
+              style={{ position: "absolute", top: "283px" }}
+              className={style["domainTakenText"]}
+            >
+              <div className={style["domainTakenIcon2"]}>!</div>
+              {domainAvailablityMessage}
+            </div>
+          )}
+
+          <AgentAddressInput
+            agentAddressSearchValue={agentAddressSearchValue}
+            handleAgentAddressInputChange={handleAgentAddressInputChange}
+            isValidAgentAddress={isValidAgentAddress}
+            domainAvailablity={domainAvailablity}
+            searchValue={searchValue}
+            isLoading={isLoading}
           />
-        ) : searchValue === "" ? (
-          <img src={searchButton} className={style["searchIcon"]} alt="" />
-        ) : isValidAgentAddress ? (
-          <img
-            src={require("@assets/svg/agent-domain-available.svg")}
-            className={style["availableIcon"]}
-            alt=""
-          />
-        ) : (
-          <div className={style["domainTakenIcon"]}>!</div>
-        )}
-        <input
-          className={style["searchInput"]}
-          placeholder="Enter Agent Address"
-          type="text"
-          style={{ width: "244px" }}
-          value={agentAddressSearchValue}
-          onChange={handleAgentAddressInputChange}
-          disabled={!domainAvailablity || searchValue === ""}
-        />
-      </div>
-      {!isValidAgentAddress && agentAddressSearchValue !== "" && (
-        <div
-          style={{ position: "absolute", top: "387px" }}
-          className={style["domainTakenText"]}
-        >
-          <div className={style["domainTakenIcon2"]}>!</div>Agent name does not
-          exist
+          <button
+            className={style["registerButton"]}
+            disabled={!domainAvailablity || !isValidAgentAddress}
+            onClick={() => {
+              handleRegisterClick();
+            }}
+          >
+            Register{" "}
+            <img
+              src={require("@assets/svg/arrow-right.svg")}
+              className={style["registerIcon"]}
+              alt=""
+            />
+          </button>
         </div>
+      ) : (
+        <Web2 />
       )}
-      <button
-        className={style["registerButton"]}
-        disabled={!domainAvailablity || !isValidAgentAddress}
-        onClick={() => {
-          handleRegisterClick();
-        }}
-      >
-        Register{" "}
-        <img
-          src={require("@assets/svg/arrow-right.svg")}
-          className={style["registerIcon"]}
-          alt=""
-        />
-      </button>
     </HeaderLayout>
   );
 });

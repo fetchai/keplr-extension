@@ -2,10 +2,10 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { ANS_CONFIG } from "../../config.ui.var";
 import { HeaderLayout } from "../../new-layouts";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { getAllDomainsbyAddress } from "../../name-service/ans-api";
 
 interface FetchedDomain {
   domain_name: string;
@@ -24,12 +24,12 @@ export const AgentNameService = observer(() => {
   useEffect(() => {
     const init = async () => {
       try {
-        const fetchDomains = await fetch(
-          `${ANS_CONFIG[current.chainId].domainsUrl}${account.bech32Address}`
+        const response = await getAllDomainsbyAddress(
+          current.chainId,
+          account.bech32Address
         );
-        const response: FetchedDomain[] = await fetchDomains.json();
         setFetchedDomains(
-          response.filter((domain) => domain.permissions !== "none")
+          response.filter((domain: any) => domain.permissions !== "none")
         );
       } catch (error) {
         console.error("Error fetching data:", error);

@@ -1,10 +1,20 @@
-.registerTitle {
+.title {
   width: 247px;
   color: #fff;
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
   margin: 58px 0 66px 12px;
+}
+.radioContainer {
+  position: fixed;
+  top: 185px;
+  accent-color: red;
+  color: #fff;
+  margin: 0 18px;
+}
+.radioButton {
+  padding-right: 18px;
 }
 .searchContainer {
   display: flex;
@@ -164,4 +174,18 @@
 }
 .dropdown:disabled {
   cursor: not-allowed;
+}
+//verify domain
+.domain {
+  color: var(--orange, #f9774b);
+}
+.copy {
+  color: white;
+  display: flex;
+  width: 83px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
 }

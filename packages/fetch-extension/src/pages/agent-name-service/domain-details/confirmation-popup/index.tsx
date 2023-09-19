@@ -31,6 +31,7 @@ export const ConfirmationPopup = observer(
       try {
         setIsTrnsxLoading(true);
         await updateDomainPermissions(
+          current.chainId,
           account,
           address,
           domain,

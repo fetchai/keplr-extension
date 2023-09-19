@@ -1,5 +1,5 @@
 import { ContextProps } from "@components/notification";
-import { agentDomainNames, ownerAddresses, writerAddresses } from "./constants";
+import { fromBase64, toBase64, toBech32, toHex } from "@cosmjs/encoding";
 import {
   AccountSetBase,
   CosmosAccount,
@@ -7,63 +7,74 @@ import {
   MakeTxResponse,
   SecretAccount,
 } from "@keplr-wallet/stores";
-import { ANS_CONTRACT_ADDRESS } from "../config.ui.var";
+import { encodeLengthPrefixed } from "@utils/ans-v2-utils";
+import { generateUUID } from "@utils/auth";
+import axios from "axios";
+import { createHash } from "crypto";
+import { ANS_CONFIG } from "../config.ui.var";
 
-export const getYourAgentDomains = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = agentDomainNames.map((domainObj) => domainObj.domain);
-      resolve(domains);
-    }, 1000);
-  });
+export const getAgentAddressByDomain = async (
+  chainId: string,
+  domainName: string
+) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/agents-by-domain/${domainName}`
+  );
+  return response.data;
 };
 
-export const getDomainOwners = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = ownerAddresses.map((domainObj) => domainObj);
-      resolve(domains);
-    }, 1000);
-  });
+export const getAllDomainsbyAddress = async (
+  chainId: string,
+  address: string
+) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/domains/${address}`
+  );
+  return response.data;
 };
-export const getDomainWriters = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = writerAddresses.map((domainObj) => domainObj);
-      resolve(domains);
-    }, 1000);
-  });
-};
-export const getAllAgentDomains = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const domains = agentDomainNames.map((domainObj) => domainObj.domain);
-      resolve(domains);
-    }, 1000);
-  });
+
+export const getDomainDetails = async (chainId: string, domainName: string) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/domain_details/${domainName}`
+  );
+  return response.data;
 };
 
 export const registerDomain = async (
+  chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   agent_address: any,
   domain: string,
-  notification: ContextProps
+  notification: ContextProps,
+  approval_token?: string
 ) => {
+  const registerData: {
+    domain: string;
+    agent_address: any;
+    approval_token?: string;
+  } = {
+    domain,
+    agent_address,
+  };
+
+  if (approval_token !== undefined) {
+    registerData.approval_token = approval_token;
+  }
+
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
-    ANS_CONTRACT_ADDRESS,
+    ANS_CONFIG[chainId].contractAddress,
     {
-      register: {
-        domain,
-        agent_address,
-      },
+      register: registerData,
     },
     []
   );
+
   await executeTxn(tx, notification);
 };
 
 export const updateDomainPermissions = async (
+  chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   owner: any,
   domain: string,
@@ -72,7 +83,7 @@ export const updateDomainPermissions = async (
 ) => {
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
-    ANS_CONTRACT_ADDRESS,
+    ANS_CONFIG[chainId].contractAddress,
     {
       update_ownership: {
         domain,
@@ -83,6 +94,50 @@ export const updateDomainPermissions = async (
     []
   );
   await executeTxn(tx, notification);
+};
+
+export const verifyDomain = async (
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  chainId: string,
+  domain: string
+) => {
+  const target =
+    "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w";
+  const sender = toBech32("user", account.pubKey);
+  const payloadJson = {
+    domain,
+    address: sender,
+    public_key: toHex(account.pubKey),
+    chain_id: chainId,
+  };
+  const payload = toBase64(Buffer.from(JSON.stringify(payloadJson)));
+  const session = generateUUID();
+  const schema_digest =
+    "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860";
+  const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
+  const response = await axios.post(
+    "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+    {
+      version: 1,
+      sender,
+      target,
+      session,
+      schema_digest,
+      protocol_digest: null,
+      nonce: null,
+      payload,
+      expires,
+    },
+    {
+      headers: {
+        "content-type": "application/json",
+        "x-uagents-connection": "sync",
+      },
+    }
+  );
+  const result = Buffer.from(fromBase64(response.data.payload)).toString();
+
+  return JSON.parse(result);
 };
 
 const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
@@ -123,4 +178,16 @@ const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
       },
     }
   );
+};
+
+export const createDigest = async (data: any) => {
+  const { sender, target, session, payload, expires, schema_digest } = data;
+  const hasher = createHash("sha256");
+  hasher.update(encodeLengthPrefixed(sender));
+  hasher.update(encodeLengthPrefixed(target));
+  hasher.update(encodeLengthPrefixed(session));
+  hasher.update(encodeLengthPrefixed(schema_digest));
+  hasher.update(encodeLengthPrefixed(payload));
+  hasher.update(encodeLengthPrefixed(expires));
+  return hasher.digest();
 };

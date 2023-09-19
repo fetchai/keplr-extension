@@ -15,7 +15,7 @@ export class ObservableQueryPermissionsInner extends ObservableCosmwasmContractC
   ) {
     super(kvStore, chainId, chainGetter, contractAddress, {
       permissions: {
-        owner: { address: { address: owner } },
+        owner: owner,
         domain: domain,
       },
     });

@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import { ANS_CONFIG } from "../../../../config.ui.var";
 import { useStore } from "../../../../stores";
 import { PermissionsPopup } from "../permissions-popup";
 import { AddressList } from "./address-list";
 import style from "./style.module.scss";
+import { getDomainDetails } from "../../../../name-service/ans-api";
 
 interface PermissionsProps {
   setIsTrnsxLoading: any;
@@ -38,14 +38,10 @@ export const Permissions: React.FC<PermissionsProps> = observer(
     useEffect(() => {
       const fetchData = async () => {
         setIsLoading(true);
-
         try {
           const owners: string[] = [];
           const writers: string[] = [];
-          const fetchDomains = await fetch(
-            `${ANS_CONFIG[current.chainId].domainDetailsUrl}${domainName}`
-          );
-          const response = await fetchDomains.json();
+          const response = await getDomainDetails(current.chainId, domainName);
           response.forEach((domain: any) => {
             if (domain.permissions === "admin") {
               owners.push(domain.account_address);
@@ -62,7 +58,7 @@ export const Permissions: React.FC<PermissionsProps> = observer(
         }
       };
       fetchData();
-    }, [domainName]);
+    }, [current.chainId, domainName]);
 
     return (
       <div>

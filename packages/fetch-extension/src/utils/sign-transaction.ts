@@ -19,7 +19,6 @@ export const signTransaction = async (
 
   const keplr = (await getKeplrFromWindow())!;
   const pubKey = (await keplr.getKey(payload.chainId)).pubKey;
-
   const unsignedTx = TxRaw.fromPartial({
     bodyBytes: payload.bodyBytes,
     authInfoBytes: AuthInfo.encode({
