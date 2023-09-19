@@ -25,8 +25,6 @@ export const ADDITIONAL_INTL_MESSAGES: IntlMessages = {};
 
 export const AUTH_SERVER = "https://auth-attila.sandbox-london-b.fetch-ai.com";
 
-export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
-
 export const CHAIN_ID_DORADO = "dorado-1";
 export const CHAIN_ID_FETCHHUB = "fetchhub-4";
 
@@ -197,10 +195,9 @@ export const ANS_CONFIG: {
     rpc: string;
     contractAddress: string;
     validateAgentAddressContract: string;
+    oracleAgentContract: string;
     isEditable: boolean;
-    domainsUrl: string;
-    domainDetailsUrl: string;
-    agentsUrl: string;
+    apiUrl: string;
   };
 } =
   process.env.NODE_ENV === "production"
@@ -212,12 +209,10 @@ export const ANS_CONFIG: {
             "fetch1479lwv5vy8skute5cycuz727e55spkhxut0valrcm38x9caa2x8q99ef0q",
           validateAgentAddressContract:
             "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
           isEditable: true,
-          domainsUrl:
-            "https://staging.agentverse.ai/v1/almanac/search/domains/",
-          domainDetailsUrl:
-            "https://staging.agentverse.ai/v1/almanac/search/domain_details/",
-          agentsUrl: "https://staging.agentverse.ai/v1/almanac/agents/",
+          apiUrl: "https://staging.agentverse.ai/v1/almanac",
         },
       }
     : {
@@ -228,12 +223,10 @@ export const ANS_CONFIG: {
             "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
           validateAgentAddressContract:
             "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
           isEditable: true,
-          domainsUrl:
-            "https://staging.agentverse.ai/v1/almanac/search/domains/",
-          domainDetailsUrl:
-            "https://staging.agentverse.ai/v1/almanac/search/domain_details/",
-          agentsUrl: "https://staging.agentverse.ai/v1/almanac/agents/",
+          apiUrl: "http://localhost:8001/v1/almanac",
         },
       };
 

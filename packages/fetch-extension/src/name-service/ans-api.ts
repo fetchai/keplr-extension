@@ -1,4 +1,5 @@
 import { ContextProps } from "@components/notification";
+import { makeSignDoc } from "@cosmjs/amino";
 import { toBase64, toBech32 } from "@cosmjs/encoding";
 import {
   AccountSetBase,
@@ -9,11 +10,35 @@ import {
 } from "@keplr-wallet/stores";
 import { generateUUID } from "@utils/auth";
 import axios from "axios";
+import { sha256 } from "sha.js";
 import { ANS_CONFIG } from "../config.ui.var";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { SignMessagingPayload } from "@keplr-wallet/background/build/messaging";
-import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 
+export const getAgentAddressByDomain = async (
+  chainId: string,
+  domainName: string
+) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/agents-by-domain/${domainName}`
+  );
+  return response.data;
+};
+
+export const getAllDomainsbyAddress = async (
+  chainId: string,
+  address: string
+) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/domains/${address}`
+  );
+  return response.data;
+};
+
+export const getDomainDetails = async (chainId: string, domainName: string) => {
+  const response = await axios.get(
+    `${ANS_CONFIG[chainId].apiUrl}/search/domain_details/${domainName}`
+  );
+  return response.data;
+};
 export const registerDomain = async (
   chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
@@ -75,9 +100,13 @@ export const verifyDomain = async (
   chainId: string,
   domain: string
 ) => {
-  const sender = toBech32("agent", account.pubKey); //length fix is needed
+  const target =
+    "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w";
+  const sender = toBech32("agent", account.pubKey);
+  const session = generateUUID();
+  const schema_digest =
+    "model:a830ecadac9ea969c7062b316043fed2212ef1c3cc628d533d67673cf8cfb486";
   const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
-
   const payloadJson = {
     domain,
     address: sender,
@@ -86,37 +115,75 @@ export const verifyDomain = async (
   };
   const payload = toBase64(Buffer.from(JSON.stringify(payloadJson)));
 
-  const requester = new InExtensionMessageRequester();
-  const signature = await requester.sendMessage(
-    BACKGROUND_PORT,
-    new SignMessagingPayload(chainId, payload)
-  );
-  // const signature = toBech32("sig", Buffer.from(payload));
+  const digest = await createDigest({
+    sender,
+    target,
+    session,
+    payload,
+    schema_digest,
+  });
+  const memo = "";
+  const accountNumber = 0;
+  const sequence = 0;
 
-  const response = await axios.post(
-    "https://oracle.sandbox-london-b.fetch-ai.com/submit",
-    {
-      version: 1,
-      sender,
-      target:
-        "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
-      session: generateUUID(),
-      schema_digest:
-        "model:a830ecadac9ea969c7062b316043fed2212ef1c3cc628d533d67673cf8cfb486",
-      signature,
-      protocol_digest: null,
-      nonce: null,
-      payload,
-      expires,
+  // Construct a transaction
+  const msg = {
+    type: "cosmos-sdk/MsgSignData",
+    value: {
+      data: digest.toString("base64"),
+      from_address: sender,
     },
-    {
-      headers: {
-        "content-type": "application/json",
-        "x-uagents-connection": "sync",
-      },
-    }
+  };
+
+  const fee = {
+    amount: [],
+    gas: "200000",
+  };
+
+  // Create a StdSignDoc
+  const signDoc = makeSignDoc(
+    [msg],
+    fee,
+    chainId,
+    memo,
+    accountNumber,
+    sequence
   );
-  console.log(response);
+  const signedTxResponse = await window.keplr?.signAmino(
+    chainId,
+    account.bech32Address,
+    signDoc
+  );
+  if (signedTxResponse?.signature.signature) {
+    const signature = toBech32(
+      "sig",
+      Buffer.from(signedTxResponse.signature.signature),
+      1000
+    );
+
+    const response = await axios.post(
+      "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+      {
+        version: 1,
+        sender,
+        target,
+        session: generateUUID(),
+        schema_digest,
+        protocol_digest: null,
+        nonce: null,
+        payload,
+        expires,
+        signature,
+      },
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-uagents-connection": "sync",
+        },
+      }
+    );
+    console.log(response);
+  }
 };
 
 const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
@@ -157,4 +224,17 @@ const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
       },
     }
   );
+};
+
+const createDigest = async (data: any) => {
+  const { sender, target, session, payload, expires, schema_digest } = data;
+  const hasher = new sha256();
+  const encoder = new TextEncoder();
+  hasher.update(encoder.encode(sender));
+  hasher.update(encoder.encode(target));
+  hasher.update(encoder.encode(session));
+  hasher.update(encoder.encode(schema_digest));
+  hasher.update(encoder.encode(payload));
+  hasher.update(encoder.encode(expires));
+  return hasher.digest();
 };
