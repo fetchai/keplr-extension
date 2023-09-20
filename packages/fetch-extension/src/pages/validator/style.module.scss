@@ -115,24 +115,7 @@
 .dropdown:hover {
   background: aliceblue !important;
 }
-.rewards {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  font-weight: bold;
-}
-.values {
-  color: #3b82f6;
-}
-.claimButton {
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0px 13px;
-  text-decoration: underline;
-  color: #3b82f6;
-  border: none;
-  background: transparent;
-}
+
 @keyframes pathRect {
   25% {
     stroke-dashoffset: 64;

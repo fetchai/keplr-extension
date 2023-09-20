@@ -10,7 +10,6 @@ import { Transfer } from "./transfer";
 import { Unstake } from "./unstake";
 import { ValidatorDetails } from "./validator-details";
 import { Dec } from "@keplr-wallet/unit";
-import { useNotification } from "@components/notification";
 
 enum ValidatorOperation {
   STAKE = "stake",
@@ -21,7 +20,6 @@ enum ValidatorOperation {
 export const Validator: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const location = useLocation();
-  const notification = useNotification();
   const validatorAddress = location.pathname.split("/")[2];
   const operation = location.pathname.split("/")[3];
 
@@ -76,34 +74,6 @@ export const Validator: FunctionComponent = observer(() => {
     validator?.commission.commission_rates.rate || "0"
   );
   const APR = ARR.mul(new Dec(1 - validatorCom));
-
-  const handleClaim = async () => {
-    await account.cosmos.sendWithdrawDelegationRewardMsgs(
-      [validatorAddress],
-      "",
-      undefined,
-      undefined,
-      {
-        onFulfill: (tx: any) => {
-          const istxnSuccess = tx.code ? false : true;
-          notification.push({
-            type: istxnSuccess ? "success" : "danger",
-            placement: "top-center",
-            duration: 5,
-            content: istxnSuccess
-              ? `Transaction Completed`
-              : `Transaction Failed`,
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-        },
-      }
-    );
-    navigate("/validators/validator");
-  };
-
   return (
     <HeaderLayout
       showChainName={false}
@@ -116,6 +86,9 @@ export const Validator: FunctionComponent = observer(() => {
           <ValidatorDetails
             chainID={chainStore.current.chainId}
             validator={validator}
+            isFetching={isFetching}
+            APR={APR}
+            rewards={rewards}
           />
         )}
         <div>
@@ -128,59 +101,6 @@ export const Validator: FunctionComponent = observer(() => {
               }}
             >
               {amount.maxDecimals(4).trim(true).toString()}
-            </div>
-          </div>
-          <div>
-            <div className={style["rewards"]} style={{ marginTop: "10px" }}>
-              <div>APR</div>
-              <div>
-                {!isFetching ? (
-                  <div className={style["values"]}>
-                    {APR.maxDecimals(2).trim(true).toString()}%
-                  </div>
-                ) : (
-                  <span style={{ fontSize: "14px" }}>
-                    <i className="fas fa-spinner fa-spin" />
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className={style["rewards"]}>
-              <div>
-                Earned Rewards{" "}
-                {(!rewards ||
-                  rewards.length !== 0 ||
-                  parseFloat(
-                    rewards[0]?.maxDecimals(4).toString().split(" ")[0]
-                  ) > 0.00001) && (
-                  <button
-                    color="primary"
-                    className={style["claimButton"]}
-                    onClick={handleClaim}
-                  >
-                    Claim
-                  </button>
-                )}
-              </div>
-              <div>
-                {!isFetching ? (
-                  <div className={style["values"]}>
-                    {!rewards ||
-                    rewards.length === 0 ||
-                    parseFloat(
-                      rewards[0]?.maxDecimals(4).toString().split(" ")[0]
-                    ) < 0.00001 ? (
-                      <span style={{ color: "black" }}>0</span>
-                    ) : (
-                      rewards[0]?.maxDecimals(4).toString()
-                    )}
-                  </div>
-                ) : (
-                  <span style={{ fontSize: "14px" }}>
-                    <i className="fas fa-spinner fa-spin" />
-                  </span>
-                )}
-              </div>
             </div>
           </div>
           <div className={style["tabList"]}>
