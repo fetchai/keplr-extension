@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd -P )"
 file_path=${DIR}/../node_modules/react-native-scrypt/android/build.gradle
 # Check if the file exists
 if [ ! -f "$file_path" ]; then
-  echo "Error: File '$file_path' not found."
+  echo "Android Error: File '$file_path' not found."
   exit 1
 fi
 
@@ -21,7 +21,7 @@ sed -i 's/compile '\''com\.facebook\.react:react-native:+'\''/implementation '\'
 if [ $? -eq 0 ]; then
   echo "Legacy android dependency updates completed successfully."
 else
-  echo "Error: Legacy android dependency updates failed."
+  echo "Android Error: Legacy dependency updates failed."
 fi
 
 # Print the modified file content
