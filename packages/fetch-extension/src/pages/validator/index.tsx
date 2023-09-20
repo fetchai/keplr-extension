@@ -10,7 +10,6 @@ import { Transfer } from "./transfer";
 import { Unstake } from "./unstake";
 import { ValidatorDetails } from "./validator-details";
 import { Dec } from "@keplr-wallet/unit";
-import { Button } from "reactstrap";
 import { useNotification } from "@components/notification";
 
 enum ValidatorOperation {
@@ -147,30 +146,40 @@ export const Validator: FunctionComponent = observer(() => {
               </div>
             </div>
             <div className={style["rewards"]}>
-              <div>Earned Rewards</div>
+              <div>
+                Earned Rewards{" "}
+                {(!rewards ||
+                  rewards.length !== 0 ||
+                  parseFloat(
+                    rewards[0]?.maxDecimals(4).toString().split(" ")[0]
+                  ) > 0.00001) && (
+                  <button
+                    color="primary"
+                    className={style["claimButton"]}
+                    onClick={handleClaim}
+                  >
+                    Claim
+                  </button>
+                )}
+              </div>
               <div>
                 {!isFetching ? (
                   <div className={style["values"]}>
-                    {!rewards || rewards.length === 0 ? (
+                    {!rewards ||
+                    rewards.length === 0 ||
+                    parseFloat(
+                      rewards[0]?.maxDecimals(4).toString().split(" ")[0]
+                    ) < 0.00001 ? (
                       <span style={{ color: "black" }}>0</span>
                     ) : (
                       rewards[0]?.maxDecimals(4).toString()
-                    )}
-                    {(!rewards || rewards.length !== 0) && (
-                      <Button
-                        className="btn-sm"
-                        style={{ padding: "0px 13px", marginLeft: "5px" }}
-                        onClick={handleClaim}
-                      >
-                        Claim
-                      </Button>
                     )}
                   </div>
                 ) : (
                   <span style={{ fontSize: "14px" }}>
                     <i className="fas fa-spinner fa-spin" />
                   </span>
-                )}{" "}
+                )}
               </div>
             </div>
           </div>
