@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, ImageStyle, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "../../styles";
 import * as SplashScreen from "expo-splash-screen";
@@ -20,6 +20,8 @@ import { KeychainStore } from "../../stores/keychain";
 import { IAccountStore } from "@keplr-wallet/stores";
 import { autorun } from "mobx";
 import { SimpleGradient } from "../../components/svg";
+import { RightArrowWithBarIcon } from "../../components/icon";
+import { FingerprintIcon } from "../../components/icon/fingerprint";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -218,28 +220,40 @@ export const UnlockScreen: FunctionComponent = observer(() => {
   return (
     <React.Fragment>
       <UnlockScreenGradientBackground />
-      <View style={style.flatten(["flex-1"])}>
+      <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
         <KeyboardAwareScrollView
           contentContainerStyle={style.flatten(["flex-grow-1"])}
           indicatorStyle={style.theme === "dark" ? "white" : "black"}
         >
-          <View style={style.get("flex-5")} />
-          <Image
-            style={
-              StyleSheet.flatten([style.flatten(["width-full"])]) as ImageStyle
-            }
-            fadeDuration={0}
-            resizeMode="contain"
-            source={
-              style.theme === "dark"
-                ? require("../../assets/logo/logo.png")
-                : require("../../assets/logo/logo.png")
-            }
-          />
           <View style={style.get("flex-3")} />
+          <View style={style.flatten(["flex-5", "items-center"]) as ViewStyle}>
+            <Image
+              source={
+                style.theme === "dark"
+                  ? require("../../assets/logo/logo-name.png")
+                  : require("../../assets/logo/logo-name.png")
+              }
+              style={{
+                height: 45,
+                aspectRatio: 2.977,
+              }}
+              resizeMode="contain"
+              fadeDuration={0}
+            />
+          </View>
+          <View>
+            <Text style={style.flatten(["text-center", "h2", "font-medium"])}>
+              Welcome back
+            </Text>
+          </View>
           <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
             <TextInput
-              containerStyle={style.flatten(["padding-bottom-40"]) as ViewStyle}
+              containerStyle={
+                style.flatten([
+                  "padding-top-40",
+                  "padding-bottom-40",
+                ]) as ViewStyle
+              }
               label="Password"
               returnKeyType="done"
               secureTextEntry={true}
@@ -252,19 +266,32 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               text="Sign in"
               size="large"
               loading={isLoading}
+              rightIcon={
+                <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
+                  <RightArrowWithBarIcon color="#fff" size={16} />
+                </View>
+              }
               onPress={tryUnlock}
             />
-            {keychainStore.isBiometryOn ? (
-              <Button
-                containerStyle={style.flatten(["margin-top-40"]) as ViewStyle}
-                text="Use Biometric Authentication"
-                mode="text"
-                loading={isBiometricLoading}
-                onPress={tryBiometric}
-              />
-            ) : null}
           </View>
-          <View style={style.get("flex-7")} />
+          <View style={style.get("flex-4")} />
+          {keychainStore.isBiometryOn ? (
+            <TouchableOpacity onPress={tryBiometric} activeOpacity={1}>
+              <View
+                style={style.flatten(["flex", "margin-bottom-40"]) as ViewStyle}
+              >
+                <View style={style.flatten(["items-center"]) as ViewStyle}>
+                  <FingerprintIcon color={style.get("color-blue-400").color} />
+                </View>
+                <Button
+                  textStyle={style.flatten(["color-black", "h5"]) as ViewStyle}
+                  text="Use biometric authentication"
+                  mode="text"
+                  loading={isBiometricLoading}
+                />
+              </View>
+            </TouchableOpacity>
+          ) : null}
         </KeyboardAwareScrollView>
       </View>
     </React.Fragment>

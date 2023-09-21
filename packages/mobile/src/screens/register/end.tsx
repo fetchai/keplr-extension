@@ -70,7 +70,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         <Text
           style={
             style.flatten([
-              "subtitle1",
+              "h4",
               "color-text-low",
               "text-center",
               "margin-top-10",

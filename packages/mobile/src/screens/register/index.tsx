@@ -109,9 +109,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
       }}
     >
       <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
-        <View
-          style={style.flatten(["items-center", "padding-x-18"]) as ViewStyle}
-        >
+        <View style={style.flatten(["items-center"]) as ViewStyle}>
           <Image
             source={
               style.theme === "dark"
@@ -127,7 +125,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
           />
         </View>
         <View>
-          <Text style={style.flatten(["text-center", "h3", "font-medium"])}>
+          <Text style={style.flatten(["text-center", "h2", "font-medium"])}>
             Welcome to Fetch Wallet
           </Text>
         </View>
@@ -300,7 +298,7 @@ export const NewWalletModal: FunctionComponent<{
             onSelectGoogle();
           }}
         />
-        <Text style={style.flatten(["text-center", "color-blue-300@50%"])}>
+        <Text style={style.flatten(["text-center", "color-platinum-300"])}>
           Powered by Web3Auth
         </Text>
         <View
@@ -342,7 +340,7 @@ export const NewWalletModal: FunctionComponent<{
           text="Create new mnemonic"
           size="default"
           rightIcon={
-            <View style={style.flatten(["margin-left-6"]) as ViewStyle}>
+            <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
               <RightArrowWithBarIcon color="#fff" size={16} />
             </View>
           }
@@ -439,7 +437,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
               onSelectGoogle();
             }}
           />
-          <Text style={style.flatten(["text-center", "color-blue-300@50%"])}>
+          <Text style={style.flatten(["text-center", "color-platinum-300"])}>
             Powered by Web3Auth
           </Text>
           <View
