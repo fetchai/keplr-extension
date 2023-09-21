@@ -36,6 +36,7 @@ const SelectWalletOptionCard: FunctionComponent<{
       onPress={() => {
         setIsModalOpen(true);
       }}
+      activeOpacity={1}
     >
       <View
         style={
@@ -47,6 +48,7 @@ const SelectWalletOptionCard: FunctionComponent<{
             "padding-right-10",
             "padding-top-15",
             "padding-bottom-15",
+            "background-color-white",
           ]) as ViewStyle
         }
       >

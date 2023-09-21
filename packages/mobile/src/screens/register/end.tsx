@@ -44,7 +44,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
   return (
     <PageWithView
       backgroundMode="gradient"
-      style={style.flatten(["padding-x-42"]) as ViewStyle}
+      style={style.flatten(["padding-x-20"]) as ViewStyle}
     >
       <View style={style.get("flex-8")} />
       <View style={style.flatten(["items-center"])}>
