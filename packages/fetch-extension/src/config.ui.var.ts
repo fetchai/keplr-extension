@@ -209,6 +209,8 @@ export const ANS_CONFIG: {
     oracleAgentContract: string;
     isEditable: boolean;
     apiUrl: string;
+    oracleApi: string;
+    schemaDigest: string;
   };
 } =
   process.env.NODE_ENV === "production"
@@ -224,6 +226,9 @@ export const ANS_CONFIG: {
             "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
           isEditable: true,
           apiUrl: "https://staging.agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
         },
       }
     : {
@@ -237,12 +242,13 @@ export const ANS_CONFIG: {
           oracleAgentContract:
             "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
           isEditable: true,
-          apiUrl: "http://localhost:8001/v1/almanac",
+          apiUrl: "https://staging.agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
         },
       };
 
-// export const ANS_CONTRACT_ADDRESS =
-// "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l";
 export const ANS_TRNSX_AMOUNT = {
   denom: "atestfet",
   amount: "5000000000000000",

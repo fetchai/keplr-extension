@@ -101,28 +101,22 @@ export const verifyDomain = async (
   chainId: string,
   domain: string
 ) => {
-  const target =
-    "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w";
-  const sender = toBech32("user", account.pubKey);
   const payloadJson = {
     domain,
-    address: sender,
+    address: toBech32("user", account.pubKey),
     public_key: toHex(account.pubKey),
     chain_id: chainId,
   };
   const payload = toBase64(Buffer.from(JSON.stringify(payloadJson)));
-  const session = generateUUID();
-  const schema_digest =
-    "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860";
   const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
   const response = await axios.post(
-    "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+    ANS_CONFIG[chainId].oracleApi,
     {
       version: 1,
-      sender,
-      target,
-      session,
-      schema_digest,
+      sender: toBech32("user", account.pubKey),
+      target: ANS_CONFIG[chainId].oracleAgentContract,
+      session: generateUUID(),
+      schema_digest: ANS_CONFIG[chainId].schemaDigest,
       protocol_digest: null,
       nonce: null,
       payload,
