@@ -16,3 +16,5 @@ export * from "./refresh";
 export * from "./unconnect";
 export * from "./google";
 export * from "./apple";
+export * from "./download";
+export * from "./right-arrow";

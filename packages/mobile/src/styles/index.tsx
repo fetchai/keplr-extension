@@ -630,6 +630,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         "16": 16,
         "32": 32,
         "64": 64,
+        full: 99999,
       },
       opacities: {
         transparent: 0,

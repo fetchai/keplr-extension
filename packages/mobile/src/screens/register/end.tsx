@@ -1,19 +1,13 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { PageWithView } from "../../components/page";
 import { useStyle } from "../../styles";
-import { View, Text, ViewStyle } from "react-native";
+import { View, Text, ViewStyle, Image } from "react-native";
 import { Button } from "../../components/button";
 import { useSmartNavigation } from "../../navigation";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { Toggle } from "../../components/toggle";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import WelcomeRocket from "../../assets/svg/welcome-rocket.svg";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import WelcomeRocketDarkMode from "../../assets/svg/welcome-rocket-dark-mode.svg";
 import delay from "delay";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
@@ -55,20 +49,22 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
       <View style={style.get("flex-8")} />
       <View style={style.flatten(["items-center"])}>
         {style.theme === "dark" ? (
-          <WelcomeRocketDarkMode width={400} height={360} />
+          <Image
+            style={{ width: 400, height: 260, marginRight: -80 }}
+            source={require("../../assets/image/wallet.png")}
+            fadeDuration={0}
+            resizeMode="stretch"
+          />
         ) : (
-          <WelcomeRocket width={400} height={360} />
+          <Image
+            style={{ width: 400, height: 260, marginRight: -80 }}
+            source={require("../../assets/image/all-set.png")}
+            fadeDuration={0}
+            resizeMode="contain"
+          />
         )}
 
-        <Text
-          style={
-            style.flatten([
-              "h2",
-              "color-text-middle",
-              "margin-top-8",
-            ]) as ViewStyle
-          }
-        >
+        <Text style={style.flatten(["h2", "color-text-middle"]) as ViewStyle}>
           You’re all set!
         </Text>
         <Text
@@ -81,7 +77,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          Your cosmic interchain journey now begins.
+          Your Fetch journey now begins.
         </Text>
       </View>
       {password && keychainStore.isBiometrySupported ? (
@@ -104,10 +100,13 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
           />
         </View>
       ) : null}
+      <View style={style.get("flex-8")} />
       <Button
-        containerStyle={style.flatten(["margin-top-44"]) as ViewStyle}
+        containerStyle={
+          style.flatten(["margin-top-44", "margin-bottom-20"]) as ViewStyle
+        }
         size="large"
-        text="Done"
+        text="Continue"
         loading={isLoading}
         onPress={async () => {
           setIsLoading(true);
@@ -141,7 +140,6 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.get("flex-10")} />
     </PageWithView>
   );
 });
