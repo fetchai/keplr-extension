@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { HeaderLayout } from "../../../../new-layouts";
 import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
+
 import { TooltipForDomainNames } from "../../../fetch-name-service/domain-details";
 import { useNotification } from "@components/notification";
-import { verifyDomain } from "../../../../name-service/ans-api";
+import { registerDomain, verifyDomain } from "../../../../name-service/ans-api";
 import { useStore } from "../../../../stores";
 
 export const VerifyDomain = () => {
@@ -14,6 +15,7 @@ export const VerifyDomain = () => {
   const { domainName, agentName, verificationString } = location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
   const [approvalToken, setApprovalToken] = useState<string>("");
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -22,7 +24,7 @@ export const VerifyDomain = () => {
   const handleVerifyClick = async () => {
     try {
       setIsVerifying(true);
-      const result = await verifyDomain(account, current.chainId, domainName);
+      const result = await verifyDomain(current.chainId, domainName);
       if (!result.approval_token) throw Error(result.info);
       else {
         setApprovalToken(result.approval_token);
@@ -55,7 +57,43 @@ export const VerifyDomain = () => {
     setIsVerifying(false);
   };
 
-  const handleRegisterClick = async () => {};
+  const handleRegisterClick = async () => {
+    try {
+      const domain = domainName;
+      setIsRegisterInProgress(true);
+      await registerDomain(
+        current.chainId,
+        account,
+        agentName,
+        domain,
+        notification,
+        approvalToken
+      );
+      setIsRegisterInProgress(false);
+      navigate(`/agent-name-service`, {
+        state: {
+          disclaimer:
+            "New Domain additions can take upto 5 mins to take effect.",
+        },
+      });
+    } catch (err) {
+      setIsRegisterInProgress(false);
+      console.error("Error minting domain:", err);
+      notification.push({
+        placement: "top-center",
+        type: "warning",
+        duration: 2,
+        content: `transaction failed!`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+      if (err.toString().includes("Error: Request rejected")) {
+        navigate("/agent-name-service/register-new/");
+      }
+    }
+  };
 
   const handleUnload = useCallback(async () => {
     const data = {
@@ -80,7 +118,9 @@ export const VerifyDomain = () => {
   const copyVerificationString = useCallback(
     async (verificationString) => {
       try {
-        await navigator.clipboard.writeText(verificationString);
+        await navigator.clipboard.writeText(
+          "fetch-ans-token=" + verificationString
+        );
         notification.push({
           placement: "top-center",
           type: "success",
@@ -108,6 +148,12 @@ export const VerifyDomain = () => {
       }}
       showBottomMenu={true}
     >
+      {isRegisterInProgress ? (
+        <div className={style["loader"]}>
+          Loading Register Transaction
+          <i className="fas fa-spinner fa-spin ml-2" />
+        </div>
+      ) : null}
       <div className={style["title"]} style={{ marginBottom: "36px" }}>
         Verify domain
       </div>
@@ -122,7 +168,9 @@ export const VerifyDomain = () => {
         {" "}
         <div className={style["searchInput"]}>
           {" "}
-          <TooltipForDomainNames domainName={verificationString} />{" "}
+          <TooltipForDomainNames
+            domainName={"fetch-ans-token=" + verificationString}
+          />{" "}
         </div>
         <button
           style={{ cursor: "pointer" }}

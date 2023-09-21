@@ -179,6 +179,23 @@
 .domain {
   color: var(--orange, #f9774b);
 }
+
+.loader {
+  color: white;
+  font-size: small;
+  text-align: center;
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  top: 67px;
+  background-color: rgba(0, 0, 0, 0.7);
+  left: 0;
+  z-index: 300;
+}
+
 .copy {
   color: white;
   display: flex;

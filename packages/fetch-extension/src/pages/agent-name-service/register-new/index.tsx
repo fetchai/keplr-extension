@@ -167,8 +167,8 @@ export const RegisterAgentDomains = observer(() => {
             value="web3"
             checked={selectedWebVersion === "web3"}
             onChange={() => setSelectedWebVersion("web3")}
-          />
-          Web3
+          />{" "}
+          web3
         </label>
         <label>
           <input
@@ -176,8 +176,8 @@ export const RegisterAgentDomains = observer(() => {
             value="web2"
             checked={selectedWebVersion === "web2"}
             onChange={() => setSelectedWebVersion("web2")}
-          />
-          Web2
+          />{" "}
+          web2
         </label>
       </div>
       {selectedWebVersion === "web3" ? (

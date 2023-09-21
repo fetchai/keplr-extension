@@ -1,5 +1,8 @@
 import { ContextProps } from "@components/notification";
 import { fromBase64, toBase64, toBech32, toHex } from "@cosmjs/encoding";
+import { PubKeyPayload, SignPayload } from "@keplr-wallet/background/build/ans";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import {
   AccountSetBase,
   CosmosAccount,
@@ -7,7 +10,6 @@ import {
   MakeTxResponse,
   SecretAccount,
 } from "@keplr-wallet/stores";
-import { encodeLengthPrefixed } from "@utils/ans-v2-utils";
 import { generateUUID } from "@utils/auth";
 import axios from "axios";
 import { createHash } from "crypto";
@@ -56,7 +58,6 @@ export const registerDomain = async (
     domain,
     agent_address,
   };
-
   if (approval_token !== undefined) {
     registerData.approval_token = approval_token;
   }
@@ -96,31 +97,48 @@ export const updateDomainPermissions = async (
   await executeTxn(tx, notification);
 };
 
-export const verifyDomain = async (
-  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
-  chainId: string,
-  domain: string
-) => {
+export const verifyDomain = async (chainId: string, domain: string) => {
+  const requester = new InExtensionMessageRequester();
+  const public_key = await requester.sendMessage(
+    BACKGROUND_PORT,
+    new PubKeyPayload(chainId)
+  );
+  const senderAgentAddress = toBech32("agent", public_key);
   const payloadJson = {
     domain,
-    address: toBech32("user", account.pubKey),
-    public_key: toHex(account.pubKey),
+    address: senderAgentAddress,
+    public_key: toHex(public_key),
     chain_id: chainId,
   };
   const payload = toBase64(Buffer.from(JSON.stringify(payloadJson)));
-  const expires = parseInt(`${new Date().getTime() / 1000 + 30}`);
+  const data = {
+    sender: senderAgentAddress,
+    target: ANS_CONFIG[chainId].oracleAgentContract,
+    session: generateUUID(),
+    schema_digest: ANS_CONFIG[chainId].schemaDigest,
+    expires: parseInt(`${new Date().getTime() / 1000 + 30}`),
+    payload: payload,
+  };
+
+  let signature;
+  try {
+    const digest = await createDigest(data);
+    signature = await requester.sendMessage(
+      BACKGROUND_PORT,
+      new SignPayload(chainId, digest)
+    );
+  } catch (err) {
+    console.log("signature", err);
+  }
+
   const response = await axios.post(
     ANS_CONFIG[chainId].oracleApi,
     {
       version: 1,
-      sender: toBech32("user", account.pubKey),
-      target: ANS_CONFIG[chainId].oracleAgentContract,
-      session: generateUUID(),
-      schema_digest: ANS_CONFIG[chainId].schemaDigest,
+      signature,
       protocol_digest: null,
       nonce: null,
-      payload,
-      expires,
+      ...data,
     },
     {
       headers: {
@@ -130,7 +148,7 @@ export const verifyDomain = async (
     }
   );
   const result = Buffer.from(fromBase64(response.data.payload)).toString();
-
+  console.log(result);
   return JSON.parse(result);
 };
 
@@ -177,11 +195,31 @@ const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
 export const createDigest = async (data: any) => {
   const { sender, target, session, payload, expires, schema_digest } = data;
   const hasher = createHash("sha256");
-  hasher.update(encodeLengthPrefixed(sender));
-  hasher.update(encodeLengthPrefixed(target));
-  hasher.update(encodeLengthPrefixed(session));
-  hasher.update(encodeLengthPrefixed(schema_digest));
-  hasher.update(encodeLengthPrefixed(payload));
-  hasher.update(encodeLengthPrefixed(expires));
+  hasher.update(encode(sender));
+  hasher.update(encode(target));
+  hasher.update(encode(session));
+  hasher.update(encode(schema_digest));
+  hasher.update(encode(payload));
+  // Update with expires if not null
+  if (expires !== null) {
+    // Convert expires to a packed 64-bit integer and update the hasher
+    hasher.update(encode(expires));
+  }
   return hasher.digest();
 };
+
+export function encode(value: any) {
+  let encoded;
+
+  if (typeof value === "string") {
+    encoded = Buffer.from(value, "utf8");
+  } else if (typeof value === "number") {
+    encoded = Buffer.alloc(8);
+    encoded.writeBigInt64BE(BigInt(value));
+  } else if (Buffer.isBuffer(value)) {
+    encoded = value;
+  } else {
+    throw new Error("Invalid value type");
+  }
+  return encoded;
+}
