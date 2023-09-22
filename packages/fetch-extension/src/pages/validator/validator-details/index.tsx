@@ -41,42 +41,49 @@ export const ValidatorDetails = ({
   ).toFixed(2);
 
   const handleClaim = async () => {
-    await account.cosmos.sendWithdrawDelegationRewardMsgs(
-      [validator.operator_address],
-      "",
-      undefined,
-      undefined,
-      {
-        onFulfill: (tx: any) => {
-          const istxnSuccess = tx.code ? false : true;
-          notification.push({
-            type: istxnSuccess ? "success" : "danger",
-            placement: "top-center",
-            duration: 5,
-            content: istxnSuccess
-              ? `Transaction Completed`
-              : `Transaction Failed`,
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-        },
-        onBroadcasted() {
-          notification.push({
-            type: "primary",
-            placement: "top-center",
-            duration: 5,
-            content: `Transaction Broadcasted`,
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-        },
+    try {
+      await account.cosmos.sendWithdrawDelegationRewardMsgs(
+        [validator.operator_address],
+        "",
+        undefined,
+        undefined,
+        {
+          onBroadcasted() {
+            notification.push({
+              type: "primary",
+              placement: "top-center",
+              duration: 5,
+              content: `Transaction Broadcasted`,
+              canDelete: true,
+              transition: {
+                duration: 0.25,
+              },
+            });
+          },
+          onFulfill: (tx: any) => {
+            const istxnSuccess = tx.code ? false : true;
+            notification.push({
+              type: istxnSuccess ? "success" : "danger",
+              placement: "top-center",
+              duration: 5,
+              content: istxnSuccess
+                ? `Transaction Completed`
+                : `Transaction Failed`,
+              canDelete: true,
+              transition: {
+                duration: 0.25,
+              },
+            });
+          },
+        }
+      );
+      navigate(`/validators/${validator.operator_address}/stake`);
+    } catch (err) {
+      console.error(err);
+      if (err.toString().includes("Error: Request rejected")) {
+        navigate(`/validators/${validator.operator_address}/stake`);
       }
-    );
-    navigate("/validators/validator");
+    }
   };
   return (
     <div className={styleValidators["item"]}>
