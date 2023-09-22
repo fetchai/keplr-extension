@@ -226,8 +226,6 @@ export const SignPage: FunctionComponent = observer(() => {
     return memoConfig.error != null || feeConfig.error != null;
   })();
 
-  console.log("@@@@#!3", signDocHelper.signDocWrapper?.isADR36SignDoc);
-
   return (
     <HeaderLayout
       showChainName={alternativeTitle == null}
@@ -284,7 +282,10 @@ export const SignPage: FunctionComponent = observer(() => {
               })}
             >
               {tab === Tab.Data ? (
-                <DataTab signDocHelper={signDocHelper} />
+                <DataTab
+                  signDocHelper={signDocHelper}
+                  ethSignType={ethSignType}
+                />
               ) : null}
               {tab === Tab.Details ? (
                 signDocHelper.signDocWrapper?.isADR36SignDoc ? (

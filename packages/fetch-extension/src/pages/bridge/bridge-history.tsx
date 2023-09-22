@@ -9,6 +9,7 @@ import { CoinPretty } from "@keplr-wallet/unit";
 import { BridgeHistory } from "@keplr-wallet/stores";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Button } from "reactstrap";
+import restartIcon from "@assets/icon/undo.png";
 
 export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
@@ -46,6 +47,17 @@ export const BridgeHistoryView: FunctionComponent = observer(() => {
         navigate(-1);
       }}
       showBottomMenu={false}
+      rightRenderer={
+        <img
+          src={restartIcon}
+          className={style["refresh"]}
+          onClick={(e) => {
+            e.preventDefault();
+
+            bridgeHistory.fetch();
+          }}
+        />
+      }
     >
       <div className={style["proposalContainer"]}>
         {bridgeHistory.isFetching ? (
