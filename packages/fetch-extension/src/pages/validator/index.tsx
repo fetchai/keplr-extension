@@ -22,7 +22,7 @@ export const Validator: FunctionComponent = observer(() => {
   const location = useLocation();
   const validatorAddress = location.pathname.split("/")[2];
   const operation = location.pathname.split("/")[3];
-
+  const validatorTab = localStorage.getItem("validatorTab") || "validator";
   const { chainStore, accountStore, queriesStore } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -79,7 +79,7 @@ export const Validator: FunctionComponent = observer(() => {
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle={operation.toLocaleUpperCase()}
-      onBackButton={() => navigate(-1)}
+      onBackButton={() => navigate(`/validators/${validatorTab}`)}
     >
       <div className={style["stakeContainer"]}>
         {validator && (
