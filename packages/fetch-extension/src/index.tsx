@@ -113,9 +113,9 @@ window.keplr = new Keplr(
 
 // Make sure that icon file will be included in bundle
 require("@assets/logo-256.svg");
-require("./public/assets/icon/icon-16.png");
-require("./public/assets/icon/icon-48.png");
-require("./public/assets/icon/icon-128.png");
+require("@assets/icon/icon-16.png");
+require("@assets/icon/icon-48.png");
+require("@assets/icon/icon-128.png");
 
 configure({
   enforceActions: "always", // Make mobx to strict mode.
@@ -381,7 +381,10 @@ ReactDOM.render(
                         path="/setting/chat/readRecipt"
                         element={<ReadRecipt />}
                       />
-                      <Route path="/validators" element={<ValidatorList />} />
+                      <Route
+                        path="/validators/:operation"
+                        element={<ValidatorList />}
+                      />
                       <Route
                         path="/validators/:validator_address/:operation"
                         element={<Validator />}
