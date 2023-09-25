@@ -233,7 +233,7 @@ export const Transfer: FunctionComponent<{
               height: "15px",
             }}
           />
-          Transfer
+          Redelegate
         </Button>
       </FormGroup>
     </React.Fragment>
