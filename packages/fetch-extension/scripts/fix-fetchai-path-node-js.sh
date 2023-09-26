@@ -16,7 +16,7 @@ fi
 fs1='const fs_1 = __importDefault(require("fs"));'
 fs1_replacement="\/\/ $fs1"
 # Uncomment
-sed -i "s|$fs1_replacement|$fs1|g" "$file_path"
+sed -i'' -e "s|$fs1_replacement|$fs1|g" "$file_path"
 
 ###################################################################
 # mkdirBinary

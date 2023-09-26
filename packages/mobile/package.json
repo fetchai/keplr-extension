@@ -90,7 +90,7 @@
     "hyphenation.en-us": "^0.2.1",
     "hypher": "^0.2.5",
     "js-yaml": "^4.1.0",
-    "lottie-ios": "^4.2.0",
+    "lottie-ios": "3.4.0",
     "lottie-react-native": "^5.1.6",
     "metro-config": "^0.77.0",
     "mobx": "^6.1.7",
