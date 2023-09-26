@@ -16,14 +16,14 @@ fi
 fs='var fs;'
 fs_replacement="\/\/ $fs"
 # Uncomment
-sed -i "s|$fs_replacement|$fs|g" "$file_path"
+sed -i'' -e "s|$fs_replacement|$fs|g" "$file_path"
 
 ###################################################################
 # fs = require('fs');
 fs="fs = require('fs');"
 fs_replacement="\/\/ $fs"
 # Uncomment
-sed -i "s|$fs_replacement|$fs|g" "$file_path"
+sed -i'' -e "s|$fs_replacement|$fs|g" "$file_path"
 
 ###################################################################
 # read_

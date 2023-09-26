@@ -20,7 +20,7 @@ fi
 auto_lock='import \* as AutoLocker from "\./auto-lock-account/internal";'
 auto_lock_replacement="\/\/ $auto_lock"
 # Uncomment
-sed -i "s|$auto_lock_replacement|$auto_lock|g" "$file_path"
+sed -i'' -e "s|$auto_lock_replacement|$auto_lock|g" "$file_path"
 
 ###################################################################
 # Define the start for the code block
@@ -47,33 +47,33 @@ awk -v start="$auto_lock_service_upattern" '
 ###################################################################
 auto_lock_sinit='AutoLocker.init(router, autoLockAccountService);'
 auto_lock_sinit_replacement="\/\/ $auto_lock_sinit"
-sed -i "s|$auto_lock_sinit_replacement|$auto_lock_sinit|g" "$file_path"
+sed -i'' -e "s|$auto_lock_sinit_replacement|$auto_lock_sinit|g" "$file_path"
 
 ###################################################################
 auto_lock_init='await autoLockAccountService.init(keyRingService);'
 auto_lock_init_replacement="\/\/ $auto_lock_init"
-sed -i "s|$auto_lock_init_replacement|$auto_lock_init|g" "$file_path"
+sed -i'' -e "s|$auto_lock_init_replacement|$auto_lock_init|g" "$file_path"
 
 ###################################################################
 # Umbral service
 umbral='import \* as Umbral from "\./umbral/internal";'
 umbral_replacement="\/\/ $umbral"
-sed -i "s|$umbral_replacement|$umbral|g" "$file_path"
+sed -i'' -e "s|$umbral_replacement|$umbral|g" "$file_path"
 
 ###################################################################
 umbral_service='const umbralService = new Umbral.UmbralService(chainsService);'
 umbral_service_replacement="\/\/ $umbral_service"
-sed -i "s|$umbral_service_replacement|$umbral_service|g" "$file_path"
+sed -i'' -e "s|$umbral_service_replacement|$umbral_service|g" "$file_path"
 
 ###################################################################
 umbral_sinit='Umbral.init(router, umbralService);'
 umbral_sinit_replacement="\/\/ $umbral_sinit"
-sed -i "s|$umbral_sinit_replacement|$umbral_sinit|g" "$file_path"
+sed -i'' -e "s|$umbral_sinit_replacement|$umbral_sinit|g" "$file_path"
 
 ###################################################################
 umbral_init='await umbralService.init(keyRingService, permissionService);'
 umbral_init_replacement="\/\/ $umbral_init"
-sed -i "s|$umbral_init_replacement|$umbral_init|g" "$file_path"
+sed -i'' -e "s|$umbral_init_replacement|$umbral_init|g" "$file_path"
 
 # Check if the replacement was successful
 if [ $? -eq 0 ]; then

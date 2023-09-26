@@ -32478,10 +32478,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-ios@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "lottie-ios@npm:4.2.0"
-  checksum: 5787fb6e276e5743d2bd8a28cf4301fedcc1727f4eae4d22c97f3ebd48daa79d1f09c9e69fd44e7a44a1ddbc9b6778985f5edfaa844e1f879ea41db74152dcf8
+"lottie-ios@npm:3.4.0":
+  version: 3.4.0
+  resolution: "lottie-ios@npm:3.4.0"
+  checksum: 1a5becc6b34d258afde38f17104877c74749afd7d21d29813a0a56e7b8dae022deacd2139ea2262cd964bdf18791b63de50f28f6263aba3fcff09b08acabb3ce
   languageName: node
   linkType: hard
 
@@ -35121,7 +35121,7 @@ __metadata:
     hyphenation.en-us: ^0.2.1
     hypher: ^0.2.5
     js-yaml: ^4.1.0
-    lottie-ios: ^4.2.0
+    lottie-ios: 3.4.0
     lottie-react-native: ^5.1.6
     metro-config: ^0.77.0
     metro-react-native-babel-preset: ^0.70.3

@@ -4,9 +4,11 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
-#import <UMCore/UMModuleRegistry.h>
-#import <UMReactNativeAdapter/UMNativeModulesProxy.h>
-#import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
+// #import <UMCore/UMModuleRegistry.h>
+#import <Expo/Expo.h>
+#import <React/RCTConvert.h>
+// #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
+// #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 
 #import <React/RCTLinkingManager.h>
 
@@ -15,7 +17,7 @@
 #import <AppCenterReactNative.h>
 #import <AppCenterReactNativeAnalytics.h>
 
-#import <Bugsnag/Bugsnag.h>
+// #import <Bugsnag/Bugsnag.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -36,17 +38,17 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
-@interface AppDelegate () <RCTBridgeDelegate>
+// @interface AppDelegate () <RCTBridgeDelegate>
 
-@property (nonatomic, strong) UMModuleRegistryAdapter *moduleRegistryAdapter;
+// @property (nonatomic, strong) EXModuleRegistryAdapter *moduleRegistryAdapter;
 
-@end
+// @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [Bugsnag start];
+//   [Bugsnag start];
   [AppCenterReactNative register];
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
 
@@ -54,37 +56,40 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
 
-  self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
-
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"mobile"
-                                            initialProperties:nil];
-
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:@"mobile" initialProperties:nil];
+  id rootViewBackgroundColor = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTRootViewBackgroundColor"];
+  if (rootViewBackgroundColor != nil) {
+    rootView.backgroundColor = [RCTConvert UIColor:rootViewBackgroundColor];
+  } else {
+    rootView.backgroundColor = [UIColor whiteColor];
+  }
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [super application:application didFinishLaunchingWithOptions:launchOptions];
+
+  // [super application:application didFinishLaunchingWithOptions:launchOptions];
+
   return YES;
 }
 
 - (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge
 {
-    NSArray<id<RCTBridgeModule>> *extraModules = [_moduleRegistryAdapter extraModulesForBridge:bridge];
+    // NSArray<id<RCTBridgeModule>> *extraModules = [_moduleRegistryAdapter extraModulesForBridge:bridge];
     // If you'd like to export some custom RCTBridgeModules that are not Expo modules, add them here!
-    return extraModules;
+    // return extraModules;
+    return @[];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [CodePush bundleURL];
+  return [[NSBundle mainBundle] URLForResource:@"mobile" withExtension:@"jsbundle"];
 #endif
 }
 
