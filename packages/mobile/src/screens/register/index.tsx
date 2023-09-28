@@ -16,12 +16,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { registerModal } from "../../modals/base";
 import { CardModal } from "../../modals/card";
-import {
-  AppleIcon,
-  DownloadIcon,
-  GoogleIcon,
-  RightArrowWithBarIcon,
-} from "../../components/icon";
+import { AppleIcon, DownloadIcon, GoogleIcon } from "../../components/icon";
 import { HeaderAddIcon } from "../../components/header/icon";
 
 const SelectWalletOptionCard: FunctionComponent<{
@@ -339,11 +334,6 @@ export const NewWalletModal: FunctionComponent<{
         <Button
           text="Create new mnemonic"
           size="default"
-          rightIcon={
-            <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
-              <RightArrowWithBarIcon color="#fff" size={16} />
-            </View>
-          }
           onPress={() => {
             onSelectNewMnemonic();
           }}

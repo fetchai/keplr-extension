@@ -164,7 +164,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
             }
           },
         }}
-        render={({ field: { onChange, onBlur, value, ref } }) => {
+        render={({ field: { onBlur, value, ref } }) => {
           return (
             <TextInput
               label="Mnemonic seed"
@@ -207,7 +207,11 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
               }}
               error={errors.mnemonic?.message}
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(text) =>
+                setValue("mnemonic", text, {
+                  shouldValidate: true,
+                })
+              }
               value={value}
               ref={ref}
             />

@@ -20,7 +20,6 @@ import { KeychainStore } from "../../stores/keychain";
 import { IAccountStore } from "@keplr-wallet/stores";
 import { autorun } from "mobx";
 import { SimpleGradient } from "../../components/svg";
-import { RightArrowWithBarIcon } from "../../components/icon";
 import { FingerprintIcon } from "../../components/icon/fingerprint";
 
 let splashScreenHided = false;
@@ -266,11 +265,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               text="Sign in"
               size="large"
               loading={isLoading}
-              rightIcon={
-                <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
-                  <RightArrowWithBarIcon color="#fff" size={16} />
-                </View>
-              }
               onPress={tryUnlock}
             />
           </View>
