@@ -28918,6 +28918,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"instabug-reactnative@npm:^11.14.0":
+  version: 11.14.0
+  resolution: "instabug-reactnative@npm:11.14.0"
+  peerDependencies:
+    react: ">=16.8.6"
+    react-native: ">=0.60.0"
+  bin:
+    instabug: bin/index.js
+  checksum: b764a725887a9a94009646801c6dabf765aa873e7f306a6c04e4ebc34a36acb7cb026ad75783b1abea532e52c4c159b1087f5e2df5909df05c9033283ae761c6
+  languageName: node
+  linkType: hard
+
 "internal-ip@npm:4.3.0, internal-ip@npm:^4.3.0":
   version: 4.3.0
   resolution: "internal-ip@npm:4.3.0"
@@ -35120,6 +35132,7 @@ __metadata:
     https-browserify: ^1.0.0
     hyphenation.en-us: ^0.2.1
     hypher: ^0.2.5
+    instabug-reactnative: ^11.14.0
     js-yaml: ^4.1.0
     lottie-ios: 3.4.0
     lottie-react-native: ^5.1.6

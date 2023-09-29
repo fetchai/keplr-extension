@@ -20,6 +20,7 @@ import "react-native-gesture-handler";
 import "react-native-url-polyfill/auto";
 
 import { AppRegistry } from "react-native";
+import Instabug, { InvocationEvent } from "instabug-reactnative";
 
 import "./init";
 
@@ -31,5 +32,14 @@ import "./init";
 const App = require("./src/app").App;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const appName = require("./app.json").name;
+
+Instabug.init({
+  token: "cf467aa7beed2839b3ec0d23f83b4580",
+  invocationEvents: [
+    InvocationEvent.shake,
+    InvocationEvent.screenshot,
+    InvocationEvent.floatingButton,
+  ],
+});
 
 AppRegistry.registerComponent(appName, () => App);
