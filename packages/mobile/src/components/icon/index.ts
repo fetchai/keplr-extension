@@ -18,3 +18,4 @@ export * from "./google";
 export * from "./apple";
 export * from "./download";
 export * from "./right-arrow";
+export * from "./edit";

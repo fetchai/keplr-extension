@@ -11,7 +11,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { AsyncKVStore } from "../../../../common";
 import { useStore } from "../../../../stores";
-import { TrashCanIcon } from "../../../../components/icon";
+import { EditIcon, TrashCanIcon } from "../../../../components/icon";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RectButton } from "../../../../components/rect-button";
@@ -168,6 +168,31 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                     ]) as ViewStyle
                   }
                   onPress={async () => {
+                    smartNavigation.navigateSmart("EditAddressBook", {
+                      chainId,
+                      addressBookConfig,
+                      i,
+                    });
+                  }}
+                >
+                  <EditIcon
+                    color={
+                      style.flatten([
+                        "color-gray-100",
+                        "dark:color-platinum-300",
+                      ]).color
+                    }
+                    size={24}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={
+                    style.flatten([
+                      "padding-left-8",
+                      "padding-y-12",
+                    ]) as ViewStyle
+                  }
+                  onPress={async () => {
                     if (
                       await confirmModal.confirm({
                         title: "Remove Address",
@@ -240,3 +265,4 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
 });
 
 export * from "./add";
+export * from "./edit";

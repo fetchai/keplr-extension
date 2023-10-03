@@ -66,6 +66,7 @@ import { OpenDrawerIcon, ScanIcon } from "./components/icon";
 import {
   AddAddressBookScreen,
   AddressBookScreen,
+  EditAddressBookScreen,
 } from "./screens/setting/screens/address-book";
 import { NewLedgerScreen } from "./screens/register/ledger";
 import { PageScrollPositionProvider } from "./providers/page-scroll-position";
@@ -224,6 +225,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "AddressBooks",
       },
       AddAddressBook: {
+        upperScreenName: "AddressBooks",
+      },
+      EditAddressBook: {
         upperScreenName: "AddressBooks",
       },
       Result: {
@@ -829,6 +833,14 @@ export const AddressBookStackScreen: FunctionComponent = () => {
         }}
         name="AddAddressBook"
         component={AddAddressBookScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...HeaderOnTertiaryScreenOptionsPreset,
+          title: "Edit Address Book",
+        }}
+        name="EditAddressBook"
+        component={EditAddressBookScreen}
       />
     </Stack.Navigator>
   );
