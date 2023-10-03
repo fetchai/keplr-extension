@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from "react";
+import React, { FunctionComponent, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../../stores";
 import { PageWithScrollViewInBottomTabView } from "../../../../components/page";
@@ -10,8 +10,10 @@ import {
   MultiKeyStoreInfoElem,
   MultiKeyStoreInfoWithSelectedElem,
 } from "@keplr-wallet/background";
-import { View, ViewStyle } from "react-native";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSmartNavigation } from "../../../../navigation";
+import { EditAccountNameModal } from "../../../../modals/edit-account-name.tsx";
+import { EditIcon } from "../../../../components/icon";
 
 const CheckIcon: FunctionComponent<{
   color: string;
@@ -76,11 +78,16 @@ export const getKeyStoreParagraph = (keyStore: MultiKeyStoreInfoElem) => {
 };
 
 export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [editAccountIndex, setEditAccountIndex] = useState(-1);
+
   const { keyRingStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
+
+  const waitingNameData = keyRingStore.waitingNameData?.data;
 
   const googleTorusKeyStores = useMemo(() => {
     return keyRingStore.multiKeyStoreInfo.filter(
@@ -157,6 +164,7 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                   paragraph={getKeyStoreParagraph(keyStore)}
                   topBorder={i === 0}
                   bottomBorder={keyStores.length - 1 !== i}
+                  containerStyle={style.flatten(["flex-1"])}
                   right={
                     keyStore.selected ? (
                       <CheckIcon
@@ -171,6 +179,33 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                       await selectKeyStore(keyStore);
                     }
                   }}
+                  unClickableChildren={
+                    <TouchableOpacity
+                      style={
+                        style.flatten([
+                          "background-color-white",
+                          "padding-15",
+                          "height-87",
+                          "flex",
+                          "justify-center",
+                        ]) as ViewStyle
+                      }
+                      onPress={() => {
+                        setEditAccountIndex(i);
+                        setIsOpenModal(true);
+                      }}
+                    >
+                      <EditIcon
+                        color={
+                          style.flatten([
+                            "color-gray-100",
+                            "dark:color-platinum-300",
+                          ]).color
+                        }
+                        size={24}
+                      />
+                    </TouchableOpacity>
+                  }
                 />
               );
             })}
@@ -189,6 +224,26 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
       {renderKeyStores("private key", privateKeyStores)}
       {/* Margin bottom for last */}
       <View style={style.get("height-16") as ViewStyle} />
+      <EditAccountNameModal
+        isOpen={isOpenModal}
+        close={() => setIsOpenModal(false)}
+        title="Edit Account Name"
+        isReadOnly={waitingNameData !== undefined && !waitingNameData?.editable}
+        onEnterName={async (name) => {
+          console.log(name, editAccountIndex);
+          try {
+            if (waitingNameData != null) {
+              await keyRingStore.approveChangeName(name);
+              return;
+            }
+
+            await keyRingStore.updateNameKeyRing(editAccountIndex, name.trim());
+            setIsOpenModal(false);
+          } catch (e) {
+            console.log("Fail to decrypt: " + e.message);
+          }
+        }}
+      />
     </PageWithScrollViewInBottomTabView>
   );
 });

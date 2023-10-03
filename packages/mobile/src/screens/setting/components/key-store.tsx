@@ -64,6 +64,7 @@ export const KeyStoreItem: FunctionComponent<{
   paragraph?: string;
   left?: React.ReactElement;
   right?: React.ReactElement;
+  unClickableChildren?: React.ReactElement;
 
   onPress?: () => void;
 
@@ -78,6 +79,7 @@ export const KeyStoreItem: FunctionComponent<{
   paragraph,
   left,
   right,
+  unClickableChildren,
   onPress,
   topBorder,
   bottomBorder = true,
@@ -146,40 +148,55 @@ export const KeyStoreItem: FunctionComponent<{
           }
         />
       ) : null}
-      {onPress ? (
-        <RectButton
-          style={StyleSheet.flatten([
+      <View
+        style={
+          unClickableChildren &&
+          StyleSheet.flatten([
             style.flatten([
-              "height-87",
+              "flex",
               "flex-row",
+              "width-full",
               "items-center",
-              "padding-x-20",
-              "background-color-white",
-              "dark:background-color-platinum-600",
             ]) as ViewStyle,
-            containerStyle,
-          ])}
-          onPress={onPress}
-        >
-          {renderChildren()}
-        </RectButton>
-      ) : (
-        <View
-          style={StyleSheet.flatten([
-            style.flatten([
-              "height-87",
-              "flex-row",
-              "items-center",
-              "padding-x-20",
-              "background-color-white",
-              "dark:background-color-platinum-600",
-            ]) as ViewStyle,
-            containerStyle,
-          ])}
-        >
-          {renderChildren()}
-        </View>
-      )}
+          ])
+        }
+      >
+        {onPress ? (
+          <RectButton
+            style={StyleSheet.flatten([
+              style.flatten([
+                "height-87",
+                "flex-row",
+                "items-center",
+                "padding-x-20",
+                "background-color-white",
+                "dark:background-color-platinum-600",
+              ]) as ViewStyle,
+              containerStyle,
+            ])}
+            onPress={onPress}
+          >
+            {renderChildren()}
+          </RectButton>
+        ) : (
+          <View
+            style={StyleSheet.flatten([
+              style.flatten([
+                "height-87",
+                "flex-row",
+                "items-center",
+                "padding-x-20",
+                "background-color-white",
+                "dark:background-color-platinum-600",
+              ]) as ViewStyle,
+              containerStyle,
+            ])}
+          >
+            {renderChildren()}
+          </View>
+        )}
+        {unClickableChildren ? unClickableChildren : null}
+      </View>
       {bottomBorder ? (
         <View
           style={
