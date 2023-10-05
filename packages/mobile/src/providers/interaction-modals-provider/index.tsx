@@ -73,12 +73,10 @@ export const InteractionModalsProivder: FunctionComponent = observer(
             }}
           />
         ) : null*/}
-        {ledgerInitStore.isInitNeeded ? (
-          <LedgerGranterModal
-            isOpen={true}
-            close={() => ledgerInitStore.abortAll()}
-          />
-        ) : null}
+        <LedgerGranterModal
+          isOpen={ledgerInitStore.isInitNeeded}
+          close={() => ledgerInitStore.abortAll()}
+        />
         {permissionStore.waitingDatas.map((data) => {
           if (data.data.origins.length === 1) {
             if (

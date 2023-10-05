@@ -184,7 +184,9 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                       style={
                         style.flatten([
                           "background-color-white",
-                          "padding-15",
+                          "padding-top-15",
+                          "padding-bottom-15",
+                          "padding-right-24",
                           "height-87",
                           "flex",
                           "justify-center",
@@ -198,7 +200,7 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                       <EditIcon
                         color={
                           style.flatten([
-                            "color-gray-100",
+                            "color-black",
                             "dark:color-platinum-300",
                           ]).color
                         }

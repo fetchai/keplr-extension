@@ -18,6 +18,7 @@ import { registerModal } from "../../modals/base";
 import { CardModal } from "../../modals/card";
 import { AppleIcon, DownloadIcon, GoogleIcon } from "../../components/icon";
 import { HeaderAddIcon } from "../../components/header/icon";
+import { BluetoothIcon } from "../../components/icon/bluetooth";
 
 const SelectWalletOptionCard: FunctionComponent<{
   setIsModalOpen: (val: boolean) => void;
@@ -104,7 +105,9 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
       }}
     >
       <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
-        <View style={style.flatten(["items-center"]) as ViewStyle}>
+        <View
+          style={style.flatten(["items-center", "margin-top-8"]) as ViewStyle}
+        >
           <Image
             source={
               style.theme === "dark"
@@ -113,7 +116,6 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             }
             style={{
               height: 45,
-              aspectRatio: 2.977,
             }}
             resizeMode="contain"
             fadeDuration={0}
@@ -136,6 +138,16 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             img={<DownloadIcon color="#fff" size={18} />}
             title="Import existing wallet"
             desc="Access your existing wallet using your Secret Recovery Phrase"
+          />
+          <SelectWalletOptionCard
+            setIsModalOpen={() => {
+              smartNavigation.navigateSmart("Register.NewLedger", {
+                registerConfig,
+              });
+            }}
+            img={<BluetoothIcon color="#fff" size={18} />}
+            title="Import Ledger Nano X"
+            desc="Access your hardware wallet using bluetooth"
           />
           <NewWalletModal
             isOpen={isModalOpen}

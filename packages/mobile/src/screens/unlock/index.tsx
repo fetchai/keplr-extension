@@ -234,7 +234,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               }
               style={{
                 height: 45,
-                aspectRatio: 2.977,
               }}
               resizeMode="contain"
               fadeDuration={0}

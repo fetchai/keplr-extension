@@ -4,7 +4,6 @@ import { CardModal } from "../card";
 import {
   AppState,
   AppStateStatus,
-  Linking,
   PermissionsAndroid,
   Platform,
   Text,
@@ -24,9 +23,9 @@ import { getLastUsedLedgerDeviceId } from "../../utils/ledger";
 import { RectButton } from "../../components/rect-button";
 import { useUnmount } from "../../hooks";
 import Svg, { Path } from "react-native-svg";
-import { Button } from "../../components/button";
+import * as Location from "expo-location";
+import { LocationAccuracy } from "expo-location";
 
-//Todo
 const AlertIcon: FunctionComponent<{
   size: number;
   color: string;
@@ -67,13 +66,16 @@ export const LedgerGranterModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
 }> = registerModal(
-  observer(() => {
+  observer(({ isOpen }) => {
     const { ledgerInitStore } = useStore();
 
     const style = useStyle();
 
     const resumed = useRef(false);
     const [isBLEAvailable, setIsBLEAvailable] = useState(false);
+    const [location, setLocation] = useState<
+      Location.LocationObject | undefined
+    >();
 
     useEffect(() => {
       // If this modal appears, it's probably because there was a problem with the ledger connection.
@@ -93,7 +95,7 @@ export const LedgerGranterModal: FunctionComponent<{
         ledgerInitStore.abortAll();
       }
     });
-    //observeState
+
     useEffect(() => {
       const subscription = bleManager.onStateChange((newState) => {
         if (newState === State.PoweredOn) {
@@ -107,15 +109,6 @@ export const LedgerGranterModal: FunctionComponent<{
         subscription.remove();
       };
     }, []);
-
-    useEffect(() => {
-      if (Platform.OS === "android" && !isBLEAvailable) {
-        // If the platform is android and can't use the bluetooth,
-        // try to turn on the bluetooth.
-        // Below API can be called only in android.
-        bleManager.enable();
-      }
-    }, [isBLEAvailable]);
 
     const [isFinding, setIsFinding] = useState(false);
 
@@ -163,17 +156,7 @@ export const LedgerGranterModal: FunctionComponent<{
         permissionStatus === BLEPermissionGrantStatus.NotInit ||
         permissionStatus === BLEPermissionGrantStatus.FailedAndRetry
       ) {
-        if (Platform.OS === "android") {
-          PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
-          ).then((granted) => {
-            if (granted == PermissionsAndroid.RESULTS["GRANTED"]) {
-              setPermissionStatus(BLEPermissionGrantStatus.Granted);
-            } else {
-              setPermissionStatus(BLEPermissionGrantStatus.Failed);
-            }
-          });
-        }
+        checkAndRequestBluetoothPermission();
       }
     }, [permissionStatus]);
 
@@ -211,6 +194,7 @@ export const LedgerGranterModal: FunctionComponent<{
                       name: device.name,
                     },
                   ];
+                  setErrorOnListen(undefined);
                   setDevices(_devices);
                 }
               }
@@ -243,6 +227,52 @@ export const LedgerGranterModal: FunctionComponent<{
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isBLEAvailable, permissionStatus]);
+
+    const checkAndRequestBluetoothPermission = () => {
+      if (Platform.OS === "android") {
+        PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS["BLUETOOTH_CONNECT"],
+          PermissionsAndroid.PERMISSIONS["BLUETOOTH_SCAN"],
+          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"],
+        ]).then((result) => {
+          if (
+            result["android.permission.BLUETOOTH_CONNECT"] ===
+            PermissionsAndroid.RESULTS["GRANTED"]
+          ) {
+            setPermissionStatus(BLEPermissionGrantStatus.Granted);
+          } else {
+            setPermissionStatus(BLEPermissionGrantStatus.Failed);
+          }
+
+          fetchCurrentLocation(
+            result["android.permission.ACCESS_FINE_LOCATION"] ===
+              PermissionsAndroid.RESULTS["GRANTED"]
+          );
+        });
+      }
+    };
+
+    useEffect(() => {
+      if (Platform.OS === "android" && location == undefined) {
+        PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
+        ).then((result) => fetchCurrentLocation(result));
+      }
+    }, [location]);
+
+    const fetchCurrentLocation = (isPermissionGranted: boolean) => {
+      if (isPermissionGranted) {
+        Location.getCurrentPositionAsync({
+          accuracy: LocationAccuracy.Highest,
+        }).then((location) => {
+          setLocation(location);
+        });
+      }
+    };
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal
@@ -300,21 +330,6 @@ export const LedgerGranterModal: FunctionComponent<{
               );
             })}
           </React.Fragment>
-        ) : permissionStatus === BLEPermissionGrantStatus.Failed ||
-          BLEPermissionGrantStatus.FailedAndRetry ? (
-          <LedgerErrorView text="Fetch doesn't have permission to use bluetooth">
-            <Button
-              containerStyle={style.flatten(["margin-top-16"]) as ViewStyle}
-              textStyle={
-                style.flatten(["margin-x-8", "normal-case"]) as ViewStyle
-              }
-              text="Open app setting"
-              size="small"
-              onPress={() => {
-                Linking.openSettings();
-              }}
-            />
-          </LedgerErrorView>
         ) : (
           <Text style={style.flatten(["subtitle3", "color-text-high"])}>
             Please turn on Bluetooth

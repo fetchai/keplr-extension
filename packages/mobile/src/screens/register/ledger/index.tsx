@@ -33,7 +33,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const { analyticsStore } = useStore();
+  const { analyticsStore, ledgerInitStore } = useStore();
 
   const smartNavigation = useSmartNavigation();
 
@@ -78,6 +78,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         ],
       });
     } catch (e) {
+      ledgerInitStore.abortAll();
       // Definitely, the error can be thrown when the ledger connection failed
       console.log(e);
       setIsCreating(false);

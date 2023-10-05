@@ -14,13 +14,20 @@
       "bundleIdentifier": "com.fetchai.fetchwallet"
     },
     "android": {
-      "package": "com.fetchai.fetchwallet"
+      "package": "com.fetchai.fetchwallet",
+      "permissions": ["CAMERA", "BLUETOOTH_ADMIN", "BLUETOOTH_CONNECT", "BLUETOOTH_ADVERTISE", "BLUETOOTH_SCAN", "BLUETOOTH", "ACCESS_FINE_LOCATION"]
     },
     "plugins": [
       [
         "expo-camera",
         {
           "cameraPermission": "Allow Fetch Wallet to access your camera."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Fetch Wallet to use your location."
         }
       ]
     ]
