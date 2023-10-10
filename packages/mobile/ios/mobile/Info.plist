@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>bugsnag</key>
-	<dict>
-		<key>apiKey</key>
-		<string>f07be1dce2391227e818fbe3e4235bf4</string>
-	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -51,6 +46,13 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>New Exception Domain</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -82,5 +84,10 @@
 	<false/>
 	<key>XSAppIconAssets</key>
 	<string>Images.xcassets/AppIcon.appiconset</string>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>f07be1dce2391227e818fbe3e4235bf4</string>
+	</dict>
 </dict>
 </plist>

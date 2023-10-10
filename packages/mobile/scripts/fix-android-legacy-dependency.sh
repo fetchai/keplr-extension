@@ -15,7 +15,7 @@ fi
 # cat "$file_path"
 
 # Search for the line containing "compile 'com.facebook.react:react-native:+'" and replace it
-sed -i 's/compile '\''com\.facebook\.react:react-native:+'\''/implementation '\''com.facebook.react:react-native:+'\''/g' "$file_path"
+sed -i -e 's/compile '\''com\.facebook\.react:react-native:+'\''/implementation '\''com.facebook.react:react-native:+'\''/g' "$file_path"
 
 # Check if the replacement was successful
 if [ $? -eq 0 ]; then

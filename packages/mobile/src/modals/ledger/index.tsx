@@ -162,6 +162,7 @@ export const LedgerGranterModal: FunctionComponent<{
 
     useEffect(() => {
       let unsubscriber: (() => void) | undefined;
+      setErrorOnListen(undefined);
 
       if (
         isBLEAvailable &&
@@ -194,7 +195,6 @@ export const LedgerGranterModal: FunctionComponent<{
                       name: device.name,
                     },
                   ];
-                  setErrorOnListen(undefined);
                   setDevices(_devices);
                 }
               }
@@ -226,7 +226,7 @@ export const LedgerGranterModal: FunctionComponent<{
         }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isBLEAvailable, permissionStatus]);
+    }, [isBLEAvailable, permissionStatus, location]);
 
     const checkAndRequestBluetoothPermission = () => {
       if (Platform.OS === "android") {
@@ -235,6 +235,11 @@ export const LedgerGranterModal: FunctionComponent<{
           PermissionsAndroid.PERMISSIONS["BLUETOOTH_SCAN"],
           PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"],
         ]).then((result) => {
+          fetchCurrentLocation(
+            result["android.permission.ACCESS_FINE_LOCATION"] ===
+              PermissionsAndroid.RESULTS["GRANTED"]
+          );
+
           if (
             result["android.permission.BLUETOOTH_CONNECT"] ===
             PermissionsAndroid.RESULTS["GRANTED"]
@@ -243,11 +248,6 @@ export const LedgerGranterModal: FunctionComponent<{
           } else {
             setPermissionStatus(BLEPermissionGrantStatus.Failed);
           }
-
-          fetchCurrentLocation(
-            result["android.permission.ACCESS_FINE_LOCATION"] ===
-              PermissionsAndroid.RESULTS["GRANTED"]
-          );
         });
       }
     };
