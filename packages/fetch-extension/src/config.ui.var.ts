@@ -214,7 +214,38 @@ export const ANS_CONFIG: {
   };
 } =
   process.env.NODE_ENV === "production"
-    ? {}
+    ? {
+        [CHAIN_ID_FETCHHUB]: {
+          network: "mainnet",
+          rpc: "https://rpc-fetchhub.fetch.ai:443",
+          contractAddress:
+            "fetch1479lwv5vy8skute5cycuz727e55spkhxut0valrcm38x9caa2x8q99ef0q",
+          validateAgentAddressContract:
+            "fetch1mezzhfj7qgveewzwzdk6lz5sae4dunpmmsjr9u7z0tpmdsae8zmquq3y0y",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+        [CHAIN_ID_DORADO]: {
+          network: "testnet",
+          rpc: "https://rpc-dorado.fetch.ai:443",
+          contractAddress:
+            "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+          validateAgentAddressContract:
+            "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+      }
     : {
         [CHAIN_ID_DORADO]: {
           network: "testnet",
