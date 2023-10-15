@@ -15,15 +15,23 @@ export const EditAccountNameModal: FunctionComponent<{
   ({ close, title, onEnterName, isOpen, isReadOnly }) => {
     const [newName, setNewName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isInvalidName, setIsInvalidName] = useState(false);
 
     const submitNewName = async () => {
+      if (newName.length == 0) {
+        setIsInvalidName(true);
+        return;
+      }
+
       setIsLoading(true);
       try {
         await onEnterName(newName);
+        setIsInvalidName(false);
         setNewName("");
         close();
       } catch (e) {
         console.log(e);
+        setIsInvalidName(true);
       } finally {
         setIsLoading(false);
       }
@@ -41,6 +49,8 @@ export const EditAccountNameModal: FunctionComponent<{
             if (!isReadOnly) setNewName(text);
           }}
           value={newName}
+          maxLength={30}
+          error={isInvalidName ? "Name is required" : undefined}
           returnKeyType="done"
           onSubmitEditing={submitNewName}
         />

@@ -79,7 +79,8 @@ export const getKeyStoreParagraph = (keyStore: MultiKeyStoreInfoElem) => {
 
 export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [editAccountIndex, setEditAccountIndex] = useState(-1);
+  const [selectedKeyStore, setSelectedKeyStore] =
+    useState<MultiKeyStoreInfoWithSelectedElem>();
 
   const { keyRingStore, analyticsStore } = useStore();
 
@@ -193,7 +194,7 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
                         ]) as ViewStyle
                       }
                       onPress={() => {
-                        setEditAccountIndex(i);
+                        setSelectedKeyStore(keyStore);
                         setIsOpenModal(true);
                       }}
                     >
@@ -232,14 +233,13 @@ export const SettingSelectAccountScreen: FunctionComponent = observer(() => {
         title="Edit Account Name"
         isReadOnly={waitingNameData !== undefined && !waitingNameData?.editable}
         onEnterName={async (name) => {
-          console.log(name, editAccountIndex);
           try {
-            if (waitingNameData != null) {
-              await keyRingStore.approveChangeName(name);
-              return;
-            }
+            const selectedIndex = keyRingStore.multiKeyStoreInfo.findIndex(
+              (keyStore) => keyStore == selectedKeyStore
+            );
 
-            await keyRingStore.updateNameKeyRing(editAccountIndex, name.trim());
+            await keyRingStore.updateNameKeyRing(selectedIndex, name.trim());
+            setSelectedKeyStore(undefined);
             setIsOpenModal(false);
           } catch (e) {
             console.log("Fail to decrypt: " + e.message);

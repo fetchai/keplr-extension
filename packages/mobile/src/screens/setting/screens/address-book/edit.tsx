@@ -17,6 +17,7 @@ import {
 } from "../../../../components/input";
 import { Button } from "../../../../components/button";
 import { useSmartNavigation } from "../../../../navigation";
+import Toast from "react-native-toast-message";
 
 export const EditAddressBookScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -46,10 +47,6 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
     allowHexAddressOnEthermint: true,
   });
   const memoConfig = useMemoConfig(chainStore, route.params.chainId);
-
-  const addressIndex = addressBookConfig.addressBookDatas.findIndex(
-    (element) => element.address === recipientConfig.recipient
-  );
 
   useEffect(() => {
     if (index >= 0) {
@@ -90,17 +87,32 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
           if (
             name &&
             recipientConfig.error == null &&
-            memoConfig.error == null &&
-            addressIndex == index
+            memoConfig.error == null
           ) {
-            await addressBookConfig.editAddressBookAt(index, {
-              name: name.trim(),
-              address: recipientConfig.recipient,
-              memo: memoConfig.memo,
-            });
-            recipientConfig.setRawRecipient("");
-            memoConfig.setMemo("");
-            smartNavigation.goBack();
+            /// return -1 if address not matched
+            const addressIndex = addressBookConfig.addressBookDatas.findIndex(
+              (element) => element.address === recipientConfig.recipient
+            );
+
+            if (index >= 0 && (index === addressIndex || addressIndex === -1)) {
+              /// Validating edit case and address is already added in the address book
+              /// [addressIndex === -1] replacing old address to unique address
+              /// [index === addressIndex] if the index and address index is same that means we are dealing with unique address
+              addressBookConfig.editAddressBookAt(index, {
+                name: name.trim(),
+                address: recipientConfig.recipient,
+                memo: memoConfig.memo,
+              });
+
+              recipientConfig.setRawRecipient("");
+              memoConfig.setMemo("");
+              smartNavigation.goBack();
+            } else {
+              Toast.show({
+                type: "error",
+                text1: "Address is already available in the Address Book",
+              });
+            }
           }
         }}
       />

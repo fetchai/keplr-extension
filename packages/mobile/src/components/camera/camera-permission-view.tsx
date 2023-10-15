@@ -2,17 +2,19 @@ import LottieView from "lottie-react-native";
 import { PageWithView } from "../page";
 import { Button } from "../button";
 import { useStyle } from "../../styles";
-import { StatusBar, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { FunctionComponent } from "react";
 import { HeaderLeftButton } from "../header";
 import { HeaderBackButtonIcon } from "../header/icon";
 import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const CameraPermissionView: FunctionComponent<{
   onPress?: () => void;
 }> = ({ onPress }) => {
   const style = useStyle();
   const navigation = useNavigation();
+  const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <PageWithView
@@ -24,7 +26,7 @@ export const CameraPermissionView: FunctionComponent<{
         style={{
           position: "absolute",
           zIndex: 100,
-          top: StatusBar.currentHeight,
+          top: safeAreaInsets.top,
           left: 8,
         }}
       >

@@ -35163,6 +35163,7 @@ __metadata:
     react-native-scrypt: ^1.2.1
     react-native-svg: ^13.10.0
     react-native-svg-transformer: ^1.1.0
+    react-native-toast-message: ^2.1.6
     react-native-url-polyfill: ^2.0.0
     react-native-webview: ^13.2.3
     react-test-renderer: ^18.0.0
@@ -40460,6 +40461,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 5b71a69f779eb0c8139b716f76736a798c99d85cd5f1741bdc54cf46bfc032505df7b81a92c76859d09317fe5787dc31aabee8a79e67db083442d00af1600f26
+  languageName: node
+  linkType: hard
+
+"react-native-toast-message@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "react-native-toast-message@npm:2.1.6"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 250ce35cf3df05562ac19a0f1dd9ca3b0f4731021cc1f95a6291fe320a1122f8fbc55e6e4185c9bc0303c43b0acf1435861a0a08e05dc69495b06db818f1daa1
   languageName: node
   linkType: hard
 

@@ -19,6 +19,7 @@ export const CopyIcon: FunctionComponent<{
         d="M11.333 3.833h-6a2 2 0 00-2 2v6"
         stroke={color}
         strokeWidth={1.5}
+        fill="#ffff"
         strokeLinecap="round"
       />
       <Rect
@@ -28,6 +29,7 @@ export const CopyIcon: FunctionComponent<{
         height={7.833}
         rx={1.25}
         stroke={color}
+        fill="#ffff"
         strokeWidth={1.5}
       />
     </Svg>

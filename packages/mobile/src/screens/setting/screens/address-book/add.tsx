@@ -17,6 +17,7 @@ import {
 } from "../../../../components/input";
 import { Button } from "../../../../components/button";
 import { useSmartNavigation } from "../../../../navigation";
+import Toast from "react-native-toast-message";
 
 export const AddAddressBookScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -77,13 +78,25 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
             recipientConfig.error == null &&
             memoConfig.error == null
           ) {
-            await addressBookConfig.addAddressBook({
-              name,
-              address: recipientConfig.rawRecipient,
-              memo: memoConfig.memo,
-            });
+            /// return -1 if address not matched
+            const addressIndex = addressBookConfig.addressBookDatas.findIndex(
+              (element) => element.address === recipientConfig.recipient
+            );
 
-            smartNavigation.goBack();
+            /// Validating a new address is unique in the address book
+            if (addressIndex < 0) {
+              addressBookConfig.addAddressBook({
+                name: name.trim(),
+                address: recipientConfig.recipient,
+                memo: memoConfig.memo,
+              });
+              smartNavigation.goBack();
+            } else {
+              Toast.show({
+                type: "error",
+                text1: "Address is already available in the Address Book",
+              });
+            }
           }
         }}
       />

@@ -13,6 +13,8 @@ import { LoadingScreenProvider } from "./providers/loading-screen";
 import * as SplashScreen from "expo-splash-screen";
 import { ConfirmModalProvider } from "./providers/confirm-modal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import { BaseToastProps } from "react-native-toast-message/lib/src/types";
 //import Bugsnag from "@bugsnag/react-native";
 
 if (Platform.OS === "android") {
@@ -76,44 +78,64 @@ const ThemeStatusBar: FunctionComponent = () => {
   );
 };
 
+const toastConfig = {
+  /*
+    Overwrite 'success' type,
+    by modifying the existing `BaseToast` component
+  */
+  success: (props: BaseToastProps) => (
+    <BaseToast {...props} text1NumberOfLines={2} text2NumberOfLines={2} />
+  ),
+  /*
+    Overwrite 'error' type,
+    by modifying the existing `ErrorToast` component
+  */
+  error: (props: BaseToastProps) => (
+    <ErrorToast {...props} text1NumberOfLines={2} text2NumberOfLines={2} />
+  ),
+};
+
 const AppBody: FunctionComponent = () => {
   return (
-    <StyleProvider>
-      <StoreProvider>
-        <IntlProvider
-          locale="en"
-          formats={{
-            date: {
-              en: {
-                // Prefer not showing the year.
-                // If the year is different with current time, recommend to show the year.
-                // However, this recomendation should be handled in the component logic.
-                // year: "numeric",
-                month: "short",
-                day: "2-digit",
-                hour: "2-digit",
-                hour12: false,
-                minute: "2-digit",
-                timeZoneName: "short",
+    <React.Fragment>
+      <StyleProvider>
+        <StoreProvider>
+          <IntlProvider
+            locale="en"
+            formats={{
+              date: {
+                en: {
+                  // Prefer not showing the year.
+                  // If the year is different with current time, recommend to show the year.
+                  // However, this recomendation should be handled in the component logic.
+                  // year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  hour12: false,
+                  minute: "2-digit",
+                  timeZoneName: "short",
+                },
               },
-            },
-          }}
-        >
-          <ThemeStatusBar />
-          <SafeAreaProvider>
-            <ModalsProvider>
-              <LoadingScreenProvider>
-                <ConfirmModalProvider>
-                  <InteractionModalsProivder>
-                    <AppNavigation />
-                  </InteractionModalsProivder>
-                </ConfirmModalProvider>
-              </LoadingScreenProvider>
-            </ModalsProvider>
-          </SafeAreaProvider>
-        </IntlProvider>
-      </StoreProvider>
-    </StyleProvider>
+            }}
+          >
+            <ThemeStatusBar />
+            <SafeAreaProvider>
+              <ModalsProvider>
+                <LoadingScreenProvider>
+                  <ConfirmModalProvider>
+                    <InteractionModalsProivder>
+                      <AppNavigation />
+                    </InteractionModalsProivder>
+                  </ConfirmModalProvider>
+                </LoadingScreenProvider>
+              </ModalsProvider>
+            </SafeAreaProvider>
+          </IntlProvider>
+        </StoreProvider>
+      </StyleProvider>
+      <Toast config={toastConfig} />
+    </React.Fragment>
   );
 };
 

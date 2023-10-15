@@ -154,8 +154,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       // So to make sure that the loading state changes, just wait very short time.
       await delay(10);
       await keychainStore.tryUnlockWithBiometry();
-
-      await hideSplashScreen();
     } catch (e) {
       console.log(e);
       setIsBiometricLoading(false);
@@ -171,8 +169,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       // So to make sure that the loading state changes, just wait very short time.
       await delay(10);
       await keyRingStore.unlock(password);
-
-      await hideSplashScreen();
     } catch (e) {
       console.log(e);
       setIsLoading(false);
@@ -203,10 +199,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   useEffect(() => {
     if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
-      (async () => {
-        await hideSplashScreen();
-        navigateToHome();
-      })();
+      navigateToHome();
     }
   }, [keyRingStore.status, navigateToHome]);
 

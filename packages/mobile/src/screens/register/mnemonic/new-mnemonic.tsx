@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { View, Text, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { RouteProp, useIsFocused, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
@@ -109,6 +109,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              maxLength={30}
               ref={ref}
             />
           );

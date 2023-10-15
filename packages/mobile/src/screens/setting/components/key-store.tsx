@@ -94,7 +94,7 @@ export const KeyStoreItem: FunctionComponent<{
         ) : (
           <View
             style={StyleSheet.flatten([
-              style.flatten(["margin-right-16"]) as ViewStyle,
+              style.flatten(["margin-right-8"]) as ViewStyle,
               defaultRightWalletIconStyle,
             ])}
           >
@@ -104,10 +104,14 @@ export const KeyStoreItem: FunctionComponent<{
             />
           </View>
         )}
-        <View>
+        <View style={style.flatten(["flex-10"])}>
           <Text
             style={StyleSheet.flatten([
-              style.flatten(["h5", "color-text-high"]),
+              style.flatten([
+                "padding-top-2",
+                "h6",
+                "color-text-high",
+              ]) as ViewStyle,
               labelStyle,
             ])}
           >
@@ -119,7 +123,7 @@ export const KeyStoreItem: FunctionComponent<{
                 style.flatten([
                   "subtitle3",
                   "color-text-low",
-                  "margin-top-4",
+                  "margin-top-2",
                 ]) as ViewStyle,
                 paragraphStyle,
               ])}
@@ -142,7 +146,7 @@ export const KeyStoreItem: FunctionComponent<{
             style.flatten([
               "height-1",
               "margin-x-20",
-              "background-color-gray-50",
+              "color-gray-50",
               "dark:background-color-platinum-500@75%",
             ]) as ViewStyle
           }

@@ -222,6 +222,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   setFocus("password");
                 }
               }}
+              maxLength={30}
               error={errors.name?.message}
               onBlur={onBlur}
               onChangeText={onChange}

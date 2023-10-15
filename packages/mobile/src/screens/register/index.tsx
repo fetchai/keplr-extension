@@ -2,12 +2,12 @@ import React, { FunctionComponent, useState } from "react";
 import { PageWithScrollView } from "../../components/page";
 import { useStyle } from "../../styles";
 import {
-  View,
   Image,
-  ViewStyle,
-  TouchableOpacity,
-  Text,
   Platform,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 import { Button } from "../../components/button";
 import { useSmartNavigation } from "../../navigation";
@@ -196,6 +196,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               });
             }}
             onSelectApple={() => {
+              setIsmportWalletModalOpen(false);
               analyticsStore.logEvent("OAuth sign in started", {
                 registerType: "apple",
               });

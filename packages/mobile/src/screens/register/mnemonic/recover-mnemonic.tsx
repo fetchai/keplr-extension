@@ -243,6 +243,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              maxLength={30}
               ref={ref}
             />
           );

@@ -71,12 +71,12 @@ import {
 import { NewLedgerScreen } from "./screens/register/ledger";
 import { PageScrollPositionProvider } from "./providers/page-scroll-position";
 import {
+  HeaderAtSecondaryScreenOptionsPreset,
   HeaderLeftButton,
-  HeaderRightButton,
   HeaderOnGradientScreenOptionsPreset,
   HeaderOnSecondaryScreenOptionsPreset,
-  HeaderAtSecondaryScreenOptionsPreset,
   HeaderOnTertiaryScreenOptionsPreset,
+  HeaderRightButton,
   TransparentHeaderOptionsPreset,
 } from "./components/header";
 import { TokensScreen } from "./screens/tokens";
@@ -111,15 +111,16 @@ import {
   ImportFromExtensionSetPasswordScreen,
 } from "./screens/register/import-from-extension";
 import {
-  OsmosisWebpageScreen,
+  FetchhubScreen,
+  JunoswapWebpageScreen,
   OsmosisFrontierWebpageScreen,
+  OsmosisWebpageScreen,
   StargazeWebpageScreen,
   UmeeWebpageScreen,
-  JunoswapWebpageScreen,
-  FetchhubScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
 import { UnlockScreen } from "./screens/unlock";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -902,6 +903,7 @@ export const MainTabNavigation: FunctionComponent = () => {
 
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     // When the focused screen is not "Home" screen and the drawer is open,
@@ -1014,8 +1016,9 @@ export const MainTabNavigation: FunctionComponent = () => {
           backgroundColor: style.get("color-blurred-tabbar-background").color,
           shadowColor: style.get("color-transparent").color,
           elevation: 0,
-          paddingLeft: 30,
-          paddingRight: 30,
+          paddingVertical: 16,
+          paddingHorizontal: 30,
+          height: 64 + insets.bottom,
         },
         showLabel: false,
       })}
