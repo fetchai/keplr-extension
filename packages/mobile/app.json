@@ -11,7 +11,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.fetchai.fetchwallet",
+      "bundleIdentifier": "com.fetchai.wallet",
       "permissions": [
         "CAMERA",
         "BLUETOOTH_ADMIN",
@@ -23,7 +23,7 @@
       ]
     },
     "android": {
-      "package": "com.fetchai.fetchwallet",
+      "package": "com.fetchai.wallet",
       "permissions": ["CAMERA", "BLUETOOTH_ADMIN", "BLUETOOTH_CONNECT", "BLUETOOTH_ADVERTISE", "BLUETOOTH_SCAN", "BLUETOOTH", "ACCESS_FINE_LOCATION"]
     },
     "plugins": [

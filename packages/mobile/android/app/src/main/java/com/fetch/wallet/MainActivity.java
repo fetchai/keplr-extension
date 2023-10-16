@@ -1,4 +1,4 @@
-package com.fetchai.fetchwallet;
+package com.fetchai.wallet;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

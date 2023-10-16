@@ -1,4 +1,4 @@
-package com.fetchai.fetchwallet;
+package com.fetchai.wallet;
 
 import android.content.res.Configuration;
 import androidx.annotation.NonNull;

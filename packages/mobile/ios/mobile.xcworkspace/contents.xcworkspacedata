@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:mobile.xcodeproj">
+      location = "group:/Users/hemant/WebstormProjects/fetch-wallet/packages/mobile/ios/Fetch Wallet.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
