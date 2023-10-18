@@ -298,12 +298,12 @@ export class FeeConfig extends TxChainSetter implements IFeeConfig {
       );
     }
 
-    if (this.chainId === "1") {
+    if (this.chainId === "1" || this.chainId === "11155111") {
       const ethereumFees = this.queriesStore.get(this.chainId).evm
         ?.queryEthGasFees.fees;
 
       if (ethereumFees) {
-        const gasPrice = new Dec(ethereumFees[feeType].toString());
+        const gasPrice = new Dec(ethereumFees[feeType]!.toString());
         const feeAmount = gasPrice
           .mul(new Dec(this.gasConfig.gas))
           .mul(new Dec("1000000000"));
@@ -425,6 +425,23 @@ export class FeeConfig extends TxChainSetter implements IFeeConfig {
       feeCurrency,
       new Int(feeTypePrimitive.amount)
     ).maxDecimals(feeCurrency.coinDecimals);
+  });
+
+  readonly getEthBaseFee = computedFn(() => {
+    if (this._manualFee) {
+      throw new Error(
+        "Can't calculate fee from fee type. Because fee config uses the manual fee now"
+      );
+    }
+
+    if (!this.feeCurrency) {
+      throw new Error("Fee currency not set");
+    }
+
+    const baseFee = this.queriesStore.get(this.chainId).evm?.queryEthGasFees
+      .base;
+
+    return baseFee?.toString();
   });
 
   readonly getFeeTypePrettyForFeeCurrency = computedFn(

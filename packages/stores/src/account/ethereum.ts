@@ -5,7 +5,7 @@ import {
   erc20MetadataInterface,
   nativeFetBridgeInterface,
 } from "../common";
-import { DenomHelper } from "@keplr-wallet/common";
+import { DenomHelper, LocalKVStore } from "@keplr-wallet/common";
 import { Dec, DecUtils } from "@keplr-wallet/unit";
 import {
   AppCurrency,
@@ -19,14 +19,20 @@ import { CosmosAccount } from "./cosmos";
 import { txEventsWithPreOnFulfill } from "./utils";
 import Axios, { AxiosInstance } from "axios";
 import { MakeTxResponse } from "./types";
-import { BigNumber } from "@ethersproject/bignumber";
+import { formatEther } from "@ethersproject/units";
 import {
   JsonRpcProvider,
   TransactionReceipt,
   TransactionRequest,
 } from "@ethersproject/providers";
-import { isAddress } from "@ethersproject/address";
 
+import { isAddress } from "@ethersproject/address";
+import { KVStore } from "@keplr-wallet/common";
+
+export interface ITxn {
+  hash: string;
+  status: "pending" | "success" | "failed";
+}
 export interface EthereumAccount {
   ethereum: EthereumAccountImpl;
 }
@@ -54,7 +60,7 @@ export const EthereumAccount = {
 
 export class EthereumAccountImpl {
   public broadcastMode: "sync" | "async" | "block" = "sync";
-
+  protected kvStore: KVStore;
   constructor(
     protected readonly base: AccountSetBaseSuper & CosmosAccount,
     protected readonly chainGetter: ChainGetter,
@@ -62,6 +68,7 @@ export class EthereumAccountImpl {
     protected readonly queriesStore: IQueriesStore<EvmQueries>
   ) {
     this.base.registerMakeSendTokenFn(this.processMakeSendTokenTx.bind(this));
+    this.kvStore = new LocalKVStore("Transactions");
   }
 
   get instance(): AxiosInstance {
@@ -280,6 +287,74 @@ export class EthereumAccountImpl {
     });
   }
 
+  async checkTransactionStatus(transactionHash: string) {
+    let receipt = null;
+    try {
+      receipt = await this.instance.post("", {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_getTransactionReceipt",
+        params: [transactionHash],
+      });
+    } catch (error) {
+      console.error("Error checking transaction receipt:", error);
+    }
+
+    if (receipt) {
+      if (receipt.data.result.status == 1) {
+        return 1; // Transaction succeeded
+      } else if (receipt.data.result.status == 0) {
+        return 0; // Transaction failed
+      }
+    } else {
+      return 2;
+    }
+  }
+
+  // Store transaction hash in an array
+  async storeTransactionHash(transactionInfo: ITxn, kvStore: KVStore) {
+    try {
+      const txList: any[] | undefined = await kvStore.get(
+        this.base.ethereumHexAddress
+      );
+      if (txList === undefined) {
+        await kvStore.set(this.base.ethereumHexAddress, [transactionInfo]);
+      } else {
+        txList?.push(transactionInfo);
+        await kvStore.set(this.base.ethereumHexAddress, txList);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  async updateTransactionStatus(
+    hash: string,
+    status: "pending" | "success" | "failed"
+  ) {
+    try {
+      const txList: ITxn[] | undefined = await this.kvStore.get(
+        this.base.ethereumHexAddress
+      );
+      if (txList === undefined) {
+        await this.kvStore.set(this.base.ethereumHexAddress, [
+          { hash, status },
+        ]);
+      } else {
+        // Find and update the transaction status by hash
+        const updatedTxList = txList.map((txn) =>
+          txn.hash === hash ? { hash, status } : txn
+        );
+        await this.kvStore.set(this.base.ethereumHexAddress, updatedTxList);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  weiToEther(amountInWei: string) {
+    return formatEther(amountInWei);
+  }
   async broadcastTx(params: TransactionRequest, fee: StdFee): Promise<string> {
     if (this.base.walletStatus !== WalletStatus.Loaded) {
       throw new Error(`Wallet is not loaded: ${this.base.walletStatus}`);
@@ -297,19 +372,19 @@ export class EthereumAccountImpl {
     }
 
     const nonce = parseInt(txCountResult.data.result, 16);
+    const feeData = await this.ethersInstance.getFeeData();
 
     const encoder = new TextEncoder();
-    const gasPrice = BigNumber.from(fee.amount[0].amount)
-      .div(BigNumber.from(fee.gas))
-      .toNumber();
-    const rawTxn = encoder.encode(
-      JSON.stringify({
-        ...params,
-        nonce,
-        gasLimit: parseInt(fee.gas),
-        gasPrice,
-      })
-    );
+    const rawTxData = {
+      ...params,
+      nonce,
+      type: 2,
+      chainId: this.chainId,
+      maxPriorityFeePerGas: feeData["maxPriorityFeePerGas"],
+      maxFeePerGas: feeData["maxFeePerGas"],
+      gasLimit: parseInt(fee.gas),
+    };
+    const rawTxn = encoder.encode(JSON.stringify(rawTxData));
 
     const keplr = (await this.base.getKeplr())!;
 
@@ -331,7 +406,19 @@ export class EthereumAccountImpl {
       throw new Error("Issue sending transaction");
     }
 
+    const resultString = result.data.result.toString();
+
+    await this.storeTransactionHash(
+      { hash: resultString, status: "pending" },
+      this.kvStore
+    );
+
     return result.data.result as string;
+  }
+
+  async getTxList(address: string) {
+    const txList = await this.kvStore.get(address);
+    return txList;
   }
 
   makeApprovalTx(amount: string, spender: string, currency: AppCurrency) {

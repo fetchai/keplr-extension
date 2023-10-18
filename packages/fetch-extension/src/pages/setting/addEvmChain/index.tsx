@@ -1,15 +1,18 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, Input, Button } from "reactstrap";
+import { Form, Input, Button, Label } from "reactstrap";
 import style from "./style.module.scss";
 import { useStore } from "../../../stores";
 import { Bech32Address } from "@keplr-wallet/cosmos";
+import axios from "axios";
 
 export const AddEvmChain: FunctionComponent = () => {
   const navigate = useNavigate();
   const { chainStore } = useStore();
   const [hasErrors, setHasErrors] = useState(false);
+  const [info, setInfo] = useState("");
+  // const [chainIdMsg, setChainIdMsg] = useState("");
   const initialState = {
     chainName: "",
     rpc: "",
@@ -19,7 +22,7 @@ export const AddEvmChain: FunctionComponent = () => {
     stakeCurrency: {
       coinDenom: "",
       coinMinimalDenom: "",
-      coinDecimals: 18,
+      coinDecimals: 12,
     },
     bip44: {
       coinType: 118,
@@ -29,18 +32,19 @@ export const AddEvmChain: FunctionComponent = () => {
       {
         coinDenom: "",
         coinMinimalDenom: "",
-        coinDecimals: 18,
+        coinDecimals: 12,
+        // coinGeckoId: "",
       },
     ],
     feeCurrencies: [
       {
         coinDenom: "",
         coinMinimalDenom: "",
-        coinDecimals: 18,
+        coinDecimals: 12,
 
         gasPriceStep: {
-          low: 3000000000,
-          average: 3000000000,
+          low: 1000000000,
+          average: 2000000000,
           high: 3000000000,
         },
       },
@@ -49,40 +53,112 @@ export const AddEvmChain: FunctionComponent = () => {
   };
   const [newChainInfo, setNewChainInfo] = useState(initialState);
 
-  useEffect(() => {
-    const symbolLower = newChainInfo.symbol.toLowerCase();
-    const symbolUpper = newChainInfo.symbol.toUpperCase();
-    const coinDecimals = newChainInfo.currencies[0].coinDecimals;
+  const getChainInfo = async (rpcUrl: string) => {
+    try {
+      const chains = await axios.get("https://chainid.network/chains.json");
+      const response = await axios.post(rpcUrl, {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_chainId",
+        params: [],
+      });
 
-    newChainInfo.rest = newChainInfo.rpc;
-    newChainInfo.currencies[0].coinDenom = symbolUpper;
-    newChainInfo.currencies[0].coinDenom = symbolUpper;
-    newChainInfo.currencies[0].coinMinimalDenom = symbolLower;
-    newChainInfo.stakeCurrency.coinDecimals = coinDecimals;
-    newChainInfo.stakeCurrency.coinDenom = symbolUpper;
-    newChainInfo.stakeCurrency.coinMinimalDenom = symbolLower;
-    newChainInfo.feeCurrencies[0].coinDecimals = coinDecimals;
-    newChainInfo.feeCurrencies[0].coinDenom = symbolUpper;
-    newChainInfo.feeCurrencies[0].coinMinimalDenom = symbolLower;
-    newChainInfo.bech32Config = Bech32Address.defaultBech32Config(symbolLower);
-  }, [
-    newChainInfo.rpc,
-    newChainInfo.symbol,
-    newChainInfo.currencies[0].coinDecimals,
-  ]);
+      if (response.status === 200 && chains.status === 200) {
+        const data = response.data;
+        const chainId = parseInt(data.result, 16);
+        const chainData = chains.data.find(
+          (element: any) => chainId === element.chainId
+        );
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setHasErrors(false);
-    setNewChainInfo({
-      ...newChainInfo,
-      [name]: value,
-    });
+        if (chainData) {
+          setInfo("We've fetched information based on the provided RPC.");
+          const symbol = chainData.nativeCurrency.symbol;
+          setNewChainInfo({
+            ...newChainInfo,
+            currencies: [
+              {
+                coinDenom: symbol,
+                coinMinimalDenom: symbol,
+                coinDecimals: chainData.nativeCurrency.decimals,
+              },
+            ],
+            symbol: symbol,
+            rpc: rpcUrl,
+            rest: rpcUrl,
+            chainId: chainData.chainId.toString(),
+            chainName: chainData.name,
+            bech32Config: Bech32Address.defaultBech32Config(
+              symbol.toLowerCase()
+            ),
+          });
+        }
+      }
+    } catch (error) {
+      setNewChainInfo({ ...initialState, rpc: rpcUrl });
+      console.error(
+        "Unable to connect with RPC url provided or fetch chains data:",
+        error
+      );
+    }
   };
 
+  useEffect(() => {
+    const symbol = newChainInfo.symbol;
+    newChainInfo.stakeCurrency.coinDecimals =
+      newChainInfo.currencies[0].coinDecimals;
+    newChainInfo.stakeCurrency.coinDenom = symbol;
+    newChainInfo.stakeCurrency.coinMinimalDenom = symbol;
+    newChainInfo.feeCurrencies[0].coinDecimals =
+      newChainInfo.currencies[0].coinDecimals;
+    newChainInfo.feeCurrencies[0].coinDenom = symbol;
+    newChainInfo.feeCurrencies[0].coinMinimalDenom = symbol;
+    newChainInfo.bech32Config = Bech32Address.defaultBech32Config(
+      symbol.toLowerCase()
+    );
+  }, [newChainInfo]);
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInfo("");
+    const { name, value } = e.target;
+    setHasErrors(false);
+    // suggestValid(name, value);
+
+    if (name === "rpc") {
+      setNewChainInfo({ ...newChainInfo, rpc: value });
+      await getChainInfo(value);
+    } else if (name === "decimal") {
+      setNewChainInfo({
+        ...newChainInfo,
+        currencies: [
+          {
+            ...newChainInfo.currencies[0],
+            coinDecimals: parseInt(value),
+          },
+        ],
+      });
+    } else {
+      console.log("check");
+      setNewChainInfo({
+        ...newChainInfo,
+        [name]: value,
+      });
+    }
+  };
+
+  // const suggestValid = (name: string, value: string) => {
+  //   // if (name === "symbol" && value !== chainData.symbol) {
+  //   // }
+  //   if (name === "chainId" && value !== chainData.chainId) {
+  //     console.log("checking chainID");
+  //     setChainIdMsg(
+  //       `The RPC URL you have entered returned a different chain ID ("${chainData.chainId}"). Please update the Chain ID to match the RPC URL of the network you are trying to add.`
+  //     );
+  //   } else {
+  //     setChainIdMsg("");
+  //   }
+  // };
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
     if (chainStore.hasChain(newChainInfo.chainId)) {
       setNewChainInfo(initialState);
       setHasErrors(true);
@@ -107,7 +183,28 @@ export const AddEvmChain: FunctionComponent = () => {
     >
       <Form onSubmit={handleSubmit} className={style["container"]}>
         <div>
-          <label>Network Name: </label>
+          <Label>RPC URL: </Label>
+          <Input
+            formGroupClassName={style["formGroup"]}
+            type="text"
+            name="rpc"
+            value={newChainInfo.rpc}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        {info && (
+          <Label
+            style={{
+              color: "#567965",
+              fontSize: "15px",
+            }}
+          >
+            {info}
+          </Label>
+        )}
+        <div>
+          <Label>Network Name: </Label>
           <Input
             formGroupClassName={style["formGroup"]}
             type="text"
@@ -118,18 +215,7 @@ export const AddEvmChain: FunctionComponent = () => {
           />
         </div>
         <div>
-          <label>RPC URL: </label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="text"
-            name="rpc"
-            value={newChainInfo.rpc}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Chain ID: </label>
+          <Label>Chain ID: </Label>
           <Input
             formGroupClassName={style["formGroup"]}
             type="text"
@@ -139,19 +225,29 @@ export const AddEvmChain: FunctionComponent = () => {
             required
           />
         </div>
+        {/* {chainIdMsg && (
+          <Label
+            style={{
+              color: "#567965",
+              fontSize: "15px",
+            }}
+          >
+            {chainIdMsg}
+          </Label>
+        )} */}
         <div>
-          <label>Symbol: </label>
+          <Label>Symbol: </Label>
           <Input
             formGroupClassName={style["formGroup"]}
             type="text"
             name="symbol"
-            value={newChainInfo.symbol.toUpperCase()}
+            value={newChainInfo.symbol}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label>Decimal:</label>
+          <Label>Decimal:</Label>
           <Input
             formGroupClassName={style["formGroup"]}
             type="number"

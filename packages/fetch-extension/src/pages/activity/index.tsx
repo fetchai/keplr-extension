@@ -7,17 +7,54 @@ import { GovProposalsTab } from "./gov-proposals";
 import { LatestBlock } from "./latest-block";
 import { NativeTab } from "./native";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
+import { NativeEthTab } from "./native-eth";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const intl = useIntl();
   const [latestBlock, setLatestBlock] = useState();
-  const [activeTab, setActiveTab] = useState("native");
+  const { chainStore } = useStore();
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  const [activeTab, setActiveTab] = useState(isEvm ? "eth" : "native");
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
+  const tabs = () => {
+    return isEvm ? (
+      <React.Fragment>
+        <div
+          className={`${style["tab"]} ${
+            activeTab === "eth" ? style["active"] : ""
+          }`}
+          // onClick={() => handleTabClick("eth")}
+        >
+          Transactions
+        </div>
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        <div
+          className={`${style["tab"]} ${
+            activeTab === "native" ? style["active"] : ""
+          }`}
+          onClick={() => handleTabClick("native")}
+        >
+          Transactions
+        </div>
+        <div
+          className={`${style["tab"]} ${
+            activeTab === "gov" ? style["active"] : ""
+          }`}
+          onClick={() => handleTabClick("gov")}
+        >
+          Gov Proposals
+        </div>
+      </React.Fragment>
+    );
+  };
   return (
     <HeaderLayout
       showChainName={true}
@@ -37,26 +74,10 @@ export const ActivityPage: FunctionComponent = observer(() => {
             setLatestBlock={setLatestBlock}
           />
         </div>
-        <div className={style["tabContainer"]}>
-          <div
-            className={`${style["tab"]} ${
-              activeTab === "native" ? style["active"] : ""
-            }`}
-            onClick={() => handleTabClick("native")}
-          >
-            Transactions
-          </div>
-          <div
-            className={`${style["tab"]} ${
-              activeTab === "gov" ? style["active"] : ""
-            }`}
-            onClick={() => handleTabClick("gov")}
-          >
-            Gov Proposals
-          </div>
-        </div>
+        <div className={style["tabContainer"]}>{tabs()}</div>
         {activeTab === "native" && <NativeTab latestBlock={latestBlock} />}
         {activeTab === "gov" && <GovProposalsTab latestBlock={latestBlock} />}
+        {activeTab === "eth" && <NativeEthTab latestBlock={latestBlock} />}
       </div>
     </HeaderLayout>
   );
