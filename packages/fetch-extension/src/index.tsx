@@ -105,7 +105,7 @@ import { DomainDetails } from "./pages/fetch-name-service/domain-details";
 import { BridgePage } from "./pages/bridge";
 import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
-import { SendAXLTokens } from "./pages/axelar-poc";
+import { SendAXLTokens } from "./pages/axelar-bridge";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -309,7 +309,7 @@ ReactDOM.render(
                         path="/suggest-chain"
                         element={<ChainSuggestedPage />}
                       />
-                      <Route path="/axl" element={<SendAXLTokens />} />
+                      <Route path="/axl-bridge" element={<SendAXLTokens />} />
                       <Route
                         path="/permissions/grant/get-chain-infos"
                         element={<GrantGlobalPermissionGetChainInfosPage />}

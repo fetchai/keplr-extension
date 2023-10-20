@@ -6,12 +6,16 @@ import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
+import { CHAIN_ID_DORADO } from "../../config.ui.var";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
 
   const navigate = useNavigate();
-
+  const AxlBrdigeDisabledChainIds = [
+    CHAIN_ID_DORADO,
+    "axelar-testnet-lisbon-3",
+  ];
   return (
     <div className={styleMenu["container"]}>
       <div
@@ -25,6 +29,18 @@ export const Menu: FunctionComponent = observer(() => {
       >
         <FormattedMessage id="main.menu.address-book" />
       </div>
+      {!AxlBrdigeDisabledChainIds.includes(chainStore.current.chainId) && (
+        <div
+          className={styleMenu["item"]}
+          onClick={() => {
+            navigate({
+              pathname: "/axl-bridge",
+            });
+          }}
+        >
+          <FormattedMessage id="main.menu.axl-bridge" />
+        </div>
+      )}
       <div
         className={styleMenu["item"]}
         onClick={() => {
