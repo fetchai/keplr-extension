@@ -38,11 +38,11 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
-// @interface AppDelegate () <RCTBridgeDelegate>
+@interface AppDelegate () <RCTBridgeDelegate>
 
-// @property (nonatomic, strong) EXModuleRegistryAdapter *moduleRegistryAdapter;
+@property (nonatomic, strong) EXModuleRegistryAdapter *moduleRegistryAdapter;
 
-// @end
+@end
 
 @implementation AppDelegate
 
@@ -70,8 +70,11 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"SplashScreen" bundle:nil];
+  UIViewController *vc = [sb instantiateInitialViewController];
+  rootView.loadingView = vc.view;
 
-  // [super application:application didFinishLaunchingWithOptions:launchOptions];
+//   [super application:application didFinishLaunchingWithOptions:launchOptions];
 
   return YES;
 }
@@ -89,7 +92,10 @@ static void InitializeFlipper(UIApplication *application) {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"mobile" withExtension:@"jsbundle"];
+  NSString *path = [[NSBundle mainBundle] pathForResource:@"main" ofType:@"jsbundle"];
+  NSURL *jsBundleURL = [NSURL URLWithString:path];
+
+  return jsBundleURL;
 #endif
 }
 

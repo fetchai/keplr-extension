@@ -44,5 +44,6 @@ storybook-static
 build-storybook.log
 /.yarn/
 
+.xcode.env
 .xcode.env.local
 cached-packages.json

@@ -17,7 +17,7 @@
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
                BuildableName = "mobile-tvOS.app"
                BlueprintName = "mobile-tvOS"
-               ReferencedContainer = "container:Fetch Wallet.xcodeproj">
+               ReferencedContainer = "container:mobile.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
                BuildableName = "mobile-tvOSTests.xctest"
                BlueprintName = "mobile-tvOSTests"
-               ReferencedContainer = "container:Fetch Wallet.xcodeproj">
+               ReferencedContainer = "container:mobile.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,7 +57,7 @@
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
             BuildableName = "mobile-tvOS.app"
             BlueprintName = "mobile-tvOS"
-            ReferencedContainer = "container:Fetch Wallet.xcodeproj">
+            ReferencedContainer = "container:mobile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -74,7 +74,7 @@
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
             BuildableName = "mobile-tvOS.app"
             BlueprintName = "mobile-tvOS"
-            ReferencedContainer = "container:Fetch Wallet.xcodeproj">
+            ReferencedContainer = "container:mobile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
