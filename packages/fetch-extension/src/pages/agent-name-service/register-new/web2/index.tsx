@@ -6,38 +6,33 @@ import { useStore } from "../../../../stores";
 import searchButton from "@assets/icon/search.png";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
+import { encode } from "@utils/ans-v2-utils";
 import {
-  makeArbitrarySignDoc,
-  encodeLengthPrefixed,
-  makeVerificationString,
-} from "@utils/ans-v2-utils";
+  MakeVerificationStringPayload,
+  PubKeyPayload,
+} from "@keplr-wallet/background/src/ans";
 import { createHash } from "crypto";
 import { AgentAddressInput } from "../agent-input";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { toBech32 } from "@cosmjs/encoding";
 export const Web2 = observer(() => {
   const navigate = useNavigate();
   const notification = useNotification();
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, queriesStore } = useStore();
   const current = chainStore.current;
-  const account = accountStore.getAccount(current.chainId);
   const { queryDomainRecord, queryVaildateAgentAddress } = queriesStore.get(
     current.chainId
   ).ans;
   const [searchValue, setSearchValue] = useState("");
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
-  let signDoc: any;
 
   function generateDomainDigest(domain: string, address: any) {
     const hasher = createHash("sha256");
-    hasher.update(encodeLengthPrefixed(domain));
-    hasher.update(encodeLengthPrefixed(address));
+    hasher.update(encode(domain));
+    hasher.update(encode(address));
     return hasher.digest();
   }
-
-  function makeDomainSignDoc(signerAddress: any, domain: any) {
-    const digest = generateDomainDigest(domain, signerAddress);
-    return makeArbitrarySignDoc(signerAddress, digest, current.chainId);
-  }
-
   let domainAvailablityMessage;
   let domainAvailablity = false;
 
@@ -81,19 +76,17 @@ export const Web2 = observer(() => {
   const handleRegisterClick = async () => {
     try {
       const domain = searchValue;
-      let verificationString;
-      signDoc = makeDomainSignDoc(account.bech32Address, domain);
-      const signedTxResponse = await window.keplr?.signAmino(
-        current.chainId,
-        account.bech32Address,
-        signDoc
+      const requester = new InExtensionMessageRequester();
+      const public_key = await requester.sendMessage(
+        BACKGROUND_PORT,
+        new PubKeyPayload(current.chainId)
       );
-      if (signedTxResponse && signedTxResponse.signature) {
-        verificationString = makeVerificationString(
-          signedTxResponse.signature.signature,
-          account.pubKey
-        );
-      }
+      const address = toBech32("fetch", public_key);
+      const domainDigest = generateDomainDigest(domain, address);
+      const verificationString = await requester.sendMessage(
+        BACKGROUND_PORT,
+        new MakeVerificationStringPayload(current.chainId, domainDigest)
+      );
       navigate("/agent-name-service/register-new/verify-domain", {
         state: {
           domainName: domain,
@@ -102,7 +95,7 @@ export const Web2 = observer(() => {
         },
       });
     } catch (err) {
-      console.error("Error minting domain:", err);
+      console.log("Error minting domain:", err);
       notification.push({
         placement: "top-center",
         type: "warning",

@@ -1,4 +1,4 @@
-import { toBech32 } from "@cosmjs/encoding";
+import { toBase64, toBech32 } from "@cosmjs/encoding";
 import { Hash, PrivKeySecp256k1 } from "@keplr-wallet/crypto";
 import { Env } from "@keplr-wallet/router";
 import { KeyRingService } from "../keyring";
@@ -17,7 +17,7 @@ export class NameService {
    * @param digest The Uint8Array digest that should be signed
    * @returns The bech32 encoded signature for the verification
    */
-  public async sign(
+  public async signDigest(
     env: Env,
     chainId: string,
     digest: Uint8Array
@@ -26,8 +26,16 @@ export class NameService {
     const privateKey = new PrivKeySecp256k1(sk);
     // sign the payload
     const rawSignature = privateKey.signDigest32(digest);
-    // convert and return the signature
     return toBech32("sig", rawSignature, 1000);
+  }
+
+  async signDomain(env: Env, chainId: string, digest: any): Promise<string> {
+    const sk = await this.getPrivateKey(env, chainId);
+    const privateKey = new PrivKeySecp256k1(sk);
+    // sign the payload
+    const rawSignature = privateKey.signDigest32(digest);
+    // convert and return the signature
+    return toBase64(rawSignature);
   }
 
   /**
@@ -67,5 +75,22 @@ export class NameService {
     const privateKey = new PrivKeySecp256k1(sk);
     const pubKey = privateKey.getPubKey().toBytes();
     return pubKey;
+  }
+
+  public async makeVerificationString(
+    env: Env,
+    domain: Buffer,
+    chainId: string
+  ): Promise<string> {
+    const signature = await this.signDomain(env, chainId, domain);
+    const signatureBuffer = Buffer.from(signature, "base64"); // Example first bytes
+    const pubKey: any = await this.getPubKey(env, chainId);
+    const pubkeyBuffer = Buffer.from(pubKey, "base64");
+    const data = Buffer.concat([pubkeyBuffer, signatureBuffer]);
+    return data
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
   }
 }

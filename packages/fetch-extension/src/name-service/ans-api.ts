@@ -14,6 +14,7 @@ import { generateUUID } from "@utils/auth";
 import axios from "axios";
 import { createHash } from "crypto";
 import { ANS_CONFIG } from "../config.ui.var";
+import { encode } from "@utils/ans-v2-utils";
 
 export const getAgentAddressByDomain = async (
   chainId: string,
@@ -207,19 +208,3 @@ export const createDigest = async (data: any) => {
   }
   return hasher.digest();
 };
-
-export function encode(value: any) {
-  let encoded;
-
-  if (typeof value === "string") {
-    encoded = Buffer.from(value, "utf8");
-  } else if (typeof value === "number") {
-    encoded = Buffer.alloc(8);
-    encoded.writeBigInt64BE(BigInt(value));
-  } else if (Buffer.isBuffer(value)) {
-    encoded = value;
-  } else {
-    throw new Error("Invalid value type");
-  }
-  return encoded;
-}

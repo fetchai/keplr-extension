@@ -51,3 +51,33 @@ export class PubKeyPayload extends Message<Uint8Array> {
     return PubKeyPayload.type();
   }
 }
+
+export class MakeVerificationStringPayload extends Message<string> {
+  public static type() {
+    return "make-verification-string-payload";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly signature: Buffer
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("Chain id is empty");
+    }
+    if (!this.signature) {
+      throw new Error("Signature is empty");
+    }
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return MakeVerificationStringPayload.type();
+  }
+}
