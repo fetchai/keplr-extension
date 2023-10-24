@@ -11,6 +11,7 @@
     "hoistingLimits": "workspaces"
   },
   "scripts": {
+    "clean": "sh ./scripts/clean.sh",
     "android": "yarn build:background && sh ./scripts/fix-android-legacy-dependency.sh && yarn build:provider && echo 'Building Android' && expo run:android",
     "ios": "yarn build:background && yarn build:provider && echo 'Building iOS' && expo run:ios",
     "android:connect": "adb reverse tcp:8081 tcp:8081",

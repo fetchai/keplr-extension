@@ -50,10 +50,10 @@ npm install --global yarn lerna
 Install and build packages:
 
 ```bash
-yarn && yarn build
+yarn && yarn build:libs
 ```
 
-### Local dev server
+### Local dev server for fetch-extension
 
 ```bash
 yarn dev
