@@ -1,17 +1,21 @@
 import { HeaderLayout } from "@layouts/header-layout";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, Input, Button, Label } from "reactstrap";
+import { Form, Button } from "reactstrap";
+import { Input } from "@components/form";
 import style from "./style.module.scss";
 import { useStore } from "../../../stores";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import axios from "axios";
+import { useLoadingIndicator } from "@components/loading-indicator";
 
 export const AddEvmChain: FunctionComponent = () => {
   const navigate = useNavigate();
   const { chainStore } = useStore();
   const [hasErrors, setHasErrors] = useState(false);
   const [info, setInfo] = useState("");
+  const loadingIndicator = useLoadingIndicator();
+
   // const [chainIdMsg, setChainIdMsg] = useState("");
   const initialState = {
     chainName: "",
@@ -22,17 +26,17 @@ export const AddEvmChain: FunctionComponent = () => {
     stakeCurrency: {
       coinDenom: "",
       coinMinimalDenom: "",
-      coinDecimals: 12,
+      coinDecimals: 0,
     },
     bip44: {
-      coinType: 118,
+      coinType: 60,
     },
     bech32Config: Bech32Address.defaultBech32Config("fetch"),
     currencies: [
       {
         coinDenom: "",
         coinMinimalDenom: "",
-        coinDecimals: 12,
+        coinDecimals: 0,
         // coinGeckoId: "",
       },
     ],
@@ -40,12 +44,12 @@ export const AddEvmChain: FunctionComponent = () => {
       {
         coinDenom: "",
         coinMinimalDenom: "",
-        coinDecimals: 12,
+        coinDecimals: 0,
 
         gasPriceStep: {
-          low: 1000000000,
-          average: 2000000000,
-          high: 3000000000,
+          low: 10000000000,
+          average: 10000000000,
+          high: 10000000000,
         },
       },
     ],
@@ -54,14 +58,19 @@ export const AddEvmChain: FunctionComponent = () => {
   const [newChainInfo, setNewChainInfo] = useState(initialState);
 
   const getChainInfo = async (rpcUrl: string) => {
+    loadingIndicator.setIsLoading("chain-details", true);
     try {
       const chains = await axios.get("https://chainid.network/chains.json");
-      const response = await axios.post(rpcUrl, {
-        jsonrpc: "2.0",
-        id: 1,
-        method: "eth_chainId",
-        params: [],
-      });
+      const response = await axios.post(
+        rpcUrl,
+        {
+          jsonrpc: "2.0",
+          id: 1,
+          method: "eth_chainId",
+          params: [],
+        },
+        { timeout: 5000 }
+      );
 
       if (response.status === 200 && chains.status === 200) {
         const data = response.data;
@@ -95,10 +104,11 @@ export const AddEvmChain: FunctionComponent = () => {
       }
     } catch (error) {
       setNewChainInfo({ ...initialState, rpc: rpcUrl });
-      console.error(
-        "Unable to connect with RPC url provided or fetch chains data:",
-        error
+      setInfo(
+        "We could not fetch chain details, please enter the chain details manually"
       );
+    } finally {
+      loadingIndicator.setIsLoading("chain-details", false);
     }
   };
 
@@ -117,6 +127,15 @@ export const AddEvmChain: FunctionComponent = () => {
     );
   }, [newChainInfo]);
 
+  const isUrlValid = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
+
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setInfo("");
     const { name, value } = e.target;
@@ -125,7 +144,10 @@ export const AddEvmChain: FunctionComponent = () => {
 
     if (name === "rpc") {
       setNewChainInfo({ ...newChainInfo, rpc: value });
-      await getChainInfo(value);
+
+      if (isUrlValid(value)) {
+        await getChainInfo(value);
+      }
     } else if (name === "decimal") {
       setNewChainInfo({
         ...newChainInfo,
@@ -137,7 +159,6 @@ export const AddEvmChain: FunctionComponent = () => {
         ],
       });
     } else {
-      console.log("check");
       setNewChainInfo({
         ...newChainInfo,
         [name]: value,
@@ -145,18 +166,6 @@ export const AddEvmChain: FunctionComponent = () => {
     }
   };
 
-  // const suggestValid = (name: string, value: string) => {
-  //   // if (name === "symbol" && value !== chainData.symbol) {
-  //   // }
-  //   if (name === "chainId" && value !== chainData.chainId) {
-  //     console.log("checking chainID");
-  //     setChainIdMsg(
-  //       `The RPC URL you have entered returned a different chain ID ("${chainData.chainId}"). Please update the Chain ID to match the RPC URL of the network you are trying to add.`
-  //     );
-  //   } else {
-  //     setChainIdMsg("");
-  //   }
-  // };
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (chainStore.hasChain(newChainInfo.chainId)) {
@@ -182,87 +191,71 @@ export const AddEvmChain: FunctionComponent = () => {
       }}
     >
       <Form onSubmit={handleSubmit} className={style["container"]}>
-        <div>
-          <Label>RPC URL: </Label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="text"
-            name="rpc"
-            value={newChainInfo.rpc}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <Input
+          label="RPC URL"
+          type="text"
+          name="rpc"
+          value={newChainInfo.rpc}
+          onChange={handleChange}
+          required
+        />
         {info && (
-          <Label
+          <p
             style={{
               color: "#567965",
-              fontSize: "15px",
+              fontSize: "12px",
+              marginTop: "-22px",
             }}
           >
             {info}
-          </Label>
+          </p>
         )}
-        <div>
-          <Label>Network Name: </Label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="text"
-            name="chainName"
-            value={newChainInfo.chainName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <Label>Chain ID: </Label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="text"
-            name="chainId"
-            value={newChainInfo.chainId}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <Input
+          label="Network Name"
+          type="text"
+          name="chainName"
+          value={newChainInfo.chainName}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="Chain id"
+          type="text"
+          name="chainId"
+          value={newChainInfo.chainId}
+          onChange={handleChange}
+          required
+        />
         {/* {chainIdMsg && (
-          <Label
-            style={{
-              color: "#567965",
-              fontSize: "15px",
-            }}
-          >
-            {chainIdMsg}
-          </Label>
-        )} */}
-        <div>
-          <Label>Symbol: </Label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="text"
-            name="symbol"
-            value={newChainInfo.symbol}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <Label>Decimal:</Label>
-          <Input
-            formGroupClassName={style["formGroup"]}
-            type="number"
-            name="decimal"
-            value={newChainInfo.currencies[0].coinDecimals}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <br />
+        <Label
+          style={{
+            color: "#567965",
+            fontSize: "15px",
+          }}
+        >
+          {chainIdMsg}
+        </Label>
+      )} */}
+        <Input
+          label="Symbol"
+          type="text"
+          name="symbol"
+          value={newChainInfo.symbol}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="Decimal"
+          type="number"
+          name="decimal"
+          value={newChainInfo.currencies[0].coinDecimals}
+          onChange={handleChange}
+          required
+        />
         <Button
           text="Add Chain"
-          color={hasErrors ? "danger" : "primary"}
-          size="medium"
-          style={{ width: "100%" }}
+          color="primary"
+          block
           disabled={hasErrors}
           type="submit"
         >

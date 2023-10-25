@@ -28,6 +28,7 @@ import {
 
 import { isAddress } from "@ethersproject/address";
 import { KVStore } from "@keplr-wallet/common";
+import { BigNumber } from "@ethersproject/bignumber";
 
 export interface ITxn {
   hash: string;
@@ -372,18 +373,26 @@ export class EthereumAccountImpl {
     }
 
     const nonce = parseInt(txCountResult.data.result, 16);
-    const feeData = await this.ethersInstance.getFeeData();
-
     const encoder = new TextEncoder();
+    const gasPrice = BigNumber.from(fee.amount[0].amount)
+      .div(BigNumber.from(fee.gas))
+      .toNumber();
+
     const rawTxData = {
       ...params,
       nonce,
-      type: 2,
-      chainId: this.chainId,
-      maxPriorityFeePerGas: feeData["maxPriorityFeePerGas"],
-      maxFeePerGas: feeData["maxFeePerGas"],
       gasLimit: parseInt(fee.gas),
     };
+
+    // EIP1995 support only for ethereum
+    if (this.chainId === "1") {
+      rawTxData["chainId"] = parseInt(this.chainId);
+      rawTxData["type"] = 2;
+      rawTxData["maxFeePerGas"] = gasPrice;
+    } else {
+      rawTxData["gasPrice"] = gasPrice;
+    }
+
     const rawTxn = encoder.encode(JSON.stringify(rawTxData));
 
     const keplr = (await this.base.getKeplr())!;

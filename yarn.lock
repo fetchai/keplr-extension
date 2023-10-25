@@ -6665,6 +6665,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethersproject/units@npm:^5.7.0":
+  version: 5.7.0
+  resolution: "@ethersproject/units@npm:5.7.0"
+  dependencies:
+    "@ethersproject/bignumber": ^5.7.0
+    "@ethersproject/constants": ^5.7.0
+    "@ethersproject/logger": ^5.7.0
+  checksum: 304714f848cd32e57df31bf545f7ad35c2a72adae957198b28cbc62166daa929322a07bff6e9c9ac4577ab6aa0de0546b065ed1b2d20b19e25748b7d475cb0fc
+  languageName: node
+  linkType: hard
+
 "@ethersproject/wallet@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/wallet@npm:5.7.0"
@@ -8371,6 +8382,7 @@ __metadata:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/providers": ^5.7.2
+    "@ethersproject/units": ^5.7.0
     "@keplr-wallet/background": 0.12.12
     "@keplr-wallet/common": 0.12.12
     "@keplr-wallet/cosmos": 0.12.12

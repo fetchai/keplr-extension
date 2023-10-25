@@ -337,7 +337,6 @@ export const FeeButtonsInner: FunctionComponent<
     const highFee = feeConfig.getFeeTypePretty("high");
     const highFeePrice = priceStore.calculatePrice(highFee, fiatCurrency);
 
-    const baseFee = feeConfig.getEthBaseFee();
     let isFeeLoading = false;
 
     const error = feeConfig.error;
@@ -370,15 +369,6 @@ export const FeeButtonsInner: FunctionComponent<
           <Label for={inputId} className="form-control-label">
             {label}
           </Label>
-        ) : null}
-        {baseFee ? (
-          <div
-            className={classnames(styleFeeButtons["coin"], {
-              "text-muted": feeConfig.feeType !== "low",
-            })}
-          >
-            {"Base fee = " + baseFee}
-          </div>
         ) : null}
 
         <ButtonGroup id={inputId} className={styleFeeButtons["buttons"]}>
