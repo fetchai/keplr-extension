@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "../../styles";
 import * as SplashScreen from "expo-splash-screen";
@@ -19,8 +19,17 @@ import { KeyRingStatus } from "@keplr-wallet/background";
 import { KeychainStore } from "../../stores/keychain";
 import { IAccountStore } from "@keplr-wallet/stores";
 import { autorun } from "mobx";
-import { SimpleGradient } from "../../components/svg";
+// import { SimpleGradient } from "../../components/svg";
 import { FingerprintIcon } from "../../components/icon/fingerprint";
+import { PageWithView } from "../../components/page";
+import {
+  Defs,
+  LinearGradient,
+  Stop,
+  Svg,
+  Text as TextSvg,
+} from "react-native-svg";
+import { RightArrowWithBarIcon } from "../../components/icon";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -211,91 +220,134 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   return (
     <React.Fragment>
-      <UnlockScreenGradientBackground />
-      <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={style.flatten(["flex-grow-1"])}
-          indicatorStyle={style.theme === "dark" ? "white" : "black"}
-        >
-          <View style={style.get("flex-3")} />
-          <View style={style.flatten(["flex-5", "items-center"]) as ViewStyle}>
-            <Image
-              source={
-                style.theme === "dark"
-                  ? require("../../assets/logo/logo-name.png")
-                  : require("../../assets/logo/logo-name.png")
-              }
-              style={{
-                height: 45,
-              }}
-              resizeMode="contain"
-              fadeDuration={0}
-            />
-          </View>
-          <View>
-            <Text style={style.flatten(["text-center", "h2", "font-medium"])}>
-              Welcome back
-            </Text>
-          </View>
-          <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
-            <TextInput
-              containerStyle={
-                style.flatten([
-                  "padding-top-40",
-                  "padding-bottom-40",
-                ]) as ViewStyle
-              }
-              label="Password"
-              returnKeyType="done"
-              secureTextEntry={true}
-              value={password}
-              error={isFailed ? "Invalid password" : undefined}
-              onChangeText={setPassword}
-              onSubmitEditing={tryUnlock}
-            />
-            <Button
-              text="Sign in"
-              size="large"
-              loading={isLoading}
-              onPress={tryUnlock}
-            />
-          </View>
-          <View style={style.get("flex-4")} />
-          {keychainStore.isBiometryOn ? (
-            <TouchableOpacity onPress={tryBiometric} activeOpacity={1}>
-              <View
-                style={style.flatten(["flex", "margin-bottom-40"]) as ViewStyle}
-              >
-                <View style={style.flatten(["items-center"]) as ViewStyle}>
-                  <FingerprintIcon color={style.get("color-blue-400").color} />
+      <PageWithView backgroundMode="image">
+        {/* <UnlockScreenGradientBackground /> */}
+        <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={style.flatten(["flex-grow-1"])}
+            indicatorStyle={style.theme === "dark" ? "white" : "black"}
+          >
+            <View style={style.get("flex-3")} />
+            <View
+              style={style.flatten(["flex-5", "items-center"]) as ViewStyle}
+            >
+              <Image
+                source={
+                  style.theme === "dark"
+                    ? require("../../assets/logo/logo-white.png")
+                    : require("../../assets/logo/logo-white.png")
+                }
+                style={{
+                  height: 45,
+                }}
+                resizeMode="contain"
+                fadeDuration={0}
+              />
+            </View>
+            <View style={{ height: 50, width: "100%" }}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <LinearGradient
+                    id="customGradient"
+                    x1="37.86%"
+                    y1="0%"
+                    x2="78.96%"
+                    y2="100%"
+                  >
+                    <Stop offset="0%" stopColor="#CF447B" />
+                    <Stop offset="100%" stopColor="#F9774B" />
+                  </LinearGradient>
+                </Defs>
+                <TextSvg
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  fontSize="25"
+                  fill="url(#customGradient)"
+                >
+                  Welcome back
+                </TextSvg>
+              </Svg>
+            </View>
+            <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
+              <TextInput
+                containerStyle={
+                  style.flatten([
+                    "padding-top-40",
+                    "padding-bottom-40",
+                  ]) as ViewStyle
+                }
+                inputContainerStyle={style.flatten([
+                  "background-color-transparent",
+                ])}
+                placeholderTextColor={style.flatten(["color-white"]).color}
+                style={style.flatten(["background-color-transparent"])}
+                label="Password"
+                returnKeyType="done"
+                secureTextEntry={true}
+                value={password}
+                error={isFailed ? "Invalid password" : undefined}
+                onChangeText={setPassword}
+                onSubmitEditing={tryUnlock}
+              />
+              <Button
+                text="Sign in"
+                size="large"
+                containerStyle={
+                  style.flatten([
+                    "background-color-white",
+                    "border-radius-64",
+                  ]) as ViewStyle
+                }
+                rightIcon={<RightArrowWithBarIcon color="black" size={20} />}
+                textStyle={
+                  style.flatten(["color-black", "margin-right-12"]) as ViewStyle
+                }
+                loading={isLoading}
+                onPress={tryUnlock}
+              />
+            </View>
+            <View style={style.get("flex-4")} />
+            {keychainStore.isBiometryOn ? (
+              <TouchableOpacity onPress={tryBiometric} activeOpacity={1}>
+                <View
+                  style={
+                    style.flatten(["flex", "margin-bottom-40"]) as ViewStyle
+                  }
+                >
+                  <View style={style.flatten(["items-center"]) as ViewStyle}>
+                    <FingerprintIcon color={style.get("color-white").color} />
+                  </View>
+                  <Button
+                    textStyle={
+                      style.flatten(["color-white", "h5"]) as ViewStyle
+                    }
+                    text="Use biometric authentication"
+                    mode="text"
+                    loading={isBiometricLoading}
+                  />
                 </View>
-                <Button
-                  textStyle={style.flatten(["color-black", "h5"]) as ViewStyle}
-                  text="Use biometric authentication"
-                  mode="text"
-                  loading={isBiometricLoading}
-                />
-              </View>
-            </TouchableOpacity>
-          ) : null}
-        </KeyboardAwareScrollView>
-      </View>
+              </TouchableOpacity>
+            ) : null}
+          </KeyboardAwareScrollView>
+        </View>
+      </PageWithView>
     </React.Fragment>
   );
 });
 
-const UnlockScreenGradientBackground: FunctionComponent = () => {
-  const style = useStyle();
+// const UnlockScreenGradientBackground: FunctionComponent = () => {
+//   const style = useStyle();
 
-  return (
-    <View style={style.flatten(["absolute-fill"])}>
-      <SimpleGradient
-        degree={style.get("unlock-screen-gradient-background").degree}
-        stops={style.get("unlock-screen-gradient-background").stops}
-        fallbackAndroidImage={
-          style.get("unlock-screen-gradient-background").fallbackAndroidImage
-        }
-      />
-    </View>
-  );
-};
+//   return (
+//     <View style={style.flatten(["absolute-fill"])}>
+//       {/* <SimpleGradient
+//         degree={style.get("unlock-screen-gradient-background").degree}
+//         stops={style.get("unlock-screen-gradient-background").stops}
+//         fallbackAndroidImage={
+//           style.get("unlock-screen-gradient-background").fallbackAndroidImage
+//         }
+//       /> */}
+//     </View>
+//   );
+// };

@@ -1,9 +1,15 @@
 import React, { FunctionComponent } from "react";
-import { View } from "react-native";
+import { ImageBackground, View } from "react-native";
 import { SimpleGradient } from "../svg";
 import { useStyle } from "../../styles";
 
-export type BackgroundMode = "gradient" | "secondary" | "tertiary" | null;
+export type BackgroundMode =
+  | "gradient"
+  | "image"
+  | "imageBlurred"
+  | "secondary"
+  | "tertiary"
+  | null;
 
 export const ScreenBackground: FunctionComponent<{
   backgroundMode: BackgroundMode;
@@ -27,6 +33,16 @@ export const ScreenBackground: FunctionComponent<{
           fallbackAndroidImage={
             style.get("background-gradient").fallbackAndroidImage
           }
+        />
+      ) : backgroundMode === "image" ? (
+        <ImageBackground
+          source={require("../../assets/bg.png")}
+          resizeMode="cover"
+          style={style.flatten([
+            "flex-1",
+            "justify-center",
+            "background-color-dark-blue",
+          ])}
         />
       ) : backgroundMode === "secondary" ? (
         <View
