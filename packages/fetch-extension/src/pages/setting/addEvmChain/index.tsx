@@ -60,7 +60,6 @@ export const AddEvmChain: FunctionComponent = () => {
   const getChainInfo = async (rpcUrl: string) => {
     loadingIndicator.setIsLoading("chain-details", true);
     try {
-      const chains = await axios.get("https://chainid.network/chains.json");
       const response = await axios.post(
         rpcUrl,
         {
@@ -72,41 +71,68 @@ export const AddEvmChain: FunctionComponent = () => {
         { timeout: 5000 }
       );
 
-      if (response.status === 200 && chains.status === 200) {
-        const data = response.data;
-        const chainId = parseInt(data.result, 16);
-        const chainData = chains.data.find(
-          (element: any) => chainId === element.chainId
+      if (response.status !== 200 || !response.data.result) {
+        setInfo(
+          "The rpc seems to be invalid. Please recheck the RPC url provided"
         );
+        setHasErrors(true);
+        return;
+      }
 
-        if (chainData) {
-          setInfo("We've fetched information based on the provided RPC.");
-          const symbol = chainData.nativeCurrency.symbol;
-          setNewChainInfo({
-            ...newChainInfo,
-            currencies: [
-              {
-                coinDenom: symbol,
-                coinMinimalDenom: symbol,
-                coinDecimals: chainData.nativeCurrency.decimals,
-              },
-            ],
-            symbol: symbol,
-            rpc: rpcUrl,
-            rest: rpcUrl,
-            chainId: chainData.chainId.toString(),
-            chainName: chainData.name,
-            bech32Config: Bech32Address.defaultBech32Config(
-              symbol.toLowerCase()
-            ),
-          });
-        }
+      const chainId = parseInt(response.data.result, 16);
+
+      if (chainStore.hasChain(chainId.toString())) {
+        setInfo(
+          "Network already exists. You can go to network settings if you want to update the RPC"
+        );
+        setHasErrors(true);
+        return;
+      }
+
+      setNewChainInfo({
+        ...newChainInfo,
+        chainId: chainId.toString(),
+      });
+
+      const chains = await axios.get("https://chainid.network/chains.json");
+      if (chains.status !== 200) {
+        setInfo(
+          "We've fetched chain id based on the provided RPC. You will need to enter other details manaually"
+        );
+        return;
+      }
+
+      const chainData = chains.data.find(
+        (element: any) => chainId === element.chainId
+      );
+
+      if (chainData) {
+        setInfo("We've fetched information based on the provided RPC.");
+        const symbol = chainData.nativeCurrency.symbol;
+        setNewChainInfo({
+          ...newChainInfo,
+          currencies: [
+            {
+              coinDenom: symbol,
+              coinMinimalDenom: symbol,
+              coinDecimals: chainData.nativeCurrency.decimals,
+            },
+          ],
+          symbol: symbol,
+          rpc: rpcUrl,
+          rest: rpcUrl,
+          chainId: chainId.toString(),
+          chainName: chainData.name,
+          bech32Config: Bech32Address.defaultBech32Config(symbol.toLowerCase()),
+        });
+      } else {
+        setInfo(
+          "We've fetched chain id based on the provided RPC. You will need to enter other details manaually"
+        );
       }
     } catch (error) {
       setNewChainInfo({ ...initialState, rpc: rpcUrl });
-      setInfo(
-        "We could not fetch chain details, please enter the chain details manually"
-      );
+      setInfo("We could not fetch chain details, please try again.");
     } finally {
       loadingIndicator.setIsLoading("chain-details", false);
     }
@@ -129,7 +155,10 @@ export const AddEvmChain: FunctionComponent = () => {
 
   const isUrlValid = (url: string) => {
     try {
-      new URL(url);
+      const parsedUrl = new URL(url);
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+        return false;
+      }
       return true;
     } catch (err) {
       return false;
@@ -140,10 +169,9 @@ export const AddEvmChain: FunctionComponent = () => {
     setInfo("");
     const { name, value } = e.target;
     setHasErrors(false);
-    // suggestValid(name, value);
 
     if (name === "rpc") {
-      setNewChainInfo({ ...newChainInfo, rpc: value });
+      setNewChainInfo({ ...newChainInfo, rpc: value, chainId: "" });
 
       if (isUrlValid(value)) {
         await getChainInfo(value);
@@ -166,13 +194,13 @@ export const AddEvmChain: FunctionComponent = () => {
     }
   };
 
+  const isValid =
+    !hasErrors &&
+    newChainInfo.rpc &&
+    newChainInfo.chainId &&
+    newChainInfo.symbol;
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (chainStore.hasChain(newChainInfo.chainId)) {
-      setNewChainInfo(initialState);
-      setHasErrors(true);
-    }
-
     try {
       chainStore.addEVMChainInfo(newChainInfo);
       chainStore.selectChain(newChainInfo.chainId);
@@ -223,19 +251,9 @@ export const AddEvmChain: FunctionComponent = () => {
           type="text"
           name="chainId"
           value={newChainInfo.chainId}
-          onChange={handleChange}
+          disabled
           required
         />
-        {/* {chainIdMsg && (
-        <Label
-          style={{
-            color: "#567965",
-            fontSize: "15px",
-          }}
-        >
-          {chainIdMsg}
-        </Label>
-      )} */}
         <Input
           label="Symbol"
           type="text"
@@ -256,10 +274,10 @@ export const AddEvmChain: FunctionComponent = () => {
           text="Add Chain"
           color="primary"
           block
-          disabled={hasErrors}
+          disabled={!isValid}
           type="submit"
         >
-          {hasErrors ? "Chain id already exist" : "Add Chain"}
+          Add Chain
         </Button>
       </Form>
     </HeaderLayout>

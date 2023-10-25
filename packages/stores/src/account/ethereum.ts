@@ -380,13 +380,13 @@ export class EthereumAccountImpl {
 
     const rawTxData = {
       ...params,
+      chainId: parseInt(this.chainId),
       nonce,
       gasLimit: parseInt(fee.gas),
     };
 
     // EIP1995 support only for ethereum
     if (this.chainId === "1") {
-      rawTxData["chainId"] = parseInt(this.chainId);
       rawTxData["type"] = 2;
       rawTxData["maxFeePerGas"] = gasPrice;
     } else {
