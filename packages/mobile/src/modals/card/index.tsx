@@ -23,7 +23,7 @@ export const CardModal: FunctionComponent<{
     <View
       style={StyleSheet.flatten([
         style.flatten([
-          "background-color-background-tertiary",
+          "background-color-background-dark-blur",
           "border-radius-top-left-8",
           "border-radius-top-right-8",
           "overflow-hidden",
@@ -58,16 +58,24 @@ export const CardModal: FunctionComponent<{
                 style.flatten([
                   "flex-row",
                   "items-center",
+                  "justify-center",
                   "margin-bottom-16",
                 ]) as ViewStyle
               }
             >
-              <Text style={style.flatten(["h4", "color-text-high"])}>
+              <Text
+                style={style.flatten([
+                  "h4",
+                  "color-text-high",
+                  "text-center",
+                  "color-white",
+                ])}
+              >
                 {title}
               </Text>
               {right}
             </View>
-            <View
+            {/* <View
               style={
                 style.flatten([
                   "height-1",
@@ -75,7 +83,7 @@ export const CardModal: FunctionComponent<{
                   "dark:background-color-platinum-500",
                 ]) as ViewStyle
               }
-            />
+            /> */}
           </React.Fragment>
         ) : null}
       </View>

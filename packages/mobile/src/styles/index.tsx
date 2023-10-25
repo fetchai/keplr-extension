@@ -88,6 +88,8 @@ export const ColorPalette = {
   black: "#000000",
 
   transparent: "rgba(255,255,255,0)",
+
+  "dark-blue": "#06103d",
 };
 
 export const TextColors = {
@@ -112,6 +114,7 @@ export const BackgroundColors = {
   // The background tertiary has a color that is distinct with the inputs.
   // Used in card modal or screen where input exists.
   "background-tertiary": ColorPalette["gray-10"],
+  "background-dark-blur": ColorPalette["dark-blue"],
 };
 
 export const DarkThemeBackgroundColors = {
@@ -194,6 +197,11 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           lineHeight: 21,
           letterSpacing: 0.1,
           ...getPlatformFontWeight("500"),
+        },
+        headingText1: {
+          fontSize: 24,
+          lineHeight: 29,
+          ...getPlatformFontWeight("400"),
         },
         body1: {
           fontSize: 18,

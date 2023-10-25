@@ -9,6 +9,14 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { Toggle } from "../../components/toggle";
 import delay from "delay";
+import {
+  Defs,
+  LinearGradient,
+  Stop,
+  Svg,
+  Text as TextSvg,
+} from "react-native-svg";
+import { RightArrowWithBarIcon } from "../../components/icon";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
   const { keychainStore, keyRingStore } = useStore();
@@ -43,7 +51,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
 
   return (
     <PageWithView
-      backgroundMode="gradient"
+      backgroundMode="image"
       style={style.flatten(["padding-x-20"]) as ViewStyle}
     >
       <View style={style.get("flex-8")} />
@@ -63,18 +71,35 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
             resizeMode="contain"
           />
         )}
+        <View style={{ height: 50, width: "100%" }}>
+          <Svg width="100%" height="100%">
+            <Defs>
+              <LinearGradient
+                id="customGradient"
+                x1="37.86%"
+                y1="0%"
+                x2="78.96%"
+                y2="100%"
+              >
+                <Stop offset="0%" stopColor="#CF447B" />
+                <Stop offset="100%" stopColor="#F9774B" />
+              </LinearGradient>
+            </Defs>
+            <TextSvg
+              x="50%"
+              y="50%"
+              textAnchor="middle"
+              fontSize="25"
+              fill="url(#customGradient)"
+            >
+              You’re all set!
+            </TextSvg>
+          </Svg>
+        </View>
 
-        <Text style={style.flatten(["h2", "color-text-middle"]) as ViewStyle}>
-          You’re all set!
-        </Text>
         <Text
           style={
-            style.flatten([
-              "h4",
-              "color-text-low",
-              "text-center",
-              "margin-top-10",
-            ]) as ViewStyle
+            style.flatten(["h4", "color-text-low", "text-center"]) as ViewStyle
           }
         >
           Your Fetch journey now begins.
@@ -103,7 +128,16 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
       <View style={style.get("flex-8")} />
       <Button
         containerStyle={
-          style.flatten(["margin-top-44", "margin-bottom-20"]) as ViewStyle
+          style.flatten([
+            "margin-top-44",
+            "margin-bottom-20",
+            "background-color-white",
+            "border-radius-64",
+          ]) as ViewStyle
+        }
+        rightIcon={<RightArrowWithBarIcon color="black" size={20} />}
+        textStyle={
+          style.flatten(["color-black", "margin-right-12"]) as ViewStyle
         }
         size="large"
         text="Continue"
