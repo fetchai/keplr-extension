@@ -111,17 +111,17 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         onPress={async () => {
           setIsLoading(true);
           try {
-            // Because javascript is synchronous language, the loadnig state change would not delivered to the UI thread
+            // Because javascript is synchronous language, the loading state change would not be delivered to the UI thread
             // So to make sure that the loading state changes, just wait very short time.
             await delay(10);
 
             if (password && isBiometricOn) {
-              await keychainStore.turnOnBiometry(password);
+              keychainStore.turnOnBiometry(password);
             }
 
-            // Definetly, the last key is newest keyring.
+            // Definitely, the last key is the newest keyring.
             if (keyRingStore.multiKeyStoreInfo.length > 0) {
-              await keyRingStore.changeKeyRing(
+              keyRingStore.changeKeyRing(
                 keyRingStore.multiKeyStoreInfo.length - 1
               );
             }

@@ -20,6 +20,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
 
   const smartNavigation = useSmartNavigation();
 
+  const showPrivateData = canShowPrivateData(keyRingStore.keyRingType);
   const showManageTokenButton = (() => {
     if (!chainStore.current.features) {
       return false;
@@ -58,14 +59,10 @@ export const SettingScreen: FunctionComponent = observer(() => {
         />
       ) : null}
       {/*<SettingThemeItem />*/}
-      <SettingSectionTitle title="Security" />
-      {canShowPrivateData(keyRingStore.keyRingType) && (
-        <SettingViewPrivateDataItem topBorder={true} />
-      )}
+      {showPrivateData && <SettingSectionTitle title="Security" />}
+      {showPrivateData && <SettingViewPrivateDataItem topBorder={true} />}
       {keychainStore.isBiometrySupported || keychainStore.isBiometryOn ? (
-        <SettingBiometricLockItem
-          topBorder={!canShowPrivateData(keyRingStore.keyRingType)}
-        />
+        <SettingBiometricLockItem topBorder={!showPrivateData} />
       ) : null}
       <SettingSectionTitle title="Others" />
       <SettingItem
