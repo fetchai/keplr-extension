@@ -23,37 +23,24 @@ export const ActivityPage: FunctionComponent = observer(() => {
   };
 
   const tabs = () => {
-    return isEvm ? (
-      <React.Fragment>
-        <div
-          className={`${style["tab"]} ${
-            activeTab === "eth" ? style["active"] : ""
-          }`}
-          // onClick={() => handleTabClick("eth")}
-        >
-          Transactions
-        </div>
-      </React.Fragment>
-    ) : (
-      <React.Fragment>
-        <div
-          className={`${style["tab"]} ${
-            activeTab === "native" ? style["active"] : ""
-          }`}
-          onClick={() => handleTabClick("native")}
-        >
-          Transactions
-        </div>
-        <div
-          className={`${style["tab"]} ${
-            activeTab === "gov" ? style["active"] : ""
-          }`}
-          onClick={() => handleTabClick("gov")}
-        >
-          Gov Proposals
-        </div>
-      </React.Fragment>
-    );
+    <React.Fragment>
+      <div
+        className={`${style["tab"]} ${
+          activeTab === "native" ? style["active"] : ""
+        }`}
+        onClick={() => handleTabClick("native")}
+      >
+        Transactions
+      </div>
+      <div
+        className={`${style["tab"]} ${
+          activeTab === "gov" ? style["active"] : ""
+        }`}
+        onClick={() => handleTabClick("gov")}
+      >
+        Gov Proposals
+      </div>
+    </React.Fragment>;
   };
   return (
     <HeaderLayout
@@ -74,7 +61,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
             setLatestBlock={setLatestBlock}
           />
         </div>
-        <div className={style["tabContainer"]}>{tabs()}</div>
+        <div className={isEvm ? style["tabContainer"] : ""}>{tabs()}</div>
         {activeTab === "native" && <NativeTab latestBlock={latestBlock} />}
         {activeTab === "gov" && <GovProposalsTab latestBlock={latestBlock} />}
         {activeTab === "eth" && <NativeEthTab latestBlock={latestBlock} />}

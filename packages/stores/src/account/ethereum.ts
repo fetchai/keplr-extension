@@ -29,10 +29,15 @@ import {
 import { isAddress } from "@ethersproject/address";
 import { KVStore } from "@keplr-wallet/common";
 import { BigNumber } from "@ethersproject/bignumber";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Contract } from "@ethersproject/contracts";
 
 export interface ITxn {
   hash: string;
+  type: "ContractInteraction" | "FundsTransfers";
   status: "pending" | "success" | "failed";
+  amount: string;
+  symbol: string;
 }
 export interface EthereumAccount {
   ethereum: EthereumAccountImpl;
@@ -315,14 +320,13 @@ export class EthereumAccountImpl {
   // Store transaction hash in an array
   async storeTransactionHash(transactionInfo: ITxn, kvStore: KVStore) {
     try {
-      const txList: any[] | undefined = await kvStore.get(
-        this.base.ethereumHexAddress
-      );
+      const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
+      const txList: any[] | undefined = await kvStore.get(key);
       if (txList === undefined) {
-        await kvStore.set(this.base.ethereumHexAddress, [transactionInfo]);
+        await kvStore.set(key, [transactionInfo]);
       } else {
         txList?.push(transactionInfo);
-        await kvStore.set(this.base.ethereumHexAddress, txList);
+        await kvStore.set(key, txList);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -334,19 +338,16 @@ export class EthereumAccountImpl {
     status: "pending" | "success" | "failed"
   ) {
     try {
-      const txList: ITxn[] | undefined = await this.kvStore.get(
-        this.base.ethereumHexAddress
-      );
+      const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
+      const txList: ITxn[] | undefined = await this.kvStore.get(key);
       if (txList === undefined) {
-        await this.kvStore.set(this.base.ethereumHexAddress, [
-          { hash, status },
-        ]);
+        await this.kvStore.set(key, [{ hash, status }]);
       } else {
         // Find and update the transaction status by hash
         const updatedTxList = txList.map((txn) =>
-          txn.hash === hash ? { hash, status } : txn
+          txn.hash === hash ? { ...txn, status } : txn
         );
-        await this.kvStore.set(this.base.ethereumHexAddress, updatedTxList);
+        await this.kvStore.set(key, updatedTxList);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -377,7 +378,6 @@ export class EthereumAccountImpl {
     const gasPrice = BigNumber.from(fee.amount[0].amount)
       .div(BigNumber.from(fee.gas))
       .toNumber();
-
     const rawTxData = {
       ...params,
       chainId: parseInt(this.chainId),
@@ -417,16 +417,64 @@ export class EthereumAccountImpl {
 
     const resultString = result.data.result.toString();
 
+    const isContractInteraction = params.hasOwnProperty("data") ? true : false;
+    let amount,
+      type: "ContractInteraction" | "FundsTransfers" = "ContractInteraction",
+      symbol: string = "";
+
+    if (isContractInteraction) {
+      const tokenContract = new Contract(
+        params.to!,
+        erc20MetadataInterface,
+        this.ethersInstance
+      );
+      symbol = await tokenContract["symbol"]();
+      if (params.data?.toString().startsWith("0xa9059cbb")) {
+        const parsedData = erc20MetadataInterface.decodeFunctionData(
+          "transfer",
+          params.data!
+        );
+        amount = parsedData[1].toString();
+      } else if (params.data?.toString().startsWith("0x095ea7b3")) {
+        const parsedData = erc20MetadataInterface.decodeFunctionData(
+          "approve",
+          params.data!
+        );
+        amount = parsedData[1].toString();
+      } else if (params.data?.toString().startsWith("0x095ea7b3")) {
+        const parsedData = erc20MetadataInterface.decodeFunctionData(
+          "swap",
+          params.data!
+        );
+        amount = parsedData[1].toString();
+      } else {
+        const parsedData = nativeFetBridgeInterface.decodeFunctionData(
+          "swap",
+          params.data!
+        );
+        amount = parsedData[1].toString();
+      }
+    } else {
+      amount = params.value?.toString();
+      type = "FundsTransfers";
+    }
+
     await this.storeTransactionHash(
-      { hash: resultString, status: "pending" },
+      {
+        hash: resultString,
+        status: "pending",
+        amount: amount,
+        type: type,
+        symbol: symbol,
+      },
       this.kvStore
     );
 
     return result.data.result as string;
   }
 
-  async getTxList(address: string) {
-    const txList = await this.kvStore.get(address);
+  async getTxList(key: string) {
+    const txList = await this.kvStore.get(key);
     return txList;
   }
 
