@@ -298,7 +298,7 @@ export class FeeConfig extends TxChainSetter implements IFeeConfig {
       );
     }
 
-    if (this.chainId === "1" || this.chainId === "11155111") {
+    if (this.chainId === "1") {
       const ethereumFees = this.queriesStore.get(this.chainId).evm
         ?.queryEthGasFees.fees;
 
@@ -307,6 +307,33 @@ export class FeeConfig extends TxChainSetter implements IFeeConfig {
         const feeAmount = gasPrice
           .mul(new Dec(this.gasConfig.gas))
           .mul(new Dec("1000000000"));
+
+        return {
+          denom: feeCurrency.coinMinimalDenom,
+          amount: feeAmount.roundUp().toString(),
+        };
+      }
+    }
+
+    if (this.chainGetter.getChain(this.chainId).features?.includes("evm")) {
+      const evmGasPrice = this.queriesStore.get(this.chainId).evm?.queryGasPrice
+        .gasPrice;
+      if (evmGasPrice) {
+        const gasPrice = new Dec(evmGasPrice);
+        const multiplicationFactor = (() => {
+          switch (feeType) {
+            case "low":
+              return new Dec(1);
+            case "average":
+              return new Dec(1.35);
+            case "high":
+              return new Dec(1.7);
+          }
+        })();
+
+        const feeAmount = gasPrice
+          .mul(new Dec(this.gasConfig.gas))
+          .mul(multiplicationFactor);
 
         return {
           denom: feeCurrency.coinMinimalDenom,
