@@ -9,6 +9,8 @@ export const getEnvironment = (chain: string) => {
       return Environment.TESTNET;
     case "axelar testnet":
       return Environment.TESTNET;
+    case "dorado":
+      return Environment.TESTNET;
     default:
       return Environment.MAINNET;
   }

@@ -8,6 +8,7 @@ interface RecipientAddressProps {
   recieverChain: any;
   recipientAddress: any;
   setRecipientAddress: any;
+  isDisabled: boolean;
   env: any;
 }
 
@@ -15,6 +16,7 @@ export const RecipientAddress: React.FC<RecipientAddressProps> = ({
   recieverChain,
   recipientAddress,
   setRecipientAddress,
+  isDisabled,
   env,
 }) => {
   const [addressValidationInProgress, setAddressValidationInProgress] =
@@ -50,6 +52,7 @@ export const RecipientAddress: React.FC<RecipientAddressProps> = ({
         }
         label={"Recipient Address"}
         value={recipientAddress}
+        disabled={isDisabled}
       />
       {!addressValidationInProgress && addressValidationError ? (
         <div className={style["errorText"]}>{addressValidationError}</div>

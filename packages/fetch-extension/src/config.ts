@@ -181,12 +181,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDecimals: 18,
         coinGeckoId: "ethereum",
       },
-      {
-        coinDenom: "USDC",
-        coinMinimalDenom: "uusdc",
-        coinDecimals: 6,
-      },
-
       // {
       //   coinDenom: "FET",
       //   coinMinimalDenom:

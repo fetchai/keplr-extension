@@ -3,14 +3,13 @@ import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { useNotification } from "@components/notification";
 import { getEnvironment } from "@utils/axl-bridge-utils";
 import React, { useCallback, useEffect, useState } from "react";
-import { useStore } from "../../stores";
-import { TooltipForDomainNames } from "../fetch-name-service/domain-details";
-import style from "./style.module.scss";
+import { useStore } from "../../../stores";
+import { TooltipForDomainNames } from "../../fetch-name-service/domain-details";
+import style from "../style.module.scss";
 interface GasAndDetailsProps {
   transferChain: any;
   recieverChain: any;
   transferToken: any;
-  isDepositAddressFetched: any;
   depositAddress: any;
   estimatedWaitTime: number;
 }
@@ -19,7 +18,6 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
   transferChain,
   recieverChain,
   transferToken,
-  isDepositAddressFetched,
   depositAddress,
   estimatedWaitTime,
 }) => {
@@ -155,7 +153,7 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
           <div>{maxTrsnferAmt ? maxTrsnferAmt : "Not Available"}</div>
         )}
       </div>
-      {isDepositAddressFetched ? (
+      {!!depositAddress ? (
         <div className={style["entries"]}>
           <div>Deposit Address</div>
           <div

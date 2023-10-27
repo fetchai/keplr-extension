@@ -6,13 +6,23 @@ import {
   loadChains,
 } from "@axelar-network/axelarjs-sdk";
 import { Input } from "@components/form";
+import {
+  BridgeAmountError,
+  EmptyAmountError,
+  InsufficientAmountError,
+  InvalidNumberAmountError,
+  NegativeAmountError,
+  ZeroAmountError,
+  useSendTxConfig,
+} from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/header-layout";
 import {
   extractNumberFromBalance,
   getEnvironment,
 } from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import {
   ButtonDropdown,
@@ -20,14 +30,64 @@ import {
   DropdownMenu,
   DropdownToggle,
 } from "reactstrap";
-import { useStore } from "../../stores";
-import { GasAndDetails } from "./gas-and-details";
+import { useStore } from "../../../stores";
 import { GetDepositAddress } from "./get-deposit-address";
-import { RecipientAddress } from "./recipient-address";
+import { RecipientAddress } from "../recipient-address";
 import { SendToken } from "./send-token";
-import style from "./style.module.scss";
-import { TokenBalances } from "./token-balances";
-export const SendAXLTokens = observer(() => {
+import style from "../style.module.scss";
+import { GasAndDetails } from "./gas-and-details";
+
+export const AxelarBridgeEVM = observer(() => {
+  const { chainStore, queriesStore, accountStore } = useStore();
+
+  const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+  const configs = useSendTxConfig(
+    chainStore,
+    queriesStore,
+    accountStore,
+    current.chainId,
+    accountInfo.bech32Address,
+    {
+      allowHexAddressOnEthermint: true,
+      computeTerraClassicTax: true,
+    }
+  );
+  const intl = useIntl();
+  const error = configs.amountConfig.error;
+  const errorText: string | undefined = useMemo(() => {
+    if (error) {
+      switch (error.constructor) {
+        case EmptyAmountError:
+          // No need to show the error to user.
+          return;
+        case InvalidNumberAmountError:
+          return intl.formatMessage({
+            id: "input.amount.error.invalid-number",
+          });
+        case ZeroAmountError:
+          return intl.formatMessage({
+            id: "input.amount.error.is-zero",
+          });
+        case NegativeAmountError:
+          return intl.formatMessage({
+            id: "input.amount.error.is-negative",
+          });
+        case InsufficientAmountError:
+          return intl.formatMessage({
+            id: "input.amount.error.insufficient",
+          });
+        case BridgeAmountError:
+          return error.message;
+        default:
+          return intl.formatMessage({ id: "input.amount.error.unknown" });
+      }
+    }
+  }, [intl, error]);
+
+  configs.memoConfig.setMemo("");
+  configs.feeConfig.setFeeType("high");
+
   // to chain list
   const [transferChain, setTransferChain] = useState<any>();
   const [chains, setChains] = useState<any[]>([]);
@@ -35,73 +95,92 @@ export const SendAXLTokens = observer(() => {
 
   const [transferTokens, setTransferTokens] = useState<any[]>([]);
   const [transferToken, setTransferToken] = useState<any>();
-
-  const [toToken, setToToken] = useState<any>();
-
   const [recipientAddress, setRecipientAddress] = useState("");
-  const [amount, setAmount] = useState<any>();
-  const [amountError, setAmountError] = useState<any>();
-  const [estimatedWaitTime, setEstimatedWaitTime] = useState<number>(0);
-
-  const [tokenBal, setTokenBal] = useState<any>("");
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [fromTokenDropdownOpen, setFromTokenDropdownOpen] = useState(false);
-  const [depositAddress, setDepositAddress] = useState<any>();
-  const [isDepositAddressFetched, setIsDepositAddressFetched] =
-    useState<boolean>(false);
-  const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
 
-  const { chainStore } = useStore();
-  const current = chainStore.current;
+  const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
+  const [isInactiveChain, setIsInactiveChain] = useState<boolean>(false);
+
   const currentChainName = current.chainName.toLowerCase().replace(" ", "");
 
   const navigate = useNavigate();
 
   const env = getEnvironment(current.chainName.toLowerCase());
 
-  const axelarQuery = new AxelarQueryAPI({
+  const assetsApi = new AxelarAssetTransfer({
     environment: env,
   });
 
-  const api = new AxelarAssetTransfer({
+  const queryApi = new AxelarQueryAPI({
     environment: env,
   });
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
-  const toggleFromTokenDropdown = () => {
-    setFromTokenDropdownOpen(!fromTokenDropdownOpen);
-  };
+
   const handleChainSelect = async (chain: string) => {
     setRecieverChain(chain);
     toggleDropdown();
   };
+
+  const query = queriesStore
+    .get(current.chainId)
+    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+
+  const [toToken, setToToken] = useState<any>();
+  const [amountError, setAmountError] = useState<any>();
+  const [tokenBal, setTokenBal] = useState<any>("");
+  const [tokenDropdown, setTokenDropdown] = useState(false);
+
+  useEffect(() => {
+    if (transferToken) {
+      const { balances, nonNativeBalances } = query;
+      const queryBalances = balances.concat(nonNativeBalances);
+      const queryBalance = queryBalances.find(
+        (bal) =>
+          transferToken.assetSymbol == bal.currency.coinDenom ||
+          transferToken.ibcDenom == bal.currency.coinMinimalDenom
+      );
+      if (queryBalance?.balance)
+        setTokenBal(queryBalance.balance.trim(true).maxDecimals(6).toString());
+    } else {
+      setTokenBal(null);
+    }
+  }, [transferToken]);
+  useEffect(() => {
+    if (transferToken && recieverChain) {
+      const toToken: any = recieverChain?.assets.find(
+        (asset: any) => asset.common_key === transferToken.common_key
+      );
+      setToToken(toToken);
+    }
+  }, [transferToken, recieverChain]);
+
   const handleTokenSelect = (token: any) => {
+    const tokenCurrency = current.currencies.find(
+      (currency: any) =>
+        currency.contractAddress == token.tokenAddress ||
+        currency.coinMinimalDenom === token.ibcDenom
+    );
+    configs.amountConfig.setSendCurrency(tokenCurrency);
     setTransferToken(token);
-    toggleFromTokenDropdown();
+    setTokenDropdown(false);
   };
   const handleAmountChange = (event: any) => {
-    const amount = parseFloat(event.target.value);
-    setAmount(amount);
-    if (isNaN(amount)) {
-      setAmountError("Please enter a valid number");
-    } else if (amount < 0) {
-      setAmountError("Amount cannot be less than zero");
-    } else if (amount < transferToken.minDepositAmt) {
+    configs.amountConfig.setAmount(event.target.value);
+    const value = parseFloat(event.target.value);
+    if (value < transferToken.minDepositAmt) {
       setAmountError("Please enter at least the minimum deposit amount");
-    } else if (amount > extractNumberFromBalance(tokenBal)) {
-      setAmountError("Amount greater than token balance");
-    } else if (!extractNumberFromBalance(tokenBal)) {
-      setAmountError("You do not have enough Balance");
+    } else if (value > extractNumberFromBalance(tokenBal)) {
+      setAmountError("Insufficient asset");
     } else {
-      setAmountError("");
+      setAmountError(null);
     }
   };
-
   useEffect(() => {
     const init = async () => {
       const config: LoadAssetConfig = {
@@ -110,43 +189,32 @@ export const SendAXLTokens = observer(() => {
       setIsChainsLoaded(false);
       try {
         const chains = await loadChains(config);
-
-        const currentChain = chains.find((chain: any) =>
-          currentChainName.includes(chain.chainName.toLowerCase())
+        const activeChains = await queryApi.getActiveChains();
+        const currentChain = chains.find(
+          (chain: any) =>
+            currentChainName.includes(chain.chainName.toLowerCase()) &&
+            activeChains.find(
+              (activeChain) =>
+                activeChain.toLowerCase() == chain.id.toLowerCase()
+            )
         );
+        console.log("activeChains", activeChains);
         console.log("chains", chains);
         console.log("currentChain", currentChain);
         if (currentChain) {
           setTransferChain(currentChain);
           setTransferTokens(currentChain.assets);
           setChains(chains);
-          setIsChainsLoaded(true);
-          setEstimatedWaitTime(currentChain.estimatedWaitTime);
         } else {
-          console.log("Chain not found in Axelar", currentChainName);
+          setIsInactiveChain(true);
         }
+        setIsChainsLoaded(true);
       } catch (error) {
         console.error("Error loading assets:", error);
       }
     };
     init();
   }, [currentChainName, env]);
-  useEffect(() => {
-    const queryToToken = async (transferToken: any, selectedChain: any) => {
-      try {
-        const toToken: any = await axelarQuery.getAssetConfigFromDenom(
-          transferToken.common_key,
-          selectedChain.id
-        );
-        setToToken(toToken || transferToken);
-      } catch (error) {
-        setToToken(transferToken);
-      }
-    };
-    if (transferToken && recieverChain)
-      queryToToken(transferToken, recieverChain);
-  }, [transferToken, recieverChain]);
-
   return (
     <HeaderLayout
       showChainName={false}
@@ -160,6 +228,11 @@ export const SendAXLTokens = observer(() => {
         <div className={style["loader"]}>
           Generating Deposit address{" "}
           <i className="fas fa-spinner fa-spin ml-2" />
+        </div>
+      )}
+      {isInactiveChain && (
+        <div className={style["loader"]}>
+          Axelar Bridge not active for {current.chainName}
         </div>
       )}
       <div className={style["chain-container"]}>
@@ -177,7 +250,9 @@ export const SendAXLTokens = observer(() => {
           <ButtonDropdown
             isOpen={dropdownOpen}
             toggle={toggleDropdown}
-            disabled={!isChainsLoaded}
+            disabled={
+              !isChainsLoaded || configs.recipientConfig.rawRecipient.length > 0
+            }
           >
             <DropdownToggle style={{ width: "150px" }} caret>
               {!isChainsLoaded ? (
@@ -208,8 +283,12 @@ export const SendAXLTokens = observer(() => {
         recieverChain={recieverChain}
         recipientAddress={recipientAddress}
         setRecipientAddress={setRecipientAddress}
+        isDisabled={
+          configs.recipientConfig.rawRecipient.length > 0 || !recieverChain
+        }
         env={env}
       />
+
       <div
         style={{
           display: "flex",
@@ -220,9 +299,11 @@ export const SendAXLTokens = observer(() => {
         <div>
           <div className={style["label"]}>Transfer Token</div>
           <ButtonDropdown
-            isOpen={fromTokenDropdownOpen}
-            toggle={() => setFromTokenDropdownOpen(!fromTokenDropdownOpen)}
-            disabled={!recieverChain}
+            isOpen={tokenDropdown}
+            toggle={() => setTokenDropdown(!tokenDropdown)}
+            disabled={
+              !recieverChain || configs.recipientConfig.rawRecipient.length > 0
+            }
             style={{ width: "150px" }}
           >
             <DropdownToggle style={{ width: "150px" }} caret>
@@ -255,6 +336,7 @@ export const SendAXLTokens = observer(() => {
           <div className={style["label"]}>Receive Token</div>
           <Input
             readOnly={true}
+            disabled={configs.recipientConfig.rawRecipient.length > 0}
             contentEditable={false}
             value={toToken ? toToken.assetSymbol : "Select a Token"}
             style={{ width: "150px", height: "43px", textAlign: "center" }}
@@ -268,57 +350,48 @@ export const SendAXLTokens = observer(() => {
         >
           Min Amount :
           {`${transferToken.minDepositAmt} ${transferToken.assetSymbol}`}
-          <TokenBalances
-            fromToken={transferToken}
-            tokenBal={tokenBal}
-            setTokenBal={setTokenBal}
-          />
+          <div>Balance : {tokenBal ? tokenBal : "0.0"}</div>
         </div>
       )}
       <Input
         type="number"
         min="0"
-        label={"Enter Amount"}
+        placeholder="Enter Amount"
         onChange={handleAmountChange}
-        disabled={!transferToken}
+        disabled={
+          !transferToken || configs.recipientConfig.rawRecipient.length > 0
+        }
       />
 
       {amountError ? (
-        <div className={style["errorText"]}>{amountError}</div>
+        <div className={style["errorText"]}>{errorText || amountError}</div>
       ) : null}
-
       {transferToken && (
         <GasAndDetails
           transferChain={transferChain}
           recieverChain={recieverChain}
           transferToken={transferToken}
-          isDepositAddressFetched={isDepositAddressFetched}
-          depositAddress={depositAddress}
-          estimatedWaitTime={estimatedWaitTime}
+          depositAddress={configs.recipientConfig.rawRecipient}
+          estimatedWaitTime={transferChain.estimatedWaitTime}
         />
       )}
 
-      {isDepositAddressFetched ? (
-        <SendToken
-          transferChain={transferChain}
-          recieverChain={recieverChain}
-          destinationAddress={recipientAddress}
-          depositAddress={depositAddress}
-          amount={amount}
-          transferToken={transferToken}
-          recieverToken={toToken}
-        />
+      {configs.recipientConfig.rawRecipient ? (
+        <SendToken sendConfigs={configs} />
       ) : (
         <GetDepositAddress
+          recipientConfig={configs.recipientConfig}
           fromChain={transferChain}
           toChain={recieverChain}
           recipentAddress={recipientAddress}
-          setDepositAddress={setDepositAddress}
-          setIsDepositAddressFetched={setIsDepositAddressFetched}
           setIsFetchingAddress={setIsFetchingAddress}
           transferToken={transferToken}
-          amountError={amountError}
-          api={api}
+          isDisabled={
+            !!errorText ||
+            !recipientAddress ||
+            configs.amountConfig.sendCurrency === undefined
+          }
+          api={assetsApi}
         />
       )}
     </HeaderLayout>

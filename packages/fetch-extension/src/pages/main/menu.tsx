@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { FunctionComponent } from "react";
 
 import { observer } from "mobx-react-lite";
@@ -6,16 +7,15 @@ import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
-import { CHAIN_ID_DORADO } from "../../config.ui.var";
+import { EvmChain } from "@axelar-network/axelarjs-sdk";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
-
+  const isEVM = Object.values(EvmChain).find((evmchain) =>
+    chainStore.current.chainName.toLowerCase().includes(evmchain.toLowerCase())
+  );
   const navigate = useNavigate();
-  const AxlBrdigeDisabledChainIds = [
-    CHAIN_ID_DORADO,
-    "axelar-testnet-lisbon-3",
-  ];
+  const AxlBrdigeDisabledChainIds = ["axelar-testnet-lisbon-3"];
   return (
     <div className={styleMenu["container"]}>
       <div
@@ -34,7 +34,7 @@ export const Menu: FunctionComponent = observer(() => {
           className={styleMenu["item"]}
           onClick={() => {
             navigate({
-              pathname: "/axl-bridge",
+              pathname: isEVM ? "/axl-bridge-evm" : "/axl-bridge-cosmos",
             });
           }}
         >

@@ -1,12 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useState } from "react";
-import { Button } from "reactstrap";
-import { EvmChain } from "@axelar-network/axelarjs-sdk";
-import { useStore } from "../../stores";
 import { useNotification } from "@components/notification";
+import React from "react";
+import { Button } from "reactstrap";
+import { useStore } from "../../../stores";
 
 interface GetDepositAddressProps {
-  setIsDepositAddressFetched: any;
   setDepositAddress: any;
   fromChain: any;
   toChain: any;
@@ -18,7 +16,6 @@ interface GetDepositAddressProps {
 }
 
 export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
-  setIsDepositAddressFetched,
   setDepositAddress,
   fromChain,
   toChain,
@@ -30,26 +27,8 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
 }) => {
   const { accountStore, chainStore } = useStore();
   const current = chainStore.current;
-  const [refundAddress, setRefundAddress] = useState<any>();
+  const accountInfo = accountStore.getAccount(current.chainId);
   const notification = useNotification();
-  useEffect(() => {
-    const init = async () => {
-      const isEVM = Object.values(EvmChain).includes(
-        current.chainName.toLowerCase() as EvmChain
-      );
-      if (isEVM) {
-        const address = accountStore.getAccount(
-          current.chainId
-        ).ethereumHexAddress;
-        setRefundAddress(address);
-      } else {
-        setRefundAddress(
-          accountStore.getAccount(current.chainId).bech32Address
-        );
-      }
-    };
-    init();
-  }, []);
 
   const getDepositAddress = async () => {
     try {
@@ -59,18 +38,17 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
         toChain: toChain.id,
         destinationAddress: recipentAddress,
         asset: transferToken.common_key,
-        options: { refundAddress },
+        options: { refundAddress: accountInfo.bech32Address },
       });
       setDepositAddress(address);
-      setIsDepositAddressFetched(true);
       setIsFetchingAddress(false);
     } catch (err) {
       console.log("Error", err);
       notification.push({
         placement: "top-center",
-        type: "danger",
+        type: "warning",
         duration: 5,
-        content: "Error in fetching deposit address, Chain id not supported",
+        content: `Error fetching deposit address: ${err.message}`,
         canDelete: true,
         transition: {
           duration: 0.25,
