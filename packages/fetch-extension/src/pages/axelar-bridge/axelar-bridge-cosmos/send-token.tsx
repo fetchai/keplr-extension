@@ -66,8 +66,7 @@ export const SendToken: React.FC<SendTokenProps> = ({
           },
         },
       };
-      const send = await api.sendToken(requestOptions);
-      console.log(send);
+      await api.sendToken(requestOptions);
       setIsTrsnxInProgress(false);
       navigate("/axl-bridge");
       notification.push({
@@ -92,7 +91,6 @@ export const SendToken: React.FC<SendTokenProps> = ({
           duration: 0.25,
         },
       });
-      console.log(err);
       navigate("/axl-bridge");
     }
   };

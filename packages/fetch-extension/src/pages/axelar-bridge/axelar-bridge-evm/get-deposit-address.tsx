@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
+import { AxelarAssetTransfer } from "@axelar-network/axelarjs-sdk";
 
 interface GetDepositAddressProps {
   recipientConfig: IRecipientConfig | IRecipientConfigWithICNS;
@@ -16,13 +17,11 @@ interface GetDepositAddressProps {
   recipentAddress: string;
   setIsFetchingAddress: any;
   transferToken: any;
-  api: any;
   isDisabled: boolean;
 }
 
 export const GetDepositAddress: React.FC<GetDepositAddressProps> = observer(
   ({
-    api,
     fromChain,
     toChain,
     recipientConfig,
@@ -35,11 +34,14 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = observer(
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
     const notification = useNotification();
+    const assetsApi = new AxelarAssetTransfer({
+      environment: fromChain.environment,
+    });
 
     const getDepositAddress = async () => {
       try {
         setIsFetchingAddress(true);
-        const address = await api.getDepositAddress({
+        const address = await assetsApi.getDepositAddress({
           fromChain: fromChain.id,
           toChain: toChain.id,
           destinationAddress: recipentAddress,

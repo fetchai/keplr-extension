@@ -50,6 +50,9 @@ export const RecipientAddress: React.FC<RecipientAddressProps> = ({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setRecipientAddress(e.target.value)
         }
+        placeholder={
+          !recieverChain ? "Select To chain first" : "Enter Recipient Address"
+        }
         label={"Recipient Address"}
         value={recipientAddress}
         disabled={isDisabled}

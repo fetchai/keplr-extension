@@ -1,10 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import {
-  AxelarAssetTransfer,
-  AxelarQueryAPI,
-  LoadAssetConfig,
-  loadChains,
-} from "@axelar-network/axelarjs-sdk";
+import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { Input } from "@components/form";
 import {
   BridgeAmountError,
@@ -16,31 +11,27 @@ import {
   useSendTxConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/header-layout";
-import {
-  extractNumberFromBalance,
-  getEnvironment,
-} from "@utils/axl-bridge-utils";
+import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import {
-  ButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-} from "reactstrap";
+import { CHAINS } from "../../../config.axl-brdige.var";
 import { useStore } from "../../../stores";
-import { GetDepositAddress } from "./get-deposit-address";
+import { ChainSelect } from "../chain-select";
+import { GasAndDetails } from "../gas-and-details";
 import { RecipientAddress } from "../recipient-address";
-import { SendToken } from "./send-token";
 import style from "../style.module.scss";
-import { GasAndDetails } from "./gas-and-details";
+import { TokenSelect } from "../token-select";
+import { GetDepositAddress } from "./get-deposit-address";
+import { SendToken } from "./send-token";
 
 export const AxelarBridgeEVM = observer(() => {
   const { chainStore, queriesStore, accountStore } = useStore();
-
   const current = chainStore.current;
+  const transferChain = CHAINS.find(
+    (chain: any) => chain.chainId == current.chainId
+  );
   const accountInfo = accountStore.getAccount(current.chainId);
   const configs = useSendTxConfig(
     chainStore,
@@ -53,6 +44,7 @@ export const AxelarBridgeEVM = observer(() => {
       computeTerraClassicTax: true,
     }
   );
+
   const intl = useIntl();
   const error = configs.amountConfig.error;
   const errorText: string | undefined = useMemo(() => {
@@ -89,43 +81,16 @@ export const AxelarBridgeEVM = observer(() => {
   configs.feeConfig.setFeeType("high");
 
   // to chain list
-  const [transferChain, setTransferChain] = useState<any>();
-  const [chains, setChains] = useState<any[]>([]);
   const [recieverChain, setRecieverChain] = useState<any>();
-
   const [transferTokens, setTransferTokens] = useState<any[]>([]);
   const [transferToken, setTransferToken] = useState<any>();
   const [recipientAddress, setRecipientAddress] = useState("");
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
   const [isInactiveChain, setIsInactiveChain] = useState<boolean>(false);
-
-  const currentChainName = current.chainName.toLowerCase().replace(" ", "");
-
   const navigate = useNavigate();
-
-  const env = getEnvironment(current.chainName.toLowerCase());
-
-  const assetsApi = new AxelarAssetTransfer({
-    environment: env,
-  });
-
-  const queryApi = new AxelarQueryAPI({
-    environment: env,
-  });
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
-  const handleChainSelect = async (chain: string) => {
-    setRecieverChain(chain);
-    toggleDropdown();
-  };
 
   const query = queriesStore
     .get(current.chainId)
@@ -134,7 +99,6 @@ export const AxelarBridgeEVM = observer(() => {
   const [toToken, setToToken] = useState<any>();
   const [amountError, setAmountError] = useState<any>();
   const [tokenBal, setTokenBal] = useState<any>("");
-  const [tokenDropdown, setTokenDropdown] = useState(false);
 
   useEffect(() => {
     if (transferToken) {
@@ -151,6 +115,7 @@ export const AxelarBridgeEVM = observer(() => {
       setTokenBal(null);
     }
   }, [transferToken]);
+
   useEffect(() => {
     if (transferToken && recieverChain) {
       const toToken: any = recieverChain?.assets.find(
@@ -160,6 +125,37 @@ export const AxelarBridgeEVM = observer(() => {
     }
   }, [transferToken, recieverChain]);
 
+  useEffect(() => {
+    const init = async () => {
+      setIsChainsLoaded(false);
+      try {
+        if (transferChain) {
+          setTransferTokens(transferChain.assets);
+
+          const queryApi = new AxelarQueryAPI({
+            environment: transferChain.environment,
+          });
+          const activeChains = await queryApi.getActiveChains();
+          const isActiveChain = activeChains.find(
+            (activeChain) =>
+              activeChain.toLowerCase() == transferChain.id.toLowerCase()
+          );
+          if (!isActiveChain) {
+            setIsInactiveChain(true);
+            return;
+          }
+        }
+        console.log("chains", CHAINS);
+        console.log("transferChain", transferChain);
+      } catch (error) {
+        console.error("Error loading assets:", error);
+      } finally {
+        setIsChainsLoaded(true);
+      }
+    };
+    init();
+  }, [transferChain]);
+
   const handleTokenSelect = (token: any) => {
     const tokenCurrency = current.currencies.find(
       (currency: any) =>
@@ -168,53 +164,20 @@ export const AxelarBridgeEVM = observer(() => {
     );
     configs.amountConfig.setSendCurrency(tokenCurrency);
     setTransferToken(token);
-    setTokenDropdown(false);
   };
+
   const handleAmountChange = (event: any) => {
     configs.amountConfig.setAmount(event.target.value);
     const value = parseFloat(event.target.value);
     if (value < transferToken.minDepositAmt) {
       setAmountError("Please enter at least the minimum deposit amount");
     } else if (value > extractNumberFromBalance(tokenBal)) {
-      setAmountError("Insufficient asset");
+      setAmountError("Insufficient Balance");
     } else {
       setAmountError(null);
     }
   };
-  useEffect(() => {
-    const init = async () => {
-      const config: LoadAssetConfig = {
-        environment: env,
-      };
-      setIsChainsLoaded(false);
-      try {
-        const chains = await loadChains(config);
-        const activeChains = await queryApi.getActiveChains();
-        const currentChain = chains.find(
-          (chain: any) =>
-            currentChainName.includes(chain.chainName.toLowerCase()) &&
-            activeChains.find(
-              (activeChain) =>
-                activeChain.toLowerCase() == chain.id.toLowerCase()
-            )
-        );
-        console.log("activeChains", activeChains);
-        console.log("chains", chains);
-        console.log("currentChain", currentChain);
-        if (currentChain) {
-          setTransferChain(currentChain);
-          setTransferTokens(currentChain.assets);
-          setChains(chains);
-        } else {
-          setIsInactiveChain(true);
-        }
-        setIsChainsLoaded(true);
-      } catch (error) {
-        console.error("Error loading assets:", error);
-      }
-    };
-    init();
-  }, [currentChainName, env]);
+
   return (
     <HeaderLayout
       showChainName={false}
@@ -244,39 +207,19 @@ export const AxelarBridgeEVM = observer(() => {
             readOnly={true}
           />
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div className={style["label"]}>To Chain</div>
-          <ButtonDropdown
-            isOpen={dropdownOpen}
-            toggle={toggleDropdown}
-            disabled={
-              !isChainsLoaded || configs.recipientConfig.rawRecipient.length > 0
-            }
-          >
-            <DropdownToggle style={{ width: "150px" }} caret>
-              {!isChainsLoaded ? (
-                <React.Fragment>
-                  loading <i className="fas fa-spinner fa-spin ml-2" />
-                </React.Fragment>
-              ) : recieverChain ? (
-                recieverChain.id
-              ) : (
-                "Select network"
-              )}
-            </DropdownToggle>
-            <DropdownMenu style={{ maxHeight: "200px", overflow: "auto" }}>
-              {chains.map((chain: any) => (
-                <DropdownItem
-                  key={chain.id}
-                  onClick={() => handleChainSelect(chain)}
-                >
-                  {chain.id}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </ButtonDropdown>
-        </div>
+        <ChainSelect
+          depositAddress={configs.recipientConfig.rawRecipient}
+          chains={
+            transferChain
+              ? CHAINS.filter(
+                  (chain) => chain.environment == transferChain.environment
+                )
+              : []
+          }
+          recieverChain={recieverChain}
+          setRecieverChain={setRecieverChain}
+          isChainsLoaded={isChainsLoaded}
+        />
       </div>
 
       <RecipientAddress
@@ -286,7 +229,7 @@ export const AxelarBridgeEVM = observer(() => {
         isDisabled={
           configs.recipientConfig.rawRecipient.length > 0 || !recieverChain
         }
-        env={env}
+        env={transferChain?.environment}
       />
 
       <div
@@ -296,49 +239,20 @@ export const AxelarBridgeEVM = observer(() => {
           marginTop: "20px",
         }}
       >
-        <div>
-          <div className={style["label"]}>Transfer Token</div>
-          <ButtonDropdown
-            isOpen={tokenDropdown}
-            toggle={() => setTokenDropdown(!tokenDropdown)}
-            disabled={
-              !recieverChain || configs.recipientConfig.rawRecipient.length > 0
-            }
-            style={{ width: "150px" }}
-          >
-            <DropdownToggle style={{ width: "150px" }} caret>
-              {transferToken ? transferToken.assetSymbol : "Select a Token"}
-            </DropdownToggle>
-            <DropdownMenu style={{ maxHeight: "200px", overflow: "auto" }}>
-              {transferTokens &&
-                transferTokens
-                  .filter((token) =>
-                    recieverChain?.assets.find(
-                      (asset: any) => asset.common_key === token.common_key
-                    )
-                  )
-                  .map((token) => (
-                    <DropdownItem
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      key={token.common_key}
-                      onClick={() => handleTokenSelect(token)}
-                    >
-                      {token.assetSymbol}
-                    </DropdownItem>
-                  ))}
-            </DropdownMenu>
-          </ButtonDropdown>
-        </div>
+        <TokenSelect
+          tokens={transferTokens}
+          depositAddress={configs.recipientConfig.rawRecipient}
+          recieverChain={recieverChain}
+          transferToken={transferToken}
+          setTransferToken={handleTokenSelect}
+        />
         <div>
           <div className={style["label"]}>Receive Token</div>
           <Input
             readOnly={true}
             disabled={configs.recipientConfig.rawRecipient.length > 0}
             contentEditable={false}
-            value={toToken ? toToken.assetSymbol : "Select a Token"}
+            value={toToken ? toToken.assetSymbol : "N/A"}
             style={{ width: "150px", height: "43px", textAlign: "center" }}
           />
         </div>
@@ -366,7 +280,7 @@ export const AxelarBridgeEVM = observer(() => {
       {amountError ? (
         <div className={style["errorText"]}>{errorText || amountError}</div>
       ) : null}
-      {transferToken && (
+      {transferChain && transferToken && (
         <GasAndDetails
           transferChain={transferChain}
           recieverChain={recieverChain}
@@ -391,7 +305,6 @@ export const AxelarBridgeEVM = observer(() => {
             !recipientAddress ||
             configs.amountConfig.sendCurrency === undefined
           }
-          api={assetsApi}
         />
       )}
     </HeaderLayout>

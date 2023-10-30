@@ -65,6 +65,7 @@ export const SendToken: React.FC<SendTokenProps> = observer(
                     duration: 0.25,
                   },
                 });
+                navigate("/axl-bridge-evm");
               },
               onFulfill: (e) => {
                 console.log(e.transactionHash);
@@ -80,7 +81,6 @@ export const SendToken: React.FC<SendTokenProps> = observer(
                     duration: 0.25,
                   },
                 });
-                navigate("/axl-bridge-evm");
               },
             }
           );

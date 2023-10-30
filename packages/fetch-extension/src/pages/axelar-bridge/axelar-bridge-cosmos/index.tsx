@@ -14,20 +14,16 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import {
-  ButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-} from "reactstrap";
+import { CHAIN_ID_DORADO } from "../../../config.ui.var";
 import { useStore } from "../../../stores";
-import { GasAndDetails } from "./gas-and-details";
-import { GetDepositAddress } from "./get-deposit-address";
+import { ChainSelect } from "../chain-select";
+import { GasAndDetails } from "../gas-and-details";
 import { RecipientAddress } from "../recipient-address";
-import { SendToken } from "./send-token";
 import style from "../style.module.scss";
 import { TokenBalances } from "../token-balances";
-import { CHAIN_ID_DORADO } from "../../../config.ui.var";
+import { TokenSelect } from "../token-select";
+import { GetDepositAddress } from "./get-deposit-address";
+import { SendToken } from "./send-token";
 
 export const AxelarBridgeCosmos = observer(() => {
   // to chain list
@@ -49,8 +45,6 @@ export const AxelarBridgeCosmos = observer(() => {
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [fromTokenDropdownOpen, setFromTokenDropdownOpen] = useState(false);
   const [depositAddress, setDepositAddress] = useState<any>();
   const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
 
@@ -72,20 +66,6 @@ export const AxelarBridgeCosmos = observer(() => {
     environment: env,
   });
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-  const toggleFromTokenDropdown = () => {
-    setFromTokenDropdownOpen(!fromTokenDropdownOpen);
-  };
-  const handleChainSelect = async (chain: string) => {
-    setRecieverChain(chain);
-    toggleDropdown();
-  };
-  const handleTokenSelect = (token: any) => {
-    setTransferToken(token);
-    toggleFromTokenDropdown();
-  };
   const handleAmountChange = (event: any) => {
     const amount = parseFloat(event.target.value);
     setAmount(amount);
@@ -96,13 +76,12 @@ export const AxelarBridgeCosmos = observer(() => {
     } else if (amount < transferToken.minDepositAmt) {
       setAmountError("Please enter at least the minimum deposit amount");
     } else if (amount > extractNumberFromBalance(tokenBal)) {
-      setAmountError("Insufficient asset");
-    } else if (!extractNumberFromBalance(tokenBal)) {
-      setAmountError("You do not have enough Balance");
+      setAmountError("Insufficient Balance");
     } else {
       setAmountError("");
     }
   };
+
   useEffect(() => {
     const init = async () => {
       const config: LoadAssetConfig = {
@@ -172,37 +151,13 @@ export const AxelarBridgeCosmos = observer(() => {
             readOnly={true}
           />
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div className={style["label"]}>To Chain</div>
-          <ButtonDropdown
-            isOpen={dropdownOpen}
-            toggle={toggleDropdown}
-            disabled={!isChainsLoaded || depositAddress}
-          >
-            <DropdownToggle style={{ width: "150px" }} caret>
-              {!isChainsLoaded ? (
-                <React.Fragment>
-                  loading <i className="fas fa-spinner fa-spin ml-2" />
-                </React.Fragment>
-              ) : recieverChain ? (
-                recieverChain.id
-              ) : (
-                "Select network"
-              )}
-            </DropdownToggle>
-            <DropdownMenu style={{ maxHeight: "200px", overflow: "auto" }}>
-              {chains.map((chain: any) => (
-                <DropdownItem
-                  key={chain.id}
-                  onClick={() => handleChainSelect(chain)}
-                >
-                  {chain.id}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </ButtonDropdown>
-        </div>
+        <ChainSelect
+          chains={chains}
+          recieverChain={recieverChain}
+          setRecieverChain={setRecieverChain}
+          isChainsLoaded={isChainsLoaded}
+          depositAddress={depositAddress}
+        />
       </div>
 
       <RecipientAddress
@@ -219,40 +174,13 @@ export const AxelarBridgeCosmos = observer(() => {
           marginTop: "20px",
         }}
       >
-        <div>
-          <div className={style["label"]}>Transfer Token</div>
-          <ButtonDropdown
-            isOpen={fromTokenDropdownOpen}
-            toggle={() => setFromTokenDropdownOpen(!fromTokenDropdownOpen)}
-            disabled={!recieverChain || depositAddress}
-            style={{ width: "150px" }}
-          >
-            <DropdownToggle style={{ width: "150px" }} caret>
-              {transferToken ? transferToken.assetSymbol : "Select a Token"}
-            </DropdownToggle>
-            <DropdownMenu style={{ maxHeight: "200px", overflow: "auto" }}>
-              {transferTokens &&
-                transferTokens
-                  .filter((token) =>
-                    recieverChain?.assets.find(
-                      (asset: any) => asset.common_key === token.common_key
-                    )
-                  )
-                  .map((token) => (
-                    <DropdownItem
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      key={token.common_key}
-                      onClick={() => handleTokenSelect(token)}
-                    >
-                      {token.assetSymbol}
-                    </DropdownItem>
-                  ))}
-            </DropdownMenu>
-          </ButtonDropdown>
-        </div>
+        <TokenSelect
+          tokens={transferTokens}
+          recieverChain={recieverChain}
+          depositAddress={depositAddress}
+          setTransferToken={setTransferToken}
+          transferToken={transferToken}
+        />
         <div>
           <div className={style["label"]}>Receive Token</div>
           <Input
@@ -264,18 +192,11 @@ export const AxelarBridgeCosmos = observer(() => {
         </div>
       </div>
       {transferToken && (
-        <div
-          style={{ float: "right", fontSize: "small" }}
-          className={style["label"]}
-        >
-          Min Amount :
-          {`${transferToken.minDepositAmt} ${transferToken.assetSymbol}`}
-          <TokenBalances
-            fromToken={transferToken}
-            tokenBal={tokenBal}
-            setTokenBal={setTokenBal}
-          />
-        </div>
+        <TokenBalances
+          fromToken={transferToken}
+          tokenBal={tokenBal}
+          setTokenBal={setTokenBal}
+        />
       )}
       <Input
         type="number"

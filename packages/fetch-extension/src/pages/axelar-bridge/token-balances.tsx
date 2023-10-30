@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
+import style from "./style.module.scss";
 
 interface BalanceProps {
   fromToken: any;
@@ -16,6 +17,7 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
     const query = queriesStore
       .get(current.chainId)
       .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+
     useEffect(() => {
       const queryBalances = query.balances;
       console.log(queryBalances);
@@ -47,6 +49,14 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
       queriesStore,
       accountInfo.bech32Address,
     ]);
-    return <div>Token Bal : {tokenBal ? tokenBal : "0.0"}</div>;
+    return (
+      <div
+        style={{ float: "right", fontSize: "small" }}
+        className={style["label"]}
+      >
+        Min Amount :{`${fromToken.minDepositAmt} ${fromToken.assetSymbol}`}
+        <div>Token Bal : {tokenBal ? tokenBal : "0.0"}</div>
+      </div>
+    );
   }
 );

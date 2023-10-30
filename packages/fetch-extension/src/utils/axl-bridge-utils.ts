@@ -17,6 +17,7 @@ export const getEnvironment = (chain: string) => {
 };
 export const extractNumberFromBalance = (balanceString: string) => {
   // Use regular expression to extract the numeric part
+  if (!balanceString) return 0;
   const regex = /(\d+(\.\d+)?)/;
   const match = balanceString.match(regex);
   if (match) {

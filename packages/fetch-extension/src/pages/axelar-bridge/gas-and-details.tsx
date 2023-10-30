@@ -3,9 +3,10 @@ import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { useNotification } from "@components/notification";
 import { getEnvironment } from "@utils/axl-bridge-utils";
 import React, { useCallback, useEffect, useState } from "react";
-import { useStore } from "../../../stores";
-import { TooltipForDomainNames } from "../../fetch-name-service/domain-details";
-import style from "../style.module.scss";
+import { useStore } from "../../stores";
+import { TooltipForDomainNames } from "../fetch-name-service/domain-details";
+import style from "./style.module.scss";
+
 interface GasAndDetailsProps {
   transferChain: any;
   recieverChain: any;
@@ -82,7 +83,7 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
       0
     );
     const feeAmt: any = fee.fee?.amount || 0;
-    if (!feeAmt) setMaxTrsnferAmt("Not Provided");
+    if (!feeAmt) setRelayerFee("Not Provided");
     else {
       const amountString = (
         parseFloat(feeAmt) /
@@ -153,7 +154,7 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
           <div>{maxTrsnferAmt ? maxTrsnferAmt : "Not Available"}</div>
         )}
       </div>
-      {!!depositAddress ? (
+      {depositAddress ? (
         <div className={style["entries"]}>
           <div>Deposit Address</div>
           <div
