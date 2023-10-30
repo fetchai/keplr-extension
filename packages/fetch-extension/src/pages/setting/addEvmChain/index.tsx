@@ -1,5 +1,5 @@
 import { HeaderLayout } from "@layouts/header-layout";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useNavigate } from "react-router";
 import { Form, Button } from "reactstrap";
 import { Input } from "@components/form";
@@ -8,6 +8,7 @@ import { useStore } from "../../../stores";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import axios from "axios";
 import { useLoadingIndicator } from "@components/loading-indicator";
+import { ChainInfo } from "@keplr-wallet/types";
 
 export const AddEvmChain: FunctionComponent = () => {
   const navigate = useNavigate();
@@ -17,12 +18,11 @@ export const AddEvmChain: FunctionComponent = () => {
   const loadingIndicator = useLoadingIndicator();
 
   // const [chainIdMsg, setChainIdMsg] = useState("");
-  const initialState = {
+  const initialState: ChainInfo = {
     chainName: "",
     rpc: "",
     rest: "",
     chainId: "",
-    symbol: "",
     stakeCurrency: {
       coinDenom: "",
       coinMinimalDenom: "",
@@ -54,6 +54,7 @@ export const AddEvmChain: FunctionComponent = () => {
       },
     ],
     features: ["evm"],
+    explorerUrl: "",
   };
   const [newChainInfo, setNewChainInfo] = useState(initialState);
 
@@ -118,12 +119,29 @@ export const AddEvmChain: FunctionComponent = () => {
               coinDecimals: chainData.nativeCurrency.decimals,
             },
           ],
-          symbol: symbol,
+          stakeCurrency: {
+            coinDenom: symbol,
+            coinMinimalDenom: symbol,
+            coinDecimals: chainData.nativeCurrency.decimals,
+          },
+          feeCurrencies: [
+            {
+              coinDenom: symbol,
+              coinMinimalDenom: symbol,
+              coinDecimals: chainData.nativeCurrency.decimals,
+              gasPriceStep: {
+                low: 10000000000,
+                average: 10000000000,
+                high: 10000000000,
+              },
+            },
+          ],
           rpc: rpcUrl,
           rest: rpcUrl,
           chainId: chainId.toString(),
           chainName: chainData.name,
           bech32Config: Bech32Address.defaultBech32Config(symbol.toLowerCase()),
+          explorerUrl: chainData.explorers[0].url,
         });
       } else {
         setInfo(
@@ -137,21 +155,6 @@ export const AddEvmChain: FunctionComponent = () => {
       loadingIndicator.setIsLoading("chain-details", false);
     }
   };
-
-  useEffect(() => {
-    const symbol = newChainInfo.symbol;
-    newChainInfo.stakeCurrency.coinDecimals =
-      newChainInfo.currencies[0].coinDecimals;
-    newChainInfo.stakeCurrency.coinDenom = symbol;
-    newChainInfo.stakeCurrency.coinMinimalDenom = symbol;
-    newChainInfo.feeCurrencies[0].coinDecimals =
-      newChainInfo.currencies[0].coinDecimals;
-    newChainInfo.feeCurrencies[0].coinDenom = symbol;
-    newChainInfo.feeCurrencies[0].coinMinimalDenom = symbol;
-    newChainInfo.bech32Config = Bech32Address.defaultBech32Config(
-      symbol.toLowerCase()
-    );
-  }, [newChainInfo]);
 
   const isUrlValid = (url: string) => {
     try {
@@ -185,6 +188,41 @@ export const AddEvmChain: FunctionComponent = () => {
             coinDecimals: parseInt(value),
           },
         ],
+        stakeCurrency: {
+          ...newChainInfo.stakeCurrency,
+          coinDenom: value,
+          coinMinimalDenom: value,
+        },
+        feeCurrencies: [
+          {
+            ...newChainInfo.feeCurrencies[0],
+            coinDenom: value,
+            coinMinimalDenom: value,
+          },
+        ],
+      });
+    } else if (name === "symbol") {
+      setNewChainInfo({
+        ...newChainInfo,
+        currencies: [
+          {
+            ...newChainInfo.currencies[0],
+            coinDenom: value,
+            coinMinimalDenom: value,
+          },
+        ],
+        stakeCurrency: {
+          ...newChainInfo.stakeCurrency,
+          coinDenom: value,
+          coinMinimalDenom: value,
+        },
+        feeCurrencies: [
+          {
+            ...newChainInfo.feeCurrencies[0],
+            coinDenom: value,
+            coinMinimalDenom: value,
+          },
+        ],
       });
     } else {
       setNewChainInfo({
@@ -194,11 +232,8 @@ export const AddEvmChain: FunctionComponent = () => {
     }
   };
 
-  const isValid =
-    !hasErrors &&
-    newChainInfo.rpc &&
-    newChainInfo.chainId &&
-    newChainInfo.symbol;
+  const isValid = !hasErrors && newChainInfo.rpc && newChainInfo.chainId;
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     try {
@@ -239,14 +274,6 @@ export const AddEvmChain: FunctionComponent = () => {
           </p>
         )}
         <Input
-          label="Network Name"
-          type="text"
-          name="chainName"
-          value={newChainInfo.chainName}
-          onChange={handleChange}
-          required
-        />
-        <Input
           label="Chain id"
           type="text"
           name="chainId"
@@ -255,10 +282,18 @@ export const AddEvmChain: FunctionComponent = () => {
           required
         />
         <Input
+          label="Network Name"
+          type="text"
+          name="chainName"
+          value={newChainInfo.chainName}
+          onChange={handleChange}
+          required
+        />
+        <Input
           label="Symbol"
           type="text"
           name="symbol"
-          value={newChainInfo.symbol}
+          value={newChainInfo.currencies[0].coinDenom}
           onChange={handleChange}
           required
         />
@@ -269,6 +304,13 @@ export const AddEvmChain: FunctionComponent = () => {
           value={newChainInfo.currencies[0].coinDecimals}
           onChange={handleChange}
           required
+        />
+        <Input
+          label="Explorer Url"
+          type="text"
+          name="explorerUrl"
+          value={newChainInfo.explorerUrl}
+          onChange={handleChange}
         />
         <Button
           text="Add Chain"

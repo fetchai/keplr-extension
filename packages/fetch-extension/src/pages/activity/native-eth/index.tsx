@@ -1,5 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import axios from "axios";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import sendIcon from "@assets/icon/send-grey.png";
@@ -7,26 +6,12 @@ import pendingIcon from "@assets/icon/awaiting.png";
 import success from "@assets/icon/success.png";
 import cancel from "@assets/icon/cancel.png";
 import contractIcon from "@assets/icon/contract-grey.png";
-import { FilterActivities } from "../filter";
-
-const options = [
-  { value: "FundsTransfers", label: "Funds transfers" },
-  { value: "ContractInteraction", label: "Contract interaction" },
-];
-interface ITxn {
-  hash: string;
-  type: "ContractInteraction" | "FundsTransfers";
-  status: "pending" | "success" | "failed";
-  amount: string;
-  symbol: string;
-}
+import { ITxn } from "@keplr-wallet/stores";
 
 const TransactionItem: FunctionComponent<{
   transactionInfo: ITxn;
 }> = ({ transactionInfo }) => {
-  const [explorerUrl, setExplorerUrl] = useState("");
-  const { chainStore, accountStore } = useStore();
-  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const { chainStore } = useStore();
   const getStatusIcon = (status: string): string => {
     switch (status) {
       case "success":
@@ -40,7 +25,7 @@ const TransactionItem: FunctionComponent<{
 
   const getActivityIcon = (type: string): string => {
     switch (type) {
-      case "FundsTransfers":
+      case "Send":
         return sendIcon;
       case "ContractInteraction":
         return contractIcon;
@@ -49,23 +34,10 @@ const TransactionItem: FunctionComponent<{
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const chains = await axios.get("https://chainid.network/chains.json");
-      const chainId = chainStore.current.chainId;
-      if (chains.status === 200) {
-        const chainData = chains.data.find(
-          (element: any) => chainId == element.chainId
-        );
-        setExplorerUrl(chainData.explorers[0].url);
-      }
-    })();
-  }, [chainStore.current.chainId]);
-
   const displayActivity = (status: string, amount: string) => {
     return (
       <div className={style["activityRow"]}>
-        <div className={style["activityCol"]} style={{ width: "7%" }}>
+        <div className={style["activityCol"]} style={{ width: "15%" }}>
           <img
             src={getActivityIcon(transactionInfo.type)}
             alt={transactionInfo.type}
@@ -73,15 +45,12 @@ const TransactionItem: FunctionComponent<{
         </div>
         <div
           className={style["activityCol"]}
-          style={{ width: "53%", overflow: "hidden" }}
+          style={{ width: "40%", overflow: "hidden" }}
         >
-          {transactionInfo.hash}
+          {transactionInfo.type}
         </div>
-        <div className={style["activityCol"]} style={{ width: "33%" }}>
-          {accountInfo.ethereum.weiToEther(amount) +
-            (transactionInfo.type === "ContractInteraction"
-              ? transactionInfo.symbol
-              : chainStore.current.currencies[0].coinDenom)}
+        <div className={style["activityCol"]} style={{ width: "46%" }}>
+          {amount + " " + transactionInfo.symbol}
         </div>
         <div className={style["activityCol"]} style={{ width: "7%" }}>
           <img src={getStatusIcon(status)} alt={status} />
@@ -90,9 +59,9 @@ const TransactionItem: FunctionComponent<{
     );
   };
 
-  return explorerUrl ? (
+  return chainStore.current.explorerUrl ? (
     <a
-      href={explorerUrl + "/tx/" + transactionInfo.hash}
+      href={chainStore.current.explorerUrl + "/tx/" + transactionInfo.hash}
       target="_blank"
       rel="noreferrer"
     >
@@ -103,92 +72,57 @@ const TransactionItem: FunctionComponent<{
   );
 };
 
-export const NativeEthTab = ({ latestBlock }: { latestBlock: any }) => {
+export const NativeEthTab = () => {
   const { chainStore, accountStore } = useStore();
   const [hashList, setHashList] = useState<ITxn[]>([]);
-  const [explorerUrl, setExplorerUrl] = useState("");
-  const [filter, setFilter] = useState<string[]>(
-    options.map((option) => option.value)
-  );
 
+  const timer = useRef<NodeJS.Timer>();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
-  const getTxList = async () => {
-    const txList: ITxn[] | unknown = await accountInfo.ethereum.getTxList(
-      `${accountInfo.ethereumHexAddress}-${chainStore.current.chainId}`
-    );
-    const rv: any = await txList;
-    const filteredList = filterHashList(rv, filter);
-    setHashList(filteredList.reverse());
-  };
-
-  const checkStatusAndUpdate = async (hash: string) => {
-    const status = await accountInfo.ethereum.checkTransactionStatus(hash);
-    if (status === 1) {
-      await accountInfo.ethereum.updateTransactionStatus(hash, "success");
-      await getTxList();
-    } else if (status === 0) {
-      await accountInfo.ethereum.updateTransactionStatus(hash, "failed");
-      await getTxList();
+  const refreshTxList = async () => {
+    if (!window.location.href.includes("#/activity") && timer.current) {
+      clearInterval(timer.current);
+      return;
     }
+
+    let txList = await accountInfo.ethereum.getTxList();
+    setHashList(txList);
+
+    await Promise.all(
+      txList.map(async (txData, _) => {
+        if (txData.status === "pending") {
+          await accountInfo.ethereum.checkAndUpdateTransactionStatus(
+            txData.hash
+          );
+          txList = await accountInfo.ethereum.getTxList();
+          setHashList(txList);
+        }
+      })
+    );
   };
-
-  useEffect(() => {
-    (async () => {
-      const chains = await axios.get("https://chainid.network/chains.json");
-      const chainId = chainStore.current.chainId;
-      if (chains.status === 200) {
-        const chainData = chains.data.find(
-          (element: any) => chainId == element.chainId
-        );
-        setExplorerUrl(chainData.explorers[0].url);
-      }
-    })();
-  }, [explorerUrl]);
-
-  useEffect(() => {
-    hashList.map(async (txData, _) => {
-      if (txData.status === "pending") {
-        await checkStatusAndUpdate(txData.hash);
-      }
-    });
-  }, [latestBlock]);
 
   useEffect(() => {
     if (!accountInfo.ethereumHexAddress) {
       return;
     }
 
-    (async () => {
-      await getTxList();
-    })();
-  }, [accountInfo.ethereumHexAddress, chainStore.current.chainId, filter]);
-
-  const filterHashList = (hashList: ITxn[], selectedFilters: string[]) => {
-    const _list = hashList.filter((transaction) =>
-      selectedFilters.includes(transaction.type)
-    );
-    return _list;
-  };
-
-  const handleFilterChange = (selectedFilter: string[]) => {
-    setFilter(selectedFilter);
-  };
+    refreshTxList();
+    if (!timer.current) {
+      timer.current = setInterval(() => refreshTxList(), 5000);
+    }
+  }, [accountInfo.ethereumHexAddress, chainStore.current.chainId]);
 
   return (
     <React.Fragment>
-      <div>
-        <div id={"filterActivities"}>
-          <FilterActivities
-            onFilterChange={handleFilterChange}
-            options={options}
-            selectedFilter={filter}
-          />
+      {hashList.length > 0 ? (
+        <div>
+          {hashList.map((transactionInfo, index) => (
+            <TransactionItem key={index} transactionInfo={transactionInfo} />
+          ))}
         </div>
-        {hashList.map((transactionInfo, index) => (
-          <TransactionItem key={index} transactionInfo={transactionInfo} />
-        ))}
-      </div>
+      ) : (
+        <p style={{ textAlign: "center" }}> No activity </p>
+      )}
     </React.Fragment>
   );
 };

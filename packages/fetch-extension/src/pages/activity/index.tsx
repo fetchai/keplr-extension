@@ -13,7 +13,7 @@ import { NativeEthTab } from "./native-eth";
 export const ActivityPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const intl = useIntl();
-  const [latestBlock, setLatestBlock] = useState();
+  const [latestBlock, setLatestBlock] = useState<string>();
   const { chainStore } = useStore();
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
   const [activeTab, setActiveTab] = useState(isEvm ? "eth" : "native");
@@ -56,15 +56,17 @@ export const ActivityPage: FunctionComponent = observer(() => {
       <div className={style["container"]}>
         <div className={style["title"]}>
           <FormattedMessage id="main.menu.activity" />
-          <LatestBlock
-            latestBlock={latestBlock}
-            setLatestBlock={setLatestBlock}
-          />
+          {!isEvm && (
+            <LatestBlock
+              latestBlock={latestBlock}
+              setLatestBlock={setLatestBlock}
+            />
+          )}
         </div>
         <div className={isEvm ? style["tabContainer"] : ""}>{tabs()}</div>
         {activeTab === "native" && <NativeTab latestBlock={latestBlock} />}
         {activeTab === "gov" && <GovProposalsTab latestBlock={latestBlock} />}
-        {activeTab === "eth" && <NativeEthTab latestBlock={latestBlock} />}
+        {activeTab === "eth" && <NativeEthTab />}
       </div>
     </HeaderLayout>
   );

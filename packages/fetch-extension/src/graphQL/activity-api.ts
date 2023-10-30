@@ -74,27 +74,6 @@ export const fetchLatestBlock = async (chainId: string) => {
   return data.blocks.nodes[0].height;
 };
 
-export async function fetchLatestEthBlock(ethereumRpcUrl: string) {
-  try {
-    const response = await axios.post(ethereumRpcUrl, {
-      jsonrpc: "2.0",
-      method: "eth_getBlockByNumber",
-      params: ["latest", false],
-      id: 1,
-    });
-
-    if (response.data.result) {
-      const data = response.data;
-      const height = parseInt(data.result.number, 16);
-      return height;
-    } else {
-      throw new Error("Error fetching the latest Ethereum block");
-    }
-  } catch (error) {
-    console.error("Error fetching the latest Ethereum block:", error);
-  }
-}
-
 export async function fetchAllEthTransactions(
   address: string,
   fromBlock: string,

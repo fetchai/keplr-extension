@@ -18,8 +18,7 @@ import { Buffer } from "buffer/";
 import { CosmosAccount } from "./cosmos";
 import { txEventsWithPreOnFulfill } from "./utils";
 import Axios, { AxiosInstance } from "axios";
-import { MakeTxResponse } from "./types";
-import { formatEther } from "@ethersproject/units";
+import { MakeTxResponse, ITxn } from "./types";
 import {
   JsonRpcProvider,
   TransactionReceipt,
@@ -29,16 +28,7 @@ import {
 import { isAddress } from "@ethersproject/address";
 import { KVStore } from "@keplr-wallet/common";
 import { BigNumber } from "@ethersproject/bignumber";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Contract } from "@ethersproject/contracts";
 
-export interface ITxn {
-  hash: string;
-  type: "ContractInteraction" | "FundsTransfers";
-  status: "pending" | "success" | "failed";
-  amount: string;
-  symbol: string;
-}
 export interface EthereumAccount {
   ethereum: EthereumAccountImpl;
 }
@@ -112,10 +102,28 @@ export class EthereumAccountImpl {
         throw new Error("Invalid receipient address");
       }
 
-      return this.makeEthereumTx("send", {
-        to: recipient,
-        value: actualAmount,
-      });
+      return this.makeEthereumTx(
+        "send",
+        {
+          to: recipient,
+          value: actualAmount,
+        },
+        {
+          onBroadcasted: async (txHash) => {
+            console.log("Broadcasted", txHash);
+            await this.storeTransactionHash(
+              {
+                hash: Buffer.from(txHash).toString(),
+                status: "pending",
+                amount: amount,
+                type: "Send",
+                symbol: currency.coinDenom,
+              },
+              this.kvStore
+            );
+          },
+        }
+      );
     } else if (denomHelper.type === "erc20") {
       return this.makeEthereumTx(
         "send",
@@ -126,21 +134,35 @@ export class EthereumAccountImpl {
             actualAmount,
           ]),
         },
-        (tx: TransactionReceipt) => {
-          if (tx.status && tx.status === 1) {
-            // After succeeding to send token, refresh the balance.
-            const queryBalance = this.queries.queryBalances
-              .getQueryBech32Address(this.base.bech32Address)
-              .balances.find((bal) => {
-                return (
-                  bal.currency.coinMinimalDenom === currency.coinMinimalDenom
-                );
-              });
+        {
+          onBroadcasted: async (txHash) => {
+            await this.storeTransactionHash(
+              {
+                hash: Buffer.from(txHash).toString(),
+                status: "pending",
+                amount: amount,
+                type: "Send",
+                symbol: currency.coinDenom,
+              },
+              this.kvStore
+            );
+          },
+          onFulfill: (tx: TransactionReceipt) => {
+            if (tx.status && tx.status === 1) {
+              // After succeeding to send token, refresh the balance.
+              const queryBalance = this.queries.queryBalances
+                .getQueryBech32Address(this.base.bech32Address)
+                .balances.find((bal) => {
+                  return (
+                    bal.currency.coinMinimalDenom === currency.coinMinimalDenom
+                  );
+                });
 
-            if (queryBalance) {
-              queryBalance.fetch();
+              if (queryBalance) {
+                queryBalance.fetch();
+              }
             }
-          }
+          },
         }
       );
     }
@@ -263,7 +285,7 @@ export class EthereumAccountImpl {
     }
 
     if (onBroadcasted) {
-      onBroadcasted(Uint8Array.from(Buffer.from(txHash, "hex")));
+      onBroadcasted(Uint8Array.from(Buffer.from(txHash)));
     }
 
     const provider = this.ethersInstance;
@@ -293,27 +315,33 @@ export class EthereumAccountImpl {
     });
   }
 
-  async checkTransactionStatus(transactionHash: string) {
-    let receipt = null;
+  async checkAndUpdateTransactionStatus(
+    transactionHash: string
+  ): Promise<boolean> {
     try {
-      receipt = await this.instance.post("", {
+      const receipt = await this.instance.post("", {
         jsonrpc: "2.0",
         id: 1,
         method: "eth_getTransactionReceipt",
         params: [transactionHash],
       });
+
+      if (receipt && receipt.data && receipt.data.result) {
+        if (parseInt(receipt.data.result.status, 16) == 1) {
+          await this.updateTransactionStatus(transactionHash, "success");
+          return true;
+        }
+
+        if (parseInt(receipt.data.result.status, 16) == 0) {
+          await this.updateTransactionStatus(transactionHash, "failed");
+          return true;
+        }
+      }
+
+      return false;
     } catch (error) {
       console.error("Error checking transaction receipt:", error);
-    }
-
-    if (receipt) {
-      if (receipt.data.result.status == 1) {
-        return 1; // Transaction succeeded
-      } else if (receipt.data.result.status == 0) {
-        return 0; // Transaction failed
-      }
-    } else {
-      return 2;
+      return false;
     }
   }
 
@@ -340,23 +368,21 @@ export class EthereumAccountImpl {
     try {
       const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
       const txList: ITxn[] | undefined = await this.kvStore.get(key);
-      if (txList === undefined) {
-        await this.kvStore.set(key, [{ hash, status }]);
-      } else {
-        // Find and update the transaction status by hash
-        const updatedTxList = txList.map((txn) =>
-          txn.hash === hash ? { ...txn, status } : txn
-        );
-        await this.kvStore.set(key, updatedTxList);
+      if (txList === undefined || !txList.find((txn) => txn.hash === hash)) {
+        return;
       }
+
+      // Find and update the transaction status by hash
+      const updatedTxList = txList.map((txn) =>
+        txn.hash === hash ? { ...txn, status } : txn
+      );
+
+      await this.kvStore.set(key, updatedTxList);
     } catch (error) {
       console.error("Error:", error);
     }
   }
 
-  weiToEther(amountInWei: string) {
-    return formatEther(amountInWei);
-  }
   async broadcastTx(params: TransactionRequest, fee: StdFee): Promise<string> {
     if (this.base.walletStatus !== WalletStatus.Loaded) {
       throw new Error(`Wallet is not loaded: ${this.base.walletStatus}`);
@@ -415,67 +441,18 @@ export class EthereumAccountImpl {
       throw new Error("Issue sending transaction");
     }
 
-    const resultString = result.data.result.toString();
-
-    const isContractInteraction = params.hasOwnProperty("data") ? true : false;
-    let amount,
-      type: "ContractInteraction" | "FundsTransfers" = "ContractInteraction",
-      symbol: string = "";
-
-    if (isContractInteraction) {
-      const tokenContract = new Contract(
-        params.to!,
-        erc20MetadataInterface,
-        this.ethersInstance
-      );
-      symbol = await tokenContract["symbol"]();
-      if (params.data?.toString().startsWith("0xa9059cbb")) {
-        const parsedData = erc20MetadataInterface.decodeFunctionData(
-          "transfer",
-          params.data!
-        );
-        amount = parsedData[1].toString();
-      } else if (params.data?.toString().startsWith("0x095ea7b3")) {
-        const parsedData = erc20MetadataInterface.decodeFunctionData(
-          "approve",
-          params.data!
-        );
-        amount = parsedData[1].toString();
-      } else if (params.data?.toString().startsWith("0x095ea7b3")) {
-        const parsedData = erc20MetadataInterface.decodeFunctionData(
-          "swap",
-          params.data!
-        );
-        amount = parsedData[1].toString();
-      } else {
-        const parsedData = nativeFetBridgeInterface.decodeFunctionData(
-          "swap",
-          params.data!
-        );
-        amount = parsedData[1].toString();
-      }
-    } else {
-      amount = params.value?.toString();
-      type = "FundsTransfers";
-    }
-
-    await this.storeTransactionHash(
-      {
-        hash: resultString,
-        status: "pending",
-        amount: amount,
-        type: type,
-        symbol: symbol,
-      },
-      this.kvStore
-    );
-
     return result.data.result as string;
   }
 
-  async getTxList(key: string) {
-    const txList = await this.kvStore.get(key);
-    return txList;
+  async getTxList() {
+    const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
+    const txList: ITxn[] | undefined = await this.kvStore.get(key);
+
+    if (!txList) {
+      return [];
+    }
+
+    return txList.reverse();
   }
 
   makeApprovalTx(amount: string, spender: string, currency: AppCurrency) {
@@ -498,20 +475,34 @@ export class EthereumAccountImpl {
           actualAmount,
         ]),
       },
-      (tx: TransactionReceipt) => {
-        if (tx.status && tx.status === 1) {
-          // After succeeding to send token, refresh the allowance.
-          const queryAllowance =
-            this.queries.evm.queryERC20Allowance.getQueryAllowance(
-              this.base.bech32Address,
-              spender,
-              new DenomHelper(currency.coinMinimalDenom).contractAddress
-            );
+      {
+        onBroadcasted: async (txHash) => {
+          await this.storeTransactionHash(
+            {
+              hash: Buffer.from(txHash).toString(),
+              status: "pending",
+              amount: amount,
+              type: "Approve",
+              symbol: currency.coinDenom,
+            },
+            this.kvStore
+          );
+        },
+        onFulfill: (tx: TransactionReceipt) => {
+          if (tx.status && tx.status === 1) {
+            // After succeeding to send token, refresh the allowance.
+            const queryAllowance =
+              this.queries.evm.queryERC20Allowance.getQueryAllowance(
+                this.base.bech32Address,
+                spender,
+                new DenomHelper(currency.coinMinimalDenom).contractAddress
+              );
 
-          if (queryAllowance) {
-            queryAllowance.fetch();
+            if (queryAllowance) {
+              queryAllowance.fetch();
+            }
           }
-        }
+        },
       }
     );
   }
@@ -532,19 +523,33 @@ export class EthereumAccountImpl {
           recipient,
         ]),
       },
-      (tx: TransactionReceipt) => {
-        if (tx.status && tx.status === 1) {
-          // After succeeding to send token, refresh the balance.
-          const queryBalance = this.queries.queryBalances
-            .getQueryBech32Address(this.base.bech32Address)
-            .balances.find((bal) => {
-              return bal.currency.coinDenom === "FET";
-            });
+      {
+        onBroadcasted: async (txHash) => {
+          await this.storeTransactionHash(
+            {
+              hash: Buffer.from(txHash).toString(),
+              status: "pending",
+              amount: amount,
+              type: "Bridge",
+              symbol: "ETH",
+            },
+            this.kvStore
+          );
+        },
+        onFulfill: (tx: TransactionReceipt) => {
+          if (tx.status && tx.status === 1) {
+            // After succeeding to send token, refresh the balance.
+            const queryBalance = this.queries.queryBalances
+              .getQueryBech32Address(this.base.bech32Address)
+              .balances.find((bal) => {
+                return bal.currency.coinDenom === "FET";
+              });
 
-          if (queryBalance) {
-            queryBalance.fetch();
+            if (queryBalance) {
+              queryBalance.fetch();
+            }
           }
-        }
+        },
       }
     );
   }
