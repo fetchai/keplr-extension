@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import { ScrollView, Text, View, ViewStyle } from "react-native";
+import { Animated, ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { useStore } from "../../stores";
 import { MemoInput } from "../../components/input";
@@ -25,6 +25,10 @@ import { renderAminoMessage } from "./amino";
 import { renderDirectMessage } from "./direct";
 import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
+  KeyboardAwareScrollView
+);
 
 export const SignModal: FunctionComponent<{
   isOpen: boolean;
@@ -220,74 +224,79 @@ export const SignModal: FunctionComponent<{
 
     return (
       <CardModal title="Confirm Transaction">
-        {wcSession ? (
-          <WCAppLogoAndName
-            containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
-            peerMeta={wcSession.peerMeta}
-          />
-        ) : null}
-        <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
-          <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
-            <Text style={style.flatten(["subtitle3", "color-blue-400"])}>
-              {`${msgs.length.toString()} `}
+        <AnimatedKeyboardAwareScrollView
+          indicatorStyle={style.theme === "dark" ? "white" : "black"}
+          extraScrollHeight={30}
+        >
+          {wcSession ? (
+            <WCAppLogoAndName
+              containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
+              peerMeta={wcSession.peerMeta}
+            />
+          ) : null}
+          <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
+            <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
+              <Text style={style.flatten(["subtitle3", "color-blue-400"])}>
+                {`${msgs.length.toString()} `}
+              </Text>
+              <Text style={style.flatten(["subtitle3", "color-text-middle"])}>
+                Messages
+              </Text>
             </Text>
-            <Text style={style.flatten(["subtitle3", "color-text-middle"])}>
-              Messages
-            </Text>
-          </Text>
-          <View
-            style={style.flatten([
-              "border-radius-8",
-              "border-width-1",
-              "border-color-gray-50",
-              "dark:border-color-platinum-400",
-              "overflow-hidden",
-            ])}
-          >
-            <ScrollView
-              style={
-                style.flatten([
-                  "max-height-214",
-                  "background-color-white",
-                  "dark:background-color-platinum-500",
-                ]) as ViewStyle
-              }
-              persistentScrollbar={true}
-              indicatorStyle={style.theme === "dark" ? "white" : "black"}
+            <View
+              style={style.flatten([
+                "border-radius-8",
+                "border-width-1",
+                "border-color-gray-50",
+                "dark:border-color-platinum-400",
+                "overflow-hidden",
+              ])}
             >
-              {renderedMsgs}
-            </ScrollView>
+              <ScrollView
+                style={
+                  style.flatten([
+                    "max-height-214",
+                    "background-color-white",
+                    "dark:background-color-platinum-500",
+                  ]) as ViewStyle
+                }
+                persistentScrollbar={true}
+                indicatorStyle={style.theme === "dark" ? "white" : "black"}
+              >
+                {renderedMsgs}
+              </ScrollView>
+            </View>
           </View>
-        </View>
-        <MemoInput label="Memo" memoConfig={memoConfig} />
-        <FeeInSign
-          feeConfig={feeConfig}
-          gasConfig={gasConfig}
-          signOptions={signInteractionStore.waitingData?.data.signOptions}
-          isInternal={isInternal}
-        />
-        <Button
-          text="Approve"
-          size="large"
-          disabled={
-            signDocWapper == null ||
-            signDocHelper.signDocWrapper == null ||
-            memoConfig.error != null ||
-            feeConfig.error != null
-          }
-          loading={signInteractionStore.isLoading}
-          onPress={async () => {
-            try {
-              if (signDocHelper.signDocWrapper) {
-                await signInteractionStore.approveAndWaitEnd(
-                  signDocHelper.signDocWrapper
-                );
-              }
-            } catch (error) {
-              console.log(error);
+          <MemoInput label="Memo" memoConfig={memoConfig} />
+          <FeeInSign
+            feeConfig={feeConfig}
+            gasConfig={gasConfig}
+            signOptions={signInteractionStore.waitingData?.data.signOptions}
+            isInternal={isInternal}
+          />
+          <Button
+            text="Approve"
+            size="large"
+            disabled={
+              signDocWapper == null ||
+              signDocHelper.signDocWrapper == null ||
+              memoConfig.error != null ||
+              feeConfig.error != null
             }
-          }}
-        />
+            loading={signInteractionStore.isLoading}
+            onPress={async () => {
+              try {
+                if (signDocHelper.signDocWrapper) {
+                  signInteractionStore.approveAndWaitEnd(
+                    signDocHelper.signDocWrapper
+                  );
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          />
+        </AnimatedKeyboardAwareScrollView>
       </CardModal>
     );
   }),

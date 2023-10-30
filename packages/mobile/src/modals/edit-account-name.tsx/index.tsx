@@ -3,6 +3,7 @@ import { registerModal } from "../base";
 import { CardModal } from "../card";
 import { TextInput } from "../../components/input";
 import { Button } from "../../components/button";
+import { KeyboardSpacerView } from "../../components/keyboard";
 
 export const EditAccountNameModal: FunctionComponent<{
   isOpen: boolean;
@@ -60,6 +61,7 @@ export const EditAccountNameModal: FunctionComponent<{
           loading={isLoading}
           onPress={submitNewName}
         />
+        <KeyboardSpacerView />
       </CardModal>
     );
   },

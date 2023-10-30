@@ -5,6 +5,7 @@ import { useStyle } from "../../styles";
 import { CardModal } from "../card";
 import { TextInput } from "../../components/input";
 import { Button } from "../../components/button";
+import { KeyboardSpacerView } from "../../components/keyboard";
 
 export const PasswordInputModal: FunctionComponent<{
   isOpen: boolean;
@@ -74,6 +75,7 @@ export const PasswordInputModal: FunctionComponent<{
           loading={isLoading}
           onPress={submitPassword}
         />
+        <KeyboardSpacerView />
       </CardModal>
     );
   },
