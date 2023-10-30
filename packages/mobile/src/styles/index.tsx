@@ -87,6 +87,13 @@ export const ColorPalette = {
 
   black: "#000000",
 
+    indigo: "#5F38FB",
+    linear: "#CF447B",
+
+    "indigo-100": "#5f38fb12",
+    "indigo-200": "#fbfaff40",
+    "indigo-400": "#000D3D",
+
   transparent: "rgba(255,255,255,0)",
 };
 
@@ -212,6 +219,13 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           letterSpacing: 0.1,
           ...getPlatformFontWeight("400"),
         },
+          "text-button0": {
+              fontSize: 20,
+              lineHeight: 25,
+              letterSpacing: 0.2,
+              textTransform: "capitalize" as EnumTextTransform,
+              ...getPlatformFontWeight("600"),
+          },
         "text-button1": {
           fontSize: 18,
           lineHeight: 20,
@@ -266,7 +280,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ...getPlatformFontWeight("400"),
           },
           android: {
-            fontSize: 16,
+              fontSize: 20,
             lineHeight: 22,
             letterSpacing: 0.25,
             ...getPlatformFontWeight("400"),

@@ -25333,6 +25333,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-blur@npm:12.6.0":
+  version: 12.6.0
+  resolution: "expo-blur@npm:12.6.0"
+  peerDependencies:
+    expo: "*"
+  checksum: ff5194ef9633b68e90274724439382a2606a2c313ea1d99faed72f491432c5a94cbae5446aa3fe0f3e798664d027b631c4b1d61d60cfcf19cd79f16d5f26208a
+  languageName: node
+  linkType: hard
+
 "expo-camera@npm:^13.4.2":
   version: 13.5.1
   resolution: "expo-camera@npm:13.5.1"
@@ -35116,6 +35125,7 @@ __metadata:
     expo: ^49.0.3
     expo-apple-authentication: ^6.1.0
     expo-barcode-scanner: ^12.5.3
+    expo-blur: 12.6.0
     expo-camera: ^13.4.2
     expo-clipboard: ^4.3.0
     expo-constants: ^14.4.2

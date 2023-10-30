@@ -14,6 +14,7 @@ export const PageWithView: FunctionComponent<
   ViewProps & {
     disableSafeArea?: boolean;
     backgroundMode: BackgroundMode;
+    backgroundBlur?: boolean
   }
 > = (props) => {
   const style = useStyle();
@@ -24,12 +25,13 @@ export const PageWithView: FunctionComponent<
     style: propStyle,
     disableSafeArea,
     backgroundMode,
+      backgroundBlur = false,
     ...restProps
   } = props;
 
   return (
     <React.Fragment>
-      <ScreenBackground backgroundMode={backgroundMode} />
+        <ScreenBackground backgroundMode={backgroundMode} backgroundBlur={backgroundBlur}/>
       {!disableSafeArea ? (
         <SafeAreaView style={style.get("flex-1")}>
           <View

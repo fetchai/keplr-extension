@@ -49,6 +49,8 @@ PODS:
     - ExpoModulesCore
   - ExpoAppleAuthentication (6.1.0):
     - ExpoModulesCore
+  - ExpoBlur (12.6.0):
+    - ExpoModulesCore
   - ExpoClipboard (4.3.0):
     - ExpoModulesCore
   - ExpoCrypto (12.4.1):
@@ -569,6 +571,7 @@ DEPENDENCIES:
   - EXLocation (from `../node_modules/expo-location/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAppleAuthentication (from `../node_modules/expo-apple-authentication/ios`)
+  - ExpoBlur (from `../node_modules/expo-blur/ios`)
   - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
@@ -683,6 +686,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoAppleAuthentication:
     :path: "../node_modules/expo-apple-authentication/ios"
+  ExpoBlur:
+    :path: "../node_modules/expo-blur/ios"
   ExpoClipboard:
     :path: "../node_modules/expo-clipboard/ios"
   ExpoCrypto:
@@ -830,6 +835,7 @@ SPEC CHECKSUMS:
   EXLocation: e5dd52bdf61ccb6153c9e46ad4cb2686c96a35f9
   Expo: f2485e8fab9988e5dcee34159df5e475c9c3730c
   ExpoAppleAuthentication: 7bdf1a2962ebfe9b00eb4183a17b78d736e57185
+  ExpoBlur: 9e6da7c2bd4a0c5de7e57124694d0a380d7962f7
   ExpoClipboard: ddd3ecf4af93c003667dab75a0f2ed3ae4f73d85
   ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d

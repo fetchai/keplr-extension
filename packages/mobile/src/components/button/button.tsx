@@ -7,7 +7,7 @@ import { RectButton } from "../rect-button";
 export const Button: FunctionComponent<{
   color?: "primary" | "danger";
   mode?: "fill" | "light" | "outline" | "text";
-  size?: "default" | "small" | "large";
+    size?: "default" | "small" | "large" | "xlarge";
   text: string;
   leftIcon?: ReactElement | ((color: string) => ReactElement);
   rightIcon?: ReactElement | ((color: string) => ReactElement);
@@ -82,7 +82,7 @@ export const Button: FunctionComponent<{
           ];
         }
       case "outline":
-        return ["background-color-transparent"];
+          return ["background-color-transparent", "border-color-gray-200"];
       default:
         return ["background-color-transparent"];
     }
@@ -90,6 +90,8 @@ export const Button: FunctionComponent<{
 
   const textDefinition = (() => {
     switch (size) {
+        case "xlarge":
+            return "text-button0"
       case "large":
         return "text-button1";
       case "small":

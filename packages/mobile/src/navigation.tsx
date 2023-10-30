@@ -39,14 +39,14 @@ import { SettingSelectAccountScreen } from "./screens/setting/screens/select-acc
 import { ViewPrivateDataScreen } from "./screens/setting/screens/view-private-data";
 import { SettingChainListScreen } from "./screens/setting/screens/chain-list";
 import { WebScreen } from "./screens/web";
-import { RegisterIntroScreen } from "./screens/register";
+import {RegisterIntroScreen} from "./screens/register/new";
 import {
   NewMnemonicConfig,
   NewMnemonicScreen,
   RecoverMnemonicScreen,
   VerifyMnemonicScreen,
 } from "./screens/register/mnemonic";
-import { RegisterEndScreen } from "./screens/register/end";
+import {RegisterEndScreen} from "./screens/register/new/end";
 import { RegisterNewUserScreen } from "./screens/register/new-user";
 import { RegisterNotNewUserScreen } from "./screens/register/not-new-user";
 import {
@@ -119,7 +119,7 @@ import {
   UmeeWebpageScreen,
 } from "./screens/web/webpages";
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
-import { UnlockScreen } from "./screens/unlock";
+import {UnlockScreen} from "./screens/unlock/new/index";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 //import Bugsnag from "@bugsnag/react-native";
 
