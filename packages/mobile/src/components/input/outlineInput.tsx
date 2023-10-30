@@ -65,8 +65,8 @@ export const TextInput = React.forwardRef<
         <Text
           style={StyleSheet.flatten([
             style.flatten([
-              "subtitle3",
-              "color-text-label",
+              "subtitle2",
+              "color-white",
               "margin-bottom-3",
             ]) as ViewStyle,
             labelStyle,
@@ -82,10 +82,10 @@ export const TextInput = React.forwardRef<
               "background-color-transparent",
               "border-color-gray-200",
               "padding-x-15",
-              "padding-y-20",
+              "padding-y-16",
               "border-radius-12",
               "border-width-1",
-              "border-color-gray-100@50%",
+              "border-color-gray-100@20%",
               "dark:border-color-platinum-600@50%",
             ],
             [
@@ -119,7 +119,7 @@ export const TextInput = React.forwardRef<
                 [
                   "padding-0",
                   "body2-in-text-input",
-                  "color-gray-200",
+                  "color-gray-600",
                   "dark:color-platinum-50",
                   "flex-1",
                 ],

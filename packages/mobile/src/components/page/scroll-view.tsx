@@ -28,6 +28,7 @@ export const PageWithScrollView = forwardRef<
       containerStyle?: ViewStyle;
 
       backgroundMode: BackgroundMode;
+      backgroundBlur?: boolean
     }
   >
 >((props, ref) => {
@@ -44,6 +45,7 @@ export const PageWithScrollView = forwardRef<
     containerStyle,
     backgroundMode,
     indicatorStyle,
+    backgroundBlur=false,
     ...restProps
   } = props;
 
@@ -51,7 +53,7 @@ export const PageWithScrollView = forwardRef<
 
   return (
     <React.Fragment>
-      <ScreenBackground backgroundMode={backgroundMode} />
+      <ScreenBackground backgroundMode={backgroundMode} backgroundBlur={backgroundBlur} />
       <ContainerElement
         style={StyleSheet.flatten([
           style.flatten(

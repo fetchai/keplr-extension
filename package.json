@@ -130,6 +130,8 @@
   },
   "dependencies": {
     "@azoyalabs/fns-client": "0.0.3",
-    "@cosmjs/cosmwasm-stargate": "^0.31.0"
+    "@cosmjs/cosmwasm-stargate": "^0.31.0",
+    "expo-linear-gradient": "^12.5.0",
+    "react-blur": "^1.1.1"
   }
 }
