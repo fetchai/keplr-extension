@@ -198,6 +198,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             style={
               style.flatten(
                 [
+                  "text-center",
                   "padding-top-2",
                   "text-caption1",
                   "color-gray-200",
@@ -210,7 +211,19 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
               ) as ViewStyle
             }
           >
-            {amount.maxDecimals(6).trim(true).separator("").toString()}
+            {amount
+              .maxDecimals(6)
+              .trim(true)
+              .separator("")
+              .toString()
+              .replace(/[^0-9\.]+/g, "")}
+            {"\n"}
+            {amount
+              .maxDecimals(6)
+              .trim(true)
+              .separator("")
+              .toString()
+              .replace(/[^a-zA-Z ]/g, "")}
           </Text>
         </RectButton>
       );

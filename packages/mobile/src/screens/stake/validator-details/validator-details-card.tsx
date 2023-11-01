@@ -3,12 +3,13 @@ import { observer } from "mobx-react-lite";
 import { Card, CardBody } from "../../../components/card";
 import { useStore } from "../../../stores";
 import { Staking } from "@keplr-wallet/stores";
-import { Text, View, ViewStyle } from "react-native";
+import { Linking, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { CoinPretty, Dec, IntPretty } from "@keplr-wallet/unit";
 import { Button } from "../../../components/button";
 import { useSmartNavigation } from "../../../navigation";
 import { ValidatorThumbnail } from "../../../components/thumbnail";
+import { MarkdownView } from "react-native-markdown-view";
 
 export const ValidatorDetailsCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -131,12 +132,15 @@ export const ValidatorDetailsCard: FunctionComponent<{
               >
                 Description
               </Text>
-              <Text
-                style={style.flatten(["body3", "color-text-middle"])}
-                selectable={true}
+              <MarkdownView
+                onLinkPress={(url: string) => {
+                  Linking.openURL(url).catch((error) =>
+                    console.warn("An error occurred: ", error)
+                  );
+                }}
               >
                 {validator.description.details}
-              </Text>
+              </MarkdownView>
             </View>
           ) : null}
           <Button

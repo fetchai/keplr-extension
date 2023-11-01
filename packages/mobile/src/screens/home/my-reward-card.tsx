@@ -23,6 +23,10 @@ export const MyRewardCard: FunctionComponent<{
   const queryReward = queries.cosmos.queryRewards.getQueryBech32Address(
     account.bech32Address
   );
+  const queryStakable = queries.queryBalances.getQueryBech32Address(
+    account.bech32Address
+  ).stakable;
+  const stakable = queryStakable.balance;
   const stakingReward = queryReward.stakableReward;
 
   const [isSendingTx, setIsSendingTx] = useState(false);
@@ -100,6 +104,7 @@ export const MyRewardCard: FunctionComponent<{
           !networkIsConnected ||
           !account.isReadyToSendMsgs ||
           stakingReward.toDec().equals(new Dec(0)) ||
+          stakable.toDec().lte(new Dec(0)) ||
           queryReward.pendingRewardValidatorAddresses.length === 0
         }
         buttonLoading={

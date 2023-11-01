@@ -35156,6 +35156,7 @@ __metadata:
     react-native-keyboard-aware-scroll-view: ^0.9.5
     react-native-keychain: ^8.1.1
     react-native-localize: ^3.0.2
+    react-native-markdown-view: ^1.1.4
     react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: ^3.3.0
     react-native-safe-area-context: ^4.4.1
@@ -39295,7 +39296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.0.0, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.1, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.1, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -40355,6 +40356,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-markdown-view@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "react-native-markdown-view@npm:1.1.4"
+  dependencies:
+    prop-types: ^15.5.10
+    react-native-tabular-grid-markdown-view: 0.1.x
+    simple-markdown: 0.3.x
+  checksum: 0bca38048c0fd69d9aa6585c8dff7e9dc3b33ac4967d17b2192beaeeb961a63d0f3386d26a07c69f6d03e402d1990afe47a77903f6451d5fe11f4f3f5e10a8a6
+  languageName: node
+  linkType: hard
+
 "react-native-qrcode-svg@npm:^6.2.0":
   version: 6.2.0
   resolution: "react-native-qrcode-svg@npm:6.2.0"
@@ -40461,6 +40473,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 5b71a69f779eb0c8139b716f76736a798c99d85cd5f1741bdc54cf46bfc032505df7b81a92c76859d09317fe5787dc31aabee8a79e67db083442d00af1600f26
+  languageName: node
+  linkType: hard
+
+"react-native-tabular-grid-markdown-view@npm:0.1.x":
+  version: 0.1.0
+  resolution: "react-native-tabular-grid-markdown-view@npm:0.1.0"
+  dependencies:
+    prop-types: ^15.5.10
+  peerDependencies:
+    react: ">=15.4.2"
+    react-native: ">=0.41.0"
+  checksum: 940f788d199a3a33e3ba35da314ae9bf1750cd4dea0e5cbba3ff837d5dc4176ef643f218fc8b7c1966ca7dc68aa6668846259288fb57c9f4b9c9f40f8fa23af8
   languageName: node
   linkType: hard
 
@@ -44088,6 +44112,13 @@ __metadata:
   version: 1.0.1
   resolution: "simple-concat@npm:1.0.1"
   checksum: 4d211042cc3d73a718c21ac6c4e7d7a0363e184be6a5ad25c8a1502e49df6d0a0253979e3d50dbdd3f60ef6c6c58d756b5d66ac1e05cda9cacd2e9fc59e3876a
+  languageName: node
+  linkType: hard
+
+"simple-markdown@npm:0.3.x":
+  version: 0.3.3
+  resolution: "simple-markdown@npm:0.3.3"
+  checksum: 0f87c163f56b6725e8b2d8d7cdc7afaf18d0fc8542e6095b90c1be6ac3867bc6a7329933d55ae25643b2bc315ea400405f762ea5e5b1c182a731c8fe2f496bde
   languageName: node
   linkType: hard
 

@@ -1,7 +1,14 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "../../components/page";
-import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+  Linking,
+} from "react-native";
 import { Card, CardBody } from "../../components/card";
 import { useStyle } from "../../styles";
 import { Button } from "../../components/button";
@@ -12,10 +19,11 @@ import { Governance } from "@keplr-wallet/stores";
 import { GovernanceProposalStatusChip } from "./card";
 import { IntPretty } from "@keplr-wallet/unit";
 import { useIntl } from "react-intl";
-import { dateToLocalString } from "./utils";
 import { registerModal } from "../../modals/base";
 import { RectButton } from "../../components/rect-button";
 import { useSmartNavigation } from "../../navigation";
+import { MarkdownView } from "react-native-markdown-view";
+import { dateToLocalStringFormatGMT } from "./utils";
 
 export const TallyVoteInfoView: FunctionComponent<{
   vote: "yes" | "no" | "abstain" | "noWithVeto";
@@ -260,7 +268,10 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                   "dark:color-platinum-200",
                 ])}
               >
-                {dateToLocalString(intl, proposal.raw.voting_start_time)}
+                {`${dateToLocalStringFormatGMT(
+                  intl,
+                  proposal.raw.voting_start_time
+                )} GMT`}
               </Text>
             </View>
             <View style={style.flatten(["flex-1"])}>
@@ -274,7 +285,10 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                   "dark:color-platinum-200",
                 ])}
               >
-                {dateToLocalString(intl, proposal.raw.voting_end_time)}
+                {`${dateToLocalStringFormatGMT(
+                  intl,
+                  proposal.raw.voting_end_time
+                )} GMT`}
               </Text>
             </View>
           </View>
@@ -289,18 +303,15 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
           >
             Description
           </Text>
-          <Text
-            style={style.flatten([
-              "body3",
-              "color-text-middle",
-              "dark:color-platinum-200",
-            ])}
-            // Text selection is only supported well in android.
-            // In IOS, the whole text would be selected, this process is somewhat strange, so it is disabled in IOS.
-            selectable={Platform.OS === "android"}
+          <MarkdownView
+            onLinkPress={(url: string) => {
+              Linking.openURL(url).catch((error) =>
+                console.warn("An error occurred: ", error)
+              );
+            }}
           >
             {proposal.description}
-          </Text>
+          </MarkdownView>
         </View>
       ) : (
         <LoadingSpinner

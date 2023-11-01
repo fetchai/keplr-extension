@@ -43,19 +43,44 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const [name, setName] = useState("");
+  const [preName, setPreName] = useState("");
   const recipientConfig = useRecipientConfig(chainStore, route.params.chainId, {
     allowHexAddressOnEthermint: true,
   });
+  const preRecipientConfig = useRecipientConfig(
+    chainStore,
+    route.params.chainId,
+    {
+      allowHexAddressOnEthermint: true,
+    }
+  );
   const memoConfig = useMemoConfig(chainStore, route.params.chainId);
+  const preMemoConfig = useMemoConfig(chainStore, route.params.chainId);
 
   useEffect(() => {
     if (index >= 0) {
       const data = addressBookConfig.addressBookDatas[index];
       setName(data.name);
+      setPreName(data.name);
       recipientConfig.setRawRecipient(data.address);
+      preRecipientConfig.setRawRecipient(data.address);
       memoConfig.setMemo(data.memo);
+      preMemoConfig.setMemo(data.memo);
     }
   }, [addressBookConfig.addressBookDatas, index, memoConfig, recipientConfig]);
+
+  const checkButtonDisable = () => {
+    return (
+      !name ||
+      recipientConfig.error != null ||
+      memoConfig.error != null || // this condition ckeck to empty case and error
+      (name == preName &&
+        (recipientConfig.recipient == preRecipientConfig.recipient ||
+        memoConfig.memo.length != 0
+          ? memoConfig.memo == preMemoConfig.memo
+          : false))
+    ); // this condition check the new data or previous data are the same or not
+  };
 
   return (
     <PageWithScrollView
@@ -80,9 +105,7 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
       <Button
         text="Save"
         size="large"
-        disabled={
-          !name || recipientConfig.error != null || memoConfig.error != null
-        }
+        disabled={checkButtonDisable()}
         onPress={async () => {
           if (
             name &&

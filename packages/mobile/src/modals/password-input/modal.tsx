@@ -74,6 +74,7 @@ export const PasswordInputModal: FunctionComponent<{
           size="large"
           loading={isLoading}
           onPress={submitPassword}
+          disabled={!password}
         />
         <KeyboardSpacerView />
       </CardModal>

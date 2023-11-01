@@ -60,6 +60,7 @@ export const EditAccountNameModal: FunctionComponent<{
           size="large"
           loading={isLoading}
           onPress={submitNewName}
+          disabled={!newName}
         />
         <KeyboardSpacerView />
       </CardModal>
