@@ -21915,7 +21915,7 @@ export const CHAINS = [
         fullDenomPath: "transfer/channel-4118/eth-wei",
         tokenAddress: "eth-wei",
         mintLimit: 0,
-        common_key: "eth",
+        common_key: "eth-wei",
         native_chain: "ethereum",
         decimals: 18,
         fullySupported: true,

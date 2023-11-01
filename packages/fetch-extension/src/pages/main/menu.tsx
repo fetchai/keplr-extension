@@ -7,15 +7,10 @@ import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
-import { EvmChain } from "@axelar-network/axelarjs-sdk";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
-  const isEVM = Object.values(EvmChain).find((evmchain) =>
-    chainStore.current.chainName.toLowerCase().includes(evmchain.toLowerCase())
-  );
   const navigate = useNavigate();
-  const AxlBrdigeDisabledChainIds = ["axelar-testnet-lisbon-3"];
   return (
     <div className={styleMenu["container"]}>
       <div
@@ -29,18 +24,7 @@ export const Menu: FunctionComponent = observer(() => {
       >
         <FormattedMessage id="main.menu.address-book" />
       </div>
-      {!AxlBrdigeDisabledChainIds.includes(chainStore.current.chainId) && (
-        <div
-          className={styleMenu["item"]}
-          onClick={() => {
-            navigate({
-              pathname: isEVM ? "/axl-bridge-evm" : "/axl-bridge-cosmos",
-            });
-          }}
-        >
-          <FormattedMessage id="main.menu.axl-bridge" />
-        </div>
-      )}
+
       <div
         className={styleMenu["item"]}
         onClick={() => {

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.scss";
+import { formatEthBalance } from "@utils/axl-bridge-utils";
 
 interface BalanceProps {
   fromToken: any;
@@ -26,8 +27,14 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
           fromToken.assetSymbol == bal.currency.coinDenom ||
           fromToken.ibcDenom == bal.currency.coinMinimalDenom
       );
-      if (queryBalance) {
-        setTokenBal(queryBalance.balance.trim(true).maxDecimals(6).toString());
+      const balance = queryBalance?.balance
+        .trim(true)
+        .maxDecimals(6)
+        .toString();
+      if (balance) {
+        balance.includes("-wei")
+          ? setTokenBal(formatEthBalance(balance))
+          : setTokenBal(balance);
       } else {
         const accountQueryBalances = queriesStore
           .get(current.chainId)

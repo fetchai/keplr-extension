@@ -68,7 +68,7 @@ export const SendToken: React.FC<SendTokenProps> = ({
       };
       await api.sendToken(requestOptions);
       setIsTrsnxInProgress(false);
-      navigate("/axl-bridge");
+      navigate("/axl-bridge-cosmos");
       notification.push({
         placement: "top-center",
         type: "success",
@@ -91,7 +91,7 @@ export const SendToken: React.FC<SendTokenProps> = ({
           duration: 0.25,
         },
       });
-      navigate("/axl-bridge");
+      navigate("/axl-bridge-cosmos");
     }
   };
 

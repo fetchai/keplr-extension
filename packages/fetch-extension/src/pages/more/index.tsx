@@ -10,8 +10,13 @@ import { useStore } from "../../stores";
 import { IBCTransferView } from "../main/ibc-transfer";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
+
+import { AXLView } from "@components/axl-view";
+
 export const MorePage: FunctionComponent = () => {
   const { chainStore } = useStore();
+  const AxlBrdigeDisabledChainIds = ["axelar-testnet-lisbon-3"];
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -37,6 +42,14 @@ export const MorePage: FunctionComponent = () => {
         <Card className={classnames(style["card"], "shadow")}>
           <CardBody>
             <FNSView />
+          </CardBody>
+        </Card>
+      )}
+
+      {!AxlBrdigeDisabledChainIds.includes(chainStore.current.chainId) && (
+        <Card className={classnames(style["card"], "shadow")}>
+          <CardBody>
+            <AXLView />
           </CardBody>
         </Card>
       )}

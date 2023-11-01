@@ -184,7 +184,7 @@ export const AxelarBridgeEVM = observer(() => {
       alternativeTitle={"Axelar Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
-        navigate("/");
+        navigate("/more");
       }}
     >
       {isFetchingAddress && (

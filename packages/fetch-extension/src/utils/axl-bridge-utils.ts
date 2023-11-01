@@ -26,3 +26,18 @@ export const extractNumberFromBalance = (balanceString: string) => {
     return 0;
   }
 };
+
+export const formatEthBalance = (balanceString: string) => {
+  const stringWithoutWei = balanceString.replace(/-wei/g, "");
+  const regex = /([\d,]+)\s?([a-zA-Z]+)\s?\((.*?)\)/;
+  const match = stringWithoutWei.match(regex);
+  if (match) {
+    const amount = parseFloat(match[1].replace(/,/g, ""));
+    const denom = match[2];
+    const additionalInfo = match[3];
+    const ethAmount = (amount / 10 ** 18).toFixed(2);
+    return `${ethAmount} ${denom.toUpperCase()} (${additionalInfo})`;
+  } else {
+    return "NaN";
+  }
+};
