@@ -1,20 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import {
-  AxelarAssetTransfer,
-  AxelarQueryAPI,
-  LoadAssetConfig,
-  loadChains,
-} from "@axelar-network/axelarjs-sdk";
+import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { Input } from "@components/form";
 import { HeaderLayout } from "@layouts/header-layout";
-import {
-  extractNumberFromBalance,
-  getEnvironment,
-} from "@utils/axl-bridge-utils";
+import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { CHAIN_ID_DORADO } from "../../../config.ui.var";
 import { useStore } from "../../../stores";
 import { ChainSelect } from "../chain-select";
 import { GasAndDetails } from "../gas-and-details";
@@ -24,22 +15,20 @@ import { TokenBalances } from "../token-balances";
 import { TokenSelect } from "../token-select";
 import { GetDepositAddress } from "./get-deposit-address";
 import { SendToken } from "./send-token";
+import { CHAINS } from "../../../config.axl-brdige.var";
 
 export const AxelarBridgeCosmos = observer(() => {
   // to chain list
-  const [transferChain, setTransferChain] = useState<any>();
-  const [chains, setChains] = useState<any[]>([]);
   const [recieverChain, setRecieverChain] = useState<any>();
 
   const [transferTokens, setTransferTokens] = useState<any[]>([]);
   const [transferToken, setTransferToken] = useState<any>();
 
   const [toToken, setToToken] = useState<any>();
-
+  const [isInactiveChain, setIsInactiveChain] = useState<boolean>(false);
   const [recipientAddress, setRecipientAddress] = useState("");
   const [amount, setAmount] = useState<any>();
   const [amountError, setAmountError] = useState<any>();
-  const [estimatedWaitTime, setEstimatedWaitTime] = useState<number>(0);
 
   const [tokenBal, setTokenBal] = useState<any>("");
 
@@ -50,21 +39,11 @@ export const AxelarBridgeCosmos = observer(() => {
 
   const { chainStore } = useStore();
   const current = chainStore.current;
-  const currentChainName =
-    current.chainId == CHAIN_ID_DORADO
-      ? "fetch"
-      : current.chainName.toLowerCase().replace(" ", "");
+  const transferChain = CHAINS.find(
+    (chain: any) => chain.chainId == current.chainId
+  );
 
   const navigate = useNavigate();
-
-  const env = getEnvironment(current.chainName.toLowerCase());
-
-  const axelarQuery = new AxelarQueryAPI({
-    environment: env,
-  });
-  const api = new AxelarAssetTransfer({
-    environment: env,
-  });
 
   const handleAmountChange = (event: any) => {
     const amount = parseFloat(event.target.value);
@@ -84,47 +63,41 @@ export const AxelarBridgeCosmos = observer(() => {
 
   useEffect(() => {
     const init = async () => {
-      const config: LoadAssetConfig = {
-        environment: env,
-      };
       setIsChainsLoaded(false);
       try {
-        const chains = await loadChains(config);
+        if (transferChain) {
+          setTransferTokens(transferChain.assets);
 
-        const currentChain = chains.find((chain: any) =>
-          currentChainName.includes(chain.chainName.toLowerCase())
-        );
-        console.log("chains", chains);
-        console.log("currentChain", currentChain);
-        if (currentChain) {
-          setTransferChain(currentChain);
-          setTransferTokens(currentChain.assets);
-          setChains(chains);
-          setIsChainsLoaded(true);
-          setEstimatedWaitTime(currentChain.estimatedWaitTime);
-        } else {
-          console.log("Chain not found in Axelar", currentChainName);
+          const queryApi = new AxelarQueryAPI({
+            environment: transferChain.environment,
+          });
+          const activeChains = await queryApi.getActiveChains();
+          const isActiveChain = activeChains.find(
+            (activeChain) =>
+              activeChain.toLowerCase() == transferChain.id.toLowerCase()
+          );
+          if (!isActiveChain) {
+            setIsInactiveChain(true);
+            return;
+          }
         }
+        console.log("chains", CHAINS);
+        console.log("transferChain", transferChain);
       } catch (error) {
         console.error("Error loading assets:", error);
+      } finally {
+        setIsChainsLoaded(true);
       }
     };
     init();
-  }, [currentChainName, env]);
+  }, [transferChain]);
   useEffect(() => {
-    const queryToToken = async (transferToken: any, selectedChain: any) => {
-      try {
-        const toToken: any = await axelarQuery.getAssetConfigFromDenom(
-          transferToken.common_key,
-          selectedChain.id
-        );
-        setToToken(toToken || transferToken);
-      } catch (error) {
-        setToToken(transferToken);
-      }
-    };
-    if (transferToken && recieverChain)
-      queryToToken(transferToken, recieverChain);
+    if (transferToken && recieverChain) {
+      const toToken: any = recieverChain?.assets.find(
+        (asset: any) => asset.common_key === transferToken.common_key
+      );
+      setToToken(toToken);
+    }
   }, [transferToken, recieverChain]);
 
   return (
@@ -142,6 +115,11 @@ export const AxelarBridgeCosmos = observer(() => {
           <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}
+      {isInactiveChain && (
+        <div className={style["loader"]}>
+          Axelar Bridge not active for {current.chainName}
+        </div>
+      )}
       <div className={style["chain-container"]}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div className={style["label"]}>Current Chain</div>
@@ -152,7 +130,13 @@ export const AxelarBridgeCosmos = observer(() => {
           />
         </div>
         <ChainSelect
-          chains={chains}
+          chains={
+            transferChain
+              ? CHAINS.filter(
+                  (chain) => chain.environment == transferChain.environment
+                )
+              : []
+          }
           recieverChain={recieverChain}
           setRecieverChain={setRecieverChain}
           isChainsLoaded={isChainsLoaded}
@@ -165,7 +149,7 @@ export const AxelarBridgeCosmos = observer(() => {
         recipientAddress={recipientAddress}
         setRecipientAddress={setRecipientAddress}
         isDisabled={!recieverChain || depositAddress}
-        env={env}
+        env={transferChain?.environment}
       />
       <div
         style={{
@@ -216,7 +200,7 @@ export const AxelarBridgeCosmos = observer(() => {
           recieverChain={recieverChain}
           transferToken={transferToken}
           depositAddress={depositAddress}
-          estimatedWaitTime={estimatedWaitTime}
+          estimatedWaitTime={transferChain?.estimatedWaitTime}
         />
       )}
 
@@ -238,7 +222,6 @@ export const AxelarBridgeCosmos = observer(() => {
           setIsFetchingAddress={setIsFetchingAddress}
           transferToken={transferToken}
           amountError={amountError}
-          api={api}
         />
       )}
     </HeaderLayout>

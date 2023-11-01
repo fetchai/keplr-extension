@@ -12,7 +12,7 @@ interface GasAndDetailsProps {
   recieverChain: any;
   transferToken: any;
   depositAddress: any;
-  estimatedWaitTime: number;
+  estimatedWaitTime: number | undefined;
 }
 
 export const GasAndDetails: React.FC<GasAndDetailsProps> = ({

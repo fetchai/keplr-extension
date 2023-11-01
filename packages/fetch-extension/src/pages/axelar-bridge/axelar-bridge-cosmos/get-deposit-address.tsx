@@ -3,6 +3,7 @@ import { useNotification } from "@components/notification";
 import React from "react";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
+import { AxelarAssetTransfer } from "@axelar-network/axelarjs-sdk";
 
 interface GetDepositAddressProps {
   setDepositAddress: any;
@@ -12,7 +13,6 @@ interface GetDepositAddressProps {
   setIsFetchingAddress: any;
   transferToken: any;
   amountError: string;
-  api: any;
 }
 
 export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
@@ -22,18 +22,21 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
   recipentAddress,
   setIsFetchingAddress,
   transferToken,
-  api,
+
   amountError,
 }) => {
   const { accountStore, chainStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const notification = useNotification();
+  const assetsApi = new AxelarAssetTransfer({
+    environment: fromChain.environment,
+  });
 
   const getDepositAddress = async () => {
     try {
       setIsFetchingAddress(true);
-      const address = await api.getDepositAddress({
+      const address = await assetsApi.getDepositAddress({
         fromChain: fromChain.id,
         toChain: toChain.id,
         destinationAddress: recipentAddress,
