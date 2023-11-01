@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { TooltipForDomainNames } from "../fetch-name-service/domain-details";
 import style from "./style.module.scss";
+import { formatAmount } from "@utils/format";
 
 interface GasAndDetailsProps {
   transferChain: any;
@@ -151,7 +152,9 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
             <i className="fas fa-spinner fa-spin ml-2" />
           </div>
         ) : (
-          <div>{maxTrsnferAmt ? maxTrsnferAmt : "Not Available"}</div>
+          <div>
+            {maxTrsnferAmt ? formatAmount(maxTrsnferAmt) : "Not Available"}
+          </div>
         )}
       </div>
       {depositAddress ? (
