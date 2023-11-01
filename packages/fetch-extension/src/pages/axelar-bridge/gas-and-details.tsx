@@ -1,12 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { useNotification } from "@components/notification";
-import { getEnvironment } from "@utils/axl-bridge-utils";
+import { formatAmount } from "@utils/format";
 import React, { useCallback, useEffect, useState } from "react";
-import { useStore } from "../../stores";
 import { TooltipForDomainNames } from "../fetch-name-service/domain-details";
 import style from "./style.module.scss";
-import { formatAmount } from "@utils/format";
 
 interface GasAndDetailsProps {
   transferChain: any;
@@ -23,15 +21,13 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
   depositAddress,
   estimatedWaitTime,
 }) => {
-  const { chainStore } = useStore();
-  const current = chainStore.current;
   const notification = useNotification();
   const [relayerFree, setRelayerFee] = useState<string>("");
   const [maxTrsnferAmt, setMaxTrsnferAmt] = useState("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const axelarQuery = new AxelarQueryAPI({
-    environment: getEnvironment(current.chainName.toLowerCase()),
+    environment: transferChain.environment,
   });
 
   const copyAddress = useCallback(

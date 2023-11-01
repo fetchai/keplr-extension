@@ -5,7 +5,6 @@ import {
 } from "@axelar-network/axelarjs-sdk";
 import { useNotification } from "@components/notification";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { getEnvironment } from "@utils/axl-bridge-utils";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
@@ -24,7 +23,6 @@ interface SendTokenProps {
 export const SendToken: React.FC<SendTokenProps> = ({
   transferChain,
   recieverChain,
-  // destinationAddress,
   depositAddress,
   amount,
   transferToken,
@@ -36,7 +34,7 @@ export const SendToken: React.FC<SendTokenProps> = ({
   const [isTrsnxInProgress, setIsTrsnxInProgress] = useState<boolean>(false);
 
   const api = new AxelarAssetTransfer({
-    environment: getEnvironment(current.chainName.toLowerCase()),
+    environment: transferChain.environment,
   });
 
   const handleSendToken = async () => {
