@@ -7,34 +7,92 @@ import success from "@assets/icon/success.png";
 import cancel from "@assets/icon/cancel.png";
 import contractIcon from "@assets/icon/contract-grey.png";
 import { ITxn } from "@keplr-wallet/stores";
+import { Button } from "reactstrap";
+import { useNavigate } from "react-router";
+import { useIntl } from "react-intl";
 
 const TransactionItem: FunctionComponent<{
   transactionInfo: ITxn;
 }> = ({ transactionInfo }) => {
-  const { chainStore } = useStore();
+  const { chainStore, accountStore } = useStore();
+  const navigate = useNavigate();
+  const intl = useIntl();
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+
   const getStatusIcon = (status: string): string => {
     switch (status) {
       case "success":
         return success;
       case "pending":
         return pendingIcon;
+      case "cancelled":
+        return cancel;
       default:
         return cancel;
     }
   };
 
-  const getActivityIcon = (type: string): string => {
+  const getActivityIcon = (type: string | undefined): string => {
     switch (type) {
       case "Send":
         return sendIcon;
       case "ContractInteraction":
         return contractIcon;
       default:
-        return contractIcon;
+        return sendIcon;
     }
   };
 
-  const displayActivity = (status: string, amount: string) => {
+  const handleCancel = async () => {
+    await accountInfo.ethereum.cancelTransactionAndBroadcast(transactionInfo);
+    navigate(-1);
+  };
+
+  const handleSpeedUp = async () => {
+    await accountInfo.ethereum.speedUpTransactionAndBroadcast(transactionInfo);
+    navigate(-1);
+  };
+
+  const displaySpeedupCancelButtons = () => {
+    if (transactionInfo.status === "pending") {
+      return (
+        <div className={style["activityRow"]}>
+          <div className={style["activityCol"]} style={{ width: "50%" }}>
+            <Button
+              size="sm"
+              style={{ width: "100%" }}
+              onClick={handleCancel}
+              color="danger"
+            >
+              {intl.formatMessage({
+                id: "send.button.cancel",
+              })}
+            </Button>
+          </div>
+          <div
+            className={style["activityCol"]}
+            style={{
+              width: "50%",
+              visibility: transactionInfo.isSpeedUp ? "hidden" : "visible",
+            }}
+          >
+            <Button
+              size="sm"
+              style={{ width: "100%" }}
+              onClick={handleSpeedUp}
+              color="success"
+            >
+              {intl.formatMessage({
+                id: "send.button.speedup",
+              })}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  const displayActivity = (status: string, amount: string | undefined) => {
     return (
       <div className={style["activityRow"]}>
         <div className={style["activityCol"]} style={{ width: "15%" }}>
@@ -59,16 +117,24 @@ const TransactionItem: FunctionComponent<{
     );
   };
 
-  return chainStore.current.explorerUrl ? (
-    <a
-      href={chainStore.current.explorerUrl + "/tx/" + transactionInfo.hash}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {displayActivity(transactionInfo.status, transactionInfo.amount)}
-    </a>
+  return chainStore.current.explorerUrl &&
+    transactionInfo.status !== "cancelled" &&
+    transactionInfo.status !== "failed" ? (
+    <div>
+      <a
+        href={chainStore.current.explorerUrl + "/tx/" + transactionInfo.hash}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {displayActivity(transactionInfo.status, transactionInfo.amount)}
+      </a>
+      {displaySpeedupCancelButtons()}
+    </div>
   ) : (
-    displayActivity(transactionInfo.status, transactionInfo.amount)
+    <div>
+      {displayActivity(transactionInfo.status, transactionInfo.amount)}
+      {displaySpeedupCancelButtons()}
+    </div>
   );
 };
 

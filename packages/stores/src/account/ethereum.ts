@@ -28,7 +28,6 @@ import {
 import { isAddress } from "@ethersproject/address";
 import { KVStore } from "@keplr-wallet/common";
 import { BigNumber } from "@ethersproject/bignumber";
-
 export interface EthereumAccount {
   ethereum: EthereumAccountImpl;
 }
@@ -110,16 +109,15 @@ export class EthereumAccountImpl {
         },
         {
           onBroadcasted: async (txHash) => {
-            console.log("Broadcasted", txHash);
-            await this.storeTransactionHash(
+            await this.updateStoredTransactionInfo(
+              Buffer.from(txHash).toString(),
               {
                 hash: Buffer.from(txHash).toString(),
                 status: "pending",
                 amount: amount,
                 type: "Send",
                 symbol: currency.coinDenom,
-              },
-              this.kvStore
+              }
             );
           },
         }
@@ -136,15 +134,15 @@ export class EthereumAccountImpl {
         },
         {
           onBroadcasted: async (txHash) => {
-            await this.storeTransactionHash(
+            await this.updateStoredTransactionInfo(
+              Buffer.from(txHash).toString(),
               {
                 hash: Buffer.from(txHash).toString(),
                 status: "pending",
                 amount: amount,
                 type: "Send",
                 symbol: currency.coinDenom,
-              },
-              this.kvStore
+              }
             );
           },
           onFulfill: (tx: TransactionReceipt) => {
@@ -255,9 +253,17 @@ export class EthereumAccountImpl {
   ) {
     this.base.setTxTypeInProgress(type);
 
-    let txHash: string;
+    let txHash: string, rawTxData: TransactionRequest;
     try {
-      txHash = await this.broadcastTx(params, fee);
+      ({ txHash, rawTxData } = await this.broadcastTx(params, fee));
+      await this.storeTransactionHash(
+        {
+          hash: Buffer.from(txHash).toString(),
+          status: "pending",
+          rawTxData: rawTxData,
+        },
+        this.kvStore
+      );
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
 
@@ -345,7 +351,7 @@ export class EthereumAccountImpl {
     }
   }
 
-  // Store transaction hash in an array
+  // Store transaction hash in kvStore
   async storeTransactionHash(transactionInfo: ITxn, kvStore: KVStore) {
     try {
       const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
@@ -363,7 +369,9 @@ export class EthereumAccountImpl {
 
   async updateTransactionStatus(
     hash: string,
-    status: "pending" | "success" | "failed"
+    status: "pending" | "success" | "failed" | "cancelled"
+    // newHash?: string,
+    // newTxData?: TransactionRequest
   ) {
     try {
       const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
@@ -372,9 +380,38 @@ export class EthereumAccountImpl {
         return;
       }
 
+      let updatedTxList: ITxn[] = [];
       // Find and update the transaction status by hash
+      if (status === "failed") {
+        // if Txn is failed remove hash
+        updatedTxList = txList.filter((txn) => txn.hash !== hash);
+      } else {
+        updatedTxList = txList.map((txn) =>
+          txn.hash === hash ? { ...txn, status } : txn
+        );
+      }
+
+      if (updatedTxList.length !== 0) {
+        await this.kvStore.set(this.base.ethereumHexAddress, updatedTxList);
+      }
+
+      await this.kvStore.set(key, updatedTxList);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  async updateStoredTransactionInfo(hash: string, txnData: ITxn) {
+    try {
+      const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
+      const txList: ITxn[] | undefined = await this.kvStore.get(key);
+      if (txList === undefined || !txList.find((txn) => txn.hash === hash)) {
+        return;
+      }
+
+      // Find and update the transaction data by hash
       const updatedTxList = txList.map((txn) =>
-        txn.hash === hash ? { ...txn, status } : txn
+        txn.hash === hash ? { ...txn, ...txnData } : txn
       );
 
       await this.kvStore.set(key, updatedTxList);
@@ -383,7 +420,10 @@ export class EthereumAccountImpl {
     }
   }
 
-  async broadcastTx(params: TransactionRequest, fee: StdFee): Promise<string> {
+  async broadcastTx(
+    params: TransactionRequest,
+    fee: StdFee
+  ): Promise<{ txHash: string; rawTxData: TransactionRequest }> {
     if (this.base.walletStatus !== WalletStatus.Loaded) {
       throw new Error(`Wallet is not loaded: ${this.base.walletStatus}`);
     }
@@ -400,11 +440,10 @@ export class EthereumAccountImpl {
     }
 
     const nonce = parseInt(txCountResult.data.result, 16);
-    const encoder = new TextEncoder();
     const gasPrice = BigNumber.from(fee.amount[0].amount)
       .div(BigNumber.from(fee.gas))
       .toNumber();
-    const rawTxData = {
+    const rawTxData: TransactionRequest = {
       ...params,
       chainId: parseInt(this.chainId),
       nonce,
@@ -419,29 +458,9 @@ export class EthereumAccountImpl {
       rawTxData["gasPrice"] = gasPrice;
     }
 
-    const rawTxn = encoder.encode(JSON.stringify(rawTxData));
+    const txHash = await this.signAndSendEthereumTxn(rawTxData);
 
-    const keplr = (await this.base.getKeplr())!;
-
-    const signResponse = await keplr.signEthereum(
-      this.chainId,
-      this.base.bech32Address,
-      rawTxn,
-      EthSignType.TRANSACTION
-    );
-
-    const result = await this.instance.post("", {
-      jsonrpc: "2.0",
-      id: "1",
-      method: "eth_sendRawTransaction",
-      params: [`0x${Buffer.from(signResponse).toString("hex")}`],
-    });
-
-    if (!(result.data && result.data.result)) {
-      throw new Error("Issue sending transaction");
-    }
-
-    return result.data.result as string;
+    return { txHash: txHash as string, rawTxData };
   }
 
   async getTxList() {
@@ -477,15 +496,15 @@ export class EthereumAccountImpl {
       },
       {
         onBroadcasted: async (txHash) => {
-          await this.storeTransactionHash(
+          await this.updateStoredTransactionInfo(
+            Buffer.from(txHash).toString(),
             {
               hash: Buffer.from(txHash).toString(),
               status: "pending",
               amount: amount,
               type: "Approve",
               symbol: currency.coinDenom,
-            },
-            this.kvStore
+            }
           );
         },
         onFulfill: (tx: TransactionReceipt) => {
@@ -525,15 +544,15 @@ export class EthereumAccountImpl {
       },
       {
         onBroadcasted: async (txHash) => {
-          await this.storeTransactionHash(
+          await this.updateStoredTransactionInfo(
+            Buffer.from(txHash).toString(),
             {
               hash: Buffer.from(txHash).toString(),
               status: "pending",
               amount: amount,
               type: "Bridge",
               symbol: "ETH",
-            },
-            this.kvStore
+            }
           );
         },
         onFulfill: (tx: TransactionReceipt) => {
@@ -552,6 +571,115 @@ export class EthereumAccountImpl {
         },
       }
     );
+  }
+
+  async cancelTransactionAndBroadcast(pendingTxnInfo: ITxn) {
+    try {
+      const pendingTx = pendingTxnInfo;
+
+      // Create a new transaction with the same nonce and the rest of the details
+      const newTx: TransactionRequest = {
+        to: this.base.ethereumHexAddress,
+        gasLimit: pendingTx.rawTxData?.gasLimit,
+        nonce: pendingTx.rawTxData?.nonce,
+      };
+
+      // update gas of new transaction (current * 1.5)
+      if (
+        pendingTx.rawTxData &&
+        pendingTx.rawTxData.maxFeePerGas &&
+        pendingTx.rawTxData.type === 2
+      ) {
+        newTx["maxFeePerGas"] = BigNumber.from(pendingTx.rawTxData.maxFeePerGas)
+          .mul(BigNumber.from(150))
+          .div(BigNumber.from(100))
+          .toNumber();
+        newTx["data"] = "";
+      } else if (pendingTx.rawTxData?.gasPrice) {
+        newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
+          .mul(BigNumber.from(150))
+          .div(BigNumber.from(100))
+          .toNumber();
+        newTx["value"] = 0;
+      }
+
+      // Sign and send the new transaction
+      const resultString = await this.signAndSendEthereumTxn(newTx);
+      await this.updateTransactionStatus(pendingTx.hash, "cancelled");
+      return resultString;
+    } catch (error) {
+      console.error("Error cancelling transaction:", error);
+    }
+  }
+
+  async speedUpTransactionAndBroadcast(pendingTxnInfo: ITxn) {
+    try {
+      const pendingTx = pendingTxnInfo;
+      if (!pendingTx) {
+        console.log("Transaction not found or already confirmed.");
+        return;
+      }
+
+      // Create a new transaction with the same details
+      const newTx: TransactionRequest = {
+        ...pendingTx.rawTxData,
+      };
+
+      // update gas of new transaction (current * 1.5)
+      if (
+        pendingTx.rawTxData &&
+        pendingTx.rawTxData.maxFeePerGas &&
+        pendingTx.rawTxData.type === 2
+      ) {
+        newTx["maxFeePerGas"] = BigNumber.from(pendingTx.rawTxData.maxFeePerGas)
+          .mul(BigNumber.from(150))
+          .div(BigNumber.from(100))
+          .toNumber();
+      } else if (pendingTx.rawTxData?.gasPrice) {
+        newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
+          .mul(BigNumber.from(150))
+          .div(BigNumber.from(100))
+          .toNumber();
+      }
+
+      const resultString = await this.signAndSendEthereumTxn(newTx);
+
+      await this.updateStoredTransactionInfo(pendingTx.hash, {
+        ...pendingTx,
+        hash: resultString,
+        rawTxData: newTx,
+        isSpeedUp: true,
+      });
+
+      return resultString;
+    } catch (error) {
+      console.error("Error speeding up transaction:", error);
+    }
+  }
+
+  async signAndSendEthereumTxn(txData: any) {
+    const encoder = new TextEncoder();
+    const rawTxn = encoder.encode(JSON.stringify(txData));
+    const keplr = (await this.base.getKeplr())!;
+    const signResponse = await keplr.signEthereum(
+      this.chainId,
+      this.base.bech32Address,
+      rawTxn,
+      EthSignType.TRANSACTION
+    );
+
+    const result = await this.instance.post("", {
+      jsonrpc: "2.0",
+      id: "1",
+      method: "eth_sendRawTransaction",
+      params: [`0x${Buffer.from(signResponse).toString("hex")}`],
+    });
+
+    if (!(result.data && result.data.result)) {
+      throw new Error("Issue sending transaction");
+    }
+
+    return result.data.result as string;
   }
 
   protected get queries(): DeepReadonly<QueriesSetBase & EvmQueries> {
