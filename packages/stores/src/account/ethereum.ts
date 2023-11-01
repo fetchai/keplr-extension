@@ -440,22 +440,32 @@ export class EthereumAccountImpl {
     }
 
     const nonce = parseInt(txCountResult.data.result, 16);
-    const gasPrice = BigNumber.from(fee.amount[0].amount)
-      .div(BigNumber.from(fee.gas))
-      .toNumber();
-    const rawTxData: TransactionRequest = {
+    const gasPrice = BigNumber.from(fee.amount[0].amount).div(
+      BigNumber.from(fee.gas)
+    );
+    const rawTxData = {
       ...params,
       chainId: parseInt(this.chainId),
       nonce,
       gasLimit: parseInt(fee.gas),
     };
 
-    // EIP1995 support only for ethereum
+    // EIP1995 support only for ethereum as of now
     if (this.chainId === "1") {
+      const baseFee = this.queries.evm.queryEthGasFees.base;
+
+      if (!baseFee) {
+        throw new Error("Error estimating gas, try later");
+      }
+      const priorityFee = new Dec(gasPrice.toString())
+        .sub(new Dec(baseFee).mul(new Dec("1000000000")))
+        .roundUp()
+        .toString();
       rawTxData["type"] = 2;
       rawTxData["maxFeePerGas"] = gasPrice;
+      rawTxData["maxPriorityFeePerGas"] = priorityFee;
     } else {
-      rawTxData["gasPrice"] = gasPrice;
+      rawTxData["gasPrice"] = gasPrice.toNumber();
     }
 
     const txHash = await this.signAndSendEthereumTxn(rawTxData);

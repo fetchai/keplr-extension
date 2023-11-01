@@ -23,25 +23,28 @@ export const ActivityPage: FunctionComponent = observer(() => {
   };
 
   const tabs = () => {
-    <React.Fragment>
-      <div
-        className={`${style["tab"]} ${
-          activeTab === "native" ? style["active"] : ""
-        }`}
-        onClick={() => handleTabClick("native")}
-      >
-        Transactions
-      </div>
-      <div
-        className={`${style["tab"]} ${
-          activeTab === "gov" ? style["active"] : ""
-        }`}
-        onClick={() => handleTabClick("gov")}
-      >
-        Gov Proposals
-      </div>
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        <div
+          className={`${style["tab"]} ${
+            activeTab === "native" ? style["active"] : ""
+          }`}
+          onClick={() => handleTabClick("native")}
+        >
+          Transactions
+        </div>
+        <div
+          className={`${style["tab"]} ${
+            activeTab === "gov" ? style["active"] : ""
+          }`}
+          onClick={() => handleTabClick("gov")}
+        >
+          Gov Proposals
+        </div>
+      </React.Fragment>
+    );
   };
+
   return (
     <HeaderLayout
       showChainName={true}
@@ -63,7 +66,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
             />
           )}
         </div>
-        <div className={isEvm ? style["tabContainer"] : ""}>{tabs()}</div>
+        {!isEvm && <div className={style["tabContainer"]}>{tabs()}</div>}
         {activeTab === "native" && <NativeTab latestBlock={latestBlock} />}
         {activeTab === "gov" && <GovProposalsTab latestBlock={latestBlock} />}
         {activeTab === "eth" && <NativeEthTab />}
