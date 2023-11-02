@@ -89,7 +89,7 @@ export const AxelarBridgeEVM = observer(() => {
   const [transferToken, setTransferToken] = useState<any>();
   const [recipientAddress, setRecipientAddress] = useState("");
   const [relayerFee, setRelayerFee] = useState<string>("");
-
+  const [minDepositAmount, setMinDepositAmount] = useState<number>();
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
   const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
@@ -119,6 +119,18 @@ export const AxelarBridgeEVM = observer(() => {
       setTokenBal(null);
     }
   }, [transferToken]);
+
+  useEffect(() => {
+    if (transferToken) {
+      const minDepositAmt = extractNumberFromBalance(
+        transferToken.minDepositAmt.toString()
+      );
+      const relayerFeeAmt = extractNumberFromBalance(relayerFee);
+      const minAmount =
+        minDepositAmt > relayerFeeAmt ? minDepositAmt : relayerFeeAmt;
+      setMinDepositAmount(minAmount);
+    }
+  }, [relayerFee, transferToken]);
 
   useEffect(() => {
     if (transferToken && recieverChain) {
@@ -171,11 +183,13 @@ export const AxelarBridgeEVM = observer(() => {
   };
 
   const handleAmountChange = (event: any) => {
+    const minDepositAmt = extractNumberFromBalance(
+      transferToken.minDepositAmt.toString()
+    );
+    const relayerFeeAmt = extractNumberFromBalance(relayerFee);
     const minAmount =
-      extractNumberFromBalance(transferToken.minDepositAmt.toString()) >
-      extractNumberFromBalance(relayerFee.toString())
-        ? extractNumberFromBalance(transferToken.minDepositAmt)
-        : extractNumberFromBalance(relayerFee);
+      minDepositAmt > relayerFeeAmt ? minDepositAmt : relayerFeeAmt;
+    setMinDepositAmount(minAmount);
     configs.amountConfig.setAmount(event.target.value);
     const value = parseFloat(event.target.value);
     if (value < minAmount) {
@@ -270,8 +284,7 @@ export const AxelarBridgeEVM = observer(() => {
           style={{ float: "right", fontSize: "small" }}
           className={style["label"]}
         >
-          Min Amount :
-          {`${transferToken.minDepositAmt} ${transferToken.assetSymbol}`}
+          Min Amount :{`${minDepositAmount} ${transferToken.assetSymbol}`}
           <div>Balance : {tokenBal ? shortenBalance(tokenBal) : "0.0"}</div>
         </div>
       )}
