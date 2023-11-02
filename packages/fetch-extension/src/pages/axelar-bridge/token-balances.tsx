@@ -20,7 +20,8 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
       .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
     useEffect(() => {
-      const queryBalances = query.balances;
+      const { balances, nonNativeBalances } = query;
+      const queryBalances = balances.concat(nonNativeBalances);
       console.log(queryBalances);
       const queryBalance = queryBalances.find(
         (bal) =>
@@ -35,27 +36,9 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
         balance.includes("-wei")
           ? setTokenBal(formatEthBalance(balance))
           : setTokenBal(balance);
-      } else {
-        const accountQueryBalances = queriesStore
-          .get(current.chainId)
-          .queryBalances.getQueryBech32Address(
-            accountInfo.bech32Address
-          ).nonNativeBalances;
-        const queryBalance = accountQueryBalances.find(
-          (bal) =>
-            fromToken.assetSymbol == bal.currency.coinDenom ||
-            fromToken.ibcDenom == bal.currency.coinMinimalDenom
-        );
-        setTokenBal(queryBalance?.balance.trim(true).maxDecimals(6).toString());
       }
-    }, [
-      fromToken,
-      current.chainId,
-      query.balances,
-      setTokenBal,
-      queriesStore,
-      accountInfo.bech32Address,
-    ]);
+    }, [query, fromToken, setTokenBal]);
+
     return (
       <div
         style={{ float: "right", fontSize: "small" }}
