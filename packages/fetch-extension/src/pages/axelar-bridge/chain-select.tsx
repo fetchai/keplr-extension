@@ -7,7 +7,8 @@ import {
 } from "reactstrap";
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
-
+import { useStore } from "../../stores";
+import { formatTokenName } from "@utils/format";
 interface ChainSelectProps {
   chains: any[];
   recieverChain: any;
@@ -25,6 +26,7 @@ export const ChainSelect = observer(
     depositAddress,
   }: ChainSelectProps) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const { chainStore } = useStore();
     const handleChainSelect = async (chain: string) => {
       setRecieverChain(chain);
       setDropdownOpen(!dropdownOpen);
@@ -52,20 +54,24 @@ export const ChainSelect = observer(
                 loading <i className="fas fa-spinner fa-spin ml-2" />
               </React.Fragment>
             ) : recieverChain ? (
-              recieverChain.id
+              formatTokenName(recieverChain.chainName)
             ) : (
               "Select network"
             )}
           </DropdownToggle>
           <DropdownMenu style={{ maxHeight: "200px", overflow: "auto" }}>
-            {chains.map((chain: any) => (
-              <DropdownItem
-                key={chain.id}
-                onClick={() => handleChainSelect(chain)}
-              >
-                {chain.id}
-              </DropdownItem>
-            ))}
+            {chains.map(
+              (chain: any) =>
+                chain.chainId &&
+                chainStore.current.chainId !== chain.chainId?.toString() && (
+                  <DropdownItem
+                    key={chain.chainId}
+                    onClick={() => handleChainSelect(chain)}
+                  >
+                    {chain.chainName}
+                  </DropdownItem>
+                )
+            )}
           </DropdownMenu>
         </ButtonDropdown>
       </div>

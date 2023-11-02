@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.scss";
-import { formatEthBalance } from "@utils/axl-bridge-utils";
+import { formatEthBalance, shortenBalance } from "@utils/axl-bridge-utils";
 
 interface BalanceProps {
   fromToken: any;
@@ -38,14 +38,14 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
           : setTokenBal(balance);
       }
     }, [query, fromToken, setTokenBal]);
-
+    console.log("tokenBal", tokenBal);
     return (
       <div
         style={{ float: "right", fontSize: "small" }}
         className={style["label"]}
       >
         Min Amount :{`${fromToken.minDepositAmt} ${fromToken.assetSymbol}`}
-        <div>Token Bal : {tokenBal ? tokenBal : "0.0"}</div>
+        <div>Token Bal : {tokenBal ? shortenBalance(tokenBal) : "0.0"}</div>
       </div>
     );
   }

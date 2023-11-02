@@ -17416,7 +17416,7 @@ export const CHAINS = [
   {
     id: "acre",
     chainSymbol: "Acrechain",
-    chainName: "Acrechain",
+    chainName: "Core Blockchain Testnet",
     chainId: 1115,
     gasToken: "",
     nativeAsset: [],
@@ -17620,7 +17620,7 @@ export const CHAINS = [
   {
     id: "aura",
     chainSymbol: "Aura",
-    chainName: "Aura",
+    chainName: "Aura Serentiny Testnet",
     chainId: "serenity-testnet-001",
     gasToken: "",
     nativeAsset: [],
@@ -17826,7 +17826,7 @@ export const CHAINS = [
   {
     id: "avalanche",
     chainSymbol: "Avalanche",
-    chainName: "Avalanche",
+    chainName: "Avalanche Fuji Testnet",
     chainId: 43113,
     gasToken: "avax",
     nativeAsset: ["wavax-wei"],
@@ -18023,8 +18023,8 @@ export const CHAINS = [
   {
     id: "axelarnet",
     chainSymbol: "Axelar",
-    chainName: "Axelar",
-    chainId: "axelar-testnet-lisbon-3.",
+    chainName: "Axelar Testnet",
+    chainId: "axelar-testnet-lisbon-3",
     gasToken: "",
     nativeAsset: ["uaxl"],
     estimatedWaitTime: 1,
@@ -18252,7 +18252,7 @@ export const CHAINS = [
   {
     id: "base",
     chainSymbol: "Base",
-    chainName: "Base",
+    chainName: "Base Goerli Testnet",
     chainId: 84531,
     gasToken: "",
     nativeAsset: [],
@@ -18449,7 +18449,7 @@ export const CHAINS = [
   {
     id: "binance",
     chainSymbol: "Binance",
-    chainName: "Binance",
+    chainName: "BNB Smart Chain Testnet",
     chainId: 97,
     gasToken: "bnb",
     nativeAsset: ["wbnb-wei"],
@@ -18646,7 +18646,7 @@ export const CHAINS = [
   {
     id: "burnt-2",
     chainSymbol: "Burnt",
-    chainName: "Burnt",
+    chainName: "Xion Testnet",
     chainId: "xion-testnet-1",
     gasToken: "",
     nativeAsset: [],
@@ -18842,7 +18842,7 @@ export const CHAINS = [
   {
     id: "celestia",
     chainSymbol: "Celestia",
-    chainName: "Celestia",
+    chainName: "Mocha Testnet",
     chainId: "mocha-4",
     gasToken: "",
     nativeAsset: [],
@@ -19038,7 +19038,7 @@ export const CHAINS = [
   {
     id: "ethereum-2",
     chainSymbol: "Ethereum",
-    chainName: "Ethereum",
+    chainName: "Görli Testnet",
     chainId: 5,
     gasToken: "eth",
     nativeAsset: ["eth-wei"],
@@ -19248,7 +19248,7 @@ export const CHAINS = [
   {
     id: "evmos",
     chainSymbol: "Evmos",
-    chainName: "Evmos",
+    chainName: "Evmos Testnet",
     chainId: 9000,
     gasToken: "",
     nativeAsset: [],
@@ -19457,7 +19457,7 @@ export const CHAINS = [
   {
     id: "fantom",
     chainSymbol: "Fantom",
-    chainName: "Fantom",
+    chainName: "Fantom Testnet",
     chainId: 4002,
     gasToken: "ftm",
     nativeAsset: ["wftm-wei"],
@@ -19654,7 +19654,7 @@ export const CHAINS = [
   {
     id: "fetch",
     chainSymbol: "Fetch",
-    chainName: "Fetch",
+    chainName: "Dorado",
     chainId: "dorado-1",
 
     gasToken: "",
@@ -19851,7 +19851,7 @@ export const CHAINS = [
   {
     id: "filecoin-2",
     chainSymbol: "Filecoin",
-    chainName: "Filecoin",
+    chainName: "Filecoin - Hyperspace testnet",
     chainId: 3141,
     gasToken: "fil",
     nativeAsset: [],
@@ -20053,7 +20053,7 @@ export const CHAINS = [
     id: "haqq",
     chainSymbol: "Haqq",
     chainName: "Haqq",
-    chainId: "haqq_54211-3",
+    chainId: "Haqq TestEdge",
     gasToken: "",
     nativeAsset: [],
     estimatedWaitTime: 1,
@@ -20248,7 +20248,7 @@ export const CHAINS = [
   {
     id: "impacthub",
     chainSymbol: "IXO",
-    chainName: "IXO",
+    chainName: "Impacthub",
     chainId: "pandora-8",
     gasToken: "",
     nativeAsset: [],
@@ -20444,7 +20444,7 @@ export const CHAINS = [
   {
     id: "kujira",
     chainSymbol: "Kujira",
-    chainName: "Kujira",
+    chainName: "Kujira Testnet",
     chainId: "harpoon-4",
     gasToken: "",
     nativeAsset: [],
@@ -20646,7 +20646,7 @@ export const CHAINS = [
   {
     id: "linea",
     chainSymbol: "Linea",
-    chainName: "Linea",
+    chainName: "Linea Goerli Testnet",
     chainId: 59140,
     gasToken: "",
     nativeAsset: [],
@@ -20843,7 +20843,7 @@ export const CHAINS = [
   {
     id: "mantle",
     chainSymbol: "Mantle",
-    chainName: "Mantle",
+    chainName: "Mantle Testnet",
     chainId: 5001,
     gasToken: "",
     nativeAsset: [],
@@ -21040,7 +21040,7 @@ export const CHAINS = [
   {
     id: "moonbeam",
     chainSymbol: "Moonbeam",
-    chainName: "Moonbeam",
+    chainName: "Moonbase Alpha",
     chainId: 1287,
     gasToken: "dev",
     nativeAsset: ["wdev-wei"],
@@ -21237,7 +21237,7 @@ export const CHAINS = [
   {
     id: "neutron",
     chainSymbol: "Neutron",
-    chainName: "Neutron",
+    chainName: "Pion-1",
     chainId: "pion-1",
     gasToken: "",
     nativeAsset: [],
@@ -21459,7 +21459,7 @@ export const CHAINS = [
   {
     id: "odin",
     chainSymbol: "Odin",
-    chainName: "Odin",
+    chainName: "Heimdall Testnet",
     chainId: "odin-testnet-heimdall",
     gasToken: "",
     nativeAsset: [],
@@ -21661,7 +21661,7 @@ export const CHAINS = [
   {
     id: "optimism",
     chainSymbol: "Optimism",
-    chainName: "Optimism",
+    chainName: "Optimism Goerli Testnet",
     chainId: 420,
     gasToken: "",
     nativeAsset: [],
@@ -21871,7 +21871,7 @@ export const CHAINS = [
   {
     id: "osmosis-7",
     chainSymbol: "Osmosis",
-    chainName: "Osmosis",
+    chainName: "Osmosis Testnet",
     chainId: "osmo-test-5",
     gasToken: "",
     nativeAsset: [],
@@ -22109,8 +22109,8 @@ export const CHAINS = [
   {
     id: "persistence",
     chainSymbol: "Persistence",
-    chainName: "Persistence",
-    chainId: "test-core-1",
+    chainName: "Persistence Testnet",
+    chainId: "test-core-2",
     gasToken: "",
     nativeAsset: [],
     estimatedWaitTime: 1,
@@ -22311,7 +22311,7 @@ export const CHAINS = [
   {
     id: "polygon",
     chainSymbol: "Polygon",
-    chainName: "Polygon",
+    chainName: "Mumbai",
     chainId: 80001,
     gasToken: "matic",
     nativeAsset: ["wmatic-wei"],
@@ -22521,7 +22521,7 @@ export const CHAINS = [
   {
     id: "polygon-zkevm",
     chainSymbol: "Polygon zkEVM",
-    chainName: "Polygon zkEVM",
+    chainName: "Polygon zkEVM Testnet",
     chainId: 1442,
     gasToken: "",
     nativeAsset: [],
@@ -22718,7 +22718,7 @@ export const CHAINS = [
   {
     id: "scroll",
     chainSymbol: "Scroll",
-    chainName: "Scroll",
+    chainName: "Scroll Sepolia Testnet",
     chainId: 534351,
     gasToken: "",
     nativeAsset: [],
@@ -22915,8 +22915,8 @@ export const CHAINS = [
   {
     id: "secret",
     chainSymbol: "Secret",
-    chainName: "Secret",
-    chainId: "secret-snip-3",
+    chainName: "Secret Testnet",
+    chainId: "pulsar-3",
     gasToken: "",
     nativeAsset: [],
     estimatedWaitTime: 1,
@@ -23333,7 +23333,7 @@ export const CHAINS = [
   {
     id: "sei-2",
     chainSymbol: "Sei",
-    chainName: "Sei",
+    chainName: "Sei Testnet",
     chainId: "atlantic-1",
     gasToken: "",
     nativeAsset: [],
@@ -23535,7 +23535,7 @@ export const CHAINS = [
   {
     id: "teritori",
     chainSymbol: "Teritori",
-    chainName: "Teritori",
+    chainName: "Teritori Testnet",
     chainId: "teritori-testnet-v3",
     gasToken: "",
     nativeAsset: [],
@@ -23744,7 +23744,7 @@ export const CHAINS = [
   {
     id: "terra-3",
     chainSymbol: "Terra",
-    chainName: "Terra",
+    chainName: "Pisco testnet",
     chainId: "pisco-1",
     gasToken: "",
     nativeAsset: [],
@@ -23946,7 +23946,7 @@ export const CHAINS = [
   {
     id: "xpla",
     chainSymbol: "Xpla",
-    chainName: "Xpla",
+    chainName: "Xpla Testnet",
     chainId: "cube_47-5",
     gasToken: "",
     nativeAsset: [],
@@ -24142,7 +24142,7 @@ export const CHAINS = [
   {
     id: "arbitrum",
     chainSymbol: "arbitrum",
-    chainName: "arbitrum",
+    chainName: "Arbitrum Goerli",
     chainId: 421613,
     gasToken: "",
     nativeAsset: [],
@@ -24352,7 +24352,7 @@ export const CHAINS = [
   {
     id: "celo",
     chainSymbol: "celo",
-    chainName: "celo",
+    chainName: "Celo Alfajores Testnet",
     chainId: 44787,
     gasToken: "",
     nativeAsset: [],
@@ -24562,7 +24562,7 @@ export const CHAINS = [
   {
     id: "kava",
     chainSymbol: "kava",
-    chainName: "kava",
+    chainName: "Kava Testnet",
     chainId: 2221,
     gasToken: "",
     nativeAsset: [],
@@ -24759,7 +24759,7 @@ export const CHAINS = [
   {
     id: "provenance",
     chainSymbol: "provenance",
-    chainName: "provenance",
+    chainName: "Pio Testnet",
     chainId: "pio-testnet-1",
     gasToken: "",
     nativeAsset: [],

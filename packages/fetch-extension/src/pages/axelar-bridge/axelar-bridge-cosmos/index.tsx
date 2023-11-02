@@ -31,6 +31,7 @@ export const AxelarBridgeCosmos = observer(() => {
   const [amountError, setAmountError] = useState<any>();
 
   const [tokenBal, setTokenBal] = useState<any>("");
+  const [relayerFee, setRelayerFee] = useState<string>("");
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
@@ -47,12 +48,17 @@ export const AxelarBridgeCosmos = observer(() => {
 
   const handleAmountChange = (event: any) => {
     const amount = parseFloat(event.target.value);
+    const minAmount =
+      extractNumberFromBalance(transferToken.minDepositAmt.toString()) >
+      extractNumberFromBalance(relayerFee)
+        ? extractNumberFromBalance(transferToken.minDepositAmt)
+        : extractNumberFromBalance(relayerFee);
     setAmount(amount);
     if (isNaN(amount)) {
       setAmountError("Please enter a valid number");
     } else if (amount < 0) {
       setAmountError("Amount cannot be less than zero");
-    } else if (amount < transferToken.minDepositAmt) {
+    } else if (amount < minAmount) {
       setAmountError("Please enter at least the minimum deposit amount");
     } else if (amount > extractNumberFromBalance(tokenBal)) {
       setAmountError("Insufficient Balance");
@@ -99,7 +105,6 @@ export const AxelarBridgeCosmos = observer(() => {
       setToToken(toToken);
     }
   }, [transferToken, recieverChain]);
-
   return (
     <HeaderLayout
       showChainName={false}
@@ -202,6 +207,8 @@ export const AxelarBridgeCosmos = observer(() => {
           transferToken={transferToken}
           depositAddress={depositAddress}
           estimatedWaitTime={transferChain?.estimatedWaitTime}
+          relayerFee={relayerFee}
+          setRelayerFee={setRelayerFee}
         />
       )}
 

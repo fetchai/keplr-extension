@@ -12,6 +12,8 @@ interface GasAndDetailsProps {
   transferToken: any;
   depositAddress: any;
   estimatedWaitTime: number | undefined;
+  relayerFee: string;
+  setRelayerFee: any;
 }
 
 export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
@@ -20,9 +22,10 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
   transferToken,
   depositAddress,
   estimatedWaitTime,
+  relayerFee,
+  setRelayerFee,
 }) => {
   const notification = useNotification();
-  const [relayerFree, setRelayerFee] = useState<string>("");
   const [maxTrsnferAmt, setMaxTrsnferAmt] = useState("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -112,7 +115,6 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
     };
     fetchData();
   }, [transferToken, recieverChain]);
-
   return (
     <div className={style["feeContainer"]}>
       <div className={style["entries"]}>
@@ -122,7 +124,7 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
             <i className="fas fa-spinner fa-spin ml-2" />
           </div>
         ) : (
-          <div>{relayerFree ? relayerFree : "Not Available"}</div>
+          <div>{relayerFee ? relayerFee : "Not Available"}</div>
         )}
       </div>
 

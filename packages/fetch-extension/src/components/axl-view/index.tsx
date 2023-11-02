@@ -6,10 +6,20 @@ import { FormattedMessage } from "react-intl";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
+import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
 
 export const AXLView: FunctionComponent = () => {
   const navigate = useNavigate();
-  const { chainStore, analyticsStore } = useStore();
+  const { chainStore, analyticsStore, queriesStore, accountStore } = useStore();
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const query = queriesStore
+    .get(chainStore.current.chainId)
+    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
+  const queryBalances = query.balances;
+  const queryBalance = queryBalances[0];
+  const balance = extractNumberFromBalance(
+    queryBalance?.balance.trim(true).maxDecimals(18).toString()
+  );
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
   return (
     <div className={style["containerInner"]}>
@@ -41,6 +51,7 @@ export const AXLView: FunctionComponent = () => {
         className={style["button"]}
         color="primary"
         size="sm"
+        disabled={!balance}
         onClick={() => {
           analyticsStore.logEvent("Axelar Bridge opened", {
             chainId: chainStore.current.chainId,

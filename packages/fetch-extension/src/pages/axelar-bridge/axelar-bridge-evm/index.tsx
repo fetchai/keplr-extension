@@ -11,7 +11,10 @@ import {
   useSendTxConfig,
 } from "@keplr-wallet/hooks";
 import { HeaderLayout } from "@layouts/header-layout";
-import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
+import {
+  extractNumberFromBalance,
+  shortenBalance,
+} from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -85,6 +88,7 @@ export const AxelarBridgeEVM = observer(() => {
   const [transferTokens, setTransferTokens] = useState<any[]>([]);
   const [transferToken, setTransferToken] = useState<any>();
   const [recipientAddress, setRecipientAddress] = useState("");
+  const [relayerFee, setRelayerFee] = useState<string>("");
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
@@ -167,17 +171,21 @@ export const AxelarBridgeEVM = observer(() => {
   };
 
   const handleAmountChange = (event: any) => {
+    const minAmount =
+      extractNumberFromBalance(transferToken.minDepositAmt.toString()) >
+      extractNumberFromBalance(relayerFee.toString())
+        ? extractNumberFromBalance(transferToken.minDepositAmt)
+        : extractNumberFromBalance(relayerFee);
     configs.amountConfig.setAmount(event.target.value);
     const value = parseFloat(event.target.value);
-    if (value < transferToken.minDepositAmt) {
-      setAmountError("Please enter at least the minimum deposit amount");
+    if (value < minAmount) {
+      setAmountError("Please enter at least the minimum amount");
     } else if (value > extractNumberFromBalance(tokenBal)) {
       setAmountError("Insufficient Balance");
     } else {
       setAmountError(null);
     }
   };
-
   return (
     <HeaderLayout
       showChainName={false}
@@ -264,7 +272,7 @@ export const AxelarBridgeEVM = observer(() => {
         >
           Min Amount :
           {`${transferToken.minDepositAmt} ${transferToken.assetSymbol}`}
-          <div>Balance : {tokenBal ? tokenBal : "0.0"}</div>
+          <div>Balance : {tokenBal ? shortenBalance(tokenBal) : "0.0"}</div>
         </div>
       )}
       <Input
@@ -287,6 +295,8 @@ export const AxelarBridgeEVM = observer(() => {
           transferToken={transferToken}
           depositAddress={configs.recipientConfig.rawRecipient}
           estimatedWaitTime={transferChain.estimatedWaitTime}
+          relayerFee={relayerFee}
+          setRelayerFee={setRelayerFee}
         />
       )}
 

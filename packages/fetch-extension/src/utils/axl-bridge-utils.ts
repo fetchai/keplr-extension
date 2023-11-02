@@ -24,3 +24,14 @@ export const formatEthBalance = (balanceString: string) => {
     return "NaN";
   }
 };
+
+export const shortenBalance = (balanceString: string) => {
+  const [value, denomination] = balanceString.split(" ");
+  const [integerPart, decimalPart = ""] = value.split(".");
+  if (decimalPart.length > 4) {
+    const truncatedDecimal = decimalPart.slice(1, 5) + "...";
+    const formattedValue = `${integerPart}.${truncatedDecimal}`;
+    return `${formattedValue} ${denomination}`;
+  }
+  return balanceString;
+};
