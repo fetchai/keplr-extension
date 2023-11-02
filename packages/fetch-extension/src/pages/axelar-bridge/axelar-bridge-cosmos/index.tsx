@@ -48,11 +48,12 @@ export const AxelarBridgeCosmos = observer(() => {
 
   const handleAmountChange = (event: any) => {
     const amount = parseFloat(event.target.value);
+    const minDepositAmt = extractNumberFromBalance(
+      transferToken.minDepositAmt.toString()
+    );
+    const relayerFeeAmt = extractNumberFromBalance(relayerFee);
     const minAmount =
-      extractNumberFromBalance(transferToken.minDepositAmt.toString()) >
-      extractNumberFromBalance(relayerFee)
-        ? extractNumberFromBalance(transferToken.minDepositAmt)
-        : extractNumberFromBalance(relayerFee);
+      minDepositAmt > relayerFeeAmt ? minDepositAmt : relayerFeeAmt;
     setAmount(amount);
     if (isNaN(amount)) {
       setAmountError("Please enter a valid number");
@@ -186,6 +187,7 @@ export const AxelarBridgeCosmos = observer(() => {
           fromToken={transferToken}
           tokenBal={tokenBal}
           setTokenBal={setTokenBal}
+          relayerFee={relayerFee}
         />
       )}
       <Input

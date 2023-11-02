@@ -2,16 +2,21 @@ import React, { useEffect } from "react";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.scss";
-import { formatEthBalance, shortenBalance } from "@utils/axl-bridge-utils";
+import {
+  extractNumberFromBalance,
+  formatEthBalance,
+  shortenBalance,
+} from "@utils/axl-bridge-utils";
 
 interface BalanceProps {
   fromToken: any;
   tokenBal: any;
   setTokenBal: any;
+  relayerFee: string;
 }
 
 export const TokenBalances: React.FC<BalanceProps> = observer(
-  ({ fromToken, tokenBal, setTokenBal }) => {
+  ({ fromToken, tokenBal, setTokenBal, relayerFee }) => {
     const { queriesStore, chainStore, accountStore } = useStore();
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
@@ -22,7 +27,6 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
     useEffect(() => {
       const { balances, nonNativeBalances } = query;
       const queryBalances = balances.concat(nonNativeBalances);
-      console.log(queryBalances);
       const queryBalance = queryBalances.find(
         (bal) =>
           fromToken.assetSymbol == bal.currency.coinDenom ||
@@ -38,13 +42,19 @@ export const TokenBalances: React.FC<BalanceProps> = observer(
           : setTokenBal(balance);
       }
     }, [query, fromToken, setTokenBal]);
-    console.log("tokenBal", tokenBal);
+    const minDepositAmt = extractNumberFromBalance(
+      fromToken.minDepositAmt.toString()
+    );
+    const relayerFeeAmt = extractNumberFromBalance(relayerFee);
+    const minAmount =
+      minDepositAmt > relayerFeeAmt ? minDepositAmt : relayerFeeAmt;
+
     return (
       <div
         style={{ float: "right", fontSize: "small" }}
         className={style["label"]}
       >
-        Min Amount :{`${fromToken.minDepositAmt} ${fromToken.assetSymbol}`}
+        Min Amount :{`${minAmount} ${fromToken.assetSymbol}`}
         <div>Token Bal : {tokenBal ? shortenBalance(tokenBal) : "0.0"}</div>
       </div>
     );

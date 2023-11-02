@@ -4,12 +4,12 @@ import {
   SendTokenParams,
 } from "@axelar-network/axelarjs-sdk";
 import { useNotification } from "@components/notification";
-import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
+import { DeliverTxResponse } from "@cosmjs/stargate";
 
 interface SendTokenProps {
   transferChain: any;
@@ -40,9 +40,9 @@ export const SendToken: React.FC<SendTokenProps> = ({
   const handleSendToken = async () => {
     try {
       // from cosmos to evm
-      const signer: OfflineDirectSigner = window.keplr?.getOfflineSigner(
+      const signer: any = window.keplr?.getOfflineSignerOnlyAmino(
         current.chainId
-      ) as OfflineDirectSigner;
+      ) as any;
       const value = (amount * 10 ** transferToken.decimals).toString();
       setIsTrsnxInProgress(true);
       const requestOptions: SendTokenParams = {
@@ -64,19 +64,34 @@ export const SendToken: React.FC<SendTokenProps> = ({
           },
         },
       };
-      await api.sendToken(requestOptions);
+      const txn: DeliverTxResponse = (await api.sendToken(
+        requestOptions
+      )) as DeliverTxResponse;
+      console.log(txn);
       setIsTrsnxInProgress(false);
       navigate("/axl-bridge-cosmos");
-      notification.push({
-        placement: "top-center",
-        type: "success",
-        duration: 2,
-        content: `transaction completed!`,
-        canDelete: true,
-        transition: {
-          duration: 0.25,
-        },
-      });
+      if (txn.code == 0)
+        notification.push({
+          placement: "top-center",
+          type: "success",
+          duration: 2,
+          content: `transaction completed!`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      else
+        notification.push({
+          placement: "top-center",
+          type: "danger",
+          duration: 2,
+          content: `transaction failed!`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
     } catch (err) {
       console.log(err);
       notification.push({
