@@ -48,7 +48,6 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = observer(
           asset: transferToken.common_key,
           options: { refundAddress: accountInfo.ethereumHexAddress },
         });
-        console.log("Deposit Address", address);
         recipientConfig.setRawRecipient(address);
         setIsFetchingAddress(false);
       } catch (err) {

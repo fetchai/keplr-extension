@@ -88,8 +88,6 @@ export const AxelarBridgeCosmos = observer(() => {
             return;
           }
         }
-        console.log("chains", CHAINS);
-        console.log("transferChain", transferChain);
       } catch (error) {
         console.error("Error loading assets:", error);
       } finally {
