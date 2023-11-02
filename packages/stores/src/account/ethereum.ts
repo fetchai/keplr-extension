@@ -600,9 +600,15 @@ export class EthereumAccountImpl {
         pendingTx.rawTxData.maxFeePerGas &&
         pendingTx.rawTxData.type === 2
       ) {
-        newTx["maxFeePerGas"] = BigNumber.from(pendingTx.rawTxData.maxFeePerGas)
+        const newCalculatedFee = BigNumber.from(
+          pendingTx.rawTxData.maxPriorityFeePerGas
+        )
           .mul(BigNumber.from(150))
-          .div(BigNumber.from(100))
+          .div(BigNumber.from(100));
+
+        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toNumber();
+        newTx["maxFeePerGas"] = newCalculatedFee
+          .add(pendingTx.rawTxData.maxFeePerGas)
           .toNumber();
         newTx["data"] = "";
       } else if (pendingTx.rawTxData?.gasPrice) {
@@ -641,10 +647,17 @@ export class EthereumAccountImpl {
         pendingTx.rawTxData.maxFeePerGas &&
         pendingTx.rawTxData.type === 2
       ) {
-        newTx["maxFeePerGas"] = BigNumber.from(pendingTx.rawTxData.maxFeePerGas)
+        const newCalculatedFee = BigNumber.from(
+          pendingTx.rawTxData.maxPriorityFeePerGas
+        )
           .mul(BigNumber.from(150))
-          .div(BigNumber.from(100))
+          .div(BigNumber.from(100));
+
+        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toNumber();
+        newTx["maxFeePerGas"] = newCalculatedFee
+          .add(pendingTx.rawTxData.maxFeePerGas)
           .toNumber();
+        newTx["data"] = "";
       } else if (pendingTx.rawTxData?.gasPrice) {
         newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
           .mul(BigNumber.from(150))
