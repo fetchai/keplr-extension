@@ -18,7 +18,7 @@ export const formatEthBalance = (balanceString: string) => {
     const amount = parseFloat(match[1].replace(/,/g, ""));
     const denom = match[2];
     const additionalInfo = match[3];
-    const ethAmount = (amount / 10 ** 18).toFixed(2);
+    const ethAmount = amount / 10 ** 18;
     return `${ethAmount} ${denom.toUpperCase()} (${additionalInfo})`;
   } else {
     return "NaN";

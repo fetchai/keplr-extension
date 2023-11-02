@@ -149,7 +149,9 @@ export const GasAndDetails: React.FC<GasAndDetailsProps> = ({
           </div>
         ) : (
           <div>
-            {maxTrsnferAmt ? formatAmount(maxTrsnferAmt) : "Not Available"}
+            {maxTrsnferAmt && maxTrsnferAmt !== "Not Provided"
+              ? formatAmount(maxTrsnferAmt)
+              : "Not Provided"}
           </div>
         )}
       </div>

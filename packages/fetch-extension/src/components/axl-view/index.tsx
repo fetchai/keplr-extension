@@ -6,14 +6,11 @@ import { FormattedMessage } from "react-intl";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
-import { EvmChain } from "@axelar-network/axelarjs-sdk";
 
 export const AXLView: FunctionComponent = () => {
   const navigate = useNavigate();
   const { chainStore, analyticsStore } = useStore();
-  const isEVM = Object.values(EvmChain).find((evmchain) =>
-    chainStore.current.chainName.toLowerCase().includes(evmchain.toLowerCase())
-  );
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
   return (
     <div className={style["containerInner"]}>
       <div className={style["vertical"]}>
@@ -48,7 +45,7 @@ export const AXLView: FunctionComponent = () => {
           analyticsStore.logEvent("Axelar Bridge opened", {
             chainId: chainStore.current.chainId,
           });
-          isEVM ? navigate("/axl-bridge-evm") : navigate("/axl-bridge-cosmos");
+          isEvm ? navigate("/axl-bridge-evm") : navigate("/axl-bridge-cosmos");
         }}
       >
         <FormattedMessage id="main.axl.button" />

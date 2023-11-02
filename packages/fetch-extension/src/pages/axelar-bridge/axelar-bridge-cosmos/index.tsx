@@ -117,7 +117,8 @@ export const AxelarBridgeCosmos = observer(() => {
       )}
       {isInactiveChain && (
         <div className={style["loader"]}>
-          Axelar Bridge not active for {current.chainName}
+          Axelar Bridge currently not active for {current.chainName}. Please try
+          later
         </div>
       )}
       <div className={style["chain-container"]}>
