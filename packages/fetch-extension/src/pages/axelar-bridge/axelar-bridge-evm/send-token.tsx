@@ -30,7 +30,6 @@ export const SendToken: React.FC<SendTokenProps> = observer(
     const txStateIsValid = sendConfigError == null;
 
     const handleEVMSendToken = async () => {
-      console.log("sendConfigs", sendConfigs);
       if (txStateIsValid) {
         setIsTrsnxInProgress(true);
         try {
@@ -115,9 +114,13 @@ export const SendToken: React.FC<SendTokenProps> = observer(
           color="primary"
           style={{ width: "100%" }}
           onClick={handleEVMSendToken}
+          disabled={isTrsnxInProgress || !txStateIsValid}
         >
           Send Token
         </Button>
+        {sendConfigError ? (
+          <div className={style["errorText"]}>{sendConfigError}</div>
+        ) : null}
       </React.Fragment>
     );
   }
