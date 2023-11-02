@@ -56,13 +56,13 @@ const TransactionItem: FunctionComponent<{
   const displaySpeedupCancelButtons = () => {
     if (transactionInfo.status === "pending") {
       return (
-        <div className={style["activityRow"]}>
-          <div className={style["activityCol"]} style={{ width: "50%" }}>
+        <div className={style["buttonRow"]}>
+          <div className={style["buttonCol"]}>
             <Button
               size="sm"
               style={{ width: "100%" }}
               onClick={handleCancel}
-              color="danger"
+              color="primary"
             >
               {intl.formatMessage({
                 id: "send.button.cancel",
@@ -70,7 +70,7 @@ const TransactionItem: FunctionComponent<{
             </Button>
           </div>
           <div
-            className={style["activityCol"]}
+            className={style["buttonCol"]}
             style={{
               width: "50%",
               visibility: transactionInfo.isSpeedUp ? "hidden" : "visible",
@@ -80,7 +80,8 @@ const TransactionItem: FunctionComponent<{
               size="sm"
               style={{ width: "100%" }}
               onClick={handleSpeedUp}
-              color="success"
+              outline
+              color="primary"
             >
               {intl.formatMessage({
                 id: "send.button.speedup",
@@ -118,9 +119,8 @@ const TransactionItem: FunctionComponent<{
   };
 
   return chainStore.current.explorerUrl &&
-    transactionInfo.status !== "cancelled" &&
-    transactionInfo.status !== "failed" ? (
-    <div>
+    transactionInfo.status !== "cancelled" ? (
+    <div className={style["activityContainer"]}>
       <a
         href={chainStore.current.explorerUrl + "/tx/" + transactionInfo.hash}
         target="_blank"
@@ -131,7 +131,7 @@ const TransactionItem: FunctionComponent<{
       {displaySpeedupCancelButtons()}
     </div>
   ) : (
-    <div>
+    <div className={style["activityContainer"]}>
       {displayActivity(transactionInfo.status, transactionInfo.amount)}
       {displaySpeedupCancelButtons()}
     </div>

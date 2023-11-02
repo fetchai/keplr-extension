@@ -583,10 +583,8 @@ export class EthereumAccountImpl {
     );
   }
 
-  async cancelTransactionAndBroadcast(pendingTxnInfo: ITxn) {
+  async cancelTransactionAndBroadcast(pendingTx: ITxn) {
     try {
-      const pendingTx = pendingTxnInfo;
-
       // Create a new transaction with the same nonce and the rest of the details
       const newTx: TransactionRequest = {
         to: this.base.ethereumHexAddress,
@@ -606,11 +604,16 @@ export class EthereumAccountImpl {
           .mul(BigNumber.from(150))
           .div(BigNumber.from(100));
 
-        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toNumber();
+        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toString();
         newTx["maxFeePerGas"] = newCalculatedFee
           .add(pendingTx.rawTxData.maxFeePerGas)
-          .toNumber();
+          .toString();
         newTx["data"] = "";
+        newTx["type"] = 2;
+
+        if (pendingTx.rawTxData?.chainId) {
+          newTx["chainId"] = pendingTx.rawTxData.chainId;
+        }
       } else if (pendingTx.rawTxData?.gasPrice) {
         newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
           .mul(BigNumber.from(150))
@@ -653,10 +656,10 @@ export class EthereumAccountImpl {
           .mul(BigNumber.from(150))
           .div(BigNumber.from(100));
 
-        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toNumber();
+        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toString();
         newTx["maxFeePerGas"] = newCalculatedFee
           .add(pendingTx.rawTxData.maxFeePerGas)
-          .toNumber();
+          .toString();
         newTx["data"] = "";
       } else if (pendingTx.rawTxData?.gasPrice) {
         newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
