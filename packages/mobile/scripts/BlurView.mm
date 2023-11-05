@@ -1,8 +1,21 @@
 #import "BlurView.h"
 #import "BlurEffectWithAmount.h"
 
-@interface BlurView ()
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <React/RCTConversions.h>
+#import <React/RCTFabricComponentsPlugins.h>
+#import <react/renderer/components/rnblurview/ComponentDescriptors.h>
+#import <react/renderer/components/rnblurview/Props.h>
+#import <react/renderer/components/rnblurview/RCTComponentViewHelpers.h>
+#endif // RCT_NEW_ARCH_ENABLED
 
+#ifdef RCT_NEW_ARCH_ENABLED
+using namespace facebook::react;
+
+@interface BlurView () <RCTBlurViewViewProtocol>
+#else
+@interface BlurView ()
+#endif // RCT_NEW_ARCH_ENABLED
 @end
 
 @implementation BlurView
@@ -22,6 +35,11 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
+#ifdef RCT_NEW_ARCH_ENABLED
+    static const auto defaultProps = std::make_shared<const BlurViewProps>();
+    _props = defaultProps;
+#endif // RCT_NEW_ARCH_ENABLED
+
     self.blurEffectView = [[UIVisualEffectView alloc] init];
     self.blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.blurEffectView.frame = frame;
@@ -42,6 +60,38 @@
 
   return self;
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+#pragma mark - RCTComponentViewProtocol
+
++ (ComponentDescriptorProvider)componentDescriptorProvider
+{
+  return concreteComponentDescriptorProvider<BlurViewComponentDescriptor>();
+}
+
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
+{
+  const auto &oldViewProps = *std::static_pointer_cast<const BlurViewProps>(_props);
+  const auto &newViewProps = *std::static_pointer_cast<const BlurViewProps>(props);
+  
+  if (oldViewProps.blurAmount != newViewProps.blurAmount) {
+    NSNumber *blurAmount = [NSNumber numberWithInt:newViewProps.blurAmount];
+    [self setBlurAmount:blurAmount];
+  }
+
+  if (oldViewProps.blurType != newViewProps.blurType) {
+    NSString *blurType = [NSString stringWithUTF8String:toString(newViewProps.blurType).c_str()];
+    [self setBlurType:blurType];
+  }
+  
+  if (oldViewProps.reducedTransparencyFallbackColor != newViewProps.reducedTransparencyFallbackColor) {
+    UIColor *color = RCTUIColorFromSharedColor(newViewProps.reducedTransparencyFallbackColor);
+    [self setReducedTransparencyFallbackColor:color];
+  }
+  
+  [super updateProps:props oldProps:oldProps];
+}
+#endif // RCT_NEW_ARCH_ENABLED
 
 - (void)dealloc
 {
@@ -90,7 +140,7 @@
     if ([self.blurType isEqual: @"prominent"]) return UIBlurEffectStyleProminent;
   #endif
 
-  #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000 /* __IPHONE_13_0 */
+  #if !TARGET_OS_TV && defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000 /* __IPHONE_13_0 */
     // Adaptable blur styles
     if ([self.blurType isEqual: @"chromeMaterial"]) return UIBlurEffectStyleSystemChromeMaterial;
     if ([self.blurType isEqual: @"material"]) return UIBlurEffectStyleSystemMaterial;
@@ -110,7 +160,7 @@
     if ([self.blurType isEqual: @"thinMaterialLight"]) return UIBlurEffectStyleSystemThinMaterialLight;
     if ([self.blurType isEqual: @"ultraThinMaterialLight"]) return UIBlurEffectStyleSystemUltraThinMaterialLight;
   #endif
-
+    
   #if TARGET_OS_TV
     if ([self.blurType isEqual: @"regular"]) return UIBlurEffectStyleRegular;
     if ([self.blurType isEqual: @"prominent"]) return UIBlurEffectStyleProminent;
@@ -127,8 +177,8 @@
 
 - (void)updateBlurEffect
 {
-  // FIX: Clear the blur effect.
-  // Without below line, the blur amount will not changed if the blur type is same with prior one.
+  // Without resetting the effect, changing blurAmount doesn't seem to work in Fabric...
+  // Setting it to nil should also enable blur animations (see PR #392)
   self.blurEffectView.effect = nil;
   // FIX: If the blur amount is 0 or lesser than 0, disble the blur effect.
   if ([self.blurAmount compare:[NSNumber numberWithInt:0]] == NSOrderedDescending) {
@@ -167,3 +217,10 @@
 }
 
 @end
+
+#ifdef RCT_NEW_ARCH_ENABLED
+Class<RCTComponentViewProtocol> BlurViewCls(void)
+{
+  return BlurView.class;
+}
+#endif // RCT_NEW_ARCH_ENABLED

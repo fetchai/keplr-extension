@@ -5,4 +5,4 @@
 
 DIR="$( cd "$( dirname "$0" )" && pwd -P )"
 
-cp ${DIR}/BlurView.m ${DIR}/../node_modules/@react-native-community/blur/ios/BlurView.m
+cp ${DIR}/BlurView.mm ${DIR}/../node_modules/@react-native-community/blur/ios/BlurView.mm
