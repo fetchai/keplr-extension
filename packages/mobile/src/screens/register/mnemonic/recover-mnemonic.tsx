@@ -89,7 +89,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     const mnemonic = trimWordsStr(getValues("mnemonic"));
 
     if (!isPrivateKey(mnemonic)) {
-      await registerConfig.createMnemonic(
+      registerConfig.createMnemonic(
         getValues("name"),
         mnemonic,
         getValues("password"),
@@ -101,7 +101,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       });
     } else {
       const privateKey = Buffer.from(mnemonic.trim().replace("0x", ""), "hex");
-      await registerConfig.createPrivateKey(
+      registerConfig.createPrivateKey(
         getValues("name"),
         privateKey,
         getValues("password")

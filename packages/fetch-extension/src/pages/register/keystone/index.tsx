@@ -78,7 +78,7 @@ export const ImportKeystonePage: FunctionComponent<{
         className={style["formContainer"]}
         onSubmit={handleSubmit(async (data: FormData) => {
           try {
-            await registerConfig.createKeystone(
+            registerConfig.createKeystone(
               data.name,
               data.password,
               bip44Option.bip44HDPath

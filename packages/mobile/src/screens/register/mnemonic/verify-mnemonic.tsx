@@ -149,7 +149,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
         disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
         onPress={async () => {
           setIsCreating(true);
-          await registerConfig.createMnemonic(
+          registerConfig.createMnemonic(
             newMnemonicConfig.name,
             newMnemonicConfig.mnemonic,
             newMnemonicConfig.password,

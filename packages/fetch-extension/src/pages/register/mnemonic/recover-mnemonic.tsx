@@ -343,7 +343,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                     seedWords[0].replace("0x", ""),
                     "hex"
                   );
-                  await registerConfig.createPrivateKey(
+                  registerConfig.createPrivateKey(
                     data.name,
                     privateKey,
                     data.password
@@ -353,7 +353,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                     accountType: "privateKey",
                   });
                 } else {
-                  await registerConfig.createMnemonic(
+                  registerConfig.createMnemonic(
                     data.name,
                     // In logic, not 12/24 words can be handled.
                     // However, seed words have only a length of 12/24 when mnemonic.

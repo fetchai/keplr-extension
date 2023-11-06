@@ -55,7 +55,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
     setIsCreating(true);
 
     try {
-      await registerConfig.createLedger(
+      registerConfig.createLedger(
         getValues("name"),
         getValues("password"),
         bip44Option.bip44HDPath,

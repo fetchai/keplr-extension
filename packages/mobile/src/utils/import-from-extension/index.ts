@@ -187,7 +187,7 @@ export async function registerExportedKeyRingDatas(
 
     const name = exportKeyRingData.meta["name"] || "Fetch Account";
     if (exportKeyRingData.type === "mnemonic") {
-      await registerConfig.createMnemonic(
+      registerConfig.createMnemonic(
         name,
         exportKeyRingData.key,
         password,
@@ -210,7 +210,7 @@ export async function registerExportedKeyRingDatas(
     }
 
     if (exportKeyRingData.type === "privateKey") {
-      await registerConfig.createPrivateKey(
+      registerConfig.createPrivateKey(
         name,
         Buffer.from(exportKeyRingData.key, "hex"),
         password,

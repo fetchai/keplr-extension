@@ -168,7 +168,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
     setIsCreating(true);
 
     try {
-      await registerConfig.createPrivateKey(
+      registerConfig.createPrivateKey(
         getValues("name"),
         privateKey,
         getValues("password"),

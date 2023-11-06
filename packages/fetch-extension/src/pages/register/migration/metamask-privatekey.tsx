@@ -74,11 +74,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
           }
 
           // trigger the on complete handler
-          await registerConfig.createPrivateKey(
-            data.name,
-            privateKey,
-            data.password
-          );
+          registerConfig.createPrivateKey(data.name, privateKey, data.password);
         })}
       >
         <Input

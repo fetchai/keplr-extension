@@ -312,7 +312,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           e.preventDefault();
 
           try {
-            await registerConfig.createMnemonic(
+            registerConfig.createMnemonic(
               newMnemonicConfig.name,
               newMnemonicConfig.mnemonic,
               newMnemonicConfig.password,

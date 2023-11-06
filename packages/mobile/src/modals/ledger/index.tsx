@@ -322,9 +322,9 @@ export const LedgerGranterModal: FunctionComponent<{
                   key={device.id}
                   deviceId={device.id}
                   name={device.name}
-                  onCanResume={async () => {
+                  onCanResume={() => {
                     resumed.current = true;
-                    await ledgerInitStore.resumeAll(device.id);
+                    ledgerInitStore.resumeAll(device.id);
                   }}
                 />
               );

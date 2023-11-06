@@ -106,7 +106,7 @@ export const ImportLedgerPage: FunctionComponent<{
           try {
             await ensureUSBPermission();
 
-            await registerConfig.createLedger(
+            registerConfig.createLedger(
               data.name,
               data.password,
               bip44Option.bip44HDPath,
@@ -196,7 +196,7 @@ export const ImportLedgerPage: FunctionComponent<{
             try {
               await ensureUSBPermission();
 
-              await registerConfig.createLedger(
+              registerConfig.createLedger(
                 data.name,
                 data.password,
                 bip44Option.bip44HDPath,
