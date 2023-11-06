@@ -9,14 +9,12 @@ export const KeyboardSpacerView = () => {
     if (Platform.OS !== "ios") {
       return;
     }
-    // let event1 = Keyboard.addListener('keyboardWillShow', keyboardWillShow);
-    const event2 = Keyboard.addListener("keyboardDidShow", keyboardWillShow);
-    const event3 = Keyboard.addListener("keyboardWillHide", keyboardWillHide);
+    const event1 = Keyboard.addListener("keyboardWillShow", keyboardWillShow);
+    const event2 = Keyboard.addListener("keyboardWillHide", keyboardWillHide);
 
     return () => {
-      // Keyboard.removeSubscription(event1);
-      Keyboard.removeSubscription(event2);
-      Keyboard.removeSubscription(event3);
+      event1.remove();
+      event2.remove();
     };
   }, []);
 

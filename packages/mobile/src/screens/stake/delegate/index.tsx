@@ -94,10 +94,10 @@ export const DelegateScreen: FunctionComponent = observer(() => {
       <Button
         text="Stake"
         size="large"
-        disabled={!account.isReadyToSendMsgs || !txStateIsValid}
-        loading={account.isSendingMsg === "delegate"}
+        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        loading={account.txTypeInProgress === "delegate"}
         onPress={async () => {
-          if (account.isReadyToSendMsgs && txStateIsValid) {
+          if (account.isReadyToSendTx && txStateIsValid) {
             try {
               await account.cosmos.sendDelegateMsg(
                 sendConfigs.amountConfig.amount,

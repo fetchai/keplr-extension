@@ -9,18 +9,16 @@ const providerUrl = "https://rpc-fetchhub.fetch-ai.com";
 const getChainId = async () => {
   try {
     const ethersProvider = ethers.getDefaultProvider(providerUrl);
-    const networkDetails = await ethersProvider.getNetwork();
-    return networkDetails;
+    return await ethersProvider.getNetwork();
   } catch (error) {
     return error;
   }
 };
 
-const getAccounts = async (key: string) => {
+const getAccounts = (key: string) => {
   try {
     const wallet = new ethers.Wallet(key);
-    const address = await wallet.address;
-    return address;
+    return wallet.address;
   } catch (error) {
     return error;
   }
@@ -30,9 +28,7 @@ const getBalance = async (key: string) => {
   try {
     const ethersProvider = ethers.getDefaultProvider(providerUrl);
     const wallet = new ethers.Wallet(key, ethersProvider);
-    const balance = await wallet.getBalance();
-
-    return balance;
+    return await wallet.getBalance();
   } catch (error) {
     return error;
   }
@@ -49,14 +45,12 @@ const sendTransaction = async (key: string) => {
     const amount = ethers.utils.parseEther("0.001");
 
     // Submit transaction to the blockchain
-    const tx = await wallet.sendTransaction({
+    return await wallet.sendTransaction({
       to: destination,
       value: amount,
       maxPriorityFeePerGas: "5000000000", // Max priority fee per gas
       maxFeePerGas: "6000000000000", // Max fee per gas
     });
-
-    return tx;
   } catch (error) {
     return error;
   }
@@ -70,9 +64,7 @@ const signMessage = async (key: string) => {
     const originalMessage = "YOUR_MESSAGE";
 
     // Sign the message
-    const signedMessage = await wallet.signMessage(originalMessage);
-
-    return signedMessage;
+    return await wallet.signMessage(originalMessage);
   } catch (error) {
     return error;
   }

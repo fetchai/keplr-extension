@@ -109,10 +109,10 @@ export const SendScreen: FunctionComponent = observer(() => {
       <Button
         text="Send"
         size="large"
-        disabled={!account.isReadyToSendMsgs || !txStateIsValid}
-        loading={account.isSendingMsg === "send"}
+        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        loading={account.txTypeInProgress === "send"}
         onPress={async () => {
-          if (account.isReadyToSendMsgs && txStateIsValid) {
+          if (account.isReadyToSendTx && txStateIsValid) {
             try {
               await account.sendToken(
                 sendConfigs.amountConfig.amount,

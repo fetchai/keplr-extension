@@ -982,7 +982,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         tabBarButton: (props) => (
           <View
             style={{
-              display: "flex",
+              display: route.name === "Web" ? "none" : "flex",
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
@@ -1027,7 +1027,7 @@ export const MainTabNavigation: FunctionComponent = () => {
       )}
     >
       <Tab.Screen name="Main" component={MainNavigation} />
-      {/*<Tab.Screen name="Web" component={WebNavigation} />*/}
+      <Tab.Screen name="Web" component={WebNavigation} />
       <Tab.Screen
         name="Settings"
         component={SettingStackScreen}

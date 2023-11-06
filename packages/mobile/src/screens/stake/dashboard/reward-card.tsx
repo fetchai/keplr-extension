@@ -139,11 +139,13 @@ export const MyRewardCard: FunctionComponent<{
             }}
             disabled={
               !networkIsConnected ||
-              !account.isReadyToSendMsgs ||
+              !account.isReadyToSendTx ||
               pendingStakableReward.toDec().equals(new Dec(0)) ||
               queryReward.pendingRewardValidatorAddresses.length === 0
             }
-            loading={isSendingTx || account.isSendingMsg === "withdrawRewards"}
+            loading={
+              isSendingTx || account.txTypeInProgress === "withdrawRewards"
+            }
           />
         </View>
       </CardBody>

@@ -102,13 +102,13 @@ export const MyRewardCard: FunctionComponent<{
         buttonContainerStyle={style.flatten(["min-width-72"]) as ViewStyle}
         buttonDisabled={
           !networkIsConnected ||
-          !account.isReadyToSendMsgs ||
+          !account.isReadyToSendTx ||
           stakingReward.toDec().equals(new Dec(0)) ||
           stakable.toDec().lte(new Dec(0)) ||
           queryReward.pendingRewardValidatorAddresses.length === 0
         }
         buttonLoading={
-          isSendingTx || account.isSendingMsg === "withdrawRewards"
+          isSendingTx || account.txTypeInProgress === "withdrawRewards"
         }
       />
     </Card>

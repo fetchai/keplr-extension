@@ -33,11 +33,11 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
-  const handleOpenSettings = () => {
+  const handleOpenSettings = async () => {
     if (Platform.OS === "ios") {
-      Linking.openURL("app-settings:");
+      await Linking.openURL("app-settings:");
     } else {
-      Linking.openSettings();
+      await Linking.openSettings();
     }
   };
 
@@ -56,7 +56,7 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
             !permission?.granted &&
             permissionStatus.status === PermissionStatus.DENIED
           ) {
-            handleOpenSettings();
+            await handleOpenSettings();
           }
         }}
       />

@@ -93,7 +93,7 @@ export const EditAccountNameScreen: FunctionComponent = observer(() => {
             memoConfig.error == null &&
             addressIndex == index
           ) {
-            await addressBookConfig.editAddressBookAt(index, {
+            addressBookConfig.editAddressBookAt(index, {
               name: name.trim(),
               address: recipientConfig.recipient,
               memo: memoConfig.memo,

@@ -59,6 +59,22 @@ yarn && yarn build:libs
 yarn dev
 ```
 
+### Local dev server for mobile
+
+```bash
+yarn android
+```
+
+```bash
+yarn ios
+```
+
+In case of any error, try this and re-run the local dev server for mobile
+
+```bash
+yarn postinstall
+```
+
 ## Author
 
 👤 **Fetch.ai**

@@ -159,10 +159,10 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
       <Button
         text="Unstake"
         size="large"
-        disabled={!account.isReadyToSendMsgs || !txStateIsValid}
-        loading={account.isSendingMsg === "undelegate"}
+        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        loading={account.txTypeInProgress === "undelegate"}
         onPress={async () => {
-          if (account.isReadyToSendMsgs && txStateIsValid) {
+          if (account.isReadyToSendTx && txStateIsValid) {
             try {
               await account.cosmos.sendUndelegateMsg(
                 sendConfigs.amountConfig.amount,

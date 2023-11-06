@@ -1,6 +1,6 @@
 import {
-  AddressBookData,
   AddressBookConfigMap,
+  AddressBookData,
   RegisterConfig,
 } from "@keplr-wallet/hooks";
 import WalletConnect from "@walletconnect/client";
@@ -141,7 +141,7 @@ export async function registerExportedAddressBooks(
 
     for (const addressBookData of addressBook) {
       if (!duplicationCheck.get(sortedJsonStringify(addressBookData))) {
-        await addressBookConfig.addAddressBook(addressBookData);
+        addressBookConfig.addAddressBook(addressBookData);
       }
     }
   }

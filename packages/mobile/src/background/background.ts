@@ -21,7 +21,6 @@ import {
 
 const router = new RNRouterBackground(RNEnv.produceEnv);
 
-// Todo
 const { initFn } = init(
   router,
   (prefix: string) => new AsyncKVStore(prefix),

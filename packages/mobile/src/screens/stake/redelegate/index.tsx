@@ -196,10 +196,10 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
       <Button
         text="Switch Validator"
         size="large"
-        disabled={!account.isReadyToSendMsgs || !txStateIsValid}
-        loading={account.isSendingMsg === "redelegate"}
+        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        loading={account.txTypeInProgress === "redelegate"}
         onPress={async () => {
-          if (account.isReadyToSendMsgs && txStateIsValid) {
+          if (account.isReadyToSendTx && txStateIsValid) {
             try {
               await account.cosmos.sendBeginRedelegateMsg(
                 sendConfigs.amountConfig.amount,

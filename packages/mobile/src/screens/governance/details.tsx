@@ -512,10 +512,10 @@ export const GovernanceVoteModal: FunctionComponent<{
           containerStyle={style.flatten(["margin-top-12"]) as ViewStyle}
           text="Vote"
           size="large"
-          disabled={vote === "Unspecified" || !account.isReadyToSendMsgs}
-          loading={isSendingTx || account.isSendingMsg === "govVote"}
+          disabled={vote === "Unspecified" || !account.isReadyToSendTx}
+          loading={isSendingTx || account.txTypeInProgress === "govVote"}
           onPress={async () => {
-            if (vote !== "Unspecified" && account.isReadyToSendMsgs) {
+            if (vote !== "Unspecified" && account.isReadyToSendTx) {
               const tx = account.cosmos.makeGovVoteTx(proposalId, vote);
 
               setIsSendingTx(true);
@@ -626,7 +626,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
             <Button
               text={voteText}
               size="large"
-              disabled={!voteEnabled || !account.isReadyToSendMsgs}
+              disabled={!voteEnabled || !account.isReadyToSendTx}
               onPress={() => {
                 setIsModalOpen(true);
               }}

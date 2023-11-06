@@ -200,7 +200,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                           noButtonText: "Cancel",
                         })
                       ) {
-                        await addressBookConfig.removeAddressBook(i);
+                        addressBookConfig.removeAddressBook(i);
                       }
                     }}
                   >

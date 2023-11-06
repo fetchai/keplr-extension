@@ -19,7 +19,8 @@ export const CheckIcon: FunctionComponent<{
       <Rect width={width} height={height} rx={8} fill={color} />
       <Path
         d="M4 7.182L7.111 11 12 5"
-        stroke="#fff"
+        stroke="#ffffff"
+        fill="#ffffff00"
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
