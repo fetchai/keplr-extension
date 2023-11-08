@@ -1,0 +1,190 @@
+@import "../../styles/var";
+
+.wallet-details {
+  border: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 10px 10px 50px 0px rgba(255, 255, 255, 0.1) inset;
+  backdrop-filter: blur(25px);
+  padding: $p-xl;
+  // height: 256px;
+  width: 100%;
+  border-radius: $p-lg;
+  color: white;
+  font-size: $xs;
+
+  img {
+    height: 12px;
+    width: 12px;
+  }
+}
+.wallet-name,
+.address {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.address {
+  opacity: 0.6;
+}
+
+.chain-select {
+  cursor: pointer;
+  height: 36px;
+  display: flex;
+  padding: 6px 12px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab {
+  font-weight: 400;
+  padding: 6px 12px;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+  // margin: 8px 0px;
+}
+
+.tab1-container {
+  display: flex;
+  cursor: pointer;
+  padding: 8px 0px;
+  margin-bottom: 18px;
+}
+
+.tab1 {
+  font-size: $xs;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+  padding: 6px 12px;
+  height: 33px;
+}
+
+.tab.active,
+.tab1.active {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.balance-field {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn {
+  border-radius: 100px;
+}
+.gradient {
+  background: $gradient;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.balance {
+  font-size: $xl;
+  margin-bottom: 18px;
+}
+
+.actions {
+  color: #fff;
+  font-size: $xs;
+  margin: 32px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.action {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.your-assets {
+  font-size: $lg;
+  margin-bottom: 12px;
+  font-weight: 400;
+  color: #fff;
+}
+
+// .right {
+//   height: $header-height;
+//   padding-right: $layout-padding;
+
+//   display: flex;
+//   flex-direction: column;
+
+//   .signOut {
+//     font-size: 20px;
+//     padding: 0 8px;
+
+//     i {
+//       cursor: pointer;
+//       color: #8f8f8f;
+
+//       &:hover {
+//         color: black;
+//       }
+//     }
+//   }
+// }
+
+// .containerAccountInner {
+//   display: flex;
+//   flex-direction: column;
+//   width: 100%;
+//   // height: 360px - 2 * $main-card-padding;
+// }
+
+// .card {
+//   margin-bottom: $layout-margin;
+
+//   &:last-of-type {
+//     margin-bottom: 0;
+//   }
+
+//   :global(.card-body) {
+//     padding: $main-card-padding;
+//   }
+// }
+
+// .tokenTitle {
+//   font-weight: 600;
+//   font-size: 20px;
+//   color: #525f7f;
+//   margin-bottom: 18px;
+// }
+
+// .tokenContainnerInner {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+
+//   .tokenContainer {
+//     display: flex;
+//     align-items: center;
+//     .tokenImg {
+//       width: 24px;
+//       height: 24px;
+//       margin-right: 4px;
+//     }
+//     .tokenName {
+//       font-size: 15px;
+//       font-weight: 400;
+//       margin-right: 6px;
+//       color: #808da0;
+//     }
+//     .tokenBalance {
+//       font-size: 15px;
+//       flex: 1;
+//       color: #808da0;
+//     }
+//   }
+// }
