@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   margin: 3px;
+  color: #808da0;
 }
 
 .buttonRow {
@@ -51,4 +52,5 @@
 .activityContainer {
   padding: 10px;
   border-top: grey solid 0.5px;
+  cursor: pointer;
 }

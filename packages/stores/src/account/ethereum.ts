@@ -261,6 +261,7 @@ export class EthereumAccountImpl {
           hash: Buffer.from(txHash).toString(),
           status: "pending",
           rawTxData: rawTxData,
+          lastSpeedUpAt: new Date(),
         },
         this.kvStore
       );
@@ -344,6 +345,32 @@ export class EthereumAccountImpl {
         }
       }
 
+      // Check if nonce exceeded. This can happen due to race condition in speedup
+      const txCountResult = await this.instance.post("", {
+        jsonrpc: "2.0",
+        id: "1",
+        method: "eth_getTransactionCount",
+        params: [this.base.ethereumHexAddress, "latest"],
+      });
+
+      let currentNonce: number | undefined;
+      if (txCountResult.data && txCountResult.data.result) {
+        currentNonce = parseInt(txCountResult.data.result, 16) - 1;
+      }
+
+      const txn = await this.getTx(transactionHash);
+
+      const isSuccessByNonce =
+        txn &&
+        currentNonce &&
+        txn.rawTxData?.nonce &&
+        BigNumber.from(txn.rawTxData?.nonce).lte(currentNonce);
+
+      if (isSuccessByNonce) {
+        await this.updateTransactionStatus(transactionHash, "success");
+        return true;
+      }
+
       return false;
     } catch (error) {
       console.error("Error checking transaction receipt:", error);
@@ -367,12 +394,7 @@ export class EthereumAccountImpl {
     }
   }
 
-  async updateTransactionStatus(
-    hash: string,
-    status: "pending" | "success" | "failed" | "cancelled"
-    // newHash?: string,
-    // newTxData?: TransactionRequest
-  ) {
+  async updateTransactionStatus(hash: string, status: "success" | "failed") {
     try {
       const key = `${this.base.ethereumHexAddress}-${this.chainId}`;
       const txList: ITxn[] | undefined = await this.kvStore.get(key);
@@ -380,16 +402,16 @@ export class EthereumAccountImpl {
         return;
       }
 
-      let updatedTxList: ITxn[] = [];
       // Find and update the transaction status by hash
-      if (status === "failed") {
-        // if Txn is failed remove hash
-        updatedTxList = txList.filter((txn) => txn.hash !== hash);
-      } else {
-        updatedTxList = txList.map((txn) =>
-          txn.hash === hash ? { ...txn, status } : txn
-        );
-      }
+      const updatedTxList = txList.map((txn) =>
+        txn.hash === hash
+          ? {
+              ...txn,
+              status:
+                status === "success" && txn.cancelled ? "cancelled" : status,
+            }
+          : txn
+      );
 
       if (updatedTxList.length !== 0) {
         await this.kvStore.set(this.base.ethereumHexAddress, updatedTxList);
@@ -432,7 +454,7 @@ export class EthereumAccountImpl {
       jsonrpc: "2.0",
       id: "1",
       method: "eth_getTransactionCount",
-      params: [this.base.ethereumHexAddress, "latest"],
+      params: [this.base.ethereumHexAddress, "pending"],
     });
 
     if (!(txCountResult.data && txCountResult.data.result)) {
@@ -462,7 +484,7 @@ export class EthereumAccountImpl {
         .roundUp()
         .toString();
       rawTxData["type"] = 2;
-      rawTxData["maxFeePerGas"] = gasPrice;
+      rawTxData["maxFeePerGas"] = gasPrice.toString();
       rawTxData["maxPriorityFeePerGas"] = priorityFee;
     } else {
       rawTxData["gasPrice"] = gasPrice.toNumber();
@@ -482,6 +504,14 @@ export class EthereumAccountImpl {
     }
 
     return txList.reverse();
+  }
+
+  async getTx(hash: string) {
+    const txList = await this.getTxList();
+
+    return txList.find((tx) => {
+      return tx.hash === hash;
+    });
   }
 
   makeApprovalTx(amount: string, spender: string, currency: AppCurrency) {
@@ -583,59 +613,69 @@ export class EthereumAccountImpl {
     );
   }
 
-  async cancelTransactionAndBroadcast(pendingTx: ITxn) {
+  async cancelTransactionAndBroadcast(hash: string) {
     try {
+      const pendingTx = await this.getTx(hash);
+
+      if (!pendingTx || !pendingTx.rawTxData) {
+        return;
+      }
+
       // Create a new transaction with the same nonce and the rest of the details
       const newTx: TransactionRequest = {
+        ...pendingTx.rawTxData,
         to: this.base.ethereumHexAddress,
-        gasLimit: pendingTx.rawTxData?.gasLimit,
-        nonce: pendingTx.rawTxData?.nonce,
+        value: 0,
+        data: "",
       };
 
-      // update gas of new transaction (current * 1.5)
-      if (
-        pendingTx.rawTxData &&
-        pendingTx.rawTxData.maxFeePerGas &&
-        pendingTx.rawTxData.type === 2
-      ) {
-        const newCalculatedFee = BigNumber.from(
-          pendingTx.rawTxData.maxPriorityFeePerGas
-        )
-          .mul(BigNumber.from(150))
-          .div(BigNumber.from(100));
-
-        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toString();
-        newTx["maxFeePerGas"] = newCalculatedFee
-          .add(pendingTx.rawTxData.maxFeePerGas)
+      // Provide 15% more gas
+      if (newTx.maxFeePerGas) {
+        newTx.maxFeePerGas = new Dec(newTx.maxFeePerGas.toString())
+          .mul(new Dec(1.15))
+          .roundUp()
           .toString();
-        newTx["data"] = "";
-        newTx["type"] = 2;
+      }
 
-        if (pendingTx.rawTxData?.chainId) {
-          newTx["chainId"] = pendingTx.rawTxData.chainId;
-        }
-      } else if (pendingTx.rawTxData?.gasPrice) {
-        newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
-          .mul(BigNumber.from(150))
-          .div(BigNumber.from(100))
-          .toNumber();
-        newTx["value"] = 0;
+      if (newTx.maxPriorityFeePerGas) {
+        newTx.maxPriorityFeePerGas = new Dec(
+          newTx.maxPriorityFeePerGas.toString()
+        )
+          .mul(new Dec(1.15))
+          .roundUp()
+          .toString();
+      }
+
+      if (newTx.gasPrice) {
+        newTx.gasPrice = new Dec(newTx.gasPrice.toString())
+          .mul(new Dec(1.15))
+          .roundUp()
+          .toBigNumber()
+          .toJSNumber();
       }
 
       // Sign and send the new transaction
-      const resultString = await this.signAndSendEthereumTxn(newTx);
-      await this.updateTransactionStatus(pendingTx.hash, "cancelled");
-      return resultString;
+      const txHash = await this.signAndSendEthereumTxn(newTx);
+      await this.updateStoredTransactionInfo(pendingTx.hash, {
+        ...pendingTx,
+        hash: txHash,
+        cancelled: true,
+        lastSpeedUpAt: new Date(),
+        rawTxData: newTx,
+      });
+
+      return txHash;
     } catch (error) {
       console.error("Error cancelling transaction:", error);
+      throw new Error("Could not cancel transaction");
     }
   }
 
-  async speedUpTransactionAndBroadcast(pendingTxnInfo: ITxn) {
+  async speedUpTransactionAndBroadcast(hash: string) {
     try {
-      const pendingTx = pendingTxnInfo;
-      if (!pendingTx) {
-        console.log("Transaction not found or already confirmed.");
+      const pendingTx = await this.getTx(hash);
+
+      if (!pendingTx || !pendingTx.rawTxData) {
         return;
       }
 
@@ -644,42 +684,44 @@ export class EthereumAccountImpl {
         ...pendingTx.rawTxData,
       };
 
-      // update gas of new transaction (current * 1.5)
-      if (
-        pendingTx.rawTxData &&
-        pendingTx.rawTxData.maxFeePerGas &&
-        pendingTx.rawTxData.type === 2
-      ) {
-        const newCalculatedFee = BigNumber.from(
-          pendingTx.rawTxData.maxPriorityFeePerGas
-        )
-          .mul(BigNumber.from(150))
-          .div(BigNumber.from(100));
-
-        newTx["maxPriorityFeePerGas"] = newCalculatedFee.toString();
-        newTx["maxFeePerGas"] = newCalculatedFee
-          .add(pendingTx.rawTxData.maxFeePerGas)
+      // Provide 15% more gas
+      if (newTx.maxFeePerGas) {
+        newTx.maxFeePerGas = new Dec(newTx.maxFeePerGas.toString())
+          .mul(new Dec(1.15))
+          .roundUp()
           .toString();
-        newTx["data"] = "";
-      } else if (pendingTx.rawTxData?.gasPrice) {
-        newTx["gasPrice"] = BigNumber.from(pendingTx.rawTxData.gasPrice)
-          .mul(BigNumber.from(150))
-          .div(BigNumber.from(100))
-          .toNumber();
       }
 
-      const resultString = await this.signAndSendEthereumTxn(newTx);
+      if (newTx.maxPriorityFeePerGas) {
+        newTx.maxPriorityFeePerGas = new Dec(
+          newTx.maxPriorityFeePerGas.toString()
+        )
+          .mul(new Dec(1.15))
+          .roundUp()
+          .toString();
+      }
 
+      if (newTx.gasPrice) {
+        newTx.gasPrice = new Dec(newTx.gasPrice.toString())
+          .mul(new Dec(1.15))
+          .roundUp()
+          .toBigNumber()
+          .toJSNumber();
+      }
+
+      const newHash = await this.signAndSendEthereumTxn(newTx);
+      console.log("@@@", pendingTx.hash, newHash);
       await this.updateStoredTransactionInfo(pendingTx.hash, {
         ...pendingTx,
-        hash: resultString,
+        hash: newHash,
         rawTxData: newTx,
-        isSpeedUp: true,
+        lastSpeedUpAt: new Date(),
       });
 
-      return resultString;
+      return newHash;
     } catch (error) {
       console.error("Error speeding up transaction:", error);
+      throw new Error("Could not speed up transaction");
     }
   }
 

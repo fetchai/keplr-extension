@@ -84,6 +84,8 @@ export interface ITxn {
   status: "pending" | "success" | "failed" | "cancelled";
   amount?: string;
   symbol?: string;
-  isSpeedUp?: boolean;
+  createdAt?: Date;
+  lastSpeedUpAt?: Date;
+  cancelled?: boolean;
   rawTxData?: TransactionRequest;
 }
