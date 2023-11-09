@@ -204,7 +204,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["evm"],
-    explorerUrl: "https://goerli.etherscan.io/",
+    explorerUrl: "https://goerli.etherscan.io",
   },
   {
     rpc: "https://rpc-cosmoshub.keplr.app",
