@@ -244,8 +244,10 @@ export const TokensView: FunctionComponent = observer(() => {
         {" "}
         {tokens.map((token, i) => {
           return (
-            <div className={styleToken["tokenCard"]}>
-              {" "}
+            <div
+              className={styleToken["tokenCard"]}
+              key={token.currency.coinDenom}
+            >
               <TokenView
                 key={i.toString()}
                 balance={token}

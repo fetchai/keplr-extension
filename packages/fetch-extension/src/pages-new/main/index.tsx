@@ -19,10 +19,13 @@ import { WalletActions } from "./wallet-actions";
 import { WalletDetailsView } from "./wallet-details";
 // import { ToolTip } from "@components/tooltip";
 import { Tab } from "../../new-components-1/tab";
+import { Dropdown } from "../../new-components-1/dropdown";
+import { ChainList } from "../../new-layout-1/header/chain-list";
 
 export const MainPage: FunctionComponent = observer(() => {
-  
   const [activeTab, setActiveTab] = useState("Tokens");
+  const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
+  const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
   const tabNames = ["Tokens", "NFTs", ".FET Domains"];
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
@@ -79,9 +82,10 @@ export const MainPage: FunctionComponent = observer(() => {
       canChangeChainInfo
       menuRenderer={<Menu isOpen={false} />}
       rightRenderer={<SwitchUser />}
-  
     >
       <WalletDetailsView
+        setIsSelectNetOpen={setIsSelectNetOpen}
+        setIsSelectWalletOpen={setIsSelectWalletOpen}
       />
       <WalletActions />
       <div className={style["your-assets"]}>Your assets</div>
@@ -94,6 +98,18 @@ export const MainPage: FunctionComponent = observer(() => {
         {" "}
         {activeTab === "Tokens" && <TokensView />}
       </div>{" "}
+      <Dropdown
+        setIsOpen={setIsSelectNetOpen}
+        isOpen={isSelectNetOpen}
+        title="Change Network"
+      >
+        <ChainList />
+      </Dropdown>
+      <Dropdown
+        setIsOpen={setIsSelectWalletOpen}
+        isOpen={isSelectWalletOpen}
+        title="Change Wallet"
+      />
     </HeaderLayout>
   );
 });

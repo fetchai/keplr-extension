@@ -7,10 +7,7 @@ interface AssetCardProps {
   name: any;
   balance?: any;
 }
-export const AssetCard: React.FC<AssetCardProps> = ({
-  image,
-  name,
-}) => {
+export const AssetCard: React.FC<AssetCardProps> = ({ image, name }) => {
   return (
     <div className={styleToken["tokenContainer"]}>
       <div className={styleToken["tokenImg"]}>

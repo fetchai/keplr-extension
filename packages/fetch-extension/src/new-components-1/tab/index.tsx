@@ -33,5 +33,3 @@ export const Tab: React.FC<TabProps> = ({
     </div>
   );
 };
-
-export default Tab;

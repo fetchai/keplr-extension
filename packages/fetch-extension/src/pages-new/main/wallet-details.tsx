@@ -1,21 +1,22 @@
-import React, { useCallback, useState } from "react";
-import { Button } from "reactstrap";
-import style from "./style.module.scss";
 import { Address } from "@components/address";
-import styleAccount from "../../pages/main/account.module.scss";
-import { useStore } from "../../stores";
-import { useIntl } from "react-intl";
-import { WalletStatus } from "@keplr-wallet/stores";
 import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
+import { WalletStatus } from "@keplr-wallet/stores";
+import React, { useCallback } from "react";
+import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
+import { Button } from "reactstrap";
+import styleAccount from "../../pages/main/account.module.scss";
+import { useStore } from "../../stores";
 import { Assets } from "./assets";
-import { Dropdown } from "../../new-components-1/dropdown";
-import { ChainList } from "@layouts/header/chain-list";
-
+import style from "./style.module.scss";
 
 export const WalletDetailsView = ({
+  setIsSelectNetOpen,
+}: {
+  setIsSelectNetOpen: any;
+  setIsSelectWalletOpen?: any;
 }) => {
   const {
     accountStore,
@@ -24,8 +25,6 @@ export const WalletDetailsView = ({
     uiConfigStore,
     analyticsStore,
   } = useStore();
-  const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
-  const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const current = chainStore.current;
@@ -115,7 +114,6 @@ export const WalletDetailsView = ({
       }
     }
   };
-  console.log(isSelectWalletOpen, setIsSelectWalletOpen);
   return (
     <div className={style["wallet-details"]}>
       {icnsPrimaryName ? (
@@ -204,7 +202,7 @@ export const WalletDetailsView = ({
                 <div onClick={() => copyAddress(accountInfo.bech32Address)}>
                   <Address maxCharacters={22} lineBreakBeforePrefix={false}>
                     {accountInfo.walletStatus === WalletStatus.Loaded &&
-                      accountInfo.bech32Address
+                    accountInfo.bech32Address
                       ? accountInfo.bech32Address
                       : "..."}
                   </Address>
@@ -223,12 +221,12 @@ export const WalletDetailsView = ({
                       tooltipAddress={accountInfo.ethereumHexAddress}
                     >
                       {accountInfo.walletStatus === WalletStatus.Loaded &&
-                        accountInfo.ethereumHexAddress
+                      accountInfo.ethereumHexAddress
                         ? accountInfo.ethereumHexAddress.length === 42
                           ? `${accountInfo.ethereumHexAddress.slice(
-                            0,
-                            10
-                          )}...${accountInfo.ethereumHexAddress.slice(-8)}`
+                              0,
+                              10
+                            )}...${accountInfo.ethereumHexAddress.slice(-8)}`
                           : accountInfo.ethereumHexAddress
                         : "..."}
                     </Address>
@@ -245,7 +243,7 @@ export const WalletDetailsView = ({
         </div>
         <div
           onClick={() => {
-            setIsSelectNetOpen(!isSelectNetOpen);
+            setIsSelectNetOpen(true);
           }}
           className={style["chain-select"]}
         >
@@ -262,9 +260,6 @@ export const WalletDetailsView = ({
       >
         Claim <span className={style["gradient"]}>staking rewards</span>
       </Button>
-      <Dropdown setIsOpen={setIsSelectNetOpen} isOpen={isSelectNetOpen} title="Change Network">
-        <ChainList />
-      </Dropdown>
     </div>
   );
 };

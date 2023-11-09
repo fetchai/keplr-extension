@@ -5,8 +5,11 @@ import moreTabGreyIcon from "@assets/svg/wireframe/new-more.svg";
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
 import { store } from "@chatStore/index";
 import {
-  WalletConfig, notificationsDetails,
-  setNotifications, userDetails, walletConfig
+  WalletConfig,
+  notificationsDetails,
+  setNotifications,
+  userDetails,
+  walletConfig,
 } from "@chatStore/user-slice";
 import { NotificationSetup } from "@notificationTypes";
 import React, { useEffect, useState } from "react";
@@ -32,20 +35,16 @@ const bottomNav = [
   },
 ];
 
-
-
 export const BottomNav = () => {
   return (
     <div>
-    
-        <div className={style["bottomNavContainer"]}>
-          <HomeTab />
-          <ChatTab />
-          <NotificationTab />
-          <ActivityTab />
-          <MoreTab />
-        </div>
-     
+      <div className={style["bottomNavContainer"]}>
+        <HomeTab />
+        <ChatTab />
+        <NotificationTab />
+        <ActivityTab />
+        <MoreTab />
+      </div>
     </div>
   );
 };
