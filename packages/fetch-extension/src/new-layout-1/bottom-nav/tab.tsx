@@ -28,7 +28,7 @@ export const Tab = ({ title, icon, path, disabled, tooltip }: TabProps) => {
   return (
     <div
       id={title}
-      // style={{padding :"12px 24px", marginBottom:"4px"}}
+      style={{ backgroundColor: "#000D3D" }}
       className={`${style["tab"]} `}
       onClick={() => {
         if (!disabled) {

@@ -2,25 +2,26 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 import { HeaderLayout } from "../../new-layout-1";
 
-import { observer } from "mobx-react-lite";
-import { useIntl } from "react-intl";
-import { useConfirm } from "@components/confirm";
-import { SwitchUser } from "@components/switch-user";
-import { useStore } from "../../stores";
-import { Menu } from "../../new-layout-1/menu";
-import style from "./style.module.scss";
-import { AUTH_SERVER } from "../../config.ui.var";
-import { getJWT } from "@utils/auth";
 import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
+import { useConfirm } from "@components/confirm";
+import { SwitchUser } from "@components/switch-user";
 import { getWalletConfig } from "@graphQL/config-api";
-import { WalletDetailsView } from "./wallet-details";
-import { WalletActions } from "./wallet-actions";
+import { getJWT } from "@utils/auth";
+import { observer } from "mobx-react-lite";
+import { useIntl } from "react-intl";
+import { AUTH_SERVER } from "../../config.ui.var";
+import { Menu } from "../../new-layout-1/menu";
+import { useStore } from "../../stores";
+import style from "./style.module.scss";
 import { TokensView } from "./tokens";
+import { WalletActions } from "./wallet-actions";
+import { WalletDetailsView } from "./wallet-details";
 // import { ToolTip } from "@components/tooltip";
-import { Tab } from "../../new-components-1/tab"
+import { Tab } from "../../new-components-1/tab";
 
 export const MainPage: FunctionComponent = observer(() => {
+  
   const [activeTab, setActiveTab] = useState("Tokens");
   const tabNames = ["Tokens", "NFTs", ".FET Domains"];
   const handleTabClick = (tab: any) => {
@@ -78,8 +79,10 @@ export const MainPage: FunctionComponent = observer(() => {
       canChangeChainInfo
       menuRenderer={<Menu isOpen={false} />}
       rightRenderer={<SwitchUser />}
+  
     >
-      <WalletDetailsView />
+      <WalletDetailsView
+      />
       <WalletActions />
       <div className={style["your-assets"]}>Your assets</div>
       <Tab
@@ -87,9 +90,10 @@ export const MainPage: FunctionComponent = observer(() => {
         activeTab={activeTab}
         onTabClick={handleTabClick}
       />
-
-   <div style={{marginTop:"18px"}}> {activeTab === "Tokens" && <TokensView />}</div>  {" "}
-
+      <div style={{ marginTop: "18px" }}>
+        {" "}
+        {activeTab === "Tokens" && <TokensView />}
+      </div>{" "}
     </HeaderLayout>
   );
 });

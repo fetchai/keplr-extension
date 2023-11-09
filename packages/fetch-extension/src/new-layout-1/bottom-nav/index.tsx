@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { userDetails } from "@chatStore/user-slice";
-import {
-  notificationsDetails,
-  setNotifications,
-  walletConfig,
-  WalletConfig,
-} from "@chatStore/user-slice";
-import chatTabGreyIcon from "@assets/svg/wireframe/new-inbox.svg";
+import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
+import chatTabGreyIcon from "@assets/svg/wireframe/new-inbox.svg";
 import moreTabGreyIcon from "@assets/svg/wireframe/new-more.svg";
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
-import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
+import { store } from "@chatStore/index";
+import {
+  WalletConfig, notificationsDetails,
+  setNotifications, userDetails, walletConfig
+} from "@chatStore/user-slice";
+import { NotificationSetup } from "@notificationTypes";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-import { NotificationSetup } from "@notificationTypes";
-import { store } from "@chatStore/index";
 // import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 const bottomNav = [
@@ -35,14 +32,20 @@ const bottomNav = [
   },
 ];
 
+
+
 export const BottomNav = () => {
   return (
-    <div className={style["bottomNavContainer"]}>
-      <HomeTab />
-      <ChatTab />
-      <NotificationTab />
-      <ActivityTab />
-      <MoreTab />
+    <div>
+    
+        <div className={style["bottomNavContainer"]}>
+          <HomeTab />
+          <ChatTab />
+          <NotificationTab />
+          <ActivityTab />
+          <MoreTab />
+        </div>
+     
     </div>
   );
 };

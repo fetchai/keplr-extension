@@ -240,7 +240,7 @@ export const TokensView: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   return (
     <div className={styleToken["tokenContainnerInner"]}>
-      <div>
+      <div style={{ marginBottom: "80px" }}>
         {" "}
         {tokens.map((token, i) => {
           return (
