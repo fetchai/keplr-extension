@@ -1,5 +1,7 @@
 import React from "react";
-
+import style from "./style.module.scss"
+import { Button } from "reactstrap";
+import { useStore } from "../../stores";
 interface TabProps {
   tabNames: string[];
   activeTab: string;
@@ -14,21 +16,28 @@ export const Tab: React.FC<TabProps> = ({
   const handleTabClick = (title: string) => {
     onTabClick(title);
   };
+  const { chainStore } = useStore()
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
 
   return (
-    <div style={{ display: "flex", cursor: "pointer" }}>
+    <div className={style["tab-container"]}>
       {tabNames.map((tab, index) => (
-        <div
+        <Button
+          disabled={isEvm && (tab === "Available" || tab === "Staked")}
           style={{
-            background: `${activeTab === tab ? "#ffffff33" : "transparent"}`,
-            borderRadius: "8px",
+            boxShadow: "none",
+            color: `${activeTab !== tab ? "#ffff" : "#000d3d"}`,
+            borderRadius: "100px",
+            background: `${activeTab === tab ? "white" : "transparent"}`,
+            border: `${activeTab === tab ? "white" : "transparent"}`,
+
           }}
           key={index}
           onClick={() => handleTabClick(tab)}
-          className={`px-2 py-1 text-white`}
+          className={`${activeTab === tab ? "m-0 px-3 py-1 bg-white" : "m-0 px-3 py-1 text-white"}`}
         >
           {tab}
-        </div>
+        </Button>
       ))}
     </div>
   );

@@ -1,5 +1,5 @@
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
-import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
+import homeTabIcon from "@assets/svg/wireframe/grid (1).svg";
 import chatTabGreyIcon from "@assets/svg/wireframe/new-inbox.svg";
 import moreTabGreyIcon from "@assets/svg/wireframe/new-more.svg";
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
@@ -37,7 +37,7 @@ const bottomNav = [
 
 export const BottomNav = () => {
   return (
-    <div>
+    
       <div className={style["bottomNavContainer"]}>
         <HomeTab />
         <ChatTab />
@@ -45,7 +45,7 @@ export const BottomNav = () => {
         <ActivityTab />
         <MoreTab />
       </div>
-    </div>
+    
   );
 };
 

@@ -19,7 +19,6 @@ export const WalletActions = observer(() => {
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
     undefined;
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
-
   const isStakableInApp = [CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(
     chainStore.current.chainId
   );
@@ -33,16 +32,17 @@ export const WalletActions = observer(() => {
 
   return (
     <div className={style["actions"]}>
-      <div className={style["action"]}>
+      <button disabled className={style["action"]}>
         <img
           style={{ width: "42px", height: "42px" }}
           src={require("@assets/svg/wireframe/arrow-down.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Recieve</div>
-      </div>
+      </button>
 
-      <div
+      <button
+        disabled={!hasAssets}
         className={style["action"]}
         onClick={() => {
           if (hasAssets) {
@@ -51,20 +51,29 @@ export const WalletActions = observer(() => {
         }}
       >
         <img
-          style={{ width: "42px", height: "42px" }}
+          className="w-42 h-42 "
+          style={{
+            background: "rgba(255, 255, 255, 0.20)",
+            borderRadius: "100px",
+          }}
+          // className={style["action-icon"]}
           src={require("@assets/svg/wireframe/arrow-up.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Send</div>
-      </div>
-      <div className={style["action"]}>
+      </button>
+      <button disabled className={style["action"]}>
         <img
-          style={{ width: "42px", height: "42px" }}
+          className="w-42 h-42 "
+          style={{
+            background: "rgba(255, 255, 255, 0.20)",
+            borderRadius: "100px",
+          }}
           src={require("@assets/svg/wireframe/swap.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Swap</div>
-      </div>
+      </button>
       {isStakableInApp && (
         <div
           onClick={() =>
@@ -77,7 +86,11 @@ export const WalletActions = observer(() => {
           className={style["action"]}
         >
           <img
-            style={{ width: "42px", height: "42px" }}
+            className="w-42 h-42 "
+            style={{
+              background: "rgba(255, 255, 255, 0.20)",
+              borderRadius: "100px",
+            }}
             src={require("@assets/svg/wireframe/stake.svg")}
             alt=""
           />
@@ -85,7 +98,7 @@ export const WalletActions = observer(() => {
         </div>
       )}
 
-      <div
+      <button
         onClick={() => {
           if (isEvm) {
             navigate("/axl-bridge-evm");
@@ -96,20 +109,28 @@ export const WalletActions = observer(() => {
         className={style["action"]}
       >
         <img
-          style={{ width: "42px", height: "42px" }}
+          className="w-42 h-42 "
+          style={{
+            background: "rgba(255, 255, 255, 0.20)",
+            borderRadius: "100px",
+          }}
           src={require("@assets/svg/wireframe/bridge.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Bridge</div>
-      </div>
-      <div className={style["action"]}>
+      </button>
+      <button disabled className={style["action"]}>
         <img
-          style={{ width: "42px", height: "42px" }}
+          className="w-42 h-42 "
+          style={{
+            background: "rgba(255, 255, 255, 0.20)",
+            borderRadius: "100px",
+          }}
           src={require("@assets/svg/wireframe/buy.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Buy</div>
-      </div>
+      </button>
     </div>
   );
 });

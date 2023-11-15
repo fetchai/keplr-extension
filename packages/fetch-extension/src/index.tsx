@@ -108,6 +108,7 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
+import { ChangeWallet } from "./pages-new/main/wallet-options/change-wallet";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -417,6 +418,10 @@ ReactDOM.render(
                       <Route
                         path="/setting/addEvmChain"
                         element={<AddEvmChain />}
+                      />
+                      <Route
+                        path="/changewallet"
+                        element={<ChangeWallet />}
                       />
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>

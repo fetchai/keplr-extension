@@ -11,9 +11,11 @@ import styleAccount from "../../pages/main/account.module.scss";
 import { useStore } from "../../stores";
 import { Assets } from "./assets";
 import style from "./style.module.scss";
+import { ButtonGradient } from "../../new-components-1/button-gradient";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
+  setIsSelectWalletOpen,
 }: {
   setIsSelectNetOpen: any;
   setIsSelectWalletOpen?: any;
@@ -158,12 +160,6 @@ export const WalletDetailsView = ({
                 }
               })()}
             </div>
-            <img
-              onClick={() => navigate("/setting/set-keyring")}
-              style={{ cursor: "pointer" }}
-              src={require("@assets/svg/wireframe/chevron-down.svg")}
-              alt=""
-            />
           </div>
           <div className={style["address"]}>
             {accountInfo.walletStatus === WalletStatus.Rejected && (
@@ -200,14 +196,13 @@ export const WalletDetailsView = ({
             {accountInfo.walletStatus !== WalletStatus.Rejected && !isEvm && (
               <div>
                 <div onClick={() => copyAddress(accountInfo.bech32Address)}>
-                  <Address maxCharacters={22} lineBreakBeforePrefix={false}>
+                  <Address maxCharacters={16} lineBreakBeforePrefix={false}>
                     {accountInfo.walletStatus === WalletStatus.Loaded &&
                     accountInfo.bech32Address
                       ? accountInfo.bech32Address
                       : "..."}
                   </Address>
                 </div>
-                <div style={{ flex: 1 }} />
               </div>
             )}
             {accountInfo.walletStatus !== WalletStatus.Rejected &&
@@ -225,8 +220,8 @@ export const WalletDetailsView = ({
                         ? accountInfo.ethereumHexAddress.length === 42
                           ? `${accountInfo.ethereumHexAddress.slice(
                               0,
-                              10
-                            )}...${accountInfo.ethereumHexAddress.slice(-8)}`
+                              6
+                            )}...${accountInfo.ethereumHexAddress.slice(-6)}`
                           : accountInfo.ethereumHexAddress
                         : "..."}
                     </Address>
@@ -234,32 +229,49 @@ export const WalletDetailsView = ({
                   <div style={{ flex: 1 }} />
                 </div>
               )}
-            <img
-              // style={{ height: "12px", width: "12px" }}
-              src={require("@assets/svg/wireframe/copy.svg")}
-              alt=""
-            />
+            <img src={require("@assets/svg/wireframe/copy.svg")} alt="" />
           </div>
         </div>
         <div
-          onClick={() => {
-            setIsSelectNetOpen(true);
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
-          className={style["chain-select"]}
         >
-          {current.chainName}
-          <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
+          <Button
+            onClick={() => setIsSelectWalletOpen(true)}
+            className={style["change-net"]}
+          >
+            <img
+              style={{ width: "32px", height: "32px" }}
+              src={require("@assets/svg/wireframe/changeNet.svg")}
+              alt=""
+            />
+          </Button>
+          <Button
+            onClick={() => {
+              setIsSelectNetOpen(true);
+            }}
+            className={style["chain-select"]}
+          >
+            {current.chainName}
+            <img
+              src={require("@assets/svg/wireframe/chevron-down.svg")}
+              alt=""
+            />
+          </Button>
         </div>
       </div>
       <Assets />
-      <Button
-        onClick={withdrawAllRewards}
-        data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
-        className={style["btn"]}
-        style={{ width: "100%" }}
-      >
-        Claim <span className={style["gradient"]}>staking rewards</span>
-      </Button>
+      {!isEvm && (
+        <ButtonGradient
+          onClick={withdrawAllRewards}
+          data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
+          text={"claim"}
+          gradientText={"staking rewards"}
+        />
+      )}
     </div>
   );
 };

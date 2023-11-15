@@ -83,12 +83,12 @@ export const Assets = observer(() => {
             stakable.shrink(true).maxDecimals(6).toString()}
         </div>
       )}
-      {activeTab === "Available" && (
+      {activeTab === "Available" && !isEvm && (
         <div className={style["balance"]}>
           {!isEvm && stakable.shrink(true).maxDecimals(6).toString()}
         </div>
       )}
-      {activeTab === "Staked" && (
+      {activeTab === "Staked" && !isEvm && (
         <div className={style["balance"]}>
           {!isEvm && stakedSum.shrink(true).maxDecimals(6).toString()}
         </div>

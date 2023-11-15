@@ -27,32 +27,12 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
     },
   };
 
-  const containerStyles: CSSProperties = {
-    transition: "filter 0.3s ease-in-out",
-    position: "relative",
-  };
-
-  const bottomNavStyles: CSSProperties = {
-    position: "fixed",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 200,
-  };
-
   return (
     <MenuProvider value={menuContext}>
-      <div
-        style={{ ...containerStyles, ...props.style }}
-        className={style["container"]}
-      >
+      <div className={style["container"]} style={props.style}>
         <div className={style["innerContainer"]}>{children}</div>
+        {(props.showBottomMenu ?? true) && <BottomNav />}
       </div>
-      {(props.showBottomMenu ?? true) && (
-        <div style={bottomNavStyles}>
-          <BottomNav />
-        </div>
-      )}
     </MenuProvider>
   );
 };

@@ -1,0 +1,11 @@
+@import "../../styles/var";
+.btn {
+    border-radius: 100px;
+    margin-top: 18px;
+  }
+  
+  .gradient {
+    background: $gradient;
+    -webkit-background-clip: text;
+    color: transparent;
+  }

@@ -110,7 +110,7 @@ export const AxelarBridgeCosmos = observer(() => {
       alternativeTitle={"Axelar Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
-        navigate("/more");
+        navigate(-1);
       }}
     >
       {isFetchingAddress && (

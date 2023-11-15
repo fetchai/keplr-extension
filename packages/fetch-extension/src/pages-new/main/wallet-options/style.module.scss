@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.inner-field {
+  cursor: pointer;
+  color: white;
+  background: transparent !important;
+  border: 0px;
+  border-radius: 18px;
+  display: flex;
+  padding: 18px 12px;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+}
+.optins-icon {
+  width: 18px;
+  height: 18px;
+}
