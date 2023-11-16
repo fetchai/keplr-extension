@@ -86,7 +86,7 @@ export const getJWT = async (chainId: string, url: string) => {
   );
 
   if (!pubKey.publicKey) throw new Error("public key not found");
-  console.log("@@@pkey", pubKey.publicKey);
+
   const addr = Bech32.encode(
     "fetch",
     rawSecp256k1PubkeyToRawAddress(fromHex(pubKey.publicKey))
@@ -110,7 +110,6 @@ export const getJWT = async (chainId: string, url: string) => {
     signature = await signArbitrary(
       chainId,
       addr,
-      // pubKey.publicKey,
       r1.data.challenge,
       requester
     );
@@ -149,18 +148,6 @@ export const getJWT = async (chainId: string, url: string) => {
   if (r3.status !== 200) {
     throw new RequestError(r3.statusText);
   }
-
-  const r4 = await axios.get(`${url}/profile`, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      Authorization: `Bearer ${r3.data.access_token}`,
-    },
-  });
-  if (r4.status !== 200) {
-    throw new RequestError(r4.statusText);
-  }
-
-  console.log("@!@@", r4.data);
 
   return r3.data.access_token;
 };
