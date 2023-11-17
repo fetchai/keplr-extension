@@ -9,89 +9,12 @@ import {
   setIsChatSubscriptionActive,
 } from "@chatStore/messages-slice";
 import { resetUser } from "@chatStore/user-slice";
-// import { useConfirm } from "@components/confirm";
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
-// import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
 import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "../../new-components-1/card";
 import { ButtonGradient } from "../../new-components-1/button-gradient";
-
-// const ChainElement: FunctionComponent<{
-//   chainInfo: ChainInfoWithCoreTypes;
-// }> = observer(({ chainInfo }) => {
-//   const { chainStore, analyticsStore } = useStore();
-//   const navigate = useNavigate();
-//   const intl = useIntl();
-
-//   const confirm = useConfirm();
-
-//   return (
-//     <>
-//       {console.log(chainInfo)}
-//       {/* <Card heading={"chainInfo.chainId"} rightContent={undefined} /> */}
-//       <div
-//         className={classnames({
-//           [style["chainName"]]: true,
-//           selected: chainInfo.chainId === chainStore.current.chainId,
-//         })}
-//         onClick={() => {
-//           let properties = {};
-//           if (chainInfo.chainId !== chainStore.current.chainId) {
-//             properties = {
-//               chainId: chainStore.current.chainId,
-//               chainName: chainStore.current.chainName,
-//               toChainId: chainInfo.chainId,
-//               toChainName: chainInfo.chainName,
-//             };
-//           }
-//           chainStore.selectChain(chainInfo.chainId);
-//           chainStore.saveLastViewChainId();
-//           store.dispatch(resetUser({}));
-//           store.dispatch(resetProposals({}));
-
-//           store.dispatch(resetChatList({}));
-//           store.dispatch(setIsChatSubscriptionActive(false));
-//           messageAndGroupListenerUnsubscribe();
-//           navigate("/");
-//           if (Object.values(properties).length > 0) {
-//             analyticsStore.logEvent("Chain changed", properties);
-//           }
-//         }}
-//       >
-//         {chainInfo.chainName}
-//         {!chainInfo.embeded &&
-//         chainStore.current.chainId !== chainInfo.chainId ? (
-//           <div className={style["removeBtn"]}>
-//             <i
-//               className="fas fa-times-circle"
-//               onClick={async (e) => {
-//                 e.preventDefault();
-//                 e.stopPropagation();
-
-//                 if (
-//                   await confirm.confirm({
-//                     paragraph: intl.formatMessage(
-//                       {
-//                         id: "chain.remove.confirm.paragraph",
-//                       },
-//                       {
-//                         chainName: chainInfo.chainName,
-//                       }
-//                     ),
-//                   })
-//                 ) {
-//                   await chainStore.removeChainInfo(chainInfo.chainId);
-//                 }
-//               }}
-//             />
-//           </div>
-//         ) : null}
-//       </div>
-//     </>
-//   );
-// });
 
 export const ChainList: FunctionComponent = observer(() => {
   const { chainStore, analyticsStore } = useStore();

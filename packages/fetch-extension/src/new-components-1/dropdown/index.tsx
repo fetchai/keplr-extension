@@ -5,7 +5,7 @@ interface DropdownProps {
   isOpen?: boolean;
   title: string;
   setIsOpen: any;
-  closeClicked:any;
+  closeClicked: any;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -13,7 +13,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   title,
   setIsOpen,
   isOpen,
-  closeClicked
+  closeClicked,
 }) => {
   return isOpen ? (
     <React.Fragment>

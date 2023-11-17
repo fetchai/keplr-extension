@@ -2,7 +2,7 @@
 
 .wallet-details {
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 10px 10px 50px 0px rgba(255, 255, 255, 0.10) inset;
+  box-shadow: 10px 10px 50px 0px rgba(255, 255, 255, 0.1) inset;
   backdrop-filter: blur(25px);
   padding: $p-lg;
   width: 100%;
@@ -25,6 +25,8 @@
 
 .address {
   opacity: 0.6;
+  display: flex;
+  flex-direction: column;
 }
 
 .chain-select {
@@ -40,21 +42,20 @@
   border: 0px;
   color: white;
   box-shadow: none;
-
 }
-.chain-select:hover ,.change-net, .change-net:hover{
-  color:white;
+.chain-select:hover,
+.change-net,
+.change-net:hover {
+  color: white;
   background: transparent !important;
   box-shadow: none;
-  
 }
-.change-net{
+.change-net {
   width: 32px !important;
-  height: 32px !important;  
-padding: 0px;
-border: 0px;
-border-radius: 100px;
-
+  height: 32px !important;
+  padding: 0px;
+  border: 0px;
+  border-radius: 100px;
 }
 
 .tab {

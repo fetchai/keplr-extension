@@ -15,8 +15,8 @@ import { Menu, useMenu, MenuButton } from "../menu";
 import { motion } from "framer-motion";
 
 export interface Props {
-  showChainName: boolean;
-  canChangeChainInfo: boolean;
+  showChainName?: boolean;
+  canChangeChainInfo?: boolean;
 
   alternativeTitle?: string;
   smallTitle?: boolean;

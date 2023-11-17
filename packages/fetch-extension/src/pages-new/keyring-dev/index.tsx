@@ -22,7 +22,8 @@ import { Card } from "../../new-components-1/card";
 export const SetKeyRingPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
-  const { keyRingStore, analyticsStore } = useStore();
+  const { keyRingStore, analyticsStore, accountStore, chainStore } = useStore();
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const navigate = useNavigate();
   const loadingIndicator = useLoadingIndicator();
   return (
@@ -86,7 +87,7 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                 ? require("@assets/svg/wireframe/check.svg")
                 : ""
             }
-            // subheading={"subheading"}
+            subheading={keyStore.selected ? accountInfo.bech32Address : ""}
             isActive={keyStore.selected}
             onClick={
               keyStore.selected

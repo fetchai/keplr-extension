@@ -9,9 +9,10 @@ import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
 import styleAccount from "../../pages/main/account.module.scss";
 import { useStore } from "../../stores";
-import { Assets } from "./assets";
+import { Assets } from "./balances";
 import style from "./style.module.scss";
 import { ButtonGradient } from "../../new-components-1/button-gradient";
+import { formatAddress } from "@utils/format";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
@@ -135,7 +136,7 @@ export const WalletDetailsView = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: "24px",
+          marginBottom: "18px",
         }}
       >
         <div>
@@ -209,6 +210,11 @@ export const WalletDetailsView = ({
               (isEvm || accountInfo.hasEthereumHexAddress) && (
                 <div>
                   <div
+                    style={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: "3px",
+                    }}
                     onClick={() => copyAddress(accountInfo.ethereumHexAddress)}
                   >
                     <Address
@@ -225,11 +231,13 @@ export const WalletDetailsView = ({
                           : accountInfo.ethereumHexAddress
                         : "..."}
                     </Address>
+                    <img
+                      src={require("@assets/svg/wireframe/copy.svg")}
+                      alt=""
+                    />
                   </div>
-                  <div style={{ flex: 1 }} />
                 </div>
               )}
-            <img src={require("@assets/svg/wireframe/copy.svg")} alt="" />
           </div>
         </div>
         <div
@@ -255,7 +263,7 @@ export const WalletDetailsView = ({
             }}
             className={style["chain-select"]}
           >
-            {current.chainName}
+            {formatAddress(current.chainName)}
             <img
               src={require("@assets/svg/wireframe/chevron-down.svg")}
               alt=""

@@ -5,33 +5,27 @@ import { HeaderLayout } from "../../new-layout-1";
 import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
 import { useConfirm } from "@components/confirm";
-import { SwitchUser } from "@components/switch-user";
 import { getWalletConfig } from "@graphQL/config-api";
 import { getJWT } from "@utils/auth";
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { AUTH_SERVER } from "../../config.ui.var";
-import { Menu } from "../../new-layout-1/menu";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { TokensView } from "./tokens";
 import { WalletActions } from "./wallet-actions";
 import { WalletDetailsView } from "./wallet-details";
 // import { ToolTip } from "@components/tooltip";
-import { Tab } from "../../new-components-1/tab";
+import { TabsPanel } from "../../new-components-1/tabsPanel";
 import { Dropdown } from "../../new-components-1/dropdown";
 import { ChainList } from "../../new-layout-1/header/chain-list";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { WalletOptions } from "./wallet-options";
 
 export const MainPage: FunctionComponent = observer(() => {
-  const [activeTab, setActiveTab] = useState("Tokens");
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
-  const tabNames = ["Tokens", "NFTs", ".FET Domains"];
-  const handleTabClick = (tab: any) => {
-    setActiveTab(tab);
-  };
+
   const intl = useIntl();
   const {
     chainStore,
@@ -83,7 +77,12 @@ export const MainPage: FunctionComponent = observer(() => {
           console.log(error);
         });
     });
-  }, [chainStore.current.chainId, accountInfo.bech32Address]);
+  }, [
+    chainStore,
+    chainStore.current.chainId,
+    accountInfo.bech32Address,
+    keyRingStore.keyRingType,
+  ]);
   const icnsPrimaryName = (() => {
     if (
       uiConfigStore.icnsInfo &&
@@ -98,32 +97,26 @@ export const MainPage: FunctionComponent = observer(() => {
       return icnsQuery.primaryName;
     }
   })();
+  const tabs = [
+    { id: "Tokens", component: <TokensView /> },
+    { id: "NFTs", disabled: true },
+    { id: ".FET Domains", disabled: true },
+  ];
+
   return (
-    <HeaderLayout
-      showChainName
-      canChangeChainInfo
-      menuRenderer={<Menu isOpen={false} />}
-      rightRenderer={<SwitchUser />}
-    >
+    <HeaderLayout>
       <WalletDetailsView
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
       />
       <WalletActions />
       <div className={style["your-assets"]}>Your assets</div>
-      <Tab
-        tabNames={tabNames}
-        activeTab={activeTab}
-        onTabClick={handleTabClick}
-      />
-      <div style={{ marginTop: "18px" }}>
-        {activeTab === "Tokens" && <TokensView />}
-      </div>
+      <TabsPanel tabs={tabs} />
       <Dropdown
         setIsOpen={setIsSelectNetOpen}
         isOpen={isSelectNetOpen}
         title="Change Network"
-        closeClicked={()=>setIsSelectNetOpen(false)}
+        closeClicked={() => setIsSelectNetOpen(false)}
       >
         <ChainList />
       </Dropdown>
@@ -147,7 +140,7 @@ export const MainPage: FunctionComponent = observer(() => {
             return "Loading...";
           }
         })()}
-        closeClicked={()=>setIsSelectWalletOpen(false)}
+        closeClicked={() => setIsSelectWalletOpen(false)}
       >
         <WalletOptions />
       </Dropdown>

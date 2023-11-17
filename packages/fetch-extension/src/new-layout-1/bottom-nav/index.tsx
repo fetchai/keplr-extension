@@ -37,15 +37,13 @@ const bottomNav = [
 
 export const BottomNav = () => {
   return (
-    
-      <div className={style["bottomNavContainer"]}>
-        <HomeTab />
-        <ChatTab />
-        <NotificationTab />
-        <ActivityTab />
-        <MoreTab />
-      </div>
-    
+    <div className={style["bottomNavContainer"]}>
+      <HomeTab />
+      <ChatTab />
+      <NotificationTab />
+      <ActivityTab />
+      <MoreTab />
+    </div>
   );
 };
 

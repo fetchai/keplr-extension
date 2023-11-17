@@ -419,10 +419,7 @@ ReactDOM.render(
                         path="/setting/addEvmChain"
                         element={<AddEvmChain />}
                       />
-                      <Route
-                        path="/changewallet"
-                        element={<ChangeWallet />}
-                      />
+                      <Route path="/changewallet" element={<ChangeWallet />} />
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

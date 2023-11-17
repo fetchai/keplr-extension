@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import style from "./style.module.scss";
 import { useStore } from "../../stores";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { useLanguage } from "../../languages";
 import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
-import { Tab } from "../../new-components-1/tab";
+import { TabsPanel } from "../../new-components-1/tabsPanel";
 
 export const Assets = observer(() => {
-  const [activeTab, setActiveTab] = useState("Your Balance");
-  const tabNames = ["Your Balance", "Available", "Staked"];
-  const handleTabClick = (tab: any) => {
-    setActiveTab(tab);
-  };
-
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
 
   const language = useLanguage();
@@ -38,7 +32,6 @@ export const Assets = observer(() => {
   );
 
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
-
   const stakable = (() => {
     if (isNoble && hasUSDC) {
       return balanceQuery.getBalanceFromCurrency(hasUSDC);
@@ -62,37 +55,45 @@ export const Assets = observer(() => {
   const stakableReward = rewards.stakableReward;
   const stakedSum = delegated.add(unbonding);
   const total = stakable.add(stakedSum).add(stakableReward);
-  const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
-  return (
-    <div className={style["balance-field"]}>
-      <Tab
-        tabNames={tabNames}
-        activeTab={activeTab}
-        onTabClick={handleTabClick}
-      />
 
-      {activeTab === "Your Balance" && (
+  const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
+  const tabs = [
+    {
+      id: "Your Balance",
+      component: (
         <div className={style["balance"]}>
-          {" "}
           {totalPrice
             ? totalPrice.toString()
             : total.shrink(true).trim(true).maxDecimals(6).toString()}
           {isEvm &&
             totalPrice &&
-            activeTab === "Your Balance" &&
             stakable.shrink(true).maxDecimals(6).toString()}
         </div>
-      )}
-      {activeTab === "Available" && !isEvm && (
+      ),
+      disabled: false,
+    },
+    {
+      id: "Available",
+      component: (
         <div className={style["balance"]}>
           {!isEvm && stakable.shrink(true).maxDecimals(6).toString()}
         </div>
-      )}
-      {activeTab === "Staked" && !isEvm && (
+      ),
+      disabled: isEvm,
+    },
+    {
+      id: "Staked",
+      component: (
         <div className={style["balance"]}>
           {!isEvm && stakedSum.shrink(true).maxDecimals(6).toString()}
         </div>
-      )}
+      ),
+      disabled: isEvm,
+    },
+  ];
+  return (
+    <div className={style["balance-field"]}>
+      <TabsPanel tabs={tabs} />
     </div>
   );
 });

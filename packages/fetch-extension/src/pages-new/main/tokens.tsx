@@ -10,7 +10,7 @@ import { useNotification } from "@components/notification";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { Dec } from "@keplr-wallet/unit";
 import { DenomHelper } from "@keplr-wallet/common";
-import { Card } from "../..//new-components-1/card";
+import { Card } from "../../new-components-1/card";
 import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
 
@@ -108,7 +108,7 @@ export const TokensView: FunctionComponent = observer(() => {
           };
           const tokenInfo = token.balance.currency;
           return (
-            <>
+            <React.Fragment>
               <Card
                 leftImage={
                   tokenInfo.coinImageUrl
@@ -131,7 +131,7 @@ export const TokensView: FunctionComponent = observer(() => {
                   )
                 }
                 subheadingStyle={{ fontSize: "14px", color: "#808da0" }}
-                rightContent={"$0"}
+                rightContent={""}
                 style={{
                   background: "rgba(255, 255, 255, 0.12)",
                   height: "78px",
@@ -201,7 +201,7 @@ export const TokensView: FunctionComponent = observer(() => {
                   )}
                 </div>
               ) : null}
-            </>
+            </React.Fragment>
           );
         })}
       </div>
