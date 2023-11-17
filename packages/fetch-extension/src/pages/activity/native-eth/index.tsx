@@ -44,7 +44,7 @@ const TransactionItem: FunctionComponent<{
       case "ContractInteraction":
         return contractIcon;
       default:
-        return sendIcon;
+        return contractIcon;
     }
   };
 

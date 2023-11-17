@@ -251,8 +251,6 @@ export class EthereumAccountImpl {
           onFulfill?: (tx: any) => void;
         }
   ) {
-    this.base.setTxTypeInProgress(type);
-
     let txHash: string, rawTxData: TransactionRequest;
     try {
       ({ txHash, rawTxData } = await this.broadcastTx(params, fee));
@@ -266,8 +264,6 @@ export class EthereumAccountImpl {
         this.kvStore
       );
     } catch (e: any) {
-      this.base.setTxTypeInProgress("");
-
       if (
         onTxEvents &&
         "onBroadcastFailed" in onTxEvents &&
@@ -297,8 +293,6 @@ export class EthereumAccountImpl {
 
     const provider = this.ethersInstance;
     provider.once(txHash, (tx) => {
-      this.base.setTxTypeInProgress("");
-
       for (const feeAmount of fee.amount) {
         const bal = this.queries.queryBalances
           .getQueryBech32Address(this.base.bech32Address)
@@ -664,6 +658,10 @@ export class EthereumAccountImpl {
         rawTxData: newTx,
       });
 
+      const provider = this.ethersInstance;
+      const listeners = provider.listeners(pendingTx.hash);
+      provider.removeAllListeners(pendingTx.hash).once(txHash, listeners[0]);
+
       return txHash;
     } catch (error) {
       console.error("Error cancelling transaction:", error);
@@ -710,13 +708,16 @@ export class EthereumAccountImpl {
       }
 
       const newHash = await this.signAndSendEthereumTxn(newTx);
-      console.log("@@@", pendingTx.hash, newHash);
       await this.updateStoredTransactionInfo(pendingTx.hash, {
         ...pendingTx,
         hash: newHash,
         rawTxData: newTx,
         lastSpeedUpAt: new Date(),
       });
+
+      const provider = this.ethersInstance;
+      const listeners = provider.listeners(pendingTx.hash);
+      provider.removeAllListeners(pendingTx.hash).once(newHash, listeners[0]);
 
       return newHash;
     } catch (error) {
