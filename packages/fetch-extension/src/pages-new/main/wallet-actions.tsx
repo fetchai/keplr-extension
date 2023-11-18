@@ -32,7 +32,7 @@ export const WalletActions = observer(() => {
 
   return (
     <div className={style["actions"]}>
-      <button disabled className={style["action"]}>
+      <button className={style["action"]} onClick={() => navigate("/receive")}>
         <img
           style={{ width: "42px", height: "42px" }}
           src={require("@assets/svg/wireframe/arrow-down.svg")}
@@ -56,23 +56,10 @@ export const WalletActions = observer(() => {
             background: "rgba(255, 255, 255, 0.20)",
             borderRadius: "100px",
           }}
-          // className={style["action-icon"]}
           src={require("@assets/svg/wireframe/arrow-up.svg")}
           alt=""
         />
         <div className={style["img-title"]}>Send</div>
-      </button>
-      <button disabled className={style["action"]}>
-        <img
-          className="w-42 h-42 "
-          style={{
-            background: "rgba(255, 255, 255, 0.20)",
-            borderRadius: "100px",
-          }}
-          src={require("@assets/svg/wireframe/swap.svg")}
-          alt=""
-        />
-        <div className={style["img-title"]}>Swap</div>
       </button>
       {isStakableInApp && (
         <div
@@ -118,18 +105,6 @@ export const WalletActions = observer(() => {
           alt=""
         />
         <div className={style["img-title"]}>Bridge</div>
-      </button>
-      <button disabled className={style["action"]}>
-        <img
-          className="w-42 h-42 "
-          style={{
-            background: "rgba(255, 255, 255, 0.20)",
-            borderRadius: "100px",
-          }}
-          src={require("@assets/svg/wireframe/buy.svg")}
-          alt=""
-        />
-        <div className={style["img-title"]}>Buy</div>
       </button>
     </div>
   );

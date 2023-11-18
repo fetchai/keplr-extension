@@ -15,11 +15,13 @@ import style from "./chain-list.module.scss";
 import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "../../new-components-1/card";
 import { ButtonGradient } from "../../new-components-1/button-gradient";
+import { useConfirm } from "@components/confirm";
 
 export const ChainList: FunctionComponent = observer(() => {
   const { chainStore, analyticsStore } = useStore();
   const intl = useIntl();
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const mainChainList = chainStore.chainInfosInUI.filter(
     (chainInfo) => !chainInfo.beta && !chainInfo.features?.includes("evm")
@@ -139,11 +141,26 @@ export const ChainList: FunctionComponent = observer(() => {
           }
           heading={chainInfo.chainName}
           isActive={chainInfo.chainId === chainStore.current.chainId}
-          rightContent={
-            chainInfo.chainId === chainStore.current.chainId
-              ? require("@assets/svg/wireframe/check.svg")
-              : ""
-          }
+          rightContent={require("@assets/svg/wireframe/closeImage.svg")}
+          rightContentOnClick={async (e: any) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (
+              await confirm.confirm({
+                paragraph: intl.formatMessage(
+                  {
+                    id: "chain.remove.confirm.paragraph",
+                  },
+                  {
+                    chainName: chainInfo.chainName,
+                  }
+                ),
+              })
+            ) {
+              await chainStore.removeChainInfo(chainInfo.chainId);
+            }
+          }}
           onClick={() => {
             let properties = {};
             if (chainInfo.chainId !== chainStore.current.chainId) {

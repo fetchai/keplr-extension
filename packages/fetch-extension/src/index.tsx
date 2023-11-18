@@ -109,6 +109,7 @@ import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
 import { ChangeWallet } from "./pages-new/main/wallet-options/change-wallet";
+import { ReceivetModal } from "./pages-new/main/receive";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -420,6 +421,8 @@ ReactDOM.render(
                         element={<AddEvmChain />}
                       />
                       <Route path="/changewallet" element={<ChangeWallet />} />
+                      <Route path="/receive" element={<ReceivetModal />} />
+
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

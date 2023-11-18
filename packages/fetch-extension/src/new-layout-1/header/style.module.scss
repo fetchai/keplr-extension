@@ -1,20 +1,24 @@
 @import "../../styles/var";
 
+.header {
+  background: rgba(0, 13, 61, 0.6);
+  backdrop-filter: blur(10px);
+}
+
 .menuContainer {
   height: $header-height;
   display: flex;
   flex-direction: row;
   align-items: center;
-
   padding-left: $layout-margin;
 }
 
-$menu-icon-size: 20px;
+// $menu-icon-size: 20px;
 $menu-icon-gap: 14px;
 
 .menuImg {
-  width: $menu-icon-size;
-  height: $menu-icon-size;
+  // width: $menu-icon-size;
+  // height: $menu-icon-size;
 
   margin-left: $menu-icon-gap;
   margin-bottom: 4px;

@@ -10,6 +10,7 @@ interface CardProps {
   style?: any;
   subheadingStyle?: any;
   onClick?: any;
+  rightContentOnClick?: any;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -21,6 +22,7 @@ export const Card: React.FC<CardProps> = ({
   style,
   subheadingStyle,
   onClick,
+  rightContentOnClick,
 }) => {
   return (
     <div
@@ -51,7 +53,7 @@ export const Card: React.FC<CardProps> = ({
         }}
       >
         <div className={styles["middleSection"]}>
-          <div style={{ fontWeight: "bold" }} className={styles["heading"]}>
+          <div className={`${styles["heading"]} ${styles["wordBreak"]}`}>
             {heading}
           </div>
           {subheading && (
@@ -66,9 +68,12 @@ export const Card: React.FC<CardProps> = ({
 
         <div className={styles["rightSection"]}>
           {!rightContent.includes("chrome-extension://") ? (
-            <div className={styles["rightText"]}>{rightContent}</div>
+            <div onClick={rightContentOnClick} className={styles["rightText"]}>
+              {rightContent}
+            </div>
           ) : (
             <img
+              onClick={rightContentOnClick}
               src={rightContent}
               alt="Right Section"
               className={styles["rightImage"]}

@@ -11,6 +11,10 @@
 .cardContainer:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+.heading {
+  word-break: break-all;
+  font-weight: bold;
+}
 .subHeading {
   font-size: 12px;
   opacity: 0.8;

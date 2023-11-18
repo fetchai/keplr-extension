@@ -196,25 +196,37 @@ export const WalletDetailsView = ({
             )}
             {accountInfo.walletStatus !== WalletStatus.Rejected && !isEvm && (
               <div>
-                <div onClick={() => copyAddress(accountInfo.bech32Address)}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "3px",
+                  }}
+                >
                   <Address maxCharacters={16} lineBreakBeforePrefix={false}>
                     {accountInfo.walletStatus === WalletStatus.Loaded &&
                     accountInfo.bech32Address
                       ? accountInfo.bech32Address
                       : "..."}
                   </Address>
+                  <img
+                    onClick={() => copyAddress(accountInfo.bech32Address)}
+                    src={require("@assets/svg/wireframe/copy.svg")}
+                    alt=""
+                  />
                 </div>
               </div>
             )}
             {accountInfo.walletStatus !== WalletStatus.Rejected &&
               (isEvm || accountInfo.hasEthereumHexAddress) && (
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "3px",
+                  }}
+                >
                   <div
-                    style={{
-                      display: "flex",
-                      alignItems: "baseline",
-                      gap: "3px",
-                    }}
                     onClick={() => copyAddress(accountInfo.ethereumHexAddress)}
                   >
                     <Address
@@ -231,11 +243,12 @@ export const WalletDetailsView = ({
                           : accountInfo.ethereumHexAddress
                         : "..."}
                     </Address>
-                    <img
-                      src={require("@assets/svg/wireframe/copy.svg")}
-                      alt=""
-                    />
                   </div>
+                  <img
+                    onClick={() => copyAddress(accountInfo.bech32Address)}
+                    src={require("@assets/svg/wireframe/copy.svg")}
+                    alt=""
+                  />
                 </div>
               )}
           </div>
@@ -248,16 +261,6 @@ export const WalletDetailsView = ({
           }}
         >
           <Button
-            onClick={() => setIsSelectWalletOpen(true)}
-            className={style["change-net"]}
-          >
-            <img
-              style={{ width: "32px", height: "32px" }}
-              src={require("@assets/svg/wireframe/changeNet.svg")}
-              alt=""
-            />
-          </Button>
-          <Button
             onClick={() => {
               setIsSelectNetOpen(true);
             }}
@@ -266,6 +269,16 @@ export const WalletDetailsView = ({
             {formatAddress(current.chainName)}
             <img
               src={require("@assets/svg/wireframe/chevron-down.svg")}
+              alt=""
+            />
+          </Button>
+          <Button
+            onClick={() => setIsSelectWalletOpen(true)}
+            className={style["change-net"]}
+          >
+            <img
+              style={{ width: "32px", height: "32px" }}
+              src={require("@assets/svg/wireframe/changeNet.svg")}
               alt=""
             />
           </Button>

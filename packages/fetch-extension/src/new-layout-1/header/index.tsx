@@ -74,15 +74,10 @@ export const Header: FunctionComponent<Props & LocalProps> = observer(
                   }
                 }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                  <path
-                    fill="transparent"
-                    strokeWidth="2"
-                    stroke="hsl(0, 0%, 18%)"
-                    strokeLinecap="round"
-                    d="M 6.5 10 L 13.5 3.5 M 6.5 10 L 13.5 16.5"
-                  />
-                </svg>
+                <img
+                  src={require("@assets/svg/wireframe/back-button.svg")}
+                  alt=""
+                />
               </div>
             ) : null}
           </div>
