@@ -251,6 +251,8 @@ export class EthereumAccountImpl {
           onFulfill?: (tx: any) => void;
         }
   ) {
+    this.base.setTxTypeInProgress(type);
+
     let txHash: string, rawTxData: TransactionRequest;
     try {
       ({ txHash, rawTxData } = await this.broadcastTx(params, fee));
@@ -271,6 +273,7 @@ export class EthereumAccountImpl {
       ) {
         onTxEvents.onBroadcastFailed(e);
       }
+      this.base.setTxTypeInProgress("");
 
       throw e;
     }
@@ -290,6 +293,8 @@ export class EthereumAccountImpl {
     if (onBroadcasted) {
       onBroadcasted(Uint8Array.from(Buffer.from(txHash)));
     }
+
+    this.base.setTxTypeInProgress("");
 
     const provider = this.ethersInstance;
     provider.once(txHash, (tx) => {
