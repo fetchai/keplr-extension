@@ -5,13 +5,11 @@ import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
 import React, { useCallback } from "react";
 import { useIntl } from "react-intl";
-import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
 import styleAccount from "../../pages/main/account.module.scss";
 import { useStore } from "../../stores";
-import { Assets } from "./balances";
+import { Balances } from "./balances";
 import style from "./style.module.scss";
-import { ButtonGradient } from "../../new-components-1/button-gradient";
 import { formatAddress } from "@utils/format";
 
 export const WalletDetailsView = ({
@@ -21,17 +19,10 @@ export const WalletDetailsView = ({
   setIsSelectNetOpen: any;
   setIsSelectWalletOpen?: any;
 }) => {
-  const {
-    accountStore,
-    chainStore,
-    queriesStore,
-    uiConfigStore,
-    analyticsStore,
-  } = useStore();
+  const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const current = chainStore.current;
-  const navigate = useNavigate();
   const icnsPrimaryName = (() => {
     if (
       uiConfigStore.icnsInfo &&
@@ -50,10 +41,6 @@ export const WalletDetailsView = ({
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
 
   const intl = useIntl();
-  const queries = queriesStore.get(chainStore.current.chainId);
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
   const notification = useNotification();
   const copyAddress = useCallback(
     async (address: string) => {
@@ -77,46 +64,7 @@ export const WalletDetailsView = ({
   );
 
   //withdraw rewards
-  const withdrawAllRewards = async () => {
-    if (
-      accountInfo.isReadyToSendMsgs &&
-      chainStore.current.walletUrlForStaking
-    ) {
-      try {
-        // When the user delegated too many validators,
-        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
-        // So, to prevent this problem, just send the msgs up to 8.
-        await accountInfo.cosmos.sendWithdrawDelegationRewardMsgs(
-          rewards.getDescendingPendingRewardValidatorAddresses(8),
-          "",
-          undefined,
-          undefined,
-          {
-            onBroadcasted: () => {
-              analyticsStore.logEvent("Claim reward tx broadcasted", {
-                chainId: chainStore.current.chainId,
-                chainName: chainStore.current.chainName,
-              });
-            },
-          }
-        );
 
-        navigate("/", { replace: true });
-      } catch (e: any) {
-        navigate("/", { replace: true });
-        notification.push({
-          type: "warning",
-          placement: "top-center",
-          duration: 5,
-          content: `Fail to withdraw rewards: ${e.message}`,
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
-      }
-    }
-  };
   return (
     <div className={style["wallet-details"]}>
       {icnsPrimaryName ? (
@@ -284,15 +232,7 @@ export const WalletDetailsView = ({
           </Button>
         </div>
       </div>
-      <Assets />
-      {!isEvm && (
-        <ButtonGradient
-          onClick={withdrawAllRewards}
-          data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
-          text={"claim"}
-          gradientText={"staking rewards"}
-        />
-      )}
+      <Balances />
     </div>
   );
 };

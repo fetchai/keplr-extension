@@ -142,6 +142,7 @@ export const ChainList: FunctionComponent = observer(() => {
           heading={chainInfo.chainName}
           isActive={chainInfo.chainId === chainStore.current.chainId}
           rightContent={require("@assets/svg/wireframe/closeImage.svg")}
+          rightContentStyle={{ height: "24px", width: "24px" }}
           rightContentOnClick={async (e: any) => {
             e.preventDefault();
             e.stopPropagation();

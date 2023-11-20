@@ -22,6 +22,7 @@ import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages/register";
 import { SendPage } from "./pages/send";
+import { NewSendPage } from "./pages-new/main/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { Banner } from "@components/banner";
@@ -422,6 +423,7 @@ ReactDOM.render(
                       />
                       <Route path="/changewallet" element={<ChangeWallet />} />
                       <Route path="/receive" element={<ReceivetModal />} />
+                      <Route path="/send-new" element={<NewSendPage />} />
 
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>

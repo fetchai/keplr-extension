@@ -1,20 +1,27 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UncontrolledTooltip } from "reactstrap";
-// import { ToolTip } from "@components/tooltip";
 
 import style from "./style.module.scss";
 import { useStore } from "../../stores";
 
 interface TabProps {
   title: string;
+  activeIcon?: string;
   icon: string;
   path: string;
   disabled: boolean;
   tooltip?: string;
 }
 
-export const Tab = ({ title, icon, path, disabled, tooltip }: TabProps) => {
+export const Tab = ({
+  title,
+  icon,
+  path,
+  disabled,
+  tooltip,
+  activeIcon,
+}: TabProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { analyticsStore } = useStore();
@@ -44,7 +51,7 @@ export const Tab = ({ title, icon, path, disabled, tooltip }: TabProps) => {
           isActive ? style["active"] : disabled ? style["disabled"] : null
         }`}
       >
-        <img draggable={false} src={icon} alt="tab" />
+        <img draggable={false} src={isActive ? activeIcon : icon} alt="tab" />
       </div>
       <div className={style["title"]}>{title}</div>
       {disabled && (

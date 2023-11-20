@@ -11,6 +11,7 @@ interface CardProps {
   subheadingStyle?: any;
   onClick?: any;
   rightContentOnClick?: any;
+  rightContentStyle?: any;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -18,6 +19,7 @@ export const Card: React.FC<CardProps> = ({
   heading,
   subheading,
   rightContent,
+  rightContentStyle,
   isActive,
   style,
   subheadingStyle,
@@ -77,6 +79,7 @@ export const Card: React.FC<CardProps> = ({
               src={rightContent}
               alt="Right Section"
               className={styles["rightImage"]}
+              style={rightContentStyle}
             />
           )}
         </div>

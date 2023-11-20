@@ -1,7 +1,13 @@
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
-import homeTabIcon from "@assets/svg/wireframe/grid (1).svg";
-import chatTabGreyIcon from "@assets/svg/wireframe/new-inbox.svg";
-import moreTabGreyIcon from "@assets/svg/wireframe/new-more.svg";
+import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
+import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
+
+import chatTabIcon from "@assets/svg/wireframe/new-inbox.svg";
+import selectedChatTabIcon from "@assets/svg/wireframe/selected-inbox.svg";
+
+import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
+import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
+
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
 import { store } from "@chatStore/index";
 import {
@@ -23,13 +29,15 @@ const bottomNav = [
   {
     title: "Home",
     icon: homeTabIcon,
+    activeIcon: selectedHomeTabIcon,
     path: "/",
     disabled: false,
     tooltip: "Home",
   },
   {
     title: "More",
-    icon: moreTabGreyIcon,
+    icon: moreTabIcon,
+    activeIcon: selectedMoreTabIcon,
     path: "/more",
     disabled: false,
   },
@@ -96,7 +104,7 @@ const NotificationTab = () => {
         title={"Agents"}
         icon={agentIcon}
         path={"/notification"}
-        disabled={isComingSoon}
+        disabled={true}
         tooltip={"Coming Soon"}
       />
     </React.Fragment>
@@ -142,7 +150,8 @@ const ChatTab = () => {
   return (
     <Tab
       title={"Chat"}
-      icon={chatTabGreyIcon}
+      icon={chatTabIcon}
+      activeIcon={selectedChatTabIcon}
       path={"/chat"}
       disabled={chatDisabled}
       tooltip={chatTooltip}

@@ -43,6 +43,22 @@
   color: white;
   box-shadow: none;
 }
+.view-details {
+  cursor: pointer;
+  height: 27px;
+  display: flex;
+  padding: 6px 12px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+  background: transparent;
+  border: 0px;
+  color: white;
+  box-shadow: none;
+  width: 95px;
+  font-size: 12px;
+}
 .chain-select:hover,
 .change-net,
 .change-net:hover {
@@ -100,7 +116,14 @@
 .balance {
   font-size: $xl;
 }
-
+.inUsd {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+.reward {
+  font-size: $xl;
+  cursor: pointer;
+}
 .actions {
   color: #fff;
   font-size: $xs;

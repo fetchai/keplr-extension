@@ -46,7 +46,7 @@ export const WalletActions = observer(() => {
         className={style["action"]}
         onClick={() => {
           if (hasAssets) {
-            navigate("/send");
+            navigate("/send-new");
           }
         }}
       >
