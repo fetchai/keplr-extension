@@ -29,7 +29,6 @@ export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
 
 export const CHAIN_ID_DORADO = "dorado-1";
 export const CHAIN_ID_FETCHHUB = "fetchhub-4";
-
 export const GROUP_PAGE_COUNT = 30;
 export const CHAT_PAGE_COUNT = 30;
 
@@ -195,3 +194,8 @@ export const TRANSACTION_APPROVED = "Transaction approved";
 export const TRANSACTION_SENT = "Transaction sent";
 export const TRANSACTION_SIGNED = "Transaction signed";
 export const TRANSACTION_FAILED = "Transaction failed";
+
+export const AXL_BRIDGE_EVM_TRNSX_FEE = {
+  gas: "2730000",
+  amount: [{ denom: "eth", amount: "4000000000000000" }],
+};
