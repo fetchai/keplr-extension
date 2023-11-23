@@ -5,7 +5,7 @@ interface CardProps {
   leftImage?: any;
   heading: any;
   subheading?: any;
-  rightContent: any;
+  rightContent?: any;
   isActive?: boolean;
   style?: any;
   subheadingStyle?: any;
@@ -69,11 +69,11 @@ export const Card: React.FC<CardProps> = ({
         </div>
 
         <div className={styles["rightSection"]}>
-          {!rightContent.includes("chrome-extension://") ? (
-            <div onClick={rightContentOnClick} className={styles["rightText"]}>
-              {rightContent}
-            </div>
-          ) : (
+          {/* Updated to allow any React element */}
+          {React.isValidElement(rightContent) ? (
+            <div style={rightContentStyle}> {rightContent}</div>
+          ) : // Check for Chrome extension link
+          rightContent && rightContent.includes("chrome-extension://") ? (
             <img
               onClick={rightContentOnClick}
               src={rightContent}
@@ -81,6 +81,10 @@ export const Card: React.FC<CardProps> = ({
               className={styles["rightImage"]}
               style={rightContentStyle}
             />
+          ) : (
+            <div onClick={rightContentOnClick} className={styles["rightText"]}>
+              {rightContent}
+            </div>
           )}
         </div>
       </div>

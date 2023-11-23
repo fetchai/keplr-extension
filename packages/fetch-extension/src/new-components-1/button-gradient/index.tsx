@@ -7,6 +7,7 @@ interface Props {
   dataLoading?: any;
   gradientText: string;
   text: string;
+  disabled?: any;
 }
 
 export const ButtonGradient: React.FC<Props> = ({
@@ -14,9 +15,11 @@ export const ButtonGradient: React.FC<Props> = ({
   dataLoading,
   gradientText,
   text,
+  disabled,
 }) => {
   return (
     <Button
+      disabled={disabled}
       onClick={onClick}
       data-loading={dataLoading ? dataLoading : null}
       className={style["btn"]}

@@ -4,8 +4,9 @@ import style from "./style.module.scss";
 interface DropdownProps {
   isOpen?: boolean;
   title: string;
-  setIsOpen: any;
+  setIsOpen?: any;
   closeClicked: any;
+  styleProp?: any;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -14,24 +15,27 @@ export const Dropdown: React.FC<DropdownProps> = ({
   setIsOpen,
   isOpen,
   closeClicked,
+  styleProp
 }) => {
   return isOpen ? (
     <React.Fragment>
-      <div onClick={() => setIsOpen(false)} className={style["overlay"]} />
-
+      <div className={style["overlay"]} />
       <div
-        onClick={() => setIsOpen(false)}
+      style={styleProp}
+        // onClick={() => setIsOpen(false)}
         className={style["dropdownContainer"]}
       >
         <div className={style["header"]}>
           {title}
           <img
             className={style["closeIcon"]}
-            onClick={() => closeClicked}
+            onClick={() => {
+              closeClicked;
+              setIsOpen(false);
+            }}
             src={require("@assets/svg/wireframe/closeImage.svg")}
           />
         </div>
-
         {children}
       </div>
     </React.Fragment>

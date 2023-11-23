@@ -3,7 +3,6 @@ import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 
-import { useNavigate } from "react-router";
 
 import { store } from "@chatStore/index";
 import {
@@ -17,14 +16,12 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 // import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
-import { ButtonGradient } from "../../new-components-1/button-gradient";
 import { Card } from "../../new-components-1/card";
 export const SetKeyRingPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
   const { keyRingStore, analyticsStore, accountStore, chainStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-  const navigate = useNavigate();
   const loadingIndicator = useLoadingIndicator();
   return (
     <div>
@@ -104,7 +101,6 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                       store.dispatch(resetChatList({}));
                       store.dispatch(setIsChatSubscriptionActive(false));
                       messageAndGroupListenerUnsubscribe();
-                      navigate("/");
                     } catch (e: any) {
                       console.log(`Failed to change keyring: ${e.message}`);
                       loadingIndicator.setIsLoading("keyring", false);
@@ -114,19 +110,6 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
           />
         );
       })}
-
-      <ButtonGradient
-        text="Add New Wallet"
-        gradientText="+"
-        onClick={(e: any) => {
-          e.preventDefault();
-          analyticsStore.logEvent("Add additional account started");
-
-          browser.tabs.create({
-            url: "/popup.html#/register",
-          });
-        }}
-      />
     </div>
   );
 });

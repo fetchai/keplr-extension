@@ -7,7 +7,7 @@
 .inner-field {
   cursor: pointer;
   color: white;
-  background: transparent !important;
+  background: transparent;
   border: 0px;
   border-radius: 18px;
   display: flex;
@@ -15,6 +15,10 @@
   align-items: center;
   gap: 8px;
   align-self: stretch;
+}
+.inner-field:hover{
+  border-radius: 12px;
+  background: var(--Indigo---Fetch, #5F38FB);
 }
 .optins-icon {
   width: 18px;

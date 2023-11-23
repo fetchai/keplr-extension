@@ -113,6 +113,7 @@ export const MainPage: FunctionComponent = observer(() => {
       <div className={style["your-assets"]}>Your assets</div>
       <TabsPanel tabs={tabs} />
       <Dropdown
+        styleProp={{ height: "595px", maxHeight: "595px" }}
         setIsOpen={setIsSelectNetOpen}
         isOpen={isSelectNetOpen}
         title="Change Network"

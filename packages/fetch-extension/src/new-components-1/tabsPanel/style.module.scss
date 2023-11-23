@@ -5,15 +5,27 @@
   font-size: 14px;
   align-items: center;
 }
+.tab-bar {
+  height: 38px;
+  padding: 2px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  margin: 18px 0px;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .tab {
+  border-right: 1px solid white;
+  box-sizing: border-box;
+  width: 100%;
   display: flex;
   padding: 6px 12px;
-  align-items: flex-start;
-  gap: 10px;
-  // font-weight: bold;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  border-radius: 100px;
-  height: 33px;
+  height: 32px;
 }
 .tab:disabled {
   cursor: not-allowed;

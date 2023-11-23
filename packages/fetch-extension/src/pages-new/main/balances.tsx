@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 // import { TabsPanel } from "../../new-components-1/tabsPanel";
 import { Button } from "reactstrap";
+import { ButtonGradient } from "../../new-components-1/button-gradient";
 
 export const Balances = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
@@ -69,7 +70,6 @@ export const Balances = observer(() => {
     return inUsd;
   };
   // withdraw rewards
-  console.log("staked", stakable.shrink(true).maxDecimals(6).toString());
   const withdrawAllRewards = async () => {
     if (
       accountInfo.isReadyToSendMsgs &&
@@ -146,6 +146,14 @@ export const Balances = observer(() => {
           </div>
         </div>
       )}
+      {!isEvm && (
+        <Button
+          onClick={() => setIsVisible(!isVisible)}
+          className={style["view-details"]}
+        >
+          {isVisible ? "Hide details" : "View details"}
+        </Button>
+      )}
       {isVisible && !isEvm && (
         <div>
           <img
@@ -192,8 +200,6 @@ export const Balances = observer(() => {
               Staking reward
             </div>
             <div
-              onClick={withdrawAllRewards}
-              data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
               className={style["reward"]}
             >
               {rewardNumber}{" "}
@@ -203,22 +209,14 @@ export const Balances = observer(() => {
               </div>
             </div>
           </div>
-          <Button
-            onClick={() => setIsVisible(false)}
-            style={{ marginTop: "18px" }}
-            className={style["view-details"]}
-          >
-            Hide details
-          </Button>
+          <ButtonGradient
+          disabled={rewardNumber=="0"}
+            data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
+            text="Claim rewards"
+            gradientText=""
+            onClick={withdrawAllRewards}
+          />
         </div>
-      )}
-      {!isVisible && !isEvm && (
-        <Button
-          onClick={() => setIsVisible(true)}
-          className={style["view-details"]}
-        >
-          View details
-        </Button>
       )}
     </div>
   );

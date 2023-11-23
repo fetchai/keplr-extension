@@ -8,7 +8,7 @@ export const WalletOptions = observer(() => {
   const [accountIndex, setAccountIndex] = useState<number>(0);
 
   const navigate = useNavigate();
-  const { keyRingStore } = useStore();
+  const { keyRingStore, analyticsStore } = useStore();
   useEffect(() => {
     const firstAccountIndex = keyRingStore.multiKeyStoreInfo.findIndex(
       (value) => value.selected
@@ -18,6 +18,24 @@ export const WalletOptions = observer(() => {
 
   return (
     <div className={style["container"]}>
+       <button
+        onClick={(e: any) => {
+          e.preventDefault();
+          analyticsStore.logEvent("Add additional account started");
+
+          browser.tabs.create({
+            url: "/popup.html#/register",
+          });
+        }}
+        className={style["inner-field"]}
+      >
+        <img
+          className={style["optins-icon"]}
+          src={require("@assets/svg/wireframe/plus.svg")}
+          alt=""
+        />{" "}
+        Add new Wallet
+      </button>
       <button
         onClick={() => {
           navigate("/changewallet");
