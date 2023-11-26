@@ -1,10 +1,11 @@
-import React, { FunctionComponent, useEffect, useMemo } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   AddressInput,
   FeeButtons,
   CoinInput,
   MemoInput,
-} from "@components/form";
+  TokenSelectorDropdown,
+} from "../../../new-components-1/form";
 import { useStore } from "../../../stores";
 
 import { HeaderLayout } from "../../../new-layout-1";
@@ -15,7 +16,6 @@ import style from "./style.module.scss";
 import { useNotification } from "@components/notification";
 
 import { useIntl } from "react-intl";
-import { Button } from "reactstrap";
 
 import { useNavigate, useLocation } from "react-router";
 import queryString from "querystring";
@@ -27,8 +27,13 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
+import { Card } from "../../../new-components-1/card";
+import { Dropdown } from "../../../new-components-1/dropdown";
+import { SetKeyRingPage } from "../../../pages-new/keyring-dev";
+import { ButtonGradient } from "../../../new-components-1/button-gradient";
 
 export const NewSendPage: FunctionComponent = observer(() => {
+  const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);
   const navigate = useNavigate();
   let search = useLocation().search;
   if (search.startsWith("?")) {
@@ -346,13 +351,7 @@ export const NewSendPage: FunctionComponent = observer(() => {
         }}
       >
         <div className={style["formInnerContainer"]}>
-          <div>
-            <AddressInput
-              recipientConfig={sendConfigs.recipientConfig}
-              memoConfig={sendConfigs.memoConfig}
-              label={intl.formatMessage({ id: "send.input.recipient" })}
-              value={""}
-            />
+          <div className={style["cardContainer"]}>
             <CoinInput
               amountConfig={sendConfigs.amountConfig}
               label={intl.formatMessage({ id: "send.input.amount" })}
@@ -391,14 +390,37 @@ export const NewSendPage: FunctionComponent = observer(() => {
                     ) {
                       return false;
                     }
-
                     return true;
                   });
                 }
-
                 return undefined;
               })()}
             />
+            <Card
+              style={{
+                background: "rgba(255, 255, 255, 0.10)",
+                color: "rgba(255, 255, 255, 0.6)",
+                fontSize: "14px",
+              }}
+              subheadingStyle={{
+                fontSize: "14px",
+                color: "white",
+                fontWeight: "bold",
+                opacity: "1",
+              }}
+              heading={"Wallet"}
+              subheading={accountInfo.name}
+              rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
+              onClick={() => setIsChangeWalletOpen(!isChangeWalletOpen)}
+            />
+            <TokenSelectorDropdown amountConfig={sendConfigs.amountConfig} />
+            <AddressInput
+              recipientConfig={sendConfigs.recipientConfig}
+              memoConfig={sendConfigs.memoConfig}
+              label={intl.formatMessage({ id: "send.input.recipient" })}
+              value={""}
+            />
+
             <MemoInput
               memoConfig={sendConfigs.memoConfig}
               label={intl.formatMessage({ id: "send.input.memo" })}
@@ -419,22 +441,82 @@ export const NewSendPage: FunctionComponent = observer(() => {
               gasSimulator={gasSimulator}
             />
           </div>
-          <div style={{ flex: 1 }} />
-          <Button
-            type="submit"
-            color="primary"
-            block
+          <ButtonGradient
+            text="Review transfer"
+            gradientText=""
+            onClick={async (e: any) => {
+              e.preventDefault();
+
+              if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
+                try {
+                  const stdFee = sendConfigs.feeConfig.toStdFee();
+
+                  const tx = accountInfo.makeSendTokenTx(
+                    sendConfigs.amountConfig.amount,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    sendConfigs.amountConfig.sendCurrency!,
+                    sendConfigs.recipientConfig.recipient
+                  );
+
+                  await tx.send(
+                    stdFee,
+                    sendConfigs.memoConfig.memo,
+                    {
+                      preferNoSetFee: true,
+                      preferNoSetMemo: true,
+                    },
+                    {
+                      onBroadcastFailed: (e: any) => {
+                        console.log(e);
+                      },
+                      onBroadcasted: () => {
+                        analyticsStore.logEvent("Send token tx broadcasted", {
+                          chainId: chainStore.current.chainId,
+                          chainName: chainStore.current.chainName,
+                          feeType: sendConfigs.feeConfig.feeType,
+                        });
+                      },
+                    }
+                  );
+
+                  if (!isDetachedPage) {
+                    navigate("/", { replace: true });
+                  }
+                } catch (e) {
+                  if (!isDetachedPage) {
+                    navigate("/", { replace: true });
+                  }
+                  notification.push({
+                    type: "warning",
+                    placement: "top-center",
+                    duration: 5,
+                    content: `Fail to send token: ${e.message}`,
+                    canDelete: true,
+                    transition: {
+                      duration: 0.25,
+                    },
+                  });
+                } finally {
+                  // XXX: If the page is in detached state,
+                  // close the window without waiting for tx to commit. analytics won't work.
+                  if (isDetachedPage) {
+                    window.close();
+                  }
+                }
+              }
+            }}
             data-loading={accountInfo.isSendingMsg === "send"}
             disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
-            style={{
-              marginTop: "12px",
-            }}
-          >
-            {intl.formatMessage({
-              id: "send.button.send",
-            })}
-          </Button>
+          />
         </div>
+        <Dropdown
+          isOpen={isChangeWalletOpen}
+          setIsOpen={setIsChangeWalletOpen}
+          title="Select Wallet"
+          closeClicked={() => setIsChangeWalletOpen(false)}
+        >
+          <SetKeyRingPage navigateTo={"/send-new"} />
+        </Dropdown>
       </form>
     </HeaderLayout>
   );

@@ -52,6 +52,7 @@ export const ChainList: FunctionComponent = observer(() => {
                   : ""
               }
               onClick={() => {
+                navigate("/");
                 let properties = {};
                 if (chainInfo.chainId !== chainStore.current.chainId) {
                   properties = {
@@ -69,7 +70,7 @@ export const ChainList: FunctionComponent = observer(() => {
                 store.dispatch(resetChatList({}));
                 store.dispatch(setIsChatSubscriptionActive(false));
                 messageAndGroupListenerUnsubscribe();
-                navigate("/");
+
                 if (Object.values(properties).length > 0) {
                   analyticsStore.logEvent("Chain changed", properties);
                 }
@@ -188,13 +189,13 @@ export const ChainList: FunctionComponent = observer(() => {
               }}
             />
           ))}
-          <div style={{position:"absolute", bottom:"5px", width:"94%"}}>
+          <div style={{ position: "absolute", bottom: "5px", width: "94%" }}>
             <ButtonGradient
-            onClick={(e:any) => {
-              e.preventDefault();
-              navigate("/setting/addEvmChain");
-            }}
-            gradientText={""}
+              onClick={(e: any) => {
+                e.preventDefault();
+                navigate("/setting/addEvmChain");
+              }}
+              gradientText={""}
               text={"Add custom EVM network"}
             />
           </div>

@@ -3,7 +3,6 @@ import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 
-
 import { store } from "@chatStore/index";
 import {
   resetChatList,
@@ -17,99 +16,108 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
 import { Card } from "../../new-components-1/card";
-export const SetKeyRingPage: FunctionComponent = observer(() => {
-  const intl = useIntl();
+import { useNavigate } from "react-router";
 
-  const { keyRingStore, analyticsStore, accountStore, chainStore } = useStore();
-  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-  const loadingIndicator = useLoadingIndicator();
-  return (
-    <div>
-      {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {
-        const bip44HDPath = keyStore.bip44HDPath
-          ? keyStore.bip44HDPath
-          : {
-              account: 0,
-              change: 0,
-              addressIndex: 0,
-            };
-        let paragraph = keyStore.meta?.["email"]
-          ? keyStore.meta["email"]
-          : undefined;
-        if (keyStore.type === "keystone") {
-          paragraph = "Keystone";
-        } else if (keyStore.type === "ledger") {
-          const coinType = (() => {
+interface SetKeyRingProps {
+  navigateTo?: any;
+}
+export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
+  ({ navigateTo }) => {
+    const intl = useIntl();
+    const navigate = useNavigate();
+    const { keyRingStore, analyticsStore, accountStore, chainStore } =
+      useStore();
+    const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+    const loadingIndicator = useLoadingIndicator();
+    return (
+      <div>
+        {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {
+          const bip44HDPath = keyStore.bip44HDPath
+            ? keyStore.bip44HDPath
+            : {
+                account: 0,
+                change: 0,
+                addressIndex: 0,
+              };
+          let paragraph = keyStore.meta?.["email"]
+            ? keyStore.meta["email"]
+            : undefined;
+          if (keyStore.type === "keystone") {
+            paragraph = "Keystone";
+          } else if (keyStore.type === "ledger") {
+            const coinType = (() => {
+              if (
+                keyStore.meta &&
+                keyStore.meta["__ledger__cosmos_app_like__"] &&
+                keyStore.meta["__ledger__cosmos_app_like__"] !== "Cosmos"
+              ) {
+                return (
+                  AppCoinType[
+                    keyStore.meta["__ledger__cosmos_app_like__"] as App
+                  ] || 118
+                );
+              }
+
+              return 118;
+            })();
+
+            paragraph = `Ledger - m/44'/${coinType}'/${bip44HDPath.account}'${
+              bip44HDPath.change !== 0 || bip44HDPath.addressIndex !== 0
+                ? `/${bip44HDPath.change}/${bip44HDPath.addressIndex}`
+                : ""
+            }`;
+
             if (
               keyStore.meta &&
               keyStore.meta["__ledger__cosmos_app_like__"] &&
               keyStore.meta["__ledger__cosmos_app_like__"] !== "Cosmos"
             ) {
-              return (
-                AppCoinType[
-                  keyStore.meta["__ledger__cosmos_app_like__"] as App
-                ] || 118
-              );
+              paragraph += ` (${keyStore.meta["__ledger__cosmos_app_like__"]})`;
             }
-
-            return 118;
-          })();
-
-          paragraph = `Ledger - m/44'/${coinType}'/${bip44HDPath.account}'${
-            bip44HDPath.change !== 0 || bip44HDPath.addressIndex !== 0
-              ? `/${bip44HDPath.change}/${bip44HDPath.addressIndex}`
-              : ""
-          }`;
-
-          if (
-            keyStore.meta &&
-            keyStore.meta["__ledger__cosmos_app_like__"] &&
-            keyStore.meta["__ledger__cosmos_app_like__"] !== "Cosmos"
-          ) {
-            paragraph += ` (${keyStore.meta["__ledger__cosmos_app_like__"]})`;
           }
-        }
-        console.log(paragraph);
-        return (
-          <Card
-            heading={
-              keyStore.meta?.["name"]
-                ? keyStore.meta["name"]
-                : intl.formatMessage({
-                    id: "setting.keyring.unnamed-account",
-                  })
-            }
-            rightContent={
-              keyStore.selected
-                ? require("@assets/svg/wireframe/check.svg")
-                : ""
-            }
-            subheading={keyStore.selected ? accountInfo.bech32Address : ""}
-            isActive={keyStore.selected}
-            onClick={
-              keyStore.selected
-                ? undefined
-                : async (e: any) => {
-                    e.preventDefault();
-                    loadingIndicator.setIsLoading("keyring", true);
-                    try {
-                      await keyRingStore.changeKeyRing(i);
-                      analyticsStore.logEvent("Account changed");
-                      loadingIndicator.setIsLoading("keyring", false);
-                      store.dispatch(resetUser({}));
-                      store.dispatch(resetProposals({}));
-                      store.dispatch(resetChatList({}));
-                      store.dispatch(setIsChatSubscriptionActive(false));
-                      messageAndGroupListenerUnsubscribe();
-                    } catch (e: any) {
-                      console.log(`Failed to change keyring: ${e.message}`);
-                      loadingIndicator.setIsLoading("keyring", false);
+          console.log(paragraph);
+          return (
+            <Card
+              heading={
+                keyStore.meta?.["name"]
+                  ? keyStore.meta["name"]
+                  : intl.formatMessage({
+                      id: "setting.keyring.unnamed-account",
+                    })
+              }
+              rightContent={
+                keyStore.selected
+                  ? require("@assets/svg/wireframe/check.svg")
+                  : ""
+              }
+              subheading={keyStore.selected ? accountInfo.bech32Address : ""}
+              isActive={keyStore.selected}
+              onClick={
+                keyStore.selected
+                  ? undefined
+                  : async (e: any) => {
+                      e.preventDefault();
+                      loadingIndicator.setIsLoading("keyring", true);
+                      try {
+                        await keyRingStore.changeKeyRing(i);
+                        analyticsStore.logEvent("Account changed");
+                        loadingIndicator.setIsLoading("keyring", false);
+                        store.dispatch(resetUser({}));
+                        store.dispatch(resetProposals({}));
+                        store.dispatch(resetChatList({}));
+                        store.dispatch(setIsChatSubscriptionActive(false));
+                        messageAndGroupListenerUnsubscribe();
+                        navigate(navigateTo);
+                      } catch (e: any) {
+                        console.log(`Failed to change keyring: ${e.message}`);
+                        loadingIndicator.setIsLoading("keyring", false);
+                      }
                     }
-                  }
-            }
-          />
-        );
-      })}
-    </div>
-  );
-});
+              }
+            />
+          );
+        })}
+      </div>
+    );
+  }
+);

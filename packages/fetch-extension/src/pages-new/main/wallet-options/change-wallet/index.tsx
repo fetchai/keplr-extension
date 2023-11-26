@@ -17,7 +17,7 @@ export const ChangeWallet = () => {
         title="Change Wallet"
         closeClicked={navigate("/")}
       >
-        <SetKeyRingPage />
+        <SetKeyRingPage navigateTo={"/"} />
       </Dropdown>
     </HeaderLayout>
   );

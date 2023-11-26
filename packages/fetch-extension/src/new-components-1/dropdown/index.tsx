@@ -15,16 +15,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
   setIsOpen,
   isOpen,
   closeClicked,
-  styleProp
+  styleProp,
 }) => {
   return isOpen ? (
     <React.Fragment>
-      <div className={style["overlay"]} />
       <div
-      style={styleProp}
-        // onClick={() => setIsOpen(false)}
-        className={style["dropdownContainer"]}
-      >
+        onClick={() => {
+          closeClicked;
+          setIsOpen(false);
+        }}
+        className={style["overlay"]}
+      />
+      <div style={styleProp} className={style["dropdownContainer"]}>
         <div className={style["header"]}>
           {title}
           <img

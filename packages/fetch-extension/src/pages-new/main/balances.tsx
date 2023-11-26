@@ -142,7 +142,7 @@ export const Balances = observer(() => {
           <div className={style["inUsd"]}>
             {totalPrice
               ? totalPrice.toString()
-              : total.shrink(true).trim(true).maxDecimals(6).toString()}{" "}
+              : total.shrink(true).trim(true).maxDecimals(6).toString()}
           </div>
         </div>
       )}
@@ -166,7 +166,7 @@ export const Balances = observer(() => {
               Available balance
             </div>
             <div className={style["balance"]}>
-              {availableNumber}{" "}
+              {availableNumber}
               <span className={style["inUsd"]}> {availableDenom}</span>
               <div className={style["inUsd"]}>{convertToUsd(stakable)} USD</div>
             </div>
@@ -199,9 +199,7 @@ export const Balances = observer(() => {
               {" "}
               Staking reward
             </div>
-            <div
-              className={style["reward"]}
-            >
+            <div className={style["reward"]}>
               {rewardNumber}{" "}
               <span className={style["inUsd"]}>{rewardDenom}</span>
               <div className={style["inUsd"]}>
@@ -210,7 +208,7 @@ export const Balances = observer(() => {
             </div>
           </div>
           <ButtonGradient
-          disabled={rewardNumber=="0"}
+            disabled={rewardNumber == "0"}
             data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
             text="Claim rewards"
             gradientText=""
