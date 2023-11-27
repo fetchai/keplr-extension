@@ -36,8 +36,8 @@ let SUBSCRIPTION_SERVER, MESSAGING_SERVER;
 export let NOTYPHI_BASE_URL: string;
 
 if (process.env.NODE_ENV === "production") {
-  SUBSCRIPTION_SERVER = "wss://messaging.fetch-ai.network/subscription";
-  MESSAGING_SERVER = "https://messaging.fetch-ai.network/graphql";
+  SUBSCRIPTION_SERVER = "wss://messaging-server.prod.fetch-ai.com/subscription";
+  MESSAGING_SERVER = "https://messaging-server.prod.fetch-ai.com/graphql";
   NOTYPHI_BASE_URL = "https://api.notyphi.com/v1";
 } else {
   SUBSCRIPTION_SERVER =
