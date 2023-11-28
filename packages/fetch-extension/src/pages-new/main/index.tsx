@@ -21,10 +21,12 @@ import { Dropdown } from "../../new-components-1/dropdown";
 import { ChainList } from "../../new-layout-1/header/chain-list";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { WalletOptions } from "./wallet-options";
-
+import { SetKeyRingPage } from "../keyring-dev";
+// import {Button } from "../../../../extension-storybook/src/stories/button/Button"
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
 
   const intl = useIntl();
   const {
@@ -143,7 +145,18 @@ export const MainPage: FunctionComponent = observer(() => {
         })()}
         closeClicked={() => setIsSelectWalletOpen(false)}
       >
-        <WalletOptions />
+        <WalletOptions
+          setIsSelectWalletOpen={setIsSelectWalletOpen}
+          setIsOptionsOpen={setIsOptionsOpen}
+        />
+      </Dropdown>
+      <Dropdown
+        isOpen={isOptionsOpen}
+        setIsOpen={setIsOptionsOpen}
+        title="Change Wallet"
+        closeClicked={() => setIsOptionsOpen(false)}
+      >
+        <SetKeyRingPage />
       </Dropdown>
     </HeaderLayout>
   );

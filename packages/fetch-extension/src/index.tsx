@@ -109,7 +109,6 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
-import { ChangeWallet } from "./pages-new/main/wallet-options/change-wallet";
 import { ReceivetModal } from "./pages-new/main/receive";
 
 window.keplr = new Keplr(
@@ -421,7 +420,6 @@ ReactDOM.render(
                         path="/setting/addEvmChain"
                         element={<AddEvmChain />}
                       />
-                      <Route path="/changewallet" element={<ChangeWallet />} />
                       <Route path="/receive" element={<ReceivetModal />} />
                       <Route path="/send-new" element={<NewSendPage />} />
 
