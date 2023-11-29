@@ -8,17 +8,20 @@ import { UncontrolledTooltip } from "reactstrap";
 import { WrongViewingKeyError } from "@keplr-wallet/stores";
 import { useNotification } from "@components/notification";
 import { useLoadingIndicator } from "@components/loading-indicator";
-import { Dec } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, Int } from "@keplr-wallet/unit";
 import { DenomHelper } from "@keplr-wallet/common";
 import { Card } from "../../new-components-1/card";
 import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
+import { useLanguage } from "../../languages";
 
 export const TokensView: FunctionComponent = observer(() => {
-  const { chainStore, accountStore, queriesStore, tokensStore } = useStore();
+  const { chainStore, accountStore, queriesStore, tokensStore, priceStore } =
+    useStore();
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
   const tokens = queriesStore
     .get(chainStore.current.chainId)
     .queryBalances.getQueryBech32Address(accountInfo.bech32Address)
@@ -66,6 +69,12 @@ export const TokensView: FunctionComponent = observer(() => {
   // if ("originCurrency" in amount.currency && amount.currency.originCurrency) {
   //   amount = amount.setCurrency(amount.currency.originCurrency);
   // }
+
+  const convertToUsd = (currency: any) => {
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
+    const inUsd = value && value.shrink(true).maxDecimals(6).toString();
+    return inUsd;
+  };
   return (
     <div className={styleToken["tokenContainnerInner"]}>
       <div>
@@ -107,6 +116,18 @@ export const TokensView: FunctionComponent = observer(() => {
             }
           };
           const tokenInfo = token.balance.currency;
+          const amountInNumber =
+            parseFloat(
+              token.balance.maxDecimals(6).hideDenom(false).toString()
+            ) *
+            10 ** token.currency.coinDecimals;
+
+          const inputValue = new CoinPretty(
+            tokenInfo,
+            new Int(tokenInfo ? amountInNumber : 0)
+          );
+          const tokenInUsd = convertToUsd(inputValue);
+          console.log(tokenInUsd, amountInNumber);
           return (
             <React.Fragment>
               <Card
@@ -131,7 +152,7 @@ export const TokensView: FunctionComponent = observer(() => {
                   )
                 }
                 subheadingStyle={{ fontSize: "14px", color: "#808da0" }}
-                rightContent={""}
+                rightContent={tokenInUsd ? tokenInUsd : ""}
                 style={{
                   background: "rgba(255, 255, 255, 0.12)",
                   height: "78px",
