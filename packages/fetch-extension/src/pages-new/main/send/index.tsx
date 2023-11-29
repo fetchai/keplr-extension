@@ -30,7 +30,7 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { Card } from "../../../new-components-1/card";
 import { Dropdown } from "../../../new-components-1/dropdown";
 import { SetKeyRingPage } from "../../../pages-new/keyring-dev";
-import { ButtonGradient } from "../../../new-components-1/button-gradient";
+import { ButtonGradient } from "../../../new-components-1/buttons/button-gradient";
 
 export const NewSendPage: FunctionComponent = observer(() => {
   const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);

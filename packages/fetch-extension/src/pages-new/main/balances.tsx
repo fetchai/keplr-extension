@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 // import { TabsPanel } from "../../new-components-1/tabsPanel";
 import { Button } from "reactstrap";
-import { ButtonGradient } from "../../new-components-1/button-gradient";
+import { ButtonGradient } from "../../new-components-1/buttons/button-gradient";
 
 export const Balances = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =

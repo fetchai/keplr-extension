@@ -14,7 +14,7 @@ import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "../../new-components-1/card";
-import { ButtonGradient } from "../../new-components-1/button-gradient";
+import { ButtonGradient } from "../../new-components-1/buttons/button-gradient";
 import { useConfirm } from "@components/confirm";
 import { TabsPanel } from "../../new-components-1/tabsPanel";
 export const ChainList: FunctionComponent = observer(() => {

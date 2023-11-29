@@ -1,0 +1,23 @@
+.image{
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.action{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0px;
+  }
+  
+  .action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  

@@ -15,14 +15,12 @@ import style from "./style.module.scss";
 import { TokensView } from "./tokens";
 import { WalletActions } from "./wallet-actions";
 import { WalletDetailsView } from "./wallet-details";
-// import { ToolTip } from "@components/tooltip";
 import { TabsPanel } from "../../new-components-1/tabsPanel";
 import { Dropdown } from "../../new-components-1/dropdown";
 import { ChainList } from "../../new-layout-1/header/chain-list";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
-// import {Button } from "../../../../extension-storybook/src/stories/button/Button"
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
