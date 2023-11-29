@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "77820851704",
+    "project_id": "wallet-2fa-poc",
+    "storage_bucket": "wallet-2fa-poc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77820851704:android:592d76fe2f9112754b120d",
+        "android_client_info": {
+          "package_name": "com.fetchai.wallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1qp1tk6Ridr-RrMy8ZCm02R3Z_GSbrwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

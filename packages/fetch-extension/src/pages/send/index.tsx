@@ -1,8 +1,8 @@
-import React, { FunctionComponent, useEffect, useMemo } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   AddressInput,
-  FeeButtons,
   CoinInput,
+  FeeButtons,
   MemoInput,
 } from "@components/form";
 import { useStore } from "../../stores";
@@ -17,7 +17,7 @@ import { useNotification } from "@components/notification";
 import { useIntl } from "react-intl";
 import { Button } from "reactstrap";
 
-import { useNavigate, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import queryString from "querystring";
 
 import { useGasSimulator, useSendTxConfig } from "@keplr-wallet/hooks";
@@ -27,6 +27,13 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
+import {
+  deleteFirebaseTxRequest,
+  firebaseTxRequest,
+  firebaseTxRequestListener,
+} from "@utils/2fa-transaction";
+import { TwoFAInputModal } from "../2fa/2fa-modal";
+import { TxRequest } from "../2fa/firebase-tx-request-converter";
 
 export const SendPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -53,7 +60,11 @@ export const SendPage: FunctionComponent = observer(() => {
 
   const notification = useNotification();
 
+  const [txnStatus, setTxnStatus] = useState<string>("");
+  const [txnData, setTxnData] = useState<TxRequest>();
+
   const {
+    keyRingStore,
     chainStore,
     accountStore,
     priceStore,
@@ -215,6 +226,125 @@ export const SendPage: FunctionComponent = observer(() => {
     sendConfigs.feeConfig.error;
   const txStateIsValid = sendConfigError == null;
 
+  async function processTxnRequest() {
+    try {
+      const stdFee = sendConfigs.feeConfig.toStdFee();
+
+      const tx = accountInfo.makeSendTokenTx(
+        sendConfigs.amountConfig.amount,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        sendConfigs.amountConfig.sendCurrency!,
+        sendConfigs.recipientConfig.recipient
+      );
+
+      await tx.send(
+        stdFee,
+        sendConfigs.memoConfig.memo,
+        {
+          preferNoSetFee: true,
+          preferNoSetMemo: true,
+        },
+        {
+          onBroadcastFailed: (e: any) => {
+            console.log(e);
+          },
+          onBroadcasted: () => {
+            analyticsStore.logEvent("Send token tx broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              feeType: sendConfigs.feeConfig.feeType,
+            });
+          },
+        }
+      );
+
+      if (!isDetachedPage) {
+        navigate("/", { replace: true });
+      }
+    } catch (e) {
+      if (!isDetachedPage) {
+        navigate("/", { replace: true });
+      }
+      notification.push({
+        type: "warning",
+        placement: "top-center",
+        duration: 5,
+        content: `Fail to send token: ${e.message}`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    } finally {
+      await deleteFirebaseTxRequest(accountInfo.bech32Address);
+      // XXX: If the page is in detached state,
+      // close the window without waiting for tx to commit. analytics won't work.
+      if (isDetachedPage) {
+        window.close();
+      }
+    }
+  }
+
+  useEffect(() => {
+    firebaseTxRequestListener(
+      accountInfo.bech32Address,
+      (data) => {
+        setTxnData(data);
+        if (data.status == "pending") {
+          setTxnStatus("pending");
+          notification.push({
+            type: "warning",
+            placement: "top-center",
+            duration: 5,
+            content: "Transaction broadcast for 2FA",
+            canDelete: true,
+            transition: {
+              duration: 0.25,
+            },
+          });
+        } else if (data.status == "rejected") {
+          setTxnStatus("");
+          notification.push({
+            type: "warning",
+            placement: "top-center",
+            duration: 5,
+            content: "Transaction request rejected by 2FA device",
+            canDelete: true,
+            transition: {
+              duration: 0.25,
+            },
+          });
+          (async () => {
+            await deleteFirebaseTxRequest(accountInfo.bech32Address);
+          })();
+
+          if (!isDetachedPage) {
+            navigate("/", { replace: true });
+          }
+        }
+      },
+      (error) => {
+        (async () => {
+          await deleteFirebaseTxRequest(accountInfo.bech32Address);
+        })();
+
+        if (!isDetachedPage) {
+          navigate("/", { replace: true });
+        }
+        notification.push({
+          type: "warning",
+          placement: "top-center",
+          duration: 5,
+          content: `Fail to process transaction request: ${error}`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      }
+    );
+  }, []);
+
   return (
     <HeaderLayout
       showChainName
@@ -280,161 +410,138 @@ export const SendPage: FunctionComponent = observer(() => {
         )
       }
     >
-      <form
-        className={style["formContainer"]}
-        onSubmit={async (e) => {
-          e.preventDefault();
+      <React.Fragment>
+        <form
+          className={style["formContainer"]}
+          onSubmit={async (e) => {
+            e.preventDefault();
 
-          if (accountInfo.isReadyToSendTx && txStateIsValid) {
-            try {
-              const stdFee = sendConfigs.feeConfig.toStdFee();
-
-              const tx = accountInfo.makeSendTokenTx(
-                sendConfigs.amountConfig.amount,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                sendConfigs.amountConfig.sendCurrency!,
-                sendConfigs.recipientConfig.recipient
-              );
-
-              await tx.send(
-                stdFee,
-                sendConfigs.memoConfig.memo,
-                {
-                  preferNoSetFee: true,
-                  preferNoSetMemo: true,
-                },
-                {
-                  onBroadcastFailed: (e: any) => {
-                    console.log(e);
-                  },
-                  onBroadcasted: () => {
-                    analyticsStore.logEvent("Send token tx broadcasted", {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                      feeType: sendConfigs.feeConfig.feeType,
-                    });
-                  },
-                }
-              );
-
-              if (!isDetachedPage) {
-                navigate("/", { replace: true });
-              }
-            } catch (e) {
-              if (!isDetachedPage) {
-                navigate("/", { replace: true });
-              }
-              notification.push({
-                type: "warning",
-                placement: "top-center",
-                duration: 5,
-                content: `Fail to send token: ${e.message}`,
-                canDelete: true,
-                transition: {
-                  duration: 0.25,
-                },
-              });
-            } finally {
-              // XXX: If the page is in detached state,
-              // close the window without waiting for tx to commit. analytics won't work.
-              if (isDetachedPage) {
-                window.close();
+            if (accountInfo.isReadyToSendTx && txStateIsValid) {
+              if (keyRingStore.keyRingType == "ledger") {
+                await processTxnRequest();
+              } else {
+                // 2FA process
+                await firebaseTxRequest(accountInfo.bech32Address);
               }
             }
-          }
-        }}
-      >
-        <div className={style["formInnerContainer"]}>
-          <div>
-            <AddressInput
-              recipientConfig={sendConfigs.recipientConfig}
-              memoConfig={sendConfigs.memoConfig}
-              label={intl.formatMessage({ id: "send.input.recipient" })}
-              value={""}
-            />
-            <CoinInput
-              amountConfig={sendConfigs.amountConfig}
-              label={intl.formatMessage({ id: "send.input.amount" })}
-              balanceText={intl.formatMessage({
-                id: "send.input-button.balance",
-              })}
-              disableAllBalance={(() => {
-                if (
-                  // In the case of terra classic, tax is applied in proportion to the amount.
-                  // However, in this case, the tax itself changes the fee,
-                  // so if you use the max function, it will fall into infinite repetition.
-                  // We currently disable if chain is terra classic because we can't handle it properly.
-                  sendConfigs.feeConfig.chainInfo.features &&
-                  sendConfigs.feeConfig.chainInfo.features.includes(
-                    "terra-classic-fee"
-                  )
-                ) {
-                  return true;
-                }
-                return false;
-              })()}
-              overrideSelectableCurrencies={(() => {
-                if (
-                  chainStore.current.features &&
-                  chainStore.current.features.includes("terra-classic-fee")
-                ) {
-                  // At present, can't handle stability tax well if it is not registered native token.
-                  // So, for terra classic, disable other tokens.
-                  const currencies =
-                    sendConfigs.amountConfig.sendableCurrencies;
-                  return currencies.filter((cur) => {
-                    const denom = new DenomHelper(cur.coinMinimalDenom);
-                    if (
-                      denom.type !== "native" ||
-                      denom.denom.startsWith("ibc/")
-                    ) {
-                      return false;
-                    }
-
+          }}
+        >
+          <div className={style["formInnerContainer"]}>
+            <div>
+              <AddressInput
+                recipientConfig={sendConfigs.recipientConfig}
+                memoConfig={sendConfigs.memoConfig}
+                label={intl.formatMessage({ id: "send.input.recipient" })}
+                value={""}
+              />
+              <CoinInput
+                amountConfig={sendConfigs.amountConfig}
+                label={intl.formatMessage({ id: "send.input.amount" })}
+                balanceText={intl.formatMessage({
+                  id: "send.input-button.balance",
+                })}
+                disableAllBalance={(() => {
+                  if (
+                    // In the case of terra classic, tax is applied in proportion to the amount.
+                    // However, in this case, the tax itself changes the fee,
+                    // so if you use the max function, it will fall into infinite repetition.
+                    // We currently disable if chain is terra classic because we can't handle it properly.
+                    sendConfigs.feeConfig.chainInfo.features &&
+                    sendConfigs.feeConfig.chainInfo.features.includes(
+                      "terra-classic-fee"
+                    )
+                  ) {
                     return true;
-                  });
-                }
+                  }
+                  return false;
+                })()}
+                overrideSelectableCurrencies={(() => {
+                  if (
+                    chainStore.current.features &&
+                    chainStore.current.features.includes("terra-classic-fee")
+                  ) {
+                    // At present, can't handle stability tax well if it is not registered native token.
+                    // So, for terra classic, disable other tokens.
+                    const currencies =
+                      sendConfigs.amountConfig.sendableCurrencies;
+                    return currencies.filter((cur) => {
+                      const denom = new DenomHelper(cur.coinMinimalDenom);
+                      if (
+                        denom.type !== "native" ||
+                        denom.denom.startsWith("ibc/")
+                      ) {
+                        return false;
+                      }
 
-                return undefined;
-              })()}
-            />
-            <MemoInput
-              memoConfig={sendConfigs.memoConfig}
-              label={intl.formatMessage({ id: "send.input.memo" })}
-            />
-            <FeeButtons
-              feeConfig={sendConfigs.feeConfig}
-              gasConfig={sendConfigs.gasConfig}
-              priceStore={priceStore}
-              label={intl.formatMessage({ id: "send.input.fee" })}
-              feeSelectLabels={{
-                low: intl.formatMessage({ id: "fee-buttons.select.low" }),
-                average: intl.formatMessage({
-                  id: "fee-buttons.select.average",
-                }),
-                high: intl.formatMessage({ id: "fee-buttons.select.high" }),
+                      return true;
+                    });
+                  }
+
+                  return undefined;
+                })()}
+              />
+              <MemoInput
+                memoConfig={sendConfigs.memoConfig}
+                label={intl.formatMessage({ id: "send.input.memo" })}
+              />
+              <FeeButtons
+                feeConfig={sendConfigs.feeConfig}
+                gasConfig={sendConfigs.gasConfig}
+                priceStore={priceStore}
+                label={intl.formatMessage({ id: "send.input.fee" })}
+                feeSelectLabels={{
+                  low: intl.formatMessage({ id: "fee-buttons.select.low" }),
+                  average: intl.formatMessage({
+                    id: "fee-buttons.select.average",
+                  }),
+                  high: intl.formatMessage({ id: "fee-buttons.select.high" }),
+                }}
+                gasLabel={intl.formatMessage({ id: "send.input.gas" })}
+                gasSimulator={gasSimulator}
+              />
+            </div>
+            <div style={{ flex: 1 }} />
+            <Button
+              type="submit"
+              color="primary"
+              block
+              data-loading={accountInfo.txTypeInProgress === "send"}
+              disabled={!accountInfo.isReadyToSendTx || !txStateIsValid}
+              style={{
+                marginTop: "12px",
               }}
-              gasLabel={intl.formatMessage({ id: "send.input.gas" })}
-              gasSimulator={gasSimulator}
-            />
+            >
+              {intl.formatMessage({
+                id: "send.button.send",
+              })}
+            </Button>
           </div>
-          <div style={{ flex: 1 }} />
-          <Button
-            type="submit"
-            color="primary"
-            block
-            data-loading={accountInfo.txTypeInProgress === "send"}
-            disabled={!accountInfo.isReadyToSendTx || !txStateIsValid}
-            style={{
-              marginTop: "12px",
+        </form>
+        {txnStatus === "pending" && (
+          <TwoFAInputModal
+            onClose={() => setTxnStatus("")}
+            onSubmit={(data: string) => {
+              if (txnData?.code == data) {
+                setTxnStatus("");
+                (async () => {
+                  await processTxnRequest();
+                })();
+              } else {
+                notification.push({
+                  type: "warning",
+                  placement: "top-center",
+                  duration: 5,
+                  content: "Please enter correct code to proceed",
+                  canDelete: true,
+                  transition: {
+                    duration: 0.25,
+                  },
+                });
+              }
             }}
-          >
-            {intl.formatMessage({
-              id: "send.button.send",
-            })}
-          </Button>
-        </div>
-      </form>
+          />
+        )}
+      </React.Fragment>
     </HeaderLayout>
   );
 });

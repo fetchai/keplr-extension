@@ -25,9 +25,16 @@ import { usePrevious } from "../../hooks";
 import { BIP44Selectable } from "./bip44-selectable";
 import { useFocusEffect } from "@react-navigation/native";
 import { Dec } from "@keplr-wallet/unit";
+import { TwoFAModal } from "../../modals/2fa/2fa-modal";
+import {
+  firebaseTxRequestListener,
+  TxRequest,
+} from "../../utils/2fa/2fa-transaction";
 
 export const HomeScreen: FunctionComponent = observer(() => {
   const [refreshing, setRefreshing] = React.useState(false);
+  const [showFAModal, setShowFAModal] = React.useState(false);
+  const [txRequest, setTxRequest] = React.useState<TxRequest>();
 
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
 
@@ -63,6 +70,19 @@ export const HomeScreen: FunctionComponent = observer(() => {
 
   const stakedSum = delegated.add(unbonding);
   const total = stakable.add(stakedSum);
+
+  useEffect(() => {
+    firebaseTxRequestListener(
+      account.bech32Address,
+      (data) => {
+        setTxRequest(data);
+        setShowFAModal(data !== undefined);
+      },
+      (error) => {
+        console.log("ferror", error);
+      }
+    );
+  }, [account.bech32Address]);
 
   const checkAndUpdateChainInfo = useCallback(() => {
     if (!chainStoreIsInitializing) {
@@ -172,6 +192,12 @@ export const HomeScreen: FunctionComponent = observer(() => {
           />
         </View>
       ) : null}
+      <TwoFAModal
+        isOpen={showFAModal || txRequest != undefined}
+        txRequest={txRequest}
+        address={account.bech32Address}
+        close={() => setShowFAModal(false)}
+      />
     </PageWithScrollViewInBottomTabView>
   );
 });
