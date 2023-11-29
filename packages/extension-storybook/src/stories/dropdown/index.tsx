@@ -1,11 +1,11 @@
 import React from "react";
 import style from "./style.module.scss";
-
+import closeImage from "../assets/closeImage.svg";
 interface DropdownProps {
   isOpen?: boolean;
   title: string;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
-  closeClicked: () => void; // Assuming closeClicked is a function
+  closeClicked: () => void;
   children: React.ReactNode;
 }
 
@@ -15,7 +15,6 @@ export const Dropdown = ({
   setIsOpen,
   isOpen,
   closeClicked,
-
 }: DropdownProps) => {
   return isOpen ? (
     <div>
@@ -30,6 +29,7 @@ export const Dropdown = ({
         <div className={style["header"]}>
           {title}
           <img
+            src={closeImage}
             className={style["closeIcon"]}
             onClick={() => {
               closeClicked();

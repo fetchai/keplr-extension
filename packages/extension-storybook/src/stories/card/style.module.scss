@@ -1,5 +1,5 @@
 .cardContainer {
-  font-family:"Nunito Sans", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   display: flex;
   align-items: center;
   color: white;
@@ -42,4 +42,20 @@
 }
 .rightText {
   font-weight: bold;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+
+  &::placeholder {
+    color: white;
+  }
+
+  &:focus,
+  &:hover {
+    border: none;
+  }
 }
