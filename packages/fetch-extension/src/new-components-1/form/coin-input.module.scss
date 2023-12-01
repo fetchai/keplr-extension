@@ -3,14 +3,15 @@
 @import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/variables";
 
 .input {
-  box-shadow: $input-alternative-box-shadow !important;
+  box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02) !important;
   height: 32px;
   background: transparent !important;
   border: none !important;
   color: #fff;
-  padding-left: 0;
+  padding: 0;
   padding-right: 0;
-  width: fit-content;
+  font-size: 32px;
+  width: 90%;
   &:focus {
     box-shadow: $input-focus-alternative-box-shadow !important;
     height: 32px;
@@ -28,8 +29,14 @@
       border: none !important;
       color: #fff;
       padding-left: 0;
-      padding-right: 0;
+      padding-right: 0; 
       width: fit-content;
+    }
+    &::placeholder {
+      color: white;
+      font-weight: bold !important;
+      font-size: 32px;
+
     }
   }
 }

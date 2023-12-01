@@ -107,8 +107,8 @@ import { DomainDetails } from "./pages/fetch-name-service/domain-details";
 import { BridgePage } from "./pages/bridge";
 import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
-import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
-import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
+import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
+import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
 import { ReceivetModal } from "./pages-new/main/receive";
 
 window.keplr = new Keplr(
