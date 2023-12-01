@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
 import { DeliverTxResponse } from "@cosmjs/stargate";
-import { ButtonGradient } from "../../../new-components-1/buttons/button-gradient";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 
 interface SendTokenProps {
   transferChain: any;

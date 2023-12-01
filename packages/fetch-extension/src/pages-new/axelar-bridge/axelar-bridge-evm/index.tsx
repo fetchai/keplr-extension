@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
-import { Input } from "@components/form";
 import {
   BridgeAmountError,
   EmptyAmountError,
@@ -10,31 +9,25 @@ import {
   ZeroAmountError,
   useSendTxConfig,
 } from "@keplr-wallet/hooks";
-import { HeaderLayout } from "../../../new-layout-1";
-import {
-  extractNumberFromBalance,
-  shortenBalance,
-} from "@utils/axl-bridge-utils";
+import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { CHAINS } from "../../../config.axl-brdige.var";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { useStore } from "../../../stores";
 import { ChainSelect } from "../chain-select";
 import { GasAndDetails } from "../gas-and-details";
 // import { RecipientAddress } from "../recipient-address";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
+import { CoinInput } from "@components-v2/form/coin-input";
+import { ChainList } from "@layouts-v2/header/chain-list";
 import style from "../style.module.scss";
 import { TokenSelect } from "../token-select";
 import { GetDepositAddress } from "./get-deposit-address";
 import { SendToken } from "./send-token";
-import { Card } from "../../../new-components-1/card";
-import { Dropdown } from "../../../new-components-1/dropdown";
-import { ChainList } from "../../../new-layout-1/header/chain-list";
-import {
-  CoinInput,
-  TokenSelectorDropdown,
-} from "../../../new-components-1/form/coin-input";
 
 export const AxelarBridgeEVM = observer(() => {
   const { chainStore, queriesStore, accountStore } = useStore();
@@ -96,7 +89,7 @@ export const AxelarBridgeEVM = observer(() => {
   const [transferToken, setTransferToken] = useState<any>();
   const [recipientAddress, setRecipientAddress] = useState("");
   const [relayerFee, setRelayerFee] = useState<string>("");
-  const [minDepositAmount, setMinDepositAmount] = useState<number>();
+  const [_minDepositAmount, setMinDepositAmount] = useState<number>();
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
   const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
@@ -110,7 +103,7 @@ export const AxelarBridgeEVM = observer(() => {
     .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
   const [toToken, setToToken] = useState<any>();
-  const [amountError, setAmountError] = useState<any>();
+
   const [tokenBal, setTokenBal] = useState<any>("");
 
   useEffect(() => {
@@ -189,24 +182,6 @@ export const AxelarBridgeEVM = observer(() => {
     setTransferToken(token);
   };
 
-  const handleAmountChange = (event: any) => {
-    const minDepositAmt = extractNumberFromBalance(
-      transferToken.minDepositAmt.toString()
-    );
-    const relayerFeeAmt = extractNumberFromBalance(relayerFee);
-    const minAmount =
-      minDepositAmt > relayerFeeAmt ? minDepositAmt : relayerFeeAmt;
-    setMinDepositAmount(minAmount);
-    configs.amountConfig.setAmount(event.target.value);
-    const value = parseFloat(event.target.value);
-    if (value < minAmount) {
-      setAmountError("Please enter at least the minimum amount");
-    } else if (value > extractNumberFromBalance(tokenBal)) {
-      setAmountError("Insufficient Balance");
-    } else {
-      setAmountError(null);
-    }
-  };
   return (
     <HeaderLayout
       showBottomMenu={true}
@@ -238,10 +213,7 @@ export const AxelarBridgeEVM = observer(() => {
           })}
         />
 
-        {amountError ? (
-          <div className={style["errorText"]}>{errorText || amountError}</div>
-        ) : null}
-        <div></div>
+        <div />
         <Card
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "16px" }}
           onClick={() => setChainsDropdownOpen(true)}

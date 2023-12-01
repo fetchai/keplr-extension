@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
-import { HeaderLayout } from "../../new-layout-1";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 
 import { store } from "@chatStore/index";
 import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
@@ -15,9 +15,9 @@ import style from "./style.module.scss";
 import { TokensView } from "./tokens";
 import { WalletActions } from "./wallet-actions";
 import { WalletDetailsView } from "./wallet-details";
-import { TabsPanel } from "../../new-components-1/tabsPanel";
-import { Dropdown } from "../../new-components-1/dropdown";
-import { ChainList } from "../../new-layout-1/header/chain-list";
+import { TabsPanel } from "@components-v2/tabsPanel";
+import { Dropdown } from "@components-v2/dropdown";
+import { ChainList } from "@layouts-v2/header/chain-list";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
@@ -83,6 +83,7 @@ export const MainPage: FunctionComponent = observer(() => {
     accountInfo.bech32Address,
     keyRingStore.keyRingType,
   ]);
+
   const icnsPrimaryName = (() => {
     if (
       uiConfigStore.icnsInfo &&

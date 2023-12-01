@@ -222,7 +222,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 className={styleAddressInput["righContentButtons"]}
                 disabled={true}
               >
-                <img src={require("@assets/svg/wireframe/Line 1.svg")} alt="" />
+                <img src={require("@assets/svg/wireframe/Line.svg")} alt="" />
               </Button>
               <Button
                 className={styleAddressInput["righContentButtons"]}

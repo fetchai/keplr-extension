@@ -13,10 +13,10 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { resetProposals } from "@chatStore/proposal-slice";
-import { Card } from "../../new-components-1/card";
-import { ButtonGradient } from "../../new-components-1/buttons/button-gradient";
+import { Card } from "@components-v2/card";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 import { useConfirm } from "@components/confirm";
-import { TabsPanel } from "../../new-components-1/tabsPanel";
+import { TabsPanel } from "@components-v2/tabsPanel";
 import { formatAddress } from "@utils/format";
 
 interface ChainListProps {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from "./style.module.scss";
 
-interface ButtonToggleProps {
+export interface ButtonToggleProps {
   label: string;
   content: any;
 }

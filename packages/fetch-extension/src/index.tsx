@@ -21,8 +21,7 @@ import { LockPage } from "./pages/lock";
 import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages/register";
-import { SendPage } from "./pages/send";
-import { NewSendPage } from "./pages-new/main/send";
+import { SendPage } from "./pages-new/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { Banner } from "@components/banner";
@@ -109,7 +108,7 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
-import { ReceivetModal } from "./pages-new/main/receive";
+import { Receive } from "./pages-new/receive";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -420,9 +419,7 @@ ReactDOM.render(
                         path="/setting/addEvmChain"
                         element={<AddEvmChain />}
                       />
-                      <Route path="/receive" element={<ReceivetModal />} />
-                      <Route path="/send-new" element={<NewSendPage />} />
-
+                      <Route path="/receive" element={<Receive />} />
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

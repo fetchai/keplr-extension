@@ -1,16 +1,16 @@
 import React, { FunctionComponent, useCallback } from "react";
 import StyleQrCode from "./qr-code.module.scss";
-import { useStore } from "../../../stores";
-import { HeaderLayout } from "../../../new-layout-1";
+import { useStore } from "../../stores";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { useNavigate } from "react-router";
-import { Card } from "../../../new-components-1/card";
+import { Card } from "@components-v2/card";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { useNotification } from "@components/notification";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const QrCode = require("qrcode");
 
-export const ReceivetModal: FunctionComponent<{}> = () => {
+export const Receive: FunctionComponent = () => {
   const { chainStore, accountStore } = useStore();
   const navigate = useNavigate();
   const notification = useNotification();
@@ -59,7 +59,7 @@ export const ReceivetModal: FunctionComponent<{}> = () => {
             style={{ marginBottom: "8px" }}
           >
             Deposit to your address <br /> to receive tokens
-            <br></br>
+            <br />
           </h3>
           <div className={StyleQrCode["depositSubtitle"]}>
             Scan to code or use the address below <br /> to copy your deposit

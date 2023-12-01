@@ -15,7 +15,7 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 // import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
-import { Card } from "../../new-components-1/card";
+import { Card } from "@components-v2/card";
 import { useNavigate } from "react-router";
 
 interface SetKeyRingProps {

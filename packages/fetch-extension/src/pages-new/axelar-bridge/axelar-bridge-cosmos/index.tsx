@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
 import { Input } from "@components/form";
-import { HeaderLayout } from "../../../new-layout-1";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -14,9 +14,9 @@ import { TokenSelect } from "../token-select";
 import { GetDepositAddress } from "./get-deposit-address";
 import { SendToken } from "./send-token";
 import { CHAINS } from "../../../config.axl-brdige.var";
-import { Card } from "../../../new-components-1/card";
-import { Dropdown } from "../../../new-components-1/dropdown";
-import { ChainList } from "../../../new-layout-1/header/chain-list";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
+import { ChainList } from "@layouts-v2/header/chain-list";
 
 export const AxelarBridgeCosmos = observer(() => {
   // to chain list

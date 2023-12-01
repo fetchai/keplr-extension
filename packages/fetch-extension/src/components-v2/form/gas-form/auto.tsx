@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import styleAuto from "./auto.module.scss";
 import { Input } from "../input";
 import { IGasConfig, IGasSimulator } from "@keplr-wallet/hooks";
-import { Card } from "../../../new-components-1/card";
+import { Card } from "@components-v2/card";
 
 export const GasAutoContainer: FunctionComponent<{
   gasConfig: IGasConfig;

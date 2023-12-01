@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import styleToken from "./token.module.scss";
+import styleToken from "./style.module.scss";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
 import { useNavigate } from "react-router";
 import { Hash } from "@keplr-wallet/crypto";
 import { UncontrolledTooltip } from "reactstrap";
@@ -10,10 +10,10 @@ import { useNotification } from "@components/notification";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { CoinPretty, Dec, Int } from "@keplr-wallet/unit";
 import { DenomHelper } from "@keplr-wallet/common";
-import { Card } from "../../new-components-1/card";
+import { Card } from "@components-v2/card";
 import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
-import { useLanguage } from "../../languages";
+import { useLanguage } from "../../../languages";
 
 export const TokensView: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, tokensStore, priceStore } =
@@ -129,7 +129,7 @@ export const TokensView: FunctionComponent = observer(() => {
           const tokenInUsd = convertToUsd(inputValue);
           console.log(tokenInUsd, amountInNumber);
           return (
-            <React.Fragment>
+            <React.Fragment key={token.currency.coinDenom}>
               <Card
                 leftImage={
                   tokenInfo.coinImageUrl
@@ -166,7 +166,6 @@ export const TokensView: FunctionComponent = observer(() => {
                   });
                 }}
               />
-
               {error ? (
                 <div style={{ paddingRight: "10px" }}>
                   <i

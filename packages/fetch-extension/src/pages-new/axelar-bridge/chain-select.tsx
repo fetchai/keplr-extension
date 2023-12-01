@@ -4,8 +4,8 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 // import { formatTokenName } from "@utils/format";
 
-import { Card } from "../../new-components-1/card";
-import { Dropdown } from "../../new-components-1/dropdown";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
 
 interface ChainSelectProps {
   chains: any[];

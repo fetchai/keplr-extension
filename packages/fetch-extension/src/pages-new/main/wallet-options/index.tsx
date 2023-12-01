@@ -41,7 +41,6 @@ export const WalletOptions = observer(
           onClick={() => {
             setIsOptionsOpen(true);
             setIsSelectWalletOpen(false);
-            // navigate("/changewallet");
           }}
           className={style["inner-field"]}
         >

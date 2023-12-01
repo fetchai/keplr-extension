@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { Card } from "../../new-components-1/card";
-import { Dropdown } from "../../new-components-1/dropdown";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
 import { useStore } from "../../stores";
 import { formatEthBalance } from "@utils/axl-bridge-utils";
 

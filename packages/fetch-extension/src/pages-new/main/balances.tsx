@@ -7,9 +7,9 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
-// import { TabsPanel } from "../../new-components-1/tabsPanel";
+// import { TabsPanel } from "@components-v2/tabsPanel";
 import { Button } from "reactstrap";
-import { ButtonGradient } from "../../new-components-1/buttons/button-gradient";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 
 export const Balances = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =

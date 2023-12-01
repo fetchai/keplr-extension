@@ -6,7 +6,7 @@ import style from "../style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { formatActivityHash } from "@utils/format";
-import { ButtonGradient } from "../../../new-components-1/buttons/button-gradient";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 
 interface SendTokenProps {
   sendConfigs: any;

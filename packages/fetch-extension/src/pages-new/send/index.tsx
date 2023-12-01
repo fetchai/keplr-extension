@@ -5,10 +5,10 @@ import {
   CoinInput,
   MemoInput,
   TokenSelectorDropdown,
-} from "../../../new-components-1/form";
-import { useStore } from "../../../stores";
+} from "@components-v2/form";
+import { useStore } from "../../stores";
 
-import { HeaderLayout } from "../../../new-layout-1";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 
 import { observer } from "mobx-react-lite";
 
@@ -27,12 +27,12 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
-import { Card } from "../../../new-components-1/card";
-import { Dropdown } from "../../../new-components-1/dropdown";
-import { SetKeyRingPage } from "../../../pages-new/keyring-dev";
-import { ButtonGradient } from "../../../new-components-1/buttons/button-gradient";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
+import { SetKeyRingPage } from "../keyring-dev";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 
-export const NewSendPage: FunctionComponent = observer(() => {
+export const SendPage: FunctionComponent = observer(() => {
   const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);
   const navigate = useNavigate();
   let search = useLocation().search;
@@ -515,7 +515,7 @@ export const NewSendPage: FunctionComponent = observer(() => {
           title="Select Wallet"
           closeClicked={() => setIsChangeWalletOpen(false)}
         >
-          <SetKeyRingPage navigateTo={"/send-new"} />
+          <SetKeyRingPage navigateTo={"/send"} />
         </Dropdown>
       </form>
     </HeaderLayout>

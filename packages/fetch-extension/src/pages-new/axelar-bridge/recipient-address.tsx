@@ -3,9 +3,9 @@ import { validateDestinationAddressByChainSymbol } from "@axelar-network/axelarj
 import { Input } from "@components/form/input";
 import React, { useEffect, useState } from "react";
 import style from "./style.module.scss";
-import { Card } from "../../new-components-1/card";
-import { Dropdown } from "../../new-components-1/dropdown";
-import { ChainList } from "../../new-layout-1/header/chain-list";
+import { Card } from "@components-v2/card";
+import { Dropdown } from "@components-v2/dropdown";
+import { ChainList } from "@layouts-v2/header/chain-list";
 
 interface RecipientAddressProps {
   recieverChain: any;

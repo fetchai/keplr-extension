@@ -35,7 +35,7 @@ import { action, autorun, makeObservable, observable } from "mobx";
 import { GasContainer } from "../gas-form";
 import styleCoinInput from "../coin-input.module.scss";
 import { useStore } from "../../../stores";
-import { Card } from "../../../new-components-1/card";
+import { Card } from "@components-v2/card";
 
 export interface FeeButtonsProps {
   feeConfig: IFeeConfig;

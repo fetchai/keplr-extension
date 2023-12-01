@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import style from "./style.module.scss";
 import { useNavigate } from "react-router";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
 import { Dec } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
-import { WalletActionsButton } from "../../new-components-1/buttons/wallet-action-button";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
+import { WalletActionsButton } from "@components-v2/buttons/wallet-action-button";
 
 export const WalletActions = observer(() => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export const WalletActions = observer(() => {
         image="arrow-up.svg"
         onClick={() => {
           if (hasAssets) {
-            navigate("/send-new");
+            navigate("/send");
           }
         }}
       />

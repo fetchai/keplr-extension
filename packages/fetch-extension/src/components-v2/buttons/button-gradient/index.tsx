@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "reactstrap";
 import style from "./style.module.scss";
 
-interface Props {
+export interface Props {
   onClick: any;
   dataLoading?: any;
   gradientText: string;

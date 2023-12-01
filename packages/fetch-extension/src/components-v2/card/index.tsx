@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./style.module.scss";
 
-interface CardProps {
+export interface CardProps {
   leftImage?: any;
   heading: any;
   subheading?: any;

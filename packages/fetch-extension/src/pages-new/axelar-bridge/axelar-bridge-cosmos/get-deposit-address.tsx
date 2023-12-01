@@ -3,7 +3,7 @@ import { useNotification } from "@components/notification";
 import React from "react";
 import { useStore } from "../../../stores";
 import { AxelarAssetTransfer } from "@axelar-network/axelarjs-sdk";
-import { ButtonGradient } from "../../../new-components-1/buttons/button-gradient";
+import { ButtonGradient } from "@components-v2/buttons/button-gradient";
 
 interface GetDepositAddressProps {
   setDepositAddress: any;
