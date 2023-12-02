@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Text, TextInput, View, ViewStyle } from "react-native";
 import { registerModal } from "../base";
 import { observer } from "mobx-react-lite";
@@ -6,9 +6,10 @@ import { useStyle } from "../../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CloseIcon } from "../../components/icon";
 import {
-  firebaseTxRequestRejected,
+  firebaseTxStatusUpdate,
   TxRequest,
 } from "../../utils/2fa/2fa-transaction";
+import Toast from "react-native-toast-message";
 
 export const TwoFAModal: FunctionComponent<{
   isOpen: boolean;
@@ -18,6 +19,54 @@ export const TwoFAModal: FunctionComponent<{
 }> = registerModal(
   observer(({ isOpen, close, address, txRequest }) => {
     const style = useStyle();
+    const [inputValues, setInputValues] = useState(["", "", "", ""]);
+    const inputRefs = useRef<Array<TextInput | null>>([]);
+
+    useEffect(() => {
+      // Focus on the first input when the component mounts
+      if (inputRefs.current[0]) {
+        inputRefs.current[0]?.focus();
+      }
+    }, []);
+
+    const handleChange = (index: number, value: string) => {
+      const sanitizedValue = value.replace(/\D/g, "").slice(0, 1);
+
+      let newValues: string[] = [];
+      setInputValues((prevValues) => {
+        newValues = [...prevValues];
+        newValues[index] = sanitizedValue;
+        return newValues;
+      });
+
+      if (sanitizedValue.length === 1 && index < inputValues.length - 1) {
+        // Move focus to the next input field
+        inputRefs.current[index + 1]?.focus();
+      } else if (sanitizedValue.length === 0 && index > 0) {
+        // Move focus to the previous input field
+        inputRefs.current[index - 1]?.focus();
+      }
+
+      ///Todo handle a case where only 3 incorrect attempts allowed
+      const inputValue = newValues.join("");
+      if (inputValue.length === 4) {
+        if (txRequest?.code == inputValue) {
+          close();
+          (async () => {
+            await firebaseTxStatusUpdate(
+              txRequest?.address ?? "address",
+              "approved"
+            );
+            setInputValues(["", "", "", ""]);
+          })();
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Please enter correct code to proceed",
+          });
+        }
+      }
+    };
 
     if (!isOpen) {
       return null;
@@ -51,8 +100,9 @@ export const TwoFAModal: FunctionComponent<{
             <TouchableOpacity
               onPress={async () => {
                 close();
-                await firebaseTxRequestRejected(
-                  txRequest?.address ?? "address"
+                await firebaseTxStatusUpdate(
+                  txRequest?.address ?? "address",
+                  "rejected"
                 );
               }}
             >
@@ -92,10 +142,14 @@ export const TwoFAModal: FunctionComponent<{
             {address}
           </Text>
           <View style={{ flexDirection: "row" }}>
-            {Array.from(txRequest?.code ?? "").map((value, index) => (
+            {inputValues.map((value, index) => (
               <TextInput
                 key={index}
                 value={value}
+                keyboardType="numeric"
+                maxLength={1}
+                onChange={(e) => handleChange(index, e.nativeEvent.text)}
+                ref={(el) => (inputRefs.current[index] = el)}
                 style={{
                   borderWidth: 1.5,
                   borderColor: "#ccc",

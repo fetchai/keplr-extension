@@ -276,7 +276,6 @@ export const SendPage: FunctionComponent = observer(() => {
         },
       });
     } finally {
-      await deleteFirebaseTxRequest(accountInfo.bech32Address);
       // XXX: If the page is in detached state,
       // close the window without waiting for tx to commit. analytics won't work.
       if (isDetachedPage) {
@@ -286,63 +285,49 @@ export const SendPage: FunctionComponent = observer(() => {
   }
 
   useEffect(() => {
-    firebaseTxRequestListener(
-      accountInfo.bech32Address,
-      (data) => {
-        setTxnData(data);
-        if (data.status == "pending") {
-          setTxnStatus("pending");
-          notification.push({
-            type: "warning",
-            placement: "top-center",
-            duration: 5,
-            content: "Transaction broadcast for 2FA",
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-        } else if (data.status == "rejected") {
-          setTxnStatus("");
-          notification.push({
-            type: "warning",
-            placement: "top-center",
-            duration: 5,
-            content: "Transaction request rejected by 2FA device",
-            canDelete: true,
-            transition: {
-              duration: 0.25,
-            },
-          });
-          (async () => {
-            await deleteFirebaseTxRequest(accountInfo.bech32Address);
-          })();
-
+    deleteFirebaseTxRequest(accountInfo.bech32Address).then((_) => {
+      firebaseTxRequestListener(
+        accountInfo.bech32Address,
+        (data) => {
+          if (data.status == "pending") {
+            setTxnData(data);
+            setTxnStatus("pending");
+          } else if (data.status == "rejected") {
+            setTxnStatus("rejected");
+            notification.push({
+              type: "warning",
+              placement: "top-center",
+              duration: 2,
+              content: "Transaction request canceled",
+              canDelete: true,
+              transition: {
+                duration: 0.25,
+              },
+            });
+          } else if (data.status == "approved") {
+            setTxnStatus("approved");
+            (async () => {
+              await processTxnRequest();
+            })();
+          }
+        },
+        (error) => {
           if (!isDetachedPage) {
             navigate("/", { replace: true });
           }
+          notification.push({
+            type: "warning",
+            placement: "top-center",
+            duration: 5,
+            content: `Fail to process transaction request: ${error}`,
+            canDelete: true,
+            transition: {
+              duration: 0.25,
+            },
+          });
         }
-      },
-      (error) => {
-        (async () => {
-          await deleteFirebaseTxRequest(accountInfo.bech32Address);
-        })();
-
-        if (!isDetachedPage) {
-          navigate("/", { replace: true });
-        }
-        notification.push({
-          type: "warning",
-          placement: "top-center",
-          duration: 5,
-          content: `Fail to process transaction request: ${error}`,
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
-      }
-    );
+      );
+    });
   }, []);
 
   return (
@@ -520,25 +505,7 @@ export const SendPage: FunctionComponent = observer(() => {
         {txnStatus === "pending" && (
           <TwoFAInputModal
             onClose={() => setTxnStatus("")}
-            onSubmit={(data: string) => {
-              if (txnData?.code == data) {
-                setTxnStatus("");
-                (async () => {
-                  await processTxnRequest();
-                })();
-              } else {
-                notification.push({
-                  type: "warning",
-                  placement: "top-center",
-                  duration: 5,
-                  content: "Please enter correct code to proceed",
-                  canDelete: true,
-                  transition: {
-                    duration: 0.25,
-                  },
-                });
-              }
-            }}
+            txRequest={txnData}
           />
         )}
       </React.Fragment>

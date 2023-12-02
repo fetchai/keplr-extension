@@ -23,7 +23,11 @@ export const firebaseTxRequestListener = (
         "fromCache",
         snapshot.metadata.fromCache
       );
-      if (snapshot.exists && snapshot.get("status") == "pending") {
+      if (
+        snapshot.exists &&
+        !snapshot.metadata.fromCache &&
+        snapshot.get("status") == "pending"
+      ) {
         onNext(
           new TxRequest(
             snapshot.get("address"),
@@ -43,9 +47,12 @@ export const firebaseTxRequestListener = (
   );
 };
 
-export const firebaseTxRequestRejected = async (address: string) => {
+export const firebaseTxStatusUpdate = async (
+  address: string,
+  status: string
+) => {
   const docRef = doc(firestoreInstance, "txnRequest", address);
-  await updateDoc(docRef, { status: "rejected" });
+  await updateDoc(docRef, { status: status });
 };
 
 export class TxRequest {

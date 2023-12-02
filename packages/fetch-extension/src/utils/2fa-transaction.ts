@@ -4,6 +4,7 @@ import {
   FirestoreError,
   onSnapshot,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { firestoreApp } from "../../firebaseConfig";
 import {
@@ -24,8 +25,7 @@ export const firebaseTxRequestListener = (
     docRef,
     (snapshot) => {
       console.log("Metadata", snapshot.metadata);
-
-      if (snapshot.exists()) {
+      if (snapshot.exists() && !snapshot.metadata.fromCache) {
         onNext(snapshot.data());
       } else {
         // docSnap.data() will be undefined in this case
@@ -44,8 +44,13 @@ export const firebaseTxRequest = async (address: string) => {
     address: address,
     status: "pending",
     txTypeInProgress: "send",
-    code: Math.random().toString().slice(2, 8),
+    code: Math.random().toString().slice(2, 6),
   });
+};
+
+export const firebaseTxRequestRejected = async (address: string) => {
+  const docRef = doc(firestoreApp, "txnRequest", address);
+  await updateDoc(docRef, { status: "rejected" });
 };
 
 export const deleteFirebaseTxRequest = async (address: string) => {
