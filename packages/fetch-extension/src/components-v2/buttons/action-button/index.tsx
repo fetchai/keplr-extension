@@ -7,7 +7,7 @@ export interface Props {
   onClick: () => void;
 }
 
-export const WalletActionsButton: FC<Props> = ({ title, image, onClick }) => {
+export const ActionButton: FC<Props> = ({ title, image, onClick }) => {
   return (
     <button className={style["action"]} onClick={onClick}>
       <img src={require(`@assets/svg/wireframe/${image}`)} alt="" />

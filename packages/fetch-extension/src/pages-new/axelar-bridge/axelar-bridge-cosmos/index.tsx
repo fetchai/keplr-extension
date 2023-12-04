@@ -1,8 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { AxelarQueryAPI } from "@axelar-network/axelarjs-sdk";
-import { Input } from "@components/form";
 import { HeaderLayout } from "@layouts-v2/header-layout";
-import { extractNumberFromBalance } from "@utils/axl-bridge-utils";
+import {
+  extractNumberFromBalance,
+  formatEthBalance,
+} from "@utils/axl-bridge-utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -17,6 +19,9 @@ import { CHAINS } from "../../../config.axl-brdige.var";
 import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 import { ChainList } from "@layouts-v2/header/chain-list";
+import { useLanguage } from "../../../languages";
+import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { CoinInput } from "./coin-input";
 
 export const AxelarBridgeCosmos = observer(() => {
   // to chain list
@@ -33,6 +38,9 @@ export const AxelarBridgeCosmos = observer(() => {
 
   const [tokenBal, setTokenBal] = useState<any>("");
   const [relayerFee, setRelayerFee] = useState<string>("");
+  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   // UI related state
   const [isChainsLoaded, setIsChainsLoaded] = useState(true);
@@ -40,11 +48,16 @@ export const AxelarBridgeCosmos = observer(() => {
   const [isFetchingAddress, setIsFetchingAddress] = useState<boolean>(false);
   const [chainsDropdownOpen, setChainsDropdownOpen] = useState(false);
 
-  const { chainStore } = useStore();
+  const { queriesStore, chainStore, accountStore, priceStore } = useStore();
   const current = chainStore.current;
+  const accountInfo = accountStore.getAccount(current.chainId);
+
   const transferChain = CHAINS.find(
     (chain: any) => chain.chainId == current.chainId
   );
+  const query = queriesStore
+    .get(current.chainId)
+    .queryBalances.getQueryBech32Address(accountInfo.bech32Address);
 
   const navigate = useNavigate();
 
@@ -69,6 +82,42 @@ export const AxelarBridgeCosmos = observer(() => {
       setAmountError("");
     }
   };
+
+  useEffect(() => {
+    const { balances, nonNativeBalances } = query;
+    const queryBalances = balances.concat(nonNativeBalances);
+    const queryBalance = queryBalances.find(
+      (bal) =>
+        (transferToken &&
+          transferToken.assetSymbol == bal.currency.coinDenom) ||
+        (transferToken &&
+          transferToken.ibcDenom == bal.currency.coinMinimalDenom)
+    );
+    const balance = queryBalance?.balance.trim(true).maxDecimals(6).toString();
+    if (balance) {
+      balance.includes("-wei")
+        ? setTokenBal(formatEthBalance(balance))
+        : setTokenBal(balance);
+    }
+  }, [query, transferToken, setTokenBal]);
+
+  const convertToUsd = (currency: any) => {
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
+    const inUsd = value && value.shrink(true).maxDecimals(6).toString();
+    return inUsd;
+  };
+
+  useEffect(() => {
+    if (transferToken && transferToken.decimals !== undefined && amount) {
+      const amountInNumber = parseFloat(amount) * 10 ** transferToken.decimals;
+      const inputValue = new CoinPretty(
+        transferToken,
+        new Int(transferToken ? amountInNumber : 0)
+      );
+      const inputValueInUsd = convertToUsd(inputValue);
+      setInputInUsd(inputValueInUsd);
+    }
+  }, [transferToken]);
 
   useEffect(() => {
     const init = async () => {
@@ -131,16 +180,53 @@ export const AxelarBridgeCosmos = observer(() => {
             try later
           </div>
         )}
-        <Input
-          type="number"
-          min="0"
-          label={"Enter Amount"}
-          onChange={handleAmountChange}
-          disabled={!transferToken || depositAddress}
+        <CoinInput
+          amount={amount}
+          amountError={amountError}
+          depositAddress={depositAddress}
+          handleAmountChange={handleAmountChange}
+          inputInUsd={inputInUsd}
+          setAmount={setAmount}
+          tokenBal={tokenBal}
+          transferToken={transferToken}
         />
-        {amountError ? (
-          <div className={style["errorText"]}>{amountError}</div>
-        ) : null}
+        {/* <div className={style["coinInputContainer"]}>
+          <div>
+            <div className={style["amount"]}>Amount</div>
+            <Input
+              className={style["amountInput"]}
+              type="number"
+              min="0"
+              value={amount ? amount.toString() : ""}
+              placeholder={`0 ${
+                transferToken ? transferToken.assetSymbol : ""
+              }`}
+              onChange={handleAmountChange}
+              disabled={!transferToken || depositAddress}
+            />
+            <div className={style["amountInUsd"]}>
+              {inputInUsd && `(${inputInUsd} USD)`}
+            </div>
+            {amountError ? (
+              <div className={style["errorText"]}>{amountError}</div>
+            ) : null}
+          </div>
+
+          <div className={style["rightWidgets"]}>
+            <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
+            <Button
+              className={style["max"]}
+              onClick={(e: any) => {
+                e.preventDefault();
+                const [numericPart, _denomPart] = tokenBal.split(" ");
+                console.log(numericPart);
+                setAmount(numericPart);
+              }}
+            >
+              MAX
+            </Button>
+          </div>
+        </div> */}
         <Card
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "16px" }}
           onClick={() => setChainsDropdownOpen(true)}
@@ -158,14 +244,6 @@ export const AxelarBridgeCosmos = observer(() => {
           tokenBal={tokenBal}
           setTokenBal={setTokenBal}
         />
-        {/* {transferToken && (
-          <TokenBalances
-            fromToken={transferToken}
-            tokenBal={tokenBal}
-            setTokenBal={setTokenBal}
-            relayerFee={relayerFee}
-          />
-        )} */}
         <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
 
         <ChainSelect

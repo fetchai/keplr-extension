@@ -5,7 +5,7 @@ import { useStore } from "../../../stores";
 import { Dec } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import { WalletActionsButton } from "@components-v2/buttons/wallet-action-button";
+import { ActionButton } from "@components-v2/buttons/action-button";
 
 export const WalletActions = observer(() => {
   const navigate = useNavigate();
@@ -33,12 +33,12 @@ export const WalletActions = observer(() => {
 
   return (
     <div className={style["actions"]}>
-      <WalletActionsButton
+      <ActionButton
         title="Recieve"
         image="arrow-down.svg"
         onClick={() => navigate("/receive")}
       />
-      <WalletActionsButton
+      <ActionButton
         title="Send"
         image="arrow-up.svg"
         onClick={() => {
@@ -48,7 +48,7 @@ export const WalletActions = observer(() => {
         }}
       />
       {isStakableInApp && (
-        <WalletActionsButton
+        <ActionButton
           title="Stake"
           image="stake.svg"
           onClick={() =>
@@ -60,7 +60,7 @@ export const WalletActions = observer(() => {
           }
         />
       )}
-      <WalletActionsButton
+      <ActionButton
         title="Bridge"
         image="bridge.svg"
         onClick={() => {

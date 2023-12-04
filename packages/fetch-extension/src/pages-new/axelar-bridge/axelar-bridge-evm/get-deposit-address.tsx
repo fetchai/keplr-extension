@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { useStore } from "../../../stores";
 import { AxelarAssetTransfer } from "@axelar-network/axelarjs-sdk";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 interface GetDepositAddressProps {
   recipientConfig: IRecipientConfig | IRecipientConfigWithICNS;
@@ -66,7 +66,7 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = observer(
       }
     };
     return (
-      <ButtonGradient
+      <ButtonV2
         text="Get Deposit Address"
         gradientText=""
         onClick={getDepositAddress}

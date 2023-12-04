@@ -3,7 +3,7 @@
 @import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/variables";
 
 .input {
-  box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02) !important;
+  box-shadow: none !important;
   height: 32px;
   background: transparent !important;
   border: none !important;
@@ -13,32 +13,35 @@
   font-size: 32px;
   width: 90%;
   &:focus {
-    box-shadow: $input-focus-alternative-box-shadow !important;
+    box-shadow: none !important;
     height: 32px;
     background: transparent !important;
     border: none !important;
     color: #fff;
     padding-left: 0;
     padding-right: 0;
-    width: fit-content;
+    width: 90%;
 
     & + .select {
-      box-shadow: $input-focus-alternative-box-shadow !important;
+      box-shadow: none !important;
       height: 32px;
       background: transparent !important;
       border: none !important;
       color: #fff;
       padding-left: 0;
-      padding-right: 0; 
-      width: fit-content;
+      padding-right: 0;
+      width: 90%;
     }
     &::placeholder {
       color: white;
-      font-weight: bold !important;
       font-size: 32px;
-
     }
   }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .amount-label {
   font-size: 14px;
@@ -61,7 +64,7 @@
   }
 
   :global(.dropdown-toggle) {
-    box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02) !important;
+    box-shadow: none !important;
 
     &::after {
       border-radius: 2px;

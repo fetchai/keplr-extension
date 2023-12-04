@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import style from "./style.module.scss";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
-import { useLanguage } from "../../languages";
+import { useLanguage } from "../../../languages";
 import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 // import { TabsPanel } from "@components-v2/tabsPanel";
 import { Button } from "reactstrap";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const Balances = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
@@ -168,7 +168,9 @@ export const Balances = observer(() => {
             <div className={style["balance"]}>
               {availableNumber}
               <span className={style["inUsd"]}> {availableDenom}</span>
-              <div className={style["inUsd"]}>{convertToUsd(stakable)} USD</div>
+              <div className={style["inUsd"]}>
+                {convertToUsd(stakable) && `${convertToUsd(stakable)} USD`}{" "}
+              </div>
             </div>
           </div>
           <img
@@ -178,14 +180,13 @@ export const Balances = observer(() => {
           />
           <div>
             <div style={{ color: " rgba(255, 255, 255, 0.60)" }}>
-              {" "}
               Staked amount
             </div>
             <div className={style["balance"]}>
               {stakableNumber}{" "}
               <span className={style["inUsd"]}>{stakableDenom}</span>
               <div className={style["inUsd"]}>
-                {convertToUsd(stakedSum)} USD
+                {convertToUsd(stakedSum) && `${convertToUsd(stakedSum)} USD`}
               </div>
             </div>
           </div>
@@ -196,18 +197,18 @@ export const Balances = observer(() => {
           />
           <div>
             <div style={{ color: " rgba(255, 255, 255, 0.60)" }}>
-              {" "}
               Staking reward
             </div>
             <div className={style["reward"]}>
               {rewardNumber}{" "}
               <span className={style["inUsd"]}>{rewardDenom}</span>
               <div className={style["inUsd"]}>
-                {convertToUsd(stakableReward)} USD
+                {convertToUsd(stakableReward) &&
+                  `${convertToUsd(stakableReward)} USD`}
               </div>
             </div>
           </div>
-          <ButtonGradient
+          <ButtonV2
             disabled={rewardNumber == "0"}
             data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
             text="Claim rewards"

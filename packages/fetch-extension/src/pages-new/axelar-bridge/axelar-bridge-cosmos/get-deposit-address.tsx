@@ -3,7 +3,7 @@ import { useNotification } from "@components/notification";
 import React from "react";
 import { useStore } from "../../../stores";
 import { AxelarAssetTransfer } from "@axelar-network/axelarjs-sdk";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 interface GetDepositAddressProps {
   setDepositAddress: any;
@@ -61,7 +61,7 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = ({
     }
   };
   return (
-    <ButtonGradient
+    <ButtonV2
       text="Get Deposit Address"
       gradientText=""
       onClick={getDepositAddress}

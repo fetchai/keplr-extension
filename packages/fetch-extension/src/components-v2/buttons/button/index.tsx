@@ -5,17 +5,19 @@ import style from "./style.module.scss";
 export interface Props {
   onClick: any;
   dataLoading?: any;
-  gradientText: string;
+  gradientText?: string;
   text: string;
   disabled?: any;
+  styleProps?: React.CSSProperties;
 }
 
-export const ButtonGradient: React.FC<Props> = ({
+export const ButtonV2: React.FC<Props> = ({
   onClick,
   dataLoading,
   gradientText,
   text,
   disabled,
+  styleProps,
 }) => {
   return (
     <Button
@@ -23,7 +25,7 @@ export const ButtonGradient: React.FC<Props> = ({
       onClick={onClick}
       data-loading={dataLoading ? dataLoading : null}
       className={style["btn"]}
-      style={{ width: "100%" }}
+      style={{ width: "100%", ...styleProps }}
     >
       {text} <span className={style["gradient"]}>{gradientText}</span>
     </Button>

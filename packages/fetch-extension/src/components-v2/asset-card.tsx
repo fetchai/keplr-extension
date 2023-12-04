@@ -53,13 +53,6 @@ export const AssetCard: React.FC<AssetCardProps> = ({ image, name }) => {
           {formatTokenName(name)}
         </ToolTip>
       </div>
-      {/* <div className={styleToken["tokenBalance"]}>
-                {balance.isFetching ? (
-                    <i className="fas fa-spinner fa-spin ml-1" />
-                ) : (
-                    amount.maxDecimals(6).hideDenom(true).toString()
-                )}
-            </div> */}
     </div>
   );
 };

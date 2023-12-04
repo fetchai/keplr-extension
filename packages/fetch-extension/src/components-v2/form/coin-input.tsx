@@ -50,7 +50,9 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       return inUsd;
     };
     useEffect(() => {
-      const amountInNumber = parseFloat(amountConfig.amount) * 10 ** 18;
+      const amountInNumber =
+        parseFloat(amountConfig.amount) *
+        10 ** amountConfig.sendCurrency.coinDecimals;
       const inputValue = new CoinPretty(
         amountConfig.sendCurrency,
         new Int(amountConfig.amount ? amountInNumber : 0)
@@ -155,12 +157,6 @@ export const TokenSelectorDropdown: React.FC<TokenDropdownProps> = ({
 }) => {
   const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
   const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
-
-  // const [randomId] = useState(() => {
-  //   const bytes = new Uint8Array(4);
-  //   crypto.getRandomValues(bytes);
-  //   return Buffer.from(bytes).toString("hex");
-  // });
 
   const { queriesStore, priceStore } = useStore();
   const queryBalances = queriesStore

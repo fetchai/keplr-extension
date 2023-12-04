@@ -48,10 +48,16 @@ export const TokenSelect = observer(
         .trim(true)
         .maxDecimals(6)
         .toString();
-      if (balance) {
-        balance.includes("-wei")
-          ? setTokenBal(formatEthBalance(balance))
-          : setTokenBal(balance);
+
+      if (balance !== undefined && !isNaN(parseFloat(balance))) {
+        if (balance.includes("-wei")) {
+          setTokenBal(formatEthBalance(balance));
+        } else {
+          setTokenBal(balance);
+        }
+      } else {
+        // Handle the case when the balance is zero
+        setTokenBal(`0 ${transferToken ? transferToken.assetSymbol : ""}`);
       }
     }, [query, transferToken, setTokenBal]);
 
@@ -66,15 +72,14 @@ export const TokenSelect = observer(
           onClick={() => {
             if (recieverChain || depositAddress) setDropdownOpen(!dropdownOpen);
           }}
-          heading={"Transfer as"}
+          heading={"Asset"}
           style={{ height: "72px", background: "rgba(255,255,255,0.1)" }}
           rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
           subheading={
             <div>
               {transferToken ? transferToken.assetSymbol : ""}
               <div>
-                {" "}
-                {tokenBal && `available: ${tokenBal}`}
+                {recieverChain && tokenBal && `available: ${tokenBal}`}
                 {!recieverChain && "Select Transfer chain first"}
               </div>
             </div>

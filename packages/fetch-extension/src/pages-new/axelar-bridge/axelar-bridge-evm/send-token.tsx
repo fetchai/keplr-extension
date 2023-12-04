@@ -6,7 +6,7 @@ import style from "../style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { formatActivityHash } from "@utils/format";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 interface SendTokenProps {
   sendConfigs: any;
@@ -109,7 +109,7 @@ export const SendToken: React.FC<SendTokenProps> = observer(
             <i className="fas fa-spinner fa-spin ml-2" />
           </div>
         )}
-        <ButtonGradient
+        <ButtonV2
           text="Review transfer"
           gradientText=""
           onClick={handleEVMSendToken}

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-// import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-// import { formatTokenName } from "@utils/format";
-
 import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 
@@ -32,8 +29,6 @@ export const ChainSelect = observer(
       setRecieverChain(chain);
       setDropdownOpen(false);
     };
-
-    // const isEvm = chainStore.current.features?.includes("evm") ?? false;
 
     return (
       <div>

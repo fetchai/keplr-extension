@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
 import { DeliverTxResponse } from "@cosmjs/stargate";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 interface SendTokenProps {
   transferChain: any;
@@ -115,7 +115,7 @@ export const SendToken: React.FC<SendTokenProps> = ({
           Transaction In Progress <i className="fas fa-spinner fa-spin ml-2" />
         </div>
       )}
-      <ButtonGradient
+      <ButtonV2
         text="Review Transfer"
         gradientText=""
         onClick={handleSendToken}

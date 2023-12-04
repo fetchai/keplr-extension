@@ -14,7 +14,7 @@ import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "@components-v2/card";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 import { useConfirm } from "@components/confirm";
 import { TabsPanel } from "@components-v2/tabsPanel";
 import { formatAddress } from "@utils/format";
@@ -84,7 +84,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 }}
                 subheading={
                   showAddress
-                    ? formatAddress(accountStore.getAccount(chainInfo.chainId).bech32Address)
+                    ? formatAddress(
+                        accountStore.getAccount(chainInfo.chainId).bech32Address
+                      )
                     : null
                 }
               />
@@ -224,7 +226,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               />
             ))}
             <div style={{ position: "absolute", bottom: "5px", width: "94%" }}>
-              <ButtonGradient
+              <ButtonV2
                 onClick={(e: any) => {
                   e.preventDefault();
                   navigate("/setting/addEvmChain");
