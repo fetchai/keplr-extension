@@ -4,6 +4,8 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { HeaderBackButtonIcon } from "./icon";
+import { IconView } from "../new/button/icon";
+import { LeftBackIcon } from "../icon/new/left-back";
 
 export const HeaderLeftButton: FunctionComponent<
   StackHeaderLeftButtonProps
@@ -47,6 +49,26 @@ export const HeaderLeftBackButton: FunctionComponent<
       {props.canGoBack ? (
         <HeaderLeftButton {...props}>
           <HeaderBackButtonIcon />
+        </HeaderLeftButton>
+      ) : null}
+    </React.Fragment>
+  );
+};
+
+export const HeaderLeftBackBlurButton: FunctionComponent<
+  StackHeaderLeftButtonProps
+> = (props) => {
+  const style = useStyle();
+  return (
+    <React.Fragment>
+      {props.canGoBack ? (
+        <HeaderLeftButton {...props}>
+          {/* <HeaderBackButtonIcon /> */}
+          <IconView
+            img={<LeftBackIcon />}
+            backgroundBlur={true}
+            iconStyle={style.flatten(["padding-11"]) as ViewStyle}
+          />
         </HeaderLeftButton>
       ) : null}
     </React.Fragment>

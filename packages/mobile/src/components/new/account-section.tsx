@@ -1,0 +1,234 @@
+import React, { FunctionComponent, useState } from "react";
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
+import { observer } from "mobx-react-lite";
+import { useStyle } from "../../styles";
+import { BlurBackground } from "./blur-background/blur-background";
+import { ChevronDownIcon } from "../icon/new/chevron-down";
+import { SelectAccountButton } from "./select-account/select-account-button";
+import { BlurButton } from "./button/blur-button";
+import { Button } from "../button/button";
+import { AddressCopyable } from "./address-copyable";
+import {
+  DrawerActions,
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
+import { useStore } from "../../stores";
+import { IconView } from "./button/icon";
+import { TreeDotIcon } from "../icon/new/tree-dot";
+import { MainWalletCardModel } from "./wallet-card/main-wallet";
+
+export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
+  observer(({ containtStyle }) => {
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
+    const style = useStyle();
+    const [selectedId, setSelectedId] = useState<string>("1");
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+
+    const account = accountStore.getAccount(chainStore.current.chainId);
+    const queries = queriesStore.get(chainStore.current.chainId);
+
+    const queryStakable = queries.queryBalances.getQueryBech32Address(
+      account.bech32Address
+    ).stakable;
+    const stakable = queryStakable.balance;
+
+    const queryDelegated =
+      queries.cosmos.queryDelegations.getQueryBech32Address(
+        account.bech32Address
+      );
+    const delegated = queryDelegated.total;
+
+    const queryUnbonding =
+      queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+        account.bech32Address
+      );
+    const unbonding = queryUnbonding.total;
+
+    const stakedSum = delegated.add(unbonding);
+
+    const total = stakable.add(stakedSum);
+
+    const totalPrice = priceStore.calculatePrice(total);
+
+    const accountSectionList = [
+      { id: "1", title: "Your Balance" },
+      { id: "2", title: "Available" },
+      { id: "3", title: "Staked" },
+    ];
+
+    const renderItem = ({ item }: any) => {
+      const selected = item.id === selectedId ? true : false;
+      return (
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => setSelectedId(item.id)}
+        >
+          <BlurButton backgroundBlur={selected} text={item.title} />
+        </TouchableOpacity>
+      );
+    };
+
+    const showBalance = () => {
+      switch (selectedId) {
+        case "1":
+          return totalPrice
+            ? totalPrice.toString()
+            : total.shrink(true).maxDecimals(6).toString();
+
+        case "2":
+          return stakable.maxDecimals(6).trim(true).shrink(true).toString();
+
+        case "3":
+          return stakedSum.maxDecimals(6).trim(true).shrink(true).toString();
+      }
+    };
+    return (
+      <React.Fragment>
+        <BlurBackground
+          borderRadius={16}
+          backgroundBlur={true}
+          blurIntensity={20}
+          containerStyle={
+            [
+              style.flatten(["margin-x-12", "padding-20"]),
+              containtStyle,
+            ] as ViewStyle
+          }
+        >
+          <View
+            style={style.flatten(["flex-row", "justify-between"]) as ViewStyle}
+          >
+            <View>
+              <View
+                style={
+                  style.flatten([
+                    "flex-row",
+                    "items-center",
+                    "margin-right-6",
+                    "margin-bottom-6",
+                  ]) as ViewStyle
+                }
+              >
+                <Text
+                  style={
+                    style.flatten([
+                      "h6",
+                      "color-white",
+                      "margin-right-6",
+                    ]) as ViewStyle
+                  }
+                >
+                  {"Main Wallet"}
+                </Text>
+              </View>
+
+              <View>
+                {/* <View>
+              <Text
+                style={
+                  style.flatten([
+                    "h6",
+                    "color-gray-200",
+                    "margin-right-8",
+                  ]) as ViewStyle
+                }
+              >
+                {"0x65D...AFFa"}
+              </Text>
+            </View>
+            <View>
+              <View style={style.flatten(["padding-top-2"]) as ViewStyle}>
+                {<CopyIcon size={18} />}
+              </View>
+            </View> */}
+                <AddressCopyable
+                  address={account.bech32Address}
+                  maxCharacters={16}
+                />
+              </View>
+            </View>
+            <View style={style.flatten(["flex-row"])}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => setIsOpenModal(true)}
+              >
+                <IconView
+                  backgroundBlur={true}
+                  img={<TreeDotIcon />}
+                  iconStyle={
+                    style.flatten([
+                      "padding-10",
+                      "margin-right-12",
+                    ]) as ViewStyle
+                  }
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() =>
+                  navigation.dispatch(DrawerActions.toggleDrawer())
+                }
+              >
+                <SelectAccountButton
+                  containerStyle={style.flatten(["padding-x-12"]) as ViewStyle}
+                  text={chainStore.current.chainName}
+                  icon={<ChevronDownIcon />}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* this is tab view */}
+          <View
+            style={style.flatten(["flex-row", "margin-top-32"]) as ViewStyle}
+          >
+            <FlatList
+              data={accountSectionList}
+              renderItem={renderItem}
+              horizontal={true}
+              keyExtractor={(item) => item.id}
+              extraData={selectedId}
+            />
+          </View>
+          <View
+            style={
+              style.flatten([
+                "padding-top-20",
+                "padding-bottom-20",
+              ]) as ViewStyle
+            }
+          >
+            <Text style={style.flatten(["h1", "color-white"]) as ViewStyle}>
+              {showBalance()}
+            </Text>
+          </View>
+          <Button
+            text="Claim staking rewards"
+            size="default"
+            color="gradient"
+            containerStyle={
+              style.flatten([
+                "background-color-white",
+                "border-radius-64",
+              ]) as ViewStyle
+            }
+            rippleColor="black@50%"
+          />
+        </BlurBackground>
+        <MainWalletCardModel
+          isOpen={isOpenModal}
+          title="Main Wallet"
+          close={() => setIsOpenModal(false)}
+        />
+      </React.Fragment>
+    );
+  });

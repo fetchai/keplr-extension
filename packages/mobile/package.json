@@ -78,7 +78,7 @@
     "expo": "^49.0.3",
     "expo-apple-authentication": "^6.1.0",
     "expo-barcode-scanner": "^12.5.3",
-    "expo-blur": "12.6.0",
+    "expo-blur": "12.8.0",
     "expo-camera": "^13.4.2",
     "expo-clipboard": "^4.3.0",
     "expo-constants": "^14.4.2",

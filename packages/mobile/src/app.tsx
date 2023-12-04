@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StoreProvider } from "./stores";
-import { StyleProvider, useStyle } from "./styles";
+import { StyleProvider } from "./styles";
 import { AppNavigation } from "./navigation";
 import { IntlProvider } from "react-intl";
 import { ModalsProvider } from "./modals/base";
@@ -67,13 +67,11 @@ SplashScreen.preventAutoHideAsync()
   .catch(console.warn);
 
 const ThemeStatusBar: FunctionComponent = () => {
-  const style = useStyle();
-
   return (
     <StatusBar
       translucent={true}
-      backgroundColor="#fff"
-      barStyle={style.get("status-bar-style")}
+      backgroundColor="#ffffff00"
+      barStyle={"light-content"}
     />
   );
 };

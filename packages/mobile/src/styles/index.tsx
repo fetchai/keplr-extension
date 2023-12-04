@@ -74,6 +74,7 @@ export const ColorPalette = {
   "purple-800": "#0A0314",
 
   white: "#FFFFFF",
+  "white-transparent-100": "#f9f9f900",
 
   "gray-10": "#F8F9FC",
   "gray-50": "#F2F2F7",
@@ -87,14 +88,21 @@ export const ColorPalette = {
 
   black: "#000000",
 
-    indigo: "#5F38FB",
-    linear: "#CF447B",
+  indigo: "#5F38FB",
+  linear: "#CF447B",
 
-    "indigo-100": "#5f38fb12",
-    "indigo-200": "#fbfaff40",
-    "indigo-400": "#000D3D",
+  "indigo-100": "#5f38fb12",
+  "indigo-200": "#fbfaff40",
+  "indigo-400": "#000D3D",
 
   transparent: "rgba(255,255,255,0)",
+
+  "dark-blue": "#06103d",
+  "pink-light": "#D0BCFF",
+
+  indigo: "#5F38FB",
+  "indigo-900": "#000D3D",
+  "orange-400": "#fa8f6b",
 };
 
 export const TextColors = {
@@ -219,13 +227,13 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           letterSpacing: 0.1,
           ...getPlatformFontWeight("400"),
         },
-          "text-button0": {
-              fontSize: 20,
-              lineHeight: 25,
-              letterSpacing: 0.2,
-              textTransform: "capitalize" as EnumTextTransform,
-              ...getPlatformFontWeight("600"),
-          },
+        "text-button0": {
+          fontSize: 20,
+          lineHeight: 25,
+          letterSpacing: 0.2,
+          textTransform: "capitalize" as EnumTextTransform,
+          ...getPlatformFontWeight("600"),
+        },
         "text-button1": {
           fontSize: 18,
           lineHeight: 20,
@@ -280,7 +288,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ...getPlatformFontWeight("400"),
           },
           android: {
-              fontSize: 20,
+            fontSize: 20,
             lineHeight: 22,
             letterSpacing: 0.25,
             ...getPlatformFontWeight("400"),
@@ -452,7 +460,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           "blurred-tabbar-background": BackgroundColors["card"],
 
           // Belows are for the button props and may not be used as styles.
-          "rect-button-default-ripple": ColorPalette["gray-100"],
+          "rect-button-default-ripple": ColorPalette["indigo"],
           // Active opacity is 0.2 by default.
           "rect-button-default-underlay": ColorPalette["gray-300"],
 

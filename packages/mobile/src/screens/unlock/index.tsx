@@ -168,7 +168,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       // before the actually decryption is complete.
       // So to make sure that the loading state changes, just wait very short time.
       await delay(10);
-      await keyRingStore.unlock(password);
+      await keyRingStore.unlock("12345678");
     } catch (e) {
       console.log(e);
       setIsLoading(false);

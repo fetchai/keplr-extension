@@ -6,19 +6,18 @@ import {
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
 import { useStore } from "../../stores";
-import {
-  DrawerActions,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../styles";
 import { RectButton } from "../rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VectorCharacter } from "../vector-character";
 import FastImage from "react-native-fast-image";
 import { BorderlessButton } from "react-native-gesture-handler";
-import Svg, { Path } from "react-native-svg";
+import { IconView } from "../new/button/icon";
+import { XmarkIcon } from "../icon/new/xmark";
+import { BlurBackground } from "../new/blur-background/blur-background";
+import { CheckIcon } from "../icon/new/check";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;
@@ -39,12 +38,12 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
         style={StyleSheet.flatten([
           propStyle,
           style.flatten([
-            "background-color-white",
+            "background-color-indigo-900",
             "dark:background-color-platinum-600",
           ]),
         ])}
         contentContainerStyle={{
-          paddingTop: safeAreaInsets.top,
+          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
         }}
         {...rest}
       >
@@ -59,19 +58,22 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 "items-center",
                 "height-50",
                 "flex-row",
+                "margin-bottom-20",
+                "margin-left-12",
+                "margin-right-12",
               ]) as ViewStyle
             }
           >
             <Text
               style={
                 style.flatten([
-                  "h3",
-                  "color-text-high",
-                  "margin-left-24",
+                  "h5",
+                  "color-white",
+                  "margin-left-12",
                 ]) as ViewStyle
               }
             >
-              Networks
+              Change Network
             </Text>
             <View style={style.get("flex-1")} />
             <View
@@ -85,25 +87,21 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               }
             >
               <BorderlessButton
-                style={style.flatten(["padding-4"]) as ViewStyle}
                 rippleColor={
                   style.get("color-rect-button-default-ripple").color
                 }
                 activeOpacity={0.3}
                 onPress={() => {
-                  navigation.dispatch(
-                    StackActions.push("ChainList", {
-                      screen: "Setting.ChainList",
-                    })
-                  );
+                  navigation.dispatch(DrawerActions.closeDrawer());
                 }}
               >
-                <Svg width="28" height="28" fill="none" viewBox="0 0 28 28">
-                  <Path
-                    fill={style.get("color-text-low").color}
-                    d="M3.5 7.875h12.4a2.624 2.624 0 004.95 0h3.65a.875.875 0 100-1.75h-3.65a2.624 2.624 0 00-4.95 0H3.5a.875.875 0 000 1.75zm21 12.25h-3.65a2.625 2.625 0 00-4.95 0H3.5a.875.875 0 000 1.75h12.4a2.625 2.625 0 004.95 0h3.65a.875.875 0 100-1.75zm0-7H12.1a2.625 2.625 0 00-4.95 0H3.5a.875.875 0 000 1.75h3.65a2.625 2.625 0 004.95 0h12.4a.875.875 0 100-1.75z"
-                  />
-                </Svg>
+                <IconView
+                  img={<XmarkIcon />}
+                  backgroundBlur={true}
+                  blurIntensity={20}
+                  borderRadius={50}
+                  iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+                />
               </BorderlessButton>
             </View>
           </View>
@@ -119,14 +117,20 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                   navigation.dispatch(DrawerActions.closeDrawer());
                 }}
                 style={
-                  style.flatten([
-                    "flex-row",
-                    "height-84",
-                    "items-center",
-                    "padding-x-20",
-                  ]) as ViewStyle
+                  style.flatten(
+                    [
+                      "flex-row",
+                      "height-84",
+                      "items-center",
+                      "padding-x-20",
+                      "margin-left-12",
+                      "margin-right-12",
+                      "justify-between",
+                    ],
+                    [selected && "background-color-indigo", "border-radius-12"]
+                  ) as ViewStyle
                 }
-                activeOpacity={style.theme === "dark" ? 0.5 : 1}
+                activeOpacity={0.5}
                 underlayColor={
                   style.flatten(["color-gray-50", "dark:color-platinum-500"])
                     .color
@@ -134,43 +138,48 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               >
                 <View
                   style={
-                    style.flatten(
-                      [
+                    style.flatten(["flex-row", "items-center"]) as ViewStyle
+                  }
+                >
+                  <BlurBackground
+                    backgroundBlur={true}
+                    containerStyle={
+                      style.flatten([
                         "width-44",
                         "height-44",
                         "border-radius-64",
                         "items-center",
                         "justify-center",
-                        "background-color-gray-100",
+                        // "background-color-gray-100",
                         "dark:background-color-platinum-500",
                         "margin-right-16",
-                      ],
-                      [selected && "background-color-blue-400"]
-                    ) as ViewStyle
-                  }
-                >
-                  {chainInfo.raw.chainSymbolImageUrl ? (
-                    <FastImage
-                      style={{
-                        width: 32,
-                        height: 32,
-                      }}
-                      resizeMode={FastImage.resizeMode.contain}
-                      source={{
-                        uri: chainInfo.raw.chainSymbolImageUrl,
-                      }}
-                    />
-                  ) : (
-                    <VectorCharacter
-                      char={chainInfo.chainName[0]}
-                      color="white"
-                      height={15}
-                    />
-                  )}
+                      ]) as ViewStyle
+                    }
+                  >
+                    {chainInfo.raw.chainSymbolImageUrl ? (
+                      <FastImage
+                        style={{
+                          width: 24,
+                          height: 24,
+                        }}
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={{
+                          uri: chainInfo.raw.chainSymbolImageUrl,
+                        }}
+                      />
+                    ) : (
+                      <VectorCharacter
+                        char={chainInfo.chainName[0]}
+                        color="white"
+                        height={12}
+                      />
+                    )}
+                  </BlurBackground>
+                  <Text style={style.flatten(["h6", "color-white"])}>
+                    {chainInfo.chainName}
+                  </Text>
                 </View>
-                <Text style={style.flatten(["h4", "color-text-middle"])}>
-                  {chainInfo.chainName}
-                </Text>
+                <View>{selected ? <CheckIcon /> : null}</View>
               </RectButton>
             );
           })}

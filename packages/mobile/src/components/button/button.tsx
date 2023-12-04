@@ -3,9 +3,15 @@ import { useStyle } from "../../styles";
 import { Text, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import { LoadingSpinner } from "../spinner";
 import { RectButton } from "../rect-button";
+import Svg, {
+  Defs,
+  LinearGradient,
+  Stop,
+  Text as TextSvg,
+} from "react-native-svg";
 
 export const Button: FunctionComponent<{
-  color?: "primary" | "danger";
+  color?: "primary" | "danger" | "gradient";
   mode?: "fill" | "light" | "outline" | "text";
     size?: "default" | "small" | "large" | "xlarge";
   text: string;
@@ -298,17 +304,61 @@ export const Button: FunctionComponent<{
                 )}
           </View>
         </View>
-        <Text
-          style={StyleSheet.flatten([
-            style.flatten(
-              [textDefinition, "text-center", ...(textColorDefinition as any)],
-              [loading && "opacity-transparent"]
-            ),
-            textStyle,
-          ])}
-        >
-          {text}
-        </Text>
+        {color === "gradient" ? (
+          <Svg
+            width="100%"
+            height="26"
+            style={StyleSheet.flatten([
+              style.flatten(
+                [
+                  textDefinition,
+                  "text-center",
+                  ...(textColorDefinition as any),
+                ],
+                [loading && "opacity-transparent"]
+              ),
+              textStyle,
+            ])}
+          >
+            <Defs>
+              <LinearGradient
+                id="customGradient"
+                x1="37.86%"
+                y1="0%"
+                x2="78.96%"
+                y2="100%"
+              >
+                <Stop offset="0%" stopColor="#0B1742" />
+                <Stop offset="100%" stopColor="#F9774B" />
+              </LinearGradient>
+            </Defs>
+            <TextSvg
+              x="50%"
+              y="70%"
+              textAnchor="middle"
+              fill="url(#customGradient)"
+            >
+              {text}
+            </TextSvg>
+          </Svg>
+        ) : (
+          <Text
+            style={StyleSheet.flatten([
+              style.flatten(
+                [
+                  textDefinition,
+                  "text-center",
+                  ...(textColorDefinition as any),
+                ],
+                [loading && "opacity-transparent"]
+              ),
+              textStyle,
+            ])}
+          >
+            {text}
+          </Text>
+        )}
+
         <View
           style={
             style.flatten(

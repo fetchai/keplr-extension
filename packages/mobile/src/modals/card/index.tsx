@@ -21,16 +21,18 @@ export const CardModal: FunctionComponent<{
 
   return (
     <View
-      style={StyleSheet.flatten([
-        style.flatten([
-            "background-color-indigo-400",
+      style={
+        StyleSheet.flatten([
+          style.flatten([
+            "background-color-indigo-900",
             "border-radius-top-left-32",
             "border-radius-top-right-32",
-          "overflow-hidden",
-        ]),
-      ])}
+            "overflow-hidden",
+          ]),
+        ]) as ViewStyle
+      }
     >
-      <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
+      <View style={style.flatten(["padding-x-16", "margin-y-10"]) as ViewStyle}>
         <View
           style={
             style.flatten(["items-center", "margin-bottom-16"]) as ViewStyle
@@ -52,8 +54,9 @@ export const CardModal: FunctionComponent<{
               style={
                 style.flatten([
                   "flex-row",
-                    "justify-center",
-                  "margin-bottom-16",
+                  "items-center",
+                  "justify-between",
+                  "padding-x-12",
                 ]) as ViewStyle
               }
             >
@@ -67,7 +70,7 @@ export const CardModal: FunctionComponent<{
       </View>
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-page", "padding-top-16"]) as ViewStyle,
+          style.flatten(["padding-x-16", "padding-y-10"]) as ViewStyle,
           childrenContainerStyle,
         ])}
       >

@@ -1,118 +1,81 @@
 import React, { FunctionComponent } from "react";
-import { View } from "react-native";
+import { ImageBackground, View } from "react-native";
 import { SimpleGradient } from "../svg";
 import { useStyle } from "../../styles";
-import {ImageBackground} from "react-native";
-import {BlurView} from "@react-native-community/blur";
+import { BlurBackground } from "../new/blur-background/blur-background";
 
-export type BackgroundMode = "image" | "gradient" | "secondary" | "tertiary" | null;
+export type BackgroundMode =
+  | "image"
+  | "gradient"
+  | "secondary"
+  | "tertiary"
+  | null;
 
 export const ScreenBackground: FunctionComponent<{
   backgroundMode: BackgroundMode;
-    backgroundBlur?: boolean
-}> = ({backgroundMode, backgroundBlur = false}) => {
+  backgroundBlur?: boolean;
+}> = ({ backgroundMode }) => {
   const style = useStyle();
 
-    function _decideView(): React.ReactElement<any, any> | null {
-        switch (backgroundMode) {
-            case "gradient":
-                return (
-                    <SimpleGradient
-                        degree={style.get("background-gradient").degree}
-                        stops={style.get("background-gradient").stops}
-                        fallbackAndroidImage={
-                            style.get("background-gradient").fallbackAndroidImage
-                        }
-                    />
-                );
-
-            case "secondary":
-                return (
-                    <View
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: style.get("color-background-secondary").color,
-                        }}
-                    />
-                );
-
-            case "image":
-                return (
-                    <ImageBackground
-                        source={require("../../assets/image/bg.png")}
-                        resizeMode="cover"
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                        }}
-                    >
-                        {backgroundBlur ?
-                            <BlurView
-                                blurAmount={20}
-                                style={
-                                    {
-                                        position: "absolute",
-                                        top: 0,
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                    }
-                                }
-                            /> : null}
-                    </ImageBackground>
-                );
-
-            // case "blurImage":
-            //   return (
-            //     <ImageBackground
-            //       source={require("../../assets/image/bg.png")}
-            //       resizeMode="cover"
-            //       style={{
-            //         width: "100%",
-            //         height: "100%",
-            //       }}
-
-            //       >
-            //         <BlurView
-            //       blurAmount={20}
-            //       style={
-            //         {
-            //           position: "absolute",
-            //           top: 0,
-            //           bottom: 0,
-            //           left: 0,
-            //           right: 0,
-            //         }
-            //       }
-            //       />
-            //       </ImageBackground>
-            // );
-
-            default:
-                return (
-                    <View
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: style.get("color-background-tertiary").color,
-                        }}
-                    />
-                );
-        }
-    }
-
-    return backgroundMode ? (
-        <View
-            style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: -100,
-                bottom: -100,
-            }}
+  return backgroundMode ? (
+    <View
+      style={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: -100,
+        bottom: -100,
+      }}
+    >
+      {backgroundMode === "gradient" ? (
+        <SimpleGradient
+          degree={style.get("background-gradient").degree}
+          stops={style.get("background-gradient").stops}
+          fallbackAndroidImage={
+            style.get("background-gradient").fallbackAndroidImage
+          }
+        />
+      ) : backgroundMode === "image" ? (
+        <ImageBackground
+          source={require("../../assets/bg1.png")}
+          resizeMode="cover"
+          style={style.flatten([
+            "flex-1",
+            "justify-center",
+            "background-color-indigo-900",
+          ])}
         >
-            {_decideView()}
+          <BlurBackground
+            backgroundBlur={true}
+            borderRadius={0}
+            blurType="dark"
+            blurIntensity={10}
+            containerStyle={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+          />
+        </ImageBackground>
+      ) : backgroundMode === "secondary" ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: style.get("color-background-secondary").color,
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: style.get("color-background-tertiary").color,
+          }}
+        />
+      )}
     </View>
   ) : null;
 };

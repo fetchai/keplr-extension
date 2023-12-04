@@ -22,6 +22,7 @@ import {
   TransitionPresets,
 } from "@react-navigation/stack";
 import { SendScreen } from "./screens/send";
+import { SendScreen as NewSendScreen } from "./components/new/send-screen";
 import {
   GovernanceDetailsScreen,
   GovernanceScreen,
@@ -71,6 +72,7 @@ import {
 import { NewLedgerScreen } from "./screens/register/ledger";
 import { PageScrollPositionProvider } from "./providers/page-scroll-position";
 import {
+  BlurHeaderOptionsPreset,
   HeaderAtSecondaryScreenOptionsPreset,
   HeaderLeftButton,
   HeaderOnGradientScreenOptionsPreset,
@@ -87,7 +89,6 @@ import {
   FocusedScreenProvider,
   useFocusedScreen,
 } from "./providers/focused-screen";
-import Svg, { Path, Rect } from "react-native-svg";
 import {
   TxFailedResultScreen,
   TxPendingResultScreen,
@@ -121,6 +122,14 @@ import {
 import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
 import {UnlockScreen} from "./screens/unlock/new/index";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TestHomeScreen } from "./components/new/test-home-screen";
+import { IconButtonWithText } from "./components/new/button/icon-button-with-text";
+import { GridIcon } from "./components/icon/new/grid-icon";
+import { InboxIcon } from "./components/icon/new/inbox-icon";
+import { ClockIcon } from "./components/icon/new/clock-icon";
+import { RobotIcon } from "./components/icon/new/robot-icon";
+import { MoreIcon } from "./components/icon/new/more-icon";
+// import Svg, { Rect, Path } from "react-native-svg";
 //import Bugsnag from "@bugsnag/react-native";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
@@ -166,6 +175,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Main",
       },
       Send: {
+        upperScreenName: "Others",
+      },
+      SendNew: {
         upperScreenName: "Others",
       },
       Tokens: {
@@ -302,6 +314,11 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         currency?: string;
         recipient?: string;
       };
+      SendNew: {
+        chainId?: string;
+        currency?: string;
+        recipient?: string;
+      };
       "Validator.Details": {
         validatorAddress: string;
       };
@@ -433,6 +450,162 @@ const HomeScreenHeaderRight: FunctionComponent = observer(() => {
     </React.Fragment>
   );
 });
+
+export const HomeNavigation: FunctionComponent = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
+      }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+          // title: "",
+          // headerLeft: () => <HomeScreenHeaderLeft />,
+          // headerRight: () => <HomeScreenHeaderRight />,
+        }}
+        name="Home"
+        component={TestHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
+      />
+    </Stack.Navigator>
+  );
+};
+export const InboxNavigation: FunctionComponent = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
+      }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+          // title: "",
+          // headerLeft: () => <HomeScreenHeaderLeft />,
+          // headerRight: () => <HomeScreenHeaderRight />,
+        }}
+        name="Home"
+        component={TestHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
+      />
+    </Stack.Navigator>
+  );
+};
+export const AgentsNavigation: FunctionComponent = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
+      }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+          // title: "",
+          // headerLeft: () => <HomeScreenHeaderLeft />,
+          // headerRight: () => <HomeScreenHeaderRight />,
+        }}
+        name="Home"
+        component={TestHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
+      />
+    </Stack.Navigator>
+  );
+};
+export const ActivityNavigation: FunctionComponent = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
+      }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+          // title: "",
+          // headerLeft: () => <HomeScreenHeaderLeft />,
+          // headerRight: () => <HomeScreenHeaderRight />,
+        }}
+        name="Home"
+        component={TestHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
+      />
+    </Stack.Navigator>
+  );
+};
+export const MoreNavigation: FunctionComponent = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...TransitionPresets.SlideFromRightIOS,
+        headerMode: "screen",
+      }}
+      initialRouteName="Home"
+    >
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+          // title: "",
+          // headerLeft: () => <HomeScreenHeaderLeft />,
+          // headerRight: () => <HomeScreenHeaderRight />,
+        }}
+        name="Home"
+        component={TestHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...WebpageScreenScreenOptionsPreset,
+          headerMode: "screen",
+        }}
+        name="Fetchhub"
+        component={FetchhubScreen}
+      />
+    </Stack.Navigator>
+  );
+};
 
 export const MainNavigation: FunctionComponent = () => {
   return (
@@ -596,6 +769,14 @@ export const OtherNavigation: FunctionComponent = () => {
         }}
         name="Send"
         component={SendScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...BlurHeaderOptionsPreset,
+          title: "Send",
+        }}
+        name="SendNew"
+        component={NewSendScreen}
       />
       <Stack.Screen
         options={{
@@ -913,70 +1094,149 @@ export const MainTabNavigation: FunctionComponent = () => {
     }
   }, [focusedScreen.name, isDrawerOpen, navigation]);
 
+  enum screenNames {
+    Home = "Home",
+    Inbox = "Inbox",
+    Agents = "Agents",
+    Activity = "Activity",
+    More = "More",
+  }
+
+  const screenIcons = {
+    Home: <GridIcon />,
+    Inbox: <InboxIcon />,
+    Agents: <RobotIcon size={18} />,
+    Activity: <ClockIcon />,
+    More: <MoreIcon />,
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         title: "",
-        tabBarIcon: ({ color }) => {
-          const size = 24;
-
+        tabBarIcon: ({ focused }) => {
+          // const size = 24;
+          // const color = style.flatten([
+          //   "color-blue-400",
+          //   "dark:color-platinum-50",
+          // ]).color;
           switch (route.name) {
-            case "Main":
+            case "Home":
               return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="3"
-                    y="3"
-                    fill={color}
-                    rx="1.5"
-                  />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="3"
-                    y="13"
-                    fill={color}
-                    rx="1.5"
-                  />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="13"
-                    y="3"
-                    fill={color}
-                    rx="1.5"
-                  />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="13"
-                    y="13"
-                    fill={color}
-                    rx="1.5"
-                  />
-                </Svg>
+                <IconButtonWithText
+                  icon={screenIcons[screenNames.Home]}
+                  text={screenNames.Home}
+                  backgroundBlur={focused}
+                  borderRadius={32}
+                  iconStyle={
+                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                  }
+                />
               );
-            case "Web":
+            case "Inbox":
               return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Path
-                    fill={color}
-                    d="M12 2C8.741 2 5.849 3.577 4.021 6H4v.027A9.931 9.931 0 002 12c0 5.511 4.489 10 10 10s10-4.489 10-10S17.511 2 12 2zm3 2.584A7.98 7.98 0 0120 12c0 2.088-.8 3.978-2.102 5.4A1.993 1.993 0 0016 16a1 1 0 01-1-1v-2a1 1 0 00-1-1h-4a1 1 0 010-2 1 1 0 001-1V8a1 1 0 011-1h1a2 2 0 002-2v-.416zM4.207 10.207L9 15v1a2 2 0 002 2v1.932a7.979 7.979 0 01-6.793-9.725z"
-                  />
-                </Svg>
+                <IconButtonWithText
+                  icon={screenIcons[screenNames.Inbox]}
+                  text={screenNames.Inbox}
+                  borderRadius={32}
+                  backgroundBlur={focused}
+                  iconStyle={
+                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                  }
+                />
               );
-            case "Settings":
+            case "Agents":
               return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Path
-                    fill={color}
-                    d="M12 2c-.528 0-1.046.045-1.55.131l-.311 1.302c-.484 2.023-2.544 3.225-4.52 2.635l-1.084-.325A10.124 10.124 0 003 8.598l.805.781a3.663 3.663 0 010 5.242L3 15.402c.36 1.043.882 2.006 1.535 2.855l1.084-.325c1.976-.59 4.036.612 4.52 2.635l.31 1.302a9.187 9.187 0 003.101 0l.311-1.302c.484-2.023 2.544-3.225 4.52-2.635l1.084.325A10.124 10.124 0 0021 15.402l-.805-.781a3.663 3.663 0 010-5.242L21 8.598a10.113 10.113 0 00-1.535-2.855l-1.084.325c-1.976.59-4.036-.612-4.52-2.635l-.31-1.302A9.184 9.184 0 0012 2zm0 7.273c1.491 0 2.7 1.22 2.7 2.727 0 1.506-1.209 2.727-2.7 2.727S9.3 13.507 9.3 12c0-1.506 1.209-2.727 2.7-2.727z"
-                  />
-                </Svg>
+                <IconButtonWithText
+                  icon={screenIcons[screenNames.Agents]}
+                  text={screenNames.Agents}
+                  borderRadius={32}
+                  backgroundBlur={focused}
+                  iconStyle={
+                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                  }
+                />
               );
+            case "Activity":
+              return (
+                <IconButtonWithText
+                  icon={screenIcons[screenNames.Activity]}
+                  text={screenNames.Activity}
+                  borderRadius={32}
+                  backgroundBlur={focused}
+                  iconStyle={
+                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                  }
+                />
+              );
+            case "More":
+              return (
+                <IconButtonWithText
+                  icon={screenIcons[screenNames.More]}
+                  text={screenNames.More}
+                  borderRadius={32}
+                  backgroundBlur={focused}
+                  iconStyle={
+                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                  }
+                />
+              );
+            // case "Main":
+            //   return (
+            //     <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
+            //       <Rect
+            //         width="8"
+            //         height="8"
+            //         x="3"
+            //         y="3"
+            //         fill={color}
+            //         rx="1.5"
+            //       />
+            //       <Rect
+            //         width="8"
+            //         height="8"
+            //         x="3"
+            //         y="13"
+            //         fill={color}
+            //         rx="1.5"
+            //       />
+            //       <Rect
+            //         width="8"
+            //         height="8"
+            //         x="13"
+            //         y="3"
+            //         fill={color}
+            //         rx="1.5"
+            //       />
+            //       <Rect
+            //         width="8"
+            //         height="8"
+            //         x="13"
+            //         y="13"
+            //         fill={color}
+            //         rx="1.5"
+            //       />
+            //     </Svg>
+            //   );
+            // case "Web":
+            //   return (
+            //     <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
+            //       <Path
+            //         fill={color}
+            //         d="M12 2C8.741 2 5.849 3.577 4.021 6H4v.027A9.931 9.931 0 002 12c0 5.511 4.489 10 10 10s10-4.489 10-10S17.511 2 12 2zm3 2.584A7.98 7.98 0 0120 12c0 2.088-.8 3.978-2.102 5.4A1.993 1.993 0 0016 16a1 1 0 01-1-1v-2a1 1 0 00-1-1h-4a1 1 0 010-2 1 1 0 001-1V8a1 1 0 011-1h1a2 2 0 002-2v-.416zM4.207 10.207L9 15v1a2 2 0 002 2v1.932a7.979 7.979 0 01-6.793-9.725z"
+            //       />
+            //     </Svg>
+            //   );
+            // case "Settings":
+            //   return (
+            //     <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
+            //       <Path
+            //         fill={color}
+            //         d="M12 2c-.528 0-1.046.045-1.55.131l-.311 1.302c-.484 2.023-2.544 3.225-4.52 2.635l-1.084-.325A10.124 10.124 0 003 8.598l.805.781a3.663 3.663 0 010 5.242L3 15.402c.36 1.043.882 2.006 1.535 2.855l1.084-.325c1.976-.59 4.036.612 4.52 2.635l.31 1.302a9.187 9.187 0 003.101 0l.311-1.302c.484-2.023 2.544-3.225 4.52-2.635l1.084.325A10.124 10.124 0 0021 15.402l-.805-.781a3.663 3.663 0 010-5.242L21 8.598a10.113 10.113 0 00-1.535-2.855l-1.084.325c-1.976.59-4.036-.612-4.52-2.635l-.31-1.302A9.184 9.184 0 0012 2zm0 7.273c1.491 0 2.7 1.22 2.7 2.727 0 1.506-1.209 2.727-2.7 2.727S9.3 13.507 9.3 12c0-1.506 1.209-2.727 2.7-2.727z"
+            //       />
+            //     </Svg>
+            //   );
           }
         },
         tabBarButton: (props) => (
@@ -1002,23 +1262,18 @@ export const MainTabNavigation: FunctionComponent = () => {
             />
           </View>
         ),
-        tabBarActiveTintColor: style.flatten([
-          "color-blue-400",
-          "dark:color-platinum-50",
-        ]).color,
-        tabBarInactiveTintColor: style.flatten([
-          "color-gray-200",
-          "dark:color-platinum-300",
-        ]).color,
+        tabBarActiveTint: true,
+        tabBarInactiveTint: false,
         tabBarStyle: {
-          borderTopWidth: 0.5,
-          borderTopColor: style.get("blurred-tabbar-top-border"),
-          backgroundColor: style.get("color-blurred-tabbar-background").color,
-          shadowColor: style.get("color-transparent").color,
+          // borderTopWidth: 1,
+          // borderTopColor: style.get("blurred-tabbar-top-border"),
+          backgroundColor: style.get("color-indigo-900").color,
+          // shadowColor: style.get("color-transparent").color,
           elevation: 0,
           paddingVertical: 16,
-          paddingHorizontal: 30,
-          height: 64 + insets.bottom,
+          paddingHorizontal: 20,
+          height: 100 + insets.bottom,
+          borderTopWidth: 0,
         },
         showLabel: false,
       })}
@@ -1026,15 +1281,20 @@ export const MainTabNavigation: FunctionComponent = () => {
         <BlurredBottomTabBar {...props} enabledScreens={["Home"]} />
       )}
     >
-      <Tab.Screen name="Main" component={MainNavigation} />
-      <Tab.Screen name="Web" component={WebNavigation} />
-      <Tab.Screen
+      <Tab.Screen name="Home" component={HomeNavigation} />
+      <Tab.Screen name="Inbox" component={InboxNavigation} />
+      <Tab.Screen name="Agents" component={AgentsNavigation} />
+      <Tab.Screen name="Activity" component={ActivityNavigation} />
+      <Tab.Screen name="More" component={MoreNavigation} />
+      {/* <Tab.Screen name="Main" component={MainNavigation} /> */}
+      {/* <Tab.Screen name="Web" component={WebNavigation} /> */}
+      {/* <Tab.Screen
         name="Settings"
         component={SettingStackScreen}
         options={{
           unmountOnBlur: true,
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };
@@ -1059,6 +1319,7 @@ export const MainTabNavigationWithDrawer: FunctionComponent = () => {
           "dark:color-gray-700@75%",
         ]).color,
         headerShown: false,
+        drawerStyle: { width: "100%" },
       }}
     >
       <Drawer.Screen name="MainTab" component={MainTabNavigation} />
