@@ -20,7 +20,12 @@ Default.args = {
 export const WithImage = Template.bind({});
 WithImage.args = {
   heading: "Card with Image",
-  leftImage: "https://example.com/image.jpg",
+  leftImage: (
+    <img
+      src="https://assets.coingecko.com/coins/images/5395/standard/ImageCoin.png?1696505877"
+      width={20}
+    />
+  ),
   subheading: "Card Subheading",
   rightContent: "Right Content",
   isActive: false,
@@ -37,6 +42,6 @@ export const CustomContent = Template.bind({});
 CustomContent.args = {
   heading: "Custom Content",
   subheading: "Card Subheading",
-  rightContent: <div style={{ color: "indigo" }}>Custom Right Content</div>,
+  rightContent: "Custom Right Content",
   isActive: false,
 };

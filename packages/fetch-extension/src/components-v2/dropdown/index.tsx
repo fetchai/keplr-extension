@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./style.module.scss";
-
-interface DropdownProps {
+import closeIcon from "../../public/assets/svg/wireframe/closeImage.svg";
+export interface DropdownProps {
   isOpen?: boolean;
   title: string;
   setIsOpen?: any;
@@ -35,7 +35,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               closeClicked;
               setIsOpen(false);
             }}
-            src={require("@assets/svg/wireframe/closeImage.svg")}
+            src={closeIcon}
           />
         </div>
         {children}

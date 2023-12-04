@@ -7,7 +7,7 @@ interface Tab {
   disabled?: boolean;
 }
 
-interface TabsProps {
+export interface TabsProps {
   tabs: Tab[];
 }
 
