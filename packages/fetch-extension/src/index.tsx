@@ -16,7 +16,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
-import { LockPage } from "./pages/lock";
+import { LockPage } from "./pages-new/lock";
 // import { MainPage } from "./pages/main";
 import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
@@ -117,7 +117,7 @@ window.keplr = new Keplr(
 );
 
 // Make sure that icon file will be included in bundle
-require("@assets/logo-256.svg");
+require("@assets/svg/wireframe/LogoV2.svg");
 require("@assets/icon/icon-16.png");
 require("@assets/icon/icon-48.png");
 require("@assets/icon/icon-128.png");
@@ -177,11 +177,14 @@ const StateRenderer: FunctionComponent = observer(() => {
     );
   } else if (keyRingStore.status === KeyRingStatus.NOTLOADED) {
     return (
-      <div style={{ height: "100%" }}>
-        <Banner
-          icon={require("@assets/logo-256.svg")}
-          logo={require("@assets/brand-text.png")}
-        />
+      <div
+        style={{
+          height: "100%",
+          backgroundColor: "#030e3b",
+          backgroundImage: `url(${require("@assets/svg/wireframe/bg-onboarding.svg")})`,
+        }}
+      >
+        <Banner icon={require("@assets/svg/wireframe/LogoV2.svg")} logo={""} />
       </div>
     );
   } else {

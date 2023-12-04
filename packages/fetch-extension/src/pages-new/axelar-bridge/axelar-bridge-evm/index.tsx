@@ -265,13 +265,6 @@ export const AxelarBridgeEVM = observer(() => {
         subheading={toToken && toToken.assetSymbol}
         rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
       />
-      {/* <Input
-        readOnly={true}
-        disabled={configs.recipientConfig.rawRecipient.length > 0}
-        contentEditable={false}
-        value={toToken ? toToken.assetSymbol : "N/A"}
-        style={{ width: "150px", height: "43px", textAlign: "center" }}
-      /> */}
 
       {transferChain && transferToken && (
         <GasAndDetails

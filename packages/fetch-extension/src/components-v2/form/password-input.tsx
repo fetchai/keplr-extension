@@ -19,6 +19,8 @@ export const PasswordInput = forwardRef<
   return (
     <React.Fragment>
       <Input
+        style={{ width: "333px" }}
+        className={stylePasswordInput["password-input"]}
         {...props}
         type="password"
         ref={(argRef) => {

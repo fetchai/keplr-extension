@@ -30,7 +30,7 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 import { SetKeyRingPage } from "../keyring-dev";
-import { ButtonGradient } from "@components-v2/buttons/button-gradient";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const SendPage: FunctionComponent = observer(() => {
   const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);
@@ -441,7 +441,7 @@ export const SendPage: FunctionComponent = observer(() => {
               gasSimulator={gasSimulator}
             />
           </div>
-          <ButtonGradient
+          <ButtonV2
             text="Review transfer"
             gradientText=""
             onClick={async (e: any) => {
