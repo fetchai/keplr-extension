@@ -206,6 +206,7 @@ const extensionConfig = () => {
         fs: false,
         assert: require.resolve("assert"),
         url: require.resolve("url"),
+        _stream_transform: false,
       },
     },
     module: {
