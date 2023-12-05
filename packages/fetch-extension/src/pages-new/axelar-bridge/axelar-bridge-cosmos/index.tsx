@@ -190,43 +190,6 @@ export const AxelarBridgeCosmos = observer(() => {
           tokenBal={tokenBal}
           transferToken={transferToken}
         />
-        {/* <div className={style["coinInputContainer"]}>
-          <div>
-            <div className={style["amount"]}>Amount</div>
-            <Input
-              className={style["amountInput"]}
-              type="number"
-              min="0"
-              value={amount ? amount.toString() : ""}
-              placeholder={`0 ${
-                transferToken ? transferToken.assetSymbol : ""
-              }`}
-              onChange={handleAmountChange}
-              disabled={!transferToken || depositAddress}
-            />
-            <div className={style["amountInUsd"]}>
-              {inputInUsd && `(${inputInUsd} USD)`}
-            </div>
-            {amountError ? (
-              <div className={style["errorText"]}>{amountError}</div>
-            ) : null}
-          </div>
-
-          <div className={style["rightWidgets"]}>
-            <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
-            <Button
-              className={style["max"]}
-              onClick={(e: any) => {
-                e.preventDefault();
-                const [numericPart, _denomPart] = tokenBal.split(" ");
-                console.log(numericPart);
-                setAmount(numericPart);
-              }}
-            >
-              MAX
-            </Button>
-          </div>
-        </div> */}
         <Card
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "16px" }}
           onClick={() => setChainsDropdownOpen(true)}

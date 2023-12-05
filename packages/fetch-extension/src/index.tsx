@@ -103,7 +103,7 @@ import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
 import { FetchnameService } from "./pages/fetch-name-service";
 import { DomainDetails } from "./pages/fetch-name-service/domain-details";
-import { BridgePage } from "./pages/bridge";
+import { BridgePage } from "./pages-new/bridge";
 import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";

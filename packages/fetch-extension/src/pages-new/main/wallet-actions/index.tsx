@@ -19,7 +19,6 @@ export const WalletActions = observer(() => {
   const hasAssets =
     queryBalances.balances.find((bal) => bal.balance.toDec().gt(new Dec(0))) !==
     undefined;
-  const isEvm = chainStore.current.features?.includes("evm") ?? false;
   const isStakableInApp = [CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(
     chainStore.current.chainId
   );
@@ -64,11 +63,7 @@ export const WalletActions = observer(() => {
         title="Bridge"
         image="bridge.svg"
         onClick={() => {
-          if (isEvm) {
-            navigate("/axl-bridge-evm");
-          } else {
-            navigate("/axl-bridge-cosmos");
-          }
+          navigate("/bridge");
         }}
       />
     </div>
