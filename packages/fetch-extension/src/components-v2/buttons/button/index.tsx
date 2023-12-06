@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "reactstrap";
 import style from "./style.module.scss";
 
 export interface Props {
@@ -20,14 +19,14 @@ export const ButtonV2: React.FC<Props> = ({
   styleProps,
 }) => {
   return (
-    <Button
+    <button
       disabled={disabled}
       onClick={onClick}
       data-loading={dataLoading ? dataLoading : null}
       className={style["btn"]}
-      style={{ width: "100%", ...styleProps }}
+      style={{ ...styleProps }}
     >
       {text} <span className={style["gradient"]}>{gradientText}</span>
-    </Button>
+    </button>
   );
 };

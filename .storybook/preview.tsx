@@ -1,4 +1,5 @@
 import type { Preview } from "@storybook/react";
+import React from "react";
 
 const preview: Preview = {
   parameters: {
@@ -10,6 +11,13 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <div style={{ fontFamily: "sans-serif" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default preview;
