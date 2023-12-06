@@ -18,12 +18,12 @@
 
 .input {
   font-size: 14px;
-  box-shadow: $input-alternative-box-shadow !important;
+  box-shadow: none !important;
   background: transparent !important;
   border: none;
 
   &:focus {
-    box-shadow: $input-focus-alternative-box-shadow !important;
+    box-shadow: none !important;
     background: transparent !important;
     border: none;
     color: white !important;
@@ -49,7 +49,6 @@
 .errorText {
   color: #fb8c72;
   font-size: 12px;
-  margin: 3px;
 }
 
 .infoText {
@@ -68,4 +67,7 @@
   padding: 0px;
   background: transparent !important;
   cursor: not-allowed;
+}
+.righContent{
+  display: flex;
 }

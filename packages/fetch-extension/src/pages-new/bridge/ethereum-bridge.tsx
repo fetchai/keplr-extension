@@ -227,49 +227,9 @@ export const Configure: FunctionComponent<{
               accountInfo.txTypeInProgress === "approval"
                 ? ` Approve txn in progress
              ${(<i className="fa fa-spinner fa-spin fa-fw" />)}`
-                : "next"
+                : "Next"
             }
           />
-          {/* <Button
-            type="submit"
-            color="primary"
-            block
-            disabled={!isValid}
-            data-loading={allowanceQuery.isFetching}
-            onClick={(e) => {
-              e.preventDefault();
-              if (!allowanceQuery.allowance || allowanceQuery.error) {
-                navigate(-1);
-                throw new Error("Failed to fetch allowance");
-                // TODO: Add error notification
-              }
-
-              const currentAllowance = BigNumber.from(allowanceQuery.allowance);
-              const currencyDecimals = amountConfig.sendCurrency.coinDecimals;
-
-              let dec = new Dec(amountConfig.amount);
-              dec = dec.mul(
-                DecUtils.getTenExponentNInPrecisionRange(currencyDecimals)
-              );
-              const amountToBridge = BigNumber.from(dec.truncate().toString());
-
-              if (currentAllowance.gte(amountToBridge)) {
-                // Open bridge page directly
-                return setPhase("bridge");
-              }
-
-              setPhase("approve");
-            }}
-          >
-            {accountInfo.txTypeInProgress === "approval" ? (
-              <p style={{ marginBottom: 0 }}>
-                Approve txn in progress{" "}
-                <i className="fa fa-spinner fa-spin fa-fw" />
-              </p>
-            ) : (
-              <FormattedMessage id="ibc.transfer.next" />
-            )}
-          </Button> */}
         </div>
       </form>
     );

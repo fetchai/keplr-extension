@@ -33,6 +33,14 @@
 }
 
 .welcome-text {
+  text-align: center;
+  font-family: Lexend;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: -0.48px;
+
   font-size: 24px;
   background: linear-gradient(64deg, #cf447b 37.86%, #f9774b 78.96%);
   background-clip: text;
@@ -41,60 +49,40 @@
 }
 
 .sign-in {
+  color: var(--Fetch-Navy, #0b1742);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 40px;
   gap: 5px;
   z-index: 1111;
-}
-
-.bg {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 100%;
-  height: 56px;
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(24px);
-  border-radius: 10px;
+  position: relative;
   overflow: hidden;
-  outline: 2px solid white;
 }
 
-.blob {
+.racing-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.racing-button::before {
+  content: "";
   position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 57px;
-  border-radius: 50%;
-  background-color: #ff0000;
-  opacity: 1;
-  filter: blur(12px);
-  animation: blob-bounce 5s infinite ease;
+  height: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(90deg, #cf447b, #f9774b);
+  border-radius: 10px;
+  animation: moveTrack 5s linear infinite;
 }
 
-@keyframes blob-bounce {
-  0% {
-    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+@keyframes moveTrack {
+  from {
+    background-position: 100% 0;
   }
-
-  25% {
-    transform: translate(-100%, -100%) translate3d(100%, 0, 0);
-  }
-
-  50% {
-    transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
-  }
-
-  75% {
-    transform: translate(-100%, -100%) translate3d(0, 100%, 0);
-  }
-
-  100% {
-    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  to {
+    background-position: 0 0;
   }
 }

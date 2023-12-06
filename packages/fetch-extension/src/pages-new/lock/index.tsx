@@ -103,10 +103,9 @@ export const LockPage: FunctionComponent = observer(() => {
               }),
             })}
           />
-          <div className={style["buttonBg"]}></div>
-          <div className={style["buttonBlob"]}></div>
+
           <Button className={style["sign-in"]} block data-loading={loading}>
-            sign in{" "}
+            Sign in
             <img
               src={require("@assets/svg/wireframe/arrow-right.svg")}
               alt=""

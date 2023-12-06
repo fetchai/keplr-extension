@@ -1,13 +1,18 @@
 @import "../../../styles/var";
 .btn {
-    border-radius: 100px;
-    margin-top: 18px;
-  }
-.btn:disabled{
-  cursor: not-allowed;
+  font-size: 15px !important;
+  border-radius: 100px;
+  margin-top: 18px;
+  border: none;
+  padding: 10px 12px;
+  width: 100%;
 }
-  .gradient {
-    background: $gradient;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
+.btn:disabled {
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.8);
+}
+.gradient {
+  background: $gradient;
+  -webkit-background-clip: text;
+  color: transparent;
+}

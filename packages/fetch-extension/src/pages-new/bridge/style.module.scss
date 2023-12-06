@@ -66,14 +66,19 @@
   margin-bottom: 15px;
   cursor: pointer;
   text-decoration: underline;
+  color: white !important;
+}
+.addressSelector:hover {
   color: #555555;
 }
 
-.historyBtn {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  margin: 18px;
+.history-icon {
+  cursor: pointer;
+  position: fixed;
+  height: 25px;
+  width: 25px;
+  top: 18px;
+  right: 12px;
 }
 
 .bHistory {
@@ -166,14 +171,14 @@
 }
 .input {
   font-size: 14px;
-  box-shadow: $input-alternative-box-shadow !important;
+  box-shadow: none !important;
   background: transparent !important;
   border: none;
   color: white;
   font-weight: bold !important;
 
   &:focus {
-    box-shadow: $input-focus-alternative-box-shadow !important;
+    box-shadow: none !important;
     background: transparent !important;
     border: none;
     color: white !important;
@@ -183,4 +188,8 @@
 .input::placeholder {
   color: white;
   opacity: 1 !important;
+}
+.hr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 32px 0px;
 }

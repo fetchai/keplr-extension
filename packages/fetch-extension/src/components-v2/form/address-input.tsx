@@ -196,7 +196,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
           heading={label}
           subheading={
             <input
-              style={{ color: "white", fontWeight: "bold" }}
+              style={{ color: "white", fontWeight: "bold", width: "250px" }}
               placeholder="Wallet Address"
               id={inputId}
               className={styleAddressInput["input"]}

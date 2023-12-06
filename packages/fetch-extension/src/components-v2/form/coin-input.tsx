@@ -3,7 +3,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import classnames from "classnames";
 import styleCoinInput from "./coin-input.module.scss";
 
-import { Button, FormGroup, Input } from "reactstrap";
+import { Button, FormGroup } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import {
   EmptyAmountError,
@@ -21,6 +21,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useLanguage } from "../../languages";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
+import { formatAddress } from "@utils/format";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -40,7 +41,19 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   ({ amountConfig, className, disableAllBalance }) => {
     const intl = useIntl();
     const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
-    const { priceStore } = useStore();
+    const { priceStore, queriesStore } = useStore();
+    const queryBalances = queriesStore
+      .get(amountConfig.chainId)
+      .queryBalances.getQueryBech32Address(amountConfig.sender);
+
+    const queryBalance = queryBalances.balances.find(
+      (bal) =>
+        amountConfig.sendCurrency.coinMinimalDenom ===
+        bal.currency.coinMinimalDenom
+    );
+    const balance = queryBalance
+      ? queryBalance.balance
+      : new CoinPretty(amountConfig.sendCurrency, new Int(0));
 
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
@@ -104,8 +117,15 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           style={{ display: "flex", justifyContent: "space-between" }}
         >
           <div className={styleCoinInput["input-container"]}>
-            <div className={styleCoinInput["amount-label"]}>Amount</div>
-            <Input
+            <div className={styleCoinInput["amount-label"]}>
+              <div>Amount </div>
+              <div>
+                {`( Balance: ${formatAddress(
+                  balance.trim(true).maxDecimals(6).toString()
+                )} )`}
+              </div>
+            </div>
+            <input
               placeholder={`0 ${amountConfig.sendCurrency.coinDenom}`}
               className={classnames(
                 "form-control-alternative",
@@ -125,7 +145,9 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           </div>
 
           <div className={styleCoinInput["right-widgets"]}>
-            <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
+            <Button disabled={true} className={styleCoinInput["toggle"]}>
+              <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
+            </Button>
             {!disableAllBalance ? (
               <Button
                 className={styleCoinInput["max"]}

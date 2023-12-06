@@ -7,7 +7,6 @@ import { EthereumBridge } from "./ethereum-bridge";
 import { FetchhubBridge } from "./fetchhub-bridge";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { Dec, IntPretty } from "@keplr-wallet/unit";
-import { Button } from "reactstrap";
 
 export const BridgePage: FunctionComponent = observer(() => {
   const { chainStore, queriesStore } = useStore();
@@ -50,18 +49,16 @@ export const BridgePage: FunctionComponent = observer(() => {
         navigate(-1);
       }}
       rightRenderer={
-        <Button
-          className={style["historyBtn"]}
-          color="primary"
-          outline
+        <img
+          className={style["history-icon"]}
           onClick={(e) => {
             e.preventDefault();
 
             navigate("/bridge-history");
           }}
-        >
-          History
-        </Button>
+          src={require("@assets/svg/wireframe/bridge-history.svg")}
+          alt=""
+        />
       }
     >
       {isLoading ? (

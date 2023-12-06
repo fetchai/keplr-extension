@@ -17,11 +17,10 @@
     height: 32px;
     background: transparent !important;
     border: none !important;
-    color: #fff;
+    color: #fff !important;
     padding-left: 0;
     padding-right: 0;
     width: 90%;
-
     & + .select {
       box-shadow: none !important;
       height: 32px;
@@ -32,11 +31,13 @@
       padding-right: 0;
       width: 90%;
     }
-    &::placeholder {
-      color: white;
-      font-size: 32px;
-    }
   }
+}
+.input::placeholder {
+  color: white !important;
+}
+.input:focus {
+  color: white !important;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -46,6 +47,8 @@ input::-webkit-inner-spin-button {
 .amount-label {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  gap: 10px;
 }
 .amount-usd {
   font-size: 12px;
@@ -118,8 +121,15 @@ input::-webkit-inner-spin-button {
 }
 .errorText {
   color: #fb8c72;
-  font: 10px;
+  font-size: 14px;
 }
+
+.right-widgets {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .max,
 .max:hover {
   display: flex;
@@ -135,13 +145,32 @@ input::-webkit-inner-spin-button {
   font-size: 12px;
   cursor: pointer;
 }
-.right-widgets {
+
+.toggle,
+.toggle:hover {
+  width: 28px;
+  margin: 0px !important;
+  box-shadow: none !important;
   display: flex;
+  height: 32px;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.toggle:disabled {
+  background: transparent !important;
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .input-container {
   display: flex;
   flex-direction: column;
+}
+.balance {
+  font-size: 13px;
+  color: white !important;
+  text-align: right !important;
 }

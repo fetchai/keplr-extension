@@ -171,7 +171,6 @@ export const FetchhubBridge: FunctionComponent<{
           amountConfig={nativeBridgeConfig.amountConfig}
           dropdownDisabled
         />
-
         <AddressInput
           label={"Recipient (Ethereum address)"}
           recipientConfig={nativeBridgeConfig.recipientConfig}
@@ -191,7 +190,7 @@ export const FetchhubBridge: FunctionComponent<{
             {accountStore.getAccount("1").ethereumHexAddress}
           </div>
         )}
-        <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
+        <div className={style["hr"]}></div>
         <MemoInput
           label={intl.formatMessage({
             id: "send.input.memo",
@@ -233,7 +232,7 @@ export const FetchhubBridge: FunctionComponent<{
 
             onSubmit();
           }}
-          text={"next"}
+          text={"Next"}
         />
       </div>
     </form>

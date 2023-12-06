@@ -3,6 +3,7 @@ import style from "./style.module.scss";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { observer } from "mobx-react-lite";
+import { Card } from "@components-v2/card";
 
 export const WalletOptions = observer(
   ({ setIsOptionsOpen, setIsSelectWalletOpen }: any) => {
@@ -10,6 +11,7 @@ export const WalletOptions = observer(
 
     const navigate = useNavigate();
     const { keyRingStore, analyticsStore } = useStore();
+
     useEffect(() => {
       const firstAccountIndex = keyRingStore.multiKeyStoreInfo.findIndex(
         (value) => value.selected
@@ -19,7 +21,14 @@ export const WalletOptions = observer(
 
     return (
       <div className={style["container"]}>
-        <button
+        <Card
+          heading={"Add new Wallet"}
+          leftImage={require("@assets/svg/wireframe/plus.svg")}
+          leftImageStyle={{
+            backgroundColor: "transparent",
+            height: "18px",
+            width: "18px",
+          }}
           onClick={(e: any) => {
             e.preventDefault();
             analyticsStore.logEvent("Add additional account started");
@@ -28,60 +37,50 @@ export const WalletOptions = observer(
               url: "/popup.html#/register",
             });
           }}
-          className={style["inner-field"]}
-        >
-          <img
-            className={style["optins-icon"]}
-            src={require("@assets/svg/wireframe/plus.svg")}
-            alt=""
-          />{" "}
-          Add new Wallet
-        </button>
-        <button
+        />
+
+        <Card
+          heading={"Change Wallet"}
+          leftImage={require("@assets/svg/wireframe/change.svg")}
+          leftImageStyle={{
+            backgroundColor: "transparent",
+            height: "18px",
+            width: "18px",
+          }}
           onClick={() => {
             setIsOptionsOpen(true);
             setIsSelectWalletOpen(false);
           }}
-          className={style["inner-field"]}
-        >
-          <img
-            className={style["optins-icon"]}
-            src={require("@assets/svg/wireframe/change.svg")}
-            alt=""
-          />{" "}
-          Change Wallet
-        </button>
-        <button
-          onClick={(e) => {
+        />
+        <Card
+          heading={"Rename Wallet"}
+          leftImage={require("@assets/svg/wireframe/rename.svg")}
+          leftImageStyle={{
+            backgroundColor: "transparent",
+            height: "30px",
+            width: "18px",
+          }}
+          onClick={(e: any) => {
             e.preventDefault();
             e.stopPropagation();
             navigate(`/setting/keyring/change/name/${accountIndex}`);
           }}
-          className={style["inner-field"]}
-        >
-          <img
-            className={style["optins-icon"]}
-            src={require("@assets/svg/wireframe/rename.svg")}
-            alt=""
-          />{" "}
-          Rename Wallet
-        </button>
-        <button
-          onClick={(e) => {
+        />
+        <Card
+          heading={"Delete Wallet"}
+          leftImage={require("@assets/svg/wireframe/delete.svg")}
+          leftImageStyle={{
+            backgroundColor: "transparent",
+            height: "30px",
+            width: "18px",
+          }}
+          onClick={(e: any) => {
             e.preventDefault();
             e.stopPropagation();
             navigate(`/setting/clear/${accountIndex}`);
           }}
-          className={style["inner-field"]}
           style={{ color: "var(--orange-orange-400, #FA8F6B)" }}
-        >
-          <img
-            className={style["optins-icon"]}
-            src={require("@assets/svg/wireframe/delete.svg")}
-            alt=""
-          />{" "}
-          Delete Wallet
-        </button>
+        />
       </div>
     );
   }

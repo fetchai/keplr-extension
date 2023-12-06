@@ -3,6 +3,7 @@ import styles from "./style.module.scss";
 
 export interface CardProps {
   leftImage?: any;
+  leftImageStyle?: React.CSSProperties;
   heading: any;
   subheading?: any;
   rightContent?: any;
@@ -16,6 +17,7 @@ export interface CardProps {
 
 export const Card: React.FC<CardProps> = ({
   leftImage,
+  leftImageStyle,
   heading,
   subheading,
   rightContent,
@@ -26,12 +28,15 @@ export const Card: React.FC<CardProps> = ({
   onClick,
   rightContentOnClick,
 }) => {
+  const containerStyle: React.CSSProperties = {
+    backgroundColor: isActive ? "var(--Indigo---Fetch, #5F38FB)" : "",
+    cursor: onClick || rightContentOnClick ? "pointer" : "default",
+    ...style,
+  };
+
   return (
     <div
-      style={{
-        backgroundColor: isActive ? "var(--Indigo---Fetch, #5F38FB)" : "",
-        ...style,
-      }}
+      style={containerStyle}
       className={styles["cardContainer"]}
       onClick={onClick}
     >
@@ -41,9 +46,12 @@ export const Card: React.FC<CardProps> = ({
             src={leftImage.length > 1 && leftImage}
             alt={leftImage[0]}
             className={styles["leftImage"]}
+            style={leftImageStyle}
           />
         ) : (
-          <div className={styles["leftImage"]}>{leftImage}</div>
+          <div className={styles["leftImage"]} style={leftImageStyle}>
+            {leftImage}
+          </div>
         ))}
 
       <div
@@ -69,11 +77,9 @@ export const Card: React.FC<CardProps> = ({
         </div>
 
         <div className={styles["rightSection"]}>
-          {/* Updated to allow any React element */}
           {React.isValidElement(rightContent) ? (
             <div style={rightContentStyle}> {rightContent}</div>
-          ) : // Check for Chrome extension link
-          rightContent && rightContent.includes("chrome-extension://") ? (
+          ) : rightContent && rightContent.includes("chrome-extension://") ? (
             <img
               onClick={rightContentOnClick}
               src={rightContent}

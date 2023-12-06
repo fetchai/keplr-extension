@@ -44,8 +44,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
         id: "Cosmos",
         component: (
           <div>
-            {mainChainList.map((chainInfo) => (
+            {mainChainList.map((chainInfo, index) => (
               <Card
+                key={index}
                 leftImage={
                   chainInfo.chainName
                     ? chainInfo.chainName[0].toUpperCase()
