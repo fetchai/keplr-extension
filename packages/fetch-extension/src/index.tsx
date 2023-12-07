@@ -109,6 +109,7 @@ import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
 import { Receive } from "./pages-new/receive";
+import { Portfolio } from "./pages-new/portfolio";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -423,6 +424,7 @@ ReactDOM.render(
                         element={<AddEvmChain />}
                       />
                       <Route path="/receive" element={<Receive />} />
+                      <Route path="/portfolio" element={<Portfolio />} />
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

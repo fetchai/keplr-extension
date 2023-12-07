@@ -6,11 +6,12 @@ import { WalletStatus } from "@keplr-wallet/stores";
 import React, { useCallback } from "react";
 import { useIntl } from "react-intl";
 import { Button } from "reactstrap";
-import styleAccount from "../../pages/main/account.module.scss";
-import { useStore } from "../../stores";
-import { Balances } from "./balances";
-import style from "./style.module.scss";
+import styleAccount from "../../../pages/main/account.module.scss";
+import { useStore } from "../../../stores";
+import { Balances } from "../balances";
+import style from "../style.module.scss";
 import { formatAddress } from "@utils/format";
+import { useNavigate } from "react-router";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
@@ -20,7 +21,7 @@ export const WalletDetailsView = ({
   setIsSelectWalletOpen?: any;
 }) => {
   const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
-
+  const navigate = useNavigate();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const current = chainStore.current;
   const icnsPrimaryName = (() => {
@@ -66,51 +67,55 @@ export const WalletDetailsView = ({
   //withdraw rewards
 
   return (
-    <div className={style["wallet-details"]}>
-      {icnsPrimaryName ? (
-        <div style={{ display: "flex", alignItems: "center", height: "1px" }}>
-          <img
-            style={{
-              width: "24px",
-              height: "24px",
-              marginLeft: "2px",
-            }}
-            src={require("../../public/assets/img/icns-mark.png")}
-            alt="icns-registered"
-          />
-        </div>
-      ) : null}
+    <div>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: "18px",
+          marginBottom: "24px",
         }}
       >
+        <Button
+          onClick={() => {
+            setIsSelectNetOpen(true);
+          }}
+          className={style["chain-select"]}
+        >
+          {formatAddress(current.chainName)}
+          <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
+        </Button>
+        <Button
+          onClick={() => {
+            navigate("/chat");
+          }}
+          className={style["chat-button"]}
+        >
+          <img src={require("@assets/svg/wireframe/chatIcon.svg")} alt="" />
+        </Button>
+      </div>
+      <div className={style["wallet-detail-card"]}>
         <div>
-          <div className={style["wallet-name"]}>
-            <div>
-              {(() => {
-                if (accountInfo.walletStatus === WalletStatus.Loaded) {
-                  if (icnsPrimaryName) {
-                    return icnsPrimaryName;
-                  }
-
-                  if (accountInfo.name) {
-                    return accountInfo.name;
-                  }
-                  return intl.formatMessage({
-                    id: "setting.keyring.unnamed-account",
-                  });
-                } else if (accountInfo.walletStatus === WalletStatus.Rejected) {
-                  return "Unable to Load Key";
-                } else {
-                  return "Loading...";
+          <div className={style["wallet-address"]}>
+            {(() => {
+              if (accountInfo.walletStatus === WalletStatus.Loaded) {
+                if (icnsPrimaryName) {
+                  return icnsPrimaryName;
                 }
-              })()}
-            </div>
+
+                if (accountInfo.name) {
+                  return accountInfo.name;
+                }
+                return intl.formatMessage({
+                  id: "setting.keyring.unnamed-account",
+                });
+              } else if (accountInfo.walletStatus === WalletStatus.Rejected) {
+                return "Unable to Load Key";
+              } else {
+                return "Loading...";
+              }
+            })()}
           </div>
-          <div className={style["address"]}>
+          <div>
             {accountInfo.walletStatus === WalletStatus.Rejected && (
               <ToolTip
                 tooltip={(() => {
@@ -147,8 +152,9 @@ export const WalletDetailsView = ({
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "baseline",
-                    gap: "3px",
+                    alignItems: "center",
+                    gap: "6px",
+                    opacity: "0.6",
                   }}
                 >
                   <Address maxCharacters={16} lineBreakBeforePrefix={false}>
@@ -158,6 +164,7 @@ export const WalletDetailsView = ({
                       : "..."}
                   </Address>
                   <img
+                    style={{ cursor: "pointer" }}
                     onClick={() => copyAddress(accountInfo.bech32Address)}
                     src={require("@assets/svg/wireframe/copy.svg")}
                     alt=""
@@ -170,8 +177,8 @@ export const WalletDetailsView = ({
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "baseline",
-                    gap: "3px",
+                    alignItems: "center",
+                    gap: "6px",
                   }}
                 >
                   <div
@@ -201,37 +208,31 @@ export const WalletDetailsView = ({
               )}
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <Button
+          onClick={() => setIsSelectWalletOpen(true)}
+          className={style["change-net"]}
         >
-          <Button
-            onClick={() => {
-              setIsSelectNetOpen(true);
-            }}
-            className={style["chain-select"]}
-          >
-            {formatAddress(current.chainName)}
-            <img
-              src={require("@assets/svg/wireframe/chevron-down.svg")}
-              alt=""
-            />
-          </Button>
-          <Button
-            onClick={() => setIsSelectWalletOpen(true)}
-            className={style["change-net"]}
-          >
-            <img
-              style={{ width: "32px", height: "32px" }}
-              src={require("@assets/svg/wireframe/changeNet.svg")}
-              alt=""
-            />
-          </Button>
-        </div>
+          <img
+            style={{ width: "14px", height: "16px" }}
+            src={require("@assets/svg/wireframe/changeNet.svg")}
+            alt=""
+          />
+        </Button>
       </div>
+      {icnsPrimaryName ? (
+        <div style={{ display: "flex", alignItems: "center", height: "1px" }}>
+          <img
+            style={{
+              width: "24px",
+              height: "24px",
+              marginLeft: "2px",
+            }}
+            src={require("../../../public/assets/img/icns-mark.png")}
+            alt="icns-registered"
+          />
+        </div>
+      ) : null}
+
       <Balances />
     </div>
   );

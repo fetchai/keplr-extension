@@ -11,14 +11,9 @@ import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { AUTH_SERVER } from "../../config.ui.var";
 import { useStore } from "../../stores";
-import style from "./style.module.scss";
-import { TokensView } from "./tokens";
-import { WalletActions } from "./wallet-actions";
 import { WalletDetailsView } from "./wallet-details";
-import { TabsPanel } from "@components-v2/tabsPanel";
 import { Dropdown } from "@components-v2/dropdown";
 import { ChainList } from "@layouts-v2/header/chain-list";
-import { WalletStatus } from "@keplr-wallet/stores";
 import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
 export const MainPage: FunctionComponent = observer(() => {
@@ -27,14 +22,7 @@ export const MainPage: FunctionComponent = observer(() => {
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
 
   const intl = useIntl();
-  const {
-    chainStore,
-    accountStore,
-    keyRingStore,
-    analyticsStore,
-    queriesStore,
-    uiConfigStore,
-  } = useStore();
+  const { chainStore, accountStore, keyRingStore, analyticsStore } = useStore();
   useEffect(() => {
     analyticsStore.logEvent("Home tab click");
     analyticsStore.setUserProperties({
@@ -84,35 +72,12 @@ export const MainPage: FunctionComponent = observer(() => {
     keyRingStore.keyRingType,
   ]);
 
-  const icnsPrimaryName = (() => {
-    if (
-      uiConfigStore.icnsInfo &&
-      chainStore.hasChain(uiConfigStore.icnsInfo.chainId)
-    ) {
-      const queries = queriesStore.get(uiConfigStore.icnsInfo.chainId);
-      const icnsQuery = queries.icns.queryICNSNames.getQueryContract(
-        uiConfigStore.icnsInfo.resolverContractAddress,
-        accountStore.getAccount(chainStore.current.chainId).bech32Address
-      );
-
-      return icnsQuery.primaryName;
-    }
-  })();
-  const tabs = [
-    { id: "Tokens", component: <TokensView /> },
-    { id: "NFTs", disabled: true },
-    { id: ".FET Domains", disabled: true },
-  ];
-
   return (
     <HeaderLayout>
       <WalletDetailsView
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
       />
-      <WalletActions />
-      <div className={style["your-assets"]}>Your assets</div>
-      <TabsPanel tabs={tabs} />
       <Dropdown
         styleProp={{ height: "595px", maxHeight: "595px" }}
         setIsOpen={setIsSelectNetOpen}
@@ -125,23 +90,7 @@ export const MainPage: FunctionComponent = observer(() => {
       <Dropdown
         setIsOpen={setIsSelectWalletOpen}
         isOpen={isSelectWalletOpen}
-        title={(() => {
-          if (accountInfo.walletStatus === WalletStatus.Loaded) {
-            if (icnsPrimaryName) {
-              return icnsPrimaryName;
-            }
-            if (accountInfo.name) {
-              return accountInfo.name;
-            }
-            return intl.formatMessage({
-              id: "setting.keyring.unnamed-account",
-            });
-          } else if (accountInfo.walletStatus === WalletStatus.Rejected) {
-            return "Unable to Load Key";
-          } else {
-            return "Loading...";
-          }
-        })()}
+        title={"Manage Wallet"}
         closeClicked={() => setIsSelectWalletOpen(false)}
       >
         <WalletOptions

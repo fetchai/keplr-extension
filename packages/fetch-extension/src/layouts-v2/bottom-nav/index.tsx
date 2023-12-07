@@ -1,20 +1,14 @@
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
-
-import chatTabIcon from "@assets/svg/wireframe/new-inbox.svg";
-import selectedChatTabIcon from "@assets/svg/wireframe/selected-inbox.svg";
-
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
-
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
 import { store } from "@chatStore/index";
 import {
   WalletConfig,
   notificationsDetails,
   setNotifications,
-  userDetails,
   walletConfig,
 } from "@chatStore/user-slice";
 import { NotificationSetup } from "@notificationTypes";
@@ -23,7 +17,7 @@ import { useSelector } from "react-redux";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-// import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { WalletActions } from "../../pages-new/main/wallet-actions";
 
 const bottomNav = [
   {
@@ -44,13 +38,42 @@ const bottomNav = [
 ];
 
 export const BottomNav = () => {
-  return (
+  const [isAssetsOpen, setIsAssetsOpen] = useState(false);
+  return !isAssetsOpen ? (
     <div className={style["bottomNavContainer"]}>
       <HomeTab />
-      <ChatTab />
       <NotificationTab />
+      <button
+        style={{ cursor: "pointer" }}
+        className={style["toggle"]}
+        onClick={() => setIsAssetsOpen(!isAssetsOpen)}
+      >
+        <img src={require("@assets/svg/wireframe/openAsset.svg")} alt="" />
+      </button>
       <ActivityTab />
       <MoreTab />
+    </div>
+  ) : (
+    <div>
+      <div className={style["overlay"]}></div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <button
+          className={style["toggle"]}
+          onClick={() => setIsAssetsOpen(!isAssetsOpen)}
+        >
+          <WalletActions />
+          <img
+            style={{
+              height: "43px",
+              width: "42px",
+              marginBottom: "21px",
+              cursor: "pointer",
+            }}
+            src={require("@assets/svg/wireframe/closeImage.svg")}
+            alt=""
+          />
+        </button>
+      </div>
     </div>
   );
 };
@@ -108,54 +131,6 @@ const NotificationTab = () => {
         tooltip={"Coming Soon"}
       />
     </React.Fragment>
-  );
-};
-const ChatTab = () => {
-  const { keyRingStore, chainStore } = useStore();
-  const { hasFET, enabledChainIds } = useSelector(userDetails);
-  const config: WalletConfig = useSelector(walletConfig);
-  const current = chainStore.current;
-  const [chatTooltip, setChatTooltip] = useState("");
-  const [chatDisabled, setChatDisabled] = useState(false);
-
-  useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      setChatTooltip("Coming soon for ledger");
-      setChatDisabled(true);
-      return;
-    }
-
-    if (config.requiredNative && !hasFET) {
-      setChatTooltip("You need to have FET balance to use this feature");
-      setChatDisabled(true);
-      return;
-    } else {
-      setChatTooltip("");
-      setChatDisabled(false);
-    }
-
-    if (!enabledChainIds.includes(current.chainId)) {
-      setChatTooltip("Feature not available on this network");
-      setChatDisabled(true);
-      return;
-    }
-  }, [
-    hasFET,
-    enabledChainIds,
-    config.requiredNative,
-    keyRingStore.keyRingType,
-    current.chainId,
-  ]);
-
-  return (
-    <Tab
-      title={"Chat"}
-      icon={chatTabIcon}
-      activeIcon={selectedChatTabIcon}
-      path={"/chat"}
-      disabled={chatDisabled}
-      tooltip={chatTooltip}
-    />
   );
 };
 

@@ -25,10 +25,12 @@ export const TabsPanel: React.FC<TabsProps> = ({ tabs }) => {
           <button
             className={style["tab"]}
             style={{
-              color: `${tab.id !== selectedTab ? "#ffff" : "#000d3d"}`,
-              background: `${tab.id === selectedTab ? "white" : "transparent"}`,
+              color: `${tab.id === selectedTab ? "#FFF" : "#FFF"}`,
+              background: `${
+                tab.id === selectedTab ? "rgba(255,255,255,0.1)" : "transparent"
+              }`,
               border: `${tab.id === selectedTab ? "white" : "transparent"}`,
-              borderRadius: `${tab.id === selectedTab ? "10px" : "0px"}`,
+              borderRadius: `${tab.id === selectedTab ? "100px" : "0px"}`,
             }}
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}

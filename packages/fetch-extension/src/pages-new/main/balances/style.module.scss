@@ -1,36 +1,65 @@
 @import "../../../styles/var";
 
+.balance-card {
+  margin-top: 32px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  align-self: stretch;
+}
 .balance-field {
-    gap: 8px;
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-  }
-  
-  .balance {
-    font-size: $xl;
-  }
-  .inUsd {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
-  }
-  .reward {
-    font-size: $xl;
-    cursor: pointer;
-  }
-  .view-details {
-    cursor: pointer;
-    height: 27px;
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 5px;
-    border-radius: 100px;
-    backdrop-filter: blur(10px);
-    background: transparent;
-    border: 0px;
-    color: white;
-    box-shadow: none;
-    width: 95px;
-    font-size: 12px;
-  }
+  display: flex;
+  flex-direction: column;
+}
+.balance {
+  font-size: $xl;
+  display: flex;
+  gap: 8px;
+}
+.denom {
+  color: var(--grey-grey-700, #556578);
+}
+.portfolio {
+  cursor: pointer;
+  width: 128px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0px;
+  color: var(--indigo-indigo-900-fetch-navy, #000d3d);
+  font-size: 14px;
+  border-radius: 100px;
+  background: #fff;
+  backdrop-filter: blur(10px);
+}
+.inUsd {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.reward {
+  font-size: $xl;
+  cursor: pointer;
+}
+.view-details {
+  cursor: pointer;
+  height: 27px;
+  display: flex;
+  padding: 6px 12px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+  background: transparent;
+  border: 0px;
+  color: white;
+  box-shadow: none;
+  width: 95px;
+  font-size: 12px;
+}

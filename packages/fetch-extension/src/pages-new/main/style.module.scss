@@ -30,18 +30,18 @@
 }
 
 .chain-select {
-  cursor: pointer;
-  height: 36px;
+  margin-top: 3px;
+  color: white;
   display: flex;
+  height: 32px;
   padding: 6px 12px;
+  justify-content: center;
   align-items: center;
   gap: 5px;
   border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   background: transparent;
-  border: 0px;
-  color: white;
-  box-shadow: none;
 }
 .view-details {
   cursor: pointer;
@@ -73,7 +73,33 @@
   border: 0px;
   border-radius: 100px;
 }
+.chat-button,
+.chat-button:hover {
+  border: 0px;
+  background: transparent !important;
+  padding: 0px;
+  box-shadow: none;
+}
+.wallet-detail-card {
+  font-size: 14px;
+  padding: 12px 18px;
+  gap: 12px;
+  align-self: stretch;
+  color: #fff;
 
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 10px 10px 50px 0px rgba(255, 255, 255, 0.1) inset;
+  backdrop-filter: blur(25px);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wallet-address {
+  font-weight: bold;
+}
 .tab {
   font-weight: 400;
   padding: 6px 12px;

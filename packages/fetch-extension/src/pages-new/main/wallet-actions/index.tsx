@@ -34,7 +34,7 @@ export const WalletActions = observer(() => {
     <div className={style["actions"]}>
       <ActionButton
         title="Recieve"
-        image="arrow-down.svg"
+        image="arrow.svg"
         onClick={() => navigate("/receive")}
       />
       <ActionButton

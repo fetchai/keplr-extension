@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode } from "react";
 
-import { Header as CompHeader } from "@components/header";
+import { Header as CompHeader } from "@components-v2/header";
 
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";

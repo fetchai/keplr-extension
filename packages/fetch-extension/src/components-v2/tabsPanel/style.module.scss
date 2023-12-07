@@ -2,14 +2,14 @@
 
 .tab-container {
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   align-items: center;
 }
 .tab-bar {
   height: 38px;
   padding: 2px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
+  background: transparent;
   display: flex;
   margin: 18px 0px;
   justify-content: space-between;
