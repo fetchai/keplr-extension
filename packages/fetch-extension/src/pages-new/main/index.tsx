@@ -16,6 +16,7 @@ import { Dropdown } from "@components-v2/dropdown";
 import { ChainList } from "@layouts-v2/header/chain-list";
 import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
+import { LineGraphView } from "./line-graph";
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
@@ -78,6 +79,8 @@ export const MainPage: FunctionComponent = observer(() => {
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
       />
+      <LineGraphView tokenName="fetch-ai" />
+
       <Dropdown
         styleProp={{ height: "595px", maxHeight: "595px" }}
         setIsOpen={setIsSelectNetOpen}

@@ -138,7 +138,7 @@ const ActivityTab = () => {
   const { keyRingStore, chainStore } = useStore();
   const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
-  const [activityDisabled, setActivityDisabled] = useState(false);
+  const [z, setActivityDisabled] = useState(false);
   const isEvm = current.features?.includes("evm") ?? false;
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
@@ -160,7 +160,7 @@ const ActivityTab = () => {
       title={"Activity"}
       icon={activitygreyIcon}
       path={"/activity"}
-      disabled={activityDisabled}
+      disabled={z}
       tooltip={activityTooltip}
     />
   );
