@@ -21,7 +21,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useLanguage } from "../../languages";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
-import { formatAddress } from "@utils/format";
+// import { formatAddress } from "@utils/format";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -54,7 +54,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     const balance = queryBalance
       ? queryBalance.balance
       : new CoinPretty(amountConfig.sendCurrency, new Int(0));
-
+    console.log(balance);
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
     const convertToUsd = (currency: any) => {
@@ -119,11 +119,6 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           <div className={styleCoinInput["input-container"]}>
             <div className={styleCoinInput["amount-label"]}>
               <div>Amount </div>
-              <div>
-                {`( Balance: ${formatAddress(
-                  balance.trim(true).maxDecimals(6).toString()
-                )} )`}
-              </div>
             </div>
             <input
               placeholder={`0 ${amountConfig.sendCurrency.coinDenom}`}

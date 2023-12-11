@@ -72,6 +72,9 @@
   padding: 0px;
   border: 0px;
   border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
 .chat-button,
 .chat-button:hover {

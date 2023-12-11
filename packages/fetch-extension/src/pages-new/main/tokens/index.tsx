@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import styleToken from "./style.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
@@ -14,29 +14,74 @@ import { Card } from "@components-v2/card";
 import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
 import { useLanguage } from "../../../languages";
+import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { AppCurrency } from "@keplr-wallet/types";
 
 export const TokensView: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, tokensStore, priceStore } =
     useStore();
+  const [nativeToken, setNativeToken] = useState<any>("");
+  const current = chainStore.current;
+  const separateNumericAndDenom = (value: string) => {
+    const [numericPart, denomPart] = value.split(" ");
+    return { numericPart, denomPart };
+  };
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
 
-  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const accountInfo = accountStore.getAccount(current.chainId);
+
+  const queries = queriesStore.get(current.chainId);
+
+  const balanceQuery = queries.queryBalances.getQueryBech32Address(
+    accountInfo.bech32Address
+  );
+  useEffect(() => {
+    setNativeToken(balanceQuery.balances[0]);
+  }, []);
+  const balanceStakableQuery = balanceQuery.stakable;
+
+  const isNoble =
+    ChainIdHelper.parse(chainStore.current.chainId).identifier === "noble";
+  const hasUSDC = chainStore.current.currencies.find(
+    (currency: AppCurrency) => currency.coinMinimalDenom === "uusdc"
+  );
+  const stakable = (() => {
+    if (isNoble && hasUSDC) {
+      return balanceQuery.getBalanceFromCurrency(hasUSDC);
+    }
+
+    return balanceStakableQuery.balance;
+  })();
+
+  const delegated = queries.cosmos.queryDelegations
+    .getQueryBech32Address(accountInfo.bech32Address)
+    .total.upperCase(true);
+
+  const unbonding = queries.cosmos.queryUnbondingDelegations
+    .getQueryBech32Address(accountInfo.bech32Address)
+    .total.upperCase(true);
+
+  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+    accountInfo.bech32Address
+  );
+
+  const stakableReward = rewards.stakableReward;
+  const stakedSum = delegated.add(unbonding);
+  const total = stakable.add(stakedSum).add(stakableReward);
   const language = useLanguage();
   const fiatCurrency = language.fiatCurrency;
   const tokens = queriesStore
-    .get(chainStore.current.chainId)
+    .get(current.chainId)
     .queryBalances.getQueryBech32Address(accountInfo.bech32Address)
     .unstakables.filter((bal) => {
       if (
         chainStore.current.features &&
         chainStore.current.features.includes("terra-classic-fee")
       ) {
-        // At present, can't handle stability tax well if it is not registered native token.
-        // So, for terra classic, disable other tokens.
         const denom = new DenomHelper(bal.currency.coinMinimalDenom);
         if (denom.type !== "native" || denom.denom.startsWith("ibc/")) {
           return false;
         }
-
         if (denom.type === "native") {
           return bal.balance.toDec().gt(new Dec("0"));
         }
@@ -59,26 +104,70 @@ export const TokensView: FunctionComponent = observer(() => {
     });
 
   const navigate = useNavigate();
-
+  console.log("nativeToken", balanceQuery.balances);
   const notification = useNotification();
   const loadingIndicator = useLoadingIndicator();
-
-  // If the currency is the IBC Currency.
-  // Show the amount as slightly different with other currencies.
-  // Show the actual coin denom to the top and just show the coin denom without channel info to the bottom.
-  // if ("originCurrency" in amount.currency && amount.currency.originCurrency) {
-  //   amount = amount.setCurrency(amount.currency.originCurrency);
-  // }
 
   const convertToUsd = (currency: any) => {
     const value = priceStore.calculatePrice(currency, fiatCurrency);
     const inUsd = value && value.shrink(true).maxDecimals(6).toString();
     return inUsd;
   };
+  const { numericPart: _totalNumber, denomPart: totalDenom } =
+    separateNumericAndDenom(
+      total.shrink(true).trim(true).maxDecimals(6).toString()
+    );
+  const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
   return (
     <div className={styleToken["tokenContainnerInner"]}>
       <div>
-        {" "}
+        {isEvm ? (
+          <Card
+            subheadingStyle={{ fontSize: "14px", color: "rgb(128, 141, 160)" }}
+            style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
+            leftImage={
+              nativeToken
+                ? nativeToken.currency.coinGeckoId
+                : totalDenom.toUpperCase()[0]
+            }
+            heading={totalDenom}
+            subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
+            rightContent={totalPrice && ` ${totalPrice.toString()} USD`}
+            onClick={() => {
+              navigate({
+                pathname: "/send",
+                search: `?defaultDenom=${totalDenom}`,
+              });
+            }}
+          />
+        ) : (
+          <Card
+            subheadingStyle={{ fontSize: "14px", color: "rgb(128, 141, 160)" }}
+            style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
+            leftImage={
+              nativeToken
+                ? nativeToken.currency.coinGeckoId
+                : totalDenom.toUpperCase()[0]
+            }
+            heading={totalDenom}
+            subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
+            onClick={() => {
+              navigate({
+                pathname: "/send",
+                search: `?defaultDenom=${totalDenom}`,
+              });
+            }}
+            rightContent={
+              totalPrice && (
+                <div>
+                  {totalPrice.toString()}{" "}
+                  <span style={{ color: "rgba(255,255,255,0.6" }}>USD</span>{" "}
+                </div>
+              )
+            }
+          />
+        )}
+
         {tokens.map((token) => {
           const error = token.error;
           const validSelector = Buffer.from(
@@ -127,7 +216,7 @@ export const TokensView: FunctionComponent = observer(() => {
             new Int(tokenInfo ? amountInNumber : 0)
           );
           const tokenInUsd = convertToUsd(inputValue);
-          console.log(tokenInUsd, amountInNumber);
+          console.log("aaaaa", tokenInfo.coinImageUrl);
           return (
             <React.Fragment key={token.currency.coinDenom}>
               <Card
@@ -201,9 +290,7 @@ export const TokensView: FunctionComponent = observer(() => {
                         });
                         return;
                       }
-                      const tokenOf = tokensStore.getTokensOf(
-                        chainStore.current.chainId
-                      );
+                      const tokenOf = tokensStore.getTokensOf(current.chainId);
                       await tokenOf.addToken({
                         ...token.balance.currency,
                         viewingKey,
