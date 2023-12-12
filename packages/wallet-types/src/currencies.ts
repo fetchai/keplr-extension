@@ -45,7 +45,7 @@ export interface BaseCurrency {
   readonly denomUnits: DenomUnit[];
 
   /**
-   * The display nane for the currency
+   * The display name for the currency
    */
   readonly display: string;
 

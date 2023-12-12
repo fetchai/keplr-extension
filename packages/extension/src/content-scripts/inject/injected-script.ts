@@ -1,13 +1,19 @@
 import {
   InjectedKeplr,
   BrowserInjectedFetchWallet,
+  FetchWalletApi,
 } from "@keplr-wallet/provider";
 import { init } from "./init";
 
 import manifest from "../../manifest.json";
 
 const keplr = new InjectedKeplr(manifest.version, "extension");
-const fetchWallet = new BrowserInjectedFetchWallet(keplr, manifest.version);
+const fetchWalletApi = new FetchWalletApi();
+const fetchWallet = new BrowserInjectedFetchWallet(
+  keplr,
+  manifest.version,
+  fetchWalletApi
+); // TODO: add wallet
 
 init(
   keplr,

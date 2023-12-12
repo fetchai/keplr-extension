@@ -1,9 +1,14 @@
-import { Keplr } from "@keplr-wallet/types";
+import { Keplr, KeplrSignOptions, Key } from "@keplr-wallet/types";
 import { UmbralApi } from "@fetchai/umbral-types";
 import { PublicKey } from "./public-keys";
 import { NetworkConfig } from "./network-info";
-import { OfflineSigner, TxsResponse } from "@cosmjs/launchpad";
-import { OfflineDirectSigner } from "@cosmjs/proto-signing";
+import {
+  AminoSignResponse,
+  OfflineSigner,
+  StdSignDoc,
+  TxsResponse,
+} from "@cosmjs/launchpad";
+import { DirectSignResponse, OfflineDirectSigner } from "@cosmjs/proto-signing";
 
 /**
  * The representation of the Account
@@ -79,6 +84,14 @@ export interface NetworksApi {
  * The accounts API controls access to the private / public key pairs which are controlled by the browser wallet.
  */
 export interface AccountsApi {
+  /**
+   * Get the currently selected account in the wallet
+   *
+   * @return the currently selected account
+   * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
+   */
+  currentAccount(): Promise<Account>;
+
   /**
    * Change the current active account to the address specified
    *
@@ -192,9 +205,9 @@ export interface EventHandler<T> {
   unsubscribe(handler: T): void;
 }
 
-interface TxResponse {
-  // TODO(EJF)
-}
+// interface TxResponse {
+//   // TODO(EJF)
+// }
 
 /**
  * The Events API
@@ -241,6 +254,35 @@ export interface EventsApi {
  * Keplr we do not allow other signing messages
  */
 export interface SigningApi {
+  /**
+   *
+   *
+   */
+  getKey(chainId: string): Promise<Key>;
+
+  signAmino(
+    chainId: string,
+    signer: string,
+    signDoc: StdSignDoc,
+    signOptions?: KeplrSignOptions
+  ): Promise<AminoSignResponse>;
+
+  signDirect(
+    chainId: string,
+    signer: string,
+    signDoc: {
+      /** SignDoc bodyBytes */
+      bodyBytes?: Uint8Array | null;
+      /** SignDoc authInfoBytes */
+      authInfoBytes?: Uint8Array | null;
+      /** SignDoc chainId */
+      chainId?: string | null;
+      /** SignDoc accountNumber */
+      accountNumber?: Long | null;
+    },
+    signOptions?: KeplrSignOptions
+  ): Promise<DirectSignResponse>;
+
   /**
    * Signs arbitrary data
    *
@@ -347,17 +389,17 @@ export interface WalletApi {
   /**
    * The address book API
    */
-  addressBook: AddressBookApi;
+  // addressBook: AddressBookApi;
 
   /**
    * The signing API
    */
-  signing: SigningApi;
+  // signing: SigningApi;
 
   /**
    * The events API
    */
-  events: EventsApi;
+  // events: EventsApi;
 }
 
 /**

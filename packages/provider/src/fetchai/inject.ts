@@ -11,7 +11,7 @@ import {
   Proxy,
   toProxyResponse,
 } from "./proxy";
-import { FetchBrowserWallet } from "@fetchai/wallet-types";
+import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
 
 class BrowserInjectedUmbral implements UmbralApi {
@@ -127,10 +127,12 @@ export class BrowserInjectedFetchWallet implements FetchBrowserWallet {
   readonly keplr: Keplr;
   readonly umbral: UmbralApi;
   readonly version: string;
+  readonly wallet: WalletApi;
 
-  constructor(keplr: Keplr, version: string) {
+  constructor(keplr: Keplr, version: string, wallet: WalletApi) {
     this.keplr = keplr;
     this.version = version;
     this.umbral = new BrowserInjectedUmbral(createBrowserWindowProxy());
+    this.wallet = wallet;
   }
 }

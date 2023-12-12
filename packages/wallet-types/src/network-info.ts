@@ -1,4 +1,5 @@
 import { Currency, NativeCurrency } from "./currencies";
+import { Bech32Config } from "@keplr-wallet/types";
 
 /**
  * A BIP44 configuration

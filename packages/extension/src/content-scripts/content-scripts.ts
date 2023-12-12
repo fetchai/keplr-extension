@@ -10,6 +10,7 @@ import {
   InjectedKeplr,
   ExtensionCoreFetchWallet,
   startFetchWalletProxy,
+  FetchWalletApi,
 } from "@keplr-wallet/provider";
 import { initEvents } from "./events";
 
@@ -17,10 +18,12 @@ import manifest from "../manifest.json";
 
 const messageRequester = new InExtensionMessageRequester();
 const coreKeplr = new Keplr(manifest.version, "core", messageRequester);
+const wallet = new FetchWalletApi();
 const coreFetchWallet = new ExtensionCoreFetchWallet(
   coreKeplr,
   manifest.version,
-  messageRequester
+  messageRequester,
+  wallet
 );
 
 InjectedKeplr.startProxy(coreKeplr);
