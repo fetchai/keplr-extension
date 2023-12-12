@@ -110,6 +110,7 @@ import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
 import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
+import {AssetView} from "./pages-new/asset-view";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -425,6 +426,8 @@ ReactDOM.render(
                       />
                       <Route path="/receive" element={<Receive />} />
                       <Route path="/portfolio" element={<Portfolio />} />
+                      <Route path="/asset" element={<AssetView />} />
+
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

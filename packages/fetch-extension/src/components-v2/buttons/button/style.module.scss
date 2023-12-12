@@ -6,6 +6,10 @@
   border: none;
   padding: 10px 12px;
   width: 100%;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
 }
 .btn:disabled {
   cursor: not-allowed;

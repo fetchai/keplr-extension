@@ -135,7 +135,7 @@ export const TokensView: FunctionComponent = observer(() => {
             rightContent={totalPrice && ` ${totalPrice.toString()} USD`}
             onClick={() => {
               navigate({
-                pathname: "/send",
+                pathname: "/asset",
                 search: `?defaultDenom=${totalDenom}`,
               });
             }}
@@ -153,7 +153,7 @@ export const TokensView: FunctionComponent = observer(() => {
             subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
             onClick={() => {
               navigate({
-                pathname: "/send",
+                pathname: "/asset",
                 search: `?defaultDenom=${totalDenom}`,
               });
             }}

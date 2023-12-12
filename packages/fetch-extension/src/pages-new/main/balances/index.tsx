@@ -8,7 +8,11 @@ import { observer } from "mobx-react-lite";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
 
-export const Balances = observer(() => {
+interface Props {
+  tokenState: any;
+}
+
+export const Balances: React.FC<Props> = observer(({ tokenState }) => {
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
   const navigate = useNavigate();
   const language = useLanguage();
@@ -68,6 +72,18 @@ export const Balances = observer(() => {
       total.shrink(true).trim(true).maxDecimals(6).toString()
     );
 
+  const changeInDollarsValue =
+    tokenState.type === "positive"
+      ? parseFloat(totalNumber) +
+        (parseFloat(totalNumber) * tokenState.diff) / 100
+      : parseFloat(totalNumber) -
+        (parseFloat(totalNumber) * tokenState.diff) / 100;
+
+  const changeInDollarsClass =
+    tokenState.type === "positive"
+      ? style["increaseInDollarsGreen"]
+      : style["increaseInDollarsOrange"];
+
   return (
     <div className={style["balance-card"]}>
       {isEvm ? (
@@ -77,6 +93,17 @@ export const Balances = observer(() => {
           </div>
           <div className={style["inUsd"]}>
             {totalPrice && ` ${totalPrice.toString()} USD`}
+          </div>
+          <div style={{ display: "flex", gap: "4px" }}>
+            <div
+              className={style["changeInDollars"] + " " + changeInDollarsClass}
+            >
+              {changeInDollarsValue.toFixed(4)}
+            </div>
+            <div className={style["changeInPer"]}>
+              ( {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
+            </div>
+            <div className={style["day"]}>{tokenState && tokenState.time}</div>
           </div>
         </div>
       ) : (
@@ -92,6 +119,17 @@ export const Balances = observer(() => {
                   .trim(true)
                   .maxDecimals(6)
                   .toString()} USD`}
+          </div>
+          <div style={{ display: "flex", gap: "4px" }}>
+            <div
+              className={style["changeInDollars"] + " " + changeInDollarsClass}
+            >
+              {changeInDollarsValue.toFixed(4)}
+            </div>
+            <div className={style["changeInPer"]}>
+              ( {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
+            </div>
+            <div className={style["day"]}>{tokenState && tokenState.time}</div>
           </div>
         </div>
       )}

@@ -16,12 +16,13 @@ import { Dropdown } from "@components-v2/dropdown";
 import { ChainList } from "@layouts-v2/header/chain-list";
 import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
-import { LineGraphView } from "./line-graph";
+import { LineGraphView } from "../../components-v2/line-graph";
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
-
+  const [tokenState, setTokenState] = useState({});
+  console.log(tokenState);
   const intl = useIntl();
   const { chainStore, accountStore, keyRingStore, analyticsStore } = useStore();
   useEffect(() => {
@@ -72,14 +73,17 @@ export const MainPage: FunctionComponent = observer(() => {
     accountInfo.bech32Address,
     keyRingStore.keyRingType,
   ]);
-
   return (
     <HeaderLayout>
       <WalletDetailsView
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
+        tokenState={tokenState}
       />
-      <LineGraphView tokenName="fetch-ai" />
+      <LineGraphView
+        setTokenState={setTokenState}
+        tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
+      />
 
       <Dropdown
         styleProp={{ height: "595px", maxHeight: "595px" }}

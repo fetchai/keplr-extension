@@ -10,32 +10,48 @@
   gap: 24px;
   align-self: stretch;
 }
+
 .balance-field {
   display: flex;
   flex-direction: column;
 }
+
 .balance {
   font-size: $xl;
   display: flex;
   gap: 8px;
+  font-family: Lexend;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
+
 .denom {
   color: var(--grey-grey-700, #556578);
 }
-.portfolio {
+
+.portfolio,
+.portfolio:hover {
   cursor: pointer;
   width: 128px;
   height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0px;
-  color: var(--indigo-indigo-900-fetch-navy, #000d3d);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
   font-size: 14px;
   border-radius: 100px;
-  background: #fff;
-  backdrop-filter: blur(10px);
+  color: #fff;
+  background: transparent;
 }
+
+.portfolio:focus {
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
 .inUsd {
   color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
@@ -43,10 +59,12 @@
   justify-content: center;
   display: flex;
 }
+
 .reward {
   font-size: $xl;
   cursor: pointer;
 }
+
 .view-details {
   cursor: pointer;
   height: 27px;
@@ -62,4 +80,40 @@
   box-shadow: none;
   width: 95px;
   font-size: 12px;
+}
+
+.day {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.changeInDollars-green {
+  color: var(--green-green-500-vibrant-green, #2DE376);
+
+}
+
+.changeInDollars-orange {
+  color: orange;
+}
+
+.increaseInDollarsGreen {
+  color: var(--green-green-500-vibrant-green, #2DE376);
+
+}
+
+.increaseInDollarsOrange {
+  color: orange;
+}
+
+.increaseInPer {
+  color: white;
+}
+
+.positive {
+  color: var(--green-green-500-vibrant-green, #2DE376);
+
+}
+
+.negative {
+  color: orange;
 }

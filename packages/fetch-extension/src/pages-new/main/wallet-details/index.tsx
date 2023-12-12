@@ -16,9 +16,11 @@ import { useNavigate } from "react-router";
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
   setIsSelectWalletOpen,
+  tokenState
 }: {
   setIsSelectNetOpen: any;
   setIsSelectWalletOpen?: any;
+  tokenState :any;
 }) => {
   const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
   const navigate = useNavigate();
@@ -233,7 +235,7 @@ export const WalletDetailsView = ({
         </div>
       ) : null}
 
-      <Balances />
+      <Balances tokenState={tokenState} />
     </div>
   );
 };

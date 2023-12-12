@@ -5,6 +5,12 @@ import type { ChartOptions } from "chart.js";
 import { TabsPanel } from "@components-v2/tabsPanel";
 import style from "./style.module.scss";
 
+interface LineGraphProps {
+  duration: number;
+  tokenName: string | undefined;
+  setTokenState: any;
+}
+
 interface PriceData {
   timestamp: number;
   price: number;
@@ -12,32 +18,16 @@ interface PriceData {
 
 interface LineGraphProps {
   duration: number;
-  tokenName: string;
+  tokenName: string | undefined;
+  setTokenState: any;
+  isActiveTab: boolean;
 }
-
-interface LineGraphViewProps {
-  tokenName: string;
-}
-
-export const LineGraphView: React.FC<LineGraphViewProps> = ({ tokenName }) => {
-  const tabs = [
-    { id: "24H", component: <LineGraph duration={1} tokenName={tokenName} /> },
-    { id: "1W", component: <LineGraph duration={7} tokenName={tokenName} /> },
-    { id: "1M", component: <LineGraph duration={30} tokenName={tokenName} /> },
-    { id: "3M", component: <LineGraph duration={90} tokenName={tokenName} /> },
-    { id: "1Y", component: <LineGraph duration={360} tokenName={tokenName} /> },
-    {
-      id: "All",
-      component: <LineGraph duration={10000} tokenName={tokenName} />,
-    },
-  ];
-
-  return <TabsPanel tabs={tabs} showTabsOnBottom={true} />;
-};
 
 export const LineGraph: React.FC<LineGraphProps> = ({
   duration,
   tokenName,
+  setTokenState,
+  isActiveTab,
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,6 +44,34 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           (price: number[]) => ({ timestamp: price[0], price: price[1] })
         );
         setPrices(pricesFromResponse);
+
+        const firstValue = pricesFromResponse[0]?.price || 0;
+        const lastValue =
+          pricesFromResponse[pricesFromResponse.length - 1]?.price || 0;
+        const diff = lastValue - firstValue;
+        const percentageDiff = (diff / lastValue) * 100;
+
+        // Only update token state if it's the active tab
+        if (isActiveTab) {
+          let time = "";
+          if (duration === 1) {
+            time = "TODAY";
+          } else if (duration === 7) {
+            time = "1 WEEK";
+          } else if (duration === 30) {
+            time = "1 MONTH";
+          } else if (duration === 90) {
+            time = "3 MONTH";
+          } else if (duration === 360) {
+            time = "1YEAR";
+          } else if (duration === 100000) {
+            time = "ALL";
+          }
+
+          const type = diff >= 0 ? "positive" : "negative";
+
+          setTokenState({ diff: Math.abs(percentageDiff), time, type });
+        }
       } catch (error) {
         console.error("Error fetching data:", error.message);
         setError("Unable to fetch data. Please try again.");
@@ -63,7 +81,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
     };
 
     fetchPrices();
-  }, [duration, tokenName]);
+  }, [duration, tokenName, setTokenState, isActiveTab]);
 
   const chartData = {
     labels: prices.map(() => ""),
@@ -146,6 +164,97 @@ export const LineGraph: React.FC<LineGraphProps> = ({
       ) : (
         <Line data={chartData} options={chartOptions} />
       )}
+    </div>
+  );
+};
+
+interface LineGraphViewProps {
+  tokenName: string | undefined;
+  setTokenState: any;
+}
+
+export const LineGraphView: React.FC<LineGraphViewProps> = ({
+  tokenName,
+  setTokenState,
+}) => {
+  const [activeTab, setActiveTab] = useState<string>("24H");
+
+  const tabs = [
+    {
+      id: "24H",
+      component: (
+        <LineGraph
+          duration={1}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={activeTab === "24H"}
+        />
+      ),
+    },
+    {
+      id: "1W",
+      component: (
+        <LineGraph
+          duration={7}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={activeTab === "1W"}
+        />
+      ),
+    },
+    {
+      id: "1M",
+      component: (
+        <LineGraph
+          duration={30}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={activeTab === "1M"}
+        />
+      ),
+    },
+    {
+      id: "3M",
+      component: (
+        <LineGraph
+          duration={90}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={activeTab === "3M"}
+        />
+      ),
+    },
+    {
+      id: "1Y",
+      component: (
+        <LineGraph
+          duration={360}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={activeTab === "1Y"}
+        />
+      ),
+    },
+    {
+      id: "All",
+      component: (
+        <LineGraph
+          duration={100000}
+          tokenName={tokenName}
+          setTokenState={setTokenState}
+          isActiveTab={false}
+        />
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <TabsPanel
+        tabs={tabs}
+        showTabsOnBottom={true}
+        setActiveTab={setActiveTab}
+      />
     </div>
   );
 };
