@@ -15,7 +15,6 @@ export const SelectAccountButton: FunctionComponent<{
   return (
     <BlurBackground
       borderRadius={32}
-      backgroundBlur={true}
       blurIntensity={blurIntensity}
       containerStyle={
         [

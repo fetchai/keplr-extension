@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { PageWithScrollViewInBottomTabView } from "../page";
+import { PageWithScrollViewInBottomTabView } from "../../../components/page";
 import {
   AppState,
   AppStateStatus,
@@ -13,23 +13,23 @@ import {
   ScrollView,
   ViewStyle,
 } from "react-native";
-import { useStore } from "../../stores";
+import { useStore } from "../../../stores";
 // import { StakingInfoCard } from "../../screens/home/staking-info-card";
-import { useStyle } from "../../styles";
+import { useStyle } from "../../../styles";
 // import { GovernanceCard } from "../../screens/home/governance-card";
 import { observer } from "mobx-react-lite";
 // import { MyRewardCard } from "../../screens/home/my-reward-card";
 // import { TokensCard } from "../../screens/home/tokens-card";
-import { usePrevious } from "../../hooks";
+import { usePrevious } from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
 // import { Dec } from "@keplr-wallet/unit";
 import { AccountSection } from "./account-section";
-import { TransectionActionCard } from "./transection-action-card";
-import { AssertsSection } from "./asserts-section";
-import { BIP44Selectable } from "../../screens/home/bip44-selectable";
+import { TransectionSection } from "./transection-section";
+import { AssetsSection } from "./assets-section";
+import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export const TestHomeScreen: FunctionComponent = observer(() => {
+export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -157,10 +157,10 @@ export const TestHomeScreen: FunctionComponent = observer(() => {
     >
       <BIP44Selectable />
       <AccountSection />
-      <TransectionActionCard
+      <TransectionSection
         containtStyle={style.flatten(["margin-y-32"]) as ViewStyle}
       />
-      <AssertsSection />
+      <AssetsSection />
 
       {/* <AccountCard
         containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}

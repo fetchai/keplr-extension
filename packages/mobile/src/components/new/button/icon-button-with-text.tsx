@@ -9,7 +9,7 @@ export const IconButtonWithText: FunctionComponent<{
   backgroundBlur?: boolean;
   borderRadius?: number;
   iconStyle?: ViewStyle;
-}> = ({ icon, text, backgroundBlur = true, borderRadius, iconStyle }) => {
+}> = ({ icon, text, backgroundBlur, borderRadius, iconStyle }) => {
   const style = useStyle();
   return (
     <View style={style.flatten(["items-center"]) as ViewStyle}>

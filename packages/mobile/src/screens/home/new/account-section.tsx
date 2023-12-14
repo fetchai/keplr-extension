@@ -7,31 +7,55 @@ import {
   ViewStyle,
 } from "react-native";
 import { observer } from "mobx-react-lite";
-import { useStyle } from "../../styles";
-import { BlurBackground } from "./blur-background/blur-background";
-import { ChevronDownIcon } from "../icon/new/chevron-down";
-import { SelectAccountButton } from "./select-account/select-account-button";
-import { BlurButton } from "./button/blur-button";
-import { Button } from "../button/button";
-import { AddressCopyable } from "./address-copyable";
+import { useStyle } from "../../../styles";
+import { BlurBackground } from "../../../components/new/blur-background/blur-background";
+import { ChevronDownIcon } from "../../../components/icon/new/chevron-down";
+import { SelectAccountButton } from "../../../components/new/select-account/select-account-button";
+import { BlurButton } from "../../../components/new/button/blur-button";
+import { Button } from "../../../components/button";
+import { AddressCopyable } from "../../../components/new/address-copyable";
 import {
   DrawerActions,
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { useStore } from "../../stores";
-import { IconView } from "./button/icon";
-import { TreeDotIcon } from "../icon/new/tree-dot";
-import { MainWalletCardModel } from "./wallet-card/main-wallet";
+import {
+  // MultiKeyStoreInfoElem,
+  MultiKeyStoreInfoWithSelectedElem,
+} from "@keplr-wallet/background";
+import { useStore } from "../../../stores";
+import { IconView } from "../../../components/new/button/icon";
+import { TreeDotIcon } from "../../../components/icon/new/tree-dot";
+import { WalletCardModel } from "../../../components/new/wallet-card/wallet-card";
+import { ChangeWalletCardModel } from "../../../components/new/wallet-card/change-wallet";
+import { EditAccountNameModal } from "../../../modals/edit-account-name.tsx";
+import { PasswordInputModal } from "../../../modals/password-input/modal";
+import { useLoadingScreen } from "../../../providers/loading-screen";
 
 export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
   observer(({ containtStyle }) => {
     const navigation = useNavigation<NavigationProp<ParamListBase>>();
+    const loadingScreen = useLoadingScreen();
     const style = useStyle();
     const [selectedId, setSelectedId] = useState<string>("1");
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+    const [changeWalletModal, setChangeWalletModal] = useState(false);
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedKeyStore, setSelectedKeyStore] =
+      useState<MultiKeyStoreInfoWithSelectedElem>();
+    const {
+      chainStore,
+      accountStore,
+      queriesStore,
+      priceStore,
+      keyRingStore,
+      analyticsStore,
+      keychainStore,
+    } = useStore();
+
+    const waitingNameData = keyRingStore.waitingNameData?.data;
 
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
@@ -95,11 +119,15 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
       <React.Fragment>
         <BlurBackground
           borderRadius={16}
-          backgroundBlur={true}
-          blurIntensity={20}
+          blurIntensity={16}
           containerStyle={
             [
-              style.flatten(["margin-x-12", "padding-20"]),
+              style.flatten([
+                "margin-x-12",
+                "padding-20",
+                "border-width-1",
+                "border-color-indigo-200",
+              ]),
               containtStyle,
             ] as ViewStyle
           }
@@ -127,34 +155,13 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
                     ]) as ViewStyle
                   }
                 >
-                  {"Main Wallet"}
+                  {account.name}
                 </Text>
               </View>
-
-              <View>
-                {/* <View>
-              <Text
-                style={
-                  style.flatten([
-                    "h6",
-                    "color-gray-200",
-                    "margin-right-8",
-                  ]) as ViewStyle
-                }
-              >
-                {"0x65D...AFFa"}
-              </Text>
-            </View>
-            <View>
-              <View style={style.flatten(["padding-top-2"]) as ViewStyle}>
-                {<CopyIcon size={18} />}
-              </View>
-            </View> */}
-                <AddressCopyable
-                  address={account.bech32Address}
-                  maxCharacters={16}
-                />
-              </View>
+              <AddressCopyable
+                address={account.bech32Address}
+                maxCharacters={16}
+              />
             </View>
             <View style={style.flatten(["flex-row"])}>
               <TouchableOpacity
@@ -224,10 +231,100 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
             rippleColor="black@50%"
           />
         </BlurBackground>
-        <MainWalletCardModel
+
+        <WalletCardModel
           isOpen={isOpenModal}
           title="Main Wallet"
           close={() => setIsOpenModal(false)}
+          onSelectWallet={(option: string) => {
+            if (option === "change_wallet") {
+              setChangeWalletModal(true);
+              setIsOpenModal(false);
+            } else if (option === "rename_wallet") {
+              keyRingStore.multiKeyStoreInfo.map((keyStore) => {
+                if (keyStore.meta?.["name"] === account.name) {
+                  setSelectedKeyStore(keyStore);
+                }
+              });
+              setIsRenameModalOpen(true);
+              setIsOpenModal(false);
+            } else {
+              setIsDeleteModalOpen(true);
+              setIsOpenModal(false);
+            }
+          }}
+        />
+
+        <ChangeWalletCardModel
+          isOpen={changeWalletModal}
+          title="Change Wallet"
+          keyRingStore={keyRingStore}
+          close={() => setChangeWalletModal(false)}
+          onClickButton={() => {
+            analyticsStore.logEvent("Add additional account started");
+            navigation.navigate("Register", {
+              screen: "Register.Intro",
+            });
+          }}
+          onChangeAccount={async (keyStore) => {
+            const index = keyRingStore.multiKeyStoreInfo.indexOf(keyStore);
+            if (index >= 0) {
+              loadingScreen.setIsLoading(true);
+              await keyRingStore.changeKeyRing(index);
+              loadingScreen.setIsLoading(false);
+            }
+          }}
+        />
+
+        <EditAccountNameModal
+          isOpen={isRenameModalOpen}
+          close={() => setIsRenameModalOpen(false)}
+          title="Edit Account Name"
+          isReadOnly={
+            waitingNameData !== undefined && !waitingNameData?.editable
+          }
+          onEnterName={async (name) => {
+            try {
+              const selectedIndex = keyRingStore.multiKeyStoreInfo.findIndex(
+                (keyStore) => keyStore == selectedKeyStore
+              );
+
+              await keyRingStore.updateNameKeyRing(selectedIndex, name.trim());
+              setSelectedKeyStore(undefined);
+              setIsRenameModalOpen(false);
+            } catch (e) {
+              console.log("Fail to decrypt: " + e.message);
+            }
+          }}
+        />
+
+        <PasswordInputModal
+          isOpen={isDeleteModalOpen}
+          close={() => setIsDeleteModalOpen(false)}
+          title="Remove Account"
+          onEnterPassword={async (password) => {
+            const index = keyRingStore.multiKeyStoreInfo.findIndex(
+              (keyStore) => keyStore.selected
+            );
+
+            if (index >= 0) {
+              await keyRingStore.deleteKeyRing(index, password);
+              analyticsStore.logEvent("Account removed");
+
+              if (keyRingStore.multiKeyStoreInfo.length === 0) {
+                await keychainStore.reset();
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: "Unlock",
+                    },
+                  ],
+                });
+              }
+            }
+          }}
         />
       </React.Fragment>
     );

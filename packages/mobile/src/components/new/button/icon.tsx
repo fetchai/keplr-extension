@@ -8,13 +8,7 @@ export const IconView: FunctionComponent<{
   backgroundBlur?: boolean;
   blurIntensity?: number;
   borderRadius?: number;
-}> = ({
-  iconStyle,
-  img,
-  backgroundBlur = false,
-  blurIntensity,
-  borderRadius = 50,
-}) => {
+}> = ({ iconStyle, img, backgroundBlur, blurIntensity, borderRadius = 50 }) => {
   return (
     <BlurBackground
       borderRadius={borderRadius}

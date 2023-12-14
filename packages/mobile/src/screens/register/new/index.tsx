@@ -9,7 +9,6 @@ import {
   Text,
   Platform,
 } from "react-native";
-import { BlurView } from "expo-blur";
 import { Button } from "../../../components/button";
 import { useSmartNavigation } from "../../../navigation";
 import { useRegisterConfig } from "@keplr-wallet/hooks";
@@ -21,6 +20,7 @@ import { AppleIcon, DownloadIcon, GoogleIcon } from "../../../components/icon";
 import { HeaderAddIcon } from "../../../components/header/icon";
 import { ColorRightErrow } from "../../../components/icon/color-rightt-arrow";
 import { LinearGradientText } from "../../../components/svg/linear-gradient-text";
+import { BlurBackground } from "../../../components/new/blur-background/blur-background";
 
 const SelectWalletOptionCard: FunctionComponent<{
   setIsModalOpen: (val: boolean) => void;
@@ -37,19 +37,16 @@ const SelectWalletOptionCard: FunctionComponent<{
         }}
         activeOpacity={1}
       >
-        <BlurView
-          intensity={50}
-          tint="dark"
-          style={
+        <BlurBackground
+          blurIntensity={12}
+          borderRadius={16}
+          containerStyle={
             style.flatten([
               "border-width-1",
-              "border-radius-16",
+              // "border-radius-16",
               "border-color-indigo-200",
-              "padding-left-10",
-              "padding-right-10",
-              "padding-top-15",
-              "padding-bottom-15",
-              "overflow-hidden",
+              "padding-x-10",
+              "padding-y-15",
               // "background-color-transparent"
             ]) as ViewStyle
           }
@@ -94,7 +91,7 @@ const SelectWalletOptionCard: FunctionComponent<{
           >
             {desc}
           </Text>
-        </BlurView>
+        </BlurBackground>
       </TouchableOpacity>
     </React.Fragment>
   );

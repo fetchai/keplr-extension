@@ -317,18 +317,20 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                 >
                   <InputCardView
                     label="Gas adjustment"
+                    placeholderText="-"
                     containerStyle={
                       style.flatten(["flex-1", "margin-right-16"]) as ViewStyle
                     }
                   />
                   <InputCardView
                     label="Estimated "
+                    placeholderText="-"
                     containerStyle={style.flatten(["flex-1"]) as ViewStyle}
                   />
                 </View>
               ) : null}
               <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
-                <InputCardView label="Gas amount " />
+                <InputCardView label="Gas amount" placeholderText="-" />
               </View>
             </View>
           ) : null}

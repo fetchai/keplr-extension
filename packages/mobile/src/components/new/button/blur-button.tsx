@@ -13,7 +13,7 @@ export const BlurButton: FunctionComponent<{
 }> = ({
   containerStyle,
   textStyle,
-  backgroundBlur = false,
+  backgroundBlur,
   text,
   blurIntensity,
   borderRadius = 8,

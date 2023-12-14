@@ -15,8 +15,7 @@ export const CardView: FunctionComponent<{
   return (
     <BlurBackground
       borderRadius={12}
-      backgroundBlur={true}
-      blurIntensity={14}
+      blurIntensity={16}
       containerStyle={
         [
           style.flatten([

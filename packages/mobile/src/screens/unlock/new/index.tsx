@@ -144,7 +144,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
     if (keyRingStore.status === KeyRingStatus.LOCKED) hideSplashScreen();
   }, [keyRingStore.status]);
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("12345678");
   const [isLoading, setIsLoading] = useState(false);
   const [isBiometricLoading, setIsBiometricLoading] = useState(false);
   const [isFailed, setIsFailed] = useState(false);
@@ -279,6 +279,8 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               }
               size="large"
               loading={isLoading}
+              loadingSpinnerColor="color-indigo-900"
+              rippleColor="black@50%"
               onPress={tryUnlock}
             />
           </View>

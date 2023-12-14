@@ -64,6 +64,7 @@ export const ColorPalette = {
   "pink-200": "#FFCFE7",
   "pink-300": "#F891C4",
   "pink-400": "#FF6BB8",
+  "coral-red": "#FF3E3E",
 
   "purple-50": "#FBF8FF",
   "purple-100": "#F7F0FF",
@@ -88,7 +89,6 @@ export const ColorPalette = {
 
   black: "#000000",
 
-  indigo: "#5F38FB",
   linear: "#CF447B",
 
   "indigo-100": "#5f38fb12",

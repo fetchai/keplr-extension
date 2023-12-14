@@ -45,7 +45,7 @@ export const PageWithScrollView = forwardRef<
     containerStyle,
     backgroundMode,
     indicatorStyle,
-    backgroundBlur = false,
+    backgroundBlur,
     ...restProps
   } = props;
 

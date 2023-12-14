@@ -1,33 +1,23 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
-import { useStore } from "../../stores";
-import { PageWithScrollView } from "../page";
-import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
-// import {
-//   AddressInput,
-//   AmountInput,
-//   MemoInput,
-//   CurrencySelector,
-//   // FeeButtons,
-// } from "../input";
-import { FeeButtons } from "./fee-button/fee-button-component";
-import { useStyle } from "../../styles";
-import { Button } from "../button";
+import { useStore } from "../../../stores";
+import { PageWithScrollView } from "../../../components/page";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { FeeButtons } from "../../../components/new/fee-button/fee-button-component";
+import { useStyle } from "../../../styles";
+import { Button } from "../../../components/button";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "../../../navigation";
 import { Buffer } from "buffer/";
-import { DropDownCardView } from "./card-view/drop-down-card";
-import { ChevronDownIcon } from "../icon/new/chevron-down";
-import { SimpleCardView } from "./card-view/simple-card";
-import { QRCodeIcon } from "../icon/new/qrcode-icon";
-import { IconView } from "./button/icon";
-import { ATIcon } from "../icon/new/at-icon";
+import { DropDownCardView } from "../../../components/new/card-view/drop-down-card";
+import { ChevronDownIcon } from "../../../components/icon/new/chevron-down";
 import Toast from "react-native-toast-message";
-import { ReloadIcon } from "../icon/new/reload-icon";
-import { BlurButton } from "./button/blur-button";
+import { InputCardView } from "../../../components/new/card-view/input-card";
+import { AddressInputCard } from "../../../components/new/card-view/address-card";
+import { AmountInputSection } from "../../../components/new/input/amount";
 
-export const SendScreen: FunctionComponent = observer(() => {
+export const NewSendScreen: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
 
   const route = useRoute<
@@ -97,87 +87,7 @@ export const SendScreen: FunctionComponent = observer(() => {
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-      {/* <AddressInput
-        label="Recipient"
-        recipientConfig={sendConfigs.recipientConfig}
-        memoConfig={sendConfigs.memoConfig}
-      />
-      <CurrencySelector
-        label="Token"
-        placeHolder="Select Token"
-        amountConfig={sendConfigs.amountConfig}
-      />
-      <AmountInput label="Amount" amountConfig={sendConfigs.amountConfig} />
-      <MemoInput label="Memo (Optional)" memoConfig={sendConfigs.memoConfig} /> */}
-
-      {/* This is a amount component */}
-      <View
-        style={
-          style.flatten([
-            "flex-row",
-            "padding-y-12",
-            "items-center",
-          ]) as ViewStyle
-        }
-      >
-        <View style={style.flatten(["flex-3"]) as ViewStyle}>
-          <Text style={style.flatten(["h6", "color-white"]) as ViewStyle}>
-            {"Amount"}
-          </Text>
-          <View style={style.flatten(["flex-row", "items-end"])}>
-            <Text
-              style={
-                style.flatten(["h1", "color-white", "font-medium"]) as ViewStyle
-              }
-            >
-              {"13,424.21"}
-            </Text>
-            <Text
-              style={
-                style.flatten([
-                  "h5",
-                  "color-white",
-                  "font-medium",
-                  "padding-bottom-10",
-                ]) as ViewStyle
-              }
-            >
-              {"FET"}
-            </Text>
-          </View>
-          <Text
-            style={
-              style.flatten(["text-caption1", "color-gray-100"]) as ViewStyle
-            }
-          >
-            {"$0.00 USD"}
-          </Text>
-        </View>
-        <View style={style.flatten(["items-end"]) as ViewStyle}>
-          <View style={style.flatten(["flex-row"])}>
-            <IconView
-              img={<ReloadIcon size={21} />}
-              backgroundBlur={true}
-              iconStyle={
-                style.flatten([
-                  "padding-8",
-                  "margin-left-18",
-                  "margin-right-12",
-                ]) as ViewStyle
-              }
-            />
-            <BlurButton
-              text="Max"
-              borderRadius={32}
-              backgroundBlur={true}
-              containerStyle={
-                style.flatten(["justify-center", "padding-x-10"]) as ViewStyle
-              }
-              textStyle={style.flatten(["text-button2"]) as ViewStyle}
-            />
-          </View>
-        </View>
-      </View>
+      <AmountInputSection amountConfig={sendConfigs.amountConfig} />
 
       {/* This is a send component */}
 
@@ -219,60 +129,16 @@ export const SendScreen: FunctionComponent = observer(() => {
             trailingIcon={<ChevronDownIcon />}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() =>
-            Toast.show({
-              type: "error",
-              text1: "Fetch.AI is working",
-            })
+        <AddressInputCard
+          backgroundContainerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
           }
-        >
-          <SimpleCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Wallet"
-            heading="fetch1pneh5rcwhtfk3zttq3ntuwzejaucmzzdpeqe8z"
-            trailingIconComponent={
-              <View style={style.flatten(["flex-row"])}>
-                <IconView
-                  img={<QRCodeIcon />}
-                  backgroundBlur={true}
-                  iconStyle={
-                    style.flatten([
-                      "padding-11",
-                      "margin-left-18",
-                      "margin-right-12",
-                    ]) as ViewStyle
-                  }
-                />
-                <IconView
-                  img={<ATIcon />}
-                  backgroundBlur={true}
-                  iconStyle={style.flatten(["padding-11"]) as ViewStyle}
-                />
-              </View>
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() =>
-            Toast.show({
-              type: "error",
-              text1: "Fetch.AI is working",
-            })
-          }
-        >
-          <SimpleCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Memo"
-            subHeading="Optional"
-          />
-        </TouchableOpacity>
+          label="Recipient"
+          placeholderText="Wallet address"
+          recipientConfig={sendConfigs.recipientConfig}
+          memoConfig={sendConfigs.memoConfig}
+        />
+        <InputCardView label="Memo" placeholderText="Optional" />
       </View>
       <FeeButtons
         label="Fee"

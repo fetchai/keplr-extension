@@ -11,7 +11,7 @@ export const BlurBackground: FunctionComponent<{
 }> = ({
   borderRadius = 32,
   blurIntensity = 30,
-  backgroundBlur,
+  backgroundBlur = true,
   blurType = "extraLight",
   containerStyle,
   children,
@@ -20,7 +20,7 @@ export const BlurBackground: FunctionComponent<{
     <BlurView
       intensity={backgroundBlur ? blurIntensity : 0}
       tint={blurType}
-      // blurReductionFactor={4}
+      // blurReductionFactor={1}
       // experimentalBlurMethod="dimezisBlurView"
       style={[
         {

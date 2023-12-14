@@ -6,13 +6,13 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../styles";
-import { BlurButton } from "./button/blur-button";
-import { CardView } from "./card-view/card-view";
-import { FetchAiIcon } from "../icon/new/fetchai-icon";
+import { useStyle } from "../../../styles";
+import { BlurButton } from "../../../components/new/button/blur-button";
+import { CardView } from "../../../components/new/card-view/card-view";
+import { FetchAiIcon } from "../../../components/icon/new/fetchai-icon";
 import Toast from "react-native-toast-message";
 
-export const AssertsSection: FunctionComponent<{
+export const AssetsSection: FunctionComponent<{
   containtStyle?: ViewStyle;
 }> = ({ containtStyle }) => {
   const style = useStyle();
@@ -23,12 +23,6 @@ export const AssertsSection: FunctionComponent<{
     { id: "2", title: "NTFs" },
     { id: "3", title: ".FET Domains" },
   ];
-
-  // enum assertsTitle {
-  //   Tokens = "Tokens",
-  //   NTFs = "NTFs",
-  //   FETDomains = ".FET Domains",
-  // }
 
   const renderItem = ({ item }: any) => {
     const selected = selectId === item.id ? true : false;
@@ -45,7 +39,7 @@ export const AssertsSection: FunctionComponent<{
   return (
     <View style={[style.flatten(["margin-x-16"]) as ViewStyle, containtStyle]}>
       <Text style={style.flatten(["h2", "color-white"]) as ViewStyle}>
-        {"Your asserts"}
+        {"Your assets"}
       </Text>
       <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
         <FlatList

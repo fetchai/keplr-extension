@@ -1,23 +1,24 @@
 import React, { FunctionComponent } from "react";
-import { useStyle } from "../../styles";
-import { ArrowDownIcon } from "../icon/new/arrow-down";
-import { ArrowUpIcon } from "../icon/new/arrow-up";
-import { SwapIcon } from "../icon/new/swap-icon";
-import { StakeIcon } from "../icon/new/stake-icon";
-import { BridgeIcon } from "../icon/new/bridge-icon";
-import { HeaderAddIcon } from "../header/icon";
+import { useStyle } from "../../../styles";
+import { ArrowDownIcon } from "../../../components/icon/new/arrow-down";
+import { ArrowUpIcon } from "../../../components/icon/new/arrow-up";
+import { SwapIcon } from "../../../components/icon/new/swap-icon";
+import { StakeIcon } from "../../../components/icon/new/stake-icon";
+import { BridgeIcon } from "../../../components/icon/new/bridge-icon";
+import { HeaderAddIcon } from "../../../components/header/icon";
 import { FlatList, TouchableOpacity, View, ViewStyle } from "react-native";
-import { IconButtonWithText } from "./button/icon-button-with-text";
-import { useStore } from "../../stores";
-import { useSmartNavigation } from "../../navigation";
+import { IconButtonWithText } from "../../../components/new/button/icon-button-with-text";
+import { useStore } from "../../../stores";
+import { useSmartNavigation } from "../../../navigation";
 import Toast from "react-native-toast-message";
 
-export const TransectionActionCard: FunctionComponent<{
+export const TransectionSection: FunctionComponent<{
   containtStyle?: ViewStyle;
 }> = ({ containtStyle }) => {
   const style = useStyle();
   const { chainStore } = useStore();
   const smartNavigation = useSmartNavigation();
+  const chainId = chainStore.current.chainId;
 
   const sectionCardlist = [
     { title: "Receive", icon: <ArrowDownIcon /> },
@@ -35,9 +36,8 @@ export const TransectionActionCard: FunctionComponent<{
         onPress={() => {
           switch (item.title) {
             case "Receive":
-              return Toast.show({
-                type: "error",
-                text1: `Recive is working`,
+              return smartNavigation.navigateSmart("Receive", {
+                chainId,
               });
 
             case "Send":

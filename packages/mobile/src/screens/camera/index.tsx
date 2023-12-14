@@ -21,11 +21,25 @@ import {
 } from "../../utils/import-from-extension";
 import { AddressBookConfigMap, useRegisterConfig } from "@keplr-wallet/hooks";
 import { AsyncKVStore } from "../../common";
-import { useFocusEffect } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { CameraType } from "expo-camera/src/Camera.types";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
 export const CameraScreen: FunctionComponent = observer(() => {
+  const route = useRoute<
+    RouteProp<
+      Record<
+        string,
+        {
+          showMyQRButton?: boolean;
+        }
+      >,
+      string
+    >
+  >();
+
+  const showQRButton = route.params.showMyQRButton ? true : false;
+
   const { chainStore, walletConnectStore, keyRingStore } = useStore();
 
   const style = useStyle();
@@ -149,22 +163,24 @@ export const CameraScreen: FunctionComponent = observer(() => {
           }
         }}
         containerBottom={
-          <Button
-            text="Show my QR code"
-            mode="light"
-            size="large"
-            containerStyle={
-              style.flatten([
-                "margin-top-64",
-                "border-radius-64",
-                "opacity-90",
-              ]) as ViewStyle
-            }
-            style={style.flatten(["padding-x-52"]) as ViewStyle}
-            onPress={() => {
-              setIsSelectChainModalOpen(true);
-            }}
-          />
+          showQRButton ? (
+            <Button
+              text="Show my QR code"
+              mode="light"
+              size="large"
+              containerStyle={
+                style.flatten([
+                  "margin-top-64",
+                  "border-radius-64",
+                  "opacity-90",
+                ]) as ViewStyle
+              }
+              style={style.flatten(["padding-x-52"]) as ViewStyle}
+              onPress={() => {
+                setIsSelectChainModalOpen(true);
+              }}
+            />
+          ) : undefined
         }
       />
       <ChainSelectorModal

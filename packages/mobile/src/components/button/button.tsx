@@ -13,11 +13,12 @@ import Svg, {
 export const Button: FunctionComponent<{
   color?: "primary" | "danger" | "gradient";
   mode?: "fill" | "light" | "outline" | "text";
-    size?: "default" | "small" | "large" | "xlarge";
+  size?: "default" | "small" | "large" | "xlarge";
   text: string;
   leftIcon?: ReactElement | ((color: string) => ReactElement);
   rightIcon?: ReactElement | ((color: string) => ReactElement);
   loading?: boolean;
+  loadingSpinnerColor?: string;
   disabled?: boolean;
 
   onPress?: () => void;
@@ -37,6 +38,7 @@ export const Button: FunctionComponent<{
   rightIcon,
   loading = false,
   disabled = false,
+  loadingSpinnerColor,
   onPress,
   containerStyle,
   style: buttonStyle,
@@ -88,7 +90,7 @@ export const Button: FunctionComponent<{
           ];
         }
       case "outline":
-          return ["background-color-transparent", "border-color-gray-200"];
+        return ["background-color-transparent", "border-color-gray-200"];
       default:
         return ["background-color-transparent"];
     }
@@ -96,8 +98,8 @@ export const Button: FunctionComponent<{
 
   const textDefinition = (() => {
     switch (size) {
-        case "xlarge":
-            return "text-button0"
+      case "xlarge":
+        return "text-button0";
       case "large":
         return "text-button1";
       case "small":
@@ -386,7 +388,10 @@ export const Button: FunctionComponent<{
             <LoadingSpinner
               color={
                 // TODO: Color for loading spinner in button is not yet determined.
-                style.flatten([...(textColorDefinition as any)]).color
+                style.flatten(
+                  [...(textColorDefinition as any)],
+                  [loadingSpinnerColor]
+                ).color
               }
               size={20}
             />

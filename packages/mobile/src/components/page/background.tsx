@@ -14,7 +14,7 @@ export type BackgroundMode =
 export const ScreenBackground: FunctionComponent<{
   backgroundMode: BackgroundMode;
   backgroundBlur?: boolean;
-}> = ({ backgroundMode }) => {
+}> = ({ backgroundMode, backgroundBlur }) => {
   const style = useStyle();
 
   return backgroundMode ? (
@@ -46,7 +46,7 @@ export const ScreenBackground: FunctionComponent<{
           ])}
         >
           <BlurBackground
-            backgroundBlur={true}
+            backgroundBlur={backgroundBlur}
             borderRadius={0}
             blurType="dark"
             blurIntensity={10}

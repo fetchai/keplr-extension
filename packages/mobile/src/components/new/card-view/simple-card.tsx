@@ -4,26 +4,24 @@ import { useStyle } from "../../../styles";
 import { BlurBackground } from "../blur-background/blur-background";
 
 export const SimpleCardView: FunctionComponent<{
-  //   trailingIconComponent?: any;
   trailingIconComponent?: ReactElement | (() => ReactElement);
   mainHeading?: string;
   heading?: string;
   subHeading?: string;
-  containerStyle?: ViewStyle;
+  cardStyle?: ViewStyle;
 }> = ({
   trailingIconComponent,
   mainHeading,
   heading,
   subHeading,
-  containerStyle,
+  cardStyle,
 }) => {
   const style = useStyle();
 
   return (
     <BlurBackground
       borderRadius={12}
-      backgroundBlur={true}
-      blurIntensity={14}
+      blurIntensity={16}
       containerStyle={
         [
           style.flatten([
@@ -32,7 +30,7 @@ export const SimpleCardView: FunctionComponent<{
             "padding-y-12",
             "items-center",
           ]),
-          containerStyle,
+          cardStyle,
         ] as ViewStyle
       }
     >
@@ -57,7 +55,7 @@ export const SimpleCardView: FunctionComponent<{
                 "h6",
                 "padding-4",
                 "color-white",
-                "font-medium",
+                "font-normal",
               ]) as ViewStyle
             }
           >
@@ -79,7 +77,7 @@ export const SimpleCardView: FunctionComponent<{
         ) : null}
       </View>
       {trailingIconComponent ? (
-        <View style={style.flatten(["items-end"]) as ViewStyle}>
+        <View style={[style.flatten(["flex-1", "items-end"])] as ViewStyle}>
           {trailingIconComponent}
         </View>
       ) : null}
