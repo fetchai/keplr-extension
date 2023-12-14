@@ -21,16 +21,59 @@ import {
 } from "@keplr-wallet/types";
 import { Result, JSONUint8Array } from "@keplr-wallet/router";
 import { KeplrEnigmaUtils } from "./enigma";
-import { CosmJSOfflineSigner, CosmJSOfflineSignerOnlyAmino } from "./cosmjs";
+import {
+  CosmJSFetchOfflineSigner,
+  CosmJSFetchOfflineSignerOnlyAmino,
+  CosmJSFetchOfflineSignerOnlyDirect,
+  CosmJSOfflineSigner,
+  CosmJSOfflineSignerOnlyAmino,
+} from "./cosmjs";
 import deepmerge from "deepmerge";
 import Long from "long";
 import { KeplrCoreTypes } from "./core-types";
-import { FetchBrowserWallet } from "@fetchai/wallet-types";
+import {
+  Account,
+  AccountsApi,
+  FetchBrowserWallet,
+  NetworksApi,
+  SigningApi,
+  WalletApi,
+  WalletStatus,
+} from "@fetchai/wallet-types";
+import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
 
 export interface ProxyRequest {
   type: "fetchai:proxy-request-v1";
   id: string;
   method: keyof (Keplr & KeplrCoreTypes);
+  args: any[];
+}
+
+export interface ProxyRequestWallet {
+  type: "fetchai:proxy-request-v1";
+  id: string;
+  method: keyof WalletApi;
+  args: any[];
+}
+
+export interface ProxyRequestAccounts {
+  type: "fetchai:proxy-request-v1";
+  id: string;
+  method: keyof AccountsApi;
+  args: any[];
+}
+
+export interface ProxyRequestWalletNetworks {
+  type: "fetchai:proxy-request-v1";
+  id: string;
+  method: keyof NetworksApi;
+  args: any[];
+}
+
+export interface ProxyRequestWalletSigning {
+  type: "fetchai:proxy-request-v1";
+  id: string;
+  method: keyof SigningApi;
   args: any[];
 }
 
@@ -139,7 +182,7 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
           !keplr[message.method] ||
           typeof keplr[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${message.method}`);
+          throw new Error(`Invalid method: ${String(message.method)}`);
         }
 
         if (message.method === "getOfflineSigner") {
@@ -620,5 +663,712 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
     return await this.requestMethod("changeKeyRingName", [
       { defaultName, editable },
     ]);
+  }
+}
+
+export class InjectedFetchWalletApi implements WalletApi {
+  static startProxy(
+    wallet: WalletApi,
+    eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    parseMessage?: (message: any) => any
+  ) {
+    eventListener.addMessageListener(async (e: any) => {
+      const message: ProxyRequestWallet = parseMessage
+        ? parseMessage(e.data)
+        : e.data;
+      if (!message || message.type !== "fetchai:proxy-request-v1") {
+        return;
+      }
+
+      try {
+        if (!message.id) {
+          throw new Error("Empty id");
+        }
+
+        if (message.method === "networks") {
+          throw new Error("networks is not function");
+        }
+
+        if (message.method === "accounts") {
+          throw new Error("accounts is not function");
+        }
+
+        if (
+          !wallet[message.method] ||
+          typeof wallet[message.method] !== "function"
+        ) {
+          throw new Error(`Invalid method: ${String(message.method)}`);
+        }
+
+        const result = await wallet[message.method](
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ...JSONUint8Array.unwrap(message.args)
+        );
+
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            return: JSONUint8Array.wrap(result),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      } catch (e: any) {
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            error: e.message || e.toString(),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      }
+    });
+  }
+
+  protected requestMethod(method: keyof WalletApi, args: any[]): Promise<any> {
+    const bytes = new Uint8Array(8);
+    const id: string = Array.from(crypto.getRandomValues(bytes))
+      .map((value) => {
+        return value.toString(16);
+      })
+      .join("");
+
+    const proxyMessage: ProxyRequestWallet = {
+      type: "fetchai:proxy-request-v1",
+      id,
+      method,
+      args: JSONUint8Array.wrap(args),
+    };
+
+    return new Promise((resolve, reject) => {
+      const receiveResponse = (e: any) => {
+        const proxyResponse: ProxyRequestResponse = this.parseMessage
+          ? this.parseMessage(e.data)
+          : e.data;
+
+        if (
+          !proxyResponse ||
+          proxyResponse.type !== "fetchai:proxy-request-response-v1"
+        ) {
+          return;
+        }
+
+        if (proxyResponse.id !== id) {
+          return;
+        }
+
+        this.eventListener.removeMessageListener(receiveResponse);
+
+        const result = JSONUint8Array.unwrap(proxyResponse.result);
+
+        if (!result) {
+          reject(new Error("Result is null"));
+          return;
+        }
+
+        if (result.error) {
+          reject(new Error(result.error));
+          return;
+        }
+
+        resolve(result.return);
+      };
+
+      this.eventListener.addMessageListener(receiveResponse);
+
+      this.eventListener.postMessage(proxyMessage);
+    });
+  }
+
+  constructor(
+    public networks: NetworksApi,
+    public accounts: AccountsApi,
+    public signing: SigningApi,
+    protected readonly eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      removeMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      removeMessageListener: (fn: (e: any) => void) =>
+        window.removeEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    protected readonly parseMessage?: (message: any) => any
+  ) {}
+
+  async status(): Promise<WalletStatus> {
+    return await this.requestMethod("status", []);
+  }
+
+  async unlockWallet(): Promise<void> {
+    await this.requestMethod("unlockWallet", []);
+  }
+
+  async lockWallet(): Promise<void> {
+    await this.requestMethod("lockWallet", []);
+  }
+}
+
+export class InjectedFetchAccount implements AccountsApi {
+  static startProxy(
+    accountsApi: AccountsApi,
+    eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    parseMessage?: (message: any) => any
+  ) {
+    eventListener.addMessageListener(async (e: any) => {
+      const message: ProxyRequestAccounts = parseMessage
+        ? parseMessage(e.data)
+        : e.data;
+      if (!message || message.type !== "fetchai:proxy-request-v1") {
+        return;
+      }
+
+      try {
+        if (!message.id) {
+          throw new Error("Empty id");
+        }
+
+        if (
+          !accountsApi[message.method] ||
+          typeof accountsApi[message.method] !== "function"
+        ) {
+          throw new Error(`Invalid method: ${String(message.method)}`);
+        }
+
+        const result = await accountsApi[message.method](
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ...JSONUint8Array.unwrap(message.args)
+        );
+
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            return: JSONUint8Array.wrap(result),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      } catch (e: any) {
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            error: e.message || e.toString(),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      }
+    });
+  }
+
+  protected requestMethod(
+    method: keyof AccountsApi,
+    args: any[]
+  ): Promise<any> {
+    const bytes = new Uint8Array(8);
+    const id: string = Array.from(crypto.getRandomValues(bytes))
+      .map((value) => {
+        return value.toString(16);
+      })
+      .join("");
+
+    const proxyMessage: ProxyRequestAccounts = {
+      type: "fetchai:proxy-request-v1",
+      id,
+      method,
+      args: JSONUint8Array.wrap(args),
+    };
+
+    return new Promise((resolve, reject) => {
+      const receiveResponse = (e: any) => {
+        const proxyResponse: ProxyRequestResponse = this.parseMessage
+          ? this.parseMessage(e.data)
+          : e.data;
+
+        if (
+          !proxyResponse ||
+          proxyResponse.type !== "fetchai:proxy-request-response-v1"
+        ) {
+          return;
+        }
+
+        if (proxyResponse.id !== id) {
+          return;
+        }
+
+        this.eventListener.removeMessageListener(receiveResponse);
+
+        const result = JSONUint8Array.unwrap(proxyResponse.result);
+
+        if (!result) {
+          reject(new Error("Result is null"));
+          return;
+        }
+
+        if (result.error) {
+          reject(new Error(result.error));
+          return;
+        }
+
+        resolve(result.return);
+      };
+
+      this.eventListener.addMessageListener(receiveResponse);
+
+      this.eventListener.postMessage(proxyMessage);
+    });
+  }
+
+  constructor(
+    protected readonly eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      removeMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      removeMessageListener: (fn: (e: any) => void) =>
+        window.removeEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    protected readonly parseMessage?: (message: any) => any
+  ) {}
+
+  /* This method will work when connection is established
+   * with wallet therefore wallet will always give status "unlocked"
+   */
+  async currentAccount(): Promise<Account> {
+    return await this.requestMethod("currentAccount", []);
+  }
+
+  async switchAccount(address: string): Promise<void> {
+    await this.requestMethod("switchAccount", [address]);
+  }
+
+  async listAccounts(): Promise<Account[]> {
+    return await this.requestMethod("listAccounts", []);
+  }
+
+  async getAccount(): Promise<Account> {
+    return await this.requestMethod("getAccount", []);
+  }
+}
+
+export class InjectedFetchNetworks implements NetworksApi {
+  static startProxy(
+    networksApi: NetworksApi,
+    eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    parseMessage?: (message: any) => any
+  ) {
+    eventListener.addMessageListener(async (e: any) => {
+      const message: ProxyRequestWalletNetworks = parseMessage
+        ? parseMessage(e.data)
+        : e.data;
+      if (!message || message.type !== "fetchai:proxy-request-v1") {
+        return;
+      }
+
+      try {
+        if (!message.id) {
+          throw new Error("Empty id");
+        }
+
+        if (
+          !networksApi[message.method] ||
+          typeof networksApi[message.method] !== "function"
+        ) {
+          throw new Error(`Invalid method: ${String(message.method)}`);
+        }
+
+        const result = await networksApi[message.method](
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ...JSONUint8Array.unwrap(message.args)
+        );
+
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            return: JSONUint8Array.wrap(result),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      } catch (e: any) {
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            error: e.message || e.toString(),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      }
+    });
+  }
+
+  protected requestMethod(
+    method: keyof NetworksApi,
+    args: any[]
+  ): Promise<any> {
+    const bytes = new Uint8Array(8);
+    const id: string = Array.from(crypto.getRandomValues(bytes))
+      .map((value) => {
+        return value.toString(16);
+      })
+      .join("");
+
+    const proxyMessage: ProxyRequestWalletNetworks = {
+      type: "fetchai:proxy-request-v1",
+      id,
+      method,
+      args: JSONUint8Array.wrap(args),
+    };
+
+    return new Promise((resolve, reject) => {
+      const receiveResponse = (e: any) => {
+        const proxyResponse: ProxyRequestResponse = this.parseMessage
+          ? this.parseMessage(e.data)
+          : e.data;
+
+        if (
+          !proxyResponse ||
+          proxyResponse.type !== "fetchai:proxy-request-response-v1"
+        ) {
+          return;
+        }
+
+        if (proxyResponse.id !== id) {
+          return;
+        }
+
+        this.eventListener.removeMessageListener(receiveResponse);
+
+        const result = JSONUint8Array.unwrap(proxyResponse.result);
+
+        if (!result) {
+          reject(new Error("Result is null"));
+          return;
+        }
+
+        if (result.error) {
+          reject(new Error(result.error));
+          return;
+        }
+
+        resolve(result.return);
+      };
+
+      this.eventListener.addMessageListener(receiveResponse);
+
+      this.eventListener.postMessage(proxyMessage);
+    });
+  }
+
+  constructor(
+    protected readonly eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      removeMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      removeMessageListener: (fn: (e: any) => void) =>
+        window.removeEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    protected readonly parseMessage?: (message: any) => any
+  ) {}
+
+  async currentNetwork(): Promise<NetworkConfig> {
+    return await this.requestMethod("currentNetwork", []);
+  }
+
+  async switchToNetwork(network: NetworkConfig): Promise<void> {
+    console.log("switchToNetwork ", network);
+  }
+
+  async switchToNetworkByChainId(chainId: string): Promise<void> {
+    console.log("switchToNetworkByChainId ", chainId);
+  }
+
+  async listNetworks(): Promise<NetworkConfig[]> {
+    return await this.requestMethod("listNetworks", []);
+  }
+}
+
+export class InjectedFetchSigning implements SigningApi {
+  static startProxy(
+    signingApi: SigningApi,
+    eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    parseMessage?: (message: any) => any
+  ) {
+    eventListener.addMessageListener(async (e: any) => {
+      const message: ProxyRequestWalletSigning = parseMessage
+        ? parseMessage(e.data)
+        : e.data;
+      if (!message || message.type !== "fetchai:proxy-request-v1") {
+        return;
+      }
+
+      try {
+        if (!message.id) {
+          throw new Error("Empty id");
+        }
+
+        if (
+          !signingApi[message.method] ||
+          typeof signingApi[message.method] !== "function"
+        ) {
+          throw new Error(`Invalid method: ${String(message.method)}`);
+        }
+
+        const result = await signingApi[message.method](
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ...JSONUint8Array.unwrap(message.args)
+        );
+
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            return: JSONUint8Array.wrap(result),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      } catch (e: any) {
+        const proxyResponse: ProxyRequestResponse = {
+          type: "fetchai:proxy-request-response-v1",
+          id: message.id,
+          result: {
+            error: e.message || e.toString(),
+          },
+        };
+
+        eventListener.postMessage(proxyResponse);
+      }
+    });
+  }
+
+  protected requestMethod(method: keyof SigningApi, args: any[]): Promise<any> {
+    const bytes = new Uint8Array(8);
+    const id: string = Array.from(crypto.getRandomValues(bytes))
+      .map((value) => {
+        return value.toString(16);
+      })
+      .join("");
+
+    const proxyMessage: ProxyRequestWalletSigning = {
+      type: "fetchai:proxy-request-v1",
+      id,
+      method,
+      args: JSONUint8Array.wrap(args),
+    };
+
+    return new Promise((resolve, reject) => {
+      const receiveResponse = (e: any) => {
+        const proxyResponse: ProxyRequestResponse = this.parseMessage
+          ? this.parseMessage(e.data)
+          : e.data;
+
+        if (
+          !proxyResponse ||
+          proxyResponse.type !== "fetchai:proxy-request-response-v1"
+        ) {
+          return;
+        }
+
+        if (proxyResponse.id !== id) {
+          return;
+        }
+
+        this.eventListener.removeMessageListener(receiveResponse);
+
+        const result = JSONUint8Array.unwrap(proxyResponse.result);
+
+        if (!result) {
+          reject(new Error("Result is null"));
+          return;
+        }
+
+        if (result.error) {
+          reject(new Error(result.error));
+          return;
+        }
+
+        resolve(result.return);
+      };
+
+      this.eventListener.addMessageListener(receiveResponse);
+
+      this.eventListener.postMessage(proxyMessage);
+    });
+  }
+
+  public defaultOptions: KeplrIntereactionOptions = {};
+
+  constructor(
+    protected readonly eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      removeMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      removeMessageListener: (fn: (e: any) => void) =>
+        window.removeEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    protected readonly parseMessage?: (message: any) => any
+  ) {}
+
+  async getKey(chainId: string): Promise<Key> {
+    return await this.requestMethod("getKey", [chainId]);
+  }
+
+  async signAmino(
+    chainId: string,
+    signer: string,
+    signDoc: StdSignDoc,
+    signOptions: KeplrSignOptions = {}
+  ): Promise<AminoSignResponse> {
+    return await this.requestMethod("signAmino", [
+      chainId,
+      signer,
+      signDoc,
+      deepmerge(this.defaultOptions.sign ?? {}, signOptions),
+    ]);
+  }
+
+  async signDirect(
+    chainId: string,
+    signer: string,
+    signDoc: {
+      bodyBytes?: Uint8Array | null;
+      authInfoBytes?: Uint8Array | null;
+      chainId?: string | null;
+      accountNumber?: Long | null;
+    },
+    signOptions: KeplrSignOptions = {}
+  ): Promise<DirectSignResponse> {
+    const result = await this.requestMethod("signDirect", [
+      chainId,
+      signer,
+      // We can't send the `Long` with remaing the type.
+      // Receiver should change the `string` to `Long`.
+      {
+        bodyBytes: signDoc.bodyBytes,
+        authInfoBytes: signDoc.authInfoBytes,
+        chainId: signDoc.chainId,
+        accountNumber: signDoc.accountNumber
+          ? signDoc.accountNumber.toString()
+          : null,
+      },
+      deepmerge(this.defaultOptions.sign ?? {}, signOptions),
+    ]);
+
+    const signed: {
+      bodyBytes: Uint8Array;
+      authInfoBytes: Uint8Array;
+      chainId: string;
+      accountNumber: string;
+    } = result.signed;
+
+    return {
+      signed: {
+        bodyBytes: signed.bodyBytes,
+        authInfoBytes: signed.authInfoBytes,
+        chainId: signed.chainId,
+        // We can't send the `Long` with remaing the type.
+        // Sender should change the `Long` to `string`.
+        accountNumber: Long.fromString(signed.accountNumber),
+      },
+      signature: result.signature,
+    };
+  }
+
+  async signArbitrary(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array
+  ): Promise<StdSignature> {
+    return await this.requestMethod("signArbitrary", [chainId, signer, data]);
+  }
+
+  async verifyArbitrary(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array,
+    signature: StdSignature
+  ): Promise<boolean> {
+    return await this.requestMethod("verifyArbitrary", [
+      chainId,
+      signer,
+      data,
+      signature,
+    ]);
+  }
+
+  async getOfflineSigner(
+    chainId: string
+  ): Promise<OfflineDirectSigner | OfflineAminoSigner> {
+    return new CosmJSFetchOfflineSigner(chainId, this);
+  }
+
+  async getOfflineDirectSigner(chainId: string): Promise<OfflineDirectSigner> {
+    return new CosmJSFetchOfflineSignerOnlyDirect(chainId, this);
+  }
+
+  async getOfflineAminoSigner(chainId: string): Promise<OfflineAminoSigner> {
+    return new CosmJSFetchOfflineSignerOnlyAmino(chainId, this);
   }
 }

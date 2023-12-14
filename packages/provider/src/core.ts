@@ -39,15 +39,42 @@ import {
   GetChainInfosWithoutEndpointsMsg,
   DisableAccessMsg,
   ChangeKeyRingNameMsg,
+  StatusMsg,
+  UnlockWalletMsg,
+  LockWalletMsg,
+  CurrentAccountMsg,
+  SwitchAccountMsg,
+  ListAccountsMsg,
+  GetAccountMsg,
+  CurrentNetworkMsg,
+  SwitchToNetworkMsg,
+  SwitchToNetworkByChainIdMsg,
+  ListNetworksMsg,
 } from "./types";
 
 import { KeplrEnigmaUtils } from "./enigma";
 
-import { CosmJSOfflineSigner, CosmJSOfflineSignerOnlyAmino } from "./cosmjs";
+import {
+  CosmJSFetchOfflineSigner,
+  CosmJSFetchOfflineSignerOnlyAmino,
+  CosmJSFetchOfflineSignerOnlyDirect,
+  CosmJSOfflineSigner,
+  CosmJSOfflineSignerOnlyAmino,
+} from "./cosmjs";
 import deepmerge from "deepmerge";
 import Long from "long";
 import { Buffer } from "buffer/";
 import { KeplrCoreTypes } from "./core-types";
+import {
+  Account,
+  AccountsApi,
+  NetworksApi,
+  SigningApi,
+  WalletApi,
+  WalletStatus,
+} from "@fetchai/wallet-types";
+// import { JSONUint8Array } from "@keplr-wallet/router";
+import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
 
 export class Keplr implements IKeplr, KeplrCoreTypes {
   protected enigmaUtils: Map<string, SecretUtils> = new Map();
@@ -423,5 +450,249 @@ export class Keplr implements IKeplr, KeplrCoreTypes {
     const msg = new ChangeKeyRingNameMsg(defaultName, editable);
 
     return await this.requester.sendMessage(BACKGROUND_PORT, msg);
+  }
+}
+
+export class FetchWalletApi implements WalletApi {
+  constructor(
+    public networks: NetworksApi,
+    public accounts: AccountsApi,
+    public signing: SigningApi,
+    protected readonly requester: MessageRequester,
+    protected readonly eventListener: {
+      addMessageListener: (fn: (e: any) => void) => void;
+      removeMessageListener: (fn: (e: any) => void) => void;
+      postMessage: (message: any) => void;
+    } = {
+      addMessageListener: (fn: (e: any) => void) =>
+        window.addEventListener("message", fn),
+      removeMessageListener: (fn: (e: any) => void) =>
+        window.removeEventListener("message", fn),
+      postMessage: (message) =>
+        window.postMessage(message, window.location.origin),
+    },
+    protected readonly parseMessage?: (message: any) => any
+  ) {}
+
+  async status(): Promise<WalletStatus> {
+    return await this.requester.sendMessage(BACKGROUND_PORT, new StatusMsg());
+  }
+
+  async unlockWallet(): Promise<void> {
+    await this.requester.sendMessage(BACKGROUND_PORT, new UnlockWalletMsg());
+  }
+
+  async lockWallet(): Promise<void> {
+    await this.requester.sendMessage(BACKGROUND_PORT, new LockWalletMsg());
+  }
+}
+
+export class FetchAccount implements AccountsApi {
+  constructor(protected readonly requester: MessageRequester) {}
+
+  /* This method will work when connection is established
+   * with wallet therefore wallet will always give status "unlocked"
+   */
+  async currentAccount(): Promise<Account> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new CurrentAccountMsg()
+    );
+  }
+
+  async switchAccount(address: string): Promise<void> {
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new SwitchAccountMsg(address)
+    );
+  }
+
+  async listAccounts(): Promise<Account[]> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new ListAccountsMsg()
+    );
+  }
+
+  async getAccount(): Promise<Account> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new GetAccountMsg()
+    );
+  }
+}
+
+export class FetchNetworks implements NetworksApi {
+  constructor(protected readonly requester: MessageRequester) {}
+
+  async currentNetwork(): Promise<NetworkConfig> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new CurrentNetworkMsg()
+    );
+  }
+
+  async switchToNetwork(network: NetworkConfig): Promise<void> {
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new SwitchToNetworkMsg(network) //suggestChainInfoMsg
+    );
+  }
+
+  async switchToNetworkByChainId(chainId: string): Promise<void> {
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new SwitchToNetworkByChainIdMsg(chainId)
+    );
+  }
+
+  async listNetworks(): Promise<NetworkConfig[]> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new ListNetworksMsg()
+    );
+  }
+}
+
+export class FetchSigning implements SigningApi {
+  public defaultOptions: KeplrIntereactionOptions = {};
+
+  constructor(protected readonly requester: MessageRequester) {}
+
+  async getKey(chainId: string): Promise<Key> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new GetKeyMsg(chainId)
+    );
+  }
+
+  async signAmino(
+    chainId: string,
+    signer: string,
+    signDoc: StdSignDoc,
+    signOptions: KeplrSignOptions = {}
+  ): Promise<AminoSignResponse> {
+    const msg = new RequestSignAminoMsg(
+      chainId,
+      signer,
+      signDoc,
+      deepmerge(this.defaultOptions.sign ?? {}, signOptions)
+    );
+    return await this.requester.sendMessage(BACKGROUND_PORT, msg);
+  }
+
+  async signDirect(
+    chainId: string,
+    signer: string,
+    signDoc: {
+      bodyBytes?: Uint8Array | null;
+      authInfoBytes?: Uint8Array | null;
+      chainId?: string | null;
+      accountNumber?: Long | null;
+    },
+    signOptions: KeplrSignOptions = {}
+  ): Promise<DirectSignResponse> {
+    const msg = new RequestSignDirectMsg(
+      chainId,
+      signer,
+      {
+        bodyBytes: signDoc.bodyBytes,
+        authInfoBytes: signDoc.authInfoBytes,
+        chainId: signDoc.chainId,
+        accountNumber: signDoc.accountNumber
+          ? signDoc.accountNumber.toString()
+          : null,
+      },
+      deepmerge(this.defaultOptions.sign ?? {}, signOptions)
+    );
+    const response = await this.requester.sendMessage(BACKGROUND_PORT, msg);
+
+    return {
+      signed: {
+        bodyBytes: response.signed.bodyBytes,
+        authInfoBytes: response.signed.authInfoBytes,
+        chainId: response.signed.chainId,
+        accountNumber: Long.fromString(response.signed.accountNumber),
+      },
+      signature: response.signature,
+    };
+  }
+
+  async signArbitrary(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array
+  ): Promise<StdSignature> {
+    let isADR36WithString: boolean;
+    [data, isADR36WithString] = this.getDataForADR36(data);
+    const signDoc = this.getADR36SignDoc(signer, data);
+
+    const msg = new RequestSignAminoMsg(chainId, signer, signDoc, {
+      isADR36WithString,
+    });
+    return (await this.requester.sendMessage(BACKGROUND_PORT, msg)).signature;
+  }
+
+  async verifyArbitrary(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array,
+    signature: StdSignature
+  ): Promise<boolean> {
+    if (typeof data === "string") {
+      data = Buffer.from(data);
+    }
+
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new RequestVerifyADR36AminoSignDoc(chainId, signer, data, signature)
+    );
+  }
+
+  async getOfflineSigner(
+    chainId: string
+  ): Promise<OfflineDirectSigner | OfflineAminoSigner> {
+    return new CosmJSFetchOfflineSigner(chainId, this);
+  }
+
+  async getOfflineDirectSigner(chainId: string): Promise<OfflineDirectSigner> {
+    return new CosmJSFetchOfflineSignerOnlyDirect(chainId, this);
+  }
+
+  async getOfflineAminoSigner(chainId: string): Promise<OfflineAminoSigner> {
+    return new CosmJSFetchOfflineSignerOnlyAmino(chainId, this);
+  }
+
+  protected getDataForADR36(data: string | Uint8Array): [string, boolean] {
+    let isADR36WithString = false;
+    if (typeof data === "string") {
+      data = Buffer.from(data).toString("base64");
+      isADR36WithString = true;
+    } else {
+      data = Buffer.from(data).toString("base64");
+    }
+    return [data, isADR36WithString];
+  }
+
+  protected getADR36SignDoc(signer: string, data: string): StdSignDoc {
+    return {
+      chain_id: "",
+      account_number: "0",
+      sequence: "0",
+      fee: {
+        gas: "0",
+        amount: [],
+      },
+      msgs: [
+        {
+          type: "sign/MsgSignData",
+          value: {
+            signer,
+            data,
+          },
+        },
+      ],
+      memo: "",
+    };
   }
 }

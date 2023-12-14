@@ -11,7 +11,7 @@ import {
   UmbralVerifyCapsuleFragMsg,
 } from "@fetchai/umbral-types";
 import { BACKGROUND_PORT, MessageRequester } from "@keplr-wallet/router";
-import { FetchBrowserWallet } from "@fetchai/wallet-types";
+import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
 
 class ExtensionCoreUmbral implements UmbralApi {
@@ -113,10 +113,17 @@ export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
   readonly keplr: Keplr;
   readonly umbral: UmbralApi;
   readonly version: string;
+  readonly wallet: WalletApi;
 
-  constructor(keplr: Keplr, version: string, requester: MessageRequester) {
+  constructor(
+    keplr: Keplr,
+    version: string,
+    requester: MessageRequester,
+    wallet: WalletApi
+  ) {
     this.keplr = keplr;
     this.version = version;
     this.umbral = new ExtensionCoreUmbral(requester);
+    this.wallet = wallet;
   }
 }

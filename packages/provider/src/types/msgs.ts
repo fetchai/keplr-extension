@@ -1,3 +1,5 @@
+import { Account, WalletStatus } from "@fetchai/wallet-types";
+import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
 import { Message } from "@keplr-wallet/router";
 import {
   ChainInfo,
@@ -705,5 +707,253 @@ export class ChangeKeyRingNameMsg extends Message<string> {
 
   type(): string {
     return ChangeKeyRingNameMsg.type();
+  }
+}
+
+export class StatusMsg extends Message<WalletStatus> {
+  public static type() {
+    return "status-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return StatusMsg.type();
+  }
+}
+
+export class UnlockWalletMsg extends Message<string> {
+  public static type() {
+    return "unlock-wallet-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return UnlockWalletMsg.type();
+  }
+}
+
+export class LockWalletMsg extends Message<string> {
+  public static type() {
+    return "lock-wallet-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return LockWalletMsg.type();
+  }
+}
+
+export class CurrentAccountMsg extends Message<Account> {
+  public static type() {
+    return "current-account-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return CurrentAccountMsg.type();
+  }
+}
+
+export class SwitchAccountMsg extends Message<string> {
+  public static type() {
+    return "switch-account-msg";
+  }
+
+  constructor(public readonly address: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.address) {
+      throw new Error("address is empty");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return SwitchAccountMsg.type();
+  }
+}
+
+export class ListAccountsMsg extends Message<Account[]> {
+  public static type() {
+    return "list-account-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return ListAccountsMsg.type();
+  }
+}
+
+export class GetAccountMsg extends Message<Account> {
+  public static type() {
+    return "get-account-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return GetAccountMsg.type();
+  }
+}
+
+export class CurrentNetworkMsg extends Message<NetworkConfig> {
+  public static type() {
+    return "current-network-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return CurrentNetworkMsg.type();
+  }
+}
+
+export class SwitchToNetworkMsg extends Message<string> {
+  public static type() {
+    return "switch-to-network-msg";
+  }
+
+  constructor(public readonly network: NetworkConfig) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.network) {
+      throw new Error("network is empty");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return SwitchToNetworkMsg.type();
+  }
+}
+
+export class SwitchToNetworkByChainIdMsg extends Message<string> {
+  public static type() {
+    return "switch-to-network-by-chain-id-msg";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chainId is empty");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return SwitchToNetworkByChainIdMsg.type();
+  }
+}
+
+export class ListNetworksMsg extends Message<NetworkConfig[]> {
+  public static type() {
+    return "list-network-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return ListNetworksMsg.type();
   }
 }
