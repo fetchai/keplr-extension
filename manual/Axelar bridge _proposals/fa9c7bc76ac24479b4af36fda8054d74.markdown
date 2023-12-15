@@ -131,8 +131,6 @@ solution:**
 
 7.  Click \"Get Deposit Address\" to finish the transaction.
 
-> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image2.png){width="3.21875in"
-> height="5.375in"}
+> ![](/media/image2.png)
 >
-> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image3.png){width="3.0208333333333335in"
-> height="3.75in"}
+> ![](/media/image3.png)
