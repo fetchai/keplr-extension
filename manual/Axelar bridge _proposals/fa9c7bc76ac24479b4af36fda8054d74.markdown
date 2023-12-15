@@ -32,8 +32,7 @@ parameters.
 > 3\. Explore and evaluate active, voted, and closed proposals within
 > this section.
 >
-> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image1.png){width="3.3125in"
-> height="4.260416666666667in"}
+> ![](/media/image1.png)
 
 **[Axelar Bridge]{.underline}**
 
