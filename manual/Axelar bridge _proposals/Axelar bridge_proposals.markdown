@@ -32,7 +32,11 @@ parameters.
 > 3\. Explore and evaluate active, voted, and closed proposals within
 > this section.
 >
+<<<<<<< HEAD:manual/Axelar bridge _proposals/Axelar bridge_proposals.markdown
 > ![](media/image1.png)
+=======
+> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image1.png)
+>>>>>>> 0452828b464978ffebb1171a0438ba8eae025088:manual/Axelar bridge _proposals/fa9c7bc76ac24479b4af36fda8054d74.markdown
 
 **[Axelar Bridge]{.underline}**
 
@@ -131,6 +135,12 @@ solution:**
 
 7.  Click \"Get Deposit Address\" to finish the transaction.
 
+<<<<<<< HEAD:manual/Axelar bridge _proposals/Axelar bridge_proposals.markdown
 > ![](media/image2.png)
 >
 > ![](media/image3.png)
+=======
+> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image2.png)
+>
+> ![](vertopal_fa9c7bc76ac24479b4af36fda8054d74/media/image3.png)
+>>>>>>> 0452828b464978ffebb1171a0438ba8eae025088:manual/Axelar bridge _proposals/fa9c7bc76ac24479b4af36fda8054d74.markdown
