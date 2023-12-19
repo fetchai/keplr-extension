@@ -1,28 +1,67 @@
 import { useEffect, useState, createContext, ReactNode } from 'react';
-import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import type { Keplr } from '@keplr-wallet/types';
+import { HttpEndpoint, StargateClient } from '@cosmjs/stargate';
 
-const web3modalStorageKey = 'WEB3_CONNECT_CACHED_PROVIDER';
+declare global {
+  interface Window {
+    keplr: Keplr | undefined;
+  }
+}
+let keplr: Keplr | undefined;
+export async function getKeplr(): Promise<Keplr> {
+  let gotKeplr: Keplr | undefined;
 
+  if (keplr) {
+    gotKeplr = keplr;
+  } else if (window.keplr) {
+    gotKeplr = window.keplr;
+  } else if (document.readyState === 'complete') {
+    gotKeplr = window.keplr;
+  } else {
+    gotKeplr = await new Promise((resolve) => {
+      const documentStateChange = (event: Event) => {
+        if (
+          event.target &&
+          (event.target as Document).readyState === 'complete'
+        ) {
+          resolve(window.keplr);
+          document.removeEventListener('readystatechange', documentStateChange);
+        }
+      };
+
+      document.addEventListener('readystatechange', documentStateChange);
+    });
+  }
+
+  // TODO: more graceful error handling
+  if (!gotKeplr) throw new Error('Keplr not found');
+  if (!gotKeplr) keplr = gotKeplr;
+
+  return gotKeplr;
+}
+export const RPC = 'https://rpc-fetchhub.fetch.ai:443';
+export async function stargateClient(rpc: string | HttpEndpoint) {
+  const client = await StargateClient.connect(rpc);
+  return client;
+}
 export const WalletContext = createContext<any>({});
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [address, setAddress] = useState<string | undefined>(undefined);
-  const [balance, setBalance] = useState<string | undefined>(undefined);
+  const [balance, setBalance] = useState<string | undefined>(
+    'Loading balance...'
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const web3Modal =
-    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
 
   /* This effect will fetch wallet address if user has already connected his/her wallet */
+
   useEffect(() => {
     async function checkConnection() {
       try {
-        if (window && window.keplr) {
-          // Check if web3modal wallet connection is available on storage
-          if (localStorage.getItem(web3modalStorageKey)) {
-            await connectToWallet();
-          }
+        if (keplr) {
+          await connectToWallet();
         } else {
           console.log('window or window.ethereum is not available');
         }
@@ -32,15 +71,18 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
     checkConnection();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [address]);
 
-  const setWalletAddress = async (provider: any) => {
+  const setWalletAddress = async () => {
     try {
-      const signer = provider.getSigner();
-      if (signer) {
-        const web3Address = await signer.getAddress();
+      const offlineSigner =
+        window.keplr && window.keplr.getOfflineSigner('fetchhub');
+
+      if (offlineSigner) {
+        const accounts = await offlineSigner.getAccounts();
+        const web3Address = accounts[0].address;
         setAddress(web3Address);
-        getBalance(provider, web3Address);
+        getBalance(RPC, web3Address);
       }
     } catch (error) {
       console.log(
@@ -49,36 +91,24 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getBalance = async (provider: any, walletAddress: string) => {
-    const walletBalance = await provider.getBalance(walletAddress);
-    const balanceInEth = ethers.utils.formatEther(walletBalance);
-    setBalance(balanceInEth);
-  };
+  const getBalance = async (RPC: any, address: string) => {
+    const client = await stargateClient(RPC);
 
-  const disconnectWallet = () => {
-    setAddress(undefined);
-    web3Modal && web3Modal.clearCachedProvider();
-  };
-
-  const checkIfExtensionIsAvailable = () => {
-    if (
-      (window && window.web3 === undefined) ||
-      (window && window.keplr === undefined)
-    ) {
-      setError(true);
-      web3Modal && web3Modal.toggleModal();
+    if (address) {
+      const balanceObj = await client.getBalance(address, 'afet');
+      const balance = `${(parseFloat(balanceObj.amount) / 10 ** 18).toFixed(
+        6
+      )} ${balanceObj.denom.toUpperCase()}`;
+      setBalance(balance);
     }
   };
 
   const connectToWallet = async () => {
     try {
       setLoading(true);
-      checkIfExtensionIsAvailable();
-      const connection = web3Modal && (await web3Modal.connect());
-      const provider = new ethers.providers.Web3Provider(connection);
-      await subscribeProvider(connection);
-
-      setWalletAddress(provider);
+      const keplr = await getKeplr();
+      await keplr.enable('fetchhub');
+      setWalletAddress();
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -89,21 +119,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const subscribeProvider = async (connection: any) => {
-    connection.on('close', () => {
-      disconnectWallet();
-    });
-    connection.on('accountsChanged', async (accounts: string[]) => {
-      if (accounts?.length) {
-        setAddress(accounts[0]);
-        const provider = new ethers.providers.Web3Provider(connection);
-        getBalance(provider, accounts[0]);
-      } else {
-        disconnectWallet();
-      }
-    });
-  };
-
   return (
     <WalletContext.Provider
       value={{
@@ -112,7 +127,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         loading,
         error,
         connectToWallet,
-        disconnectWallet,
       }}
     >
       {children}

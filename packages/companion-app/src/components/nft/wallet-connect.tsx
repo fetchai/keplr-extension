@@ -62,7 +62,7 @@ export default function WalletConnect({
                           </span>
                         </div>
                         <div className="mt-3 font-medium uppercase tracking-wider text-gray-900 dark:text-white">
-                          {balance} ETH
+                          {balance}
                         </div>
                       </div>
                     </Menu.Item>
