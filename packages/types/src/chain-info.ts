@@ -1,4 +1,4 @@
-import { Currency, AppCurrency, FeeCurrency } from "./currency";
+import { AppCurrency, Currency, FeeCurrency } from "./currency";
 import { BIP44 } from "./bip44";
 import { AxiosRequestConfig } from "axios";
 import { Bech32Config } from "./bech32";
@@ -62,6 +62,9 @@ export interface ChainInfo {
   readonly beta?: boolean;
 
   readonly chainSymbolImageUrl?: string;
+
+  readonly explorerUrl?: string;
+
   readonly txExplorer?: {
     readonly name: string;
     readonly txUrl: string;
