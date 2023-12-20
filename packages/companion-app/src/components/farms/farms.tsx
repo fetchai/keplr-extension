@@ -2,7 +2,7 @@ import Button from '@/components/ui/button';
 import FarmList from '@/components/farms/list';
 import ActiveLink from '@/components/ui/links/active-link';
 import { FarmsData } from '@/data/static/farms-data';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import cn from 'classnames';
 import { Transition } from '@/components/ui/transition';
@@ -15,6 +15,7 @@ import { useLayout } from '@/lib/hooks/use-layout';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
 import HorizontalThreeDots from '@/components/icons/horizontal-three-dots';
 import routes from '@/config/routes';
+import axios from 'axios';
 
 const sort = [
   { id: 1, name: 'Hot' },
@@ -87,7 +88,7 @@ function Search() {
       <label className="flex w-full items-center">
         <input
           className="h-11 w-full appearance-none rounded-lg border-2 border-gray-200 bg-transparent py-1 text-sm tracking-tighter text-gray-900 outline-none transition-all placeholder:text-gray-600 focus:border-gray-900 ltr:pr-5 ltr:pl-10 rtl:pr-10 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-500"
-          placeholder="Search farms"
+          placeholder="Search Validators"
           autoComplete="off"
         />
         <span className="pointer-events-none absolute flex h-full w-8 cursor-pointer items-center justify-center text-gray-600 hover:text-gray-900 ltr:left-0 ltr:pl-2 rtl:right-0 rtl:pr-2 dark:text-gray-500 sm:ltr:pl-3 sm:rtl:pr-3">
@@ -175,6 +176,18 @@ function Status() {
 }
 
 export default function Farms() {
+  const [validatorsData, setValidatorsData] = useState([]);
+  useEffect(() => {
+    const init = async () => {
+      const URL = 'https://validators.cosmos.directory/chains/fetchhub';
+      const response = await axios.get(URL);
+      const validatorslist = response.data?.validators;
+      console.log(validatorslist);
+      setValidatorsData(validatorslist);
+    };
+
+    init();
+  }, []);
   const { layout } = useLayout();
   return (
     <div className="mx-auto w-full">
@@ -213,31 +226,31 @@ export default function Farms() {
 
       <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
         <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
-          Pool
+          Validators
         </span>
         <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
-          Earned
+          Delegated
         </span>
         <span className="px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
-          APR
+          Commision
         </span>
         <span className="hidden px-6 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300 lg:block">
-          Liquidity
+          Status
         </span>
         <span className="hidden px-4 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300 lg:block">
-          Multiplier
+          rank
         </span>
       </div>
 
-      {FarmsData.map((farm) => (
+      {validatorsData.map((farm: any) => (
         <FarmList
+          name={farm.moniker}
           key={farm.id}
-          from={farm.from}
-          to={farm.to}
           earned={farm.earned}
-          apr={farm.apr}
-          liquidity={farm.liquidity}
-          multiplier={farm.multiplier}
+          delegations={farm.delegations.total_tokens}
+          commission={farm.commission.rate}
+          active={farm.active}
+          multiplier={farm.rank}
         >
           <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
             <input

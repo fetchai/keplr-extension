@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext, ReactNode } from 'react';
 import { ethers } from 'ethers';
 import type { Keplr } from '@keplr-wallet/types';
-import { HttpEndpoint, StargateClient } from '@cosmjs/stargate';
+import { HttpEndpoint, StargateClient, QueryClient } from '@cosmjs/stargate';
 
 declare global {
   interface Window {
@@ -46,7 +46,7 @@ export async function stargateClient(rpc: string | HttpEndpoint) {
   return client;
 }
 export const WalletContext = createContext<any>({});
-
+// const querClient = QueryClient.staking().
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [balance, setBalance] = useState<string | undefined>(
