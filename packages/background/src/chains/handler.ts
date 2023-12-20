@@ -1,10 +1,16 @@
 import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import { ChainsService } from "./service";
 import {
+  GetNetworkMsg,
   GetChainInfosMsg,
   GetChainInfosWithoutEndpointsMsg,
   RemoveSuggestedChainInfoMsg,
   SuggestChainInfoMsg,
+  ListNetworksMsg,
+  AddNetworkAndSwitchMsg,
+  SwitchNetworkByChainIdMsg,
+  // SwitchToNetworkMsg,
+  // SwitchToNetworkByChainIdMsg,
 } from "./messages";
 import { ChainInfo } from "@keplr-wallet/types";
 
@@ -25,11 +31,25 @@ export const getHandler: (service: ChainsService) => Handler = (service) => {
           env,
           msg as SuggestChainInfoMsg
         );
+      case AddNetworkAndSwitchMsg:
+        return handleAddNetworkAndSwitch(service)(
+          env,
+          msg as AddNetworkAndSwitchMsg
+        );
+      case SwitchNetworkByChainIdMsg:
+        return handleSwitchNetworkByChainId(service)(
+          env,
+          msg as SwitchNetworkByChainIdMsg
+        );
       case RemoveSuggestedChainInfoMsg:
         return handleRemoveSuggestedChainInfoMsg(service)(
           env,
           msg as RemoveSuggestedChainInfoMsg
         );
+      case GetNetworkMsg:
+        return handleGetNetworkMsg(service)(env, msg as GetNetworkMsg);
+      case ListNetworksMsg:
+        return handleListNetworksMsg(service)(env, msg as ListNetworksMsg);
       default:
         throw new Error("Unknown msg type");
     }
@@ -88,5 +108,50 @@ const handleRemoveSuggestedChainInfoMsg: (
   return async (_, msg) => {
     await service.removeChainInfo(msg.chainId);
     return await service.getChainInfos();
+  };
+};
+
+const handleGetNetworkMsg: (
+  service: ChainsService
+) => InternalHandler<GetNetworkMsg> = (service) => {
+  return async (_, msg) => {
+    return await service.getChainInfo(msg.chainId);
+  };
+};
+
+const handleListNetworksMsg: (
+  service: ChainsService
+) => InternalHandler<ListNetworksMsg> = (service) => {
+  return async () => {
+    return await service.getChainInfos();
+  };
+};
+
+const handleAddNetworkAndSwitch: (
+  service: ChainsService
+) => InternalHandler<AddNetworkAndSwitchMsg> = (service) => {
+  return async (env, msg) => {
+    if (await service.hasChainInfo(msg.chainInfo.chainId)) {
+      // If suggested chain info is already registered, just return.
+      return;
+    }
+    console.log("handleAddNetworkAndSwitch");
+    const chainInfo = msg.chainInfo as Writeable<ChainInfo>;
+    // And, always handle it as beta.
+    chainInfo.beta = true;
+
+    await service.addChainByNetwork(env, chainInfo, msg.origin);
+  };
+};
+
+const handleSwitchNetworkByChainId: (
+  service: ChainsService
+) => InternalHandler<SwitchNetworkByChainIdMsg> = (service) => {
+  return async (env, msg) => {
+    if (await service.hasChainInfo(msg.chainId)) {
+      // If suggested chain info is registered then switch else just return.
+      console.log("SwitchNetworkByChainIdMsg");
+      await service.switchChainByChainId(env, msg.chainId, msg.origin);
+    } else return;
   };
 };

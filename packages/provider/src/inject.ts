@@ -40,7 +40,7 @@ import {
   WalletApi,
   WalletStatus,
 } from "@fetchai/wallet-types";
-import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
+// import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
 
 export interface ProxyRequest {
   type: "fetchai:proxy-request-v1";
@@ -147,7 +147,7 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -182,7 +182,7 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
           !keplr[message.method] ||
           typeof keplr[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${String(message.method)}`);
+          throw new Error(`Invalid method keplr: ${String(message.method)}`);
         }
 
         if (message.method === "getOfflineSigner") {
@@ -337,9 +337,9 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       removeMessageListener: (fn: (e: any) => void) =>
-        window.removeEventListener("message", fn),
+        window.removeEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -674,7 +674,7 @@ export class InjectedFetchWalletApi implements WalletApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("walletMessage", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -701,11 +701,17 @@ export class InjectedFetchWalletApi implements WalletApi {
           throw new Error("accounts is not function");
         }
 
+        if (message.method === "signing") {
+          throw new Error("signing is not function");
+        }
+
         if (
           !wallet[message.method] ||
           typeof wallet[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${String(message.method)}`);
+          throw new Error(
+            `Invalid method: walletApi: ${String(message.method)}`
+          );
         }
 
         const result = await wallet[message.method](
@@ -737,7 +743,10 @@ export class InjectedFetchWalletApi implements WalletApi {
     });
   }
 
-  protected requestMethod(method: keyof WalletApi, args: any[]): Promise<any> {
+  protected requestWalletMethod(
+    method: keyof WalletApi,
+    args: any[]
+  ): Promise<any> {
     const bytes = new Uint8Array(8);
     const id: string = Array.from(crypto.getRandomValues(bytes))
       .map((value) => {
@@ -802,9 +811,9 @@ export class InjectedFetchWalletApi implements WalletApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("walletMessage", fn),
       removeMessageListener: (fn: (e: any) => void) =>
-        window.removeEventListener("message", fn),
+        window.removeEventListener("walletMessage", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -812,15 +821,18 @@ export class InjectedFetchWalletApi implements WalletApi {
   ) {}
 
   async status(): Promise<WalletStatus> {
-    return await this.requestMethod("status", []);
+    // Done
+    return await this.requestWalletMethod("status", []);
   }
 
-  async unlockWallet(): Promise<void> {
-    await this.requestMethod("unlockWallet", []);
+  async unlockWallet(password: string): Promise<void> {
+    // Done
+    await this.requestWalletMethod("unlockWallet", [password]);
   }
 
   async lockWallet(): Promise<void> {
-    await this.requestMethod("lockWallet", []);
+    // Done
+    await this.requestWalletMethod("lockWallet", []);
   }
 }
 
@@ -832,7 +844,7 @@ export class InjectedFetchAccount implements AccountsApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -855,7 +867,7 @@ export class InjectedFetchAccount implements AccountsApi {
           !accountsApi[message.method] ||
           typeof accountsApi[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${String(message.method)}`);
+          throw new Error(`Invalid method account: ${String(message.method)}`);
         }
 
         const result = await accountsApi[message.method](
@@ -887,7 +899,7 @@ export class InjectedFetchAccount implements AccountsApi {
     });
   }
 
-  protected requestMethod(
+  protected requestAccountMethod(
     method: keyof AccountsApi,
     args: any[]
   ): Promise<any> {
@@ -952,9 +964,9 @@ export class InjectedFetchAccount implements AccountsApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       removeMessageListener: (fn: (e: any) => void) =>
-        window.removeEventListener("message", fn),
+        window.removeEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -964,20 +976,23 @@ export class InjectedFetchAccount implements AccountsApi {
   /* This method will work when connection is established
    * with wallet therefore wallet will always give status "unlocked"
    */
-  async currentAccount(): Promise<Account> {
-    return await this.requestMethod("currentAccount", []);
+  async currentAccount(chainId: string): Promise<Account> {
+    // Done
+    return await this.requestAccountMethod("currentAccount", [chainId]);
   }
 
   async switchAccount(address: string): Promise<void> {
-    await this.requestMethod("switchAccount", [address]);
+    await this.requestAccountMethod("switchAccount", [address]);
   }
 
-  async listAccounts(): Promise<Account[]> {
-    return await this.requestMethod("listAccounts", []);
+  async listAccounts(): Promise<Account> {
+    // Done
+    return await this.requestAccountMethod("listAccounts", []);
   }
 
-  async getAccount(): Promise<Account> {
-    return await this.requestMethod("getAccount", []);
+  async getAccount(chainId: string): Promise<Account> {
+    // Done
+    return await this.requestAccountMethod("getAccount", [chainId]);
   }
 }
 
@@ -1012,7 +1027,7 @@ export class InjectedFetchNetworks implements NetworksApi {
           !networksApi[message.method] ||
           typeof networksApi[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${String(message.method)}`);
+          throw new Error(`Invalid method network: ${String(message.method)}`);
         }
 
         const result = await networksApi[message.method](
@@ -1044,7 +1059,7 @@ export class InjectedFetchNetworks implements NetworksApi {
     });
   }
 
-  protected requestMethod(
+  protected requestNetworkMethod(
     method: keyof NetworksApi,
     args: any[]
   ): Promise<any> {
@@ -1118,20 +1133,24 @@ export class InjectedFetchNetworks implements NetworksApi {
     protected readonly parseMessage?: (message: any) => any
   ) {}
 
-  async currentNetwork(): Promise<NetworkConfig> {
-    return await this.requestMethod("currentNetwork", []);
+  async getNetwork(chainId: string): Promise<ChainInfo> {
+    // Done
+    return await this.requestNetworkMethod("getNetwork", [chainId]);
   }
 
-  async switchToNetwork(network: NetworkConfig): Promise<void> {
-    console.log("switchToNetwork ", network);
+  async switchToNetwork(network: ChainInfo): Promise<void> {
+    return await this.requestNetworkMethod("switchToNetwork", [network]);
   }
 
   async switchToNetworkByChainId(chainId: string): Promise<void> {
-    console.log("switchToNetworkByChainId ", chainId);
+    return await this.requestNetworkMethod("switchToNetworkByChainId", [
+      chainId,
+    ]);
   }
 
-  async listNetworks(): Promise<NetworkConfig[]> {
-    return await this.requestMethod("listNetworks", []);
+  async listNetworks(): Promise<ChainInfo[]> {
+    // Done
+    return await this.requestNetworkMethod("listNetworks", []);
   }
 }
 
@@ -1143,7 +1162,7 @@ export class InjectedFetchSigning implements SigningApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
@@ -1162,11 +1181,15 @@ export class InjectedFetchSigning implements SigningApi {
           throw new Error("Empty id");
         }
 
+        console.log("type in proxy", typeof signingApi[message.method]);
         if (
           !signingApi[message.method] ||
           typeof signingApi[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method: ${String(message.method)}`);
+          console.log("message in proxy", message);
+          throw new Error(
+            `Invalid method in fetchSigning: ${String(message.method)}`
+          );
         }
 
         const result = await signingApi[message.method](
@@ -1175,6 +1198,7 @@ export class InjectedFetchSigning implements SigningApi {
           ...JSONUint8Array.unwrap(message.args)
         );
 
+        console.log("result in proxy", result);
         const proxyResponse: ProxyRequestResponse = {
           type: "fetchai:proxy-request-response-v1",
           id: message.id,
@@ -1182,6 +1206,7 @@ export class InjectedFetchSigning implements SigningApi {
             return: JSONUint8Array.wrap(result),
           },
         };
+        console.log("proxyResponse in proxy", proxyResponse);
 
         eventListener.postMessage(proxyResponse);
       } catch (e: any) {
@@ -1192,13 +1217,17 @@ export class InjectedFetchSigning implements SigningApi {
             error: e.message || e.toString(),
           },
         };
+        console.log("proxyResponse in proxy catch", proxyResponse);
 
         eventListener.postMessage(proxyResponse);
       }
     });
   }
 
-  protected requestMethod(method: keyof SigningApi, args: any[]): Promise<any> {
+  protected requestSigningMethod(
+    method: keyof SigningApi,
+    args: any[]
+  ): Promise<any> {
     const bytes = new Uint8Array(8);
     const id: string = Array.from(crypto.getRandomValues(bytes))
       .map((value) => {
@@ -1218,6 +1247,7 @@ export class InjectedFetchSigning implements SigningApi {
         const proxyResponse: ProxyRequestResponse = this.parseMessage
           ? this.parseMessage(e.data)
           : e.data;
+        console.log("proxy response in request method", proxyResponse);
 
         if (
           !proxyResponse ||
@@ -1233,6 +1263,11 @@ export class InjectedFetchSigning implements SigningApi {
         this.eventListener.removeMessageListener(receiveResponse);
 
         const result = JSONUint8Array.unwrap(proxyResponse.result);
+        console.log("result in request method", result, proxyResponse.result);
+        console.log(
+          "proxyResponse.result in request method",
+          proxyResponse.result
+        );
 
         if (!result) {
           reject(new Error("Result is null"));
@@ -1262,17 +1297,19 @@ export class InjectedFetchSigning implements SigningApi {
       postMessage: (message: any) => void;
     } = {
       addMessageListener: (fn: (e: any) => void) =>
-        window.addEventListener("message", fn),
+        window.addEventListener("messageT", fn),
       removeMessageListener: (fn: (e: any) => void) =>
-        window.removeEventListener("message", fn),
+        window.removeEventListener("messageT", fn),
       postMessage: (message) =>
         window.postMessage(message, window.location.origin),
     },
     protected readonly parseMessage?: (message: any) => any
   ) {}
 
-  async getKey(chainId: string): Promise<Key> {
-    return await this.requestMethod("getKey", [chainId]);
+  async getCurrentKey(chainId: string): Promise<Key> {
+    const k = await this.requestSigningMethod("getCurrentKey", [chainId]);
+    console.log("k", k);
+    return k;
   }
 
   async signAmino(
@@ -1281,7 +1318,7 @@ export class InjectedFetchSigning implements SigningApi {
     signDoc: StdSignDoc,
     signOptions: KeplrSignOptions = {}
   ): Promise<AminoSignResponse> {
-    return await this.requestMethod("signAmino", [
+    return await this.requestSigningMethod("signAmino", [
       chainId,
       signer,
       signDoc,
@@ -1300,7 +1337,7 @@ export class InjectedFetchSigning implements SigningApi {
     },
     signOptions: KeplrSignOptions = {}
   ): Promise<DirectSignResponse> {
-    const result = await this.requestMethod("signDirect", [
+    const result = await this.requestSigningMethod("signDirect", [
       chainId,
       signer,
       // We can't send the `Long` with remaing the type.
@@ -1341,7 +1378,11 @@ export class InjectedFetchSigning implements SigningApi {
     signer: string,
     data: string | Uint8Array
   ): Promise<StdSignature> {
-    return await this.requestMethod("signArbitrary", [chainId, signer, data]);
+    return await this.requestSigningMethod("signArbitrary", [
+      chainId,
+      signer,
+      data,
+    ]);
   }
 
   async verifyArbitrary(
@@ -1350,7 +1391,7 @@ export class InjectedFetchSigning implements SigningApi {
     data: string | Uint8Array,
     signature: StdSignature
   ): Promise<boolean> {
-    return await this.requestMethod("verifyArbitrary", [
+    return await this.requestSigningMethod("verifyArbitrary", [
       chainId,
       signer,
       data,

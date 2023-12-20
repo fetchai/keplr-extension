@@ -241,9 +241,12 @@
   "register.welcome.button.done": "Done",
 
   "chain.suggested.title": "Add {chainName}",
+  "chain.switch.title": "Switch to {chainName}",
   "chain.suggested.tooltip": "Chain info being added is from this web",
+  "chain.switch.tooltip": "ChainId to switch is from this web",
   "chain.suggested.developer.checkbox": "Use this as the preferred code string and override info registered on the community repo",
   "chain.suggested.paragraph": "<b>{host}</b> would like to add blockchain <b>{chainId}</b> to Fetch Wallet.",
+  "chain.switch.paragraph": "<b>{host}</b> would like to switch to blockchain <b>{chainId}</b>",
   "chain.suggested.approve-info.title": "Before You Approve",
   "chain.suggested.approve-info.content": "Keplr recommends that ‘suggest chain’ info be managed by the community. At this time, this chain’s info has not been registered.",
   "chain.suggested.approve-info.link": "Click here to update chain info on Github ->",

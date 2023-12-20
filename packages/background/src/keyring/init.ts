@@ -28,6 +28,14 @@ import {
   AddKeystoneKeyMsg,
   RequestICNSAdr36SignaturesMsg,
   ChangeKeyRingNameMsg,
+  StatusMsg,
+  LockWalletMsg,
+  UnlockWalletMsg,
+  CurrentAccountMsg,
+  GetKeyMsgFetchSigning,
+  RequestSignAminoMsgFetchSigning,
+  RequestSignDirectMsgFetchSigning,
+  RequestVerifyADR36AminoSignDocFetchSigning,
 } from "./messages";
 import { ROUTE } from "./constants";
 import { getHandler } from "./handler";
@@ -62,6 +70,14 @@ export function init(router: Router, service: KeyRingService): void {
   router.registerMessage(InitNonDefaultLedgerAppMsg);
   router.registerMessage(RequestICNSAdr36SignaturesMsg);
   router.registerMessage(ChangeKeyRingNameMsg);
+  router.registerMessage(StatusMsg);
+  router.registerMessage(LockWalletMsg);
+  router.registerMessage(UnlockWalletMsg);
+  router.registerMessage(CurrentAccountMsg);
+  router.registerMessage(GetKeyMsgFetchSigning);
+  router.registerMessage(RequestSignAminoMsgFetchSigning);
+  router.registerMessage(RequestSignDirectMsgFetchSigning);
+  router.registerMessage(RequestVerifyADR36AminoSignDocFetchSigning);
 
   router.addHandler(ROUTE, getHandler(service));
 }

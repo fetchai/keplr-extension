@@ -262,6 +262,7 @@ export class KeyRingService {
   }
 
   async getKey(chainId: string): Promise<Key> {
+    console.log("inside service keyring get key");
     const ethereumKeyFeatures =
       await this.chainsService.getChainEthereumKeyFeatures(chainId);
 

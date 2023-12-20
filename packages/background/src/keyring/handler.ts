@@ -28,10 +28,19 @@ import {
   AddKeystoneKeyMsg,
   RequestICNSAdr36SignaturesMsg,
   ChangeKeyRingNameMsg,
+  StatusMsg,
+  LockWalletMsg,
+  UnlockWalletMsg,
+  CurrentAccountMsg,
+  GetKeyMsgFetchSigning,
+  RequestSignAminoMsgFetchSigning,
+  RequestSignDirectMsgFetchSigning,
+  RequestVerifyADR36AminoSignDocFetchSigning,
 } from "./messages";
 import { KeyRingService } from "./service";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
+import { KeyRingStatus } from "./keyring";
 
 export const getHandler: (service: KeyRingService) => Handler = (
   service: KeyRingService
@@ -141,6 +150,31 @@ export const getHandler: (service: KeyRingService) => Handler = (
         return handleChangeKeyNameMsg(service)(
           env,
           msg as ChangeKeyRingNameMsg
+        );
+      case StatusMsg:
+        return handleStatusMsg(service)(env, msg as StatusMsg);
+      case LockWalletMsg:
+        return handleLockWallet(service)(env, msg as LockWalletMsg);
+      case UnlockWalletMsg:
+        return handleUnlockWallet(service)(env, msg as UnlockWalletMsg);
+      case CurrentAccountMsg:
+        return handleCurrentAccountMsg(service)(env, msg as CurrentAccountMsg);
+      case GetKeyMsgFetchSigning:
+        return handleGetKeyMsgFetchSigning(service)(env, msg as GetKeyMsg);
+      case RequestSignAminoMsgFetchSigning:
+        return handleRequestSignAminoMsgFetchSigning(service)(
+          env,
+          msg as RequestSignAminoMsgFetchSigning
+        );
+      case RequestSignDirectMsgFetchSigning:
+        return handleRequestSignDirectMsgFetchSigning(service)(
+          env,
+          msg as RequestSignDirectMsgFetchSigning
+        );
+      case RequestVerifyADR36AminoSignDocFetchSigning:
+        return handleRequestVerifyADR36AminoSignDocFetchSigning(service)(
+          env,
+          msg as RequestVerifyADR36AminoSignDocFetchSigning
         );
       default:
         throw new Error("Unknown msg type");
@@ -308,6 +342,7 @@ const handleGetKeyMsg: (
   service: KeyRingService
 ) => InternalHandler<GetKeyMsg> = (service) => {
   return async (env, msg) => {
+    console.log("inside get Key", msg);
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       msg.chainId,
@@ -315,7 +350,7 @@ const handleGetKeyMsg: (
     );
 
     const key = await service.getKey(msg.chainId);
-
+    console.log("handle getKey", key);
     return {
       name: service.getKeyStoreMeta("name"),
       algo: "secp256k1",
@@ -533,5 +568,193 @@ const handleChangeKeyNameMsg: (
       defaultName: msg.defaultName,
       editable: msg.editable,
     });
+  };
+};
+
+const handleStatusMsg: (
+  service: KeyRingService
+) => InternalHandler<StatusMsg> = (service) => {
+  return () => {
+    console.log("handle status msg");
+    const status = service.keyRingStatus;
+    if (status === KeyRingStatus.EMPTY) {
+      return "empty";
+    } else if (status === KeyRingStatus.LOCKED) {
+      return "locked";
+    } else if (status === KeyRingStatus.NOTLOADED) {
+      return "notLoaded";
+    } else if (status === KeyRingStatus.UNLOCKED) {
+      return "unlocked";
+    } else return undefined;
+  };
+};
+
+const handleLockWallet: (
+  service: KeyRingService
+) => InternalHandler<LockWalletMsg> = (service) => {
+  return () => {
+    const status = service.keyRingStatus;
+    if (status === KeyRingStatus.UNLOCKED) {
+      service.lock();
+    } else {
+      throw new Error("Service is unlocked or not ready");
+    }
+  };
+};
+
+const handleUnlockWallet: (
+  service: KeyRingService
+) => InternalHandler<UnlockWalletMsg> = (service) => {
+  return async (_, msg) => {
+    const status = service.keyRingStatus;
+
+    if (status === KeyRingStatus.UNLOCKED) {
+      await service.unlock(msg.password);
+    } else {
+      throw new Error("Service is unlocked or not ready");
+    }
+  };
+};
+
+const handleCurrentAccountMsg: (
+  service: KeyRingService
+) => InternalHandler<CurrentAccountMsg> = (service) => {
+  return async (env, msg) => {
+    console.log("inside get Key", msg);
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      msg.chainId,
+      msg.origin
+    );
+
+    const key = await service.getKey(msg.chainId);
+    console.log("handleCurrentAccountMsg", key);
+    return {
+      name: service.getKeyStoreMeta("name"),
+      algo: "secp256k1",
+      pubKey: key.pubKey,
+      address: key.address,
+      bech32Address: new Bech32Address(key.address).toBech32(
+        (await service.chainsService.getChainInfo(msg.chainId)).bech32Config
+          .bech32PrefixAccAddr
+      ),
+      isNanoLedger: key.isNanoLedger,
+      isKeystone: key.isKeystone,
+    };
+  };
+};
+
+const handleGetKeyMsgFetchSigning: (
+  service: KeyRingService
+) => InternalHandler<GetKeyMsgFetchSigning> = (service) => {
+  return async (env, msg) => {
+    console.log("inside handleGetKeyMsgFetchSigning", msg);
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      msg.chainId,
+      msg.origin
+    );
+
+    const key = await service.getKey(msg.chainId);
+    console.log("handleGetKeyMsgFetchSigning", key);
+    return {
+      name: service.getKeyStoreMeta("name"),
+      algo: "secp256k1",
+      pubKey: key.pubKey,
+      address: key.address,
+      bech32Address: new Bech32Address(key.address).toBech32(
+        (await service.chainsService.getChainInfo(msg.chainId)).bech32Config
+          .bech32PrefixAccAddr
+      ),
+      isNanoLedger: key.isNanoLedger,
+      isKeystone: key.isKeystone,
+    };
+  };
+};
+
+const handleRequestSignAminoMsgFetchSigning: (
+  service: KeyRingService
+) => InternalHandler<RequestSignAminoMsgFetchSigning> = (service) => {
+  return async (env, msg) => {
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      msg.chainId,
+      msg.origin
+    );
+
+    return await service.requestSignAmino(
+      env,
+      msg.origin,
+      msg.chainId,
+      msg.signer,
+      msg.signDoc,
+      msg.signOptions
+    );
+  };
+};
+
+const handleRequestSignDirectMsgFetchSigning: (
+  service: KeyRingService
+) => InternalHandler<RequestSignDirectMsgFetchSigning> = (service) => {
+  return async (env, msg) => {
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      msg.chainId,
+      msg.origin
+    );
+
+    const signDoc = SignDoc.fromPartial({
+      bodyBytes:
+        msg.signDoc.bodyBytes === null ? undefined : msg.signDoc.bodyBytes,
+      authInfoBytes:
+        msg.signDoc.authInfoBytes === null
+          ? undefined
+          : msg.signDoc.authInfoBytes,
+      chainId: msg.signDoc.chainId === null ? undefined : msg.signDoc.chainId,
+      accountNumber:
+        msg.signDoc.accountNumber === null
+          ? undefined
+          : msg.signDoc.accountNumber,
+    });
+
+    const response = await service.requestSignDirect(
+      env,
+      msg.origin,
+      msg.chainId,
+      msg.signer,
+      signDoc,
+      msg.signOptions
+    );
+
+    return {
+      signed: {
+        bodyBytes: response.signed.bodyBytes,
+        authInfoBytes: response.signed.authInfoBytes,
+        chainId: response.signed.chainId,
+        accountNumber: response.signed.accountNumber.toString(),
+      },
+      signature: response.signature,
+    };
+  };
+};
+
+const handleRequestVerifyADR36AminoSignDocFetchSigning: (
+  service: KeyRingService
+) => InternalHandler<RequestVerifyADR36AminoSignDocFetchSigning> = (
+  service
+) => {
+  return async (env, msg) => {
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      msg.chainId,
+      msg.origin
+    );
+
+    return await service.verifyADR36AminoSignDoc(
+      msg.chainId,
+      msg.signer,
+      msg.data,
+      msg.signature
+    );
   };
 };

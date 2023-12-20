@@ -7,7 +7,7 @@ import { KVStore, Debouncer, MemoryKVStore } from "@keplr-wallet/common";
 import { ChainUpdaterService } from "../updater";
 import { InteractionService } from "../interaction";
 import { Env } from "@keplr-wallet/router";
-import { SuggestChainInfoMsg } from "./messages";
+import { SuggestChainInfoMsg, SwitchNetworkByChainIdMsg } from "./messages";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { validateBasicChainInfoType } from "@keplr-wallet/chain-validator";
 import { getBasicAccessPermissionType, PermissionService } from "../permission";
@@ -295,6 +295,66 @@ export class ChainsService {
       address: chainInfo.features?.includes("eth-address-gen") ?? false,
       signing: chainInfo.features?.includes("eth-key-sign") ?? false,
     };
+  }
+
+  async addChainByNetwork(
+    env: Env,
+    chainInfo: ChainInfo,
+    origin: string
+  ): Promise<void> {
+    chainInfo = await validateBasicChainInfoType(chainInfo);
+
+    let receivedChainInfo = (await this.interactionService.waitApprove(
+      env,
+      "/add-chain-by-network",
+      SuggestChainInfoMsg.type(),
+      {
+        chainInfo,
+        origin,
+      }
+    )) as ChainInfoWithRepoUpdateOptions;
+
+    receivedChainInfo = {
+      ...(await validateBasicChainInfoType(receivedChainInfo)),
+      // Beta should be from suggested chain info itself.
+      beta: chainInfo.beta,
+      updateFromRepoDisabled: receivedChainInfo.updateFromRepoDisabled,
+    };
+
+    if (receivedChainInfo.updateFromRepoDisabled) {
+      console.log(
+        `Chain ${receivedChainInfo.chainName}(${receivedChainInfo.chainId}) added with updateFromRepoDisabled`
+      );
+    } else {
+      console.log(
+        `Chain ${receivedChainInfo.chainName}(${receivedChainInfo.chainId}) added`
+      );
+    }
+
+    await this.permissionService.addPermission(
+      [chainInfo.chainId],
+      getBasicAccessPermissionType(),
+      [origin]
+    );
+
+    await this.addChainInfo(receivedChainInfo);
+  }
+
+  async switchChainByChainId(
+    env: Env,
+    chainId: string,
+    origin: string
+  ): Promise<void> {
+    const receivedChainId = (await this.interactionService.waitApprove(
+      env,
+      "/switch-chain-by-chainid",
+      SwitchNetworkByChainIdMsg.type(),
+      {
+        chainId,
+        origin,
+      }
+    )) as string;
+    console.log(`Switched to chain with chainId ${receivedChainId}`);
   }
 
   addChainRemovedHandler(handler: ChainRemovedHandler) {

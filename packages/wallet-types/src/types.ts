@@ -8,10 +8,11 @@ import {
   StdSignDoc,
   DirectSignResponse,
   StdSignature,
+  ChainInfo,
 } from "@keplr-wallet/types";
 import { UmbralApi } from "@fetchai/umbral-types";
 import { PublicKey } from "./public-keys";
-import { NetworkConfig } from "./network-info";
+// import { NetworkConfig } from "./network-info";
 import { TxsResponse } from "@cosmjs/launchpad";
 
 /**
@@ -21,12 +22,37 @@ export interface Account {
   /**
    * The address of the account
    */
-  readonly address: string;
+  readonly address: Uint8Array;
 
   /**
    * The public key of the account
    */
-  readonly publicKey: PublicKey;
+  readonly pubKey: Uint8Array;
+
+  /**
+   * The name of the account
+   */
+  readonly name: string;
+
+  /**
+   * The algo used for the account
+   */
+  readonly algo: string;
+
+  /**
+   * The bech32Address of the account
+   */
+  readonly bech32Address: string;
+
+  /**
+   * Is Nano Ledger account
+   */
+  readonly isNanoLedger: boolean;
+
+  /**
+   * Is Keystone account
+   */
+  readonly isKeystone: boolean;
 }
 
 /**
@@ -58,7 +84,7 @@ export interface NetworksApi {
    *
    * @throws An error if the wallet is locked or if the dApp does not have permission to the networks API
    */
-  currentNetwork(): Promise<NetworkConfig>;
+  getNetwork(chainId: string): Promise<ChainInfo>;
 
   /**
    * Switch a specified network
@@ -66,7 +92,7 @@ export interface NetworksApi {
    * @param network The new network to target the Wallet at.
    * @throws An error if the dApp does not have permission to the networks API
    */
-  switchToNetwork(network: NetworkConfig): Promise<void>;
+  switchToNetwork(network: ChainInfo): Promise<void>;
 
   /**
    * Switch to a previous network by chain id
@@ -81,7 +107,7 @@ export interface NetworksApi {
    *
    * @throws An error if the dApp does not have permission to the networks API
    */
-  listNetworks(): Promise<NetworkConfig[]>;
+  listNetworks(): Promise<ChainInfo[]>;
 }
 
 /**
@@ -94,7 +120,7 @@ export interface AccountsApi {
    * @return the currently selected account
    * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
    */
-  currentAccount(): Promise<Account>;
+  currentAccount(chainId: string): Promise<Account>;
 
   /**
    * Change the current active account to the address specified
@@ -110,7 +136,7 @@ export interface AccountsApi {
    * @returns The list of accounts
    * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
    */
-  listAccounts(): Promise<Account[]>;
+  listAccounts(): Promise<Account>;
 
   /**
    * Allows the user to look up a specific account
@@ -229,9 +255,7 @@ export interface EventsApi {
    *
    * When the wallet is unlocked it will fire a network changed event
    */
-  onNetworkChanged: EventHandler<
-    (network: NetworkConfig) => void | Promise<void>
-  >;
+  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>>;
 
   /**
    * The event handler for the account updates and changes
@@ -262,7 +286,7 @@ export interface SigningApi {
    *
    *
    */
-  getKey(chainId: string): Promise<Key>;
+  getCurrentKey(chainId: string): Promise<Key>;
 
   signAmino(
     chainId: string,
@@ -354,7 +378,12 @@ export interface SigningApi {
 /**
  * The status of the wallet.
  */
-export type WalletStatus = "locked" | "unlocked";
+export type WalletStatus =
+  | "locked"
+  | "unlocked"
+  | "notLoaded"
+  | "empty"
+  | undefined;
 
 /**
  * The WalletAPI
@@ -378,7 +407,7 @@ export interface WalletApi {
   /**
    * Allows the dApp to
    */
-  unlockWallet(): Promise<void>;
+  unlockWallet(password: string): Promise<void>;
 
   /**
    * The networks API
@@ -398,7 +427,7 @@ export interface WalletApi {
   /**
    * The signing API
    */
-  // signing: SigningApi;
+  signing: SigningApi;
 
   /**
    * The events API

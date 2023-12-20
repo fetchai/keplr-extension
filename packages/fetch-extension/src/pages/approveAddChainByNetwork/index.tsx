@@ -7,12 +7,12 @@ import { EmptyLayout } from "@layouts/empty-layout";
 import { FormattedMessage } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../stores";
 import { ToolTip } from "@components/tooltip";
 import classNames from "classnames";
 import { GithubIcon, InformationCircleOutline } from "@components/icon";
+import { useStore } from "../../stores";
 
-export const ChainSuggestedPage: FunctionComponent = observer(() => {
+export const ApproveAddChainByNetworkPage: FunctionComponent = observer(() => {
   const { chainSuggestStore, analyticsStore, uiConfigStore, chainStore } =
     useStore();
   const [updateFromRepoDisabled, setUpdateFromRepoDisabled] = useState(false);
@@ -276,7 +276,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                   <div className={style["imageBackground"]} />
                   <img
                     className={style["logoImage"]}
-                    src={require("../../../public/assets/logo-256.svg")}
+                    src={require("../../public/assets/logo-256.svg")}
                     alt="keplr logo"
                   />
                 </div>
@@ -339,7 +339,7 @@ export const ChainSuggestedPage: FunctionComponent = observer(() => {
                 >
                   <FormattedMessage id="chain.suggested.add-chain-as-suggested" />
                   <img
-                    src={require("../../../public/assets/svg/arrow-right-outline.svg")}
+                    src={require("../../public/assets/svg/arrow-right-outline.svg")}
                   />
                 </div>
               )}

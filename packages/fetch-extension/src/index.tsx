@@ -107,6 +107,8 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
+import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
+import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -309,6 +311,14 @@ ReactDOM.render(
                       <Route
                         path="/suggest-chain"
                         element={<ChainSuggestedPage />}
+                      />
+                      <Route
+                        path="/add-chain-by-network"
+                        element={<ApproveAddChainByNetworkPage />}
+                      />
+                      <Route
+                        path="/switch-chain-by-chainid"
+                        element={<ApproveSwitchChainPage />}
                       />
                       <Route
                         path="/axl-bridge-evm"

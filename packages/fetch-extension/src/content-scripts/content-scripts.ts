@@ -42,9 +42,9 @@ const coreFetchWallet = new ExtensionCoreFetchWallet(
   coreWallet
 );
 
+InjectedFetchSigning.startProxy(coreSigning);
 InjectedFetchAccount.startProxy(coreAccount);
 InjectedFetchNetworks.startProxy(coreNetworks);
-InjectedFetchSigning.startProxy(coreSigning);
 InjectedFetchWalletApi.startProxy(coreWallet);
 InjectedKeplr.startProxy(coreKeplr);
 startFetchWalletProxy(coreFetchWallet);

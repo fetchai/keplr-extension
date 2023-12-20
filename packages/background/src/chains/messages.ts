@@ -2,6 +2,7 @@ import { Message } from "@keplr-wallet/router";
 import { ChainInfoWithCoreTypes } from "./types";
 import { ChainInfo, ChainInfoWithoutEndpoints } from "@keplr-wallet/types";
 import { ROUTE } from "./constants";
+// import { NetworkConfig } from "@fetchai/wallet-types";
 
 export class GetChainInfosMsg extends Message<{
   chainInfos: ChainInfoWithCoreTypes[];
@@ -98,5 +99,103 @@ export class RemoveSuggestedChainInfoMsg extends Message<
 
   type(): string {
     return RemoveSuggestedChainInfoMsg.type();
+  }
+}
+
+export class GetNetworkMsg extends Message<ChainInfo> {
+  public static type() {
+    return "current-network-msg";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("Chain id not set");
+    }
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return GetNetworkMsg.type();
+  }
+}
+
+export class ListNetworksMsg extends Message<ChainInfo[]> {
+  public static type() {
+    return "list-network-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return ListNetworksMsg.type();
+  }
+}
+
+export class AddNetworkAndSwitchMsg extends Message<void> {
+  public static type() {
+    return "add-chain-by-network";
+  }
+
+  constructor(public readonly chainInfo: ChainInfo) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainInfo) {
+      throw new Error("chain info not set");
+    }
+  }
+
+  route(): string {
+    return "chains";
+  }
+
+  type(): string {
+    return AddNetworkAndSwitchMsg.type();
+  }
+}
+
+export class SwitchNetworkByChainIdMsg extends Message<void> {
+  public static type() {
+    return "switch-network-by-chainid";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("network is empty");
+    }
+  }
+
+  override approveExternal(): boolean {
+    return true;
+  }
+
+  route(): string {
+    return "chains";
+  }
+
+  type(): string {
+    return SwitchNetworkByChainIdMsg.type();
   }
 }

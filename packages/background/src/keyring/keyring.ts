@@ -232,6 +232,7 @@ export class KeyRing {
     defaultCoinType: number,
     useEthereumAddress: boolean
   ): Key {
+    console.log("inside keyring getkey final");
     return this.loadKey(
       this.computeKeyStoreCoinType(chainId, defaultCoinType),
       useEthereumAddress

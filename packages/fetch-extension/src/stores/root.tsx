@@ -12,6 +12,7 @@ import {
 import {
   AccountStore,
   ChainSuggestStore,
+  ChainSwitchStore,
   CoinGeckoPriceStore,
   CosmosAccount,
   CosmosQueries,
@@ -76,6 +77,7 @@ export class RootStore {
   public readonly ledgerInitStore: LedgerInitStore;
   public readonly keystoneStore: KeystoneStore;
   public readonly chainSuggestStore: ChainSuggestStore;
+  public readonly chainSwitchStore: ChainSwitchStore;
   public readonly icnsInteractionStore: ICNSInteractionStore;
 
   public readonly queriesStore: QueriesStore<
@@ -153,6 +155,7 @@ export class RootStore {
     // and the queries should be executed again with the new endpoints.
     // If you do this, there is a high risk of network waste and unstable behavior.
     // Therefore, we defer the first queries until ready.
+
     ObservableQueryBase.experimentalDeferInitialQueryController =
       new DeferInitialQueryController();
 
@@ -199,6 +202,7 @@ export class RootStore {
       this.interactionStore,
       CommunityChainInfoRepo
     );
+    this.chainSwitchStore = new ChainSwitchStore(this.interactionStore);
     this.icnsInteractionStore = new ICNSInteractionStore(this.interactionStore);
 
     this.queriesStore = new QueriesStore(

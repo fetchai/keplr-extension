@@ -1,5 +1,4 @@
 import { Account, WalletStatus } from "@fetchai/wallet-types";
-import { NetworkConfig } from "@fetchai/wallet-types/build/network-info";
 import { Message } from "@keplr-wallet/router";
 import {
   ChainInfo,
@@ -732,17 +731,19 @@ export class StatusMsg extends Message<WalletStatus> {
   }
 }
 
-export class UnlockWalletMsg extends Message<string> {
+export class UnlockWalletMsg extends Message<void> {
   public static type() {
     return "unlock-wallet-msg";
   }
 
-  constructor() {
+  constructor(public readonly password = "") {
     super();
   }
 
   validateBasic(): void {
-    // noop
+    if (!this.password) {
+      throw new Error("password not set");
+    }
   }
 
   route(): string {
@@ -754,7 +755,7 @@ export class UnlockWalletMsg extends Message<string> {
   }
 }
 
-export class LockWalletMsg extends Message<string> {
+export class LockWalletMsg extends Message<void> {
   public static type() {
     return "lock-wallet-msg";
   }
@@ -781,12 +782,14 @@ export class CurrentAccountMsg extends Message<Account> {
     return "current-account-msg";
   }
 
-  constructor() {
+  constructor(public readonly chainId: string) {
     super();
   }
 
   validateBasic(): void {
-    // noop
+    if (!this.chainId) {
+      throw new Error("Chain id not set");
+    }
   }
 
   route(): string {
@@ -822,7 +825,7 @@ export class SwitchAccountMsg extends Message<string> {
   }
 }
 
-export class ListAccountsMsg extends Message<Account[]> {
+export class ListAccountsMsg extends Message<Account> {
   public static type() {
     return "list-account-msg";
   }
@@ -866,55 +869,9 @@ export class GetAccountMsg extends Message<Account> {
   }
 }
 
-export class CurrentNetworkMsg extends Message<NetworkConfig> {
+export class GetNetworkMsg extends Message<ChainInfo> {
   public static type() {
     return "current-network-msg";
-  }
-
-  constructor() {
-    super();
-  }
-
-  validateBasic(): void {
-    // noop
-  }
-
-  route(): string {
-    return "keyring";
-  }
-
-  type(): string {
-    return CurrentNetworkMsg.type();
-  }
-}
-
-export class SwitchToNetworkMsg extends Message<string> {
-  public static type() {
-    return "switch-to-network-msg";
-  }
-
-  constructor(public readonly network: NetworkConfig) {
-    super();
-  }
-
-  validateBasic(): void {
-    if (!this.network) {
-      throw new Error("network is empty");
-    }
-  }
-
-  route(): string {
-    return "keyring";
-  }
-
-  type(): string {
-    return SwitchToNetworkMsg.type();
-  }
-}
-
-export class SwitchToNetworkByChainIdMsg extends Message<string> {
-  public static type() {
-    return "switch-to-network-by-chain-id-msg";
   }
 
   constructor(public readonly chainId: string) {
@@ -923,20 +880,20 @@ export class SwitchToNetworkByChainIdMsg extends Message<string> {
 
   validateBasic(): void {
     if (!this.chainId) {
-      throw new Error("chainId is empty");
+      throw new Error("Chain id not set");
     }
   }
 
   route(): string {
-    return "keyring";
+    return "chains";
   }
 
   type(): string {
-    return SwitchToNetworkByChainIdMsg.type();
+    return GetNetworkMsg.type();
   }
 }
 
-export class ListNetworksMsg extends Message<NetworkConfig[]> {
+export class ListNetworksMsg extends Message<ChainInfo[]> {
   public static type() {
     return "list-network-msg";
   }
@@ -950,10 +907,263 @@ export class ListNetworksMsg extends Message<NetworkConfig[]> {
   }
 
   route(): string {
-    return "keyring";
+    return "chains";
   }
 
   type(): string {
     return ListNetworksMsg.type();
+  }
+}
+
+export class GetKeyMsgFetchSigning extends Message<Key> {
+  public static type() {
+    return "get-key-fetch-signing";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chain id not set");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return GetKeyMsgFetchSigning.type();
+  }
+}
+
+export class RequestSignAminoMsgFetchSigning extends Message<AminoSignResponse> {
+  public static type() {
+    return "request-sign-amino-fetch-signing";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly signer: string,
+    public readonly signDoc: StdSignDoc,
+    public readonly signOptions: KeplrSignOptions & {
+      // Hack option field to detect the sign arbitrary for string
+      isADR36WithString?: boolean;
+      ethSignType?: EthSignType;
+    } = {}
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chain id not set");
+    }
+
+    if (!this.signer) {
+      throw new Error("signer not set");
+    }
+
+    // It is not important to check this on the client side as opposed to increasing the bundle size.
+    // Validate bech32 address.
+    // Bech32Address.validate(this.signer);
+
+    const signDoc = this.signDoc;
+
+    // Check that the sign doc is for ADR-36,
+    // the validation should be performed on the background.
+    const hasOnlyMsgSignData = (() => {
+      if (
+        signDoc &&
+        signDoc.msgs &&
+        Array.isArray(signDoc.msgs) &&
+        signDoc.msgs.length === 1
+      ) {
+        const msg = signDoc.msgs[0];
+        return msg.type === "sign/MsgSignData";
+      } else {
+        return false;
+      }
+    })();
+
+    // If the sign doc is expected to be for ADR-36,
+    // it doesn't have to have the chain id in the sign doc.
+    if (!hasOnlyMsgSignData && signDoc.chain_id !== this.chainId) {
+      throw new Error(
+        "Chain id in the message is not matched with the requested chain id"
+      );
+    }
+
+    if (!this.signOptions) {
+      throw new Error("Sign options are null");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return RequestSignAminoMsgFetchSigning.type();
+  }
+}
+
+export class RequestSignDirectMsgFetchSigning extends Message<{
+  readonly signed: {
+    bodyBytes: Uint8Array;
+    authInfoBytes: Uint8Array;
+    chainId: string;
+    accountNumber: string;
+  };
+  readonly signature: StdSignature;
+}> {
+  public static type() {
+    return "request-sign-direct-fetch-signing";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly signer: string,
+    public readonly signDoc: {
+      bodyBytes?: Uint8Array | null;
+      authInfoBytes?: Uint8Array | null;
+      chainId?: string | null;
+      accountNumber?: string | null;
+    },
+    public readonly signOptions: KeplrSignOptions = {}
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chain id not set");
+    }
+
+    if (!this.signer) {
+      throw new Error("signer not set");
+    }
+
+    // It is not important to check this on the client side as opposed to increasing the bundle size.
+    // Validate bech32 address.
+    // Bech32Address.validate(this.signer);
+
+    // const signDoc = cosmos.tx.v1beta1.SignDoc.create({
+    //   bodyBytes: this.signDoc.bodyBytes,
+    //   authInfoBytes: this.signDoc.authInfoBytes,
+    //   chainId: this.signDoc.chainId,
+    //   accountNumber: this.signDoc.accountNumber
+    //     ? Long.fromString(this.signDoc.accountNumber)
+    //     : undefined,
+    // });
+    //
+    // if (signDoc.chainId !== this.chainId) {
+    //   throw new Error(
+    //     "Chain id in the message is not matched with the requested chain id"
+    //   );
+    // }
+
+    if (!this.signOptions) {
+      throw new Error("Sign options are null");
+    }
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return RequestSignDirectMsgFetchSigning.type();
+  }
+}
+
+export class RequestVerifyADR36AminoSignDocFetchSigning extends Message<boolean> {
+  public static type() {
+    return "request-verify-adr-36-amino-doc-fetch-signing";
+  }
+
+  constructor(
+    public readonly chainId: string,
+    public readonly signer: string,
+    public readonly data: Uint8Array,
+    public readonly signature: StdSignature
+  ) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chain id not set");
+    }
+
+    if (!this.signer) {
+      throw new Error("signer not set");
+    }
+
+    if (!this.signature) {
+      throw new Error("Signature not set");
+    }
+
+    // It is not important to check this on the client side as opposed to increasing the bundle size.
+    // Validate bech32 address.
+    // Bech32Address.validate(this.signer);
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return RequestVerifyADR36AminoSignDocFetchSigning.type();
+  }
+}
+
+export class AddNetworkAndSwitchMsg extends Message<void> {
+  public static type() {
+    return "add-chain-by-network";
+  }
+
+  constructor(public readonly chainInfo: ChainInfo) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainInfo) {
+      throw new Error("chain info not set");
+    }
+  }
+
+  route(): string {
+    return "chains";
+  }
+
+  type(): string {
+    return AddNetworkAndSwitchMsg.type();
+  }
+}
+
+export class SwitchNetworkByChainIdMsg extends Message<void> {
+  public static type() {
+    return "switch-network-by-chainid";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("chainId is empty");
+    }
+  }
+
+  route(): string {
+    return "chains";
+  }
+
+  type(): string {
+    return SwitchNetworkByChainIdMsg.type();
   }
 }
