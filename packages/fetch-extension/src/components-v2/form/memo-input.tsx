@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { FormFeedback, Input } from "reactstrap";
+import { FormFeedback, Input, Label } from "reactstrap";
 import { IMemoConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { Card } from "../card";
@@ -33,34 +33,36 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
 
     return (
       <React.Fragment>
+        <Label style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
+          Memo
+        </Label>
         <Card
-          heading={
-            <div>
-              Memo{" "}
-              <Input
-                id={inputId}
-                placeholder="Optional"
-                className="form-control-alternative"
-                type="textarea"
-                rows={rows ? rows : 2}
-                style={{
-                  resize: "none",
-                  boxShadow: "none",
-                  background: "transparent",
-                  border: "none",
-                  color: "white",
-                  height: "32px",
-                  paddingLeft: "0px",
-                }}
-                value={memoConfig.memo}
-                onChange={(e) => {
-                  memoConfig.setMemo(e.target.value.substring(0, 256));
-                  e.preventDefault();
-                }}
-                autoComplete="off"
-                disabled={disabled}
-              />
-            </div>
+          heading={""}
+          subheading={
+            <Input
+              id={inputId}
+              placeholder="Optional"
+              type="textarea"
+              rows={rows ? rows : 2}
+              style={{
+                resize: "none",
+                boxShadow: "none",
+                background: "transparent",
+                border: "none",
+                color: "white",
+                height: "32px",
+                paddingLeft: "0px",
+                marginTop: "-14px",
+                fontWeight: "bold",
+              }}
+              value={memoConfig.memo}
+              onChange={(e) => {
+                memoConfig.setMemo(e.target.value.substring(0, 256));
+                e.preventDefault();
+              }}
+              autoComplete="off"
+              disabled={disabled}
+            />
           }
           style={{
             opacity: "0.8",

@@ -2,6 +2,13 @@
 @import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/mixins";
 @import "../../../../../node_modules/argon-dashboard-react/src/assets/scss/argon-dashboard/custom/variables";
 
+.input-size {
+  display: flex;
+  justify-content: space-between;
+  height: 195px;
+  flex-direction: column;
+  align-items: center;
+}
 .input {
   box-shadow: none !important;
   height: 32px;
@@ -11,7 +18,8 @@
   padding: 0;
   padding-right: 0;
   font-size: 32px;
-  width: 90%;
+  width: 15%;
+  // margin-left: 215px;
   &:focus {
     box-shadow: none !important;
     height: 32px;
@@ -20,7 +28,7 @@
     color: #fff !important;
     padding-left: 0;
     padding-right: 0;
-    width: 90%;
+    width: 65%;
     & + .select {
       box-shadow: none !important;
       height: 32px;
@@ -33,6 +41,24 @@
     }
   }
 }
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 200px;
+  color: var(--Grey-Grey-700, #556578);
+  font-size: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .input::placeholder {
   color: white !important;
 }
@@ -101,6 +127,24 @@ input::-webkit-inner-spin-button {
   }
 }
 
+.widgetButton,
+.widgetButton:hover {
+  background: transparent !important;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 0px;
+  gap: 3px;
+  color: white;
+}
+.widgetButton:focus {
+  margin: 0px;
+}
+.widgetButton:disabled{
+  cursor: not-allowed;
+}
 .balance {
   float: right;
   font-weight: normal;
@@ -120,14 +164,17 @@ input::-webkit-inner-spin-button {
   }
 }
 .errorText {
+  margin-top: 8px;
   color: #fb8c72;
   font-size: 14px;
 }
 
 .right-widgets {
+  gap: 4px;
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
 }
 
 .max,
@@ -165,10 +212,6 @@ input::-webkit-inner-spin-button {
   opacity: 0.8;
 }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-}
 .balance {
   font-size: 13px;
   color: white !important;

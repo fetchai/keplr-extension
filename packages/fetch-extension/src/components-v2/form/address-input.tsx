@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { ModalBody, Modal, Button, FormText } from "reactstrap";
+import { ModalBody, Modal, Button, FormText, Label } from "reactstrap";
 import { AddressBookPage } from "../../pages/setting/address-book";
 
 import styleAddressInput from "./address-input.module.scss";
@@ -187,13 +187,15 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
             />
           </ModalBody>
         </Modal>
-
+        <Label style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
+          {label}
+        </Label>
         <Card
           style={{
             background: "rgba(255, 255, 255, 0.1)",
             color: "rgba(255, 255, 255, 0.6)",
           }}
-          heading={label}
+          heading={""}
           subheading={
             <input
               style={{ color: "white", fontWeight: "bold", width: "190px" }}

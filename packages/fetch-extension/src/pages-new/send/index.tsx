@@ -1,11 +1,5 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import {
-  AddressInput,
-  FeeButtons,
-  CoinInput,
-  MemoInput,
-  TokenSelectorDropdown,
-} from "@components-v2/form";
+
 import { useStore } from "../../stores";
 
 import { HeaderLayout } from "@layouts-v2/header-layout";
@@ -14,8 +8,6 @@ import { observer } from "mobx-react-lite";
 
 import style from "./style.module.scss";
 import { useNotification } from "@components/notification";
-
-import { useIntl } from "react-intl";
 
 import { useNavigate, useLocation } from "react-router";
 import queryString from "querystring";
@@ -27,13 +19,13 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
-import { Card } from "@components-v2/card";
-import { Dropdown } from "@components-v2/dropdown";
-import { SetKeyRingPage } from "../keyring-dev";
-import { ButtonV2 } from "@components-v2/buttons/button";
+
+import { SendPhase1 } from "./send-phase-1";
+import { SendPhase2 } from "./send-phase-2";
 
 export const SendPage: FunctionComponent = observer(() => {
-  const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);
+  const [isNext, setIsNext] = useState(false);
+
   const navigate = useNavigate();
   let search = useLocation().search;
   if (search.startsWith("?")) {
@@ -54,14 +46,11 @@ export const SendPage: FunctionComponent = observer(() => {
     }
   }, []);
 
-  const intl = useIntl();
-
   const notification = useNotification();
 
   const {
     chainStore,
     accountStore,
-    priceStore,
     queriesStore,
     analyticsStore,
     uiConfigStore,
@@ -352,171 +341,18 @@ export const SendPage: FunctionComponent = observer(() => {
       >
         <div className={style["formInnerContainer"]}>
           <div className={style["cardContainer"]}>
-            <CoinInput
-              amountConfig={sendConfigs.amountConfig}
-              label={intl.formatMessage({ id: "send.input.amount" })}
-              balanceText={intl.formatMessage({
-                id: "send.input-button.balance",
-              })}
-              disableAllBalance={(() => {
-                if (
-                  // In the case of terra classic, tax is applied in proportion to the amount.
-                  // However, in this case, the tax itself changes the fee,
-                  // so if you use the max function, it will fall into infinite repetition.
-                  // We currently disable if chain is terra classic because we can't handle it properly.
-                  sendConfigs.feeConfig.chainInfo.features &&
-                  sendConfigs.feeConfig.chainInfo.features.includes(
-                    "terra-classic-fee"
-                  )
-                ) {
-                  return true;
-                }
-                return false;
-              })()}
-              overrideSelectableCurrencies={(() => {
-                if (
-                  chainStore.current.features &&
-                  chainStore.current.features.includes("terra-classic-fee")
-                ) {
-                  // At present, can't handle stability tax well if it is not registered native token.
-                  // So, for terra classic, disable other tokens.
-                  const currencies =
-                    sendConfigs.amountConfig.sendableCurrencies;
-                  return currencies.filter((cur) => {
-                    const denom = new DenomHelper(cur.coinMinimalDenom);
-                    if (
-                      denom.type !== "native" ||
-                      denom.denom.startsWith("ibc/")
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  });
-                }
-                return undefined;
-              })()}
-            />
-            <Card
-              style={{
-                background: "rgba(255, 255, 255, 0.10)",
-                color: "rgba(255, 255, 255, 0.6)",
-                fontSize: "14px",
-              }}
-              subheadingStyle={{
-                fontSize: "14px",
-                color: "white",
-                fontWeight: "bold",
-                opacity: "1",
-              }}
-              heading={"Wallet"}
-              subheading={accountInfo.name}
-              rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
-              onClick={() => setIsChangeWalletOpen(!isChangeWalletOpen)}
-            />
-            <TokenSelectorDropdown amountConfig={sendConfigs.amountConfig} />
-            <AddressInput
-              recipientConfig={sendConfigs.recipientConfig}
-              memoConfig={sendConfigs.memoConfig}
-              label={intl.formatMessage({ id: "send.input.recipient" })}
-              value={""}
-            />
-
-            <MemoInput
-              memoConfig={sendConfigs.memoConfig}
-              label={intl.formatMessage({ id: "send.input.memo" })}
-            />
-            <FeeButtons
-              feeConfig={sendConfigs.feeConfig}
-              gasConfig={sendConfigs.gasConfig}
-              priceStore={priceStore}
-              label={intl.formatMessage({ id: "send.input.fee" })}
-              feeSelectLabels={{
-                low: intl.formatMessage({ id: "fee-buttons.select.low" }),
-                average: intl.formatMessage({
-                  id: "fee-buttons.select.average",
-                }),
-                high: intl.formatMessage({ id: "fee-buttons.select.high" }),
-              }}
-              gasLabel={intl.formatMessage({ id: "send.input.gas" })}
-              gasSimulator={gasSimulator}
-            />
+            {isNext === false && (
+              <SendPhase1 setIsNext={setIsNext} sendConfigs={sendConfigs} />
+            )}
+            {isNext === true && (
+              <SendPhase2
+                isDetachedPage={isDetachedPage}
+                sendConfigs={sendConfigs}
+                setIsNext={setIsNext}
+              />
+            )}
           </div>
-          <ButtonV2
-            text="Review transfer"
-            gradientText=""
-            onClick={async (e: any) => {
-              e.preventDefault();
-
-              if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
-                try {
-                  const stdFee = sendConfigs.feeConfig.toStdFee();
-
-                  const tx = accountInfo.makeSendTokenTx(
-                    sendConfigs.amountConfig.amount,
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    sendConfigs.amountConfig.sendCurrency!,
-                    sendConfigs.recipientConfig.recipient
-                  );
-
-                  await tx.send(
-                    stdFee,
-                    sendConfigs.memoConfig.memo,
-                    {
-                      preferNoSetFee: true,
-                      preferNoSetMemo: true,
-                    },
-                    {
-                      onBroadcastFailed: (e: any) => {
-                        console.log(e);
-                      },
-                      onBroadcasted: () => {
-                        analyticsStore.logEvent("Send token tx broadcasted", {
-                          chainId: chainStore.current.chainId,
-                          chainName: chainStore.current.chainName,
-                          feeType: sendConfigs.feeConfig.feeType,
-                        });
-                      },
-                    }
-                  );
-
-                  if (!isDetachedPage) {
-                    navigate("/", { replace: true });
-                  }
-                } catch (e) {
-                  if (!isDetachedPage) {
-                    navigate("/", { replace: true });
-                  }
-                  notification.push({
-                    type: "warning",
-                    placement: "top-center",
-                    duration: 5,
-                    content: `Fail to send token: ${e.message}`,
-                    canDelete: true,
-                    transition: {
-                      duration: 0.25,
-                    },
-                  });
-                } finally {
-                  // XXX: If the page is in detached state,
-                  // close the window without waiting for tx to commit. analytics won't work.
-                  if (isDetachedPage) {
-                    window.close();
-                  }
-                }
-              }
-            }}
-            data-loading={accountInfo.isSendingMsg === "send"}
-            disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
-          />
         </div>
-        <Dropdown
-          isOpen={isChangeWalletOpen}
-          setIsOpen={setIsChangeWalletOpen}
-          title="Select Wallet"
-          closeClicked={() => setIsChangeWalletOpen(false)}
-        >
-          <SetKeyRingPage navigateTo={"/send"} />
-        </Dropdown>
       </form>
     </HeaderLayout>
   );

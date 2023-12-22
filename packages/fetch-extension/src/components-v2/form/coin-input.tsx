@@ -3,7 +3,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import classnames from "classnames";
 import styleCoinInput from "./coin-input.module.scss";
 
-import { Button, FormGroup } from "reactstrap";
+import { Button, FormGroup, Label } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import {
   EmptyAmountError,
@@ -25,20 +25,16 @@ import { Dropdown } from "../dropdown";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
-
   balanceText?: string;
-
   className?: string;
   label?: string;
-
   disableAllBalance?: boolean;
-
   overrideSelectableCurrencies?: AppCurrency[];
   dropdownDisabled?: boolean;
 }
 
 export const CoinInput: FunctionComponent<CoinInputProps> = observer(
-  ({ amountConfig, className, disableAllBalance }) => {
+  ({ amountConfig, disableAllBalance }) => {
     const intl = useIntl();
     const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
     const { priceStore, queriesStore } = useStore();
@@ -112,53 +108,58 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     }, [intl, error]);
     return (
       <React.Fragment>
-        <FormGroup
-          className={className}
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
+        <FormGroup className={styleCoinInput["input-size"]}>
           <div className={styleCoinInput["input-container"]}>
             <div className={styleCoinInput["amount-label"]}>
-              <div>Amount </div>
+              <div>Amount</div>
             </div>
-            <input
-              placeholder={`0 ${amountConfig.sendCurrency.coinDenom}`}
-              className={classnames(
-                "form-control-alternative",
-                styleCoinInput["input"]
-              )}
-              id={`input-${randomId}`}
-              type="number"
-              value={amountConfig.amount}
-              onChange={(e: any) => {
-                e.preventDefault();
-                amountConfig.setAmount(e.target.value);
-              }}
-              min={0}
-              autoComplete="off"
-            />
+            <div className={styleCoinInput["input-wrapper"]}>
+              <input
+                placeholder={`0`}
+                className={classnames(
+                  "form-control-alternative",
+                  styleCoinInput["input"]
+                )}
+                id={`input-${randomId}`}
+                type="number"
+                value={amountConfig.amount}
+                onChange={(e: any) => {
+                  e.preventDefault();
+                  amountConfig.setAmount(e.target.value);
+                }}
+                min={0}
+                autoComplete="off"
+              />
+              <span>{amountConfig.sendCurrency.coinDenom}</span>
+            </div>
             <div className={styleCoinInput["amount-usd"]}>{inputInUsd}</div>
+            {errorText != null ? (
+              <div className={styleCoinInput["errorText"]}>{errorText}</div>
+            ) : null}
           </div>
-
           <div className={styleCoinInput["right-widgets"]}>
-            <Button disabled={true} className={styleCoinInput["toggle"]}>
+            <Button
+              // disabled={true}
+              style={{ margin: "0px" }}
+              className={styleCoinInput["widgetButton"]}
+            >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
+              Change to USD
             </Button>
             {!disableAllBalance ? (
               <Button
-                className={styleCoinInput["max"]}
+                style={{ margin: "0px" }}
+                className={styleCoinInput["widgetButton"]}
                 onClick={(e) => {
                   e.preventDefault();
                   amountConfig.toggleIsMax();
                 }}
               >
-                MAX
+                Use max available
               </Button>
             ) : null}
           </div>
         </FormGroup>
-        {errorText != null ? (
-          <div className={styleCoinInput["errorText"]}>{errorText}</div>
-        ) : null}
       </React.Fragment>
     );
   }
@@ -220,14 +221,13 @@ export const TokenSelectorDropdown: React.FC<TokenDropdownProps> = ({
   );
   return (
     <React.Fragment>
+      <Label style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
+        Asset
+      </Label>
       <Card
         style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
         onClick={() => setIsOpenTokenSelector(!isOpenTokenSelector)}
-        heading={
-          <div>
-            Asset <div>{amountConfig.sendCurrency.coinDenom}</div>
-          </div>
-        }
+        heading={<div>{amountConfig.sendCurrency.coinDenom}</div>}
         rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
         subheading={
           <div>
