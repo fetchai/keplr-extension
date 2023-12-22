@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import { observer } from "mobx-react-lite";
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { store } from "@chatStore/index";
@@ -16,8 +16,9 @@ import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "@components-v2/card";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useConfirm } from "@components/confirm";
-import { TabsPanel } from "@components-v2/tabsPanel";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-v2";
 import { formatAddress } from "@utils/format";
+import { SearchBar } from "@components-v2/search-bar";
 
 interface ChainListProps {
   showAddress?: boolean;
@@ -25,6 +26,9 @@ interface ChainListProps {
 export const ChainList: FunctionComponent<ChainListProps> = observer(
   ({ showAddress }) => {
     const { chainStore, analyticsStore, accountStore } = useStore();
+    const [cosmosSearchTerm, setCosmosSearchTerm] = useState("");
+    const [evmSearchTerm, setEvmSearchTerm] = useState("");
+
     const intl = useIntl();
     const navigate = useNavigate();
     const confirm = useConfirm();
@@ -44,54 +48,58 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
         id: "Cosmos",
         component: (
           <div>
-            {mainChainList.map((chainInfo, index) => (
-              <Card
-                key={index}
-                leftImage={
-                  chainInfo.chainName
-                    ? chainInfo.chainName[0].toUpperCase()
-                    : ""
-                }
-                heading={chainInfo.chainName}
-                isActive={chainInfo.chainId === chainStore.current.chainId}
-                rightContent={
-                  chainInfo.chainId === chainStore.current.chainId
-                    ? require("@assets/svg/wireframe/check.svg")
-                    : ""
-                }
-                onClick={() => {
-                  // navigate("/");
-                  let properties = {};
-                  if (chainInfo.chainId !== chainStore.current.chainId) {
-                    properties = {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                      toChainId: chainInfo.chainId,
-                      toChainName: chainInfo.chainName,
-                    };
+            <SearchBar
+              onSearchTermChange={setCosmosSearchTerm}
+              searchTerm={cosmosSearchTerm}
+              valuesArray={mainChainList}
+              renderResult={(chainInfo, index) => (
+                <Card
+                  key={index}
+                  leftImage={
+                    chainInfo.chainName
+                      ? chainInfo.chainName[0].toUpperCase()
+                      : ""
                   }
-                  chainStore.selectChain(chainInfo.chainId);
-                  chainStore.saveLastViewChainId();
-                  store.dispatch(resetUser({}));
-                  store.dispatch(resetProposals({}));
-
-                  store.dispatch(resetChatList({}));
-                  store.dispatch(setIsChatSubscriptionActive(false));
-                  messageAndGroupListenerUnsubscribe();
-
-                  if (Object.values(properties).length > 0) {
-                    analyticsStore.logEvent("Chain changed", properties);
+                  heading={chainInfo.chainName}
+                  isActive={chainInfo.chainId === chainStore.current.chainId}
+                  rightContent={
+                    chainInfo.chainId === chainStore.current.chainId
+                      ? require("@assets/svg/wireframe/check.svg")
+                      : ""
                   }
-                }}
-                subheading={
-                  showAddress
-                    ? formatAddress(
-                        accountStore.getAccount(chainInfo.chainId).bech32Address
-                      )
-                    : null
-                }
-              />
-            ))}
+                  onClick={() => {
+                    let properties = {};
+                    if (chainInfo.chainId !== chainStore.current.chainId) {
+                      properties = {
+                        chainId: chainStore.current.chainId,
+                        chainName: chainStore.current.chainName,
+                        toChainId: chainInfo.chainId,
+                        toChainName: chainInfo.chainName,
+                      };
+                    }
+                    chainStore.selectChain(chainInfo.chainId);
+                    chainStore.saveLastViewChainId();
+                    store.dispatch(resetUser({}));
+                    store.dispatch(resetProposals({}));
+                    store.dispatch(resetChatList({}));
+                    store.dispatch(setIsChatSubscriptionActive(false));
+                    messageAndGroupListenerUnsubscribe();
+
+                    if (Object.values(properties).length > 0) {
+                      analyticsStore.logEvent("Chain changed", properties);
+                    }
+                  }}
+                  subheading={
+                    showAddress
+                      ? formatAddress(
+                          accountStore.getAccount(chainInfo.chainId)
+                            .bech32Address
+                        )
+                      : null
+                  }
+                />
+              )}
+            />
             <div className={style["chain-title"]}>
               {betaChainList.length > 0 ? "Beta support" : null}
             </div>
@@ -180,52 +188,58 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
         id: "EVM",
         component: (
           <div>
-            {evmChainList.map((chainInfo) => (
-              <Card
-                leftImage={
-                  chainInfo.chainName
-                    ? chainInfo.chainName[0].toUpperCase()
-                    : ""
-                }
-                heading={chainInfo.chainName}
-                isActive={chainInfo.chainId === chainStore.current.chainId}
-                rightContent={
-                  chainInfo.chainId === chainStore.current.chainId
-                    ? require("@assets/svg/wireframe/check.svg")
-                    : ""
-                }
-                onClick={() => {
-                  let properties = {};
-                  if (chainInfo.chainId !== chainStore.current.chainId) {
-                    properties = {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                      toChainId: chainInfo.chainId,
-                      toChainName: chainInfo.chainName,
-                    };
+            <SearchBar
+              searchTerm={evmSearchTerm}
+              onSearchTermChange={setEvmSearchTerm}
+              valuesArray={evmChainList}
+              renderResult={(chainInfo, index) => (
+                <Card
+                  key={index}
+                  leftImage={
+                    chainInfo.chainName
+                      ? chainInfo.chainName[0].toUpperCase()
+                      : ""
                   }
-                  chainStore.selectChain(chainInfo.chainId);
-                  chainStore.saveLastViewChainId();
-                  store.dispatch(resetUser({}));
-                  store.dispatch(resetProposals({}));
+                  heading={chainInfo.chainName}
+                  isActive={chainInfo.chainId === chainStore.current.chainId}
+                  rightContent={
+                    chainInfo.chainId === chainStore.current.chainId
+                      ? require("@assets/svg/wireframe/check.svg")
+                      : ""
+                  }
+                  onClick={() => {
+                    let properties = {};
+                    if (chainInfo.chainId !== chainStore.current.chainId) {
+                      properties = {
+                        chainId: chainStore.current.chainId,
+                        chainName: chainStore.current.chainName,
+                        toChainId: chainInfo.chainId,
+                        toChainName: chainInfo.chainName,
+                      };
+                    }
+                    chainStore.selectChain(chainInfo.chainId);
+                    chainStore.saveLastViewChainId();
+                    store.dispatch(resetUser({}));
+                    store.dispatch(resetProposals({}));
+                    store.dispatch(resetChatList({}));
+                    store.dispatch(setIsChatSubscriptionActive(false));
+                    messageAndGroupListenerUnsubscribe();
 
-                  store.dispatch(resetChatList({}));
-                  store.dispatch(setIsChatSubscriptionActive(false));
-                  messageAndGroupListenerUnsubscribe();
-                  // navigate("/");
-                  if (Object.values(properties).length > 0) {
-                    analyticsStore.logEvent("Chain changed", properties);
+                    if (Object.values(properties).length > 0) {
+                      analyticsStore.logEvent("Chain changed", properties);
+                    }
+                  }}
+                  subheading={
+                    showAddress
+                      ? formatAddress(
+                          accountStore.getAccount(chainInfo.chainId)
+                            .bech32Address
+                        )
+                      : null
                   }
-                }}
-                subheading={
-                  showAddress
-                    ? formatAddress(
-                        accountStore.getAccount(chainInfo.chainId).bech32Address
-                      )
-                    : null
-                }
-              />
-            ))}
+                />
+              )}
+            />
             <div style={{ position: "absolute", bottom: "5px", width: "94%" }}>
               <ButtonV2
                 onClick={(e: any) => {

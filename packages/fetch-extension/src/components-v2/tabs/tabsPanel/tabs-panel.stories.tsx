@@ -1,6 +1,6 @@
 import React from "react";
 import { TabsPanel, TabsProps } from "./index";
-import { Card } from "../card";
+import { Card } from "../../card";
 import { Story } from "@storybook/react";
 
 export default {

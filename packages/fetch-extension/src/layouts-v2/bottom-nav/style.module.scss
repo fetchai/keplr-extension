@@ -2,11 +2,13 @@
 
 .bottomNavContainer {
   display: flex;
-  height: 74px;
+  height: 86px;
   filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.1));
-  width: 295px;
+  width: 354px;
   overflow: hidden;
   margin-left: 5px;
+  padding: 0px 12px 0px 12px;
+  background: #000d3d;
 }
 
 .tab {

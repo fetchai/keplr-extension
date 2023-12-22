@@ -15,7 +15,15 @@
   display: flex;
   flex-direction: column;
 }
+.tokenPriceChanges {
+  color: var(--green-green-500-vibrant-green, #2de376);
 
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
 .balance {
   font-size: $xl;
   display: flex;
@@ -24,6 +32,7 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  justify-content: center;
 }
 
 .denom {
@@ -88,8 +97,7 @@
 }
 
 .changeInDollars-green {
-  color: var(--green-green-500-vibrant-green, #2DE376);
-
+  color: var(--green-green-500-vibrant-green, #2de376);
 }
 
 .changeInDollars-orange {
@@ -97,8 +105,7 @@
 }
 
 .increaseInDollarsGreen {
-  color: var(--green-green-500-vibrant-green, #2DE376);
-
+  color: var(--green-green-500-vibrant-green, #2de376);
 }
 
 .increaseInDollarsOrange {
@@ -110,8 +117,7 @@
 }
 
 .positive {
-  color: var(--green-green-500-vibrant-green, #2DE376);
-
+  color: var(--green-green-500-vibrant-green, #2de376);
 }
 
 .negative {

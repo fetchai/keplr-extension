@@ -7,6 +7,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
+import { separateNumericAndDenom } from "@utils/format";
 
 interface Props {
   tokenState: any;
@@ -63,10 +64,6 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
 
   const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
 
-  const separateNumericAndDenom = (value: string) => {
-    const [numericPart, denomPart] = value.split(" ");
-    return { numericPart, denomPart };
-  };
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(
       total.shrink(true).trim(true).maxDecimals(6).toString()
@@ -74,10 +71,8 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
 
   const changeInDollarsValue =
     tokenState.type === "positive"
-      ? parseFloat(totalNumber) +
-        (parseFloat(totalNumber) * tokenState.diff) / 100
-      : parseFloat(totalNumber) -
-        (parseFloat(totalNumber) * tokenState.diff) / 100;
+      ? (parseFloat(totalNumber) * tokenState.diff) / 100
+      : -(parseFloat(totalNumber) * tokenState.diff) / 100;
 
   const changeInDollarsClass =
     tokenState.type === "positive"
@@ -94,14 +89,15 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
           <div className={style["inUsd"]}>
             {totalPrice && ` ${totalPrice.toString()} USD`}
           </div>
-          <div style={{ display: "flex", gap: "4px" }}>
+          <div className={style["tokenPriceChanges"]}>
             <div
               className={style["changeInDollars"] + " " + changeInDollarsClass}
             >
-              {changeInDollarsValue.toFixed(4)}
+              {changeInDollarsValue.toFixed(4)} {totalDenom}
             </div>
             <div className={style["changeInPer"]}>
-              ( {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
+              ( {tokenState.type === "positive" ? "+" : "-"}
+              {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
             </div>
             <div className={style["day"]}>{tokenState && tokenState.time}</div>
           </div>
@@ -120,14 +116,15 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                   .maxDecimals(6)
                   .toString()} USD`}
           </div>
-          <div style={{ display: "flex", gap: "4px" }}>
+          <div className={style["tokenPriceChanges"]}>
             <div
               className={style["changeInDollars"] + " " + changeInDollarsClass}
             >
-              {changeInDollarsValue.toFixed(4)}
+              {changeInDollarsValue.toFixed(4)} {totalDenom}
             </div>
             <div className={style["changeInPer"]}>
-              ( {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
+              ({tokenState.type === "positive" ? "+" : "-"}
+              {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
             </div>
             <div className={style["day"]}>{tokenState && tokenState.time}</div>
           </div>

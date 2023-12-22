@@ -190,7 +190,7 @@ export const FetchhubBridge: FunctionComponent<{
             {accountStore.getAccount("1").ethereumHexAddress}
           </div>
         )}
-        <div className={style["hr"]}></div>
+        <div className={style["hr"]} />
         <MemoInput
           label={intl.formatMessage({
             id: "send.input.memo",

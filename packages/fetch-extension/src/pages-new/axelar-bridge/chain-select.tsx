@@ -35,9 +35,9 @@ export const ChainSelect = observer(
         <Card
           heading={
             !isChainsLoaded ? (
-              <>
+              <React.Fragment>
                 loading <i className="fas fa-spinner fa-spin ml-2" />
-              </>
+              </React.Fragment>
             ) : recieverChain ? (
               recieverChain.chainName
             ) : (

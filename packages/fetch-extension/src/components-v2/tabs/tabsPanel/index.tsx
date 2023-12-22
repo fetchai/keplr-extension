@@ -5,7 +5,7 @@ interface Tab {
   id: string;
   component?: any;
   disabled?: boolean;
-  isActive?: boolean; // New prop to indicate if the tab is active
+  isActive?: boolean;
 }
 
 export interface TabsProps {
@@ -112,9 +112,7 @@ export const TabsPanel: React.FC<TabsProps> = ({
               >
                 {tab.id}
               </button>
-              {index !== tabs.length - 1 && (
-                <div className={style["border"]}></div>
-              )}
+              {index !== tabs.length - 1 && <div className={style["border"]} />}
             </div>
           ))}
         </div>

@@ -56,9 +56,8 @@ export const RecipientAddress: React.FC<RecipientAddressProps> = ({
         setIsOpen={setIsOpen}
         title="Transfer To"
         closeClicked={() => setIsOpen(false)}
-        styleProp={{height:"576px"}}
+        styleProp={{ height: "576px" }}
       >
-        
         <ChainList showAddress={true} />{" "}
       </Dropdown>
       <Input

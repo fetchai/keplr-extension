@@ -106,7 +106,7 @@ export const AssetView = () => {
             </div>
           )}
         </div>
-        <div></div>
+        <div />
       </div>
       <div>
         <div style={{ display: "flex", gap: "12px" }}>
@@ -145,24 +145,26 @@ export const AssetView = () => {
             />
           </ButtonV2>
         </div>
-        <ButtonV2
-          styleProps={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "4px",
-            justifyContent: "center",
-            marginBottom:"48px"
-          }}
-          onClick={() => navigate("/stake")}
-          text={"Earn"}
-        >
-          <img
-            className={style["img"]}
-            src={require("@assets/svg/wireframe/earn.svg")}
-            alt=""
-          />
-        </ButtonV2>
+        {current.chainName === "fetchhub" && (
+          <ButtonV2
+            styleProps={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              justifyContent: "center",
+              marginBottom: "48px",
+            }}
+            onClick={() => navigate("/stake")}
+            text={"Earn"}
+          >
+            <img
+              className={style["img"]}
+              src={require("@assets/svg/wireframe/earn.svg")}
+              alt=""
+            />
+          </ButtonV2>
+        )}
       </div>
       <Activity />
     </HeaderLayout>

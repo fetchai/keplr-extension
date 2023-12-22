@@ -21,7 +21,7 @@ export const GasInput: FunctionComponent<GasInputProps> = observer(
     });
 
     return (
-      <>
+      <React.Fragment>
         <Card
           style={{ background: "rgba(255,255,255,0.1)" }}
           heading={label}
@@ -41,7 +41,7 @@ export const GasInput: FunctionComponent<GasInputProps> = observer(
             />
           }
         />
-      </>
+      </React.Fragment>
     );
   }
 );

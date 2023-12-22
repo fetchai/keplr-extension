@@ -55,7 +55,7 @@ export const BottomNav = () => {
     </div>
   ) : (
     <div>
-      <div className={style["overlay"]}></div>
+      <div className={style["overlay"]} />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
           className={style["toggle"]}

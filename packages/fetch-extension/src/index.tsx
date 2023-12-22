@@ -110,7 +110,7 @@ import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
 import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
-import {AssetView} from "./pages-new/asset-view";
+import { AssetView } from "./pages-new/asset-view";
 
 window.keplr = new Keplr(
   manifest.version,

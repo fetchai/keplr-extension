@@ -187,7 +187,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
           </div>
         </div>
       </a>
-      <div className={style["hr"]}></div>
+      <div className={style["hr"]} />
     </React.Fragment>
   );
 };

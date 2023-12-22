@@ -16,11 +16,11 @@ import { useNavigate } from "react-router";
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
   setIsSelectWalletOpen,
-  tokenState
+  tokenState,
 }: {
   setIsSelectNetOpen: any;
   setIsSelectWalletOpen?: any;
-  tokenState :any;
+  tokenState: any;
 }) => {
   const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
   const navigate = useNavigate();
