@@ -6,7 +6,6 @@ import { Card } from "../card";
 import style from "./gas-input.style.module.scss";
 export interface GasInputProps {
   gasConfig: IGasConfig;
-
   label?: string;
   className?: string;
 }

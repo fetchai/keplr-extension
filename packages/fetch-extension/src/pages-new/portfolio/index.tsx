@@ -2,7 +2,7 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import React from "react";
 import { useNavigate } from "react-router";
 import style from "./style.module.scss";
-import { TabsPanel } from "@components-v2/tabs/tabsPanel";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-v2";
 import { TokensView } from "../main/tokens";
 import { Stats } from "./stats";
 
@@ -11,7 +11,7 @@ export const Portfolio = () => {
   const tabs = [
     { id: "Tokens", component: <TokensView /> },
     { id: "NFTs", disabled: true },
-    { id: "stats", disabled: false, component: <Stats /> },
+    { id: "Stats", disabled: false, component: <Stats /> },
   ];
   return (
     <HeaderLayout
