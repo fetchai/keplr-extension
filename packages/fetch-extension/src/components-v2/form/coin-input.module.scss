@@ -18,8 +18,9 @@
   padding: 0;
   padding-right: 0;
   font-size: 32px;
-  width: 70%;
   text-align: end;
+  max-width: 181px;
+
   &:focus {
     box-shadow: none !important;
     height: 32px;
@@ -28,8 +29,7 @@
     color: #fff !important;
     padding-left: 0;
     padding-right: 0;
-    max-width: fit-content;
-    width: 70%;
+    max-width: 181px;
 
     & + .select {
       box-shadow: none !important;
@@ -39,7 +39,7 @@
       color: #fff;
       padding-left: 0;
       padding-right: 0;
-      max-width: fit-content;
+      max-width: 181px;
     }
   }
 }

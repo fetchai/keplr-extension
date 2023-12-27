@@ -3,6 +3,16 @@
 .img {
   height: 12px;
 }
+.icon {
+  height: 48px;
+  width: 48px;
+  border-radius: 150px;
+  background: #000d3d;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .name {
   margin-top: 12px;
   color: rgba(255, 255, 255, 0.6);

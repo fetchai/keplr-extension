@@ -6,10 +6,25 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useLanguage } from "../../../languages";
 import { useNavigate } from "react-router";
 import { separateNumericAndDenom } from "@utils/format";
-
-export const NativeTokens = () => {
+import { getTokenIcon } from "@utils/get-token-icon";
+import { observer } from "mobx-react-lite";
+export const NativeTokens = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
   const [nativeToken, setNativeToken] = useState<any>("");
+  const [tokenIcon, setTokenIcon] = useState<string>("");
+
+  useEffect(() => {
+    if (nativeToken) {
+      const fetchTokenImage = async () => {
+        const tokenImage = await getTokenIcon(
+          nativeToken.currency?.coinGeckoId
+        );
+        setTokenIcon(tokenImage);
+      };
+      fetchTokenImage();
+    }
+  }, [nativeToken.currency?.coinGeckoId]);
+
   const navigate = useNavigate();
 
   const current = chainStore.current;
@@ -83,14 +98,17 @@ export const NativeTokens = () => {
             background: "rgba(255,255,255,0.1)",
             marginBottom: "8px",
           }}
-          leftImage={
-            nativeToken
-              ? nativeToken.currency.coinGeckoId
-              : totalDenom.toUpperCase()[0]
-          }
+          leftImage={tokenIcon ? tokenIcon : totalDenom.toUpperCase()[0]}
           heading={totalDenom}
           subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
-          rightContent={totalPrice && ` ${totalPrice.toString()} USD`}
+          rightContent={
+            totalPrice && (
+              <div>
+                {totalPrice.toString()}
+                <span style={{ color: "rgba(255,255,255,0.6" }}> USD</span>
+              </div>
+            )
+          }
           onClick={() => {
             navigate({
               pathname: "/asset",
@@ -102,11 +120,7 @@ export const NativeTokens = () => {
         <Card
           subheadingStyle={{ fontSize: "14px", color: "rgb(128, 141, 160)" }}
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
-          leftImage={
-            nativeToken
-              ? nativeToken.currency.coinGeckoId
-              : totalDenom.toUpperCase()[0]
-          }
+          leftImage={tokenIcon ? tokenIcon : totalDenom.toUpperCase()[0]}
           heading={totalDenom}
           subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
           onClick={() => {
@@ -119,7 +133,7 @@ export const NativeTokens = () => {
             totalPrice && (
               <div>
                 {totalPrice.toString()}
-                <span style={{ color: "rgba(255,255,255,0.6" }}>USD</span>{" "}
+                <span style={{ color: "rgba(255,255,255,0.6" }}> USD</span>
               </div>
             )
           }
@@ -127,4 +141,4 @@ export const NativeTokens = () => {
       )}
     </React.Fragment>
   );
-};
+});

@@ -58,6 +58,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       const inUsd = value && value.shrink(true).maxDecimals(6).toString();
       return inUsd;
     };
+
     useEffect(() => {
       const amountInNumber =
         parseFloat(amountConfig.amount) *
@@ -81,7 +82,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       if (error) {
         switch (error.constructor) {
           case EmptyAmountError:
-            // No need to show the error to user.
+            // No need to show the error to the user.
             return;
           case InvalidNumberAmountError:
             return intl.formatMessage({
@@ -106,6 +107,25 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
         }
       }
     }, [intl, error]);
+
+    const resizable = (el: any) => {
+      const int = 17.7;
+      const resize = () => {
+        el.style.width = `${(el.value.length + 1) * int}px`;
+      };
+      const events = ["keyup", "keypress", "focus", "blur", "change"];
+      for (const event of events) {
+        el.addEventListener(event, resize, false);
+      }
+      resize();
+    };
+    useEffect(() => {
+      const inputElement = document.getElementById(`input-${randomId}`);
+      if (inputElement) {
+        resizable(inputElement);
+      }
+    }, [randomId]);
+
     return (
       <React.Fragment>
         <FormGroup className={styleCoinInput["input-size"]}>
@@ -139,7 +159,6 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
           </div>
           <div className={styleCoinInput["right-widgets"]}>
             <Button
-              // disabled={true}
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
             >
@@ -164,6 +183,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     );
   }
 );
+
 export interface TokenDropdownProps {
   dropdownDisabled?: boolean;
   amountConfig: IAmountConfig;

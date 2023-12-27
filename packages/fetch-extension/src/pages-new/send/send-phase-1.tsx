@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import style from "./style.module.scss";
 import { useIntl } from "react-intl";
 import { CoinInput, TokenSelectorDropdown } from "@components-v2/form";
 import { DenomHelper } from "@keplr-wallet/common";

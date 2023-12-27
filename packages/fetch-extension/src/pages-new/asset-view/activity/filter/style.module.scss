@@ -33,6 +33,9 @@
   backdrop-filter: blur(10px);
 }
 
+.dropdownHeading:hover {
+  border: 1px solid white;
+}
 .dropdownMenuPopup {
   font-size: 12px;
   position: absolute;
@@ -54,13 +57,21 @@
 .dropdownItem {
   align-items: center;
   display: flex;
+  padding: 10px 0px;
+  font-size: 14px;
+  font-family: "Lexend";
+  border-radius: 10px;
 }
-
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 .select {
   padding: 2px 5px 0 2px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .select div:hover {

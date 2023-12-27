@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router";
 import style from "./style.module.scss";
 import { LineGraphView } from "../../components-v2/line-graph";
 import { ButtonV2 } from "@components-v2/buttons/button";
-
+import { getTokenIcon } from "@utils/get-token-icon";
 import { Activity } from "./activity";
 import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
@@ -12,6 +12,8 @@ import { separateNumericAndDenom } from "@utils/format";
 export const AssetView = observer(() => {
   const location = useLocation();
   const [tokenInfo, setTokenInfo] = useState<any>();
+  const [tokenIcon, setTokenIcon] = useState<string>("");
+
   const [balances, setBalances] = useState<any>();
   const [_assetValues, setAssetValues] = useState();
   const navigate = useNavigate();
@@ -34,13 +36,25 @@ export const AssetView = observer(() => {
       setTokenInfo(tokenInfo);
     }
   }, [location.search]);
-
+  useEffect(() => {
+    const fetchTokenImage = async () => {
+      const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
+      setTokenIcon(tokenImage);
+    };
+    fetchTokenImage();
+  }, [tokenInfo?.coinGeckoId]);
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(balances?.balance.toString());
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
       <div className={style["asset-info"]}>
-        <img src="" alt="F" />
+        {tokenIcon ? (
+          <img className={style["icon"]} src={tokenIcon} alt="" />
+        ) : (
+          <div className={style["icon"]}>
+            {tokenInfo?.coinDenom[0].toUpperCase()}
+          </div>
+        )}
         <div className={style["name"]}>{tokenInfo?.coinDenom}</div>
         <div className={style["price-in-usd"]}>
           {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"}
