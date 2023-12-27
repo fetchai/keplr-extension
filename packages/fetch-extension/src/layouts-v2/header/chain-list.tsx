@@ -16,7 +16,7 @@ import { resetProposals } from "@chatStore/proposal-slice";
 import { Card } from "@components-v2/card";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useConfirm } from "@components/confirm";
-import { TabsPanel } from "@components-v2/tabs/tabsPanel-v2";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { formatAddress } from "@utils/format";
 import { SearchBar } from "@components-v2/search-bar";
 

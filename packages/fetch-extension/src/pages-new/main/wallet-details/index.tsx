@@ -66,8 +66,6 @@ export const WalletDetailsView = ({
     [accountInfo.walletStatus, notification, intl]
   );
 
-  //withdraw rewards
-
   return (
     <div>
       <div
@@ -77,7 +75,7 @@ export const WalletDetailsView = ({
           marginBottom: "24px",
         }}
       >
-        <Button
+        <button
           onClick={() => {
             setIsSelectNetOpen(true);
           }}
@@ -85,7 +83,7 @@ export const WalletDetailsView = ({
         >
           {formatAddress(current.chainName)}
           <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
-        </Button>
+        </button>
         <Button
           onClick={() => {
             navigate("/chat");

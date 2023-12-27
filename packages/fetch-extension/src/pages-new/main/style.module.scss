@@ -42,6 +42,7 @@
   border: 1px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   background: transparent;
+  font-size: 14px;
 }
 .view-details {
   cursor: pointer;
@@ -62,6 +63,8 @@
 .chain-select:hover,
 .change-net,
 .change-net:hover {
+  cursor: pointer;
+  border-color: white;
   color: white;
   background: transparent !important;
   box-shadow: none;
@@ -109,7 +112,6 @@
   text-align: center;
   cursor: pointer;
   color: #fff;
-  // margin: 8px 0px;
 }
 
 .tab1-container {

@@ -24,7 +24,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(duration);
   const cacheKey = useMemo(
     () => `${tokenName}_${duration}`,
     [tokenName, duration]

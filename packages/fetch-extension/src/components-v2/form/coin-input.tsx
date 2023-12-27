@@ -115,7 +115,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             </div>
             <div className={styleCoinInput["input-wrapper"]}>
               <input
-                placeholder={`0`}
+                placeholder={`0.00`}
                 className={classnames(
                   "form-control-alternative",
                   styleCoinInput["input"]

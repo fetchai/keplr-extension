@@ -1,110 +1,70 @@
 import { HeaderLayout } from "@layouts-v2/header-layout";
-import React, { useState } from "react";
-import { useStore } from "../../stores";
-import { useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router";
 import style from "./style.module.scss";
 import { LineGraphView } from "../../components-v2/line-graph";
 import { ButtonV2 } from "@components-v2/buttons/button";
-import { useLanguage } from "../../languages";
-import { ChainIdHelper } from "@keplr-wallet/cosmos";
-import { AppCurrency } from "@keplr-wallet/types";
-import { Activity } from "./activity";
 
-export const AssetView = () => {
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+import { Activity } from "./activity";
+import { observer } from "mobx-react-lite";
+import { separateNumericAndDenom } from "@utils/format";
+
+export const AssetView = observer(() => {
+  const location = useLocation();
+  const [tokenInfo, setTokenInfo] = useState<any>();
+  const [balances, setBalances] = useState<any>();
   const [_assetValues, setAssetValues] = useState();
   const navigate = useNavigate();
-  const language = useLanguage();
-  const fiatCurrency = language.fiatCurrency;
-  const current = chainStore.current;
-  const queries = queriesStore.get(current.chainId);
 
-  const accountInfo = accountStore.getAccount(current.chainId);
-
-  const balanceQuery = queries.queryBalances.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
-  const balanceStakableQuery = balanceQuery.stakable;
-
-  const isNoble =
-    ChainIdHelper.parse(chainStore.current.chainId).identifier === "noble";
-  const hasUSDC = chainStore.current.currencies.find(
-    (currency: AppCurrency) => currency.coinMinimalDenom === "uusdc"
-  );
-
-  const isEvm = chainStore.current.features?.includes("evm") ?? false;
-  const stakable = (() => {
-    if (isNoble && hasUSDC) {
-      return balanceQuery.getBalanceFromCurrency(hasUSDC);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tokenInfoString = searchParams.get("tokenDetails");
+    const balancesString = searchParams.get("balance");
+    if (balancesString) {
+      const decodedBalancesString = JSON.parse(
+        decodeURIComponent(balancesString)
+      );
+      const balances: any = decodedBalancesString;
+      setBalances(balances);
     }
 
-    return balanceStakableQuery.balance;
-  })();
+    if (tokenInfoString) {
+      const decodedTokenInfo = JSON.parse(decodeURIComponent(tokenInfoString));
+      const tokenInfo: any = decodedTokenInfo;
+      setTokenInfo(tokenInfo);
+    }
+  }, [location.search]);
 
-  const delegated = queries.cosmos.queryDelegations
-    .getQueryBech32Address(accountInfo.bech32Address)
-    .total.upperCase(true);
-
-  const unbonding = queries.cosmos.queryUnbondingDelegations
-    .getQueryBech32Address(accountInfo.bech32Address)
-    .total.upperCase(true);
-
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
-
-  const stakableReward = rewards.stakableReward;
-  const stakedSum = delegated.add(unbonding);
-  const total = stakable.add(stakedSum).add(stakableReward);
-
-  const totalPrice = priceStore.calculatePrice(total, fiatCurrency);
-
-  const separateNumericAndDenom = (value: string) => {
-    const [numericPart, denomPart] = value.split(" ");
-    return { numericPart, denomPart };
-  };
   const { numericPart: totalNumber, denomPart: totalDenom } =
-    separateNumericAndDenom(
-      total.shrink(true).trim(true).maxDecimals(6).toString()
-    );
+    separateNumericAndDenom(balances?.balance.toString());
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
       <div className={style["asset-info"]}>
         <img src="" alt="F" />
-        <div className={style["name"]}>{current.chainName}</div>
+        <div className={style["name"]}>{tokenInfo?.coinDenom}</div>
         <div className={style["price-in-usd"]}>
-          {totalPrice && `${totalPrice.toString()} USD`}
+          {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"}
         </div>
       </div>
-      <LineGraphView tokenName="fetch-ai" setTokenState={setAssetValues} />
+      {tokenInfo?.coinGeckoId && (
+        <LineGraphView
+          tokenName={tokenInfo?.coinGeckoId}
+          setTokenState={setAssetValues}
+        />
+      )}
       <div className={style["balances"]}>
-        <div className={style["your-bal"]}> YOUR BALANCE</div>
+        <div className={style["your-bal"]}>YOUR BALANCE</div>
         <div>
-          {isEvm ? (
-            <div className={style["balance-field"]}>
-              <div className={style["balance"]}>
-                {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
-              </div>
-              <div className={style["inUsd"]}>
-                {totalPrice && ` ${totalPrice.toString()} USD`}
-              </div>
+          <div className={style["balance-field"]}>
+            <div className={style["balance"]}>
+              {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
             </div>
-          ) : (
-            <div className={style["balance-field"]}>
-              <div className={style["balance"]}>
-                {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
-              </div>
-              <div className={style["inUsd"]}>
-                {totalPrice
-                  ? ` ${totalPrice.toString()} USD`
-                  : ` ${total
-                      .shrink(true)
-                      .trim(true)
-                      .maxDecimals(6)
-                      .toString()} USD`}
-              </div>
+            <div className={style["inUsd"]}>
+              {balances?.balanceInUsd
+                ? `${balances?.balanceInUsd} USD`
+                : "0 USD"}{" "}
             </div>
-          )}
+          </div>
         </div>
         <div />
       </div>
@@ -145,7 +105,7 @@ export const AssetView = () => {
             />
           </ButtonV2>
         </div>
-        {current.chainName === "fetchhub" && (
+        {tokenInfo?.coinDenom === "FET" && (
           <ButtonV2
             styleProps={{
               cursor: "pointer",
@@ -166,7 +126,7 @@ export const AssetView = () => {
           </ButtonV2>
         )}
       </div>
-      <Activity />
+      <Activity token={tokenInfo?.coinDenom} />
     </HeaderLayout>
   );
-};
+});

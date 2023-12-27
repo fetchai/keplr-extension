@@ -89,7 +89,13 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
           <div className={style["inUsd"]}>
             {totalPrice && ` ${totalPrice.toString()} USD`}
           </div>
-          <div className={style["tokenPriceChanges"]}>
+          <div
+            className={` ${
+              tokenState.type === "positive"
+                ? style["priceChangesGreen"]
+                : style["priceChangesOrange"]
+            }`}
+          >
             <div
               className={style["changeInDollars"] + " " + changeInDollarsClass}
             >
@@ -116,7 +122,13 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                   .maxDecimals(6)
                   .toString()} USD`}
           </div>
-          <div className={style["tokenPriceChanges"]}>
+          <div
+            className={` ${
+              tokenState.type === "positive"
+                ? style["priceChangesGreen"]
+                : style["priceChangesOrange"]
+            }`}
+          >
             <div
               className={style["changeInDollars"] + " " + changeInDollarsClass}
             >

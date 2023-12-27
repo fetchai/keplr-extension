@@ -38,6 +38,7 @@ export const WalletActions = observer(() => {
         onClick={() => navigate("/receive")}
       />
       <ActionButton
+        disabled={!hasAssets}
         title="Send"
         image="arrow-up.svg"
         onClick={() => {

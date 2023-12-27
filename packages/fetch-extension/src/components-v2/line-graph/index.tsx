@@ -1,4 +1,4 @@
-import { TabsPanel } from "@components-v2/tabs/tabsPanel";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-1";
 import React, { useState } from "react";
 import { LineGraph } from "./line-graph";
 

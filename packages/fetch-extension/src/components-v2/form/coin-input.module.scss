@@ -18,8 +18,8 @@
   padding: 0;
   padding-right: 0;
   font-size: 32px;
-  width: 15%;
-  // margin-left: 215px;
+  width: 70%;
+  text-align: end;
   &:focus {
     box-shadow: none !important;
     height: 32px;
@@ -28,7 +28,9 @@
     color: #fff !important;
     padding-left: 0;
     padding-right: 0;
-    width: 65%;
+    max-width: fit-content;
+    width: 70%;
+
     & + .select {
       box-shadow: none !important;
       height: 32px;
@@ -37,7 +39,7 @@
       color: #fff;
       padding-left: 0;
       padding-right: 0;
-      width: 90%;
+      max-width: fit-content;
     }
   }
 }
@@ -142,7 +144,7 @@ input::-webkit-inner-spin-button {
 .widgetButton:focus {
   margin: 0px;
 }
-.widgetButton:disabled{
+.widgetButton:disabled {
   cursor: not-allowed;
 }
 .balance {

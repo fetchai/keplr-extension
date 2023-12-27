@@ -88,7 +88,10 @@ export const SendPhase1: React.FC<SendPhase1Props> = observer(
           onClick={() => setIsChangeWalletOpen(!isChangeWalletOpen)}
         />
         <ButtonV2
-          disabled={sendConfigs.amountConfig.amount === ""}
+          disabled={
+            sendConfigs.amountConfig.amount === "" ||
+            sendConfigs.amountConfig.error
+          }
           text="Next"
           onClick={() => setIsNext(true)}
         />
