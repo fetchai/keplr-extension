@@ -98,7 +98,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const balanceObj = await client.getBalance(address, 'afet');
       const balance = `${(parseFloat(balanceObj.amount) / 10 ** 18).toFixed(
         6
-      )} ${balanceObj.denom.toUpperCase()}`;
+      )} FET`;
       setBalance(balance);
     }
   };

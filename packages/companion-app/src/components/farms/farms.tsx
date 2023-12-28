@@ -16,6 +16,7 @@ import { LAYOUT_OPTIONS } from '@/lib/constants';
 import HorizontalThreeDots from '@/components/icons/horizontal-three-dots';
 import routes from '@/config/routes';
 import axios from 'axios';
+import { formatAddress } from '@/data/utils/format';
 
 const sort = [
   { id: 1, name: 'Hot' },
@@ -177,6 +178,8 @@ function Status() {
 
 export default function Farms() {
   const [validatorsData, setValidatorsData] = useState([]);
+  const [stakeAmount, setStakeAmount] = useState(0);
+  console.log(stakeAmount);
   useEffect(() => {
     const init = async () => {
       const URL = 'https://validators.cosmos.directory/chains/fetchhub';
@@ -242,31 +245,58 @@ export default function Farms() {
         </span>
       </div>
 
-      {validatorsData.map((farm: any) => (
+      {validatorsData.map((data: any) => (
         <FarmList
-          name={farm.moniker}
-          key={farm.id}
-          earned={farm.earned}
-          delegations={farm.delegations.total_tokens}
-          commission={farm.commission.rate}
-          active={farm.active}
-          multiplier={farm.rank}
+          validatorsData={data}
+          name={data.moniker}
+          key={data.id}
+          earned={data.earned}
+          delegations={data.delegations.total_tokens}
+          commission={data.commission.rate}
+          active={data.active}
+          multiplier={data.rank}
         >
           <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
-            <input
-              type="number"
-              placeholder="0.0"
-              className="spin-button-hidden h-11 appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600 sm:h-13"
-            />
-            <input
-              type="number"
-              placeholder="0.0"
-              className="spin-button-hidden h-11 appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600 sm:h-13"
-            />
+            <span>Operated By: {formatAddress(data.address)}</span>
+            <span>
+              Website:{' '}
+              {data.description.website ? data.description.website : 'N/A'}
+            </span>
+            <span>Signature: {formatAddress(data.signing_info?.address)}</span>
+            <span>Jailed: {data.jailed === true ? 'TRUE' : 'FALSE'}</span>
+            {data.jailed === true && (
+              <span>Jailed untill : {data.signing_info.jailed_until}</span>
+            )}
+            <span>Missed Blocks: {data.missed_blocks}</span>
+            <span>
+              Max Commission:{' '}
+              {(data.commission.commission_rates.max_rate * 100).toFixed(2)}%
+            </span>
+
+            {data.jailed !== true && (
+              <div className="flex flex-col">
+                <span className="mb-1">Enter Stake Amount:</span>
+                <input
+                  disabled={data.jailed === true}
+                  type="number"
+                  placeholder="0.0"
+                  value={stakeAmount}
+                  onChange={(e: any) => setStakeAmount(e.target.value)}
+                  className="spin-button-hidden h-11 appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600 sm:h-13"
+                />
+              </div>
+            )}
           </div>
+
           <ActiveLink href={routes.farms}>
-            <Button shape="rounded" fullWidth size="large">
-              APPROVE
+            <Button
+              style={{ color: 'white', background: 'rgba(255,255,255,0.2)' }}
+              disabled={data.jailed || stakeAmount === 0}
+              shape="rounded"
+              fullWidth
+              size="large"
+            >
+              STAKE
             </Button>
           </ActiveLink>
         </FarmList>
