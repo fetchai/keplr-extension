@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { ModalBody, Modal, Button, FormText, Label } from "reactstrap";
-import { AddressBookPage } from "../../pages/setting/address-book";
+import { Button, FormText, Label } from "reactstrap";
+import { ContactBookPage } from "../../pages-new/contact-book";
 
 import styleAddressInput from "./address-input.module.scss";
 import {
@@ -20,6 +20,7 @@ import { validateAgentAddress } from "@utils/validate-agent";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 import { getBeneficiaryAddress } from "../../name-service/fns-apis";
 import { Card } from "../card";
+import { Dropdown } from "@components-v2/dropdown";
 
 export interface AddressInputProps {
   recipientConfig: IRecipientConfig | IRecipientConfigWithICNS;
@@ -171,22 +172,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
 
     return (
       <React.Fragment>
-        <Modal
-          isOpen={isAddressBookOpen}
-          backdrop={false}
-          className={styleAddressInput["fullModal"]}
-          wrapClassName={styleAddressInput["fullModal"]}
-          contentClassName={styleAddressInput["fullModal"]}
-        >
-          <ModalBody className={styleAddressInput["fullModal"]}>
-            <AddressBookPage
-              onBackButton={() => setIsAddressBookOpen(false)}
-              hideChainDropdown={true}
-              selectHandler={selectAddressFromAddressBook}
-              ibcChannelConfig={ibcChannelConfig}
-            />
-          </ModalBody>
-        </Modal>
         <Label style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
           {label}
         </Label>
@@ -269,6 +254,22 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
               Invalid agent address
             </div>
           )}
+
+        <Dropdown
+          isOpen={isAddressBookOpen}
+          setIsOpen={setIsAddressBookOpen}
+          title={"Choose recipient"}
+          closeClicked={() => {
+            setIsAddressBookOpen(false);
+          }}
+        >
+          <ContactBookPage
+            onBackButton={() => setIsAddressBookOpen(false)}
+            hideChainDropdown={true}
+            selectHandler={selectAddressFromAddressBook}
+            ibcChannelConfig={ibcChannelConfig}
+          />
+        </Dropdown>
       </React.Fragment>
     );
   }
