@@ -9,6 +9,8 @@ interface LineGraphProps {
   duration: number;
   tokenName: string | undefined;
   setTokenState: any;
+  loading: boolean;
+  setLoading: any;
 }
 
 interface PriceData {
@@ -20,9 +22,10 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   duration,
   tokenName,
   setTokenState,
+  loading,
+  setLoading,
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const cacheKey = useMemo(
     () => `${tokenName}_${duration}`,
@@ -128,7 +131,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   };
 
   return (
-    <div className={style["graph-container"]}>
+    <div className={style["line-graph"]}>
       {loading ? (
         <div>
           {error ? (

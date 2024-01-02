@@ -60,7 +60,9 @@
   justify-content: center;
   gap: 8px;
 }
-
+.input-error {
+  color: #f36b6b;
+}
 .input::placeholder {
   color: white !important;
 }

@@ -80,6 +80,9 @@ export const Stats = () => {
       legend: {
         display: false,
       },
+      tooltips: {
+        enabled: false,
+      },
     },
   };
 

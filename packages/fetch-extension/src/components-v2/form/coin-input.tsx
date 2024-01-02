@@ -138,7 +138,8 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 placeholder={`0.00`}
                 className={classnames(
                   "form-control-alternative",
-                  styleCoinInput["input"]
+                  styleCoinInput["input"],
+                  { [styleCoinInput["input-error"]]: errorText != null }
                 )}
                 id={`input-${randomId}`}
                 type="number"
@@ -150,6 +151,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 min={0}
                 autoComplete="off"
               />
+
               <span>{amountConfig.sendCurrency.coinDenom}</span>
             </div>
             <div className={styleCoinInput["amount-usd"]}>{inputInUsd}</div>

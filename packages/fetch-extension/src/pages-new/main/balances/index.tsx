@@ -89,24 +89,28 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
           <div className={style["inUsd"]}>
             {totalPrice && ` ${totalPrice.toString()} USD`}
           </div>
-          <div
-            className={` ${
-              tokenState.type === "positive"
-                ? style["priceChangesGreen"]
-                : style["priceChangesOrange"]
-            }`}
-          >
+          {tokenState?.diff && (
             <div
-              className={style["changeInDollars"] + " " + changeInDollarsClass}
+              className={` ${
+                tokenState.type === "positive"
+                  ? style["priceChangesGreen"]
+                  : style["priceChangesOrange"]
+              }`}
             >
-              {changeInDollarsValue.toFixed(4)} {totalDenom}
+              <div
+                className={
+                  style["changeInDollars"] + " " + changeInDollarsClass
+                }
+              >
+                {changeInDollarsValue.toFixed(4)} {totalDenom}
+              </div>
+              <div className={style["changeInPer"]}>
+                ( {tokenState.type === "positive" ? "+" : "-"}
+                {parseFloat(tokenState.diff).toFixed(2)} %)
+              </div>
+              <div className={style["day"]}>{tokenState.time}</div>
             </div>
-            <div className={style["changeInPer"]}>
-              ( {tokenState.type === "positive" ? "+" : "-"}
-              {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
-            </div>
-            <div className={style["day"]}>{tokenState && tokenState.time}</div>
-          </div>
+          )}
         </div>
       ) : (
         <div className={style["balance-field"]}>
@@ -122,24 +126,28 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                   .maxDecimals(6)
                   .toString()} USD`}
           </div>
-          <div
-            className={` ${
-              tokenState.type === "positive"
-                ? style["priceChangesGreen"]
-                : style["priceChangesOrange"]
-            }`}
-          >
+          {tokenState?.diff && (
             <div
-              className={style["changeInDollars"] + " " + changeInDollarsClass}
+              className={` ${
+                tokenState.type === "positive"
+                  ? style["priceChangesGreen"]
+                  : style["priceChangesOrange"]
+              }`}
             >
-              {changeInDollarsValue.toFixed(4)} {totalDenom}
+              <div
+                className={
+                  style["changeInDollars"] + " " + changeInDollarsClass
+                }
+              >
+                {changeInDollarsValue.toFixed(4)} {totalDenom}
+              </div>
+              <div className={style["changeInPer"]}>
+                ({tokenState.type === "positive" ? "+" : "-"}
+                {parseFloat(tokenState.diff).toFixed(2)} %)
+              </div>
+              <div className={style["day"]}>{tokenState.time}</div>
             </div>
-            <div className={style["changeInPer"]}>
-              ({tokenState.type === "positive" ? "+" : "-"}
-              {tokenState && parseFloat(tokenState.diff).toFixed(2)} %)
-            </div>
-            <div className={style["day"]}>{tokenState && tokenState.time}</div>
-          </div>
+          )}
         </div>
       )}
       <Button

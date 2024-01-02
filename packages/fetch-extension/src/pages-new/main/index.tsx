@@ -83,6 +83,7 @@ export const MainPage: FunctionComponent = observer(() => {
       <LineGraphView
         setTokenState={setTokenState}
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
+        tokenState={tokenState}
       />
 
       <Dropdown

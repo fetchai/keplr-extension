@@ -15,7 +15,7 @@ export const AssetView = observer(() => {
   const [tokenIcon, setTokenIcon] = useState<string>("");
 
   const [balances, setBalances] = useState<any>();
-  const [_assetValues, setAssetValues] = useState();
+  const [assetValues, setAssetValues] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,6 +64,7 @@ export const AssetView = observer(() => {
         <LineGraphView
           tokenName={tokenInfo?.coinGeckoId}
           setTokenState={setAssetValues}
+          tokenState={assetValues}
         />
       )}
       <div className={style["balances"]}>

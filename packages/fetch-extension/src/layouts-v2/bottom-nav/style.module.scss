@@ -8,7 +8,6 @@
   overflow: hidden;
   margin-left: 5px;
   padding: 0px 12px 0px 12px;
-  background: #000d3d;
 }
 
 .tab {
@@ -71,22 +70,22 @@
   z-index: 300;
   width: 335px;
   border: 0px;
-  background: rgb(0, 13, 61);
+  background: transparent;
   padding: 0px;
 }
 .toggle:focus {
   border: 0px;
-  background: rgb(0, 13, 61);
+  background: transparent;
   padding: 0px;
 }
 .overlay {
   overflow: hidden;
   opacity: 0.9;
-  width: 100%;
-  height: 200%;
+  width: 116%;
+  height: 278%;
   position: absolute;
-  top: -360px;
-  left: 0px;
+  top: -392px;
+  left: -11px;
   z-index: 200;
   backdrop-filter: blur(2px);
 }

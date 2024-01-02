@@ -54,7 +54,7 @@ export const BottomNav = () => {
       <MoreTab />
     </div>
   ) : (
-    <div>
+    <div style={{ position: "absolute", top: "405px", right: "10px" }}>
       <div className={style["overlay"]} />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
@@ -69,7 +69,7 @@ export const BottomNav = () => {
               marginBottom: "21px",
               cursor: "pointer",
             }}
-            src={require("@assets/svg/wireframe/closeImage.svg")}
+            src={require("@assets/svg/wireframe/btn-close.svg")}
             alt=""
           />
         </button>

@@ -1,10 +1,12 @@
 import { TabsPanel } from "@components-v2/tabs/tabsPanel-1";
 import React, { useState } from "react";
 import { LineGraph } from "./line-graph";
+import style from "./style.module.scss";
 
 interface LineGraphViewProps {
   tokenName: string | undefined;
   setTokenState: any;
+  tokenState: any;
 }
 
 const tabs = [
@@ -37,21 +39,30 @@ const tabs = [
 export const LineGraphView: React.FC<LineGraphViewProps> = ({
   tokenName,
   setTokenState,
+  tokenState,
 }) => {
   const [activeTab, setActiveTab] = useState<any>(tabs[0]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   return (
-    <div>
+    <div className={style["graph-container"]}>
+      {!loading && !tokenState?.diff && (
+        <div className={style["errorText"]}>Line Graph unavailable</div>
+      )}
       <LineGraph
         duration={activeTab.duration}
         tokenName={tokenName}
         setTokenState={setTokenState}
+        loading={loading}
+        setLoading={setLoading}
       />
-      <TabsPanel
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      {tokenState?.diff && (
+        <TabsPanel
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      )}
     </div>
   );
 };
