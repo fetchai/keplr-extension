@@ -36,11 +36,15 @@ import {
   RequestSignAminoMsgFetchSigning,
   RequestSignDirectMsgFetchSigning,
   RequestVerifyADR36AminoSignDocFetchSigning,
+  SwitchAccountMsg,
+  ListAccountsMsg,
 } from "./messages";
 import { KeyRingService } from "./service";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { KeyRingStatus } from "./keyring";
+import { ExtensionKVStore } from "@keplr-wallet/common";
+import { Account } from "@fetchai/wallet-types";
 
 export const getHandler: (service: KeyRingService) => Handler = (
   service: KeyRingService
@@ -159,6 +163,10 @@ export const getHandler: (service: KeyRingService) => Handler = (
         return handleUnlockWallet(service)(env, msg as UnlockWalletMsg);
       case CurrentAccountMsg:
         return handleCurrentAccountMsg(service)(env, msg as CurrentAccountMsg);
+      case SwitchAccountMsg:
+        return handleSwitchAccountMsg(service)(env, msg as SwitchAccountMsg);
+      case ListAccountsMsg:
+        return handleListAccountsMsg(service)(env, msg as ListAccountsMsg);
       case GetKeyMsgFetchSigning:
         return handleGetKeyMsgFetchSigning(service)(env, msg as GetKeyMsg);
       case RequestSignAminoMsgFetchSigning:
@@ -342,7 +350,6 @@ const handleGetKeyMsg: (
   service: KeyRingService
 ) => InternalHandler<GetKeyMsg> = (service) => {
   return async (env, msg) => {
-    console.log("inside get Key", msg);
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       msg.chainId,
@@ -350,7 +357,6 @@ const handleGetKeyMsg: (
     );
 
     const key = await service.getKey(msg.chainId);
-    console.log("handle getKey", key);
     return {
       name: service.getKeyStoreMeta("name"),
       algo: "secp256k1",
@@ -575,7 +581,6 @@ const handleStatusMsg: (
   service: KeyRingService
 ) => InternalHandler<StatusMsg> = (service) => {
   return () => {
-    console.log("handle status msg");
     const status = service.keyRingStatus;
     if (status === KeyRingStatus.EMPTY) {
       return "empty";
@@ -619,23 +624,21 @@ const handleUnlockWallet: (
 const handleCurrentAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<CurrentAccountMsg> = (service) => {
-  return async (env, msg) => {
-    console.log("inside get Key", msg);
-    await service.permissionService.checkOrGrantBasicAccessPermission(
-      env,
-      msg.chainId,
-      msg.origin
-    );
+  return async () => {
+    const kvStore = new ExtensionKVStore("store_chain_config");
+    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
+    if (!chainId) {
+      throw Error("could not detect current chainId");
+    }
 
-    const key = await service.getKey(msg.chainId);
-    console.log("handleCurrentAccountMsg", key);
+    const key = await service.getKey(chainId);
     return {
       name: service.getKeyStoreMeta("name"),
       algo: "secp256k1",
       pubKey: key.pubKey,
       address: key.address,
       bech32Address: new Bech32Address(key.address).toBech32(
-        (await service.chainsService.getChainInfo(msg.chainId)).bech32Config
+        (await service.chainsService.getChainInfo(chainId)).bech32Config
           .bech32PrefixAccAddr
       ),
       isNanoLedger: key.isNanoLedger,
@@ -644,11 +647,76 @@ const handleCurrentAccountMsg: (
   };
 };
 
+const handleSwitchAccountMsg: (
+  service: KeyRingService
+) => InternalHandler<SwitchAccountMsg> = (service) => {
+  return async (env, msg) => {
+    const kvStore = new ExtensionKVStore("store_chain_config");
+    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
+    if (!chainId) {
+      throw Error("could not detect current chainId");
+    }
+    const keys = await service.getKeys(chainId);
+    const chainInfo = await service.chainsService.getChainInfo(chainId);
+    let addressFound = false;
+
+    keys.forEach(async (key, i) => {
+      console.log("key", key.address);
+
+      const bech32Address = new Bech32Address(key.address).toBech32(
+        chainInfo.bech32Config.bech32PrefixAccAddr
+      );
+
+      if (bech32Address === msg.address) {
+        addressFound = true;
+        await service.switchAccountByAddress(env, msg.address, msg.origin, i);
+      }
+    });
+    if (!addressFound) {
+      throw Error("address not found");
+    }
+  };
+};
+
+const handleListAccountsMsg: (
+  service: KeyRingService
+) => InternalHandler<ListAccountsMsg> = (service) => {
+  return async () => {
+    const kvStore = new ExtensionKVStore("store_chain_config");
+    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
+    if (!chainId) {
+      throw Error("could not detect current chainId");
+    }
+
+    const keys = await service.getKeys(chainId);
+
+    const chainInfo = await service.chainsService.getChainInfo(chainId);
+
+    const returnData: Account[] = [];
+
+    keys.forEach((key) => {
+      console.log("key", key.address);
+      returnData.push({
+        name: key.name,
+        algo: "secp256k1",
+        pubKey: key.pubKey,
+        address: key.address,
+        bech32Address: new Bech32Address(key.address).toBech32(
+          chainInfo.bech32Config.bech32PrefixAccAddr
+        ),
+        isNanoLedger: key.isNanoLedger,
+        isKeystone: key.isKeystone,
+      });
+    });
+
+    return returnData;
+  };
+};
+
 const handleGetKeyMsgFetchSigning: (
   service: KeyRingService
 ) => InternalHandler<GetKeyMsgFetchSigning> = (service) => {
   return async (env, msg) => {
-    console.log("inside handleGetKeyMsgFetchSigning", msg);
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       msg.chainId,
@@ -656,7 +724,6 @@ const handleGetKeyMsgFetchSigning: (
     );
 
     const key = await service.getKey(msg.chainId);
-    console.log("handleGetKeyMsgFetchSigning", key);
     return {
       name: service.getKeyStoreMeta("name"),
       algo: "secp256k1",

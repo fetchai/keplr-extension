@@ -5,4 +5,5 @@ export * from "./ledger";
 export * from "./keystone";
 export * from "./chain-suggest";
 export * from "./chain-switch";
+export * from "./account-switch";
 export * from "./icns";

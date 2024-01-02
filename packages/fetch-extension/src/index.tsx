@@ -109,6 +109,7 @@ import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
 import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
 import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
+import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -319,6 +320,10 @@ ReactDOM.render(
                       <Route
                         path="/switch-chain-by-chainid"
                         element={<ApproveSwitchChainPage />}
+                      />
+                      <Route
+                        path="/switch-account-by-address"
+                        element={<ApproveSwitchAccountByAddressPage />}
                       />
                       <Route
                         path="/axl-bridge-evm"

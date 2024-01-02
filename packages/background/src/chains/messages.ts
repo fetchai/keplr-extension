@@ -107,15 +107,11 @@ export class GetNetworkMsg extends Message<ChainInfo> {
     return "current-network-msg";
   }
 
-  constructor(public readonly chainId: string) {
+  constructor() {
     super();
   }
 
-  validateBasic(): void {
-    if (!this.chainId) {
-      throw new Error("Chain id not set");
-    }
-  }
+  validateBasic(): void {}
 
   route(): string {
     return ROUTE;

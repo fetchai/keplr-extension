@@ -1,4 +1,5 @@
 import { Crypto, KeyStore } from "./crypto";
+// import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import {
   KeyCurve,
   KeyCurves,
@@ -232,7 +233,6 @@ export class KeyRing {
     defaultCoinType: number,
     useEthereumAddress: boolean
   ): Key {
-    console.log("inside keyring getkey final");
     return this.loadKey(
       this.computeKeyStoreCoinType(chainId, defaultCoinType),
       useEthereumAddress
@@ -1638,5 +1638,45 @@ export class KeyRing {
     this.save();
 
     return pubKey;
+  }
+
+  public async getKeys(
+    chainId: string,
+    useEthereumAddress: boolean
+  ): Promise<(Key & { name: string })[]> {
+    const keys: (Key & { name: string })[] = [];
+
+    const defaultKeyStore = this.keyStore;
+
+    for (const keyStore of this.multiKeyStore) {
+      console.log("keyStore", keyStore);
+      const defaultCoinType = 60;
+
+      this.keyStore = keyStore;
+      await this.unlock(this.password);
+      await this.save();
+
+      const coinType = keyStore.coinTypeForChain
+        ? keyStore.coinTypeForChain[ChainIdHelper.parse(chainId).identifier] ??
+          defaultCoinType
+        : defaultCoinType;
+
+      const key = this.loadKey(coinType, useEthereumAddress);
+
+      keys.push({
+        name: keyStore.meta ? keyStore.meta["name"] : "Unnamed Account",
+        algo: "secp256k1",
+        pubKey: key.pubKey,
+        address: key.address,
+        isNanoLedger: key.isNanoLedger,
+        isKeystone: key.isKeystone,
+      });
+    }
+
+    this.keyStore = defaultKeyStore;
+    await this.unlock(this.password);
+    await this.save();
+
+    return keys;
   }
 }

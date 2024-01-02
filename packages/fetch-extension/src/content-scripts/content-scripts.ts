@@ -7,15 +7,7 @@ import {
 } from "@keplr-wallet/router-extension";
 import {
   Keplr,
-  FetchWalletApi,
-  FetchAccount,
-  FetchNetworks,
-  FetchSigning,
   InjectedKeplr,
-  InjectedFetchWalletApi,
-  InjectedFetchAccount,
-  InjectedFetchNetworks,
-  InjectedFetchSigning,
   ExtensionCoreFetchWallet,
   startFetchWalletProxy,
 } from "@keplr-wallet/provider";
@@ -25,27 +17,13 @@ import manifest from "../manifest.v2.json";
 
 const messageRequester = new InExtensionMessageRequester();
 const coreKeplr = new Keplr(manifest.version, "core", messageRequester);
-const coreAccount = new FetchAccount(messageRequester);
-const coreNetworks = new FetchNetworks(messageRequester);
-const coreSigning = new FetchSigning(messageRequester);
-const coreWallet = new FetchWalletApi(
-  coreNetworks,
-  coreAccount,
-  coreSigning,
-  messageRequester
-);
 
 const coreFetchWallet = new ExtensionCoreFetchWallet(
   coreKeplr,
   manifest.version,
-  messageRequester,
-  coreWallet
+  messageRequester
 );
 
-InjectedFetchSigning.startProxy(coreSigning);
-InjectedFetchAccount.startProxy(coreAccount);
-InjectedFetchNetworks.startProxy(coreNetworks);
-InjectedFetchWalletApi.startProxy(coreWallet);
 InjectedKeplr.startProxy(coreKeplr);
 startFetchWalletProxy(coreFetchWallet);
 

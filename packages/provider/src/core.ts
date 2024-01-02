@@ -153,7 +153,6 @@ export class Keplr implements IKeplr, KeplrCoreTypes {
 
   async getKey(chainId: string): Promise<Key> {
     const msg = new GetKeyMsg(chainId);
-    console.log("check keplr");
     return await this.requester.sendMessage(BACKGROUND_PORT, msg);
   }
 
@@ -467,6 +466,7 @@ export class FetchWalletApi implements WalletApi {
   ) {}
 
   async status(): Promise<WalletStatus> {
+    // console.log("called status");
     return await this.requester.sendMessage(BACKGROUND_PORT, new StatusMsg());
   }
 
@@ -499,17 +499,17 @@ export class FetchAccount implements AccountsApi {
     );
   }
 
-  async listAccounts(): Promise<Account> {
+  async listAccounts(): Promise<Account[]> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new ListAccountsMsg()
     );
   }
 
-  async getAccount(chainId: string): Promise<Account> {
+  async getAccount(address: string): Promise<Account> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
-      new GetKeyMsg(chainId)
+      new GetKeyMsg(address)
     );
   }
 }
@@ -517,10 +517,10 @@ export class FetchAccount implements AccountsApi {
 export class FetchNetworks implements NetworksApi {
   constructor(protected readonly requester: MessageRequester) {}
 
-  async getNetwork(chainId: string): Promise<ChainInfo> {
+  async getNetwork(): Promise<ChainInfo> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
-      new GetNetworkMsg(chainId)
+      new GetNetworkMsg()
     );
   }
 
@@ -559,13 +559,10 @@ export class FetchSigning implements SigningApi {
   constructor(protected readonly requester: MessageRequester) {}
 
   async getCurrentKey(chainId: string): Promise<Key> {
-    // const key =
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new GetKeyMsgFetchSigning(chainId)
     );
-    // console.log("key", key, await key);
-    // return key;
   }
 
   async signAmino(

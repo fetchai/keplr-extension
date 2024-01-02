@@ -13,6 +13,7 @@ import {
   AccountStore,
   ChainSuggestStore,
   ChainSwitchStore,
+  AccountSwitchStore,
   CoinGeckoPriceStore,
   CosmosAccount,
   CosmosQueries,
@@ -78,6 +79,7 @@ export class RootStore {
   public readonly keystoneStore: KeystoneStore;
   public readonly chainSuggestStore: ChainSuggestStore;
   public readonly chainSwitchStore: ChainSwitchStore;
+  public readonly accountSwitchStore: AccountSwitchStore;
   public readonly icnsInteractionStore: ICNSInteractionStore;
 
   public readonly queriesStore: QueriesStore<
@@ -203,6 +205,7 @@ export class RootStore {
       CommunityChainInfoRepo
     );
     this.chainSwitchStore = new ChainSwitchStore(this.interactionStore);
+    this.accountSwitchStore = new AccountSwitchStore(this.interactionStore);
     this.icnsInteractionStore = new ICNSInteractionStore(this.interactionStore);
 
     this.queriesStore = new QueriesStore(

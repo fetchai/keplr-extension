@@ -13,6 +13,7 @@ import {
   // SwitchToNetworkByChainIdMsg,
 } from "./messages";
 import { ChainInfo } from "@keplr-wallet/types";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -114,8 +115,15 @@ const handleRemoveSuggestedChainInfoMsg: (
 const handleGetNetworkMsg: (
   service: ChainsService
 ) => InternalHandler<GetNetworkMsg> = (service) => {
-  return async (_, msg) => {
-    return await service.getChainInfo(msg.chainId);
+  return async () => {
+    const kvStore = new ExtensionKVStore("store_chain_config");
+    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
+
+    if (!chainId) {
+      throw Error("could not detect current chainId");
+    }
+
+    return await service.getChainInfo(chainId);
   };
 };
 
@@ -135,7 +143,6 @@ const handleAddNetworkAndSwitch: (
       // If suggested chain info is already registered, just return.
       return;
     }
-    console.log("handleAddNetworkAndSwitch");
     const chainInfo = msg.chainInfo as Writeable<ChainInfo>;
     // And, always handle it as beta.
     chainInfo.beta = true;
@@ -150,7 +157,6 @@ const handleSwitchNetworkByChainId: (
   return async (env, msg) => {
     if (await service.hasChainInfo(msg.chainId)) {
       // If suggested chain info is registered then switch else just return.
-      console.log("SwitchNetworkByChainIdMsg");
       await service.switchChainByChainId(env, msg.chainId, msg.origin);
     } else return;
   };

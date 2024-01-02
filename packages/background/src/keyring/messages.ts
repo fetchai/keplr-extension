@@ -1232,7 +1232,7 @@ export class CurrentAccountMsg extends Message<Account> {
   }
 }
 
-export class SwitchAccountMsg extends Message<string> {
+export class SwitchAccountMsg extends Message<void> {
   public static type() {
     return "switch-account-msg";
   }
@@ -1256,7 +1256,7 @@ export class SwitchAccountMsg extends Message<string> {
   }
 }
 
-export class ListAccountsMsg extends Message<Account> {
+export class ListAccountsMsg extends Message<Account[]> {
   public static type() {
     return "list-account-msg";
   }
@@ -1504,94 +1504,3 @@ export class RequestVerifyADR36AminoSignDocFetchSigning extends Message<boolean>
     return RequestVerifyADR36AminoSignDocFetchSigning.type();
   }
 }
-// export class GetNetworkMsg extends Message<NetworkConfig> {
-//   public static type() {
-//     return "current-network-msg";
-//   }
-
-//   constructor() {
-//     super();
-//   }
-
-//   validateBasic(): void {
-//     // noop
-//   }
-
-//   route(): string {
-//     return "keyring";
-//   }
-
-//   type(): string {
-//     return GetNetworkMsg.type();
-//   }
-// }
-
-// export class SwitchToNetworkMsg extends Message<string> {
-//   public static type() {
-//     return "switch-to-network-msg";
-//   }
-
-//   constructor(public readonly network: NetworkConfig) {
-//     super();
-//   }
-
-//   validateBasic(): void {
-//     if (!this.network) {
-//       throw new Error("network is empty");
-//     }
-//   }
-
-//   route(): string {
-//     return "keyring";
-//   }
-
-//   type(): string {
-//     return SwitchToNetworkMsg.type();
-//   }
-// }
-
-// export class SwitchToNetworkByChainIdMsg extends Message<string> {
-//   public static type() {
-//     return "switch-to-network-by-chain-id-msg";
-//   }
-
-//   constructor(public readonly chainId: string) {
-//     super();
-//   }
-
-//   validateBasic(): void {
-//     if (!this.chainId) {
-//       throw new Error("chainId is empty");
-//     }
-//   }
-
-//   route(): string {
-//     return "keyring";
-//   }
-
-//   type(): string {
-//     return SwitchToNetworkByChainIdMsg.type();
-//   }
-// }
-
-// export class ListNetworksMsg extends Message<NetworkConfig[]> {
-//   public static type() {
-//     return "list-network-msg";
-//   }
-
-//   constructor() {
-//     super();
-//   }
-
-//   validateBasic(): void {
-//     // noop
-//   }
-
-//   route(): string {
-//     return "keyring";
-//   }
-
-//   type(): string {
-//     return ListNetworksMsg.type();
-//   }
-// }

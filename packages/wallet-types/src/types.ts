@@ -84,7 +84,7 @@ export interface NetworksApi {
    *
    * @throws An error if the wallet is locked or if the dApp does not have permission to the networks API
    */
-  getNetwork(chainId: string): Promise<ChainInfo>;
+  getNetwork(): Promise<ChainInfo>;
 
   /**
    * Switch a specified network
@@ -136,7 +136,7 @@ export interface AccountsApi {
    * @returns The list of accounts
    * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
    */
-  listAccounts(): Promise<Account>;
+  listAccounts(): Promise<Account[]>;
 
   /**
    * Allows the user to look up a specific account

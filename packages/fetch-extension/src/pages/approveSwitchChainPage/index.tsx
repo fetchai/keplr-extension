@@ -239,6 +239,7 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   chainSwitchStore.waitingSuggestedChainId?.data.chainId;
                 console.log("chainid", chainId);
                 if (chainId) {
+                  chainSwitchStore.approve(chainId);
                   chainStore.selectChain(chainId);
                   chainStore.saveLastViewChainId();
                 }

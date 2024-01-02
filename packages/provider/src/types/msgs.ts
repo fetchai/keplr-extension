@@ -801,7 +801,7 @@ export class CurrentAccountMsg extends Message<Account> {
   }
 }
 
-export class SwitchAccountMsg extends Message<string> {
+export class SwitchAccountMsg extends Message<void> {
   public static type() {
     return "switch-account-msg";
   }
@@ -825,7 +825,7 @@ export class SwitchAccountMsg extends Message<string> {
   }
 }
 
-export class ListAccountsMsg extends Message<Account> {
+export class ListAccountsMsg extends Message<Account[]> {
   public static type() {
     return "list-account-msg";
   }
@@ -874,15 +874,11 @@ export class GetNetworkMsg extends Message<ChainInfo> {
     return "current-network-msg";
   }
 
-  constructor(public readonly chainId: string) {
+  constructor() {
     super();
   }
 
-  validateBasic(): void {
-    if (!this.chainId) {
-      throw new Error("Chain id not set");
-    }
-  }
+  validateBasic(): void {}
 
   route(): string {
     return "chains";

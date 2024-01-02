@@ -4,7 +4,7 @@ import {
   UmbralEncryptionResult,
   UmbralKeyFragment,
 } from "@fetchai/umbral-types";
-import { Method } from "./types";
+import { UmbralMethod } from "./types";
 import {
   createBrowserWindowProxy,
   createProxyRequest,
@@ -13,26 +13,29 @@ import {
 } from "./proxy";
 import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
+import {
+  InjectedFetchAccount,
+  InjectedFetchNetworks,
+  InjectedFetchSigning,
+  InjectedFetchWalletApi,
+} from "./wallet-api";
 
 class BrowserInjectedUmbral implements UmbralApi {
   constructor(protected readonly proxy: Proxy) {}
 
   async getPublicKey(chainId: string): Promise<Uint8Array> {
-    return this.requestViaProxy(Method.UMBRAL_V1_GET_PUBLIC_KEY, [chainId]);
+    return this.requestViaProxy("getPublicKey", [chainId]);
   }
 
   async getSigningPublicKey(chainId: string): Promise<Uint8Array> {
-    return this.requestViaProxy(Method.UMBRAL_V1_GET_SIGNING_KEY, [chainId]);
+    return this.requestViaProxy("getSigningPublicKey", [chainId]);
   }
 
   async encrypt(
     pubKey: Uint8Array,
     plainTextBytes: Uint8Array
   ): Promise<UmbralEncryptionResult> {
-    return this.requestViaProxy(Method.UMBRAL_V1_ENCRYPT, [
-      pubKey,
-      plainTextBytes,
-    ]);
+    return this.requestViaProxy("encrypt", [pubKey, plainTextBytes]);
   }
 
   async generateKeyFragments(
@@ -41,7 +44,7 @@ class BrowserInjectedUmbral implements UmbralApi {
     threshold: number,
     shares: number
   ): Promise<UmbralKeyFragment[]> {
-    return this.requestViaProxy(Method.UMBRAL_V1_GENERATE_KEY_FRAGMENTS, [
+    return this.requestViaProxy("generateKeyFragments", [
       chainId,
       receiverPublicKey,
       threshold,
@@ -53,10 +56,7 @@ class BrowserInjectedUmbral implements UmbralApi {
     chainId: string,
     cipherTextBytes: Uint8Array
   ): Promise<Uint8Array> {
-    return this.requestViaProxy(Method.UMBRAL_V1_DECRYPT, [
-      chainId,
-      cipherTextBytes,
-    ]);
+    return this.requestViaProxy("decrypt", [chainId, cipherTextBytes]);
   }
 
   async decryptReEncrypted(
@@ -66,7 +66,7 @@ class BrowserInjectedUmbral implements UmbralApi {
     capsuleFragments: Uint8Array[],
     cipherTextBytes: Uint8Array
   ): Promise<Uint8Array> {
-    return this.requestViaProxy(Method.UMBRAL_V1_DECRYPT_REENCRYPTED, [
+    return this.requestViaProxy("decryptReEncrypted", [
       chainId,
       senderPublicKey,
       capsule,
@@ -82,7 +82,7 @@ class BrowserInjectedUmbral implements UmbralApi {
     senderPublicKey: Uint8Array,
     receiverPublicKey: Uint8Array
   ): Promise<boolean> {
-    return this.requestViaProxy(Method.UMBRAL_V1_VERIFY_CAPSULE_FRAGMENT, [
+    return this.requestViaProxy("verifyCapsuleFragment", [
       capsuleFragment,
       capsule,
       verifyingPublicKey,
@@ -91,8 +91,11 @@ class BrowserInjectedUmbral implements UmbralApi {
     ]);
   }
 
-  protected async requestViaProxy(method: Method, args: any[]): Promise<any> {
-    const proxyRequest = createProxyRequest(method, args);
+  protected async requestViaProxy(
+    method: UmbralMethod,
+    args: any[]
+  ): Promise<any> {
+    const proxyRequest = createProxyRequest(`umbral.${method}`, args);
 
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
@@ -129,10 +132,15 @@ export class BrowserInjectedFetchWallet implements FetchBrowserWallet {
   readonly version: string;
   readonly wallet: WalletApi;
 
-  constructor(keplr: Keplr, version: string, wallet: WalletApi) {
+  constructor(keplr: Keplr, version: string) {
     this.keplr = keplr;
     this.version = version;
     this.umbral = new BrowserInjectedUmbral(createBrowserWindowProxy());
-    this.wallet = wallet;
+    this.wallet = new InjectedFetchWalletApi(
+      new InjectedFetchNetworks(createBrowserWindowProxy()),
+      new InjectedFetchAccount(createBrowserWindowProxy()),
+      new InjectedFetchSigning(createBrowserWindowProxy()),
+      createBrowserWindowProxy()
+    );
   }
 }

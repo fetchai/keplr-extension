@@ -10,14 +10,22 @@ import {
   UmbralKeyFragment,
   UmbralVerifyCapsuleFragMsg,
 } from "@fetchai/umbral-types";
+
 import { BACKGROUND_PORT, MessageRequester } from "@keplr-wallet/router";
 import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
+import {
+  FetchAccount,
+  FetchNetworks,
+  FetchSigning,
+  FetchWalletApi,
+} from "../core";
 
 class ExtensionCoreUmbral implements UmbralApi {
   constructor(protected readonly requester: MessageRequester) {}
 
   async getPublicKey(chainId: string): Promise<Uint8Array> {
+    console.log("inside core umbral getPublicKey");
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new UmbralGetPublicKeyMsg(chainId)
@@ -115,15 +123,15 @@ export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
   readonly version: string;
   readonly wallet: WalletApi;
 
-  constructor(
-    keplr: Keplr,
-    version: string,
-    requester: MessageRequester,
-    wallet: WalletApi
-  ) {
+  constructor(keplr: Keplr, version: string, requester: MessageRequester) {
     this.keplr = keplr;
     this.version = version;
     this.umbral = new ExtensionCoreUmbral(requester);
-    this.wallet = wallet;
+    this.wallet = new FetchWalletApi(
+      new FetchNetworks(requester),
+      new FetchAccount(requester),
+      new FetchSigning(requester),
+      requester
+    );
   }
 }
