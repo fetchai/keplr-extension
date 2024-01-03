@@ -21,7 +21,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useLanguage } from "../../languages";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
-// import { formatAddress } from "@utils/format";
+import { parseDollarAmount } from "@utils/format";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -37,6 +37,8 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   ({ amountConfig, disableAllBalance }) => {
     const intl = useIntl();
     const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+    const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
+
     const { priceStore, queriesStore } = useStore();
     const queryBalances = queriesStore
       .get(amountConfig.chainId)
@@ -126,6 +128,10 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       }
     }, [randomId]);
 
+    const isClicked = () => {
+      setIsToggleClicked(!isToggleClicked);
+    };
+    console.log(inputInUsd, isToggleClicked);
     return (
       <React.Fragment>
         <FormGroup className={styleCoinInput["input-size"]}>
@@ -143,18 +149,32 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 )}
                 id={`input-${randomId}`}
                 type="number"
-                value={amountConfig.amount}
+                value={
+                  isToggleClicked === true
+                    ? parseDollarAmount(inputInUsd)
+                    : amountConfig.amount
+                }
                 onChange={(e: any) => {
                   e.preventDefault();
-                  amountConfig.setAmount(e.target.value);
+                  isToggleClicked === true
+                    ? parseDollarAmount(inputInUsd)
+                    : amountConfig.setAmount(e.target.value);
                 }}
                 min={0}
                 autoComplete="off"
               />
 
-              <span>{amountConfig.sendCurrency.coinDenom}</span>
+              <span>
+                {isToggleClicked === true
+                  ? "USD"
+                  : amountConfig.sendCurrency.coinDenom}
+              </span>
             </div>
-            <div className={styleCoinInput["amount-usd"]}>{inputInUsd}</div>
+            <div className={styleCoinInput["amount-usd"]}>
+              {isToggleClicked === true
+                ? `${amountConfig.amount} ${amountConfig.sendCurrency.coinDenom}`
+                : inputInUsd}
+            </div>
             {errorText != null ? (
               <div className={styleCoinInput["errorText"]}>{errorText}</div>
             ) : null}
@@ -163,6 +183,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
             <Button
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
+              onClick={isClicked}
             >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
               Change to USD
