@@ -15,9 +15,9 @@ import { VectorCharacter } from "../vector-character";
 import FastImage from "react-native-fast-image";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { IconView } from "../new/button/icon";
-import { XmarkIcon } from "../icon/new/xmark";
+import { XmarkIcon } from "../new/icon/xmark";
 import { BlurBackground } from "../new/blur-background/blur-background";
-import { CheckIcon } from "../icon/new/check";
+import { CheckIcon } from "../new/icon/check";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;

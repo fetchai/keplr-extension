@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from "react";
 import { useStyle } from "../../../styles";
-import { ArrowDownIcon } from "../../../components/icon/new/arrow-down";
-import { ArrowUpIcon } from "../../../components/icon/new/arrow-up";
-import { SwapIcon } from "../../../components/icon/new/swap-icon";
-import { StakeIcon } from "../../../components/icon/new/stake-icon";
-import { BridgeIcon } from "../../../components/icon/new/bridge-icon";
 import { HeaderAddIcon } from "../../../components/header/icon";
-import { FlatList, TouchableOpacity, View, ViewStyle } from "react-native";
+import { FlatList, View, ViewStyle } from "react-native";
 import { IconButtonWithText } from "../../../components/new/button/icon-button-with-text";
 import { useStore } from "../../../stores";
 import { useSmartNavigation } from "../../../navigation";
 import Toast from "react-native-toast-message";
+import { ArrowDownIcon } from "../../../components/new/icon/arrow-down";
+import { ArrowUpIcon } from "../../../components/new/icon/arrow-up";
+import { SwapIcon } from "../../../components/new/icon/swap-icon";
+import { StakeIcon } from "../../../components/new/icon/stake-icon";
+import { BridgeIcon } from "../../../components/new/icon/bridge-icon";
 
 export const TransectionSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -31,53 +31,52 @@ export const TransectionSection: FunctionComponent<{
 
   const renderItem = ({ item }: any) => {
     return (
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => {
-          switch (item.title) {
-            case "Receive":
-              return smartNavigation.navigateSmart("Receive", {
-                chainId,
-              });
-
-            case "Send":
-              return smartNavigation.navigateSmart("SendNew", {
-                currency: chainStore.current.stakeCurrency.coinMinimalDenom,
-              });
-
-            case "Swap":
-              return Toast.show({
-                type: "error",
-                text1: `Swap is working`,
-              });
-
-            case "Stake":
-              return Toast.show({
-                type: "error",
-                text1: `Stake is working`,
-              });
-
-            case "Bridge":
-              return Toast.show({
-                type: "error",
-                text1: `Bridge is working`,
-              });
-
-            case "Buy":
-              return Toast.show({
-                type: "error",
-                text1: `Buy is working`,
-              });
-          }
-        }}
+      <View
+        style={style.flatten(["padding-x-8"]) as ViewStyle}
+        key={item.title.toLowerCase()}
       >
-        <View
-          style={style.flatten(["padding-x-8"]) as ViewStyle}
-          key={item.title.toLowerCase()}
-        >
-          <IconButtonWithText icon={item.icon} text={item.title} />
-        </View>
-      </TouchableOpacity>
+        <IconButtonWithText
+          icon={item.icon}
+          text={item.title}
+          onPress={() => {
+            switch (item.title) {
+              case "Receive":
+                return smartNavigation.navigateSmart("Receive", {
+                  chainId,
+                });
+
+              case "Send":
+                return smartNavigation.navigateSmart("SendNew", {
+                  currency: chainStore.current.stakeCurrency.coinMinimalDenom,
+                });
+
+              case "Swap":
+                return Toast.show({
+                  type: "error",
+                  text1: `Swap is working`,
+                });
+
+              case "Stake":
+                return Toast.show({
+                  type: "error",
+                  text1: `Stake is working`,
+                });
+
+              case "Bridge":
+                return Toast.show({
+                  type: "error",
+                  text1: `Bridge is working`,
+                });
+
+              case "Buy":
+                return Toast.show({
+                  type: "error",
+                  text1: `Buy is working`,
+                });
+            }
+          }}
+        />
+      </View>
     );
   };
 

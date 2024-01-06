@@ -9,6 +9,7 @@ export const ArrowUpIcon: FunctionComponent<{
     <Svg
       width={size}
       height={size}
+      color={color}
       viewBox="0 0 13 14"
       style={{
         width: size,

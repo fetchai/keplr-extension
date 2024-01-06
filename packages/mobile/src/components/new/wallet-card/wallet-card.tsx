@@ -1,15 +1,16 @@
 import React, { FunctionComponent } from "react";
 import { CardModal } from "../../../modals/card";
-import { View, Text, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { IconView } from "../button/icon";
-import { XmarkIcon } from "../../icon/new/xmark";
+import { XmarkIcon } from "../icon/xmark";
 import { registerModal } from "../../../modals/base";
-import { LayerGroupIcon } from "../../icon/new/layer-group";
-import { EditIcon } from "../../icon/new/edit";
-import { DeleteIcon } from "../../icon/new/color-delete";
+import { LayerGroupIcon } from "../icon/layer-group";
+import { EditIcon } from "../icon/edit";
+import { DeleteIcon } from "../icon/color-delete";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { RectButton } from "../../rect-button";
+import { PlusIcon } from "../../icon";
 
 export const WalletCardModel: FunctionComponent<{
   isOpen: boolean;
@@ -45,6 +46,42 @@ export const WalletCardModel: FunctionComponent<{
         }
       >
         <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+          <RectButton
+            onPress={() => {
+              close();
+              onSelectWallet("add_new_wallet");
+            }}
+            style={style.flatten(["border-radius-12"]) as ViewStyle}
+            activeOpacity={0.5}
+            underlayColor={style.flatten(["color-gray-50"]).color}
+          >
+            <View
+              style={
+                style.flatten([
+                  "flex-row",
+                  "items-center",
+                  "padding-y-18",
+                  "padding-x-12",
+                ]) as ViewStyle
+              }
+            >
+              <IconView
+                backgroundBlur={false}
+                img={<PlusIcon color={"white"} size={13} />}
+              />
+              <Text
+                style={
+                  style.flatten([
+                    "body2",
+                    "color-white",
+                    "margin-left-10",
+                  ]) as ViewStyle
+                }
+              >
+                {"Add new wallet"}
+              </Text>
+            </View>
+          </RectButton>
           <RectButton
             onPress={() => {
               onSelectWallet("change_wallet");

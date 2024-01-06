@@ -1,19 +1,17 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
 import {
-  Text,
-  ViewStyle,
-  TextInput,
-  View,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 import { useStyle } from "../../../styles";
 import { BlurBackground } from "../blur-background/blur-background";
 
 import { observer } from "mobx-react-lite";
 import { IconView } from "../button/icon";
-import { QRCodeIcon } from "../../icon/new/qrcode-icon";
-import { ATIcon } from "../../icon/new/at-icon";
 import {
   EmptyAddressError,
   ICNSFailedToFetchError,
@@ -28,6 +26,9 @@ import { useSmartNavigation } from "../../../navigation";
 import { AddressBookCardModel } from "../addressbook-card/addressbook-card";
 import { useStore } from "../../../stores";
 import { AsyncKVStore } from "../../../common";
+import { Divider } from "../../divider";
+import { QRCodeIcon } from "../icon/qrcode-icon";
+import { ATIcon } from "../icon/at-icon";
 
 function numOfCharacter(str: string, c: string): number {
   return str.split(c).length - 1;
@@ -107,35 +108,34 @@ export const AddressInputCard: FunctionComponent<{
 
     return (
       <React.Fragment>
+        {label ? (
+          <Text
+            style={
+              style.flatten([
+                "padding-y-4",
+                "margin-y-8",
+                "color-gray-200",
+              ]) as ViewStyle
+            }
+          >
+            {label}
+          </Text>
+        ) : null}
         <BlurBackground
           borderRadius={12}
           blurIntensity={16}
           containerStyle={
             [
-              style.flatten(["padding-18"]),
+              style.flatten(["padding-x-18", "padding-y-8"]),
               backgroundContainerStyle,
             ] as ViewStyle
           }
         >
           <View style={style.flatten(["flex-row"])}>
             <View style={style.flatten(["flex-3"]) as ViewStyle}>
-              {label ? (
-                <Text
-                  style={
-                    style.flatten([
-                      "padding-y-4",
-                      "color-gray-200",
-                    ]) as ViewStyle
-                  }
-                >
-                  {label}
-                </Text>
-              ) : null}
               <TextInput
                 placeholderTextColor={style.flatten(["color-gray-200"]).color}
-                style={
-                  style.flatten(["h6", "color-white", "padding-0"]) as ViewStyle
-                }
+                style={style.flatten(["h6", "color-white"]) as ViewStyle}
                 returnKeyType="done"
                 placeholder={placeholderText}
                 value={recipientConfig.rawRecipient}
@@ -166,6 +166,14 @@ export const AddressInputCard: FunctionComponent<{
               }
             >
               <View style={style.flatten(["flex-row"])}>
+                <Divider
+                  containerStyle={
+                    style.flatten([
+                      "margin-right-16",
+                      "margin-top-10",
+                    ]) as ViewStyle
+                  }
+                />
                 <TouchableOpacity
                   activeOpacity={0.6}
                   onPress={() => {
@@ -176,11 +184,11 @@ export const AddressInputCard: FunctionComponent<{
                 >
                   <IconView
                     img={<QRCodeIcon />}
-                    backgroundBlur={true}
+                    backgroundBlur={false}
                     iconStyle={
                       style.flatten([
-                        "padding-11",
-                        "margin-right-12",
+                        "padding-y-12",
+                        "padding-right-16",
                       ]) as ViewStyle
                     }
                   />
@@ -191,8 +199,8 @@ export const AddressInputCard: FunctionComponent<{
                 >
                   <IconView
                     img={<ATIcon />}
-                    backgroundBlur={true}
-                    iconStyle={style.flatten(["padding-11"]) as ViewStyle}
+                    backgroundBlur={false}
+                    iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
                   />
                 </TouchableOpacity>
               </View>

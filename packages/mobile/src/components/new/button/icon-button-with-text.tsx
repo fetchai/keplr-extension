@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import { Text, TouchableOpacity, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { IconView } from "./icon";
 
@@ -9,10 +9,15 @@ export const IconButtonWithText: FunctionComponent<{
   backgroundBlur?: boolean;
   borderRadius?: number;
   iconStyle?: ViewStyle;
-}> = ({ icon, text, backgroundBlur, borderRadius, iconStyle }) => {
+  onPress?: () => void;
+}> = ({ icon, text, backgroundBlur, borderRadius, iconStyle, onPress }) => {
   const style = useStyle();
   return (
-    <View style={style.flatten(["items-center"]) as ViewStyle}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.6}
+      style={style.flatten(["items-center"]) as ViewStyle}
+    >
       <IconView
         img={icon}
         backgroundBlur={backgroundBlur}
@@ -25,6 +30,6 @@ export const IconButtonWithText: FunctionComponent<{
         }
       />
       <Text style={style.flatten(["color-white"]) as ViewStyle}>{text}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };

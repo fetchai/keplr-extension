@@ -9,6 +9,7 @@ export const StakeIcon: FunctionComponent<{
     <Svg
       width={size}
       height={size}
+      color={color}
       viewBox="0 0 17 16"
       style={{
         width: size,

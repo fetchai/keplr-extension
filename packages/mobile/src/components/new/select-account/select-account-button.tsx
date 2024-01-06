@@ -10,12 +10,20 @@ export const SelectAccountButton: FunctionComponent<{
   blurIntensity?: number;
   text: string;
   icon?: ReactElement | ((color: string) => ReactElement);
-}> = ({ text, icon, containerStyle, textStyle, blurIntensity }) => {
+}> = ({
+  text,
+  icon,
+  containerStyle,
+  textStyle,
+  blurIntensity,
+  backgroundBlur = true,
+}) => {
   const style = useStyle();
   return (
     <BlurBackground
       borderRadius={32}
       blurIntensity={blurIntensity}
+      backgroundBlur={backgroundBlur}
       containerStyle={
         [
           style.flatten(["flex-row", "items-center", "justify-center"]),

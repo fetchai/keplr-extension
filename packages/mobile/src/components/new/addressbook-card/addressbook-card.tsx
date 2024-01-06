@@ -1,18 +1,18 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "../../../modals/card";
-import { View, Text, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { IconView } from "../button/icon";
-import { XmarkIcon } from "../../icon/new/xmark";
 import { registerModal } from "../../../modals/base";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { RectButton } from "../../rect-button";
 import { TextInput } from "../../input";
 import { BlurBackground } from "../blur-background/blur-background";
-import { SearchIcon } from "../../icon/new/search-icon";
 import { AddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { AddressBookIcon } from "../../icon";
+import { SearchIcon } from "../icon/search-icon";
+import { XmarkIcon } from "../icon/xmark";
 
 export const AddressBookCardModel: FunctionComponent<{
   isOpen: boolean;

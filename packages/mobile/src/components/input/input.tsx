@@ -78,21 +78,21 @@ export const TextInput = React.forwardRef<
       <View
         style={StyleSheet.flatten([
           style.flatten(
-              [
-                  "background-color-transparent",
-                  "border-color-gray-200",
-                  "padding-x-15",
-                  "padding-y-20",
-                  "border-radius-12",
+            [
+              "background-color-transparent",
+              "border-color-gray-200",
+              "padding-x-15",
+              "padding-y-20",
+              "border-radius-12",
               "border-width-1",
-                  "border-color-gray-100@50%",
+              "border-color-gray-100@50%",
               "dark:border-color-platinum-600@50%",
             ],
             [
               // The order is important.
               // The border color has different priority according to state.
               // The more in front, the lower the priority.
-                isFocused ? "border-color-gray-200" : undefined,
+              isFocused ? "border-color-gray-200" : undefined,
               isFocused ? "dark:border-color-platinum-100" : undefined,
               error ? "border-color-red-200" : undefined,
               error ? "dark:border-color-red-400" : undefined,
@@ -119,7 +119,7 @@ export const TextInput = React.forwardRef<
                 [
                   "padding-0",
                   "body2-in-text-input",
-                    "color-gray-200",
+                  "color-gray-200",
                   "dark:color-platinum-50",
                   "flex-1",
                 ],

@@ -2,15 +2,15 @@ import React, { FunctionComponent, useState } from "react";
 import {
   FlatList,
   Text,
-  TouchableOpacity,
+  // TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
 import { useStyle } from "../../../styles";
 import { BlurButton } from "../../../components/new/button/blur-button";
-import { CardView } from "../../../components/new/card-view/card-view";
-import { FetchAiIcon } from "../../../components/icon/new/fetchai-icon";
-import Toast from "react-native-toast-message";
+// import { TokenCardView } from "../../../components/new/card-view/token-card-view";
+// import { FetchAiIcon } from "../../../components/icon/new/fetchai-icon";
+// import Toast from "react-native-toast-message";
 
 export const AssetsSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -27,12 +27,11 @@ export const AssetsSection: FunctionComponent<{
   const renderItem = ({ item }: any) => {
     const selected = selectId === item.id ? true : false;
     return (
-      <TouchableOpacity
-        activeOpacity={0.6}
+      <BlurButton
+        backgroundBlur={selected}
+        text={item.title}
         onPress={() => setSelectedId(item.id)}
-      >
-        <BlurButton backgroundBlur={selected} text={item.title} />
-      </TouchableOpacity>
+      />
     );
   };
 
@@ -50,7 +49,7 @@ export const AssetsSection: FunctionComponent<{
           extraData={selectId}
         />
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         activeOpacity={0.6}
         onPress={() =>
           Toast.show({
@@ -59,15 +58,12 @@ export const AssetsSection: FunctionComponent<{
           })
         }
       >
-        <CardView
+        <TokenCardView
           containerStyle={
             style.flatten(["margin-bottom-card-gap"]) as ViewStyle
           }
-          walletName="Fetch.AI"
-          walletAmount="12,453.21"
-          walletImg={<FetchAiIcon />}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

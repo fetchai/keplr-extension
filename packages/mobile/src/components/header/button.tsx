@@ -5,7 +5,7 @@ import { useStyle } from "../../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { HeaderBackButtonIcon } from "./icon";
 import { IconView } from "../new/button/icon";
-import { LeftBackIcon } from "../icon/new/left-back";
+import { LeftBackIcon } from "../new/icon/left-back";
 
 export const HeaderLeftButton: FunctionComponent<
   StackHeaderLeftButtonProps

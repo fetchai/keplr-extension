@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
-import { StyleSheet, Text, ViewStyle, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "../../../styles";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import * as Clipboard from "expo-clipboard";
 import { RectButton } from "../../rect-button";
-import { CopyIcon } from "../../icon/new/copy-icon";
 import { useSimpleTimer } from "../../../hooks";
 import LottieView from "lottie-react-native";
+import { CopyIcon } from "../icon/copy-icon";
 
 export const AddressCopyable: FunctionComponent<{
   style?: ViewStyle;

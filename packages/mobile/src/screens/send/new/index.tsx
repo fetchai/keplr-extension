@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
 import { useStore } from "../../../stores";
 import { PageWithScrollView } from "../../../components/page";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { FeeButtons } from "../../../components/new/fee-button/fee-button-component";
 import { useStyle } from "../../../styles";
 import { Button } from "../../../components/button";
@@ -11,11 +11,11 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useSmartNavigation } from "../../../navigation";
 import { Buffer } from "buffer/";
 import { DropDownCardView } from "../../../components/new/card-view/drop-down-card";
-import { ChevronDownIcon } from "../../../components/icon/new/chevron-down";
 import Toast from "react-native-toast-message";
 import { InputCardView } from "../../../components/new/card-view/input-card";
 import { AddressInputCard } from "../../../components/new/card-view/address-card";
 import { AmountInputSection } from "../../../components/new/input/amount";
+import { ChevronDownIcon } from "../../../components/new/icon/chevron-down";
 
 export const NewSendScreen: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
@@ -92,43 +92,35 @@ export const NewSendScreen: FunctionComponent = observer(() => {
       {/* This is a send component */}
 
       <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
-        <TouchableOpacity
-          activeOpacity={0.6}
+        <DropDownCardView
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+          mainHeading="Wallet"
+          heading="Main wallet"
+          trailingIcon={<ChevronDownIcon />}
           onPress={() =>
             Toast.show({
               type: "error",
               text1: "Fetch.AI is working",
             })
           }
-        >
-          <DropDownCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Wallet"
-            heading="Main wallet"
-            trailingIcon={<ChevronDownIcon />}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.6}
+        />
+        <DropDownCardView
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+          mainHeading="Asset"
+          heading="FET"
+          subHeading="Optional"
+          trailingIcon={<ChevronDownIcon />}
           onPress={() =>
             Toast.show({
               type: "error",
               text1: "Fetch.AI is working",
             })
           }
-        >
-          <DropDownCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Asset"
-            heading="FET"
-            subHeading="Optional"
-            trailingIcon={<ChevronDownIcon />}
-          />
-        </TouchableOpacity>
+        />
         <AddressInputCard
           backgroundContainerStyle={
             style.flatten(["margin-bottom-card-gap"]) as ViewStyle

@@ -123,16 +123,18 @@ import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpa
 import { UnlockScreen } from "./screens/unlock/new/index";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconButtonWithText } from "./components/new/button/icon-button-with-text";
-import { GridIcon } from "./components/icon/new/grid-icon";
-import { InboxIcon } from "./components/icon/new/inbox-icon";
-import { ClockIcon } from "./components/icon/new/clock-icon";
-import { RobotIcon } from "./components/icon/new/robot-icon";
-import { MoreIcon } from "./components/icon/new/more-icon";
 import Svg, { Path, Rect } from "react-native-svg";
 import { NewHomeScreen } from "./screens/home/new";
 import { ReceiveScreen } from "./screens/receive";
+import { IconView } from "./components/new/button/icon";
 // import Svg, { Rect, Path } from "react-native-svg";
 //import Bugsnag from "@bugsnag/react-native";
+import { PortfolioScreen } from "./screens/portfolio";
+import { HomeIcon } from "./components/new/icon/file-icon";
+import { RobotIcon } from "./components/new/icon/robot-icon";
+import { UpDownArrowIcon } from "./components/new/icon/up-down-arrow";
+import { ClockIcon } from "./components/new/icon/clock-icon";
+import { MoreIcon } from "./components/new/icon/more-icon";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
   createSmartNavigatorProvider(
@@ -184,6 +186,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       },
       SendNew: {
         upperScreenName: "Others",
+      },
+      Portfolio: {
+        upperScreenName: "Main",
       },
       Tokens: {
         upperScreenName: "Others",
@@ -481,6 +486,14 @@ export const HomeNavigation: FunctionComponent = () => {
         }}
         name="Home"
         component={NewHomeScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          headerShown: false,
+        }}
+        name="Portfolio"
+        component={PortfolioScreen}
       />
       <Stack.Screen
         options={{
@@ -1115,18 +1128,18 @@ export const MainTabNavigation: FunctionComponent = () => {
 
   enum screenNames {
     Home = "Home",
-    Inbox = "Inbox",
     Agents = "Agents",
+    Inbox = "Inbox",
     Activity = "Activity",
     More = "More",
   }
 
   const screenIcons = {
-    Home: <GridIcon />,
-    Inbox: <InboxIcon />,
-    Agents: <RobotIcon size={18} />,
-    Activity: <ClockIcon />,
-    More: <MoreIcon />,
+    Home: <HomeIcon color="white" />,
+    Agents: <RobotIcon size={18} color="white" />,
+    Inbox: <UpDownArrowIcon />,
+    Activity: <ClockIcon color="white" />,
+    More: <MoreIcon color="white" />,
   };
 
   return (
@@ -1149,19 +1162,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                   backgroundBlur={focused}
                   borderRadius={32}
                   iconStyle={
-                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
-                  }
-                />
-              );
-            case "Inbox":
-              return (
-                <IconButtonWithText
-                  icon={screenIcons[screenNames.Inbox]}
-                  text={screenNames.Inbox}
-                  borderRadius={32}
-                  backgroundBlur={focused}
-                  iconStyle={
-                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
                   }
                 />
               );
@@ -1173,7 +1174,21 @@ export const MainTabNavigation: FunctionComponent = () => {
                   borderRadius={32}
                   backgroundBlur={focused}
                   iconStyle={
-                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
+                  }
+                />
+              );
+            case "Inbox":
+              return (
+                <IconView
+                  img={screenIcons[screenNames.Inbox]}
+                  borderRadius={64}
+                  backgroundBlur={false}
+                  iconStyle={
+                    style.flatten([
+                      "padding-16",
+                      "background-color-white",
+                    ]) as ViewStyle
                   }
                 />
               );
@@ -1185,7 +1200,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                   borderRadius={32}
                   backgroundBlur={focused}
                   iconStyle={
-                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
                   }
                 />
               );
@@ -1197,7 +1212,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                   borderRadius={32}
                   backgroundBlur={focused}
                   iconStyle={
-                    style.flatten(["padding-y-10", "padding-x-24"]) as ViewStyle
+                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
                   }
                 />
               );
@@ -1301,19 +1316,27 @@ export const MainTabNavigation: FunctionComponent = () => {
       )}
     >
       <Tab.Screen name="Home" component={HomeNavigation} />
-      <Tab.Screen name="Inbox" component={InboxNavigation} />
       <Tab.Screen name="Agents" component={AgentsNavigation} />
+      <Tab.Screen
+        name="Inbox"
+        component={HomeNavigation}
+        listeners={() => ({
+          tabPress: (e) => {
+            e.preventDefault();
+          },
+        })}
+      />
       <Tab.Screen name="Activity" component={ActivityNavigation} />
       <Tab.Screen name="More" component={MoreNavigation} />
-      <Tab.Screen name="Main" component={MainNavigation} />
+      {/* <Tab.Screen name="Main" component={MainNavigation} /> */}
       {/* <Tab.Screen name="Web" component={WebNavigation} /> */}
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Settings"
         component={SettingStackScreen}
         options={{
           unmountOnBlur: true,
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

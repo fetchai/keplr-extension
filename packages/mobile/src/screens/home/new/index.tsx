@@ -11,23 +11,16 @@ import {
   Platform,
   RefreshControl,
   ScrollView,
-  ViewStyle,
 } from "react-native";
 import { useStore } from "../../../stores";
-// import { StakingInfoCard } from "../../screens/home/staking-info-card";
-import { useStyle } from "../../../styles";
-// import { GovernanceCard } from "../../screens/home/governance-card";
 import { observer } from "mobx-react-lite";
-// import { MyRewardCard } from "../../screens/home/my-reward-card";
-// import { TokensCard } from "../../screens/home/tokens-card";
 import { usePrevious } from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
-// import { Dec } from "@keplr-wallet/unit";
-import { AccountSection } from "./account-section";
-import { TransectionSection } from "./transection-section";
-import { AssetsSection } from "./assets-section";
+import { AccountSection } from "./v2/account-section";
+import { ChartWithPointer } from "./v2/chart";
 import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { QuickTabOption } from "./quick-tab-options";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
@@ -35,8 +28,6 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
-
-  const style = useStyle();
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
@@ -51,23 +42,6 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
-
-  // const queryStakable = queries.queryBalances.getQueryBech32Address(
-  //   account.bech32Address
-  // ).stakable;
-  // const stakable = queryStakable.balance;
-  // const queryDelegated = queries.cosmos.queryDelegations.getQueryBech32Address(
-  //   account.bech32Address
-  // );
-  // const queryUnbonding =
-  //   queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
-  //     account.bech32Address
-  //   );
-  // const delegated = queryDelegated.total;
-  // const unbonding = queryUnbonding.total;
-
-  // const stakedSum = delegated.add(unbonding);
-  // const total = stakable.add(stakedSum);
 
   const checkAndUpdateChainInfo = useCallback(() => {
     if (!chainStoreIsInitializing) {
@@ -155,74 +129,15 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       }}
       ref={scrollViewRef}
     >
+      <QuickTabOption
+        isOpen={false}
+        close={() => {
+          // noop
+        }}
+      />
       <BIP44Selectable />
       <AccountSection />
-      <TransectionSection
-        containtStyle={style.flatten(["margin-y-32"]) as ViewStyle}
-      />
-      <AssetsSection />
-
-      {/* <AccountCard
-        containerStyle={style.flatten(["margin-y-card-gap"]) as ViewStyle}
-      />
-      {total.toDec().gt(new Dec(0)) ? (
-        <View>
-          <MyRewardCard
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-          />
-          <TokensCardRenderIfTokenExists />
-          <StakingInfoCard
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-          />
-          <GovernanceCard
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-          />
-        </View>
-      ) : null} */}
+      <ChartWithPointer />
     </PageWithScrollViewInBottomTabView>
   );
 });
-
-/**
- * TokensCardRenderIfTokenExists is used to reduce the re-rendering of HomeScreen component.
- * Because HomeScreen is screen of the app, if it is re-rendered, all children component will be re-rendered.
- * If all components on screen are re-rendered, performance problems may occur and users may feel delay.
- * Therefore, the screen should not have state as much as possible.
- *
- * In fact, re-rendering took place because home screen had to check the user's balances
- * when deciding whether to render the tokens card on the screen and this makes some delay.
- * To solve this problem, this component has been separated.
- */
-// const TokensCardRenderIfTokenExists: FunctionComponent = observer(() => {
-//   const { chainStore, accountStore, queriesStore } = useStore();
-
-//   const style = useStyle();
-
-//   const queryBalances = queriesStore
-//     .get(chainStore.current.chainId)
-//     .queryBalances.getQueryBech32Address(
-//       accountStore.getAccount(chainStore.current.chainId).bech32Address
-//     );
-
-//   const tokens = queryBalances.positiveNativeUnstakables.concat(
-//     queryBalances.nonNativeBalances
-//   );
-
-//   return (
-//     <React.Fragment>
-//       {tokens.length > 0 ? (
-//         <TokensCard
-//           containerStyle={
-//             style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-//           }
-//         />
-//       ) : null}
-//     </React.Fragment>
-//   );
-// });

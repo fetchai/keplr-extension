@@ -14,9 +14,9 @@ import { PageWithScrollView } from "../../components/page";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import QRCode from "react-native-qrcode-svg";
 import { SimpleCardView } from "../../components/new/card-view/simple-card";
-import { CopyIcon } from "../../components/icon/new/copy-icon";
 import { useSimpleTimer } from "../../hooks";
 import LottieView from "lottie-react-native";
+import { CopyIcon } from "../../components/icon";
 
 export const ReceiveScreen: FunctionComponent = observer(() => {
   const route = useRoute<

@@ -7,21 +7,21 @@ export const CardModal: FunctionComponent<{
   title?: string;
   right?: React.ReactElement;
   childrenContainerStyle?: ViewStyle;
-
+  cardStyle?: ViewStyle;
   disableGesture?: boolean;
 }> = ({
   title,
   right,
   children,
   childrenContainerStyle,
-
   disableGesture = false,
+  cardStyle,
 }) => {
   const style = useStyle();
 
   return (
     <View
-      style={
+      style={[
         StyleSheet.flatten([
           style.flatten([
             "background-color-indigo-900",
@@ -29,8 +29,9 @@ export const CardModal: FunctionComponent<{
             "border-radius-top-right-32",
             "overflow-hidden",
           ]),
-        ]) as ViewStyle
-      }
+        ]) as ViewStyle,
+        cardStyle,
+      ]}
     >
       <View style={style.flatten(["padding-x-16", "margin-y-10"]) as ViewStyle}>
         <View
@@ -39,13 +40,7 @@ export const CardModal: FunctionComponent<{
           }
         >
           {!disableGesture ? (
-            <View
-              style={
-                style.flatten([
-                    "margin-top-10"
-                ]) as ViewStyle
-              }
-            />
+            <View style={style.flatten(["margin-top-10"]) as ViewStyle} />
           ) : null}
         </View>
         {title ? (
@@ -60,7 +55,9 @@ export const CardModal: FunctionComponent<{
                 ]) as ViewStyle
               }
             >
-                <Text style={style.flatten(["h4", "color-text-high", "color-white"])}>
+              <Text
+                style={style.flatten(["h4", "color-text-high", "color-white"])}
+              >
                 {title}
               </Text>
               {right}

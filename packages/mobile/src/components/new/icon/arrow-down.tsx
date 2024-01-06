@@ -3,12 +3,13 @@ import Svg, { Path } from "react-native-svg";
 
 export const ArrowDownIcon: FunctionComponent<{
   size?: number;
-  color?: string;
+  color?: any;
 }> = ({ size = 16, color = "white" }) => {
   return (
     <Svg
       width={size}
       height={size}
+      color={color}
       viewBox="0 0 13 14"
       style={{
         width: size,

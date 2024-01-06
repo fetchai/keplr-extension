@@ -9,7 +9,6 @@ import {
 import { observer } from "mobx-react-lite";
 import { useStyle } from "../../../styles";
 import { BlurBackground } from "../../../components/new/blur-background/blur-background";
-import { ChevronDownIcon } from "../../../components/icon/new/chevron-down";
 import { SelectAccountButton } from "../../../components/new/select-account/select-account-button";
 import { BlurButton } from "../../../components/new/button/blur-button";
 import { Button } from "../../../components/button";
@@ -20,18 +19,16 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import {
-  // MultiKeyStoreInfoElem,
-  MultiKeyStoreInfoWithSelectedElem,
-} from "@keplr-wallet/background";
+import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { useStore } from "../../../stores";
 import { IconView } from "../../../components/new/button/icon";
-import { TreeDotIcon } from "../../../components/icon/new/tree-dot";
 import { WalletCardModel } from "../../../components/new/wallet-card/wallet-card";
 import { ChangeWalletCardModel } from "../../../components/new/wallet-card/change-wallet";
 import { EditAccountNameModal } from "../../../modals/edit-account-name.tsx";
 import { PasswordInputModal } from "../../../modals/password-input/modal";
 import { useLoadingScreen } from "../../../providers/loading-screen";
+import { ChevronDownIcon } from "../../../components/new/icon/chevron-down";
+import { TreeDotIcon } from "../../../components/new/icon/tree-dot";
 
 export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
   observer(({ containtStyle }) => {
@@ -92,12 +89,11 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
     const renderItem = ({ item }: any) => {
       const selected = item.id === selectedId ? true : false;
       return (
-        <TouchableOpacity
-          activeOpacity={0.6}
+        <BlurButton
+          backgroundBlur={selected}
+          text={item.title}
           onPress={() => setSelectedId(item.id)}
-        >
-          <BlurButton backgroundBlur={selected} text={item.title} />
-        </TouchableOpacity>
+        />
       );
     };
 
@@ -234,7 +230,7 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
 
         <WalletCardModel
           isOpen={isOpenModal}
-          title="Main Wallet"
+          title="Manage Wallet"
           close={() => setIsOpenModal(false)}
           onSelectWallet={(option: string) => {
             if (option === "change_wallet") {
