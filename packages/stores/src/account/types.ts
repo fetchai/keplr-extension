@@ -1,6 +1,7 @@
 import { Any } from "@keplr-wallet/proto-types/google/protobuf/any";
 import { Dec } from "@keplr-wallet/unit";
 import { KeplrSignOptions, Msg, StdFee } from "@keplr-wallet/types";
+import { TransactionRequest } from "@ethersproject/providers";
 
 export type ProtoMsgsOrWithAminoMsgs = {
   // TODO: Make `aminoMsgs` nullable
@@ -75,4 +76,16 @@ export interface MakeTxResponse {
           onFulfill?: (tx: any) => void;
         }
   ): Promise<void>;
+}
+
+export interface ITxn {
+  hash: string;
+  type?: "ContractInteraction" | "Send" | "Bridge" | "Approve";
+  status: "pending" | "success" | "failed" | "cancelled";
+  amount?: string;
+  symbol?: string;
+  createdAt?: Date;
+  lastSpeedUpAt?: Date;
+  cancelled?: boolean;
+  rawTxData?: TransactionRequest;
 }

@@ -787,9 +787,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("assets/gradients/tx-result-screen-pending-dark.png"),
+                require("../assets/gradients/tx-result-screen-pending-dark.png"),
               () =>
-                require("assets/gradients/tx-result-screen-pending-dark-3x.png")
+                require("../assets/gradients/tx-result-screen-pending-dark-3x.png")
             ),
           },
 
@@ -807,9 +807,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("assets/gradients/tx-result-screen-success-dark.png"),
+                require("../assets/gradients/tx-result-screen-success-dark.png"),
               () =>
-                require("assets/gradients/tx-result-screen-success-dark-3x.png")
+                require("../assets/gradients/tx-result-screen-success-dark-3x.png")
             ),
           },
 
@@ -827,9 +827,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("assets/gradients/tx-result-screen-failed-dark.png"),
+                require("../assets/gradients/tx-result-screen-failed-dark.png"),
               () =>
-                require("assets/gradients/tx-result-screen-failed-dark-3x.png")
+                require("../assets/gradients/tx-result-screen-failed-dark-3x.png")
             ),
           },
         },

@@ -5,6 +5,7 @@ import {PageWithView} from "components/page";
 import { Text, View, ViewStyle } from "react-native";
 import {useStyle} from "styles/index";
 import {Button} from "components/button";
+import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
 import { useSmartNavigation } from "../../../navigation";
 
 export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
@@ -29,8 +30,7 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
         <View style={style.get("flex-2")} />
         <View style={style.flatten(["items-center"])}>
           <View style={style.flatten(["padding-left-10"]) as ViewStyle}>
-              {/*//Todo*/}
-              {/*<ImportFromExtensionSvg />*/}
+            <ImportFromExtensionSvg />
           </View>
           <Text
             style={

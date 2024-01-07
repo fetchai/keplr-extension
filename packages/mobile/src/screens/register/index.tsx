@@ -109,11 +109,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
           style={style.flatten(["items-center", "margin-top-8"]) as ViewStyle}
         >
           <Image
-            source={
-              style.theme === "dark"
-                ? require("assets/logo/logo-name.png")
-                : require("assets/logo/logo-name.png")
-            }
+              source={require("assets/logo/logo-name.png")}
             style={{
               height: 45,
             }}

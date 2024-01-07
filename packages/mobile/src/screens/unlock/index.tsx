@@ -142,7 +142,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
     if (keyRingStore.status === KeyRingStatus.LOCKED) hideSplashScreen();
   }, [keyRingStore.status]);
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("12345678");
   const [isLoading, setIsLoading] = useState(false);
   const [isBiometricLoading, setIsBiometricLoading] = useState(false);
   const [isFailed, setIsFailed] = useState(false);
@@ -168,7 +168,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       // before the actually decryption is complete.
       // So to make sure that the loading state changes, just wait very short time.
       await delay(10);
-      await keyRingStore.unlock("12345678");
+      await keyRingStore.unlock(password);
     } catch (e) {
       console.log(e);
       setIsLoading(false);
@@ -220,11 +220,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
           <View style={style.get("flex-3")} />
           <View style={style.flatten(["flex-5", "items-center"]) as ViewStyle}>
             <Image
-              source={
-                style.theme === "dark"
-                  ? require("assets/logo/logo-name.png")
-                  : require("assets/logo/logo-name.png")
-              }
+              source={require("assets/logo/logo-name.png")}
               style={{
                 height: 45,
               }}

@@ -4,8 +4,8 @@ import {useStyle} from "styles/index";
 
 export const CardDivider: FunctionComponent<{
   style?: ViewStyle;
-  verical?: boolean;
-}> = ({ style: propStyle, verical = false }) => {
+  vertical?: boolean;
+}> = ({ style: propStyle, vertical = false }) => {
   const style = useStyle();
 
   return (
@@ -16,7 +16,7 @@ export const CardDivider: FunctionComponent<{
             "background-color-gray-200@40%",
             "dark:background-color-platinum-400@40%",
           ],
-          verical
+            vertical
             ? ["height-full", "width-1"]
             : ["height-1", "margin-x-card-horizontal"]
         ) as ViewStyle,

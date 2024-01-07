@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from "react";
 import { PageWithScrollView } from "components/page";
-import { GoogleIcon, AppleIcon } from "components/icon";
+import { AppleIcon, GoogleIcon } from "components/icon";
 import { useStyle } from "styles/index";
 import {
-  View,
-  Text,
   Dimensions,
+  Image,
   Platform,
   StyleSheet,
-  Image,
+  Text,
+  View,
   ViewStyle,
 } from "react-native";
 import { Button } from "components/button";
@@ -56,11 +56,7 @@ export const RegisterNotNewUserScreen: FunctionComponent = observer(() => {
         }
       >
         <Image
-          source={
-            style.theme === "dark"
-              ? require("assets/logo/logo.png")
-              : require("assets/logo/logo.png")
-          }
+          source={require("assets/logo/logo.png")}
           style={{
             height: 90,
             aspectRatio: 2.977,
