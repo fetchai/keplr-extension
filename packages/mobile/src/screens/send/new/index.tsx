@@ -1,21 +1,21 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
-import { useStore } from "../../../stores";
-import { PageWithScrollView } from "../../../components/page";
+import { useStore } from "stores/index";
+import { PageWithScrollView } from "components/page";
 import { View, ViewStyle } from "react-native";
-import { FeeButtons } from "../../../components/new/fee-button/fee-button-component";
-import { useStyle } from "../../../styles";
-import { Button } from "../../../components/button";
+import { FeeButtons } from "components/new/fee-button/fee-button-component";
+import { useStyle } from "styles/index";
+import { Button } from "components/button";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useSmartNavigation } from "../../../navigation";
 import { Buffer } from "buffer/";
-import { DropDownCardView } from "../../../components/new/card-view/drop-down-card";
+import { DropDownCardView } from "components/new/card-view/drop-down-card";
 import Toast from "react-native-toast-message";
-import { InputCardView } from "../../../components/new/card-view/input-card";
-import { AddressInputCard } from "../../../components/new/card-view/address-card";
-import { AmountInputSection } from "../../../components/new/input/amount";
-import { ChevronDownIcon } from "../../../components/new/icon/chevron-down";
+import { InputCardView } from "components/new/card-view/input-card";
+import { AddressInputCard } from "components/new/card-view/address-card";
+import { AmountInputSection } from "components/new/input/amount";
+import { ChevronDownIcon } from "components/new/icon/chevron-down";
 
 export const NewSendScreen: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();

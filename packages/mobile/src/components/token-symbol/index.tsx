@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 import {
   Circle,
   Defs,
@@ -13,7 +13,7 @@ import {
 import FastImage from "react-native-fast-image";
 import { Hash } from "@keplr-wallet/crypto";
 import { Buffer } from "buffer/";
-import { VectorCharacter } from "../vector-character";
+import {VectorCharacter} from "components/vector-character";
 
 export const StakedTokenSymbol: FunctionComponent<{
   size: number;

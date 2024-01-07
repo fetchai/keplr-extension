@@ -1,9 +1,11 @@
 import React, { FunctionComponent, useState } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import { TextInput } from "../../components/input";
-import { Button } from "../../components/button";
-import { KeyboardSpacerView } from "../../components/keyboard";
+import {TextInput} from "components/input";
+import {Button} from "components/button";
+import {KeyboardSpacerView} from "components/keyboard";
+import {ViewStyle} from "react-native";
+import {useStyle} from "styles/index";
 
 export const EditAccountNameModal: FunctionComponent<{
   isOpen: boolean;
@@ -17,6 +19,7 @@ export const EditAccountNameModal: FunctionComponent<{
     const [newName, setNewName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isInvalidName, setIsInvalidName] = useState(false);
+      const style = useStyle();
 
     const submitNewName = async () => {
       if (newName.length == 0) {
@@ -43,7 +46,10 @@ export const EditAccountNameModal: FunctionComponent<{
     }
 
     return (
-      <CardModal title={title}>
+        <CardModal
+            title={title}
+            cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        >
         <TextInput
           label="New account name"
           onChangeText={(text) => {
@@ -68,5 +74,6 @@ export const EditAccountNameModal: FunctionComponent<{
   },
   {
     disableSafeArea: true,
+      blurBackdropOnIOS: true,
   }
 );

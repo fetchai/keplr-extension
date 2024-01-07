@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useState } from "react";
 import { Dimensions, FlatList, Text, View, ViewStyle } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
-import { useStyle } from "../../../../styles";
-import { BlurButton } from "../../../../components/new/button/blur-button";
-import { CardDivider } from "../../../../components/card";
+import {useStyle} from "styles/index";
+import {BlurButton} from "components/new/button/blur-button";
+import {CardDivider} from "components/card";
 import { LinearGradient, Stop } from "react-native-svg";
 
 export const ChartWithPointer: FunctionComponent<{

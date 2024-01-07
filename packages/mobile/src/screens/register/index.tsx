@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
-import { PageWithScrollView } from "../../components/page";
-import { useStyle } from "../../styles";
+import { PageWithScrollView } from "components/page";
+import { useStyle } from "styles/index";
 import {
   Image,
   Platform,
@@ -9,16 +9,16 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { Button } from "../../components/button";
+import { Button } from "components/button";
 import { useSmartNavigation } from "../../navigation";
 import { useRegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
-import { registerModal } from "../../modals/base";
-import { CardModal } from "../../modals/card";
-import { AppleIcon, DownloadIcon, GoogleIcon } from "../../components/icon";
-import { HeaderAddIcon } from "../../components/header/icon";
-import { BluetoothIcon } from "../../components/icon/bluetooth";
+import { useStore } from "stores/index";
+import { registerModal } from "modals/base";
+import { CardModal } from "modals/card";
+import { AppleIcon, DownloadIcon, GoogleIcon } from "components/icon";
+import { HeaderAddIcon } from "components/header/icon";
+import { BluetoothIcon } from "components/icon/bluetooth";
 
 const SelectWalletOptionCard: FunctionComponent<{
   setIsModalOpen: (val: boolean) => void;
@@ -111,8 +111,8 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
           <Image
             source={
               style.theme === "dark"
-                ? require("../../assets/logo/logo-name.png")
-                : require("../../assets/logo/logo-name.png")
+                ? require("assets/logo/logo-name.png")
+                : require("assets/logo/logo-name.png")
             }
             style={{
               height: 45,

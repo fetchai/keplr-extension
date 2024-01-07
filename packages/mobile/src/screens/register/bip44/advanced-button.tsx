@@ -6,12 +6,12 @@ import React, {
 } from "react";
 import { observer } from "mobx-react-lite";
 import { BIP44Option } from "./bip44-option";
-import { Button } from "../../../components/button";
-import { useStyle } from "../../../styles";
-import { registerModal } from "../../../modals/base";
-import { CardModal } from "../../../modals/card";
+import {Button} from "components/button";
+import {useStyle} from "styles/index";
+import {registerModal} from "modals/base";
+import {CardModal} from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
-import { TextInput } from "../../../components/input";
+import {TextInput} from "components/input";
 
 export const BIP44AdvancedButton: FunctionComponent<{
   bip44Option: BIP44Option;

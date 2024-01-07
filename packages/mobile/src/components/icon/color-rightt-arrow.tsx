@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 
 import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 
-export const ColorRightErrow: FunctionComponent<{
+export const ColorRightArrow: FunctionComponent<{
   width?: number;
   height?: number;
   color1?: string;

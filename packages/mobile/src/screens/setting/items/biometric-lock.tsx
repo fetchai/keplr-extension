@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
-import { SettingItem } from "../components";
-import { Toggle } from "../../../components/toggle";
+import { SettingItem } from "screens/setting/components";
+import { Toggle } from "components/toggle";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../stores";
+import { useStore } from "stores/index";
 import delay from "delay";
-import { PasswordInputModal } from "../../../modals/password-input/modal";
+import { PasswordInputModal } from "modals/password-input/modal";
 
 export const SettingBiometricLockItem: FunctionComponent<{
   topBorder?: boolean;

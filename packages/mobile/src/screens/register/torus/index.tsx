@@ -2,13 +2,13 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
-import { useStyle } from "../../../styles";
+import { useStyle } from "styles/index";
 import { useSmartNavigation } from "../../../navigation";
 import { Controller, useForm } from "react-hook-form";
-import { PageWithScrollView } from "../../../components/page";
-import { TextInput } from "../../../components/input";
+import { PageWithScrollView } from "components/page";
+import { TextInput } from "components/input";
 import { View, ViewStyle } from "react-native";
-import { Button } from "../../../components/button";
+import { Button } from "components/button";
 import Web3Auth, {
   LOGIN_PROVIDER,
   OPENLOGIN_NETWORK,
@@ -18,8 +18,8 @@ import * as WebBrowser from "expo-web-browser";
 import Constants, { AppOwnership } from "expo-constants";
 import * as Linking from "expo-linking";
 import { Buffer } from "buffer/";
-import { useLoadingScreen } from "../../../providers/loading-screen";
-import { useStore } from "../../../stores";
+import { useLoadingScreen } from "providers/loading-screen";
+import { useStore } from "stores/index";
 import { LOGIN_PROVIDER_TYPE } from "@toruslabs/openlogin-utils/dist/types/interfaces";
 import { AuthApiKey } from "../../../config"; // for using ethers.js
 

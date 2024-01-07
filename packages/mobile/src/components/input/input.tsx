@@ -8,9 +8,8 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 
-// eslint-disable-next-line react/display-name
 export const TextInput = React.forwardRef<
   NativeTextInput,
   React.ComponentProps<typeof NativeTextInput> & {

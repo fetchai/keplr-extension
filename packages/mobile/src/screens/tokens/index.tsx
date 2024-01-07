@@ -1,18 +1,18 @@
 import React, { FunctionComponent, useEffect } from "react";
-import { PageWithScrollView } from "../../components/page";
+import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
+import { useStore } from "stores/index";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { CoinPretty } from "@keplr-wallet/unit";
-import { useStyle } from "../../styles";
+import { useStyle } from "styles/index";
 import { useSmartNavigation } from "../../navigation";
-import { RightArrowIcon } from "../../components/icon";
-import { Card } from "../../components/card";
-import { RectButton } from "../../components/rect-button";
+import { RightArrowIcon } from "components/icon";
+import { Card } from "components/card";
+import { RectButton } from "components/rect-button";
 import { Currency } from "@keplr-wallet/types";
-import { TokenSymbol } from "../../components/token-symbol";
-import { HeaderRightButton } from "../../components/header";
-import { HeaderAddIcon } from "../../components/header/icon";
+import { TokenSymbol } from "components/token-symbol";
+import { HeaderRightButton } from "components/header";
+import { HeaderAddIcon } from "components/header/icon";
 
 export const TokensScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, accountStore } = useStore();

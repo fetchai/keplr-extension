@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
-import { BlurBackground } from "../blur-background/blur-background";
+import {useStyle} from "styles/index";
+import {BlurBackground} from "components/new/blur-background/blur-background";
 
 export const SimpleCardView: FunctionComponent<{
   trailingIconComponent?: ReactElement | (() => ReactElement);

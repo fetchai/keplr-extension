@@ -310,8 +310,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
           // Since there is no effective way to solve this problem,
           // provides an option to stretch the bitmap image and show it.
           fallbackAndroidImage: handleImageHighRes(
-            () => require("../assets/gradients/gradient-background.png"),
-            () => require("../assets/gradients/gradient-background-3x.png")
+            () => require("assets/gradients/gradient-background.png"),
+            () => require("assets/gradients/gradient-background-3x.png")
           ),
         },
 
@@ -392,8 +392,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             },
           ],
           fallbackAndroidImage: handleImageHighRes(
-            () => require("../assets/gradients/unlock-screen.png"),
-            () => require("../assets/gradients/unlock-screen-3x.png")
+            () => require("assets/gradients/unlock-screen.png"),
+            () => require("assets/gradients/unlock-screen-3x.png")
           ),
         },
 
@@ -410,8 +410,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             },
           ],
           fallbackAndroidImage: handleImageHighRes(
-            () => require("../assets/gradients/tx-result-screen-pending.png"),
-            () => require("../assets/gradients/tx-result-screen-pending-3x.png")
+            () => require("assets/gradients/tx-result-screen-pending.png"),
+            () => require("assets/gradients/tx-result-screen-pending-3x.png")
           ),
         },
 
@@ -428,8 +428,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             },
           ],
           fallbackAndroidImage: handleImageHighRes(
-            () => require("../assets/gradients/tx-result-screen-success.png"),
-            () => require("../assets/gradients/tx-result-screen-success-3x.png")
+            () => require("assets/gradients/tx-result-screen-success.png"),
+            () => require("assets/gradients/tx-result-screen-success-3x.png")
           ),
         },
 
@@ -446,8 +446,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             },
           ],
           fallbackAndroidImage: handleImageHighRes(
-            () => require("../assets/gradients/tx-result-screen-failed.png"),
-            () => require("../assets/gradients/tx-result-screen-failed-3x.png")
+            () => require("assets/gradients/tx-result-screen-failed.png"),
+            () => require("assets/gradients/tx-result-screen-failed-3x.png")
           ),
         },
       },
@@ -686,9 +686,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
               },
             ],
             fallbackAndroidImage: handleImageHighRes(
-              () => require("../assets/gradients/gradient-background-dark.png"),
-              () =>
-                require("../assets/gradients/gradient-background-dark-3x.png")
+              () => require("assets/gradients/gradient-background-dark.png"),
+              () => require("assets/gradients/gradient-background-dark-3x.png")
             ),
           },
 
@@ -769,8 +768,8 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
               },
             ],
             fallbackAndroidImage: handleImageHighRes(
-              () => require("../assets/gradients/unlock-screen-dark.png"),
-              () => require("../assets/gradients/unlock-screen-dark-3x.png")
+              () => require("assets/gradients/unlock-screen-dark.png"),
+              () => require("assets/gradients/unlock-screen-dark-3x.png")
             ),
           },
 
@@ -788,9 +787,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("../assets/gradients/tx-result-screen-pending-dark.png"),
+                require("assets/gradients/tx-result-screen-pending-dark.png"),
               () =>
-                require("../assets/gradients/tx-result-screen-pending-dark-3x.png")
+                require("assets/gradients/tx-result-screen-pending-dark-3x.png")
             ),
           },
 
@@ -808,9 +807,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("../assets/gradients/tx-result-screen-success-dark.png"),
+                require("assets/gradients/tx-result-screen-success-dark.png"),
               () =>
-                require("../assets/gradients/tx-result-screen-success-dark-3x.png")
+                require("assets/gradients/tx-result-screen-success-dark-3x.png")
             ),
           },
 
@@ -828,9 +827,9 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
             ],
             fallbackAndroidImage: handleImageHighRes(
               () =>
-                require("../assets/gradients/tx-result-screen-failed-dark.png"),
+                require("assets/gradients/tx-result-screen-failed-dark.png"),
               () =>
-                require("../assets/gradients/tx-result-screen-failed-dark-3x.png")
+                require("assets/gradients/tx-result-screen-failed-dark-3x.png")
             ),
           },
         },

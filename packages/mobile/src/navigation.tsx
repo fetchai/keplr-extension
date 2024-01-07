@@ -15,41 +15,38 @@ import {
 } from "@react-navigation/native";
 import { useStore } from "./stores";
 import { observer } from "mobx-react-lite";
-import { HomeScreen } from "./screens/home";
+import { HomeScreen } from "screens/home";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { SendScreen } from "./screens/send";
-import { NewSendScreen } from "./screens/send/new";
-import {
-  GovernanceDetailsScreen,
-  GovernanceScreen,
-} from "./screens/governance";
+import { SendScreen } from "screens/send";
+import { NewSendScreen } from "screens/send/new";
+import { GovernanceDetailsScreen, GovernanceScreen } from "screens/governance";
 import {
   createDrawerNavigator,
   useDrawerStatus,
 } from "@react-navigation/drawer";
-import { DrawerContent } from "./components/drawer";
-import { useStyle } from "./styles";
+import { DrawerContent } from "components/drawer";
+import { useStyle } from "styles/index";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { createSmartNavigatorProvider, SmartNavigator } from "./hooks";
-import { SettingScreen } from "./screens/setting";
-import { SettingSelectAccountScreen } from "./screens/setting/screens/select-account";
-import { ViewPrivateDataScreen } from "./screens/setting/screens/view-private-data";
-import { SettingChainListScreen } from "./screens/setting/screens/chain-list";
-import { WebScreen } from "./screens/web";
-import { RegisterIntroScreen } from "./screens/register/new";
+import { SettingScreen } from "screens/setting";
+import { SettingSelectAccountScreen } from "screens/setting/screens/select-account";
+import { ViewPrivateDataScreen } from "screens/setting/screens/view-private-data";
+import { SettingChainListScreen } from "screens/setting/screens/chain-list";
+import { WebScreen } from "screens/web";
+import { RegisterIntroScreen } from "screens/register/new";
 import {
   NewMnemonicConfig,
   NewMnemonicScreen,
   RecoverMnemonicScreen,
   VerifyMnemonicScreen,
-} from "./screens/register/mnemonic";
-import { RegisterEndScreen } from "./screens/register/new/end";
-import { RegisterNewUserScreen } from "./screens/register/new-user";
-import { RegisterNotNewUserScreen } from "./screens/register/not-new-user";
+} from "screens/register/mnemonic";
+import { RegisterEndScreen } from "screens/register/new/end";
+import { RegisterNewUserScreen } from "screens/register/new-user";
+import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
 import {
   AddressBookConfig,
   AddressBookData,
@@ -62,15 +59,15 @@ import {
   StakingDashboardScreen,
   ValidatorDetailsScreen,
   ValidatorListScreen,
-} from "./screens/stake";
-import { OpenDrawerIcon, ScanIcon } from "./components/icon";
+} from "screens/stake";
+import { OpenDrawerIcon, ScanIcon } from "components/icon";
 import {
   AddAddressBookScreen,
   AddressBookScreen,
   EditAddressBookScreen,
-} from "./screens/setting/screens/address-book";
-import { NewLedgerScreen } from "./screens/register/ledger";
-import { PageScrollPositionProvider } from "./providers/page-scroll-position";
+} from "screens/setting/screens/address-book";
+import { NewLedgerScreen } from "screens/register/ledger";
+import { PageScrollPositionProvider } from "providers/page-scroll-position";
 import {
   BlurHeaderOptionsPreset,
   HeaderAtSecondaryScreenOptionsPreset,
@@ -80,37 +77,34 @@ import {
   HeaderOnTertiaryScreenOptionsPreset,
   HeaderRightButton,
   TransparentHeaderOptionsPreset,
-} from "./components/header";
-import { TokensScreen } from "./screens/tokens";
-import { UndelegateScreen } from "./screens/stake/undelegate";
-import { RedelegateScreen } from "./screens/stake/redelegate";
-import { CameraScreen } from "./screens/camera";
+} from "components/header";
+import { TokensScreen } from "screens/tokens";
+import { UndelegateScreen } from "screens/stake/undelegate";
+import { RedelegateScreen } from "screens/stake/redelegate";
+import { CameraScreen } from "screens/camera";
 import {
   FocusedScreenProvider,
   useFocusedScreen,
-} from "./providers/focused-screen";
+} from "providers/focused-screen";
 import {
   TxFailedResultScreen,
   TxPendingResultScreen,
   TxSuccessResultScreen,
-} from "./screens/tx-result";
-import { TorusSignInScreen } from "./screens/register/torus";
-import {
-  HeaderAddIcon,
-  HeaderWalletConnectIcon,
-} from "./components/header/icon";
-import { BlurredBottomTabBar } from "./components/bottom-tabbar";
-import { FetchVersionScreen } from "./screens/setting/screens/version";
+} from "screens/tx-result";
+import { TorusSignInScreen } from "screens/register/torus";
+import { HeaderAddIcon, HeaderWalletConnectIcon } from "components/header/icon";
+import { BlurredBottomTabBar } from "components/bottom-tabbar";
+import { FetchVersionScreen } from "screens/setting/screens/version";
 import {
   SettingAddTokenScreen,
   SettingManageTokensScreen,
-} from "./screens/setting/screens/token";
-import { ManageWalletConnectScreen } from "./screens/manage-wallet-connect";
+} from "screens/setting/screens/token";
+import { ManageWalletConnectScreen } from "screens/manage-wallet-connect";
 import {
   ImportFromExtensionIntroScreen,
   ImportFromExtensionScreen,
   ImportFromExtensionSetPasswordScreen,
-} from "./screens/register/import-from-extension";
+} from "screens/register/import-from-extension";
 import {
   FetchhubScreen,
   JunoswapWebpageScreen,
@@ -118,23 +112,23 @@ import {
   OsmosisWebpageScreen,
   StargazeWebpageScreen,
   UmeeWebpageScreen,
-} from "./screens/web/webpages";
-import { WebpageScreenScreenOptionsPreset } from "./screens/web/components/webpage-screen";
-import { UnlockScreen } from "./screens/unlock/new/index";
+} from "screens/web/webpages";
+import { WebpageScreenScreenOptionsPreset } from "screens/web/components/webpage-screen";
+import { UnlockScreen } from "screens/unlock/new";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconButtonWithText } from "./components/new/button/icon-button-with-text";
+import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import Svg, { Path, Rect } from "react-native-svg";
-import { NewHomeScreen } from "./screens/home/new";
-import { ReceiveScreen } from "./screens/receive";
-import { IconView } from "./components/new/button/icon";
+import { NewHomeScreen } from "screens/home/new";
+import { ReceiveScreen } from "screens/receive";
+import { IconView } from "components/new/button/icon";
 // import Svg, { Rect, Path } from "react-native-svg";
 //import Bugsnag from "@bugsnag/react-native";
-import { PortfolioScreen } from "./screens/portfolio";
-import { HomeIcon } from "./components/new/icon/file-icon";
-import { RobotIcon } from "./components/new/icon/robot-icon";
-import { UpDownArrowIcon } from "./components/new/icon/up-down-arrow";
-import { ClockIcon } from "./components/new/icon/clock-icon";
-import { MoreIcon } from "./components/new/icon/more-icon";
+import { PortfolioScreen } from "screens/portfolio";
+import { HomeIcon } from "components/new/icon/file-icon";
+import { RobotIcon } from "components/new/icon/robot-icon";
+import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
+import { ClockIcon } from "components/new/icon/clock-icon";
+import { MoreIcon } from "components/new/icon/more-icon";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
   createSmartNavigatorProvider(
@@ -494,130 +488,6 @@ export const HomeNavigation: FunctionComponent = () => {
         }}
         name="Portfolio"
         component={PortfolioScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...WebpageScreenScreenOptionsPreset,
-          headerMode: "screen",
-        }}
-        name="Fetchhub"
-        component={FetchhubScreen}
-      />
-    </Stack.Navigator>
-  );
-};
-export const InboxNavigation: FunctionComponent = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        ...TransitionPresets.SlideFromRightIOS,
-        headerMode: "screen",
-      }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          headerShown: false,
-          // title: "",
-          // headerLeft: () => <HomeScreenHeaderLeft />,
-          // headerRight: () => <HomeScreenHeaderRight />,
-        }}
-        name="Home"
-        component={NewHomeScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...WebpageScreenScreenOptionsPreset,
-          headerMode: "screen",
-        }}
-        name="Fetchhub"
-        component={FetchhubScreen}
-      />
-    </Stack.Navigator>
-  );
-};
-export const AgentsNavigation: FunctionComponent = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        ...TransitionPresets.SlideFromRightIOS,
-        headerMode: "screen",
-      }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          headerShown: false,
-          // title: "",
-          // headerLeft: () => <HomeScreenHeaderLeft />,
-          // headerRight: () => <HomeScreenHeaderRight />,
-        }}
-        name="Home"
-        component={NewHomeScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...WebpageScreenScreenOptionsPreset,
-          headerMode: "screen",
-        }}
-        name="Fetchhub"
-        component={FetchhubScreen}
-      />
-    </Stack.Navigator>
-  );
-};
-export const ActivityNavigation: FunctionComponent = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        ...TransitionPresets.SlideFromRightIOS,
-        headerMode: "screen",
-      }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          headerShown: false,
-          // title: "",
-          // headerLeft: () => <HomeScreenHeaderLeft />,
-          // headerRight: () => <HomeScreenHeaderRight />,
-        }}
-        name="Home"
-        component={NewHomeScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...WebpageScreenScreenOptionsPreset,
-          headerMode: "screen",
-        }}
-        name="Fetchhub"
-        component={FetchhubScreen}
-      />
-    </Stack.Navigator>
-  );
-};
-export const MoreNavigation: FunctionComponent = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        ...TransitionPresets.SlideFromRightIOS,
-        headerMode: "screen",
-      }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          headerShown: false,
-          // title: "",
-          // headerLeft: () => <HomeScreenHeaderLeft />,
-          // headerRight: () => <HomeScreenHeaderRight />,
-        }}
-        name="Home"
-        component={NewHomeScreen}
       />
       <Stack.Screen
         options={{
@@ -1316,7 +1186,7 @@ export const MainTabNavigation: FunctionComponent = () => {
       )}
     >
       <Tab.Screen name="Home" component={HomeNavigation} />
-      <Tab.Screen name="Agents" component={AgentsNavigation} />
+      <Tab.Screen name="Agents" component={HomeNavigation} />
       <Tab.Screen
         name="Inbox"
         component={HomeNavigation}
@@ -1326,8 +1196,8 @@ export const MainTabNavigation: FunctionComponent = () => {
           },
         })}
       />
-      <Tab.Screen name="Activity" component={ActivityNavigation} />
-      <Tab.Screen name="More" component={MoreNavigation} />
+      <Tab.Screen name="Activity" component={HomeNavigation} />
+      <Tab.Screen name="More" component={SettingStackScreen} />
       {/* <Tab.Screen name="Main" component={MainNavigation} /> */}
       {/* <Tab.Screen name="Web" component={WebNavigation} /> */}
       {/* <Tab.Screen

@@ -5,19 +5,19 @@ import {
   DrawerContentOptions,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-import { useStore } from "../../stores";
+import {useStore} from "stores/index";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../styles";
-import { RectButton } from "../rect-button";
+import {useStyle} from "styles/index";
+import {RectButton} from "components/rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { VectorCharacter } from "../vector-character";
 import FastImage from "react-native-fast-image";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { IconView } from "../new/button/icon";
-import { XmarkIcon } from "../new/icon/xmark";
-import { BlurBackground } from "../new/blur-background/blur-background";
-import { CheckIcon } from "../new/icon/check";
+import {VectorCharacter} from "components/vector-character";
+import {BlurBackground} from "components/new/blur-background/blur-background";
+import {CheckIcon} from "components/new/icon/check";
+import {IconView} from "components/new/button/icon";
+import {XmarkIcon} from "components/new/icon/xmark";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;

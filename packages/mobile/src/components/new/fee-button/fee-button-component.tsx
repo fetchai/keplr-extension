@@ -10,7 +10,7 @@ import {
   ViewProps,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../../styles";
+import {useStyle} from "styles/index";
 import { action, makeObservable, observable } from "mobx";
 import {
   IFeeConfig,
@@ -19,10 +19,10 @@ import {
   NotLoadedFeeError,
 } from "@keplr-wallet/hooks";
 import { GasInput } from "../../input/gas";
-import { useStore } from "../../../stores";
+import {useStore} from "stores/index";
 import { CoinPretty, PricePretty } from "@keplr-wallet/unit";
-import { LoadingSpinner } from "../../spinner";
-import { RectButton } from "../../rect-button";
+import {LoadingSpinner} from "components/spinner";
+import {RectButton} from "components/rect-button";
 import { observer } from "mobx-react-lite";
 import { BlurButton } from "../button/blur-button";
 import { InputCardView } from "../card-view/input-card";

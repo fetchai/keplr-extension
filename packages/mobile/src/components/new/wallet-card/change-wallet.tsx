@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from "react";
-import { CardModal } from "../../../modals/card";
+import {CardModal} from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
-import { IconView } from "../button/icon";
-import { XmarkIcon } from "../icon/xmark";
-import { registerModal } from "../../../modals/base";
+import {useStyle} from "styles/index";
+import {IconView} from "components/new/button/icon";
+import {XmarkIcon} from "components/new/icon/xmark";
+import {registerModal} from "modals/base";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { RectButton } from "../../rect-button";
-import { CheckIcon } from "../icon/check";
-import { useStore } from "../../../stores";
+import {RectButton} from "components/rect-button";
+import {CheckIcon} from "components/new/icon/check";
+import {useStore} from "stores/index";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { observer } from "mobx-react-lite";
 import { KeyRingStore } from "@keplr-wallet/stores";
@@ -33,6 +33,7 @@ export const ChangeWalletCardModel: FunctionComponent<{
     return (
       <CardModal
         title={title}
+        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         disableGesture={true}
         right={
           <BorderlessButton
@@ -88,9 +89,6 @@ export const ChangeWalletCardModel: FunctionComponent<{
                   >
                     {keyStore.meta?.["name"] || "Fetch Account"}
                   </Text>
-                  {/* <Text style={style.flatten(["color-white"]) as ViewStyle}>
-                    {"fetch1pneh5rcwhtfk3zttq3ntuwzejaucmzzdpeqe8z"}
-                  </Text> */}
                 </View>
                 <View
                   style={style.flatten(["flex-1", "items-end"]) as ViewStyle}
@@ -106,6 +104,6 @@ export const ChangeWalletCardModel: FunctionComponent<{
   }),
   {
     disableSafeArea: true,
-    // disableClosingOnBackdropPress: true,
+      blurBackdropOnIOS: true,
   }
 );

@@ -1,13 +1,13 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../../styles";
-import { CheckIcon } from "../../../../components/icon";
-import { Button } from "../../../../components/button";
-import { WordChip } from "../../../../components/mnemonic";
+import { useStyle } from "styles/index";
+import { CheckIcon } from "components/icon";
+import { Button } from "components/button";
+import { WordChip } from "components/mnemonic";
 import * as Clipboard from "expo-clipboard";
-import { PageWithScrollViewInBottomTabView } from "../../../../components/page";
-import { useSimpleTimer } from "../../../../hooks";
+import { PageWithScrollViewInBottomTabView } from "components/page";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useSimpleTimer } from "hooks/use-simple-timer";
 
 export const getPrivateDataTitle = (
   keyRingType: string,

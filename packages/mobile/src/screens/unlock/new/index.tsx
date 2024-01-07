@@ -7,22 +7,22 @@ import React, {
 } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
-import { useStyle } from "../../../styles";
+import { useStyle } from "styles/index";
 import * as SplashScreen from "expo-splash-screen";
-import { TextInput } from "../../../components/input";
-import { Button } from "../../../components/button";
+import { TextInput } from "components/input";
+import { Button } from "components/button";
 import delay from "delay";
-import { useStore } from "../../../stores";
+import { useStore } from "stores/index";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { KeyRingStatus } from "@keplr-wallet/background";
-import { KeychainStore } from "../../../stores/keychain";
+import { KeychainStore } from "stores/keychain";
 import { IAccountStore } from "@keplr-wallet/stores";
 import { autorun } from "mobx";
-import { FingerprintIcon } from "../../../components/icon/fingerprint";
-import { ScreenBackground } from "../../../components/page/background";
-import { ColorRightErrow } from "../../../components/icon/color-rightt-arrow";
-import { LinearGradientText } from "../../../components/svg/linear-gradient-text";
+import { FingerprintIcon } from "components/icon/fingerprint";
+import { ScreenBackground } from "components/page/background";
+import { ColorRightArrow } from "components/icon/color-rightt-arrow";
+import { LinearGradientText } from "components/svg/linear-gradient-text";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -224,8 +224,8 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             <Image
               source={
                 style.theme === "dark"
-                  ? require("../../../assets/logo/logo.png")
-                  : require("../../../assets/logo/logo.png")
+                  ? require("assets/logo/logo.png")
+                  : require("assets/logo/logo.png")
               }
               style={{
                 height: 80,
@@ -274,7 +274,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               text="Sign in"
               rightIcon={
                 <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-                  <ColorRightErrow />
+                  <ColorRightArrow />
                 </View>
               }
               size="large"

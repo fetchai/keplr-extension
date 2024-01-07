@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
+import {useStyle} from "styles/index";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import * as Clipboard from "expo-clipboard";
-import { RectButton } from "../../rect-button";
-import { useSimpleTimer } from "../../../hooks";
+import {RectButton} from "components/rect-button";
 import LottieView from "lottie-react-native";
-import { CopyIcon } from "../icon/copy-icon";
+import {useSimpleTimer} from "hooks/use-simple-timer";
+import {CopyIcon} from "components/new/icon/copy-icon";
 
 export const AddressCopyable: FunctionComponent<{
   style?: ViewStyle;
@@ -63,7 +63,7 @@ export const AddressCopyable: FunctionComponent<{
               >
                 <LottieView
                   // TODO: Change color of animated check button according to theme.
-                  source={require("../../../assets/lottie/check.json")}
+                    source={require("assets/lottie/check.json")}
                   colorFilters={[
                     {
                       keypath: "Shape Layer 2",

@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from "react";
-import { PageWithScrollView } from "../../../../components/page";
+import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../../stores";
+import { useStore } from "stores/index";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { CoinPretty } from "@keplr-wallet/unit";
-import { useStyle } from "../../../../styles";
-import { TrashCanIcon } from "../../../../components/icon";
-import { Card } from "../../../../components/card";
+import { useStyle } from "styles/index";
+import { TrashCanIcon } from "components/icon";
+import { Card } from "components/card";
 import { Currency } from "@keplr-wallet/types";
-import { TokenSymbol } from "../../../../components/token-symbol";
+import { TokenSymbol } from "components/token-symbol";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { useConfirmModal } from "../../../../providers/confirm-modal";
+import { useConfirmModal } from "providers/confirm-modal";
 import { useNavigation } from "@react-navigation/native";
 
 export const SettingManageTokensScreen: FunctionComponent = observer(() => {

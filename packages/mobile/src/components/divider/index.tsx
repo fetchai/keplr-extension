@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { View, ViewStyle } from "react-native";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 
 export const Divider: FunctionComponent<{
   containerStyle?: ViewStyle;

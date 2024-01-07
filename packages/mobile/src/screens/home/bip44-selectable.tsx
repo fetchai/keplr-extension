@@ -1,15 +1,15 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../stores";
+import {useStore} from "stores/index";
 import { KeyRingStatus } from "@keplr-wallet/background";
-import { LoadingScreenModal } from "../../providers/loading-screen/modal";
+import {LoadingScreenModal} from "providers/loading-screen/modal";
 import { Dec } from "@keplr-wallet/unit";
 import { Text, View, ViewStyle } from "react-native";
-import { registerModal } from "../../modals/base";
-import { CardModal } from "../../modals/card";
-import { useStyle } from "../../styles";
-import { RectButton } from "../../components/rect-button";
-import { Button } from "../../components/button";
+import {registerModal} from "modals/base";
+import {CardModal} from "modals/card";
+import {useStyle} from "styles/index";
+import {RectButton} from "components/rect-button";
+import {Button} from "components/button";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { WalletIcon } from "../setting/components";
 

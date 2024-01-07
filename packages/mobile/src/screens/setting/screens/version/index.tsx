@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { PageWithScrollViewInBottomTabView } from "../../../../components/page";
-import { SettingItem, SettingSectionTitle } from "../../components";
+import { PageWithScrollViewInBottomTabView } from "components/page";
 import DeviceInfo from "react-native-device-info";
 import codePush from "react-native-code-push";
 import { codeBundleId } from "../../../../../bugsnag.env";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { SettingItem, SettingSectionTitle } from "screens/setting/components";
 
 export const FetchVersionScreen: FunctionComponent = () => {
   const [appVersion] = useState(() => DeviceInfo.getVersion());

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useRef, useState } from "react";
-import { PageWithScrollViewInBottomTabView } from "../../components/page";
+import {PageWithScrollViewInBottomTabView} from "components/page";
 import { observer } from "mobx-react-lite";
-import { StakingCard } from "../../components/new/staking/staking-card";
+import {StakingCard} from "components/new/staking/staking-card";
 import {
   FlatList,
   Platform,
@@ -12,18 +12,18 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconView } from "../../components/new/button/icon";
-import { useStyle } from "../../styles";
-import { HeaderBackButtonIcon } from "../../components/header/icon";
-import { BlurButton } from "../../components/new/button/blur-button";
-import { CardDivider } from "../../components/card";
+import {IconView} from "components/new/button/icon";
+import {useStyle} from "styles/index";
+import {HeaderBackButtonIcon} from "components/header/icon";
+import {BlurButton} from "components/new/button/blur-button";
+import {CardDivider} from "components/card";
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { useStore } from "../../stores";
-import { TokenCardView } from "../../components/new/card-view/token-card-view";
+import {useStore} from "stores/index";
+import {TokenCardView} from "components/new/card-view/token-card-view";
 
 export const PortfolioScreen: FunctionComponent = observer(() => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();

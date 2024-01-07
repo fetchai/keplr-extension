@@ -6,15 +6,15 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../styles";
-import { useSetFocusedScreen } from "./utils";
 import { BackgroundMode, ScreenBackground } from "./background";
+import {useStyle} from "styles/index";
+import {useSetFocusedScreen} from "components/page/utils";
 
 export const PageWithView: FunctionComponent<
   ViewProps & {
     disableSafeArea?: boolean;
     backgroundMode: BackgroundMode;
-    backgroundBlur?: boolean
+    backgroundBlur?: boolean;
   }
 > = (props) => {
   const style = useStyle();
@@ -31,7 +31,10 @@ export const PageWithView: FunctionComponent<
 
   return (
     <React.Fragment>
-        <ScreenBackground backgroundMode={backgroundMode} backgroundBlur={backgroundBlur}/>
+        <ScreenBackground
+            backgroundMode={backgroundMode}
+            backgroundBlur={backgroundBlur}
+        />
       {!disableSafeArea ? (
         <SafeAreaView style={style.get("flex-1")}>
           <View

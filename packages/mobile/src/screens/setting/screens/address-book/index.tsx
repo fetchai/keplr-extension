@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { PageWithScrollView } from "../../../../components/page";
-import { useStyle } from "../../../../styles";
+import { PageWithScrollView } from "components/page";
+import { useStyle } from "styles/index";
 import { Text, View, ViewStyle } from "react-native";
 import { useSmartNavigation } from "../../../../navigation";
 import {
@@ -10,16 +10,16 @@ import {
   useAddressBookConfig,
 } from "@keplr-wallet/hooks";
 import { AsyncKVStore } from "../../../../common";
-import { useStore } from "../../../../stores";
-import { EditIcon, TrashCanIcon } from "../../../../components/icon";
+import { useStore } from "stores/index";
+import { EditIcon, TrashCanIcon } from "components/icon";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { RectButton } from "../../../../components/rect-button";
+import { RectButton } from "components/rect-button";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { HeaderRightButton } from "../../../../components/header";
-import { HeaderAddIcon } from "../../../../components/header/icon";
-import { AddressBookIcon } from "../../../../components/icon";
-import { useConfirmModal } from "../../../../providers/confirm-modal";
+import { HeaderRightButton } from "components/header";
+import { HeaderAddIcon } from "components/header/icon";
+import { AddressBookIcon } from "components/icon";
+import { useConfirmModal } from "providers/confirm-modal";
 
 const addressBookItemComponent = {
   inTransaction: RectButton,

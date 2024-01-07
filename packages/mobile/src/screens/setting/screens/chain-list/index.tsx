@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../../stores";
+import { useStore } from "stores/index";
 import { FlatList, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../../styles";
-import { Toggle } from "../../../../components/toggle";
+import { useStyle } from "styles/index";
+import { Toggle } from "components/toggle";
 import FastImage from "react-native-fast-image";
-import { VectorCharacter } from "../../../../components/vector-character";
+import { VectorCharacter } from "components/vector-character";
 
 export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();

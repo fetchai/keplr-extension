@@ -6,11 +6,11 @@ import {
 } from "@react-navigation/stack";
 import { Animated, Platform, StyleSheet, View, ViewStyle } from "react-native";
 import { BlurView } from "@react-native-community/blur";
-import { usePageScrollPosition } from "../../providers/page-scroll-position";
+import {usePageScrollPosition} from "providers/page-scroll-position";
 import { useRoute } from "@react-navigation/native";
 import { HeaderLeftBackButton, HeaderLeftBackBlurButton } from "./button";
-import { useStyle } from "../../styles";
-import { BlurBackground } from "../new/blur-background/blur-background";
+import {useStyle} from "styles/index";
+import {BlurBackground} from "components/new/blur-background/blur-background";
 
 type HeaderBackgroundMode =
   | "gradient"

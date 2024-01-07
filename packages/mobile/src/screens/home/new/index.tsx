@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { PageWithScrollViewInBottomTabView } from "../../../components/page";
+import {PageWithScrollViewInBottomTabView} from "components/page";
 import {
   AppState,
   AppStateStatus,
@@ -12,15 +12,15 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
-import { useStore } from "../../../stores";
+import {useStore} from "stores/index";
 import { observer } from "mobx-react-lite";
-import { usePrevious } from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
 import { AccountSection } from "./v2/account-section";
 import { ChartWithPointer } from "./v2/chart";
 import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QuickTabOption } from "./quick-tab-options";
+import {usePrevious} from "hooks/use-previous";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();

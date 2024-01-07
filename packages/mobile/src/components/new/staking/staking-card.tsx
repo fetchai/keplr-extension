@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from "react";
 import { Text, View, ViewStyle } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import { BlurBackground } from "../blur-background/blur-background";
-import { useStyle } from "../../../styles";
-import { CardDivider } from "../../card";
+import {BlurBackground} from "components/new/blur-background/blur-background";
+import {useStyle} from "styles/index";
+import {CardDivider} from "components/card";
 
 export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   cardStyle,

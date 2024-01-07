@@ -2,14 +2,14 @@ import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
-import { useStyle } from "../../../styles";
+import { useStyle } from "styles/index";
 import { useSmartNavigation } from "../../../navigation";
 import { Controller, useForm } from "react-hook-form";
-import { PageWithScrollView } from "../../../components/page";
-import { TextInput } from "../../../components/input";
+import { PageWithScrollView } from "components/page";
+import { TextInput } from "components/input";
 import { View, ViewStyle } from "react-native";
-import { useStore } from "../../../stores";
-import { Button } from "../../../components/button";
+import { useStore } from "stores/index";
+import { Button } from "components/button";
 import { BIP44AdvancedButton, useBIP44Option } from "../bip44";
 
 interface FormData {

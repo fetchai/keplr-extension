@@ -1,15 +1,15 @@
 import React, { FunctionComponent } from "react";
-import { CardModal } from "../../../modals/card";
+import {CardModal} from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
-import { IconView } from "../button/icon";
-import { XmarkIcon } from "../icon/xmark";
-import { registerModal } from "../../../modals/base";
+import {useStyle} from "styles/index";
+import {IconView} from "components/new/button/icon";
+import {XmarkIcon} from "components/new/icon/xmark";
+import {registerModal} from "modals/base";
 import { LayerGroupIcon } from "../icon/layer-group";
 import { EditIcon } from "../icon/edit";
 import { DeleteIcon } from "../icon/color-delete";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { RectButton } from "../../rect-button";
+import {RectButton} from "components/rect-button";
 import { PlusIcon } from "../../icon";
 
 export const WalletCardModel: FunctionComponent<{
@@ -28,6 +28,7 @@ export const WalletCardModel: FunctionComponent<{
     return (
       <CardModal
         title={title}
+        cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
         disableGesture={true}
         right={
           <BorderlessButton
@@ -188,6 +189,6 @@ export const WalletCardModel: FunctionComponent<{
   },
   {
     disableSafeArea: true,
-    // disableClosingOnBackdropPress: true,
+      blurBackdropOnIOS: true,
   }
 );

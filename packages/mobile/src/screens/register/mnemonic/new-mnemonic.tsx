@@ -4,17 +4,17 @@ import { observer } from "mobx-react-lite";
 import { RouteProp, useIsFocused, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { useNewMnemonicConfig } from "./hook";
-import { PageWithScrollView } from "../../../components/page";
-import { CheckIcon } from "../../../components/icon";
-import { useStyle } from "../../../styles";
-import { WordChip } from "../../../components/mnemonic";
-import { Button } from "../../../components/button";
+import { PageWithScrollView } from "components/page";
+import { CheckIcon } from "components/icon";
+import { useStyle } from "styles/index";
+import { WordChip } from "components/mnemonic";
+import { Button } from "components/button";
 import * as Clipboard from "expo-clipboard";
-import { TextInput } from "../../../components/input";
+import { TextInput } from "components/input";
 import { Controller, useForm } from "react-hook-form";
 import { useSmartNavigation } from "../../../navigation";
-import { useSimpleTimer } from "../../../hooks";
 import { BIP44AdvancedButton, useBIP44Option } from "../bip44";
+import { useSimpleTimer } from "hooks/use-simple-timer";
 
 interface FormData {
   name: string;

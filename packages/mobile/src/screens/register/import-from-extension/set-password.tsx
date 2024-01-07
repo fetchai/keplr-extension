@@ -1,24 +1,24 @@
 import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { PageWithScrollView } from "../../../components/page";
+import {PageWithScrollView} from "components/page";
 import { View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
-import { Button } from "../../../components/button";
+import {useStyle} from "styles/index";
+import {Button} from "components/button";
 import { useSmartNavigation } from "../../../navigation";
 import { ExportKeyRingData } from "@keplr-wallet/background";
 import { Controller, useForm } from "react-hook-form";
 import {
   registerExportedAddressBooks,
   registerExportedKeyRingDatas,
-} from "../../../utils/import-from-extension";
+} from "utils/import-from-extension";
 import {
   AddressBookConfigMap,
   AddressBookData,
   RegisterConfig,
 } from "@keplr-wallet/hooks";
-import { TextInput } from "../../../components/input";
+import {TextInput} from "components/input";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../stores";
+import {useStore} from "stores/index";
 import { AsyncKVStore } from "../../../common";
 
 interface FormData {

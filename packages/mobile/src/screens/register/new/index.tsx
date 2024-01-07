@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
-import { PageWithScrollView } from "../../../components/page";
-import { useStyle } from "../../../styles";
+import { PageWithScrollView } from "components/page";
+import { useStyle } from "styles/index";
 import {
   View,
   Image,
@@ -9,18 +9,18 @@ import {
   Text,
   Platform,
 } from "react-native";
-import { Button } from "../../../components/button";
+import { Button } from "components/button";
 import { useSmartNavigation } from "../../../navigation";
 import { useRegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../stores";
-import { registerModal } from "../../../modals/base";
-import { CardModal } from "../../../modals/card";
-import { AppleIcon, DownloadIcon, GoogleIcon } from "../../../components/icon";
-import { HeaderAddIcon } from "../../../components/header/icon";
-import { ColorRightErrow } from "../../../components/icon/color-rightt-arrow";
-import { LinearGradientText } from "../../../components/svg/linear-gradient-text";
-import { BlurBackground } from "../../../components/new/blur-background/blur-background";
+import { useStore } from "stores/index";
+import { registerModal } from "modals/base";
+import { CardModal } from "modals/card";
+import { AppleIcon, DownloadIcon, GoogleIcon } from "components/icon";
+import { HeaderAddIcon } from "components/header/icon";
+import { ColorRightArrow } from "components/icon/color-rightt-arrow";
+import { LinearGradientText } from "components/svg/linear-gradient-text";
+import { BlurBackground } from "components/new/blur-background/blur-background";
 
 const SelectWalletOptionCard: FunctionComponent<{
   setIsModalOpen: (val: boolean) => void;
@@ -29,6 +29,7 @@ const SelectWalletOptionCard: FunctionComponent<{
   desc: string;
 }> = ({ setIsModalOpen, img, title, desc }) => {
   const style = useStyle();
+
   return (
     <React.Fragment>
       <TouchableOpacity
@@ -107,7 +108,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
   const registerConfig = useRegisterConfig(keyRingStore, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImportWalletModalOpen, setIsmportWalletModalOpen] = useState(false);
+  const [isImportWalletModalOpen, setImportWalletModalOpen] = useState(false);
 
   return (
     <PageWithScrollView
@@ -120,11 +121,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
         <View style={style.flatten(["items-center"]) as ViewStyle}>
           <Image
-            source={
-              style.theme === "dark"
-                ? require("../../../assets/logo/logo.png")
-                : require("../../../assets/logo/logo.png")
-            }
+            source={require("assets/logo/logo.png")}
             style={{
               height: 80,
               aspectRatio: 2.977,
@@ -133,16 +130,11 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             fadeDuration={0}
           />
         </View>
-        <View>
-          <LinearGradientText
-            text="Welcome to Fetch Wallet"
-            color1="#CF447B"
-            color2="#F9774B"
-          />
-          {/* <Text style={style.flatten(["text-center", "h1", "font-medium", "color-linear"])}>
-            Welcome to Fetch Wallet
-          </Text> */}
-        </View>
+        <LinearGradientText
+          text="Welcome to Fetch Wallet"
+          color1="#CF447B"
+          color2="#F9774B"
+        />
         <View style={{ display: "flex", gap: 20 }}>
           <SelectWalletOptionCard
             setIsModalOpen={setIsModalOpen}
@@ -151,7 +143,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             desc="This will create a new wallet and a Secret Recovery Phrase"
           />
           <SelectWalletOptionCard
-            setIsModalOpen={setIsmportWalletModalOpen}
+            setIsModalOpen={setImportWalletModalOpen}
             img={<DownloadIcon color="white" size={18} />}
             title="Import existing wallet"
             desc="Access your existing wallet using your Secret Recovery Phrase"
@@ -191,9 +183,9 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
           />
           <ImportExistingWalletModal
             isOpen={isImportWalletModalOpen}
-            close={() => setIsmportWalletModalOpen(false)}
+            close={() => setImportWalletModalOpen(false)}
             onSelectGoogle={() => {
-              setIsmportWalletModalOpen(false);
+              setImportWalletModalOpen(false);
               analyticsStore.logEvent("OAuth sign in started", {
                 registerType: "google",
               });
@@ -212,7 +204,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               });
             }}
             onImportExistingWallet={() => {
-              setIsmportWalletModalOpen(false);
+              setImportWalletModalOpen(false);
               analyticsStore.logEvent("Import account started", {
                 registerType: "seed",
               });
@@ -221,7 +213,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               });
             }}
             onImportFromFetch={() => {
-              setIsmportWalletModalOpen(false);
+              setImportWalletModalOpen(false);
               analyticsStore.logEvent("Import account started", {
                 registerType: "qr",
               });
@@ -254,11 +246,16 @@ export const NewWalletModal: FunctionComponent<{
     }
 
     return (
-      <CardModal title="Create a new wallet">
+      <CardModal
+        title="Create a new wallet"
+        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+      >
         {Platform.OS === "ios" ? (
           <Button
             containerStyle={{
-              marginBottom: 15,
+              height: 58,
+              marginTop: 6,
+              marginBottom: 20,
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -271,13 +268,16 @@ export const NewWalletModal: FunctionComponent<{
               backgroundColor: "#fff",
               borderWidth: 0,
             }}
+            textStyle={{
+              color: "#64646D",
+            }}
             text="Continue with Apple"
             leftIcon={
-              <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
-                <AppleIcon />
+              <View style={style.flatten(["margin-right-12"]) as ViewStyle}>
+                <AppleIcon width={30} height={30} />
               </View>
             }
-            size="default"
+            size="xlarge"
             mode="outline"
             onPress={() => {
               onSelectApple();
@@ -372,7 +372,7 @@ export const NewWalletModal: FunctionComponent<{
           text="Create new mnemonic"
           rightIcon={
             <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-              <ColorRightErrow />
+              <ColorRightArrow />
             </View>
           }
           size="default"
@@ -385,6 +385,7 @@ export const NewWalletModal: FunctionComponent<{
   }),
   {
     disableSafeArea: true,
+    blurBackdropOnIOS: true,
   }
 );
 
@@ -411,11 +412,16 @@ export const ImportExistingWalletModal: FunctionComponent<{
       }
 
       return (
-        <CardModal title="Import existing wallet">
+        <CardModal
+          title="Import existing wallet"
+          cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        >
           {Platform.OS === "ios" ? (
             <Button
               containerStyle={{
-                marginBottom: 15,
+                height: 58,
+                marginTop: 6,
+                marginBottom: 20,
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
@@ -428,13 +434,16 @@ export const ImportExistingWalletModal: FunctionComponent<{
                 backgroundColor: "#fff",
                 borderWidth: 0,
               }}
+              textStyle={{
+                color: "#64646D",
+              }}
               text="Continue with Apple"
               leftIcon={
-                <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
-                  <AppleIcon />
+                <View style={style.flatten(["margin-right-12"]) as ViewStyle}>
+                  <AppleIcon width={30} height={30} />
                 </View>
               }
-              size="default"
+              size="xlarge"
               mode="outline"
               onPress={() => {
                 onSelectApple();
@@ -561,5 +570,6 @@ export const ImportExistingWalletModal: FunctionComponent<{
   ),
   {
     disableSafeArea: true,
+    blurBackdropOnIOS: true,
   }
 );

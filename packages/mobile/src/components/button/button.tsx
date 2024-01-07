@@ -1,14 +1,14 @@
 import React, { FunctionComponent, ReactElement, isValidElement } from "react";
-import { useStyle } from "../../styles";
 import { Text, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
-import { LoadingSpinner } from "../spinner";
-import { RectButton } from "../rect-button";
 import Svg, {
   Defs,
   LinearGradient,
   Stop,
   Text as TextSvg,
 } from "react-native-svg";
+import {useStyle} from "styles/index";
+import {RectButton} from "components/rect-button";
+import {LoadingSpinner} from "components/spinner";
 
 export const Button: FunctionComponent<{
   color?: "primary" | "danger" | "gradient";

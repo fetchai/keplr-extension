@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, ViewProps } from "react-native";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 import { PageWithView } from "./view";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { BackgroundMode } from "./background";

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
 import Svg, { Circle, Path } from "react-native-svg";

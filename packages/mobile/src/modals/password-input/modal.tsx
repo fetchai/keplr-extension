@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState } from "react";
 import { registerModal } from "../base";
 import { Text, ViewStyle } from "react-native";
-import { useStyle } from "../../styles";
+import {useStyle} from "styles/index";
 import { CardModal } from "../card";
-import { TextInput } from "../../components/input";
-import { Button } from "../../components/button";
-import { KeyboardSpacerView } from "../../components/keyboard";
+import {TextInput} from "components/input";
+import {Button} from "components/button";
+import {KeyboardSpacerView} from "components/keyboard";
 
 export const PasswordInputModal: FunctionComponent<{
   isOpen: boolean;
@@ -46,7 +46,10 @@ export const PasswordInputModal: FunctionComponent<{
     }
 
     return (
-      <CardModal title={title}>
+        <CardModal
+            title={title}
+            cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        >
         <Text
           style={
             style.flatten([
@@ -82,6 +85,6 @@ export const PasswordInputModal: FunctionComponent<{
   },
   {
     disableSafeArea: true,
-    // disableClosingOnBackdropPress: true,
+      blurBackdropOnIOS: true,
   }
 );

@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
-import { useStyle } from "../../../../styles";
-import { BlurBackground } from "../../../../components/new/blur-background/blur-background";
-import { SelectAccountButton } from "../../../../components/new/select-account/select-account-button";
-import { AddressCopyable } from "../../../../components/new/address-copyable";
+import {useStyle} from "styles/index";
+import {BlurBackground} from "components/new/blur-background/blur-background";
+import {SelectAccountButton} from "components/new/select-account/select-account-button";
+import {AddressCopyable} from "components/new/address-copyable";
 import {
   DrawerActions,
   NavigationProp,
@@ -12,18 +12,18 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
-import { useStore } from "../../../../stores";
-import { IconView } from "../../../../components/new/button/icon";
-import { WalletCardModel } from "../../../../components/new/wallet-card/wallet-card";
-import { ChangeWalletCardModel } from "../../../../components/new/wallet-card/change-wallet";
-import { EditAccountNameModal } from "../../../../modals/edit-account-name.tsx";
-import { PasswordInputModal } from "../../../../modals/password-input/modal";
-import { useLoadingScreen } from "../../../../providers/loading-screen";
-import { BlurButton } from "../../../../components/new/button/blur-button";
-import { ChevronDownIcon } from "../../../../components/new/icon/chevron-down";
-import { BarCodeIcon } from "../../../../components/new/icon/bar-code";
-import { InboxIcon } from "../../../../components/new/icon/inbox-icon";
-import { TreeDotIcon } from "../../../../components/new/icon/tree-dot";
+import {useStore} from "stores/index";
+import {IconView} from "components/new/button/icon";
+import {WalletCardModel} from "components/new/wallet-card/wallet-card";
+import {ChangeWalletCardModel} from "components/new/wallet-card/change-wallet";
+import {EditAccountNameModal} from "modals/edit-account-name.tsx";
+import {PasswordInputModal} from "modals/password-input/modal";
+import {useLoadingScreen} from "providers/loading-screen";
+import {BlurButton} from "components/new/button/blur-button";
+import {ChevronDownIcon} from "components/new/icon/chevron-down";
+import {BarCodeIcon} from "components/new/icon/bar-code";
+import {InboxIcon} from "components/new/icon/inbox-icon";
+import {TreeDotIcon} from "components/new/icon/tree-dot";
 
 export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
   observer(({ containtStyle }) => {

@@ -10,21 +10,21 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../styles";
-import { useStore } from "../../stores";
+import {useStyle} from "styles/index";
+import {useStore} from "stores/index";
 import { observer } from "mobx-react-lite";
 import { State } from "react-native-ble-plx";
 import TransportBLE, {
   bleManager,
 } from "@ledgerhq/react-native-hw-transport-ble";
-import { LoadingSpinner } from "../../components/spinner";
+import {LoadingSpinner} from "components/spinner";
 import { Ledger, LedgerApp, LedgerInitErrorOn } from "@keplr-wallet/background";
-import { getLastUsedLedgerDeviceId } from "../../utils/ledger";
-import { RectButton } from "../../components/rect-button";
-import { useUnmount } from "../../hooks";
+import {getLastUsedLedgerDeviceId} from "utils/ledger";
+import {RectButton} from "components/rect-button";
 import Svg, { Path } from "react-native-svg";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
+import {useUnmount} from "hooks/use-unmount";
 
 const AlertIcon: FunctionComponent<{
   size: number;

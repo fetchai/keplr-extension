@@ -16,9 +16,9 @@ import {
   ZeroAmountError,
 } from "@keplr-wallet/hooks";
 import { TextInput } from "../../input";
-import { useStyle } from "../../../styles";
+import {useStyle} from "styles/index";
 import * as RNLocalize from "react-native-localize";
-import { Button } from "../../button";
+import {Button} from "components/button";
 import { ReloadIcon } from "../icon/reload-icon";
 
 export const AmountInputSection: FunctionComponent<{

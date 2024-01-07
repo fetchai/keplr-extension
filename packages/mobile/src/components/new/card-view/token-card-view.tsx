@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { View, Text, ViewStyle, TouchableOpacity } from "react-native";
-import { useStyle } from "../../../styles";
-import { BlurBackground } from "../blur-background/blur-background";
-import { IconView } from "../button/icon";
+import {useStyle} from "styles/index";
+import {BlurBackground} from "components/new/blur-background/blur-background";
+import {IconView} from "components/new/button/icon";
 import { Currency } from "@keplr-wallet/types";
 import { CoinPretty } from "@keplr-wallet/unit";
 import { TokenSymbol } from "../../token-symbol";

@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from "react";
-import { useStyle } from "../../../styles";
-import { HeaderAddIcon } from "../../../components/header/icon";
+import {useStyle} from "styles/index";
+import {HeaderAddIcon} from "components/header/icon";
 import { FlatList, View, ViewStyle } from "react-native";
-import { IconButtonWithText } from "../../../components/new/button/icon-button-with-text";
-import { useStore } from "../../../stores";
+import {IconButtonWithText} from "components/new/button/icon-button-with-text";
+import {useStore} from "stores/index";
 import { useSmartNavigation } from "../../../navigation";
 import Toast from "react-native-toast-message";
-import { ArrowDownIcon } from "../../../components/new/icon/arrow-down";
-import { ArrowUpIcon } from "../../../components/new/icon/arrow-up";
-import { SwapIcon } from "../../../components/new/icon/swap-icon";
-import { StakeIcon } from "../../../components/new/icon/stake-icon";
-import { BridgeIcon } from "../../../components/new/icon/bridge-icon";
+import {ArrowDownIcon} from "components/new/icon/arrow-down";
+import {ArrowUpIcon} from "components/new/icon/arrow-up";
+import {SwapIcon} from "components/new/icon/swap-icon";
+import {StakeIcon} from "components/new/icon/stake-icon";
+import {BridgeIcon} from "components/new/icon/bridge-icon";
 
 export const TransectionSection: FunctionComponent<{
   containtStyle?: ViewStyle;

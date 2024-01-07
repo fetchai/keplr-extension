@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
-import { PageWithScrollView } from "../../../../components/page";
+import { PageWithScrollView } from "components/page";
 import { View, ViewStyle } from "react-native";
-import { useStyle } from "../../../../styles";
-import { Button } from "../../../../components/button";
-import { AddressInput, TextInput } from "../../../../components/input";
+import { useStyle } from "styles/index";
+import { Button } from "components/button";
+import { AddressInput, TextInput } from "components/input";
 import { observer } from "mobx-react-lite";
 import { useRecipientConfig } from "@keplr-wallet/hooks";
-import { useStore } from "../../../../stores";
+import { useStore } from "stores/index";
 import { useNavigation } from "@react-navigation/native";
 
 export const SettingAddTokenScreen: FunctionComponent = observer(() => {

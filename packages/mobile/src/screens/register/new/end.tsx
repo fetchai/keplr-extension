@@ -1,16 +1,16 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { PageWithView } from "../../../components/page";
-import { useStyle } from "../../../styles";
+import { PageWithView } from "components/page";
+import { useStyle } from "styles/index";
 import { Image, Text, View, ViewStyle } from "react-native";
-import { Button } from "../../../components/button";
+import { Button } from "components/button";
 import { useSmartNavigation } from "../../../navigation";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../../stores";
-import { Toggle } from "../../../components/toggle";
+import { useStore } from "stores/index";
+import { Toggle } from "components/toggle";
 import delay from "delay";
-import { ColorRightErrow } from "../../../components/icon/color-rightt-arrow";
-import { LinearGradientText } from "../../../components/svg/linear-gradient-text";
+import { ColorRightArrow } from "components/icon/color-rightt-arrow";
+import { LinearGradientText } from "components/svg/linear-gradient-text";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
   const { keychainStore, keyRingStore } = useStore();
@@ -54,14 +54,14 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         {style.theme === "dark" ? (
           <Image
             style={{ width: 400, height: 260, marginRight: -80 }}
-            source={require("../../../assets/image/wallet-connection.png")}
+            source={require("assets/image/wallet-connection.png")}
             fadeDuration={0}
             resizeMode="stretch"
           />
         ) : (
           <Image
             style={{ width: 400, height: 260, marginRight: -80 }}
-            source={require("../../../assets/image/all-set.png")}
+            source={require("assets/image/all-set.png")}
             fadeDuration={0}
             resizeMode="contain"
           />
@@ -122,7 +122,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         }}
         rightIcon={
           <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-            <ColorRightErrow />
+            <ColorRightArrow />
           </View>
         }
         size="large"

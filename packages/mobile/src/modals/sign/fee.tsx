@@ -2,17 +2,17 @@ import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { IFeeConfig, IGasConfig, NotLoadedFeeError } from "@keplr-wallet/hooks";
 import { Text, View, ViewStyle } from "react-native";
-import { useStore } from "../../stores";
-import { useStyle } from "../../styles";
+import {useStore} from "stores/index";
+import {useStyle} from "styles/index";
 import { CoinPretty, Dec } from "@keplr-wallet/unit";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { KeplrSignOptions } from "@keplr-wallet/types";
-import { RightArrowIcon } from "../../components/icon";
+import {RightArrowIcon} from "components/icon";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import { FeeButtons, getFeeErrorText } from "../../components/input";
-import { Button } from "../../components/button";
-import { LoadingSpinner } from "../../components/spinner";
+import {FeeButtons, getFeeErrorText} from "components/input";
+import {Button} from "components/button";
+import {LoadingSpinner} from "components/spinner";
 
 const FeeButtonsModal: FunctionComponent<{
   isOpen: boolean;

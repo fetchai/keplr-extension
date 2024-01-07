@@ -1,13 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
-import { PageWithView } from "../../../components/page";
+import {PageWithView} from "components/page";
 import { Text, View, ViewStyle } from "react-native";
-import { useStyle } from "../../../styles";
-import { Button } from "../../../components/button";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import ImportFromExtensionSvg from "../../../assets/svg/import-from-extension.svg";
+import {useStyle} from "styles/index";
+import {Button} from "components/button";
 import { useSmartNavigation } from "../../../navigation";
 
 export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
@@ -24,7 +21,6 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
   >();
 
   const smartNavigation = useSmartNavigation();
-
   const style = useStyle();
 
   return (
@@ -33,7 +29,8 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
         <View style={style.get("flex-2")} />
         <View style={style.flatten(["items-center"])}>
           <View style={style.flatten(["padding-left-10"]) as ViewStyle}>
-            <ImportFromExtensionSvg />
+              {/*//Todo*/}
+              {/*<ImportFromExtensionSvg />*/}
           </View>
           <Text
             style={
