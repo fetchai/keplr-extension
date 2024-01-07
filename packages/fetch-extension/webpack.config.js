@@ -36,7 +36,9 @@ const commonResolve = () => ({
     "@new-components": path.resolve(__dirname, "src/new-components"),
     "@new-layouts": path.resolve(__dirname, "src/new-layouts"),
     "@components": path.resolve(__dirname, "src/components"),
+    "@components-v2": path.resolve(__dirname, "src/components-v2"),
     "@layouts": path.resolve(__dirname, "src/layouts"),
+    "@layouts-v2": path.resolve(__dirname, "src/layouts-v2"),
     "@chatStore": path.resolve(__dirname, "src/stores/chats"),
     "@graphQL": path.resolve(__dirname, "src/graphQL"),
     "@chatTypes": path.resolve(__dirname, "src/@types/chat"),
@@ -204,6 +206,7 @@ const extensionConfig = () => {
         fs: false,
         assert: require.resolve("assert"),
         url: require.resolve("url"),
+        _stream_transform: false,
       },
     },
     module: {

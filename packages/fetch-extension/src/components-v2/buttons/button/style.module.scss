@@ -1,0 +1,24 @@
+@import "../../../styles/var";
+.btn {
+  color: var(--Indigo-Indigo-900---Fetch-navy, #000d3d);
+  font-family: Lexend;
+  font-size: 15px;
+  border-radius: 100px;
+  margin-top: 18px;
+  border: none;
+  padding: 10px 12px;
+  width: 100%;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+}
+.btn:disabled {
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.8);
+}
+.gradient {
+  background: $gradient;
+  -webkit-background-clip: text;
+  color: transparent;
+}

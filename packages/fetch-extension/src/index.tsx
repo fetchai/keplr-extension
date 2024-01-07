@@ -16,11 +16,12 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
-import { LockPage } from "./pages/lock";
-import { MainPage } from "./pages/main";
+import { LockPage } from "./pages-new/lock";
+// import { MainPage } from "./pages/main";
+import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages/register";
-import { SendPage } from "./pages/send";
+import { SendPage } from "./pages-new/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { Banner } from "@components/banner";
@@ -102,11 +103,14 @@ import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
 import { FetchnameService } from "./pages/fetch-name-service";
 import { DomainDetails } from "./pages/fetch-name-service/domain-details";
-import { BridgePage } from "./pages/bridge";
+import { BridgePage } from "./pages-new/bridge";
 import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
-import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
-import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
+import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
+import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
+import { Receive } from "./pages-new/receive";
+import { Portfolio } from "./pages-new/portfolio";
+import { AssetView } from "./pages-new/asset-view";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -115,7 +119,7 @@ window.keplr = new Keplr(
 );
 
 // Make sure that icon file will be included in bundle
-require("@assets/logo-256.svg");
+require("@assets/svg/wireframe/LogoV2.svg");
 require("@assets/icon/icon-16.png");
 require("@assets/icon/icon-48.png");
 require("@assets/icon/icon-128.png");
@@ -175,11 +179,14 @@ const StateRenderer: FunctionComponent = observer(() => {
     );
   } else if (keyRingStore.status === KeyRingStatus.NOTLOADED) {
     return (
-      <div style={{ height: "100%" }}>
-        <Banner
-          icon={require("@assets/logo-256.svg")}
-          logo={require("@assets/brand-text.png")}
-        />
+      <div
+        style={{
+          height: "100%",
+          backgroundColor: "#030e3b",
+          backgroundImage: `url(${require("@assets/svg/wireframe/bg-onboarding.svg")})`,
+        }}
+      >
+        <Banner icon={require("@assets/svg/wireframe/LogoV2.svg")} logo={""} />
       </div>
     );
   } else {
@@ -417,6 +424,10 @@ ReactDOM.render(
                         path="/setting/addEvmChain"
                         element={<AddEvmChain />}
                       />
+                      <Route path="/receive" element={<Receive />} />
+                      <Route path="/portfolio" element={<Portfolio />} />
+                      <Route path="/asset" element={<AssetView />} />
+
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>
                   </ChatStoreProvider>

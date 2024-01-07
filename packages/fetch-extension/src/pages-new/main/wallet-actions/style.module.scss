@@ -1,0 +1,10 @@
+@import "../../../styles/var";
+.actions {
+  color: #fff;
+  font-size: $xs;
+  margin: 32px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: transparent;
+}
