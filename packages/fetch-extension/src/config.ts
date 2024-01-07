@@ -55,7 +55,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/mainnet/governance/",
+    govUrl: "https://www.mintscan.io/fetchai/proposals/",
   },
   {
     rpc: "https://mainnet.infura.io/v3/f40158f0c03842f5a18e409ffe09192c",
@@ -162,13 +162,12 @@ export const EmbedChainInfos: ChainInfo[] = [
     rpc: "https://goerli.infura.io/v3/f40158f0c03842f5a18e409ffe09192c",
     rest: "https://goerli.infura.io/v3/f40158f0c03842f5a18e409ffe09192c/",
     chainId: "5",
-    chainName: "ethereum-2",
+    chainName: "Goerli-eth (Testnet)",
 
     stakeCurrency: {
       coinDenom: "ETH",
       coinMinimalDenom: "eth",
       coinDecimals: 18,
-      coinGeckoId: "ethereum",
     },
     bip44: {
       coinType: 60,
@@ -179,7 +178,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "ETH",
         coinMinimalDenom: "eth",
         coinDecimals: 18,
-        coinGeckoId: "ethereum",
       },
       // {
       //   coinDenom: "FET",
@@ -198,7 +196,6 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "ETH",
         coinMinimalDenom: "eth",
         coinDecimals: 18,
-        coinGeckoId: "ethereum",
         gasPriceStep: {
           low: 40000000000,
           average: 40000000000,
@@ -207,6 +204,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["evm"],
+    explorerUrl: "https://goerli.etherscan.io",
   },
   {
     rpc: "https://rpc-cosmoshub.keplr.app",
@@ -2697,7 +2695,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/dorado/governance/",
+    govUrl: "https://explore-dorado.fetch.ai/proposals/",
   },
 ];
 
