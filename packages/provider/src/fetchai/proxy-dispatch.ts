@@ -9,6 +9,7 @@ import {
 } from "./proxy";
 import {
   AccountsApiMethod,
+  EventsApiMethod,
   NetworksApiMethod,
   UmbralMethod,
   WalletMethod,
@@ -20,6 +21,7 @@ async function dispatchRequest(
   request: ProxyRequest
 ): Promise<any> {
   const methodArray = request.method.split(".");
+  console.log("request.method", request.method, methodArray);
 
   const api = methodArray[0];
   if (request.method !== undefined) {
@@ -49,6 +51,12 @@ async function dispatchRequest(
           ...JSONUint8Array.unwrap(request.args)
         );
       } else if (methodArray[1] === "accounts") {
+        console.log(
+          "method",
+          fetchApi.wallet.accounts[
+            methodArray[methodArray.length - 1] as AccountsApiMethod
+          ]
+        );
         return await fetchApi.wallet.accounts[
           methodArray[methodArray.length - 1] as AccountsApiMethod
         ](
@@ -56,6 +64,28 @@ async function dispatchRequest(
           // @ts-ignore
           ...JSONUint8Array.unwrap(request.args)
         );
+      } else if (methodArray[1] === "events") {
+        // fetchApi.wallet.events.onStatusChanged.subscribe
+        const property = await fetchApi.wallet.events[
+          methodArray[methodArray.length - 2] as EventsApiMethod
+        ];
+        console.log("property", property, request, request.args);
+
+        if (methodArray[methodArray.length - 1] === "subscribe") {
+          console.log("subscribe", request.args);
+
+          property.subscribe(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ...JSONUint8Array.unwrap(request.args)
+          );
+        } else {
+          property.unsubscribe(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ...JSONUint8Array.unwrap(request.args)
+          );
+        }
       } else {
         const method = methodArray[methodArray.length - 1] as WalletMethod;
         return await fetchApi.wallet[method](

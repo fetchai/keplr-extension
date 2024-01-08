@@ -16,6 +16,7 @@ import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
 import {
   FetchAccount,
+  FetchEvents,
   FetchNetworks,
   FetchSigning,
   FetchWalletApi,
@@ -131,6 +132,7 @@ export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
       new FetchNetworks(requester),
       new FetchAccount(requester),
       new FetchSigning(requester),
+      new FetchEvents(requester),
       requester
     );
   }

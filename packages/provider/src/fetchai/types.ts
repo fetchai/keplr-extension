@@ -6,14 +6,16 @@ export type FetchWalletApiMethod =
   | WalletMethod
   | `signing.${WalletSigningMethod}`
   | `networks.${NetworksApiMethod}`
-  | `accounts.${AccountsApiMethod}`;
+  | `accounts.${AccountsApiMethod}`
+  | `events.${EventsApiSubMethod}`;
 
 export type FetchWalletMethod =
   | WalletMethod
   | UmbralMethod
   | WalletSigningMethod
   | NetworksApiMethod
-  | AccountsApiMethod;
+  | AccountsApiMethod
+  | EventsApiSubMethod;
 
 export type UmbralMethod =
   | "getPublicKey"
@@ -47,3 +49,16 @@ export type AccountsApiMethod =
   | "switchAccount"
   | "listAccounts"
   | "getAccount";
+
+export type EventsApiSubMethod =
+  | "onStatusChanged.subscribe"
+  | "onStatusChanged.unsubscribe"
+  | "onAccountChanged.subscribe"
+  | "onAccountChanged.unsubscribe"
+  | "onNetworkChanged.subscribe"
+  | "onNetworkChanged.unsubscribe";
+
+export type EventsApiMethod =
+  | "onStatusChanged"
+  | "onAccountChanged"
+  | "onNetworkChanged";

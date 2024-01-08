@@ -1,6 +1,8 @@
 import {
   Account,
   AccountsApi,
+  EventHandler,
+  EventsApi,
   NetworksApi,
   SigningApi,
   WalletApi,
@@ -32,6 +34,7 @@ import {
   NetworksApiMethod,
   WalletSigningMethod,
   WalletMethod,
+  EventsApiSubMethod,
 } from "./types";
 
 export class InjectedFetchWalletApi implements WalletApi {
@@ -39,6 +42,7 @@ export class InjectedFetchWalletApi implements WalletApi {
     public networks: NetworksApi,
     public accounts: AccountsApi,
     public signing: SigningApi,
+    public events: EventsApi,
     protected readonly proxy: Proxy
   ) {}
 
@@ -170,7 +174,7 @@ export class InjectedFetchNetworks implements NetworksApi {
     args: any[]
   ): Promise<any> {
     const proxyRequest = createProxyRequest(`wallet.networks.${method}`, args);
-
+    console.log(proxyRequest);
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
         const proxyResponse = toProxyResponse(e.data);
@@ -313,6 +317,85 @@ export class InjectedFetchSigning implements SigningApi {
   ): Promise<any> {
     const proxyRequest = createProxyRequest(`wallet.signing.${method}`, args);
 
+    return new Promise((resolve, reject) => {
+      const messageHandler = (e: any) => {
+        const proxyResponse = toProxyResponse(e.data);
+        if (proxyResponse === undefined) {
+          return;
+        }
+
+        this.proxy.removeMessageHandler(messageHandler);
+
+        const result = JSONUint8Array.unwrap(proxyResponse.result);
+        if (!result) {
+          reject(new Error("Result is null"));
+          return;
+        }
+
+        if (result.error) {
+          reject(new Error(result.error));
+          return;
+        }
+
+        resolve(result.return);
+      };
+
+      this.proxy.addMessageHandler(messageHandler);
+      this.proxy.sendMessage(proxyRequest);
+    });
+  }
+}
+
+export class InjectedFetchEvents implements EventsApi {
+  constructor(protected readonly proxy: Proxy) {}
+
+  onStatusChanged: EventHandler<
+    (status: WalletStatus) => void | Promise<void>
+  > = {
+    subscribe: (handler: any) => {
+      this.requestViaProxy("onStatusChanged.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onStatusChanged.unsubscribe", [handler.toString()]);
+    },
+  };
+
+  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>> =
+    {
+      subscribe: (handler: any) => {
+        this.requestViaProxy("onNetworkChanged.subscribe", [
+          handler.toString(),
+        ]);
+      },
+      unsubscribe: (handler: any) => {
+        this.requestViaProxy("onNetworkChanged.unsubscribe", [
+          handler.toString(),
+        ]);
+      },
+    };
+
+  onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
+    subscribe: (handler: any) => {
+      console.log("walletapi", handler);
+      this.requestViaProxy("onAccountChanged.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onAccountChanged.unsubscribe", [
+        handler.toString(),
+      ]);
+    },
+  };
+
+  // Implementing other event handlers similarly if needed
+  // onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
+  // onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
+
+  protected async requestViaProxy(
+    method: EventsApiSubMethod,
+    args: any[]
+  ): Promise<any> {
+    const proxyRequest = createProxyRequest(`wallet.events.${method}`, args);
+    console.log("args requestviaproxy", args, JSONUint8Array.wrap(args));
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
         const proxyResponse = toProxyResponse(e.data);

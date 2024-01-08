@@ -22,6 +22,7 @@ import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { MessageRequester } from "@keplr-wallet/router";
 import { KVStore, toGenerator } from "@keplr-wallet/common";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
+import { NetworkChangedEventMsg } from "@keplr-wallet/background/src/chains";
 
 export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
   @observable
@@ -159,6 +160,10 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
       this.deferChainIdSelect = chainId;
     }
     this._selectedChainId = chainId;
+    const msg = new NetworkChangedEventMsg(
+      this.getChain(this._selectedChainId)
+    );
+    this.requester.sendMessage(BACKGROUND_PORT, msg);
   }
 
   @computed

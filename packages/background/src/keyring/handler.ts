@@ -45,6 +45,7 @@ import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { KeyRingStatus } from "./keyring";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Account } from "@fetchai/wallet-types";
+import { eventEmitter } from "../events";
 
 export const getHandler: (service: KeyRingService) => Handler = (
   service: KeyRingService
@@ -329,6 +330,9 @@ const handleAddLedgerKeyMsg: (
 const handleLockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<LockKeyRingMsg> = (service) => {
+  // TODO: log statuschange event
+  eventEmitter.emit("statusChanged", service.keyRingStatus);
+
   return () => {
     return {
       status: service.lock(),
@@ -340,6 +344,9 @@ const handleUnlockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<UnlockKeyRingMsg> = (service) => {
   return async (_, msg) => {
+    // TODO: log statuschange event
+    eventEmitter.emit("statusChanged", service.keyRingStatus);
+
     return {
       status: await service.unlock(msg.password),
     };

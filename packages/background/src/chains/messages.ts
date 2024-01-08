@@ -195,3 +195,31 @@ export class SwitchNetworkByChainIdMsg extends Message<void> {
     return SwitchNetworkByChainIdMsg.type();
   }
 }
+
+export class NetworkChangedEventMsg extends Message<void> {
+  public static type() {
+    return "network-changed-event";
+  }
+
+  constructor(public readonly chainInfo: ChainInfo) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainInfo) {
+      throw new Error("Chain info not set");
+    }
+  }
+
+  override approveExternal(): boolean {
+    return true;
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return NetworkChangedEventMsg.type();
+  }
+}

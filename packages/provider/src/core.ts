@@ -55,6 +55,12 @@ import {
   RequestVerifyADR36AminoSignDocFetchSigning,
   AddNetworkAndSwitchMsg,
   SwitchNetworkByChainIdMsg,
+  UnsubscribeOnStatusChangeMsg,
+  SubscribeOnStatusChangeMsg,
+  SubscribeOnAccountChangeMsg,
+  UnsubscribeOnAccountChangeMsg,
+  SubscribeOnNetworkChangeMsg,
+  UnsubscribeOnNetworkChangeMsg,
 } from "./types";
 
 import { KeplrEnigmaUtils } from "./enigma";
@@ -73,6 +79,8 @@ import { KeplrCoreTypes } from "./core-types";
 import {
   Account,
   AccountsApi,
+  EventHandler,
+  EventsApi,
   NetworksApi,
   SigningApi,
   WalletApi,
@@ -462,6 +470,7 @@ export class FetchWalletApi implements WalletApi {
     public networks: NetworksApi,
     public accounts: AccountsApi,
     public signing: SigningApi,
+    public events: EventsApi,
     protected readonly requester: MessageRequester
   ) {}
 
@@ -699,4 +708,61 @@ export class FetchSigning implements SigningApi {
       memo: "",
     };
   }
+}
+
+export class FetchEvents implements EventsApi {
+  constructor(protected readonly requester: MessageRequester) {}
+
+  onStatusChanged: EventHandler<
+    (status: WalletStatus) => void | Promise<void>
+  > = {
+    subscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnStatusChangeMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnStatusChangeMsg(handler)
+      );
+    },
+  };
+
+  onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
+    subscribe: async (handler: any) => {
+      console.log("handler core", handler);
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnAccountChangeMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnAccountChangeMsg(handler)
+      );
+    },
+  };
+
+  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>> =
+    {
+      subscribe: async (handler: any) => {
+        await this.requester.sendMessage(
+          BACKGROUND_PORT,
+          new SubscribeOnNetworkChangeMsg(handler)
+        );
+      },
+      unsubscribe: async (handler: any) => {
+        await this.requester.sendMessage(
+          BACKGROUND_PORT,
+          new UnsubscribeOnNetworkChangeMsg(handler)
+        );
+      },
+    };
+
+  // Implementing other event handlers similarly
+  // onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
+  // onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
 }

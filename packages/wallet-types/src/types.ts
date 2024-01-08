@@ -13,7 +13,7 @@ import {
 import { UmbralApi } from "@fetchai/umbral-types";
 import { PublicKey } from "./public-keys";
 // import { NetworkConfig } from "./network-info";
-import { TxsResponse } from "@cosmjs/launchpad";
+// import { TxsResponse } from "@cosmjs/launchpad";
 
 /**
  * The representation of the Account
@@ -235,10 +235,6 @@ export interface EventHandler<T> {
   unsubscribe(handler: T): void;
 }
 
-// interface TxResponse {
-//   // TODO(EJF)
-// }
-
 /**
  * The Events API
  *
@@ -267,12 +263,12 @@ export interface EventsApi {
   /**
    * The event handler for successful transaction events
    */
-  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
+  // onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
 
   /**
    * The event handler for unsuccessful transaction events
    */
-  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
+  // onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
 }
 
 /**
@@ -432,7 +428,7 @@ export interface WalletApi {
   /**
    * The events API
    */
-  // events: EventsApi;
+  events: EventsApi;
 }
 
 /**
