@@ -28,6 +28,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
     const { chainStore, analyticsStore, accountStore } = useStore();
     const [cosmosSearchTerm, setCosmosSearchTerm] = useState("");
     const [evmSearchTerm, setEvmSearchTerm] = useState("");
+    const [clickedChain, setClickedChain] = useState("");
 
     const intl = useIntl();
     const navigate = useNavigate();
@@ -63,11 +64,12 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                   heading={chainInfo.chainName}
                   isActive={chainInfo.chainId === chainStore.current.chainId}
                   rightContent={
-                    chainInfo.chainId === chainStore.current.chainId
+                    clickedChain === chainInfo.chainId
                       ? require("@assets/svg/wireframe/check.svg")
                       : ""
                   }
                   onClick={() => {
+                    setClickedChain(chainInfo.chainId);
                     let properties = {};
                     if (chainInfo.chainId !== chainStore.current.chainId) {
                       properties = {
@@ -106,6 +108,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
 
             {betaChainList.map((chainInfo) => (
               <Card
+                key={chainInfo.chainId}
                 leftImage={
                   chainInfo.chainName
                     ? chainInfo.chainName[0].toUpperCase()
@@ -203,11 +206,12 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                   heading={chainInfo.chainName}
                   isActive={chainInfo.chainId === chainStore.current.chainId}
                   rightContent={
-                    chainInfo.chainId === chainStore.current.chainId
+                    clickedChain === chainInfo.chainId
                       ? require("@assets/svg/wireframe/check.svg")
                       : ""
                   }
                   onClick={() => {
+                    setClickedChain(chainInfo.chainId);
                     let properties = {};
                     if (chainInfo.chainId !== chainStore.current.chainId) {
                       properties = {

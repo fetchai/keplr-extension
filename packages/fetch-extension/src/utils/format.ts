@@ -113,4 +113,4 @@ export const parseDollarAmount = (dollarString: any) => {
     return parseFloat(match[0]);
   }
   return NaN;
-}
+};
