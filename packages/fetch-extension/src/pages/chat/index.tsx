@@ -55,6 +55,7 @@ const ChatView = () => {
     queriesStore,
     uiConfigStore,
     analyticsStore,
+    chatStore,
   } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -162,6 +163,8 @@ const ChatView = () => {
       try {
         const res = await getJWT(current.chainId, AUTH_SERVER);
         store.dispatch(setAccessToken(res));
+        // userDetailsStore.setAccessToken(res);
+        chatStore.userDetailsStore.setAccessToken(res);
 
         const pubKey = await fetchPublicKey(
           res,
@@ -172,6 +175,7 @@ const ChatView = () => {
           return setIsOpendialog(true);
 
         store.dispatch(setMessagingPubKey(pubKey));
+        // userDetailsStore.setMessagingPubKey(pubKey);
       } catch (e) {
         store.dispatch(
           setMessageError({
