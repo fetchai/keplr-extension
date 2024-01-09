@@ -51,7 +51,7 @@ import {
 } from "./pages/setting/connections";
 import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
-import { ChangeNamePage } from "./pages/setting/keyring/change";
+// import { ChangeNamePage } from "./pages/setting/keyring/change";
 import { SettingLanguagePage } from "./pages/setting/language";
 import { AddTokenPage } from "./pages/setting/token/add";
 import { ManageTokenPage } from "./pages/setting/token/manage";
@@ -111,6 +111,7 @@ import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosm
 import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
 import { AssetView } from "./pages-new/asset-view";
+import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -286,7 +287,7 @@ ReactDOM.render(
                       />
                       <Route
                         path="/setting/keyring/change/name/:index"
-                        element={<ChangeNamePage />}
+                        element={<ChangeNamePageV2 />}
                       />
                       <Route
                         path="/setting/token/add"

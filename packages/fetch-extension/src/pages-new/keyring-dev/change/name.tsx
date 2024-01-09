@@ -1,22 +1,21 @@
 import React, { FunctionComponent, useState, useEffect, useMemo } from "react";
-import { HeaderLayout } from "@layouts/index";
-
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { useNavigate, useParams } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Input } from "@components/form";
-import { Button, Form } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { useStore } from "../../../stores";
 import { observer } from "mobx-react-lite";
-
 import styleName from "./name.module.scss";
 import { KeyRingStatus } from "@keplr-wallet/background";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 interface FormData {
   name: string;
 }
 
-export const ChangeNamePage: FunctionComponent = observer(() => {
+export const ChangeNamePageV2: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const { index = "-1 " } = useParams<{ index: string }>();
 
@@ -64,6 +63,8 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
 
   return (
     <HeaderLayout
+      showTopMenu={true}
+      smallTitle={true}
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
@@ -103,19 +104,26 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
           }
         })}
       >
-        <Input
-          type="text"
-          label={intl.formatMessage({
+        <Label className={styleName["label"]}>
+          {intl.formatMessage({
             id: "setting.keyring.change.previous-name",
           })}
+        </Label>
+        <Input
+          type="text"
+          className={styleName["input"]}
           value={keyStore?.meta?.["name"] ?? ""}
           readOnly={true}
         />
-        <Input
-          type="text"
-          label={intl.formatMessage({
+
+        <Label className={styleName["label"]}>
+          {intl.formatMessage({
             id: "setting.keyring.change.input.name",
           })}
+        </Label>
+        <Input
+          type="text"
+          className={styleName["input"]}
           error={errors.name && errors.name.message}
           {...register("name", {
             required: intl.formatMessage({
@@ -127,9 +135,9 @@ export const ChangeNamePage: FunctionComponent = observer(() => {
         />
 
         <div style={{ flex: 1 }} />
-        <Button type="submit" color="primary" block data-loading={loading}>
+        <ButtonV2 data-loading={loading} text={""}>
           <FormattedMessage id="setting.keyring.change.name.button.save" />
-        </Button>
+        </ButtonV2>
       </Form>
     </HeaderLayout>
   );

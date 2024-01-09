@@ -170,7 +170,7 @@ export const ContactBookPage: FunctionComponent<{
     };
 
     return (
-      <>
+      <React.Fragment>
         <Modal
           isOpen={addAddressModalOpen}
           backdrop={false}
@@ -275,7 +275,7 @@ export const ContactBookPage: FunctionComponent<{
             </div>
           </div>
         )}
-      </>
+      </React.Fragment>
     );
   }
 );
