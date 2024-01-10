@@ -275,7 +275,7 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     interactionInfo.interaction &&
                     !interactionInfo.interactionInternal
                   ) {
-                    // window.close();
+                    window.close();
                   } else {
                     navigate("/");
                   }

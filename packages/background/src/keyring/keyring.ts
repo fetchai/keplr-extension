@@ -1649,7 +1649,6 @@ export class KeyRing {
     const defaultKeyStore = this.keyStore;
 
     for (const keyStore of this.multiKeyStore) {
-      console.log("keyStore", keyStore);
       const defaultCoinType = 60;
 
       this.keyStore = keyStore;

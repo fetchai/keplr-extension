@@ -331,7 +331,6 @@ const handleLockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<LockKeyRingMsg> = (service) => {
   const status = service.lock();
-  console.log("locked");
   eventEmitter.emit("statusChanged", service.keyRingStatus);
   return () => {
     return {
@@ -696,7 +695,6 @@ const handleListAccountsMsg: (
     const returnData: Account[] = [];
 
     keys.forEach((key) => {
-      console.log("key", key.address);
       returnData.push({
         name: key.name,
         algo: "secp256k1",
