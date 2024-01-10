@@ -271,7 +271,6 @@ export class KeyRingService {
   async getKey(chainId: string): Promise<Key> {
     const ethereumKeyFeatures =
       await this.chainsService.getChainEthereumKeyFeatures(chainId);
-    console.log("inside getKey of keyring");
     const isEvm =
       (await this.chainsService.getChainInfo(chainId)).features?.includes(
         "evm"

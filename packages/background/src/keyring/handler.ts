@@ -330,12 +330,12 @@ const handleAddLedgerKeyMsg: (
 const handleLockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<LockKeyRingMsg> = (service) => {
-  // TODO: log statuschange event
+  const status = service.lock();
+  console.log("locked");
   eventEmitter.emit("statusChanged", service.keyRingStatus);
-
   return () => {
     return {
-      status: service.lock(),
+      status,
     };
   };
 };
@@ -345,10 +345,11 @@ const handleUnlockKeyRingMsg: (
 ) => InternalHandler<UnlockKeyRingMsg> = (service) => {
   return async (_, msg) => {
     // TODO: log statuschange event
+    const status = await service.unlock(msg.password);
+    console.log("unlocking1");
     eventEmitter.emit("statusChanged", service.keyRingStatus);
-
     return {
-      status: await service.unlock(msg.password),
+      status,
     };
   };
 };
@@ -605,26 +606,19 @@ const handleLockWallet: (
   service: KeyRingService
 ) => InternalHandler<LockWalletMsg> = (service) => {
   return () => {
-    const status = service.keyRingStatus;
-    if (status === KeyRingStatus.UNLOCKED) {
-      service.lock();
-    } else {
-      throw new Error("Service is unlocked or not ready");
-    }
+    service.lock();
+    eventEmitter.emit("statusChanged", service.keyRingStatus);
   };
 };
 
 const handleUnlockWallet: (
   service: KeyRingService
 ) => InternalHandler<UnlockWalletMsg> = (service) => {
-  return async (_, msg) => {
-    const status = service.keyRingStatus;
+  return async (env, _) => {
+    console.log("unlocking");
+    await service.enable(env);
 
-    if (status === KeyRingStatus.UNLOCKED) {
-      await service.unlock(msg.password);
-    } else {
-      throw new Error("Service is unlocked or not ready");
-    }
+    eventEmitter.emit("statusChanged", service.keyRingStatus);
   };
 };
 

@@ -50,12 +50,12 @@ export class InjectedFetchWalletApi implements WalletApi {
     return await this.requestViaProxy("status", []);
   }
 
-  async unlockWallet(password: string): Promise<void> {
-    await this.requestViaProxy("lockWallet", [password]);
+  async unlockWallet(): Promise<void> {
+    await this.requestViaProxy("unlockWallet", []);
   }
 
   async lockWallet(): Promise<void> {
-    await this.requestViaProxy("unlockWallet", []);
+    await this.requestViaProxy("lockWallet", []);
   }
 
   protected async requestViaProxy(
@@ -174,7 +174,6 @@ export class InjectedFetchNetworks implements NetworksApi {
     args: any[]
   ): Promise<any> {
     const proxyRequest = createProxyRequest(`wallet.networks.${method}`, args);
-    console.log(proxyRequest);
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
         const proxyResponse = toProxyResponse(e.data);
@@ -376,7 +375,6 @@ export class InjectedFetchEvents implements EventsApi {
 
   onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
     subscribe: (handler: any) => {
-      console.log("walletapi", handler);
       this.requestViaProxy("onAccountChanged.subscribe", [handler.toString()]);
     },
     unsubscribe: (handler: any) => {
@@ -395,7 +393,6 @@ export class InjectedFetchEvents implements EventsApi {
     args: any[]
   ): Promise<any> {
     const proxyRequest = createProxyRequest(`wallet.events.${method}`, args);
-    console.log("args requestviaproxy", args, JSONUint8Array.wrap(args));
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
         const proxyResponse = toProxyResponse(e.data);

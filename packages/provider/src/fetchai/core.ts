@@ -26,7 +26,6 @@ class ExtensionCoreUmbral implements UmbralApi {
   constructor(protected readonly requester: MessageRequester) {}
 
   async getPublicKey(chainId: string): Promise<Uint8Array> {
-    console.log("inside core umbral getPublicKey");
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new UmbralGetPublicKeyMsg(chainId)

@@ -736,14 +736,12 @@ export class UnlockWalletMsg extends Message<void> {
     return "unlock-wallet-msg";
   }
 
-  constructor(public readonly password = "") {
+  constructor() {
     super();
   }
 
   validateBasic(): void {
-    if (!this.password) {
-      throw new Error("password not set");
-    }
+    // noop
   }
 
   route(): string {

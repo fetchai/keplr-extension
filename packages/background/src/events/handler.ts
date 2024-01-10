@@ -53,6 +53,7 @@ const handleSubscribeOnStatusChangeMsg: (
 ) => InternalHandler<SubscribeOnStatusChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("subscribing status change event...");
     service.subscribeStatusChange(handlerFunction);
   };
 };
@@ -62,6 +63,7 @@ const handleUnsubscribeOnStatusChangeMsg: (
 ) => InternalHandler<UnsubscribeOnStatusChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("unsubscribing status change event...");
     service.unSubscribeStatusChange(handlerFunction);
   };
 };
@@ -71,7 +73,7 @@ const handleSubscribeOnAccountChangeMsg: (
 ) => InternalHandler<SubscribeOnAccountChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
-    console.log("handler function eventhandler", handlerFunction);
+    console.log("subscribing account change event...");
     service.subscribeAccountChange(handlerFunction);
   };
 };
@@ -81,6 +83,7 @@ const handleUnsubscribeOnAccountChangeMsg: (
 ) => InternalHandler<UnsubscribeOnAccountChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("unsubscribing account change event...");
     service.unSubscribeAccountChange(handlerFunction);
   };
 };
@@ -90,6 +93,7 @@ const handleSubscribeOnNetworkChangeMsg: (
 ) => InternalHandler<SubscribeOnNetworkChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("subscribing network change event...");
     service.subscribeNetworkChange(handlerFunction);
   };
 };
@@ -99,6 +103,7 @@ const handleUnsubscribeOnNetworkChangeMsg: (
 ) => InternalHandler<UnsubscribeOnNetworkChangeMsg> = (service) => {
   return async (_, msg) => {
     const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("unsubscribing network change event...");
     service.unSubscribeNetworkChange(handlerFunction);
   };
 };

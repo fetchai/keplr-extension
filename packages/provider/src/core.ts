@@ -475,15 +475,11 @@ export class FetchWalletApi implements WalletApi {
   ) {}
 
   async status(): Promise<WalletStatus> {
-    // console.log("called status");
     return await this.requester.sendMessage(BACKGROUND_PORT, new StatusMsg());
   }
 
-  async unlockWallet(password: string): Promise<void> {
-    await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UnlockWalletMsg(password)
-    );
+  async unlockWallet(): Promise<void> {
+    await this.requester.sendMessage(BACKGROUND_PORT, new UnlockWalletMsg());
   }
 
   async lockWallet(): Promise<void> {
@@ -732,7 +728,6 @@ export class FetchEvents implements EventsApi {
 
   onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
     subscribe: async (handler: any) => {
-      console.log("handler core", handler);
       await this.requester.sendMessage(
         BACKGROUND_PORT,
         new SubscribeOnAccountChangeMsg(handler)

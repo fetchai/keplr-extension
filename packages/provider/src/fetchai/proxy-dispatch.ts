@@ -21,7 +21,6 @@ async function dispatchRequest(
   request: ProxyRequest
 ): Promise<any> {
   const methodArray = request.method.split(".");
-  console.log("request.method", request.method, methodArray);
 
   const api = methodArray[0];
   if (request.method !== undefined) {
@@ -51,12 +50,6 @@ async function dispatchRequest(
           ...JSONUint8Array.unwrap(request.args)
         );
       } else if (methodArray[1] === "accounts") {
-        console.log(
-          "method",
-          fetchApi.wallet.accounts[
-            methodArray[methodArray.length - 1] as AccountsApiMethod
-          ]
-        );
         return await fetchApi.wallet.accounts[
           methodArray[methodArray.length - 1] as AccountsApiMethod
         ](
@@ -69,17 +62,14 @@ async function dispatchRequest(
         const property = await fetchApi.wallet.events[
           methodArray[methodArray.length - 2] as EventsApiMethod
         ];
-        console.log("property", property, request, request.args);
 
         if (methodArray[methodArray.length - 1] === "subscribe") {
-          console.log("subscribe", request.args);
-
           property.subscribe(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             ...JSONUint8Array.unwrap(request.args)
           );
-        } else {
+        } else if (methodArray[methodArray.length - 1] === "subscribe") {
           property.unsubscribe(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
