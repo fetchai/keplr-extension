@@ -32,7 +32,7 @@ const tabs = [
   },
   {
     id: "All",
-    duration: 0,
+    duration: 3600,
   },
 ];
 

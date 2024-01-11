@@ -28,7 +28,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
     const { chainStore, analyticsStore, accountStore } = useStore();
     const [cosmosSearchTerm, setCosmosSearchTerm] = useState("");
     const [evmSearchTerm, setEvmSearchTerm] = useState("");
-    const [clickedChain, setClickedChain] = useState("");
+    const [clickedChain, setClickedChain] = useState(
+      chainStore.current.chainId
+    );
 
     const intl = useIntl();
     const navigate = useNavigate();
