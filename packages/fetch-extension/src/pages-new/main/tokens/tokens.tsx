@@ -12,8 +12,9 @@ import { formatTokenName } from "@utils/format";
 import { WrongViewingKeyError } from "@keplr-wallet/stores";
 import { UncontrolledTooltip } from "reactstrap";
 import { useNotification } from "@components/notification";
+import { observer } from "mobx-react-lite";
 
-export const Tokens = () => {
+export const Tokens = observer(() => {
   const navigate = useNavigate();
   const language = useLanguage();
   const notification = useNotification();
@@ -211,4 +212,4 @@ export const Tokens = () => {
       })}
     </React.Fragment>
   );
-};
+});
