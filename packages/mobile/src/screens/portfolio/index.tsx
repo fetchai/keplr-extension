@@ -78,7 +78,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
       <View>
         {!selected && !prevSelected ? (
           <CardDivider
-            verical={true}
+            vertical={true}
             style={style.flatten(["height-12", "margin-y-10"]) as ViewStyle}
           />
         ) : null}

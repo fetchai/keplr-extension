@@ -25,7 +25,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   const renderLine = (color: string) => {
     return (
       <CardDivider
-        verical={true}
+        vertical={true}
         style={
           [
             style.flatten(["width-4", "border-radius-4"]),

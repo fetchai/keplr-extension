@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
   DrawerContentComponentProps,
@@ -18,6 +18,8 @@ import {BlurBackground} from "components/new/blur-background/blur-background";
 import {CheckIcon} from "components/new/icon/check";
 import {IconView} from "components/new/button/icon";
 import {XmarkIcon} from "components/new/icon/xmark";
+import { TextInput } from "components/input";
+import { SearchIcon } from "components/new/icon/search-icon";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;
@@ -32,6 +34,21 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
     const { style: propStyle, ...rest } = props;
 
     const style = useStyle();
+    const [search, setSearch] = useState("");
+    const [filterChainInfos, setFilterChainInfos] = useState(
+      chainStore.chainInfosInUI
+    );
+
+    useEffect(() => {
+      const searchTrim = search.trim();
+      const newChainInfos = chainStore.chainInfosInUI.filter(
+        (chainInfo) => {
+          return chainInfo.chainName.toLowerCase().includes(searchTrim.toLowerCase());
+        }
+      );
+      setFilterChainInfos(newChainInfos);
+    }, [chainStore.chainInfosInUI, search]);
+
 
     return (
       <DrawerContentScrollView
@@ -43,10 +60,28 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
           ]),
         ])}
         contentContainerStyle={{
-          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48, height: filterChainInfos.length === 0 ? "100%" : undefined
         }}
         {...rest}
       >
+          {filterChainInfos.length === 0 ?
+            <View style={style.flatten(["items-center", "absolute", "height-full", "width-full", "justify-center"]) as ViewStyle}>
+                <SearchIcon
+                  color={style.flatten(["color-platinum-100"]).color}
+                  size={56}
+                />
+              <Text
+                style={style.flatten([
+                  "subtitle2",
+                  "color-gray-100",
+                  "dark:color-platinum-300",
+                  "margin-18"
+                ]) as ViewStyle}
+              >
+                No search data
+              </Text>
+            </View>:null}
+        
         <View
           style={{
             marginBottom: safeAreaInsets.bottom,
@@ -58,7 +93,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 "items-center",
                 "height-50",
                 "flex-row",
-                "margin-bottom-20",
+                // "margin-bottom-20",
                 "margin-left-12",
                 "margin-right-12",
               ]) as ViewStyle
@@ -105,7 +140,26 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               </BorderlessButton>
             </View>
           </View>
-          {chainStore.chainInfosInUI.map((chainInfo) => {
+          <BlurBackground borderRadius={12} blurIntensity={20} containerStyle={style.flatten(["margin-y-24", "margin-x-12",]) as ViewStyle}>
+          <TextInput
+            placeholder="Search"
+            placeholderTextColor={"white"}
+            style={style.flatten(["h6"])}
+            inputContainerStyle={
+              style.flatten([
+                "border-width-0",
+                "padding-x-18",
+                "padding-y-12",
+              ]) as ViewStyle
+            }
+            onChangeText={(text) => {
+              setSearch(text);
+            }}
+            containerStyle={style.flatten(["padding-0"]) as ViewStyle}
+            inputRight={<SearchIcon />}
+          />
+        </BlurBackground>
+        {filterChainInfos.map((chainInfo) => {
             const selected = chainStore.current.chainId === chainInfo.chainId;
 
             return (
@@ -123,8 +177,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                       "height-84",
                       "items-center",
                       "padding-x-20",
-                      "margin-left-12",
-                      "margin-right-12",
+                      "margin-x-12",
                       "justify-between",
                     ],
                     [selected && "background-color-indigo", "border-radius-12"]
@@ -182,7 +235,8 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 <View>{selected ? <CheckIcon /> : null}</View>
               </RectButton>
             );
-          })}
+          })
+          }
         </View>
       </DrawerContentScrollView>
     );

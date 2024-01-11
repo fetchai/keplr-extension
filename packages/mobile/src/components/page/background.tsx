@@ -37,7 +37,7 @@ export const ScreenBackground: FunctionComponent<{
         />
       ) : backgroundMode === "image" ? (
         <ImageBackground
-            source={require("assets/bg1.png")}
+            source={require("assets/bg2.png")}
           resizeMode="cover"
           style={style.flatten([
             "flex-1",

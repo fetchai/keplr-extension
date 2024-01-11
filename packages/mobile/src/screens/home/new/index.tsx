@@ -3,8 +3,9 @@ import React, {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
-import {PageWithScrollViewInBottomTabView} from "components/page";
+import { PageWithScrollViewInBottomTabView } from "components/page";
 import {
   AppState,
   AppStateStatus,
@@ -12,15 +13,15 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
-import {useStore} from "stores/index";
+import { useStore } from "stores/index";
 import { observer } from "mobx-react-lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { AccountSection } from "./v2/account-section";
-import { ChartWithPointer } from "./v2/chart";
 import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QuickTabOption } from "./quick-tab-options";
-import {usePrevious} from "hooks/use-previous";
+import { usePrevious } from "hooks/use-previous";
+import { LineGraphView } from "components/new/line-graph";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
@@ -28,6 +29,8 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+
+  const [tokenState, setTokenState] = useState({});
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
@@ -136,8 +139,12 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
         }}
       />
       <BIP44Selectable />
-      <AccountSection />
-      <ChartWithPointer />
+      <AccountSection tokenState={tokenState} />
+      <LineGraphView
+        setTokenState={setTokenState}
+        tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
+        tokenState={tokenState}
+      />
     </PageWithScrollViewInBottomTabView>
   );
 });
