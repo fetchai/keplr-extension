@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 
 export const CardDivider: FunctionComponent<{
   style?: ViewStyle;
@@ -16,7 +16,7 @@ export const CardDivider: FunctionComponent<{
             "background-color-gray-200@40%",
             "dark:background-color-platinum-400@40%",
           ],
-            vertical
+          vertical
             ? ["height-full", "width-1"]
             : ["height-1", "margin-x-card-horizontal"]
         ) as ViewStyle,

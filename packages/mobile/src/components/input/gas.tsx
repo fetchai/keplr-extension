@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { TextStyle, ViewStyle } from "react-native";
 import { IGasConfig } from "@keplr-wallet/hooks";
-import {TextInput} from "components/input";
+import { TextInput } from "components/input";
 
 export const GasInput: FunctionComponent<{
   labelStyle?: TextStyle;

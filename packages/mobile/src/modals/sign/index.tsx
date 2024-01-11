@@ -2,9 +2,9 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
 import { Animated, ScrollView, Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {useStore} from "stores/index";
-import {MemoInput} from "components/input";
+import { useStyle } from "styles/index";
+import { useStore } from "stores/index";
+import { MemoInput } from "components/input";
 import {
   useFeeConfig,
   useMemoConfig,
@@ -12,20 +12,20 @@ import {
   useSignDocHelper,
   useZeroAllowedGasConfig,
 } from "@keplr-wallet/hooks";
-import {Button} from "components/button";
+import { Button } from "components/button";
 import { Msg as AminoMsg } from "@keplr-wallet/types";
 import { Msg } from "./msg";
 import { observer } from "mobx-react-lite";
 import { FeeInSign } from "./fee";
-import {WCMessageRequester} from "stores/wallet-connect/msg-requester";
-import {WCAppLogoAndName} from "components/wallet-connect";
+import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
+import { WCAppLogoAndName } from "components/wallet-connect";
 import WalletConnect from "@walletconnect/client";
 import { renderAminoMessage } from "./amino";
 import { renderDirectMessage } from "./direct";
 import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {useUnmount} from "hooks/use-unmount";
+import { useUnmount } from "hooks/use-unmount";
 const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
   KeyboardAwareScrollView
 );

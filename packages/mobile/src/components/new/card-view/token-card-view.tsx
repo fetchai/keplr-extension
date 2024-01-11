@@ -1,31 +1,27 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import { View, Text, ViewStyle, TouchableOpacity } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
-import {IconView} from "components/new/button/icon";
-import { Currency } from "@keplr-wallet/types";
-import { CoinPretty } from "@keplr-wallet/unit";
-import { TokenSymbol } from "../../token-symbol";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
+import { IconView } from "components/new/button/icon";
 
 export const TokenCardView: FunctionComponent<{
   containerStyle?: ViewStyle;
-  chainInfo: {
-    stakeCurrency: Currency;
-  };
-  balance: CoinPretty;
+  leadingIcon: ReactElement;
+  title: string;
+  subtitle: string;
+  trailingStart: string;
+  trailingEnd?: string;
   onPress?: () => void;
-}> = ({ chainInfo, balance, onPress, containerStyle }) => {
+}> = ({
+  leadingIcon,
+  title,
+  subtitle,
+  onPress,
+  trailingStart,
+  trailingEnd,
+  containerStyle,
+}) => {
   const style = useStyle();
-
-  const balanceCoinDenom = (() => {
-    if (
-      "originCurrency" in balance.currency &&
-      balance.currency.originCurrency
-    ) {
-      return balance.currency.originCurrency.coinDenom;
-    }
-    return balance.currency.coinDenom;
-  })();
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
@@ -45,16 +41,7 @@ export const TokenCardView: FunctionComponent<{
         }
       >
         <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
-          <IconView
-            img={
-              <TokenSymbol
-                size={36}
-                chainInfo={chainInfo}
-                currency={balance.currency}
-              />
-            }
-            backgroundBlur={false}
-          />
+          <IconView img={leadingIcon} backgroundBlur={false} />
           <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
             <Text
               style={
@@ -66,30 +53,46 @@ export const TokenCardView: FunctionComponent<{
                 ]) as ViewStyle
               }
             >
-              {balance.currency.coinDenom}
+              {title}
             </Text>
             <Text
               style={
                 style.flatten(["padding-4", "color-gray-200"]) as ViewStyle
               }
             >
-              {`${balance
-                .trim(true)
-                .shrink(true)
-                .maxDecimals(6)
-                .upperCase(true)
-                .hideDenom(true)
-                .toString()} ${balanceCoinDenom}`}
+              {subtitle}
             </Text>
           </View>
         </View>
-        <Text
-          style={
-            style.flatten(["h6", "color-white", "font-extrabold"]) as ViewStyle
-          }
-        >
-          {`100000 USD`}
-        </Text>
+        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+          {trailingStart ? (
+            <Text
+              style={
+                style.flatten([
+                  "h6",
+                  "color-white",
+                  "font-extrabold",
+                ]) as ViewStyle
+              }
+            >
+              {trailingStart}
+            </Text>
+          ) : null}
+          {trailingEnd ? (
+            <Text
+              style={
+                style.flatten([
+                  "h6",
+                  "color-gray-300",
+                  "font-extrabold",
+                  "margin-left-8",
+                ]) as ViewStyle
+              }
+            >
+              {trailingEnd}
+            </Text>
+          ) : null}
+        </View>
       </BlurBackground>
     </TouchableOpacity>
   );

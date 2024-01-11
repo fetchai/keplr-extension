@@ -7,12 +7,12 @@ import {
   ViewStyle,
 } from "react-native";
 import { observer } from "mobx-react-lite";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
-import {SelectAccountButton} from "components/new/select-account/select-account-button";
-import {BlurButton} from "components/new/button/blur-button";
-import {Button} from "components/button";
-import {AddressCopyable} from "components/new/address-copyable";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
+import { SelectAccountButton } from "components/new/select-account/select-account-button";
+import { BlurButton } from "components/new/button/blur-button";
+import { Button } from "components/button";
+import { AddressCopyable } from "components/new/address-copyable";
 import {
   DrawerActions,
   NavigationProp,
@@ -20,15 +20,15 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
-import {useStore} from "stores/index";
-import {IconView} from "components/new/button/icon";
-import {WalletCardModel} from "components/new/wallet-card/wallet-card";
-import {ChangeWalletCardModel} from "components/new/wallet-card/change-wallet";
-import {EditAccountNameModal} from "modals/edit-account-name.tsx";
-import {PasswordInputModal} from "modals/password-input/modal";
-import {useLoadingScreen} from "providers/loading-screen";
-import {ChevronDownIcon} from "components/new/icon/chevron-down";
-import {TreeDotIcon} from "components/new/icon/tree-dot";
+import { useStore } from "stores/index";
+import { IconView } from "components/new/button/icon";
+import { WalletCardModel } from "components/new/wallet-card/wallet-card";
+import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
+import { EditAccountNameModal } from "modals/edit-account-name.tsx";
+import { PasswordInputModal } from "modals/password-input/modal";
+import { useLoadingScreen } from "providers/loading-screen";
+import { ChevronDownIcon } from "components/new/icon/chevron-down";
+import { TreeDotIcon } from "components/new/icon/tree-dot";
 
 export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
   observer(({ containtStyle }) => {

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useRef, useState } from "react";
-import {PageWithScrollViewInBottomTabView} from "components/page";
+import { PageWithScrollViewInBottomTabView } from "components/page";
 import { observer } from "mobx-react-lite";
-import {StakingCard} from "components/new/staking/staking-card";
+import { StakingCard } from "components/new/staking/staking-card";
 import {
   FlatList,
   Platform,
@@ -12,18 +12,18 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {IconView} from "components/new/button/icon";
-import {useStyle} from "styles/index";
-import {HeaderBackButtonIcon} from "components/header/icon";
-import {BlurButton} from "components/new/button/blur-button";
-import {CardDivider} from "components/card";
+import { IconView } from "components/new/button/icon";
+import { useStyle } from "styles/index";
+import { HeaderBackButtonIcon } from "components/header/icon";
+import { BlurButton } from "components/new/button/blur-button";
+import { CardDivider } from "components/card";
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import {useStore} from "stores/index";
-import {TokenCardView} from "components/new/card-view/token-card-view";
+import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
+import { TokensSection } from "screens/portfolio/tokens-section";
 
 export const PortfolioScreen: FunctionComponent = observer(() => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -33,19 +33,6 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   const [selectedId, setSelectedId] = useState<string>("1");
   const [prevSelectedId, setPrevSelectedId] = useState<string>("0");
 
-  const { chainStore, queriesStore, accountStore } = useStore();
-
-  const queryBalances = queriesStore
-    .get(chainStore.current.chainId)
-    .queryBalances.getQueryBech32Address(
-      accountStore.getAccount(chainStore.current.chainId).bech32Address
-    );
-
-  // TODO: Add sorting rule
-  const tokens = queryBalances.positiveNativeUnstakables
-    .concat(queryBalances.nonNativeBalances)
-    .slice(0, 2);
-
   const assertsSectionList = [
     { id: "1", title: "Tokens" },
     { id: "2", title: "NTFs" },
@@ -53,7 +40,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   ];
 
   const renderItem = ({ item }: any) => {
-    const selected = selectedId === item.id ? true : false;
+    const selected = selectedId === item.id;
     return (
       <BlurButton
         backgroundBlur={selected}
@@ -72,8 +59,8 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   };
 
   const renderSeparator = (item: any) => {
-    const selected = item.leadingItem.id === selectedId ? true : false;
-    const prevSelected = item.leadingItem.id === prevSelectedId ? true : false;
+    const selected = item.leadingItem.id === selectedId;
+    const prevSelected = item.leadingItem.id === prevSelectedId;
     return (
       <View>
         {!selected && !prevSelected ? (
@@ -141,23 +128,13 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle,
           ]}
         />
-        {selectedId === "1" ? (
-          tokens.length > 0 ? (
-            <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
-              {tokens.map((token) => {
-                return (
-                  <TokenCardView
-                    key={token.currency.coinMinimalDenom}
-                    chainInfo={chainStore.current}
-                    balance={token.balance}
-                  />
-                );
-              })}
-            </View>
-          ) : null
-        ) : selectedId === "2" ? (
-          console.log("select NTFs")
-        ) : (
+        {selectedId === "1" && (
+          <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+            <NativeTokensSection />
+            <TokensSection />
+          </View>
+        )}
+        {selectedId === "3" && (
           <StakingCard
             cardStyle={style.flatten(["margin-y-20"]) as ViewStyle}
           />

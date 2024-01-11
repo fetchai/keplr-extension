@@ -6,25 +6,25 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import Toast from "react-native-toast-message";
-import {registerModal} from "modals/base";
+import { registerModal } from "modals/base";
 import { observer } from "mobx-react-lite";
-import {IconButtonWithText} from "components/new/button/icon-button-with-text";
-import {Gradient} from "components/new/gradient";
-import {IconView} from "components/new/button/icon";
-import {ArrowDownIcon} from "components/new/icon/arrow-down";
-import {ArrowUpIcon} from "components/new/icon/arrow-up";
-import {StakeIcon} from "components/new/icon/stake-icon";
-import {NewBridgeIcon} from "components/new/icon/new-bridge-icon";
-import {XmarkIcon} from "components/new/icon/xmark";
+import { IconButtonWithText } from "components/new/button/icon-button-with-text";
+import { Gradient } from "components/new/gradient";
+import { IconView } from "components/new/button/icon";
+import { ArrowDownIcon } from "components/new/icon/arrow-down";
+import { ArrowUpIcon } from "components/new/icon/arrow-up";
+import { StakeIcon } from "components/new/icon/stake-icon";
+import { NewBridgeIcon } from "components/new/icon/new-bridge-icon";
+import { XmarkIcon } from "components/new/icon/xmark";
 
 export const QuickTabOption: FunctionComponent<{
   containerStyle?: ViewStyle;
   isOpen: boolean;
   close: () => void;
 }> = registerModal(
-  observer(({ containerStyle, isOpen }) => {
+  observer(({ containerStyle, isOpen, close }) => {
     const style = useStyle();
     // const { chainStore } = useStore();
     // const smartNavigation = useSmartNavigation();
@@ -116,6 +116,7 @@ export const QuickTabOption: FunctionComponent<{
           <TouchableOpacity
             activeOpacity={0.6}
             style={style.flatten(["items-center"]) as ViewStyle}
+            onPress={close}
           >
             <IconView
               img={<XmarkIcon size={12} color={"white"} />}

@@ -4,7 +4,7 @@ import {
   RectButton as NativeRectButton,
   RectButtonProps,
 } from "react-native-gesture-handler";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 
 /**
  * RectButton replaces the "RectButton" of "react-native-gesture-handler".

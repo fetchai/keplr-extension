@@ -6,8 +6,8 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import {BlurButton} from "components/new/button/blur-button";
-import {useStyle} from "styles/index";
+import { BlurButton } from "components/new/button/blur-button";
+import { useStyle } from "styles/index";
 // import { TokenCardView } from "components/new/card-view/token-card-view";
 // import { FetchAiIcon } from "components/icon/new/fetchai-icon";
 // import Toast from "react-native-toast-message";

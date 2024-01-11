@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
-import {PageWithView} from "components/page";
+import { PageWithView } from "components/page";
 import { Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {Button} from "components/button";
+import { useStyle } from "styles/index";
+import { Button } from "components/button";
 import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
 import { useSmartNavigation } from "../../../navigation";
 

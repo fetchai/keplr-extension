@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import { ViewStyle } from "react-native";
-import {BlurBackground} from "components/new/blur-background/blur-background";
+import { BlurBackground } from "components/new/blur-background/blur-background";
 
 export const IconView: FunctionComponent<{
   iconStyle?: ViewStyle;
-  img: any;
+  img: ReactElement;
   backgroundBlur?: boolean;
   blurIntensity?: number;
   borderRadius?: number;

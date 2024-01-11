@@ -9,7 +9,7 @@ import {
   ViewStyle,
   Platform,
 } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { usePageRegisterScrollYValue, useSetFocusedScreen } from "./utils";
 import { BackgroundMode, ScreenBackground } from "./background";

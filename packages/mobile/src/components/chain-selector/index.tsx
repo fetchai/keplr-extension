@@ -1,13 +1,13 @@
 import React, { FunctionComponent } from "react";
-import {registerModal} from "modals/base";
-import {CardModal} from "modals/card";
+import { registerModal } from "modals/base";
+import { CardModal } from "modals/card";
 import { ScrollView, Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import { observer } from "mobx-react-lite";
-import {useStore} from "stores/index";
-import {RectButton} from "components/rect-button";
+import { useStore } from "stores/index";
+import { RectButton } from "components/rect-button";
 import FastImage from "react-native-fast-image";
-import {VectorCharacter} from "components/vector-character";
+import { VectorCharacter } from "components/vector-character";
 
 export const ChainSelectorModal: FunctionComponent<{
   isOpen: boolean;

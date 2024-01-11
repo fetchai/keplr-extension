@@ -1,9 +1,9 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {Button} from "components/button";
-import {RectButton} from "components/rect-button";
-import {RightArrowIcon} from "components/icon";
+import { useStyle } from "styles/index";
+import { Button } from "components/button";
+import { RectButton } from "components/rect-button";
+import { RightArrowIcon } from "components/icon";
 
 export const CardHeaderWithButton: FunctionComponent<{
   title: string;

@@ -6,9 +6,9 @@ import Svg, {
   Stop,
   Text as TextSvg,
 } from "react-native-svg";
-import {useStyle} from "styles/index";
-import {RectButton} from "components/rect-button";
-import {LoadingSpinner} from "components/spinner";
+import { useStyle } from "styles/index";
+import { RectButton } from "components/rect-button";
+import { LoadingSpinner } from "components/spinner";
 
 export const Button: FunctionComponent<{
   color?: "primary" | "danger" | "gradient";

@@ -10,9 +10,9 @@ import { RightArrowIcon } from "components/icon";
 import { Card } from "components/card";
 import { RectButton } from "components/rect-button";
 import { Currency } from "@keplr-wallet/types";
-import { TokenSymbol } from "components/token-symbol";
 import { HeaderRightButton } from "components/header";
 import { HeaderAddIcon } from "components/header/icon";
+import { TokenSymbolUsingChainInfo } from "components/token-symbol/token-symbol-chain";
 
 export const TokensScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, accountStore } = useStore();
@@ -134,7 +134,7 @@ export const TokenItem: FunctionComponent<{
         });
       }}
     >
-      <TokenSymbol
+      <TokenSymbolUsingChainInfo
         style={style.flatten(["margin-right-12"]) as ViewStyle}
         size={44}
         chainInfo={chainInfo}

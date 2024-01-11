@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
-import {IconView} from "components/new/button/icon";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
+import { IconView } from "components/new/button/icon";
 
 export const DropDownCardView: FunctionComponent<{
   trailingIcon?: any;

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 
 // CONTRACT: Use with { disableSafeArea: true, align: "bottom" } modal options.
 export const CardModal: FunctionComponent<{

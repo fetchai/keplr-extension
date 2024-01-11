@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Text, TouchableOpacity, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
 
 export const BlurButton: FunctionComponent<{
   containerStyle?: ViewStyle;

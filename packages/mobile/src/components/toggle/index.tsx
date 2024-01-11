@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 
 export const Toggle: FunctionComponent<{
   on: boolean;

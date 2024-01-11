@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactElement } from "react";
 import { View, Text, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
 
 export const SelectAccountButton: FunctionComponent<{
   containerStyle?: ViewStyle;

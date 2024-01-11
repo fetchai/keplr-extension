@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Camera, CameraProps, PermissionStatus } from "expo-camera";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import {
   Linking,
   Platform,
@@ -14,8 +14,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CameraPermissionView } from "./camera-permission-view";
-import {CloseIcon} from "components/icon";
-import {LoadingSpinner} from "components/spinner";
+import { CloseIcon } from "components/icon";
+import { LoadingSpinner } from "components/spinner";
 
 interface CameraProp extends CameraProps {
   containerBottom?: React.ReactElement;

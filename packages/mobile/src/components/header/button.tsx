@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { StackHeaderLeftButtonProps } from "@react-navigation/stack";
 import { StyleSheet, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { HeaderBackButtonIcon } from "./icon";
-import {LeftBackIcon} from "components/new/icon/left-back";
-import {IconView} from "components/new/button/icon";
+import { LeftBackIcon } from "components/new/icon/left-back";
+import { IconView } from "components/new/button/icon";
 
 export const HeaderLeftButton: FunctionComponent<
   StackHeaderLeftButtonProps

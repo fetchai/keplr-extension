@@ -2,12 +2,12 @@ import React, { FunctionComponent, useMemo } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
 import { Text, View, ViewStyle } from "react-native";
-import {useStyle} from "styles/index";
-import {Button} from "components/button";
-import {useStore} from "stores/index";
+import { useStyle } from "styles/index";
+import { Button } from "components/button";
+import { useStore } from "stores/index";
 import { PermissionData } from "@keplr-wallet/background";
-import {WCMessageRequester} from "stores/wallet-connect/msg-requester";
-import {WCAppLogoAndName} from "components/wallet-connect";
+import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
+import { WCAppLogoAndName } from "components/wallet-connect";
 
 export const WalletConnectApprovalModal: FunctionComponent<{
   isOpen: boolean;

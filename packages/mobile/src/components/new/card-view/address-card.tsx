@@ -7,11 +7,11 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
 
 import { observer } from "mobx-react-lite";
-import {IconView} from "components/new/button/icon";
+import { IconView } from "components/new/button/icon";
 import {
   EmptyAddressError,
   ICNSFailedToFetchError,
@@ -24,7 +24,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { useSmartNavigation } from "../../../navigation";
 import { AddressBookCardModel } from "../addressbook-card/addressbook-card";
-import {useStore} from "stores/index";
+import { useStore } from "stores/index";
 import { AsyncKVStore } from "../../../common";
 import { Divider } from "../../divider";
 import { QRCodeIcon } from "../icon/qrcode-icon";

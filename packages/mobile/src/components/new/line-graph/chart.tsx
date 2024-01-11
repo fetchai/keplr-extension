@@ -26,7 +26,7 @@ export const GraphChart: FunctionComponent<{
   const chartMaxValue = Number((maxValue - minValue).toFixed(1));
 
   const spacingDataPoint = data.length
-    ? Number(((Dimensions.get("window").width - 25) / data.length).toFixed(2))
+    ? Number(((Dimensions.get("window").width - 27) / data.length).toFixed(2))
     : 1;
 
   const noOfSection = Number((maxValue - minValue).toFixed(1)) * 10;
@@ -83,22 +83,22 @@ export const GraphChart: FunctionComponent<{
         );
       }}
       pointerConfig={{
+        pointerStripUptoDataPoint: true,
         pointerStripColor: "lightgray",
         pointerStripWidth: 2,
+        strokeDashArray: [8, 8],
         pointerColor: "lightgray",
         radius: 6,
-        pointerLabelWidth: 100,
-        pointerLabelHeight: 90,
+        pointerLabelHeight: 50,
         activatePointersOnLongPress: true,
-        autoAdjustPointerLabelPosition: false,
+        autoAdjustPointerLabelPosition: true,
+        showPointerStrip: true,
         pointerLabelComponent: (items: any) => {
           return (
             <View
               style={{
-                // height: 100,
                 width: 100,
-                justifyContent: "center",
-                marginLeft: -40,
+                marginLeft: -22,
               }}
             >
               <Text
@@ -106,32 +106,21 @@ export const GraphChart: FunctionComponent<{
                   style.flatten([
                     "color-white",
                     "h7",
-                    "margin-bottom-6",
+                    "margin-bottom-4",
                     "text-center",
                   ]) as ViewStyle
                 }
               >
-                {items[0].date}
+                {"$" + (items[0].value + 0.6).toFixed(2)}
               </Text>
 
-              <View
+              <Text
                 style={
-                  style.flatten([
-                    "padding-x-14",
-                    "padding-y-6",
-                    "border-radius-16",
-                    "background-color-white",
-                  ]) as ViewStyle
+                  style.flatten(["text-center", "color-gray-200"]) as ViewStyle
                 }
               >
-                <Text
-                  style={
-                    style.flatten(["font-bold", "text-center"]) as ViewStyle
-                  }
-                >
-                  {"$" + (items[0].value + 0.6).toFixed(3)}
-                </Text>
-              </View>
+                {items[0].date}
+              </Text>
             </View>
           );
         },

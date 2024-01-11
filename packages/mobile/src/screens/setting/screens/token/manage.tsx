@@ -8,10 +8,10 @@ import { useStyle } from "styles/index";
 import { TrashCanIcon } from "components/icon";
 import { Card } from "components/card";
 import { Currency } from "@keplr-wallet/types";
-import { TokenSymbol } from "components/token-symbol";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useConfirmModal } from "providers/confirm-modal";
 import { useNavigation } from "@react-navigation/native";
+import { TokenSymbolUsingChainInfo } from "components/token-symbol/token-symbol-chain";
 
 export const SettingManageTokensScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
@@ -89,7 +89,7 @@ export const ManageTokenItem: FunctionComponent<{
         containerStyle,
       ])}
     >
-      <TokenSymbol
+      <TokenSymbolUsingChainInfo
         style={style.flatten(["margin-right-12"]) as ViewStyle}
         size={44}
         chainInfo={chainInfo}

@@ -1,10 +1,5 @@
-export function formatTimestamp(timestamp: string): string {
-  // const [datePart, timePart] = timestamp.split(", ");
-  // const [day, month, year] = datePart.split("/").map(Number);
-  const [month, day, year] = timestamp.split("/").map(Number);
-  // const [hours, minutes] = timePart.split(":").map(Number);
-  // const date = new Date(2000 + year, month - 1, day, hours, minutes);
-  const date = new Date(year, month - 1, day);
+export function formatTimestamp(timestamp: number): string {
+  const date = new Date(timestamp);
   const options: Intl.DateTimeFormatOptions = {
     // hour: "numeric",
     // minute: "numeric",
@@ -14,9 +9,5 @@ export function formatTimestamp(timestamp: string): string {
     year: "numeric",
     // hour12: false,
   };
-  const formattedDate: string = new Intl.DateTimeFormat(
-    "en-US",
-    options
-  ).format(date);
-  return formattedDate;
+  return new Intl.DateTimeFormat("en-US", options).format(date);
 }

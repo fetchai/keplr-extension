@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
-import {useStyle} from "styles/index";
-import {Card, CardHeaderWithButton} from "components/card";
-import {RewardIcon} from "components/icon";
+import { useStyle } from "styles/index";
+import { Card, CardHeaderWithButton } from "components/card";
+import { RewardIcon } from "components/icon";
 import { Dec } from "@keplr-wallet/unit";
 import { ViewStyle } from "react-native";
-import {useStore} from "stores/index";
+import { useStore } from "stores/index";
 import { useSmartNavigation } from "../../navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 

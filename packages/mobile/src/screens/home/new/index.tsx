@@ -27,7 +27,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
 
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const [isQuickOptionEnable, setQuickOptionEnable] = React.useState(false);
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
 
   const [tokenState, setTokenState] = useState({});
@@ -133,9 +133,9 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       ref={scrollViewRef}
     >
       <QuickTabOption
-        isOpen={false}
+        isOpen={isQuickOptionEnable}
         close={() => {
-          // noop
+          setQuickOptionEnable(false);
         }}
       />
       <BIP44Selectable />
@@ -143,7 +143,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       <LineGraphView
         setTokenState={setTokenState}
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
-        tokenState={tokenState}
+        // tokenState={tokenState}
       />
     </PageWithScrollViewInBottomTabView>
   );

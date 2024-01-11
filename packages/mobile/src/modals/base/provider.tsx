@@ -12,7 +12,7 @@ import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ModalBase } from "./base";
 import { ModalContext, useModalState } from "./hooks";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import { ModalTransisionProvider } from "./transition";
 import { BlurView } from "@react-native-community/blur";
 import Animated from "react-native-reanimated";

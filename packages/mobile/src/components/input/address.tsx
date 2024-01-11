@@ -10,10 +10,10 @@ import {
   IRecipientConfigWithICNS,
 } from "@keplr-wallet/hooks";
 import { TextStyle, View, ViewStyle } from "react-native";
-import {TextInput} from "components/input";
-import {LoadingSpinner} from "components/spinner";
-import {useStyle} from "styles/index";
-import {AddressBookIcon} from "components/icon";
+import { TextInput } from "components/input";
+import { LoadingSpinner } from "components/spinner";
+import { useStyle } from "styles/index";
+import { AddressBookIcon } from "components/icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSmartNavigation } from "../../navigation";
 

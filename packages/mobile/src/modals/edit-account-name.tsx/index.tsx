@@ -1,11 +1,14 @@
 import React, { FunctionComponent, useState } from "react";
 import { registerModal } from "../base";
 import { CardModal } from "../card";
-import {TextInput} from "components/input";
-import {Button} from "components/button";
-import {KeyboardSpacerView} from "components/keyboard";
-import {ViewStyle} from "react-native";
-import {useStyle} from "styles/index";
+import { TextInput } from "components/input";
+import { Button } from "components/button";
+import { KeyboardSpacerView } from "components/keyboard";
+import { ViewStyle } from "react-native";
+import { useStyle } from "styles/index";
+import { BorderlessButton } from "react-native-gesture-handler";
+import { IconView } from "components/new/button/icon";
+import { XmarkIcon } from "components/new/icon/xmark";
 
 export const EditAccountNameModal: FunctionComponent<{
   isOpen: boolean;
@@ -19,7 +22,7 @@ export const EditAccountNameModal: FunctionComponent<{
     const [newName, setNewName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isInvalidName, setIsInvalidName] = useState(false);
-      const style = useStyle();
+    const style = useStyle();
 
     const submitNewName = async () => {
       if (newName.length == 0) {
@@ -46,10 +49,31 @@ export const EditAccountNameModal: FunctionComponent<{
     }
 
     return (
-        <CardModal
-            title={title}
-            cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-        >
+      <CardModal
+        title={title}
+        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        right={
+          <BorderlessButton
+            rippleColor={style.get("color-rect-button-default-ripple").color}
+            activeOpacity={0.3}
+            onPress={() => close()}
+          >
+            <IconView
+              img={<XmarkIcon color={"white"} />}
+              backgroundBlur={false}
+              blurIntensity={20}
+              borderRadius={50}
+              iconStyle={
+                style.flatten([
+                  "padding-12",
+                  "border-width-1",
+                  "border-color-gray-400",
+                ]) as ViewStyle
+              }
+            />
+          </BorderlessButton>
+        }
+      >
         <TextInput
           label="New account name"
           onChangeText={(text) => {
@@ -74,6 +98,6 @@ export const EditAccountNameModal: FunctionComponent<{
   },
   {
     disableSafeArea: true,
-      blurBackdropOnIOS: true,
+    blurBackdropOnIOS: true,
   }
 );

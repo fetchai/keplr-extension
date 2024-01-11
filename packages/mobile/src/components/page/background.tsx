@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { ImageBackground, View } from "react-native";
-import {useStyle} from "styles/index";
-import {BlurBackground} from "components/new/blur-background/blur-background";
-import {SimpleGradient} from "components/svg";
+import { useStyle } from "styles/index";
+import { BlurBackground } from "components/new/blur-background/blur-background";
+import { SimpleGradient } from "components/svg";
 
 export type BackgroundMode =
   | "image"
@@ -37,7 +37,7 @@ export const ScreenBackground: FunctionComponent<{
         />
       ) : backgroundMode === "image" ? (
         <ImageBackground
-            source={require("assets/bg2.png")}
+          source={require("assets/bg2.png")}
           resizeMode="cover"
           style={style.flatten([
             "flex-1",

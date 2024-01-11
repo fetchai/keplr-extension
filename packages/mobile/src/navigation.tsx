@@ -1187,15 +1187,7 @@ export const MainTabNavigation: FunctionComponent = () => {
     >
       <Tab.Screen name="Home" component={HomeNavigation} />
       <Tab.Screen name="Agents" component={HomeNavigation} />
-      <Tab.Screen
-        name="Inbox"
-        component={HomeNavigation}
-        listeners={() => ({
-          tabPress: (e) => {
-            e.preventDefault();
-          },
-        })}
-      />
+      <Tab.Screen name="Inbox" component={HomeNavigation} />
       <Tab.Screen name="Activity" component={HomeNavigation} />
       <Tab.Screen name="More" component={SettingStackScreen} />
       {/* <Tab.Screen name="Main" component={MainNavigation} /> */}

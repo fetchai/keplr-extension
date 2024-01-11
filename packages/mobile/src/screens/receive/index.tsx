@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import {useStyle} from "styles/index";
+import { useStyle } from "styles/index";
 import { observer } from "mobx-react-lite";
-import {useStore} from "stores/index";
+import { useStore } from "stores/index";
 import {
   StyleSheet,
   Text,
@@ -10,13 +10,13 @@ import {
   ViewStyle,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import {PageWithScrollView} from "components/page";
+import { PageWithScrollView } from "components/page";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import QRCode from "react-native-qrcode-svg";
-import {SimpleCardView} from "components/new/card-view/simple-card";
+import { SimpleCardView } from "components/new/card-view/simple-card";
 import LottieView from "lottie-react-native";
-import {CopyIcon} from "components/icon";
-import {useSimpleTimer} from "hooks/use-simple-timer";
+import { CopyIcon } from "components/icon";
+import { useSimpleTimer } from "hooks/use-simple-timer";
 
 export const ReceiveScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -131,7 +131,7 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
                   >
                     <LottieView
                       // TODO: Change color of animated check button according to theme.
-                        source={require("assets/lottie/check.json")}
+                      source={require("assets/lottie/check.json")}
                       colorFilters={[
                         {
                           keypath: "Shape Layer 2",
@@ -163,7 +163,7 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
                 </View>
               </View>
             ) : (
-                <CopyIcon size={18}/>
+              <CopyIcon size={18} />
             )
           }
         />

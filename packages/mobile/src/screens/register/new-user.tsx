@@ -55,7 +55,7 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
         }
       >
         <Image
-            source={require("assets/logo/logo.png")}
+          source={require("assets/logo/logo.png")}
           style={{
             height: 90,
             aspectRatio: 2.977,

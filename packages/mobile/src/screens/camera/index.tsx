@@ -1,18 +1,18 @@
 import React, { FunctionComponent, useCallback, useState } from "react";
-import {useStyle} from "styles/index";
-import {PageWithView} from "components/page";
+import { useStyle } from "styles/index";
+import { PageWithView } from "components/page";
 import { observer } from "mobx-react-lite";
-import {useStore} from "stores/index";
+import { useStore } from "stores/index";
 import { useSmartNavigation } from "../../navigation";
-import {Button} from "components/button";
+import { Button } from "components/button";
 import { Share, StyleSheet, View, ViewStyle } from "react-native";
-import {ChainSelectorModal} from "components/chain-selector";
-import {registerModal} from "modals/base";
-import {CardModal} from "modals/card";
-import {AddressCopyable} from "components/address-copyable";
+import { ChainSelectorModal } from "components/chain-selector";
+import { registerModal } from "modals/base";
+import { CardModal } from "modals/card";
+import { AddressCopyable } from "components/address-copyable";
 import QRCode from "react-native-qrcode-svg";
 import { Bech32Address } from "@keplr-wallet/cosmos";
-import {FullScreenCameraView} from "components/camera";
+import { FullScreenCameraView } from "components/camera";
 import {
   importFromExtension,
   parseQRCodeDataForImportFromExtension,

@@ -4,13 +4,13 @@ import { useStore } from "stores/index";
 import { Card, CardBody, CardDivider } from "components/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { StakedTokenSymbol } from "components/token-symbol";
 import { Button } from "components/button";
 import { Staking } from "@keplr-wallet/stores";
 import { RightArrowIcon } from "components/icon";
 import { useSmartNavigation } from "../../../navigation";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { RectButton } from "components/rect-button";
+import { StakedTokenSymbol } from "components/token-symbol/token-symbol-chain";
 
 export const DelegationsCard: FunctionComponent<{
   containerStyle?: ViewStyle;
