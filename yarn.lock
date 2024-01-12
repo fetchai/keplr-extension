@@ -41048,7 +41048,7 @@ __metadata:
     react-native-fast-image: ^8.6.3
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.12.0
-    react-native-gifted-charts: 1.3.28
+    react-native-gifted-charts: ^1.3.28
     react-native-keyboard-aware-scroll-view: ^0.9.5
     react-native-keychain: ^8.1.1
     react-native-linear-gradient: ^2.8.3
@@ -46821,15 +46821,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gifted-charts@npm:1.3.28":
-  version: 1.3.28
-  resolution: "react-native-gifted-charts@npm:1.3.28"
+"react-native-gifted-charts@npm:^1.3.28":
+  version: 1.3.30
+  resolution: "react-native-gifted-charts@npm:1.3.30"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-linear-gradient: "*"
     react-native-svg: "*"
-  checksum: dedef7eff61d28d608b152676e205da6469185c9178d6e93dbc7a07634bf9ca381885b2bac2e888808dd4f12c39bdc4b22bb08ab98466f963df48e9e21725d24
+  checksum: ba6c43a0a66d8f2ee3b96a5c3307b79e4a0dfe217da52236694bea2263f7a1e07aca7f7716ac9e3354344fadfb33cee2343b95abe4d070d3920f104ee6dd5530
   languageName: node
   linkType: hard
 

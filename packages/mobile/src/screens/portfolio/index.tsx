@@ -24,34 +24,37 @@ import {
 } from "@react-navigation/native";
 import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
 import { TokensSection } from "screens/portfolio/tokens-section";
+import { AssetsScreen } from "screens/assets/assets";
+
+enum AssertsSectionEnum {
+  Tokens = "Tokens",
+  NTFs = "NTFs",
+  Stats = "Stats",
+}
 
 export const PortfolioScreen: FunctionComponent = observer(() => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const style = useStyle();
   const safeAreaInsets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const [selectedId, setSelectedId] = useState<string>("1");
-  const [prevSelectedId, setPrevSelectedId] = useState<string>("0");
-
-  const assertsSectionList = [
-    { id: "1", title: "Tokens" },
-    { id: "2", title: "NTFs" },
-    { id: "3", title: "Stats" },
-  ];
-
+  const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
+  const [prevSelectedId, setPrevSelectedId] = useState(0);
+  const [tokenState] = useState({});
   const renderItem = ({ item }: any) => {
-    const selected = selectedId === item.id;
+    const selected = selectedId === item;
     return (
       <BlurButton
         backgroundBlur={selected}
-        text={item.title}
+        text={item}
         borderRadius={32}
         textStyle={style.flatten(["body3"]) as ViewStyle}
         containerStyle={style.flatten(["padding-x-24"]) as ViewStyle}
         onPress={() => {
           return (
-            setSelectedId(item.id),
-            setPrevSelectedId((Number(item.id) - 1).toString())
+            setSelectedId(item),
+            setPrevSelectedId(
+              Object.values(AssertsSectionEnum).indexOf(item) - 1
+            )
           );
         }}
       />
@@ -59,8 +62,11 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   };
 
   const renderSeparator = (item: any) => {
-    const selected = item.leadingItem.id === selectedId;
-    const prevSelected = item.leadingItem.id === prevSelectedId;
+    const selected = item.leadingItem === selectedId;
+    const prevSelected =
+      Object.values(AssertsSectionEnum).indexOf(item.leadingItem) ===
+      prevSelectedId;
+
     return (
       <View>
         {!selected && !prevSelected ? (
@@ -76,9 +82,6 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
-      // refreshControl={
-      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      // }
       contentContainerStyle={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
       }}
@@ -114,10 +117,9 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
           Portfolio
         </Text>
         <FlatList
-          data={assertsSectionList}
+          data={Object.values(AssertsSectionEnum)}
           renderItem={renderItem}
           horizontal={true}
-          keyExtractor={(item) => item.id}
           extraData={selectedId}
           ItemSeparatorComponent={renderSeparator}
           contentContainerStyle={[
@@ -128,13 +130,19 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle,
           ]}
         />
-        {selectedId === "1" && (
+        {selectedId === AssertsSectionEnum.Tokens && (
           <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
             <NativeTokensSection />
             <TokensSection />
           </View>
         )}
-        {selectedId === "3" && (
+        {selectedId === AssertsSectionEnum.NTFs && (
+          <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+            <AssetsScreen tokenState={tokenState} />
+          </View>
+        )}
+
+        {selectedId === AssertsSectionEnum.Stats && (
           <StakingCard
             cardStyle={style.flatten(["margin-y-20"]) as ViewStyle}
           />

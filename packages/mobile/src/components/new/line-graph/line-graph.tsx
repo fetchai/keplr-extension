@@ -28,7 +28,9 @@ export const LineGraph: FunctionComponent<{
   };
 
   return (
-    <View style={[style.flatten(["padding-top-32"])] as ViewStyle}>
+    <View
+      style={[style.flatten(["margin-top-32", "overflow-hidden"])] as ViewStyle}
+    >
       <GraphChart data={chartData.datasets[0].data} />
     </View>
   );

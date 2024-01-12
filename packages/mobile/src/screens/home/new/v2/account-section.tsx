@@ -19,12 +19,12 @@ import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet"
 import { EditAccountNameModal } from "modals/edit-account-name.tsx";
 import { PasswordInputModal } from "modals/password-input/modal";
 import { useLoadingScreen } from "providers/loading-screen";
-import { BlurButton } from "components/new/button/blur-button";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
 import { InboxIcon } from "components/new/icon/inbox-icon";
 import { TreeDotIcon } from "components/new/icon/tree-dot";
 import { separateNumericAndDenom } from "utils/format/format";
+import { BlurButton } from "components/new/button/blur-button";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -203,7 +203,15 @@ export const AccountSection: FunctionComponent<{
           <Text style={style.flatten(["h1", "color-white"]) as ViewStyle}>
             {totalNumber}
           </Text>
-          <Text style={style.flatten(["h1", "color-gray-400"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten([
+                "h1",
+                "color-gray-400",
+                "margin-left-8",
+              ]) as ViewStyle
+            }
+          >
             {totalDenom}
           </Text>
         </View>

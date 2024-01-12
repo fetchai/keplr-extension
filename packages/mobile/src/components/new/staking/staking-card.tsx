@@ -165,15 +165,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
       >
         STAKING
       </Text>
-      <View
-        style={
-          style.flatten([
-            "flex-row",
-            // "justify-between",
-            "items-center",
-          ]) as ViewStyle
-        }
-      >
+      <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
         {renderLegendComponent()}
         <View>
           <PieChart

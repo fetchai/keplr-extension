@@ -7,7 +7,6 @@ import {
   ViewStyle,
 } from "react-native";
 import { useStyle } from "styles/index";
-import Toast from "react-native-toast-message";
 import { registerModal } from "modals/base";
 import { observer } from "mobx-react-lite";
 import { IconButtonWithText } from "components/new/button/icon-button-with-text";
@@ -23,14 +22,11 @@ export const QuickTabOption: FunctionComponent<{
   containerStyle?: ViewStyle;
   isOpen: boolean;
   close: () => void;
+  onPress: (event: string) => void;
 }> = registerModal(
-  observer(({ containerStyle, isOpen, close }) => {
+  observer(({ containerStyle, isOpen, close, onPress }) => {
     const style = useStyle();
-    // const { chainStore } = useStore();
-    // const smartNavigation = useSmartNavigation();
-    // const chainId = chainStore.current.chainId;
-
-    const sectionCardlist = [
+    const sectionCardList = [
       { title: "Receive", icon: <ArrowDownIcon color={"#000D3D"} /> },
       { title: "Send", icon: <ArrowUpIcon color={"#000D3D"} /> },
       { title: "Earn", icon: <StakeIcon color={"#000D3D"} /> },
@@ -43,40 +39,21 @@ export const QuickTabOption: FunctionComponent<{
 
     const renderItem = ({ item }: any) => {
       return (
-        <TouchableOpacity
-          activeOpacity={0.6}
+        <IconButtonWithText
+          key={item.title.toLowerCase()}
+          icon={item.icon}
+          text={item.title}
+          iconStyle={
+            style.flatten([
+              "background-color-white",
+              "margin-x-14",
+            ]) as ViewStyle
+          }
           onPress={() => {
-            switch (item.title) {
-              case "Receive":
-                return console.log("receive");
-              case "Send":
-                return console.log("send");
-              case "Swap":
-                return Toast.show({
-                  type: "error",
-                  text1: `Swap is working`,
-                });
-
-              case "Bridge":
-                return Toast.show({
-                  type: "error",
-                  text1: `Bridge is working`,
-                });
-            }
+            close();
+            onPress(item.title);
           }}
-        >
-          <IconButtonWithText
-            key={item.title.toLowerCase()}
-            icon={item.icon}
-            text={item.title}
-            iconStyle={
-              style.flatten([
-                "background-color-white",
-                "margin-x-14",
-              ]) as ViewStyle
-            }
-          />
-        </TouchableOpacity>
+        />
       );
     };
     return (
@@ -97,7 +74,7 @@ export const QuickTabOption: FunctionComponent<{
           }
         >
           <FlatList
-            data={sectionCardlist}
+            data={sectionCardList}
             renderItem={renderItem}
             horizontal={true}
             contentContainerStyle={[

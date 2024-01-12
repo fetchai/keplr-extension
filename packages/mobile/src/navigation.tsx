@@ -21,8 +21,6 @@ import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { SendScreen } from "screens/send";
-import { NewSendScreen } from "screens/send/new";
 import { GovernanceDetailsScreen, GovernanceScreen } from "screens/governance";
 import {
   createDrawerNavigator,
@@ -93,7 +91,6 @@ import {
 } from "screens/tx-result";
 import { TorusSignInScreen } from "screens/register/torus";
 import { HeaderAddIcon, HeaderWalletConnectIcon } from "components/header/icon";
-import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { FetchVersionScreen } from "screens/setting/screens/version";
 import {
   SettingAddTokenScreen,
@@ -119,7 +116,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import Svg, { Path, Rect } from "react-native-svg";
 import { NewHomeScreen } from "screens/home/new";
-import { ReceiveScreen } from "screens/receive";
 import { IconView } from "components/new/button/icon";
 // import Svg, { Rect, Path } from "react-native-svg";
 //import Bugsnag from "@bugsnag/react-native";
@@ -129,6 +125,12 @@ import { RobotIcon } from "components/new/icon/robot-icon";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
+import { BlurredBottomTabBar } from "components/bottom-tabbar";
+import { QuickTabOption } from "screens/home/new/quick-tab-options";
+import Toast from "react-native-toast-message";
+import { SendScreen } from "screens/send";
+import { NewSendScreen } from "screens/send/new";
+import { ReceiveScreen } from "screens/receive";
 
 const { SmartNavigatorProvider, useSmartNavigation } =
   createSmartNavigatorProvider(
@@ -474,9 +476,6 @@ export const HomeNavigation: FunctionComponent = () => {
         options={{
           ...TransparentHeaderOptionsPreset,
           headerShown: false,
-          // title: "",
-          // headerLeft: () => <HomeScreenHeaderLeft />,
-          // headerRight: () => <HomeScreenHeaderRight />,
         }}
         name="Home"
         component={NewHomeScreen}
@@ -981,8 +980,11 @@ export const WebNavigation: FunctionComponent = () => {
 
 export const MainTabNavigation: FunctionComponent = () => {
   const style = useStyle();
-
+  const { chainStore } = useStore();
+  const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const [isQuickOptionEnable, setQuickOptionEnable] = React.useState(false);
 
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
@@ -1013,193 +1015,264 @@ export const MainTabNavigation: FunctionComponent = () => {
   };
 
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        title: "",
-        tabBarIcon: ({ focused }) => {
-          const size = 24;
-          const color = style.flatten([
-            "color-blue-400",
-            "dark:color-platinum-50",
-          ]).color;
-          switch (route.name) {
-            case "Home":
-              return (
-                <IconButtonWithText
-                  icon={screenIcons[screenNames.Home]}
-                  text={screenNames.Home}
-                  backgroundBlur={focused}
-                  borderRadius={32}
-                  iconStyle={
-                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
-                  }
-                />
-              );
-            case "Agents":
-              return (
-                <IconButtonWithText
-                  icon={screenIcons[screenNames.Agents]}
-                  text={screenNames.Agents}
-                  borderRadius={32}
-                  backgroundBlur={focused}
-                  iconStyle={
-                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
-                  }
-                />
-              );
-            case "Inbox":
-              return (
-                <IconView
-                  img={screenIcons[screenNames.Inbox]}
-                  borderRadius={64}
-                  backgroundBlur={false}
-                  iconStyle={
-                    style.flatten([
-                      "padding-16",
-                      "background-color-white",
-                    ]) as ViewStyle
-                  }
-                />
-              );
-            case "Activity":
-              return (
-                <IconButtonWithText
-                  icon={screenIcons[screenNames.Activity]}
-                  text={screenNames.Activity}
-                  borderRadius={32}
-                  backgroundBlur={focused}
-                  iconStyle={
-                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
-                  }
-                />
-              );
-            case "More":
-              return (
-                <IconButtonWithText
-                  icon={screenIcons[screenNames.More]}
-                  text={screenNames.More}
-                  borderRadius={32}
-                  backgroundBlur={focused}
-                  iconStyle={
-                    style.flatten(["padding-y-8", "padding-x-24"]) as ViewStyle
-                  }
-                />
-              );
-            case "Main":
-              return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="3"
-                    y="3"
-                    fill={color}
-                    rx="1.5"
+    <React.Fragment>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          title: "",
+          tabBarIcon: ({ focused }) => {
+            const size = 24;
+            const color = style.flatten([
+              "color-blue-400",
+              "dark:color-platinum-50",
+            ]).color;
+            switch (route.name) {
+              case "Home":
+                return (
+                  <IconButtonWithText
+                    icon={screenIcons[screenNames.Home]}
+                    text={screenNames.Home}
+                    backgroundBlur={focused}
+                    borderRadius={32}
+                    iconStyle={
+                      style.flatten([
+                        "padding-y-8",
+                        "padding-x-24",
+                      ]) as ViewStyle
+                    }
                   />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="3"
-                    y="13"
-                    fill={color}
-                    rx="1.5"
+                );
+              case "Agents":
+                return (
+                  <IconButtonWithText
+                    icon={screenIcons[screenNames.Agents]}
+                    text={screenNames.Agents}
+                    borderRadius={32}
+                    backgroundBlur={focused}
+                    iconStyle={
+                      style.flatten([
+                        "padding-y-8",
+                        "padding-x-24",
+                      ]) as ViewStyle
+                    }
                   />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="13"
-                    y="3"
-                    fill={color}
-                    rx="1.5"
+                );
+              case "Inbox":
+                return (
+                  <IconView
+                    img={screenIcons[screenNames.Inbox]}
+                    borderRadius={64}
+                    backgroundBlur={false}
+                    iconStyle={
+                      style.flatten([
+                        "padding-16",
+                        "background-color-white",
+                      ]) as ViewStyle
+                    }
                   />
-                  <Rect
-                    width="8"
-                    height="8"
-                    x="13"
-                    y="13"
-                    fill={color}
-                    rx="1.5"
+                );
+              case "Activity":
+                return (
+                  <IconButtonWithText
+                    icon={screenIcons[screenNames.Activity]}
+                    text={screenNames.Activity}
+                    borderRadius={32}
+                    backgroundBlur={focused}
+                    iconStyle={
+                      style.flatten([
+                        "padding-y-8",
+                        "padding-x-24",
+                      ]) as ViewStyle
+                    }
                   />
-                </Svg>
-              );
-            case "Web":
-              return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Path
-                    fill={color}
-                    d="M12 2C8.741 2 5.849 3.577 4.021 6H4v.027A9.931 9.931 0 002 12c0 5.511 4.489 10 10 10s10-4.489 10-10S17.511 2 12 2zm3 2.584A7.98 7.98 0 0120 12c0 2.088-.8 3.978-2.102 5.4A1.993 1.993 0 0016 16a1 1 0 01-1-1v-2a1 1 0 00-1-1h-4a1 1 0 010-2 1 1 0 001-1V8a1 1 0 011-1h1a2 2 0 002-2v-.416zM4.207 10.207L9 15v1a2 2 0 002 2v1.932a7.979 7.979 0 01-6.793-9.725z"
+                );
+              case "More":
+                return (
+                  <IconButtonWithText
+                    icon={screenIcons[screenNames.More]}
+                    text={screenNames.More}
+                    borderRadius={32}
+                    backgroundBlur={focused}
+                    iconStyle={
+                      style.flatten([
+                        "padding-y-8",
+                        "padding-x-24",
+                      ]) as ViewStyle
+                    }
                   />
-                </Svg>
-              );
-            case "Settings":
-              return (
-                <Svg width={size} height={size} fill="none" viewBox="0 0 24 24">
-                  <Path
-                    fill={color}
-                    d="M12 2c-.528 0-1.046.045-1.55.131l-.311 1.302c-.484 2.023-2.544 3.225-4.52 2.635l-1.084-.325A10.124 10.124 0 003 8.598l.805.781a3.663 3.663 0 010 5.242L3 15.402c.36 1.043.882 2.006 1.535 2.855l1.084-.325c1.976-.59 4.036.612 4.52 2.635l.31 1.302a9.187 9.187 0 003.101 0l.311-1.302c.484-2.023 2.544-3.225 4.52-2.635l1.084.325A10.124 10.124 0 0021 15.402l-.805-.781a3.663 3.663 0 010-5.242L21 8.598a10.113 10.113 0 00-1.535-2.855l-1.084.325c-1.976.59-4.036-.612-4.52-2.635l-.31-1.302A9.184 9.184 0 0012 2zm0 7.273c1.491 0 2.7 1.22 2.7 2.727 0 1.506-1.209 2.727-2.7 2.727S9.3 13.507 9.3 12c0-1.506 1.209-2.727 2.7-2.727z"
-                  />
-                </Svg>
-              );
-          }
-        },
-        tabBarButton: (props) => (
-          <View
-            style={{
-              display: route.name === "Web" ? "none" : "flex",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore */}
-            <BorderlessButton
-              {...props}
-              activeOpacity={1}
-              rippleColor={style.get("color-rect-button-default-ripple").color}
+                );
+              case "Main":
+                return (
+                  <Svg
+                    width={size}
+                    height={size}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <Rect
+                      width="8"
+                      height="8"
+                      x="3"
+                      y="3"
+                      fill={color}
+                      rx="1.5"
+                    />
+                    <Rect
+                      width="8"
+                      height="8"
+                      x="3"
+                      y="13"
+                      fill={color}
+                      rx="1.5"
+                    />
+                    <Rect
+                      width="8"
+                      height="8"
+                      x="13"
+                      y="3"
+                      fill={color}
+                      rx="1.5"
+                    />
+                    <Rect
+                      width="8"
+                      height="8"
+                      x="13"
+                      y="13"
+                      fill={color}
+                      rx="1.5"
+                    />
+                  </Svg>
+                );
+              case "Web":
+                return (
+                  <Svg
+                    width={size}
+                    height={size}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <Path
+                      fill={color}
+                      d="M12 2C8.741 2 5.849 3.577 4.021 6H4v.027A9.931 9.931 0 002 12c0 5.511 4.489 10 10 10s10-4.489 10-10S17.511 2 12 2zm3 2.584A7.98 7.98 0 0120 12c0 2.088-.8 3.978-2.102 5.4A1.993 1.993 0 0016 16a1 1 0 01-1-1v-2a1 1 0 00-1-1h-4a1 1 0 010-2 1 1 0 001-1V8a1 1 0 011-1h1a2 2 0 002-2v-.416zM4.207 10.207L9 15v1a2 2 0 002 2v1.932a7.979 7.979 0 01-6.793-9.725z"
+                    />
+                  </Svg>
+                );
+              case "Settings":
+                return (
+                  <Svg
+                    width={size}
+                    height={size}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <Path
+                      fill={color}
+                      d="M12 2c-.528 0-1.046.045-1.55.131l-.311 1.302c-.484 2.023-2.544 3.225-4.52 2.635l-1.084-.325A10.124 10.124 0 003 8.598l.805.781a3.663 3.663 0 010 5.242L3 15.402c.36 1.043.882 2.006 1.535 2.855l1.084-.325c1.976-.59 4.036.612 4.52 2.635l.31 1.302a9.187 9.187 0 003.101 0l.311-1.302c.484-2.023 2.544-3.225 4.52-2.635l1.084.325A10.124 10.124 0 0021 15.402l-.805-.781a3.663 3.663 0 010-5.242L21 8.598a10.113 10.113 0 00-1.535-2.855l-1.084.325c-1.976.59-4.036-.612-4.52-2.635l-.31-1.302A9.184 9.184 0 0012 2zm0 7.273c1.491 0 2.7 1.22 2.7 2.727 0 1.506-1.209 2.727-2.7 2.727S9.3 13.507 9.3 12c0-1.506 1.209-2.727 2.7-2.727z"
+                    />
+                  </Svg>
+                );
+            }
+          },
+          tabBarButton: (props) => (
+            <View
               style={{
-                height: "100%",
-                aspectRatio: 1.9,
-                maxWidth: "100%",
+                display: route.name === "Web" ? "none" : "flex",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
               }}
-            />
-          </View>
-        ),
-        tabBarActiveTint: true,
-        tabBarInactiveTint: false,
-        tabBarStyle: {
-          // borderTopWidth: 1,
-          // borderTopColor: style.get("blurred-tabbar-top-border"),
-          backgroundColor: style.get("color-indigo-900").color,
-          shadowColor: style.get("color-transparent").color,
-          elevation: 0,
-          paddingVertical: 16,
-          paddingHorizontal: 20,
-          height: 100 + insets.bottom,
-          borderTopWidth: 0,
-        },
-        showLabel: false,
-      })}
-      tabBar={(props) => (
-        <BlurredBottomTabBar {...props} enabledScreens={["Home"]} />
-      )}
-    >
-      <Tab.Screen name="Home" component={HomeNavigation} />
-      <Tab.Screen name="Agents" component={HomeNavigation} />
-      <Tab.Screen name="Inbox" component={HomeNavigation} />
-      <Tab.Screen name="Activity" component={HomeNavigation} />
-      <Tab.Screen name="More" component={SettingStackScreen} />
-      {/* <Tab.Screen name="Main" component={MainNavigation} /> */}
-      {/* <Tab.Screen name="Web" component={WebNavigation} /> */}
-      {/* <Tab.Screen
+            >
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
+              <BorderlessButton
+                {...props}
+                activeOpacity={1}
+                rippleColor={
+                  style.get("color-rect-button-default-ripple").color
+                }
+                style={{
+                  height: "100%",
+                  aspectRatio: 1.9,
+                  maxWidth: "100%",
+                }}
+              />
+            </View>
+          ),
+          tabBarActiveTint: true,
+          tabBarInactiveTint: false,
+          tabBarStyle: {
+            backgroundColor: style.get("color-indigo-900").color,
+            shadowColor: style.get("color-transparent").color,
+            elevation: 0,
+            paddingVertical: 16,
+            paddingHorizontal: 20,
+            height: 100 + insets.bottom,
+            borderTopWidth: 0,
+          },
+          showLabel: false,
+        })}
+        tabBar={(props) => (
+          <BlurredBottomTabBar {...props} enabledScreens={["Home"]} />
+        )}
+      >
+        <Tab.Screen name="Home" component={HomeNavigation} />
+        <Tab.Screen name="Agents" component={HomeNavigation} />
+        <Tab.Screen
+          name="Inbox"
+          component={OtherNavigation}
+          listeners={{
+            tabPress: (e) => {
+              e.preventDefault();
+              setQuickOptionEnable(true);
+            },
+          }}
+        />
+        <Tab.Screen name="Activity" component={HomeNavigation} />
+        <Tab.Screen name="More" component={SettingStackScreen} />
+        {/* <Tab.Screen name="Main" component={MainNavigation} /> */}
+        {/* <Tab.Screen name="Web" component={WebNavigation} /> */}
+        {/* <Tab.Screen
         name="Settings"
         component={SettingStackScreen}
         options={{
           unmountOnBlur: true,
         }}
       /> */}
-    </Tab.Navigator>
+      </Tab.Navigator>
+      <QuickTabOption
+        isOpen={isQuickOptionEnable}
+        close={() => {
+          setQuickOptionEnable(false);
+        }}
+        onPress={(event) => {
+          console.log("test", event);
+          switch (event) {
+            case "Receive":
+              navigation.navigate("Others", {
+                screen: "Receive",
+                params: { chainId: chainId },
+              });
+              break;
+            case "Send":
+              return Toast.show({
+                type: "warning",
+                text1: `Send is under development`,
+              });
+            case "Swap":
+              return Toast.show({
+                type: "warning",
+                text1: `Swap is under development`,
+              });
+
+            case "Bridge":
+              return Toast.show({
+                type: "warning",
+                text1: `Bridge is under development`,
+              });
+          }
+        }}
+      />
+    </React.Fragment>
   );
 };
 
