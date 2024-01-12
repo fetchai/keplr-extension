@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import Svg, { Path } from "react-native-svg";
 
-export const TreeDotIcon: FunctionComponent<{
+export const ThreeDotIcon: FunctionComponent<{
   size?: number;
   color?: string;
 }> = ({ size = 16, color = "white" }) => {

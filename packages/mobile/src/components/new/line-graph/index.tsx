@@ -97,24 +97,34 @@ export const LineGraphView: FunctionComponent<{
     setTokenState(tokenState);
   }, []);
 
+  function getChartData() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let newPrices = [];
+        const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
+        const params = { vs_currency: "usd", days: activeTab.duration };
+
+        const response = await axios.get(apiUrl, { params });
+        newPrices = response.data.prices.map((price: number[]) => ({
+          timestamp: price[0],
+          price: price[1],
+        }));
+
+        resolve(newPrices);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   useEffect(() => {
     if (
       !durationData[activeTab.id] ||
       durationData[activeTab.id]?.tokenState?.time?.length == 0
     ) {
-      (async function () {
-        try {
-          let newPrices = [];
+      getChartData()
+        .then((newPrices: any) => {
           let tokenState = {};
-          const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-          const params = { vs_currency: "usd", days: activeTab.duration };
-
-          const response = await axios.get(apiUrl, { params });
-          newPrices = response.data.prices.map((price: number[]) => ({
-            timestamp: price[0],
-            price: price[1],
-          }));
-
           if (newPrices.length > 0) {
             const firstValue = newPrices[0].price || 0;
             const lastValue = newPrices[newPrices.length - 1].price || 0;
@@ -143,11 +153,11 @@ export const LineGraphView: FunctionComponent<{
             tokenState: tokenState as TokenStateData,
           };
           setDuration(durationData);
-        } catch (error) {
+        })
+        .catch((error) => {
           defaultPricing();
           console.log("Error fetching data:", error.message);
-        }
-      })();
+        });
     } else {
       setPrices(durationData[activeTab.id].prices);
       setTokenState(durationData[activeTab.id].tokenState);

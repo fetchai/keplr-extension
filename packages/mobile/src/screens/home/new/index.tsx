@@ -28,7 +28,11 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const [refreshing, setRefreshing] = React.useState(false);
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
 
-  const [tokenState, setTokenState] = useState({});
+  const [tokenState, setTokenState] = useState({
+    diff: 0,
+    time: "Today",
+    type: "positive",
+  });
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 

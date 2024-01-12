@@ -22,9 +22,9 @@ import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
 import { InboxIcon } from "components/new/icon/inbox-icon";
-import { TreeDotIcon } from "components/new/icon/tree-dot";
 import { separateNumericAndDenom } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
+import { ThreeDotIcon } from "components/new/icon/three-dot";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -194,7 +194,7 @@ export const AccountSection: FunctionComponent<{
             activeOpacity={0.6}
             onPress={() => setIsOpenModal(true)}
           >
-            <IconView backgroundBlur={false} img={<TreeDotIcon />} />
+            <IconView backgroundBlur={false} img={<ThreeDotIcon />} />
           </TouchableOpacity>
         </View>
       </BlurBackground>
@@ -235,8 +235,16 @@ export const AccountSection: FunctionComponent<{
               {tokenState.type === "positive" ? "+" : "-"}
               {parseFloat(tokenState.diff).toFixed(2)})
             </Text>
-            <Text style={style.flatten(["color-gray-300", "h7"]) as ViewStyle}>
-              {`  ${tokenState.time}`}
+            <Text
+              style={
+                style.flatten([
+                  "color-gray-300",
+                  "h7",
+                  "margin-left-8",
+                ]) as ViewStyle
+              }
+            >
+              {tokenState.time}
             </Text>
           </View>
         ) : null}

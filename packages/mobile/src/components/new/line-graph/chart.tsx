@@ -25,10 +25,6 @@ export const GraphChart: FunctionComponent<{
 
   const chartMaxValue = Number((maxValue - minValue).toFixed(1));
 
-  const spacingDataPoint = data.length
-    ? Number(((Dimensions.get("window").width - 27) / data.length).toFixed(2))
-    : 1;
-
   const noOfSection = Number((maxValue - minValue).toFixed(1)) * 10;
 
   return (
@@ -54,16 +50,16 @@ export const GraphChart: FunctionComponent<{
       onDataChangeAnimationDuration={300}
       // data points variable
       hideDataPoints={true}
-      spacing={spacingDataPoint}
+      adjustToWidth={true}
       thickness={2}
       initialSpacing={4}
-      endSpacing={0}
       // y label variable
       showFractionalValues={true}
       maxValue={chartMaxValue}
       noOfSections={noOfSection}
       yAxisOffset={minValue}
       // y axis variable
+      disableScroll={true}
       yAxisThickness={0}
       yAxisColor={"lightgray"}
       hideYAxisText={true}
@@ -85,10 +81,8 @@ export const GraphChart: FunctionComponent<{
       pointerConfig={{
         pointerStripUptoDataPoint: true,
         pointerStripColor: "lightgray",
-        pointerStripWidth: 2,
         strokeDashArray: [8, 8],
         pointerColor: "lightgray",
-        radius: 6,
         pointerLabelHeight: 50,
         activatePointersOnLongPress: true,
         autoAdjustPointerLabelPosition: true,
@@ -111,7 +105,7 @@ export const GraphChart: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                {"$" + (items[0].value + 0.6).toFixed(2)}
+                {"$" + (items[0].value + minValue).toFixed(2)}
               </Text>
 
               <Text
