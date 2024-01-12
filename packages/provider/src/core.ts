@@ -61,6 +61,10 @@ import {
   UnsubscribeOnAccountChangeMsg,
   SubscribeOnNetworkChangeMsg,
   UnsubscribeOnNetworkChangeMsg,
+  SubscribeOnTxSuccessfulMsg,
+  UnsubscribeOnTxSuccessfulMsg,
+  SubscribeOnTxFailedMsg,
+  UnsubscribeOnTxFailedMsg,
 } from "./types";
 
 import { KeplrEnigmaUtils } from "./enigma";
@@ -86,6 +90,7 @@ import {
   WalletApi,
   WalletStatus,
 } from "@fetchai/wallet-types";
+import { TxsResponse } from "@cosmjs/launchpad";
 // import { JSONUint8Array } from "@keplr-wallet/router";
 
 export class Keplr implements IKeplr, KeplrCoreTypes {
@@ -757,7 +762,33 @@ export class FetchEvents implements EventsApi {
       },
     };
 
-  // Implementing other event handlers similarly
-  // onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
-  // onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
+  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnTxSuccessfulMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnTxSuccessfulMsg(handler)
+      );
+    },
+  };
+
+  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnTxFailedMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnTxFailedMsg(handler)
+      );
+    },
+  };
 }

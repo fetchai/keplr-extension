@@ -56,9 +56,15 @@ export type EventsApiSubMethod =
   | "onAccountChanged.subscribe"
   | "onAccountChanged.unsubscribe"
   | "onNetworkChanged.subscribe"
-  | "onNetworkChanged.unsubscribe";
+  | "onNetworkChanged.unsubscribe"
+  | "onTxSuccessful.subscribe"
+  | "onTxSuccessful.unsubscribe"
+  | "onTxFailed.subscribe"
+  | "onTxFailed.unsubscribe";
 
 export type EventsApiMethod =
   | "onStatusChanged"
   | "onAccountChanged"
-  | "onNetworkChanged";
+  | "onNetworkChanged"
+  | "onTxFailed"
+  | "onTxSuccessful";

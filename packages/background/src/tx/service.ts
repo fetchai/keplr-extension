@@ -5,6 +5,7 @@ import { Notification } from "./types";
 
 import { Buffer } from "buffer/";
 import { simpleFetch } from "@keplr-wallet/simple-fetch";
+import { eventEmitter } from "../events";
 
 interface CosmosSdkError {
   codespace: string;
@@ -123,7 +124,7 @@ export class BackgroundTxService {
           throw new Error(log);
         }
       }
-
+      eventEmitter.emit("txSuccessful", result);
       notification.create({
         iconRelativeUrl: "assets/logo-256.png",
         title: "Tx succeeds",
@@ -142,6 +143,7 @@ export class BackgroundTxService {
     console.log(e);
     let message = e.message;
 
+    eventEmitter.emit("txFailed", e);
     // Tendermint rpc error.
     const regResult = /code:\s*(-?\d+),\s*message:\s*(.+),\sdata:\s(.+)/g.exec(
       e.message

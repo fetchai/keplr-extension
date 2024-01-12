@@ -29,6 +29,7 @@ import {
 } from "../cosmjs";
 import { Proxy, createProxyRequest, toProxyResponse } from "./proxy";
 import { JSONUint8Array } from "@keplr-wallet/router";
+import { TxsResponse } from "@cosmjs/launchpad";
 import {
   AccountsApiMethod,
   NetworksApiMethod,
@@ -384,9 +385,22 @@ export class InjectedFetchEvents implements EventsApi {
     },
   };
 
-  // Implementing other event handlers similarly if needed
-  // onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
-  // onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = { /* ... */ };
+  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: (handler: any) => {
+      this.requestViaProxy("onTxSuccessful.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onTxSuccessful.unsubscribe", [handler.toString()]);
+    },
+  };
+  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: (handler: any) => {
+      this.requestViaProxy("onTxFailed.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onTxFailed.unsubscribe", [handler.toString()]);
+    },
+  };
 
   protected async requestViaProxy(
     method: EventsApiSubMethod,

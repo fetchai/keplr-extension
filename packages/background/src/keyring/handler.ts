@@ -343,9 +343,7 @@ const handleUnlockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<UnlockKeyRingMsg> = (service) => {
   return async (_, msg) => {
-    // TODO: log statuschange event
     const status = await service.unlock(msg.password);
-    console.log("unlocking1");
     eventEmitter.emit("statusChanged", service.keyRingStatus);
     return {
       status,
@@ -614,7 +612,6 @@ const handleUnlockWallet: (
   service: KeyRingService
 ) => InternalHandler<UnlockWalletMsg> = (service) => {
   return async (env, _) => {
-    console.log("unlocking");
     await service.enable(env);
 
     eventEmitter.emit("statusChanged", service.keyRingStatus);
@@ -661,8 +658,6 @@ const handleSwitchAccountMsg: (
     let addressFound = false;
 
     keys.forEach(async (key, i) => {
-      console.log("key", key.address);
-
       const bech32Address = new Bech32Address(key.address).toBech32(
         chainInfo.bech32Config.bech32PrefixAccAddr
       );

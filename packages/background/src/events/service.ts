@@ -30,4 +30,20 @@ export class EventService {
   public unSubscribeNetworkChange(handler: any) {
     this.eventEmitter.off("networkChanged", handler);
   }
+
+  public subscribeTxSuccessful(handler: any) {
+    this.eventEmitter.on("txSuccessful", handler);
+  }
+
+  public unSubscribeTxSuccessful(handler: any) {
+    this.eventEmitter.off("txSuccessful", handler);
+  }
+
+  public subscribeTxFailed(handler: any) {
+    this.eventEmitter.on("txFailed", handler);
+  }
+
+  public unSubscribeTxFailed(handler: any) {
+    this.eventEmitter.off("txFailed", handler);
+  }
 }

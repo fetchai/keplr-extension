@@ -1305,3 +1305,99 @@ export class UnsubscribeOnAccountChangeMsg extends Message<void> {
     return UnsubscribeOnAccountChangeMsg.type();
   }
 }
+
+export class SubscribeOnTxFailedMsg extends Message<void> {
+  public static type() {
+    return "subscribe-on-tx-failed";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return SubscribeOnTxFailedMsg.type();
+  }
+}
+
+export class UnsubscribeOnTxFailedMsg extends Message<void> {
+  public static type() {
+    return "unsubscribe-on-tx-failed";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return UnsubscribeOnTxFailedMsg.type();
+  }
+}
+
+export class SubscribeOnTxSuccessfulMsg extends Message<void> {
+  public static type() {
+    return "subscribe-on-tx-successful";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return SubscribeOnTxSuccessfulMsg.type();
+  }
+}
+
+export class UnsubscribeOnTxSuccessfulMsg extends Message<void> {
+  public static type() {
+    return "unsubscribe-on-tx-successful";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return UnsubscribeOnTxSuccessfulMsg.type();
+  }
+}

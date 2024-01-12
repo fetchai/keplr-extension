@@ -5,9 +5,13 @@ import {
   SubscribeOnAccountChangeMsg,
   SubscribeOnNetworkChangeMsg,
   SubscribeOnStatusChangeMsg,
+  SubscribeOnTxFailedMsg,
+  SubscribeOnTxSuccessfulMsg,
   UnsubscribeOnAccountChangeMsg,
   UnsubscribeOnNetworkChangeMsg,
   UnsubscribeOnStatusChangeMsg,
+  UnsubscribeOnTxFailedMsg,
+  UnsubscribeOnTxSuccessfulMsg,
 } from "./messages";
 import { EventService } from "./service";
 
@@ -18,6 +22,10 @@ export function init(router: Router, service: EventService): void {
   router.registerMessage(UnsubscribeOnAccountChangeMsg);
   router.registerMessage(SubscribeOnNetworkChangeMsg);
   router.registerMessage(UnsubscribeOnNetworkChangeMsg);
+  router.registerMessage(SubscribeOnTxSuccessfulMsg);
+  router.registerMessage(UnsubscribeOnTxSuccessfulMsg);
+  router.registerMessage(SubscribeOnTxFailedMsg);
+  router.registerMessage(UnsubscribeOnTxFailedMsg);
 
   router.addHandler(ROUTE, getHandler(service));
 }
