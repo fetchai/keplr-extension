@@ -22,7 +22,6 @@ export const MainPage: FunctionComponent = observer(() => {
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   const [tokenState, setTokenState] = useState({});
-  console.log(tokenState);
   const intl = useIntl();
   const { chainStore, accountStore, keyRingStore, analyticsStore } = useStore();
   useEffect(() => {
