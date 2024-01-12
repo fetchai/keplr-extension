@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "../style.module.scss";
 import { Doughnut } from "react-chartjs-2";
 import { separateNumericAndDenom } from "@utils/format";
 import { useStore } from "../../../stores";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { DefaultGasMsgWithdrawRewards } from "../../../config.ui";
+import { useNavigate } from "react-router";
+import { useNotification } from "@components/notification";
 
 export const Stats = () => {
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const navigate = useNavigate();
+  const notification = useNotification();
+
+  const [_isWithdrawingRewards, setIsWithdrawingRewards] = useState(false);
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -85,7 +93,66 @@ export const Stats = () => {
       },
     },
   };
+  const handleClaimRewards = async () => {
+    if (accountInfo.isReadyToSendTx) {
+      try {
+        setIsWithdrawingRewards(true);
 
+        // When the user delegated too many validators,
+        // it can't be sent to withdraw rewards from all validators due to the block gas limit.
+        // So, to prevent this problem, just send the msgs up to 8.
+        const validatorAddresses =
+          rewards.getDescendingPendingRewardValidatorAddresses(8);
+        const tx =
+          accountInfo.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
+
+        let gas: number;
+        try {
+          // Gas adjustment is 1.5
+          // Since there is currently no convenient way to adjust the gas adjustment on the UI,
+          // Use high gas adjustment to prevent failure.
+          gas = (await tx.simulate()).gasUsed * 1.5;
+        } catch (e) {
+          console.log(e);
+
+          gas = DefaultGasMsgWithdrawRewards * validatorAddresses.length;
+        }
+
+        await tx.send(
+          {
+            amount: [],
+            gas: gas.toString(),
+          },
+          "",
+          undefined,
+          {
+            onBroadcasted: () => {
+              analyticsStore.logEvent("Claim reward tx broadcasted", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+              });
+            },
+          }
+        );
+
+        navigate("/", { replace: true });
+      } catch (e) {
+        navigate("/portfolio", { replace: true });
+        notification.push({
+          type: "warning",
+          placement: "top-center",
+          duration: 5,
+          content: `Fail to withdraw rewards: ${e.message}`,
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      } finally {
+        setIsWithdrawingRewards(false);
+      }
+    }
+  };
   return (
     <div className={style["card"]}>
       <div className={style["heading"]}>STAKING</div>
@@ -134,6 +201,12 @@ export const Stats = () => {
       <div className={style["doughnut-graph"]}>
         <Doughnut data={doughnutData} options={doughnutData.options} />
       </div>
+      <ButtonV2
+        onClick={handleClaimRewards}
+        text="Claim"
+        gradientText="Rewards"
+        disabled={rewardsBal === "0.000000000000000000 FET"}
+      />
     </div>
   );
 };

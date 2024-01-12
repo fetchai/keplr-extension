@@ -24,26 +24,6 @@ const getActivityIcon = (type: string): string => {
   }
 };
 
-// const getHash = (node: any): any => {
-//   const { typeUrl, json } = node.transaction.messages.nodes[0];
-
-//   switch (typeUrl) {
-//     case "/cosmos.bank.v1beta1.MsgSend":
-//     case "/cosmwasm.wasm.v1.MsgExecuteContract":
-//     case "/cosmos.authz.v1beta1.MsgRevoke":
-//     case "/ibc.applications.transfer.v1.MsgTransfer":
-//     case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
-//       return formatActivityHash(node.transaction.id) || null;
-//     case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-//       return formatActivityHash(JSON.parse(json).validatorAddress) || null;
-//     case "/cosmos.staking.v1beta1.MsgDelegate":
-//     case "/cosmos.staking.v1beta1.MsgUndelegate":
-//       return formatActivityHash(JSON.parse(json).validatorAddress) || null;
-//     default:
-//       return formatActivityHash(node.transaction.id);
-//   }
-// };
-
 export const shortenNumber = (value: string, decimal = 18) => {
   const number = Math.abs(parseFloat(value)) / 10 ** decimal;
   let result = "";

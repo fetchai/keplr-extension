@@ -141,7 +141,9 @@ export const NativeTab = () => {
           )}
         </React.Fragment>
       ) : isLoading && filter.length > 0 ? (
-        <div className={style["activityMessage"]}>Loading Activities...</div>
+        <div className={style["activityMessage"]}>
+          Loading Activities <i className="fas fa-spinner fa-spin ml-2" />
+        </div>
       ) : (
         <div className={style["activityMessage"]}>
           No activity available right now
