@@ -35,7 +35,7 @@ export const recieveMessages = async (
       await recieveMessages(userAddress, null, tmpPage, _isDm, _groupId);
     }
   }
-  return messagesObj;
+  return { userAddress, messages: messagesObj, pagination };
 };
 
 export const recieveGroups = async (
@@ -67,5 +67,5 @@ export const recieveGroups = async (
     store.dispatch(setGroups({ groups: groupsObj, pagination }));
     store.dispatch(setIsChatGroupPopulated(true));
   }
-  return groupsObj;
+  return { groups: groupsObj, pagination: pagination, isChatGroupPopulated: true };
 };

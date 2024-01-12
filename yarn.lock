@@ -9246,6 +9246,7 @@ __metadata:
     clean-webpack-plugin: ^3.0.0
     color: ^4.2.3
     copy-webpack-plugin: ^11.0.0
+    cross-env: ^7.0.3
     crypto-browserify: ^3.12.0
     css-loader: ^6.7.4
     date-fns: ^2.29.3
@@ -21930,15 +21931,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^5.2.0":
-  version: 5.2.1
-  resolution: "cross-env@npm:5.2.1"
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
   dependencies:
-    cross-spawn: ^6.0.5
+    cross-spawn: ^7.0.1
   bin:
-    cross-env: dist/bin/cross-env.js
-    cross-env-shell: dist/bin/cross-env-shell.js
-  checksum: 364f72482f0d6b65c6d560b942ce9da7e71ea66ec2eaa8226f7127b49094355277aadd23e6ff922c1d154a6ab1ad828ebc4ec8af9b44a39936d9013fb23ae4df
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
+  languageName: node
+  linkType: hard
+
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: ^7.0.1
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
   languageName: node
   linkType: hard
 
@@ -21960,7 +21973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -26168,7 +26181,7 @@ __metadata:
     "@types/react-dom": ^16.9.11
     "@typescript-eslint/eslint-plugin": ^5.52.0
     "@typescript-eslint/parser": ^5.52.0
-    cross-env: ^5.2.0
+    cross-env: ^7.0.3
     eslint: ^8.34.0
     eslint-config-prettier: ^8.6.0
     eslint-plugin-import: ^2.27.5

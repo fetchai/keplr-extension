@@ -133,9 +133,15 @@ export const fetchBlockList = async () => {
         channelId: "MESSAGING",
       },
     });
+    return data.blockedList;
     store.dispatch(setBlockedList(data.blockedList));
   } catch (e) {
     console.log(e);
+    return {
+      type: "block",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 2,
+    }
     store.dispatch(
       setMessageError({
         type: "block",
@@ -478,6 +484,7 @@ export const updateGroupTimestamp = async (
     const group = data.updateGroupLastSeen;
     group.userAddress = targetAddress;
     store.dispatch(updateGroupsData(group));
+    return group;
   } catch (err) {
     console.error("err", err);
   }

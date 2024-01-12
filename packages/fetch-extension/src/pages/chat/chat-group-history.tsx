@@ -1,16 +1,15 @@
 import React, { createRef, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-  userChatGroupPagination,
-  userChatGroups,
-} from "@chatStore/messages-slice";
+// import {
+//   userChatGroupPagination,
+//   userChatGroups,
+// } from "@chatStore/messages-slice";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import { useStore } from "../../stores";
 import { formatAddress } from "@utils/format";
 import style from "./style.module.scss";
-import { userDetails } from "@chatStore/user-slice";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { Groups, NameAddress, Pagination } from "@chatTypes";
 import { ChatUser } from "./chat-user";
@@ -24,14 +23,18 @@ export const ChatsGroupHistory: React.FC<{
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
   const navigate = useNavigate();
-  const userState = useSelector(userDetails);
-  const groups: Groups = useSelector(userChatGroups);
-  const groupsPagination: Pagination = useSelector(userChatGroupPagination);
+  const { chainStore, accountStore, chatStore } = useStore();
+
+  // const userState = useSelector(userDetails);
+  // const groups: Groups = useSelector(userChatGroups);
+  const groups: Groups = chatStore.messagesStore.userChatGroups;
+  // const groupsPagination: Pagination = useSelector(userChatGroupPagination);
+  const groupsPagination: Pagination =
+    chatStore.messagesStore.userChatGroupPagination;
   const [loadingGroups, setLoadingGroups] = useState(false);
-  const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-
+  const userState = chatStore.userDetailsStore;
   //Scrolling Logic
   const messagesEndRef: any = createRef();
   const messagesEncRef: any = useRef(null);
@@ -49,7 +52,8 @@ export const ChatsGroupHistory: React.FC<{
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
-      await recieveGroups(page, accountInfo.bech32Address);
+    const recieveGroupsData =  await recieveGroups(page, accountInfo.bech32Address);
+    console.log(recieveGroupsData)
       setLoadingGroups(false);
       setLoadingChats(false);
     }

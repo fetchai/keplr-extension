@@ -8,19 +8,11 @@ import {
 } from "@keplr-wallet/hooks";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { NameAddress } from "@chatTypes";
-import { store } from "@chatStore/index";
 import {
-  setMessageError,
   userChatStorePopulated,
   userChatSubscriptionActive,
 } from "@chatStore/messages-slice";
-import {
-  setAccessToken,
-  setMessagingPubKey,
-  userDetails,
-} from "@chatStore/user-slice";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatInitPopup } from "@components/chat/chat-init-popup";
@@ -44,11 +36,10 @@ import { GroupsHistory } from "./group-history";
 import style from "./style.module.scss";
 import { ToolTip } from "@components/tooltip";
 import { useLocation } from "react-router";
+import { observer } from "mobx-react-lite";
+import { useSelector } from "react-redux";
 
-const ChatView = () => {
-  const userState = useSelector(userDetails);
-  const chatStorePopulated = useSelector(userChatStorePopulated);
-  const chatSubscriptionActive = useSelector(userChatSubscriptionActive);
+const ChatView = observer(() => {
   const {
     chainStore,
     accountStore,
@@ -57,6 +48,11 @@ const ChatView = () => {
     analyticsStore,
     chatStore,
   } = useStore();
+  const userState = chatStore.userDetailsStore;
+
+  const chatStorePopulated = useSelector(userChatStorePopulated);
+  const chatSubscriptionActive = useSelector(userChatSubscriptionActive);
+
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountStore.getAccount(
@@ -125,17 +121,16 @@ const ChatView = () => {
 
         if (!chatStorePopulated) {
           await recieveGroups(0, walletAddress);
-          await fetchBlockList();
+          const list = await fetchBlockList();
+          chatStore.messagesStore.setBlockedList(list);
         }
       } catch (e) {
         console.log("error loading messages", e);
-        store.dispatch(
-          setMessageError({
-            type: "setup",
-            message: "Something went wrong, Please try again in sometime.",
-            level: 3,
-          })
-        );
+        chatStore.messagesStore.setMessageError({
+          type: "authorization",
+          message: "Something went wrong, Please try again in sometime.",
+          level: 3,
+        });
         // Show error visually
       } finally {
         setLoadingChats(false);
@@ -162,8 +157,6 @@ const ChatView = () => {
       setLoadingChats(true);
       try {
         const res = await getJWT(current.chainId, AUTH_SERVER);
-        store.dispatch(setAccessToken(res));
-        // userDetailsStore.setAccessToken(res);
         chatStore.userDetailsStore.setAccessToken(res);
 
         const pubKey = await fetchPublicKey(
@@ -173,17 +166,13 @@ const ChatView = () => {
         );
         if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
           return setIsOpendialog(true);
-
-        store.dispatch(setMessagingPubKey(pubKey));
-        // userDetailsStore.setMessagingPubKey(pubKey);
+        chatStore.userDetailsStore.setMessagingPubKey(pubKey);
       } catch (e) {
-        store.dispatch(
-          setMessageError({
-            type: "authorization",
-            message: "Something went wrong, Message can't be delivered",
-            level: 3,
-          })
-        );
+        chatStore.messagesStore.setMessageError({
+          type: "authorization",
+          message: "Something went wrong, Message can't be delivered",
+          level: 3,
+        });
         setAuthFail(true);
       }
 
@@ -325,7 +314,7 @@ const ChatView = () => {
       </div>
     </HeaderLayout>
   );
-};
+});
 
 export const ChatPage: FunctionComponent = () => {
   return <ChatView />;

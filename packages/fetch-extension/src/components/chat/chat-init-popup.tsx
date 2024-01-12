@@ -3,14 +3,14 @@ import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { store } from "@chatStore/index";
-import {
-  resetUser,
-  setMessagingPubKey,
-  userDetails,
-} from "@chatStore/user-slice";
+// import { store } from "@chatStore/index";
+// import {
+  // resetUser,
+  // setMessagingPubKey,
+  // userDetails,
+// } from "@chatStore/user-slice";
 import privacyIcon from "@assets/hello.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
@@ -27,9 +27,10 @@ export const ChatInitPopup = observer(
     setIsOpendialog: any;
     setLoadingChats: any;
   }) => {
-    const userState = useSelector(userDetails);
-
     const { chainStore, accountStore, analyticsStore, chatStore } = useStore();
+
+    const userState = chatStore.userDetailsStore;
+
     const current = chainStore.current;
     const walletAddress = accountStore.getAccount(
       chainStore.current.chainId
@@ -58,15 +59,14 @@ export const ChatInitPopup = observer(
             selectedPrivacySetting
           )
         );
-        store.dispatch(setMessagingPubKey(messagingPubKey));
-        // userDetailsStore.setMessagingPubKey(messagingPubKey);
+        // store.dispatch(setMessagingPubKey(messagingPubKey));
         chatStore.userDetailsStore.setMessagingPubKey(messagingPubKey);
 
         navigate("/chat", { replace: true });
       } catch (e) {
         // Show error toaster
         console.error("error", e);
-        store.dispatch(resetUser({}));
+        chatStore.userDetailsStore.resetUser();
         // Redirect to home
         navigate("/", { replace: true });
       } finally {
@@ -77,8 +77,6 @@ export const ChatInitPopup = observer(
         setLoadingChats(false);
       }
     };
-    const data = chatStore.userDetailsStore.messagingPubKey;
-    console.log("asdf", data, chatStore.userDetailsStore.accessToken);
 
     return openDialog && userState.accessToken.length > 0 ? (
       <React.Fragment>
