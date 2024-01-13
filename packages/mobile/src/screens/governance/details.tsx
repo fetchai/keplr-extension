@@ -21,7 +21,7 @@ import { IntPretty } from "@keplr-wallet/unit";
 import { useIntl } from "react-intl";
 import { registerModal } from "modals/base";
 import { RectButton } from "components/rect-button";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { MarkdownView } from "react-native-markdown-view";
 import { dateToLocalStringFormatGMT } from "./utils";
 

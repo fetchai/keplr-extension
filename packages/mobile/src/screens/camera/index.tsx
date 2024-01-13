@@ -3,7 +3,7 @@ import { useStyle } from "styles/index";
 import { PageWithView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { Button } from "components/button";
 import { Share, StyleSheet, View, ViewStyle } from "react-native";
 import { ChainSelectorModal } from "components/chain-selector";

@@ -41,6 +41,7 @@ module.exports = (async () => {
       blacklistRE: blacklist([/packages\/mobile\/node_modules\/react\/.*/]),
       extraNodeModules: {
         components: path.resolve(__dirname, "./src/components"),
+        navigation: path.resolve(__dirname, "./src/navigation"),
         screens: path.resolve(__dirname, "./src/screens"),
         hooks: path.resolve(__dirname, "./src/hooks"),
         assets: path.resolve(__dirname, "./src/assets"),

@@ -5,7 +5,7 @@ import { Card, CardBody } from "components/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const DelegatedCard: FunctionComponent<{
   containerStyle?: ViewStyle;

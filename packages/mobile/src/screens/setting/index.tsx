@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { PageWithScrollViewInBottomTabView } from "components/page";
 import { RightArrow, SettingItem, SettingSectionTitle } from "./components";
 import { SettingSelectAccountItem } from "./items/select-account";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { SettingFiatCurrencyItem } from "./items/fiat-currency";
 import { SettingBiometricLockItem } from "./items/biometric-lock";
 import { observer } from "mobx-react-lite";

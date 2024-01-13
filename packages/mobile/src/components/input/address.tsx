@@ -15,7 +15,7 @@ import { LoadingSpinner } from "components/spinner";
 import { useStyle } from "styles/index";
 import { AddressBookIcon } from "components/icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 function numOfCharacter(str: string, c: string): number {
   return str.split(c).length - 1;

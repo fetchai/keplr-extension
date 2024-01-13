@@ -10,7 +10,7 @@ import {
   MultiKeyStoreInfoWithSelectedElem,
 } from "@keplr-wallet/background";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
-import { useSmartNavigation } from "../../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { EditAccountNameModal } from "modals/edit-account-name.tsx";
 import { EditIcon } from "components/icon";
 import { KeyStoreItem, KeyStoreSectionTitle } from "screens/setting/components";

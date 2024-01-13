@@ -8,7 +8,7 @@ import { useStore } from "stores/index";
 import { useDelegateTxConfig } from "@keplr-wallet/hooks";
 import { AmountInput, FeeButtons, MemoInput } from "components/input";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { Staking } from "@keplr-wallet/stores";
 
 export const DelegateScreen: FunctionComponent = observer(() => {

@@ -7,7 +7,7 @@ import { useStyle } from "styles/index";
 import { AddressCopyable } from "components/address-copyable";
 import { Button } from "components/button";
 import { LoadingSpinner } from "components/spinner";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { NetworkErrorView } from "./network-error-view";
 import { Dec } from "@keplr-wallet/unit";
 import { DoubleDoughnutChart } from "components/svg";

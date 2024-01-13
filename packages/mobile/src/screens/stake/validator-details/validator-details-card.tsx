@@ -7,7 +7,7 @@ import { Linking, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { CoinPretty, Dec, IntPretty } from "@keplr-wallet/unit";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { MarkdownView } from "react-native-markdown-view";
 

@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { KeyStoreItem, RightArrow } from "../components";
 import { useStyle } from "styles/index";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { View, ViewStyle } from "react-native";

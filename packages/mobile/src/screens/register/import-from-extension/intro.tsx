@@ -6,7 +6,7 @@ import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
   const route = useRoute<

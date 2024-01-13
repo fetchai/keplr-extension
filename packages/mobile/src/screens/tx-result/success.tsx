@@ -6,7 +6,7 @@ import { PageWithView } from "components/page";
 import { Text, View, Animated, StyleSheet, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { useStyle } from "styles/index";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { RightArrowIcon } from "components/icon";
 import LottieView from "lottie-react-native";
 import * as WebBrowser from "expo-web-browser";

@@ -4,7 +4,7 @@ import { Card, CardBody, CardHeaderFullButton } from "components/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const StakingInfoCard: FunctionComponent<{
   containerStyle?: ViewStyle;

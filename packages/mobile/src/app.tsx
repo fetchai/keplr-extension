@@ -1,20 +1,20 @@
 import React, { FunctionComponent } from "react";
 import { StoreProvider } from "./stores";
 import { StyleProvider } from "./styles";
-import { AppNavigation } from "./navigation";
 import { IntlProvider } from "react-intl";
-import { ModalsProvider } from "./modals/base";
+import { ModalsProvider } from "modals/base";
 import { Platform, StatusBar } from "react-native";
 
 import codePush from "react-native-code-push";
-import { InteractionModalsProivder } from "./providers/interaction-modals-provider";
+import { InteractionModalsProivder } from "providers/interaction-modals-provider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { LoadingScreenProvider } from "./providers/loading-screen";
+import { LoadingScreenProvider } from "providers/loading-screen";
 import * as SplashScreen from "expo-splash-screen";
-import { ConfirmModalProvider } from "./providers/confirm-modal";
+import { ConfirmModalProvider } from "providers/confirm-modal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { BaseToastProps } from "react-native-toast-message/lib/src/types";
+import { AppNavigation } from "navigation/navigation";
 //import Bugsnag from "@bugsnag/react-native";
 
 if (Platform.OS === "android") {

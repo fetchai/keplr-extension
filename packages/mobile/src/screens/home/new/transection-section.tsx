@@ -4,7 +4,7 @@ import { HeaderAddIcon } from "components/header/icon";
 import { FlatList, View, ViewStyle } from "react-native";
 import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import { useStore } from "stores/index";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
 import { ArrowDownIcon } from "components/new/icon/arrow-down";
 import { ArrowUpIcon } from "components/new/icon/arrow-up";

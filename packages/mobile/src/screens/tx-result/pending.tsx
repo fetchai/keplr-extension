@@ -6,7 +6,7 @@ import { PageWithView } from "components/page";
 import { Text, View, StyleSheet, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { useStyle } from "styles/index";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { RightArrowIcon } from "components/icon";
 import { TendermintTxTracer } from "@keplr-wallet/cosmos";
 import { Buffer } from "buffer/";

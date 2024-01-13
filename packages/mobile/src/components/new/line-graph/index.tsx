@@ -1,12 +1,6 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { FunctionComponent, useState } from "react";
 import { TabPanel } from "components/new/tab-panel/tab-panel";
 import { LineGraph } from "./line-graph";
-import axios from "axios";
 
 export enum DurationFilter {
   "24H" = "24H",
@@ -50,123 +44,20 @@ const tabs = [
   },
 ];
 
-interface DurationData {
-  [key: string]: DurationObject;
-}
-
-interface DurationObject {
-  prices: PriceData[];
-  tokenState: TokenStateData;
-}
-
-export interface PriceData {
-  timestamp: number;
-  price: number;
-}
-
-interface TokenStateData {
-  diff: number;
-  time: string;
-  type: "positive" | "negative";
-}
-
 export const LineGraphView: FunctionComponent<{
   tokenName: string | undefined;
   setTokenState: any;
   tokenState?: any;
 }> = ({ tokenName, setTokenState }) => {
   const [activeTab, setActiveTab] = useState<any>(tabs[0]);
-  const [durationData, setDuration] = useState<DurationData>({});
-  const [prices, setPrices] = useState<PriceData[]>([]);
-
-  const defaultPricing = useCallback(() => {
-    const tokenState: TokenStateData = {
-      diff: 0,
-      time: "",
-      type: "positive",
-    };
-    const prices = [];
-    const timestamp = new Date().getTime();
-
-    for (let i = 0; i < 5; i++) {
-      prices.push({ price: 0, timestamp });
-    }
-    durationData[activeTab.id] = { tokenState, prices };
-    setDuration(durationData);
-    setPrices(prices);
-    setTokenState(tokenState);
-  }, []);
-
-  function getChartData() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let newPrices = [];
-        const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-        const params = { vs_currency: "usd", days: activeTab.duration };
-
-        const response = await axios.get(apiUrl, { params });
-        newPrices = response.data.prices.map((price: number[]) => ({
-          timestamp: price[0],
-          price: price[1],
-        }));
-
-        resolve(newPrices);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  useEffect(() => {
-    if (
-      !durationData[activeTab.id] ||
-      durationData[activeTab.id]?.tokenState?.time?.length == 0
-    ) {
-      getChartData()
-        .then((newPrices: any) => {
-          let tokenState = {};
-          if (newPrices.length > 0) {
-            const firstValue = newPrices[0].price || 0;
-            const lastValue = newPrices[newPrices.length - 1].price || 0;
-            const diff = lastValue - firstValue;
-            const percentageDiff = (diff / lastValue) * 100;
-            let time = "";
-            if (activeTab.duration == 1) time = "TODAY";
-            else if (activeTab.duration == 7) time = "1 WEEK";
-            else if (activeTab.duration == 30) time = "1 MONTH";
-            else if (activeTab.duration == 90) time = "3 MONTH";
-            else if (activeTab.duration == 365) time = "1 YEAR";
-            else if (activeTab.duration == "max") time = "ALL";
-
-            const type = diff >= 0 ? "positive" : "negative";
-
-            tokenState = {
-              diff: Math.abs(percentageDiff),
-              time,
-              type,
-            };
-            setTokenState(tokenState);
-          }
-          setPrices(newPrices);
-          durationData[activeTab.id] = {
-            prices: [...newPrices],
-            tokenState: tokenState as TokenStateData,
-          };
-          setDuration(durationData);
-        })
-        .catch((error) => {
-          defaultPricing();
-          console.log("Error fetching data:", error.message);
-        });
-    } else {
-      setPrices(durationData[activeTab.id].prices);
-      setTokenState(durationData[activeTab.id].tokenState);
-    }
-  }, [activeTab, tokenName, setTokenState]);
 
   return (
     <React.Fragment>
-      <LineGraph prices={prices} />
+      <LineGraph
+        tokenName={tokenName}
+        setTokenState={setTokenState}
+        duration={activeTab.duration}
+      />
       <TabPanel tabs={tabs} setActiveTab={setActiveTab} activeTab={activeTab} />
     </React.Fragment>
   );

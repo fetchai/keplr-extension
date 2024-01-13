@@ -12,7 +12,7 @@ import { View, ViewStyle } from "react-native";
 import { useStore } from "stores/index";
 import { AddressInput, MemoInput, TextInput } from "components/input";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
 
 export const AddAddressBookScreen: FunctionComponent = observer(() => {

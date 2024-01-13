@@ -3,7 +3,7 @@ import { PageWithView } from "components/page";
 import { useStyle } from "styles/index";
 import { View, Text, ViewStyle, Image } from "react-native";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";

@@ -12,7 +12,7 @@ import { Card, CardBody, CardDivider } from "components/card";
 import { Staking } from "@keplr-wallet/stores";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { Buffer } from "buffer/";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<

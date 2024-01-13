@@ -22,7 +22,7 @@ import {
   IRecipientConfigWithICNS,
   useAddressBookConfig,
 } from "@keplr-wallet/hooks";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { AddressBookCardModel } from "../addressbook-card/addressbook-card";
 import { useStore } from "stores/index";
 import { AsyncKVStore } from "../../../common";

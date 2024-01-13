@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { SettingItem } from "screens/setting/components";
 import { PasswordInputModal } from "modals/password-input/modal";
 import { useStore } from "stores/index";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { getPrivateDataTitle } from "screens/setting/screens/view-private-data";
 
 export const SettingViewPrivateDataItem: FunctionComponent<{

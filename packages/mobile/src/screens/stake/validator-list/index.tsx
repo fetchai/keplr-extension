@@ -6,7 +6,7 @@ import { Text, View, ViewStyle } from "react-native";
 import { Staking } from "@keplr-wallet/stores";
 import { useStyle } from "styles/index";
 import { SelectorModal, TextInput } from "components/input";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { CoinPretty, Dec } from "@keplr-wallet/unit";
 import { RightArrowIcon } from "components/icon";
 import Svg, { Path } from "react-native-svg";

@@ -16,7 +16,7 @@ import {
   SelectorButtonWithoutModal,
 } from "components/input";
 import { Button } from "components/button";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const RedelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<

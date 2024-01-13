@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { FullScreenCameraView } from "components/camera";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { RouteProp, useRoute } from "@react-navigation/native";

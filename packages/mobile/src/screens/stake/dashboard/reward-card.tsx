@@ -6,7 +6,7 @@ import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import { Dec } from "@keplr-wallet/unit";
-import { useSmartNavigation } from "../../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 export const MyRewardCard: FunctionComponent<{

@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import { GovernanceCardBody } from "../governance";
 import { useStore } from "stores/index";
 import { ObservableQueryProposal, Governance } from "@keplr-wallet/stores";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const GovernanceCard: FunctionComponent<{
   containerStyle?: ViewStyle;

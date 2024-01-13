@@ -5,7 +5,7 @@ import { useStore } from "stores/index";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { CoinPretty } from "@keplr-wallet/unit";
 import { useStyle } from "styles/index";
-import { useSmartNavigation } from "../../navigation";
+import { useSmartNavigation } from "navigation/smart-navigation";
 import { RightArrowIcon } from "components/icon";
 import { Card } from "components/card";
 import { RectButton } from "components/rect-button";
