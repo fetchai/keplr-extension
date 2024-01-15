@@ -29,7 +29,6 @@ import { ContactsOnlyMessage } from "@components/contacts-only-message";
 
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
-  // const user = useSelector(userDetails);
   const { chainStore, analyticsStore, chatStore } = useStore();
   const user = chatStore.userDetailsStore;
   const { name, address } = props.address;
@@ -102,19 +101,19 @@ const NewUser = (props: { address: NameAddress }) => {
 };
 export const NewChat: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const { chatStore } = useStore();
-  const user = chatStore.userDetailsStore;
-  const [inputVal, setInputVal] = useState("");
-  const [addresses, setAddresses] = useState<NameAddress[]>([]);
-  const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
-
   const {
     chainStore,
     accountStore,
     queriesStore,
     uiConfigStore,
     analyticsStore,
+    chatStore,
   } = useStore();
+  const user = chatStore.userDetailsStore;
+  const [inputVal, setInputVal] = useState("");
+  const [addresses, setAddresses] = useState<NameAddress[]>([]);
+  const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
+
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;

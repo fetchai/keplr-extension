@@ -64,7 +64,18 @@ export const CreateGroupChat: FunctionComponent = observer(() => {
       const pagintaion = chatStore.messagesStore.groupsPagination;
       chatStore.messagesStore.setGroups(groups, pagintaion);
       /// fetching the group messages again
-      await recieveMessages(group.id, null, 0, group.isDm, group.id);
+      const recievedMessages = await recieveMessages(
+        group.id,
+        null,
+        0,
+        group.isDm,
+        group.id
+      );
+      chatStore.messagesStore.updateChatList(
+        recievedMessages.userAddress,
+        recievedMessages.messages,
+        recievedMessages.pagination
+      );
       analyticsStore.logEvent("save_chat_settings_click");
       navigate(-1);
     }

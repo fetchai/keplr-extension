@@ -20,7 +20,6 @@ export const ChatErrorPopup = observer(() => {
       level: 3,
     });
   };
-  console.log("user message error",chatStore.messagesStore.userMessagesError);
 
   return errorMessage?.message?.length && confirmAction ? (
     <React.Fragment>

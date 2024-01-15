@@ -16,8 +16,6 @@ import { FormattedMessage } from "react-intl";
 import { IBCChannelRegistrarModal } from "@components/form";
 import { Channel } from "@keplr-wallet/hooks";
 import { deliverMessages } from "@graphQL/messages-api";
-import { useSelector } from "react-redux";
-import { userDetails } from "@chatStore/user-slice";
 import { useNotification } from "@components/notification";
 import { useLocation } from "react-router";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
@@ -36,7 +34,7 @@ export const IBCChainSelector: FunctionComponent<{
   label: ReactElement<any>[];
   disabled: boolean;
 }> = observer(({ label, disabled }) => {
-  const { accountStore, chainStore, ibcChannelStore, queriesStore } =
+  const { accountStore, chainStore, ibcChannelStore, queriesStore, chatStore } =
     useStore();
   const loadingIndicator = useLoadingIndicator();
 
@@ -45,7 +43,7 @@ export const IBCChainSelector: FunctionComponent<{
   const accountInfo = accountStore.getAccount(current.chainId);
   const targetAddress = useLocation().pathname.split("/")[3];
   const notification = useNotification();
-  const user = useSelector(userDetails);
+  const user = chatStore.userDetailsStore;
 
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<ChannelDetails>();
@@ -68,13 +66,14 @@ export const IBCChainSelector: FunctionComponent<{
         message: `Selected Channel: ${chainInfo.chainName}`,
       };
       try {
-        await deliverMessages(
+        const message = await deliverMessages(
           user.accessToken,
           current.chainId,
           messagePayload,
           accountInfo.bech32Address,
           targetAddress
         );
+        chatStore.messagesStore.updateLatestSentMessage(message);
       } catch (e) {
         console.log(e);
         notification.push({

@@ -1,13 +1,8 @@
-import {
-  userChatAgents,
-  userChatGroupPagination,
-} from "@chatStore/messages-slice";
 import { Groups, NameAddress, Pagination } from "@chatTypes";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import { formatAddress } from "@utils/format";
 import React, { createRef, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { ChatAgent } from "./chat-agent";
 import style from "../style.module.scss";
@@ -20,10 +15,12 @@ export const AgentsHistory: React.FC<{
   addresses: NameAddress;
   setLoadingChats: any;
 }> = ({ chainId, addresses, setLoadingChats, searchString }) => {
-  const groups: Groups = useSelector(userChatAgents);
-  const groupsPagination: Pagination = useSelector(userChatGroupPagination);
+  const { chainStore, accountStore, chatStore } = useStore();
+
+  const groups: Groups = chatStore.messagesStore.userChatAgents;
+  const groupsPagination: Pagination =
+    chatStore.messagesStore.userChatGroupPagination;
   const [loadingGroups, setLoadingGroups] = useState(false);
-  const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 

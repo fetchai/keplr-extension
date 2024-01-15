@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { userChatAgents, userMessages } from "@chatStore/messages-slice";
-import { userDetails } from "@chatStore/user-slice";
 import { Chats, Groups } from "@chatTypes";
 import { AgentDisclaimer } from "@components/agents/agents-disclaimer";
 import { useNotification } from "@components/notification";
@@ -15,7 +13,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { AGENT_COMMANDS, CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { useStore } from "../../stores";
@@ -34,12 +31,13 @@ export const ChatsViewSection = ({
   setLoadingChats: any;
 }) => {
   const targetAddress = useLocation().pathname.split("/")[3];
+  const { chainStore, accountStore, analyticsStore, chatStore } = useStore();
 
-  const user = useSelector(userDetails);
-  const userAgents: Groups = useSelector(userChatAgents);
-  const userChats: Chats = useSelector(userMessages);
+  const user = chatStore.userDetailsStore;
+  const userAgents: Groups = chatStore.messagesStore.userChatAgents;
 
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const userChats: Chats = chatStore.messagesStore.userMessages;
+
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const preLoadedChats = useMemo(() => {
@@ -189,6 +187,7 @@ export const ChatsViewSection = ({
         );
 
         if (message) {
+          chatStore.messagesStore.updateLatestSentMessage(message);
           const updatedMessagesList = [...messages, message];
           setMessages(updatedMessagesList);
           setNewMessage("");
