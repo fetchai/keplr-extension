@@ -7,11 +7,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-// import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Chats, Group, GroupAddress, Groups } from "@chatTypes";
-// import { userChatGroups, userMessages } from "@chatStore/messages-slice";
-// import { userDetails } from "@chatStore/user-slice";
 import { ChatMessage } from "@components/chat-message";
 import { CHAT_PAGE_COUNT } from "../../config.ui.var";
 import { deliverMessages, updateGroupTimestamp } from "@graphQL/messages-api";
@@ -39,15 +36,9 @@ export const ChatsViewSection = observer(
     const { chainStore, accountStore, chatStore } = useStore();
 
     let enterKeyCount = 0;
-    // const user = useSelector(userDetails);
     const user = chatStore.userDetailsStore;
-    // const userGroups: Groups = useSelector(userChatGroups);
     const userGroups: Groups = chatStore.messagesStore.userChatGroups;
-
-    // const userChats: Chats = useSelector(userMessages);
     const userChats: Chats = chatStore.messagesStore.userMessages;
-    // console.log("userChat", userChat,userChats);
-
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
     const preLoadedChats = useMemo(() => {
@@ -202,6 +193,14 @@ export const ChatsViewSection = observer(
       }
     }, [messagesEndRef.current]);
 
+    useEffect(() => {
+      const getChats = async () => {
+        await loadUserList();
+        if (pagination.page >= 0)
+          messagesScrollRef.current.scrollIntoView(true);
+      };
+      if (isOnScreen) getChats();
+    }, [isOnScreen]);
     useEffect(() => {
       const getChats = async () => {
         await loadUserList();

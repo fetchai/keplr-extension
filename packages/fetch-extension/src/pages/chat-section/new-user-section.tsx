@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-// import { userBlockedAddresses } from "@chatStore/messages-slice";
 import style from "./style.module.scss";
 import { useStore } from "../../stores";
 import { observer } from "mobx-react-lite";
@@ -17,7 +15,6 @@ export const NewUserSection = observer(({
   const navigate = useNavigate();
   const { analyticsStore, chatStore } = useStore();
 
-  // const blockedUsers = useSelector(userBlockedAddresses);
   const blockedUsers = chatStore.messagesStore.blockedAddress;
   return (
     <div className={style["contactsContainer"]}>

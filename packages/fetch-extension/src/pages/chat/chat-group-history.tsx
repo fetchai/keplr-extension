@@ -1,10 +1,5 @@
 import React, { createRef, useEffect, useRef, useState } from "react";
-// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-// import {
-//   userChatGroupPagination,
-//   userChatGroups,
-// } from "@chatStore/messages-slice";
 import { recieveGroups } from "@graphQL/recieve-messages";
 import { useOnScreen } from "@hooks/use-on-screen";
 import { useStore } from "../../stores";
@@ -15,20 +10,24 @@ import { Groups, NameAddress, Pagination } from "@chatTypes";
 import { ChatUser } from "./chat-user";
 import { ChatGroupUser } from "./chat-group-user";
 import { FormattedMessage } from "react-intl";
+import { observer } from "mobx-react-lite";
 
-export const ChatsGroupHistory: React.FC<{
+interface ChatsGroupHistoryProps {
   chainId: string;
   searchString: string;
   addresses: NameAddress;
   setLoadingChats: any;
-}> = ({ chainId, addresses, setLoadingChats, searchString }) => {
+}
+export const ChatsGroupHistory: React.FC<ChatsGroupHistoryProps> = observer(({
+  chainId,
+  addresses,
+  setLoadingChats,
+  searchString,
+}) => {
   const navigate = useNavigate();
   const { chainStore, accountStore, chatStore } = useStore();
 
-  // const userState = useSelector(userDetails);
-  // const groups: Groups = useSelector(userChatGroups);
   const groups: Groups = chatStore.messagesStore.userChatGroups;
-  // const groupsPagination: Pagination = useSelector(userChatGroupPagination);
   const groupsPagination: Pagination =
     chatStore.messagesStore.userChatGroupPagination;
   const [loadingGroups, setLoadingGroups] = useState(false);
@@ -52,8 +51,11 @@ export const ChatsGroupHistory: React.FC<{
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
-    const recieveGroupsData =  await recieveGroups(page, accountInfo.bech32Address);
-    console.log(recieveGroupsData)
+      const recieveGroupsData = await recieveGroups(
+        page,
+        accountInfo.bech32Address
+      );
+      console.log(recieveGroupsData);
       setLoadingGroups(false);
       setLoadingChats(false);
     }
@@ -217,4 +219,4 @@ export const ChatsGroupHistory: React.FC<{
       )}
     </div>
   );
-};
+});

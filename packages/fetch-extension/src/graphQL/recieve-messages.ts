@@ -1,9 +1,3 @@
-import { store } from "@chatStore/index";
-import {
-  setGroups,
-  updateChatList,
-  setIsChatGroupPopulated,
-} from "@chatStore/messages-slice";
 import { CHAT_PAGE_COUNT } from "../config.ui.var";
 import { fetchGroups, fetchMessages } from "./messages-api";
 
@@ -25,9 +19,7 @@ export const recieveMessages = async (
     messages.map((message: any) => {
       messagesObj[message.id] = message;
     });
-    store.dispatch(
-      updateChatList({ userAddress, messages: messagesObj, pagination })
-    );
+
 
     /// fetching the read records after unread to avoid the pagination stuck
     if (!!afterTimestamp) {
@@ -64,8 +56,6 @@ export const recieveGroups = async (
       }
       groupsObj[contactAddress] = group;
     });
-    store.dispatch(setGroups({ groups: groupsObj, pagination }));
-    store.dispatch(setIsChatGroupPopulated(true));
   }
   return { groups: groupsObj, pagination: pagination, isChatGroupPopulated: true };
 };

@@ -9,10 +9,6 @@ import {
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { NameAddress } from "@chatTypes";
-import {
-  userChatStorePopulated,
-  userChatSubscriptionActive,
-} from "@chatStore/messages-slice";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { ChatLoader } from "@components/chat-loader";
 import { ChatInitPopup } from "@components/chat/chat-init-popup";
@@ -37,7 +33,6 @@ import style from "./style.module.scss";
 import { ToolTip } from "@components/tooltip";
 import { useLocation } from "react-router";
 import { observer } from "mobx-react-lite";
-import { useSelector } from "react-redux";
 
 const ChatView = observer(() => {
   const {
@@ -50,8 +45,9 @@ const ChatView = observer(() => {
   } = useStore();
   const userState = chatStore.userDetailsStore;
 
-  const chatStorePopulated = useSelector(userChatStorePopulated);
-  const chatSubscriptionActive = useSelector(userChatSubscriptionActive);
+  const chatStorePopulated = chatStore.messagesStore.userChatStorePopulated;
+  const chatSubscriptionActive =
+    chatStore.messagesStore.userChatSubscriptionActive;
 
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -118,9 +114,12 @@ const ChatView = observer(() => {
           groupsListener(walletAddress);
           messageListener(walletAddress);
         }
-
         if (!chatStorePopulated) {
-          await recieveGroups(0, walletAddress);
+          const recievedGroups = await recieveGroups(0, walletAddress);
+          chatStore.messagesStore.setGroups(
+            await recievedGroups.groups,
+            await recievedGroups.pagination
+          );
           const list = await fetchBlockList();
           chatStore.messagesStore.setBlockedList(list);
         }

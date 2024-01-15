@@ -1,8 +1,3 @@
-// import {
-//   userChatGroupPagination,
-//   userChatGroups,
-// } from "@chatStore/messages-slice";
-// import { userDetails } from "@chatStore/user-slice";
 import { Groups, NameAddress, Pagination } from "@chatTypes";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
 import { recieveGroups } from "@graphQL/recieve-messages";
@@ -10,7 +5,6 @@ import { useOnScreen } from "@hooks/use-on-screen";
 import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { formatAddress } from "@utils/format";
 import React, { createRef, useEffect, useRef, useState } from "react";
-// import { useSelector } from "react-redux";
 import { useStore } from "../../../stores";
 import { ChatGroupUser } from "./chat-group-user";
 import { ChatUser } from "./chat-user";
@@ -25,13 +19,11 @@ export const GroupsHistory: React.FC<{
 }> = observer(({ chainId, addresses, setLoadingChats, searchString }) => {
   const { chainStore, accountStore, chatStore } = useStore();
 
-  // const userState = useSelector(userDetails);
   const userState = chatStore.userDetailsStore;
-  // const groups: Groups = useSelector(userChatGroups);
   const groups: Groups = chatStore.messagesStore.userChatGroups;
 
-  // const groupsPagination: Pagination = useSelector(userChatGroupPagination);
-  const groupsPagination: Pagination = chatStore.messagesStore.userChatGroupPagination
+  const groupsPagination: Pagination =
+    chatStore.messagesStore.userChatGroupPagination;
   const [loadingGroups, setLoadingGroups] = useState(false);
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -48,12 +40,26 @@ export const GroupsHistory: React.FC<{
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
+  useEffect(() => {
+    const getChats = async () => {
+      await loadUserGroups();
+    };
+    getChats();
+  }, []);
 
   const loadUserGroups = async () => {
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
-      await recieveGroups(page, accountInfo.bech32Address);
+      const recievedGroups = await recieveGroups(
+        page,
+        accountInfo.bech32Address
+      );
+      chatStore.messagesStore.setGroups(
+        await recievedGroups.groups,
+        await recievedGroups.pagination
+      );
+      chatStore.messagesStore.setIsChatGroupPopulated(true);
       setLoadingGroups(false);
       setLoadingChats(false);
     }

@@ -1,8 +1,8 @@
 import { makeAutoObservable, observable } from "mobx";
-import { MessagesStore } from "./message-slice";
+import { MessagesStore } from "./message-store";
 import { UserDetailsStore } from "./user-details";
-import { ProposalStore } from "./proposal-slice";
-import { NewGroupStore } from "./new-group-slice";
+import { ProposalStore } from "./proposal-store";
+import { NewGroupStore } from "./new-group-store";
 
 export class ChatStore {
   public readonly userDetailsStore: UserDetailsStore;

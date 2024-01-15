@@ -5,10 +5,7 @@ import {
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
-// import { userBlockedAddresses } from "@chatStore/messages-slice";
-// import { userDetails } from "@chatStore/user-slice";
 import { ChatActionsPopup } from "@components/chat-actions-popup";
 import { ChatErrorPopup } from "@components/chat-error-popup";
 import { SwitchUser } from "@components/switch-user";
@@ -26,8 +23,6 @@ export const ChatSection: FunctionComponent = observer(() => {
   const { chainStore, accountStore, queriesStore, uiConfigStore, chatStore } =
     useStore();
 
-  // const blockedUsers = useSelector(userBlockedAddresses);
-  // const user = useSelector(userDetails);
   const user = chatStore.userDetailsStore;
   const blockedUsers = chatStore.messagesStore.blockedAddress;
   const [targetPubKey, setTargetPubKey] = useState("");
