@@ -102,7 +102,13 @@ const ChatView = observer(() => {
       const addressesList = Object.keys(addresses).filter((contact) =>
         addresses[contact].toLowerCase().includes(searchString.toLowerCase())
       );
-      recieveGroups(0, walletAddress, searchString, addressesList);
+      recieveGroups(
+        0,
+        walletAddress,
+        searchString,
+        userState.accessToken,
+        addressesList
+      );
     }
   }, 1000);
 
@@ -111,16 +117,20 @@ const ChatView = observer(() => {
       setLoadingChats(true);
       try {
         if (!chatSubscriptionActive) {
-          groupsListener(walletAddress);
-          messageListener(walletAddress);
+          groupsListener(walletAddress, userState.accessToken);
+          messageListener(walletAddress, userState.accessToken);
         }
         if (!chatStorePopulated) {
-          const recievedGroups = await recieveGroups(0, walletAddress);
+          const recievedGroups = await recieveGroups(
+            0,
+            walletAddress,
+            userState.accessToken
+          );
           chatStore.messagesStore.setGroups(
             await recievedGroups.groups,
             await recievedGroups.pagination
           );
-          const list = await fetchBlockList();
+          const list = await fetchBlockList(userState.accessToken);
           chatStore.messagesStore.setBlockedList(list);
         }
       } catch (e) {

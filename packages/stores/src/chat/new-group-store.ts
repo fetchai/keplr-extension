@@ -35,7 +35,6 @@ export class NewGroupStore {
   setNewGroupInfo(newGroupInfo: Partial<GroupDetails>) {
     this.newGroup.group = { ...this.newGroup.group, ...newGroupInfo };
   }
-  
 
   setIsGroupEdit(isEdit: boolean) {
     this.newGroup.isEditGroup = isEdit;

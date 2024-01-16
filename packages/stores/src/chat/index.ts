@@ -10,19 +10,17 @@ export class ChatStore {
   public readonly proposalStore: ProposalStore;
   public readonly newGroupStore: NewGroupStore;
 
-
   constructor() {
     this.userDetailsStore = new UserDetailsStore();
     this.messagesStore = new MessagesStore();
     this.proposalStore = new ProposalStore();
     this.newGroupStore = new NewGroupStore();
 
-
     makeAutoObservable(this, {
       userDetailsStore: observable,
       messagesStore: observable,
       proposalStore: observable,
-      newGroupStore: observable
+      newGroupStore: observable,
     });
   }
 }

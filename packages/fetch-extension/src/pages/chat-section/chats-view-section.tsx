@@ -229,7 +229,8 @@ export const ChatsViewSection = observer(
             : null,
           page,
           group.isDm,
-          group.id
+          group.id,
+          user.accessToken
         );
         chatStore.messagesStore.updateChatList(
           userAddress,
@@ -296,7 +297,11 @@ export const ChatsViewSection = observer(
             setNewMessage("");
           }
           // scrollToBottom();
-          const receiveGroups = recieveGroups(0, accountInfo.bech32Address);
+          const receiveGroups = recieveGroups(
+            0,
+            accountInfo.bech32Address,
+            user.accessToken
+          );
           chatStore.messagesStore.setGroups(
             (await receiveGroups).groups,
             (await receiveGroups).isChatGroupPopulated

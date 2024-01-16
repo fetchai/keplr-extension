@@ -53,7 +53,8 @@ export const GroupsHistory: React.FC<{
       setLoadingGroups(true);
       const recievedGroups = await recieveGroups(
         page,
-        accountInfo.bech32Address
+        accountInfo.bech32Address,
+        userState.accessToken
       );
       chatStore.messagesStore.setGroups(
         await recievedGroups.groups,

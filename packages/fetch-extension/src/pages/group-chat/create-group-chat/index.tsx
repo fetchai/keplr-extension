@@ -56,7 +56,7 @@ export const CreateGroupChat: FunctionComponent = observer(() => {
       name: name,
       onlyAdminMessages: false,
     };
-    const group = await createGroup(updatedGroupInfo);
+    const group = await createGroup(updatedGroupInfo, user.accessToken);
 
     if (group) {
       /// updating the group(chat history) object
@@ -69,7 +69,8 @@ export const CreateGroupChat: FunctionComponent = observer(() => {
         null,
         0,
         group.isDm,
-        group.id
+        group.id,
+        user.accessToken
       );
       chatStore.messagesStore.updateChatList(
         recievedMessages.userAddress,

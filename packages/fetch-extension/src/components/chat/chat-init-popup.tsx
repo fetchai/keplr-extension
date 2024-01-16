@@ -3,14 +3,8 @@ import { PrivacySetting } from "@keplr-wallet/background/build/messaging/types";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import React, { useState } from "react";
-// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-// import { store } from "@chatStore/index";
-// import {
-  // resetUser,
-  // setMessagingPubKey,
-  // userDetails,
-// } from "@chatStore/user-slice";
+
 import privacyIcon from "@assets/hello.png";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
@@ -59,7 +53,6 @@ export const ChatInitPopup = observer(
             selectedPrivacySetting
           )
         );
-        // store.dispatch(setMessagingPubKey(messagingPubKey));
         chatStore.userDetailsStore.setMessagingPubKey(messagingPubKey);
 
         navigate("/chat", { replace: true });

@@ -6,3 +6,4 @@ export * from "./chain";
 export * from "./core";
 export * from "./ibc";
 export * from "./chat";
+export * from "./proposal";

@@ -59,7 +59,7 @@ export class UserDetailsStore {
     this.enabledChainIds = [CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO];
   }
 
-  setNotifications(notifications: NotificationSetup) {
+  setNotifications(notifications: Partial<NotificationSetup>) {
     this.notifications = { ...this.notifications, ...notifications };
   }
 

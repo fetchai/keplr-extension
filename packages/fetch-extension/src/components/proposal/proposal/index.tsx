@@ -7,8 +7,6 @@ import { proposalOptions } from "../../../pages/proposals";
 import { useStore } from "../../../stores";
 import { fetchVote } from "@utils/fetch-proposals";
 import { ProposalSetup } from "src/@types/proposal-type";
-import { useSelector } from "react-redux";
-import { useProposals } from "@chatStore/proposal-slice";
 
 interface Props {
   title: string;
@@ -18,11 +16,11 @@ interface Props {
 
 export const Proposal: FunctionComponent<Props> = (props) => {
   const { title, status, id } = props;
+  const { chainStore, accountStore, proposalStore, analyticsStore } =
+    useStore();
   const navigate = useNavigate();
   let icon, color, background, name;
-  const reduxProposals: ProposalSetup = useSelector(useProposals);
-
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const reduxProposals: ProposalSetup = proposalStore.proposals;
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [alreadyVoted, setAlreadyVoted] = useState("");
   useEffect(() => {

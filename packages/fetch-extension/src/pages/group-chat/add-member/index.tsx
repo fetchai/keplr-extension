@@ -273,7 +273,7 @@ export const AddMember: FunctionComponent = observer(() => {
       name: newGroupState.group.name,
       onlyAdminMessages: false,
     };
-    const group = await createGroup(updatedGroupInfo);
+    const group = await createGroup(updatedGroupInfo, user.accessToken);
     setIsLoading(false);
 
     if (group) {
@@ -282,7 +282,14 @@ export const AddMember: FunctionComponent = observer(() => {
       const pagination = chatStore.messagesStore.groupsPagination;
       chatStore.messagesStore.setGroups(groups, pagination);
       /// fetching the group messages again
-      await recieveMessages(group.id, null, 0, group.isDm, group.id);
+      await recieveMessages(
+        group.id,
+        null,
+        0,
+        group.isDm,
+        group.id,
+        user.accessToken
+      );
       navigate(-1);
     }
   }

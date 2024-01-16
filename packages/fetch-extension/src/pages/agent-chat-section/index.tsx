@@ -18,7 +18,8 @@ import { UserNameSection } from "./username-section";
 
 export const AgentChatSection: FunctionComponent = () => {
   const targetAddress = useLocation().pathname.split("/")[3];
-  const { chainStore, accountStore, queriesStore, uiConfigStore, chatStore } = useStore();
+  const { chainStore, accountStore, queriesStore, uiConfigStore, chatStore } =
+    useStore();
 
   const user = chatStore.userDetailsStore;
 

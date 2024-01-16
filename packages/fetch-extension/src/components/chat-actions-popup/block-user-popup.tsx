@@ -11,14 +11,15 @@ export const BlockUserPopup = ({
 }) => {
   const [processing, setProcessing] = useState(false);
   const userName = useLocation().pathname.split("/")[2];
-  const { analyticsStore } = useStore();
+  const { analyticsStore, chatStore } = useStore();
+  const userState = chatStore.userDetailsStore;
   const handleBlock = async () => {
     analyticsStore.logEvent("block_contact_click", {
       action: "Block",
     });
     setProcessing(true);
     try {
-      await blockUser(userName);
+      await blockUser(userName, userState.accessToken);
     } catch (e) {
       console.log(e);
     } finally {

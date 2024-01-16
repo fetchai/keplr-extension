@@ -3,8 +3,6 @@ import {
   getMainDefinition,
   ObservableSubscription,
 } from "@apollo/client/utilities";
-import { store } from "@chatStore/index";
-
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "@utils/encrypt-message";
 import {
@@ -42,9 +40,9 @@ export const fetchMessages = async (
   groupId: string,
   isDm: boolean,
   afterTimestamp: string | null | undefined,
-  page: number
+  page: number,
+  accessToken: string
 ) => {
-  const state = store.getState();
   let variables: messagesVariables = {
     groupId,
     isDm,
@@ -65,7 +63,7 @@ export const fetchMessages = async (
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     },
     variables,
@@ -86,7 +84,8 @@ interface groupQueryVariables {
 export const fetchGroups = async (
   page: number,
   addressQueryString: string,
-  addresses: string[]
+  addresses: string[],
+  accessToken: string
 ) => {
   const groupsQuery = addresses.length ? groupsWithAddresses : groups;
   const variables: groupQueryVariables = {
@@ -95,13 +94,12 @@ export const fetchGroups = async (
   };
   if (addresses.length) variables["addresses"] = addresses;
   else variables["addressQueryString"] = addressQueryString;
-  const state = store.getState();
   const { data, errors } = await client.query({
     query: gql(groupsQuery),
     fetchPolicy: "no-cache",
     context: {
       headers: {
-        Authorization: `Bearer ${state.user.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     },
     variables: variables,
@@ -110,15 +108,14 @@ export const fetchGroups = async (
   return data.groups;
 };
 
-export const fetchBlockList = async () => {
-  const state = store.getState();
+export const fetchBlockList = async (accessToken: string) => {
   try {
     const { data } = await client.query({
       query: gql(blockedList),
       fetchPolicy: "no-cache",
       context: {
         headers: {
-          Authorization: `Bearer ${state.user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       },
       variables: {
@@ -136,15 +133,14 @@ export const fetchBlockList = async () => {
   }
 };
 
-export const blockUser = async (address: string) => {
-  const state = store.getState();
+export const blockUser = async (address: string, accessToken: string) => {
   try {
     const { data } = await client.mutate({
       mutation: gql(block),
       fetchPolicy: "no-cache",
       context: {
         headers: {
-          Authorization: `Bearer ${state.user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       },
       variables: {
@@ -163,15 +159,14 @@ export const blockUser = async (address: string) => {
   }
 };
 
-export const unblockUser = async (address: string) => {
-  const state = store.getState();
+export const unblockUser = async (address: string, accessToken: string) => {
   try {
     const { data } = await client.mutate({
       mutation: gql(unblock),
       fetchPolicy: "no-cache",
       context: {
         headers: {
-          Authorization: `Bearer ${state.user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       },
       variables: {
@@ -197,7 +192,6 @@ export const deliverMessages = async (
   senderAddress: string,
   targetAddress: string
 ) => {
-  const state = store.getState();
   try {
     if (newMessage) {
       const encryptedData = await encryptAllData(
@@ -218,7 +212,7 @@ export const deliverMessages = async (
         },
         context: {
           headers: {
-            Authorization: `Bearer ${state.user.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       });
@@ -246,7 +240,6 @@ export const deliverGroupMessages = async (
   senderAddress: string,
   groupId: string
 ) => {
-  const state = store.getState();
   try {
     if (newMessage) {
       const encryptedData = await encryptGroupMessage(
@@ -269,7 +262,7 @@ export const deliverGroupMessages = async (
         },
         context: {
           headers: {
-            Authorization: `Bearer ${state.user.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       });
@@ -289,9 +282,8 @@ export const deliverGroupMessages = async (
   }
 };
 
-export const messageListener = (userAddress: string) => {
-  const state = store.getState();
-  const wsLink = createWSLink(state.user.accessToken);
+export const messageListener = (userAddress: string, accessToken: string) => {
+  const wsLink = createWSLink(accessToken);
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
@@ -312,7 +304,7 @@ export const messageListener = (userAddress: string) => {
       query: gql(listenMessages),
       context: {
         headers: {
-          authorization: `Bearer ${state.user.accessToken}`,
+          authorization: `Bearer ${accessToken}`,
         },
       },
     })
@@ -324,7 +316,7 @@ export const messageListener = (userAddress: string) => {
 
         /// Adding timeout for temporaray as Remove At Group subscription not working
         setTimeout(() => {
-          recieveGroups(0, id);
+          recieveGroups(0, id, accessToken);
         }, 100);
 
         return data.newMessageUpdate.message;
@@ -343,9 +335,8 @@ export const messageListener = (userAddress: string) => {
     });
 };
 
-export const groupsListener = (userAddress: string) => {
-  const state = store.getState();
-  const wsLink = createWSLink(state.user.accessToken);
+export const groupsListener = (userAddress: string, accessToken: string) => {
+  const wsLink = createWSLink(accessToken);
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
@@ -366,7 +357,7 @@ export const groupsListener = (userAddress: string) => {
       query: gql(listenGroups),
       context: {
         headers: {
-          authorization: `Bearer ${state.user.accessToken}`,
+          authorization: `Bearer ${accessToken}`,
         },
       },
     })
@@ -413,7 +404,6 @@ export const updateGroupTimestamp = async (
   lastSeenTimestamp: Date,
   groupLastSeenTimestamp: Date
 ) => {
-  const state = store.getState();
   try {
     /// Encrypting last seen timestamp
     const encryptedLastSeenTimestamp = await encryptGroupTimestamp(
@@ -436,7 +426,7 @@ export const updateGroupTimestamp = async (
       fetchPolicy: "no-cache",
       context: {
         headers: {
-          Authorization: `Bearer ${state.user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       },
       variables: {

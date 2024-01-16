@@ -18,9 +18,6 @@ import {
   NotyphiOrganisations,
 } from "@notificationTypes";
 import { SearchInput } from "@components/notification-search-input";
-import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
-import { store } from "@chatStore/index";
-import { useSelector } from "react-redux";
 import { FormattedMessage } from "react-intl";
 
 const pageOptions = {
@@ -36,7 +33,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   // Extracting org id from url
   const newOrg = useLocation().search.split("?")[1]?.split("&");
 
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, chatStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -44,9 +41,10 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
 
   const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
-  const [selectedOrg, setSelectedOrg] = useState<NotyphiOrganisation[]>([]);
+  const [selectedOrg, setSelectedOrg] = useState<any>([]);
 
-  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const notificationInfo: NotificationSetup =
+    chatStore.userDetailsStore.notifications;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
@@ -64,15 +62,13 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         if (organisations.length == 0) {
           /// Updating the pre-selected orgs.
           fetchFollowedOrganisations(accountInfo.bech32Address).then(
-            (followOrganisationList: NotyphiOrganisation[]) => {
+            (followOrganisationList: any) => {
               setSelectedOrg(followOrganisationList);
 
               /// Updating followed orgs in redux
-              store.dispatch(
-                setNotifications({
-                  organisations: followOrganisationList,
-                })
-              );
+              chatStore.userDetailsStore.setNotifications({
+                organisations: followOrganisationList,
+              });
             }
           );
         } else {
@@ -92,7 +88,9 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         follow: isChecked,
       };
     } else {
-      setSelectedOrg(selectedOrg.filter((element) => element.id != item.id));
+      setSelectedOrg(
+        selectedOrg.filter((element: { id: string }) => element.id != item.id)
+      );
 
       /// Unfollow is available in edit section only
       if (
@@ -128,11 +126,9 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
     });
 
     Promise.allSettled(allPromises).then((_) => {
-      store.dispatch(
-        setNotifications({
-          organisations: selectedOrg,
-        })
-      );
+      chatStore.userDetailsStore.setNotifications({
+        organisations: selectedOrg,
+      });
 
       if (type === pageOptions.edit) {
         analyticsStore.logEvent("update_notification_preferences_click", {
@@ -205,7 +201,11 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
               return (
                 <NotificationOrg
                   handleCheck={(isChecked) => handleCheck(isChecked, index)}
-                  isChecked={!!selectedOrg.find((item) => item.id === elem.id)}
+                  isChecked={
+                    !!selectedOrg.find(
+                      (item: { id: string }) => item.id === elem.id
+                    )
+                  }
                   elem={elem}
                   key={elem.id}
                   isNew={newOrg && newOrg.indexOf(elem.id) != -1}

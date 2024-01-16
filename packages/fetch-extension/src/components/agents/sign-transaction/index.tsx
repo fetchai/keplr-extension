@@ -57,7 +57,7 @@ export const SignTransaction = ({
           duration: 0.25,
         },
       });
-     const message = await deliverMessages(
+      const message = await deliverMessages(
         user.accessToken,
         chainId,
         TRANSACTION_FAILED,

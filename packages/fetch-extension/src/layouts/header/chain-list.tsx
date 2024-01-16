@@ -12,7 +12,7 @@ import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
 const ChainElement: FunctionComponent<{
   chainInfo: ChainInfoWithCoreTypes;
 }> = observer(({ chainInfo }) => {
-  const { chainStore, analyticsStore, chatStore } = useStore();
+  const { chainStore, analyticsStore, chatStore, proposalStore } = useStore();
   const navigate = useNavigate();
   const intl = useIntl();
 
@@ -37,7 +37,7 @@ const ChainElement: FunctionComponent<{
         chainStore.selectChain(chainInfo.chainId);
         chainStore.saveLastViewChainId();
         chatStore.userDetailsStore.resetUser();
-        chatStore.proposalStore.resetProposals();
+        proposalStore.resetProposals();
         chatStore.messagesStore.resetChatList();
         chatStore.messagesStore.setIsChatSubscriptionActive(false);
         messageAndGroupListenerUnsubscribe();

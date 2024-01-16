@@ -120,7 +120,8 @@ export const GroupChatsViewSection = observer(
             null,
             0,
             false,
-            groupId
+            groupId,
+            user.accessToken
           );
           chatStore.messagesStore.updateChatList(
             recievedMessages.userAddress,
@@ -183,7 +184,8 @@ export const GroupChatsViewSection = observer(
           null,
           page,
           group.isDm,
-          groupId
+          groupId,
+          user.accessToken
         );
         chatStore.messagesStore.updateChatList(
           recievedMessages.userAddress,
@@ -238,7 +240,8 @@ export const GroupChatsViewSection = observer(
           // scrollToBottom();
           const recievedGroups: any = recieveGroups(
             0,
-            accountInfo.bech32Address
+            accountInfo.bech32Address,
+            user.accessToken
           );
           chatStore.messagesStore.setGroups(
             recievedGroups.groups,

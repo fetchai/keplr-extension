@@ -6,9 +6,11 @@ import { useStore } from "../../stores";
 export const UnblockUserPopup = ({
   userName,
   setConfirmAction,
+  accessToken,
 }: {
   userName: string;
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
+  accessToken: string;
 }) => {
   const [processing, setProcessing] = useState(false);
   const { analyticsStore } = useStore();
@@ -19,7 +21,7 @@ export const UnblockUserPopup = ({
     });
     setProcessing(true);
     try {
-      await unblockUser(userName);
+      await unblockUser(userName, accessToken);
     } catch (e) {
       console.log(e);
     } finally {
