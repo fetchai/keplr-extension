@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 import { GroupDetails, PublicKeyDetails } from "@chatTypes";
 import { store } from "@chatStore/index";
-import { removeGroup, setMessageError } from "@chatStore/messages-slice";
 import { client } from "./client";
 import {
   Group,
@@ -44,24 +43,19 @@ export const createGroup = async (groupDetails: GroupDetails) => {
       variables: { groupDetails },
     });
     if (errors) {
-      store.dispatch(
-        setMessageError({
-          type: "Group",
-          message: errors || "Something went wrong, Group can't be created",
-          level: 1,
-        })
-      );
-      return null;
+      return {
+        type: "Group",
+        message: errors || "Something went wrong, Group can't be created",
+        level: 1,
+      };
     }
     return data.group;
   } catch (e: any) {
-    store.dispatch(
-      setMessageError({
-        type: "Group",
-        message: e?.message || "Something went wrong, Group can't be created",
-        level: 1,
-      })
-    );
+    return {
+      type: "Group",
+      message: e?.message || "Something went wrong, Group can't be created",
+      level: 1,
+    };
     return null;
   }
 };
@@ -81,25 +75,19 @@ export const leaveGroup = async (groupId: string) => {
       variables: { groupId },
     });
     if (errors) {
-      store.dispatch(
-        setMessageError({
-          type: "Group",
-          message: errors || "Something went wrong, Group can't be left",
-          level: 1,
-        })
-      );
-      return null;
+      return {
+        type: "Group",
+        message: errors || "Something went wrong, Group can't be left",
+        level: 1,
+      };
     }
     return data;
   } catch (e: any) {
-    store.dispatch(
-      setMessageError({
-        type: "Group",
-        message: e?.message || "Something went wrong, Group can't be left",
-        level: 1,
-      })
-    );
-    return null;
+    return {
+      type: "Group",
+      message: e?.message || "Something went wrong, Group can't be left",
+      level: 1,
+    };
   }
 };
 
@@ -120,26 +108,19 @@ export const deleteGroup = async (groupId: string) => {
       variables: { groupId },
     });
     if (errors) {
-      store.dispatch(
-        setMessageError({
-          type: "Group",
-          message: errors || "Something went wrong, Group can't be deleted",
-          level: 1,
-        })
-      );
-      return null;
+      return {
+        type: "Group",
+        message: errors || "Something went wrong, Group can't be deleted",
+        level: 1,
+      };
     }
-    store.dispatch(removeGroup(groupId));
     return data.group;
   } catch (e: any) {
-    store.dispatch(
-      setMessageError({
-        type: "Group",
-        message: e?.message || "Something went wrong, Group can't be deleted",
-        level: 1,
-      })
-    );
-    return null;
+    return {
+      type: "Group",
+      message: e?.message || "Something went wrong, Group can't be deleted",
+      level: 1,
+    };
   }
 };
 

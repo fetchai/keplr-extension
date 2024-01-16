@@ -8,13 +8,14 @@ import { ChatAgent } from "./chat-agent";
 import style from "../style.module.scss";
 import { AgentInit } from "@components/agents/agent-init";
 import { AGENT_ADDRESS } from "../../../config.ui.var";
+import { observer } from "mobx-react-lite";
 
 export const AgentsHistory: React.FC<{
   chainId: string;
   searchString: string;
   addresses: NameAddress;
   setLoadingChats: any;
-}> = ({ chainId, addresses, setLoadingChats, searchString }) => {
+}> = observer(({ chainId, addresses, setLoadingChats, searchString }) => {
   const { chainStore, accountStore, chatStore } = useStore();
 
   const groups: Groups = chatStore.messagesStore.userChatAgents;
@@ -41,7 +42,15 @@ export const AgentsHistory: React.FC<{
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
-      await recieveGroups(page, accountInfo.bech32Address);
+      const recievedGroups = await recieveGroups(
+        page,
+        accountInfo.bech32Address
+      );
+      chatStore.messagesStore.setGroups(
+        recievedGroups.groups,
+        recievedGroups.pagination
+      );
+      chatStore.messagesStore.setIsChatGroupPopulated(true);
       setLoadingGroups(false);
       setLoadingChats(false);
     }
@@ -109,4 +118,4 @@ export const AgentsHistory: React.FC<{
       )}
     </div>
   );
-};
+});

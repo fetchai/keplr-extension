@@ -125,7 +125,7 @@ export const GroupChatSection: FunctionComponent = observer(() => {
         accountInfo.bech32Address,
         groupId
       );
-
+      chatStore.messagesStore.updateLatestSentMessage(message);
       if (message) {
         await leaveGroup(groupId);
         const receiveGroups = recieveGroups(0, accountInfo.bech32Address);

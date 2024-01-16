@@ -112,10 +112,24 @@ export const GroupChatsViewSection = observer(
       );
       setUserGroupAddress(currentUser);
 
-      if (currentUser?.removedAt) {
-        /// receive last updated message as message subscription not called
-        recieveMessages(groupId, null, 0, false, groupId);
-      }
+      const init = async () => {
+        if (currentUser?.removedAt) {
+          /// receive last updated message as message subscription not called
+          const recievedMessages = await recieveMessages(
+            groupId,
+            null,
+            0,
+            false,
+            groupId
+          );
+          chatStore.messagesStore.updateChatList(
+            recievedMessages.userAddress,
+            recievedMessages.messages,
+            recievedMessages.pagination
+          );
+        }
+        init();
+      };
     }, [userGroups]);
 
     const messagesEndRef: any = useCallback(

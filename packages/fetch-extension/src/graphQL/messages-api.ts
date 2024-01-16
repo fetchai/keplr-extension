@@ -4,15 +4,7 @@ import {
   ObservableSubscription,
 } from "@apollo/client/utilities";
 import { store } from "@chatStore/index";
-import {
-  setBlockedList,
-  setBlockedUser,
-  setMessageError,
-  setUnblockedUser,
-  updateMessages,
-  updateLatestSentMessage,
-  updateGroupsData,
-} from "@chatStore/messages-slice";
+
 import { CHAT_PAGE_COUNT, GROUP_PAGE_COUNT } from "../config.ui.var";
 import { encryptAllData } from "@utils/encrypt-message";
 import {
@@ -134,22 +126,13 @@ export const fetchBlockList = async () => {
       },
     });
     return data.blockedList;
-    store.dispatch(setBlockedList(data.blockedList));
   } catch (e) {
     console.log(e);
     return {
       type: "block",
       message: "Something went wrong, Please try again in sometime.",
       level: 2,
-    }
-    store.dispatch(
-      setMessageError({
-        type: "block",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 2,
-      })
-    );
-    throw e;
+    };
   }
 };
 
@@ -169,17 +152,14 @@ export const blockUser = async (address: string) => {
         channelId: "MESSAGING",
       },
     });
-    store.dispatch(setBlockedUser(data.block));
+    return data.block;
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "block",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 1,
-      })
-    );
-    throw e;
+    return {
+      type: "block",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 1,
+    };
   }
 };
 
@@ -199,17 +179,14 @@ export const unblockUser = async (address: string) => {
         channelId: "MESSAGING",
       },
     });
-    store.dispatch(setUnblockedUser(data.unblock));
+    return data.unblock;
   } catch (e) {
     console.log(e);
-    store.dispatch(
-      setMessageError({
-        type: "unblock",
-        message: "Something went wrong, Please try again in sometime.",
-        level: 1,
-      })
-    );
-    throw e;
+    return {
+      type: "unblock",
+      message: "Something went wrong, Please try again in sometime.",
+      level: 1,
+    };
   }
 };
 
@@ -247,21 +224,16 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        store.dispatch(updateLatestSentMessage(data?.dispatchMessages[0]));
         return data?.dispatchMessages[0];
       }
       return null;
     }
   } catch (e: any) {
-    store.dispatch(
-      setMessageError({
-        type: "delivery",
-        message:
-          e?.message || "Something went wrong, Message can't be delivered",
-        level: 1,
-      })
-    );
-    return null;
+    return {
+      type: "delivery",
+      message: e?.message || "Something went wrong, Message can't be delivered",
+      level: 1,
+    };
   }
 };
 
@@ -303,20 +275,17 @@ export const deliverGroupMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        store.dispatch(updateLatestSentMessage(data?.dispatchMessages[0]));
         return data?.dispatchMessages[0];
       }
       return null;
     }
   } catch (e: any) {
-    store.dispatch(
-      setMessageError({
-        type: "delivery",
-        message: "Something went wrong, Message can't be delivered",
-        level: 1,
-      })
-    );
-    return null;
+    console.error(e);
+    return {
+      type: "delivery",
+      message: "Something went wrong, Message can't be delivered",
+      level: 1,
+    };
   }
 };
 
@@ -352,22 +321,21 @@ export const messageListener = (userAddress: string) => {
         const { target, groupId } = data.newMessageUpdate.message;
         /// Distinguish between Group and Single chat
         const id = groupId.split("-").length == 2 ? target : userAddress;
-        store.dispatch(updateMessages(data.newMessageUpdate.message));
 
         /// Adding timeout for temporaray as Remove At Group subscription not working
         setTimeout(() => {
           recieveGroups(0, id);
         }, 100);
+
+        return data.newMessageUpdate.message;
       },
       error(err) {
         console.error("err", err);
-        store.dispatch(
-          setMessageError({
-            type: "subscription",
-            message: "Something went wrong, Cant fetch latest messages",
-            level: 1,
-          })
-        );
+        return {
+          type: "subscription",
+          message: "Something went wrong, Cant fetch latest messages",
+          level: 1,
+        };
       },
       complete() {
         console.log("completed");
@@ -415,17 +383,15 @@ export const groupsListener = (userAddress: string) => {
         } else {
           group.userAddress = group.id;
         }
-        store.dispatch(updateGroupsData(group));
+        return group;
       },
       error(err) {
         console.error("err", err);
-        store.dispatch(
-          setMessageError({
-            type: "subscription",
-            message: "Something went wrong, Cant fetch latest messages",
-            level: 1,
-          })
-        );
+        return {
+          type: "subscription",
+          message: "Something went wrong, Cant fetch latest messages",
+          level: 1,
+        };
       },
       complete() {
         console.log("completed");
@@ -483,7 +449,6 @@ export const updateGroupTimestamp = async (
     /// Updating the last seen status
     const group = data.updateGroupLastSeen;
     group.userAddress = targetAddress;
-    store.dispatch(updateGroupsData(group));
     return group;
   } catch (err) {
     console.error("err", err);
