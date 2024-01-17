@@ -20,7 +20,6 @@ import { AccountSection } from "./v2/account-section";
 import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePrevious } from "hooks/use-previous";
-import { LineGraphView } from "components/new/line-graph";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
@@ -136,10 +135,10 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     >
       <BIP44Selectable />
       <AccountSection tokenState={tokenState} />
-      <LineGraphView
+      {/* <LineGraphView
         setTokenState={setTokenState}
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
-      />
+      /> */}
     </PageWithScrollViewInBottomTabView>
   );
 });

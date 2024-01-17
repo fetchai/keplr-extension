@@ -1254,10 +1254,13 @@ export const MainTabNavigation: FunctionComponent = () => {
               });
               break;
             case "Send":
-              return Toast.show({
-                type: "warning",
-                text1: `Send is under development`,
+              navigation.navigate("Others", {
+                screen: "SendNew",
+                params: {
+                  currency: chainStore.current.stakeCurrency.coinMinimalDenom,
+                },
               });
+              break;
             case "Swap":
               return Toast.show({
                 type: "warning",

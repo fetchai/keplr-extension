@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { useState } from "react";
 import {
   Platform,
@@ -16,6 +17,7 @@ export const TextInput = React.forwardRef<
     labelStyle?: TextStyle;
     containerStyle?: ViewStyle;
     inputContainerStyle?: ViewStyle;
+    innerInputContainerStyle?: ViewStyle;
     errorLabelStyle?: TextStyle;
 
     label?: string;
@@ -37,6 +39,7 @@ export const TextInput = React.forwardRef<
     labelStyle,
     containerStyle,
     inputContainerStyle,
+    innerInputContainerStyle,
     errorLabelStyle,
     label,
     error,
@@ -103,7 +106,12 @@ export const TextInput = React.forwardRef<
         ])}
       >
         {topInInputContainer}
-        <View style={style.flatten(["flex-row", "items-center"])}>
+        <View
+          style={[
+            style.flatten(["flex-row", "items-center"]),
+            innerInputContainerStyle,
+          ]}
+        >
           {inputLeft}
           <NativeTextInput
             placeholderTextColor={

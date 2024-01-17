@@ -5,7 +5,6 @@ import {
   Switch,
   Text,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewProps,
   ViewStyle,
@@ -152,35 +151,29 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
         >
           <View style={style.flatten(["flex-row"])}>
             <Text style={style.flatten(["h6", "color-white"])}>{label}</Text>
-            <Text
+            {/* <Text
               style={style.flatten(
                 ["h6", "color-platinum-100", "text-caption1"],
                 [selected && "color-white"]
               )}
             >
               {" ~ 15 min"}
-            </Text>
-          </View>
-          {/* {price ? (
-            <Text
-              style={
-                style.flatten(
-                  [
+            </Text> */}
+            {price ? (
+              <Text
+                style={
+                  style.flatten([
                     "padding-top-2",
                     "h7",
                     "color-gray-300",
                     "dark:color-platinum-400",
-                  ],
-                  [
-                    selected && "color-blue-300",
-                    selected && "dark:color-platinum-100",
-                  ]
-                ) as ViewStyle
-              }
-            >
-              {price.toString()}
-            </Text>
-          ) : null} */}
+                  ]) as ViewStyle
+                }
+              >
+                {price.toString()}
+              </Text>
+            ) : null}
+          </View>
           <Text
             style={
               style.flatten([
@@ -252,28 +245,29 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
           )}
         </View>
         <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={1}
             onPress={() => setIsButtonSelected(!isButtonSelected)}
-          >
-            <BlurButton
-              text="Advanced Settings"
-              blurIntensity={isButtonSelected ? 50 : 30}
-              borderRadius={32}
-              backgroundBlur={true}
-              containerStyle={
-                style.flatten(
-                  ["padding-3", "width-160", "items-center"],
-                  [
-                    isButtonSelected && "border-width-1",
-                    "border-radius-64",
-                    "border-color-platinum-100",
-                  ]
-                ) as ViewStyle
-              }
-              textStyle={style.flatten(["text-caption1"]) as ViewStyle}
-            />
-          </TouchableOpacity>
+          > */}
+          <BlurButton
+            text="Advanced Settings"
+            blurIntensity={30}
+            borderRadius={32}
+            backgroundBlur={true}
+            containerStyle={
+              style.flatten(
+                ["padding-3", "width-160", "justify-center"],
+                [
+                  isButtonSelected && "border-width-1",
+                  "border-radius-64",
+                  "border-color-indigo",
+                ]
+              ) as ViewStyle
+            }
+            textStyle={style.flatten(["text-caption1"]) as ViewStyle}
+            onPress={() => setIsButtonSelected(!isButtonSelected)}
+          />
+          {/* </TouchableOpacity> */}
           {isButtonSelected ? (
             <View>
               <View style={style.flatten(["flex-row", "items-center"])}>
@@ -319,13 +313,13 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                     label="Gas adjustment"
                     placeholderText="-"
                     containerStyle={
-                      style.flatten(["flex-1", "margin-right-16"]) as ViewStyle
+                      style.flatten(["flex-2", "margin-right-16"]) as ViewStyle
                     }
                   />
                   <InputCardView
                     label="Estimated "
                     placeholderText="-"
-                    containerStyle={style.flatten(["flex-1"]) as ViewStyle}
+                    containerStyle={style.flatten(["flex-2"]) as ViewStyle}
                   />
                 </View>
               ) : null}

@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import { Text, TouchableOpacity, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -12,6 +12,8 @@ export const BlurButton: FunctionComponent<{
   blurType?: "extraLight" | "dark";
   onPress?: () => void;
   text: string;
+  leftIcon?: ReactElement;
+  rightIcon?: ReactElement;
 }> = ({
   containerStyle,
   textStyle,
@@ -21,6 +23,8 @@ export const BlurButton: FunctionComponent<{
   borderRadius = 8,
   blurType,
   onPress,
+  leftIcon,
+  rightIcon,
 }) => {
   const style = useStyle();
   return (
@@ -30,14 +34,19 @@ export const BlurButton: FunctionComponent<{
         backgroundBlur={backgroundBlur}
         blurIntensity={blurIntensity}
         blurType={blurType}
-        containerStyle={containerStyle}
+        containerStyle={
+          [
+            style.flatten(["flex-row", "items-center"]),
+            containerStyle,
+          ] as ViewStyle
+        }
       >
+        {leftIcon ? leftIcon : null}
         <Text
           style={[
             style.flatten([
               "color-white",
               "font-bold",
-              "margin-x-14",
               "margin-y-6",
               "h6",
             ]) as ViewStyle,
@@ -46,6 +55,7 @@ export const BlurButton: FunctionComponent<{
         >
           {text}
         </Text>
+        {rightIcon ? rightIcon : null}
       </BlurBackground>
     </TouchableOpacity>
   );

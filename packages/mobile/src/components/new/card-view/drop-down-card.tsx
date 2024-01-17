@@ -37,54 +37,54 @@ export const DropDownCardView: FunctionComponent<{
           {mainHeading}
         </Text>
       ) : null}
-      <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-        <BlurBackground
-          borderRadius={12}
-          blurIntensity={16}
-          containerStyle={
-            [
-              style.flatten([
-                "flex-row",
-                "padding-x-18",
-                "padding-y-8",
-                "items-center",
-              ]),
-              containerStyle,
-            ] as ViewStyle
-          }
-        >
-          <View style={style.flatten(["flex-3"]) as ViewStyle}>
-            {heading ? (
-              <Text
-                style={
-                  style.flatten([
-                    "h6",
-                    "padding-4",
-                    "color-white",
-                    "font-medium",
-                  ]) as ViewStyle
-                }
-              >
-                {heading}
-              </Text>
-            ) : null}
-            {subHeading ? (
-              <Text
-                style={
-                  style.flatten([
-                    "text-caption1",
-                    "padding-4",
-                    "color-gray-200",
-                  ]) as ViewStyle
-                }
-              >
-                {subHeading}
-              </Text>
-            ) : null}
-          </View>
+      <BlurBackground
+        borderRadius={12}
+        blurIntensity={16}
+        containerStyle={
+          [
+            style.flatten([
+              "flex-row",
+              "padding-x-18",
+              "padding-y-8",
+              "items-center",
+            ]),
+            containerStyle,
+          ] as ViewStyle
+        }
+      >
+        <View style={style.flatten(["flex-3"]) as ViewStyle}>
+          {heading ? (
+            <Text
+              style={
+                style.flatten([
+                  "h6",
+                  "padding-4",
+                  "color-white",
+                  "font-medium",
+                ]) as ViewStyle
+              }
+            >
+              {heading}
+            </Text>
+          ) : null}
+          {subHeading ? (
+            <Text
+              style={
+                style.flatten([
+                  "text-caption1",
+                  "padding-4",
+                  "color-gray-200",
+                ]) as ViewStyle
+              }
+            >
+              {subHeading}
+            </Text>
+          ) : null}
+        </View>
+        <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
           <IconView backgroundBlur={false} img={trailingIcon} />
-        </BlurBackground>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </BlurBackground>
     </React.Fragment>
   );
 };

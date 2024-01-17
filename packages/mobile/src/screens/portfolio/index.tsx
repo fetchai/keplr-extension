@@ -24,7 +24,6 @@ import {
 } from "@react-navigation/native";
 import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
 import { TokensSection } from "screens/portfolio/tokens-section";
-import { AssetsScreen } from "screens/assets/assets";
 
 enum AssertsSectionEnum {
   Tokens = "Tokens",
@@ -39,7 +38,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
   const [prevSelectedId, setPrevSelectedId] = useState(0);
-  const [tokenState] = useState({});
+  // const [tokenState] = useState({});
   const renderItem = ({ item }: any) => {
     const selected = selectedId === item;
     return (
@@ -134,11 +133,6 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
           <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
             <NativeTokensSection />
             <TokensSection />
-          </View>
-        )}
-        {selectedId === AssertsSectionEnum.NTFs && (
-          <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
-            <AssetsScreen tokenState={tokenState} />
           </View>
         )}
 

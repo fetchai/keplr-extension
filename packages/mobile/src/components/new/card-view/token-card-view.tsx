@@ -6,10 +6,10 @@ import { IconView } from "components/new/button/icon";
 
 export const TokenCardView: FunctionComponent<{
   containerStyle?: ViewStyle;
-  leadingIcon: ReactElement;
+  leadingIcon?: ReactElement;
   title: string;
   subtitle: string;
-  trailingStart: string;
+  trailingStart?: string;
   trailingEnd?: string;
   onPress?: () => void;
 }> = ({
@@ -41,7 +41,9 @@ export const TokenCardView: FunctionComponent<{
         }
       >
         <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
-          <IconView img={leadingIcon} backgroundBlur={false} />
+          {leadingIcon ? (
+            <IconView img={leadingIcon} backgroundBlur={false} />
+          ) : null}
           <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
             <Text
               style={

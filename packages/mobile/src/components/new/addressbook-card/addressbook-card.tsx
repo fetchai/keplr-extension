@@ -13,6 +13,7 @@ import { AddressBookIcon } from "components/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
+import { EmptyView } from "../empty";
 
 export const AddressBookCardModel: FunctionComponent<{
   isOpen: boolean;
@@ -50,7 +51,10 @@ export const AddressBookCardModel: FunctionComponent<{
           <BorderlessButton
             rippleColor={style.get("color-rect-button-default-ripple").color}
             activeOpacity={0.3}
-            onPress={() => close()}
+            onPress={() => {
+              setSearch("");
+              close();
+            }}
           >
             <IconView
               img={<XmarkIcon />}
@@ -89,6 +93,7 @@ export const AddressBookCardModel: FunctionComponent<{
                   key={i.toString()}
                   onPress={() => {
                     addressBookConfig.selectAddressAt(i);
+                    setSearch("");
                     close();
                   }}
                   activeOpacity={0.5}
@@ -118,54 +123,25 @@ export const AddressBookCardModel: FunctionComponent<{
               );
             })}
           </View>
-        ) : (
-          <View
-            style={
-              style.flatten([
-                "justify-center",
-                "items-center",
-                "margin-y-24",
-              ]) as ViewStyle
+        ) : addressBookConfig.addressBookDatas.length == 0 ? (
+          <EmptyView
+            text="Address book is empty"
+            icon={
+              <AddressBookIcon
+                color={style.flatten(["color-platinum-100"]).color}
+                height={56}
+              />
             }
-          >
-            {addressBookConfig.addressBookDatas.length == 0 ? (
-              <React.Fragment>
-                <View style={style.flatten(["margin-bottom-21"]) as ViewStyle}>
-                  <AddressBookIcon
-                    color={style.flatten(["color-platinum-100"]).color}
-                    height={56}
-                  />
-                </View>
-                <Text
-                  style={style.flatten([
-                    "subtitle2",
-                    "color-gray-100",
-                    "dark:color-platinum-300",
-                  ])}
-                >
-                  Address book is empty
-                </Text>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <View style={style.flatten(["margin-bottom-21"]) as ViewStyle}>
-                  <SearchIcon
-                    color={style.flatten(["color-platinum-100"]).color}
-                    size={56}
-                  />
-                </View>
-                <Text
-                  style={style.flatten([
-                    "subtitle2",
-                    "color-gray-100",
-                    "dark:color-platinum-300",
-                  ])}
-                >
-                  No search data
-                </Text>
-              </React.Fragment>
-            )}
-          </View>
+            containerStyle={
+              style.flatten(["relative", "height-214"]) as ViewStyle
+            }
+          />
+        ) : (
+          <EmptyView
+            containerStyle={
+              style.flatten(["relative", "height-214"]) as ViewStyle
+            }
+          />
         )}
       </CardModal>
     );

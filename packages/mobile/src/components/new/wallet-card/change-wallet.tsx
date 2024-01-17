@@ -24,7 +24,9 @@ export const ChangeWalletCardModel: FunctionComponent<{
 }> = registerModal(
   observer(({ close, title, isOpen, keyRingStore, onChangeAccount }) => {
     const style = useStyle();
-    const { analyticsStore } = useStore();
+    const { analyticsStore, accountStore, chainStore } = useStore();
+
+    const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
     if (!isOpen) {
       return null;
@@ -93,6 +95,13 @@ export const ChangeWalletCardModel: FunctionComponent<{
                   }
                 >
                   {keyStore.meta?.["name"] || "Fetch Account"}
+                </Text>
+                <Text
+                  style={
+                    style.flatten(["text-caption1", "color-white"]) as ViewStyle
+                  }
+                >
+                  {keyStore.selected ? accountInfo.bech32Address : ""}
                 </Text>
               </View>
               <View style={style.flatten(["flex-1", "items-end"]) as ViewStyle}>

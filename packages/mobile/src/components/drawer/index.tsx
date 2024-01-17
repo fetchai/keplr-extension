@@ -20,6 +20,7 @@ import { IconView } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
+import { EmptyView } from "components/new/empty";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;
@@ -64,36 +65,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
         }}
         {...rest}
       >
-        {filterChainInfos.length === 0 ? (
-          <View
-            style={
-              style.flatten([
-                "items-center",
-                "absolute",
-                "height-full",
-                "width-full",
-                "justify-center",
-              ]) as ViewStyle
-            }
-          >
-            <SearchIcon
-              color={style.flatten(["color-platinum-100"]).color}
-              size={56}
-            />
-            <Text
-              style={
-                style.flatten([
-                  "subtitle2",
-                  "color-gray-100",
-                  "dark:color-platinum-300",
-                  "margin-18",
-                ]) as ViewStyle
-              }
-            >
-              No search data
-            </Text>
-          </View>
-        ) : null}
+        {filterChainInfos.length === 0 ? <EmptyView /> : null}
 
         <View
           style={{
@@ -140,6 +112,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 }
                 activeOpacity={0.3}
                 onPress={() => {
+                  setSearch("");
                   navigation.dispatch(DrawerActions.closeDrawer());
                 }}
               >
@@ -171,6 +144,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                   "padding-y-12",
                 ]) as ViewStyle
               }
+              value={search}
               onChangeText={(text) => {
                 setSearch(text);
               }}
@@ -185,6 +159,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               <RectButton
                 key={chainInfo.chainId}
                 onPress={() => {
+                  setSearch("");
                   chainStore.selectChain(chainInfo.chainId);
                   chainStore.saveLastViewChainId();
                   navigation.dispatch(DrawerActions.closeDrawer());
