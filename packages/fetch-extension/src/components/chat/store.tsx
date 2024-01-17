@@ -57,5 +57,5 @@ export const ChatStoreProvider: FunctionComponent = observer((props) => {
     };
   }, [chainStore.current.chainId, accountInfo.bech32Address]);
 
-  return <>{children}</>;
+  return <React.Fragment>{children}</React.Fragment>;
 });

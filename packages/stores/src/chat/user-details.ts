@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { NotificationSetup } from "./types";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "./constants";
 
@@ -72,7 +72,9 @@ export class UserDetailsStore {
   }
 
   setHasFET(hasFET: boolean) {
-    this.hasFET = hasFET;
+    runInAction(() => {
+      this.hasFET = hasFET;
+    });
   }
 
   setShowAgentDisclaimer(showAgentDisclaimer: boolean) {
