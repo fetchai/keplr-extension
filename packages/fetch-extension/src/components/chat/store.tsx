@@ -48,14 +48,32 @@ export const ChatStoreProvider: FunctionComponent = observer((props) => {
       }
     };
     setOrganisations();
-    fetchAndPopulateNotifications(accountInfo.bech32Address);
+    fetchAndPopulateNotifications(accountInfo.bech32Address).then(
+      (notifications) => {
+        chatStore.userDetailsStore.setNotifications({
+          unreadNotification: Object.values(notifications).length > 0,
+          allNotifications: Object.values(notifications),
+        });
+      }
+    );
     const intervalCall = setInterval(() => {
-      fetchAndPopulateNotifications(accountInfo.bech32Address);
+      fetchAndPopulateNotifications(accountInfo.bech32Address).then(
+        (notifications) => {
+          chatStore.userDetailsStore.setNotifications({
+            unreadNotification: Object.values(notifications).length > 0,
+            allNotifications: Object.values(notifications),
+          });
+        }
+      );
     }, 60000);
     return () => {
       clearInterval(intervalCall);
     };
-  }, [chainStore.current.chainId, accountInfo.bech32Address]);
+  }, [
+    chainStore.current.chainId,
+    accountInfo.bech32Address,
+    chatStore.userDetailsStore,
+  ]);
 
   return <React.Fragment>{children}</React.Fragment>;
 });
