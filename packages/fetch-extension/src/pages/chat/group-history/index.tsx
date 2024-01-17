@@ -40,12 +40,6 @@ export const GroupsHistory: React.FC<{
     };
     if (isOnScreen) getChats();
   }, [isOnScreen]);
-  useEffect(() => {
-    const getChats = async () => {
-      await loadUserGroups();
-    };
-    getChats();
-  }, []);
 
   const loadUserGroups = async () => {
     if (!loadingGroups) {

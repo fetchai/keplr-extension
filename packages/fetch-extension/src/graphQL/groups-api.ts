@@ -58,7 +58,6 @@ export const createGroup = async (
       message: e?.message || "Something went wrong, Group can't be created",
       level: 1,
     };
-    return null;
   }
 };
 

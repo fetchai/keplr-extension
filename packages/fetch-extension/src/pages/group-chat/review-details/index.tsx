@@ -259,7 +259,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
       chatStore.newGroupStore.resetNewGroup();
       const groups: any = { [groupData.id]: groupData };
       chatStore.messagesStore.setGroups(
-        { groups },
+        groups,
         chatStore.messagesStore.groupsPagination
       );
       /// Clearing stack till chat tab

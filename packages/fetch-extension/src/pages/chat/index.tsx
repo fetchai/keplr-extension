@@ -93,7 +93,7 @@ const ChatView = observer(() => {
     };
   }
 
-  const handleSearch = debounce(() => {
+  const handleSearch = debounce(async () => {
     const searchString = inputVal.trim();
     if (
       searchString.replace("fetch1", "").length > 2 &&
@@ -102,12 +102,16 @@ const ChatView = observer(() => {
       const addressesList = Object.keys(addresses).filter((contact) =>
         addresses[contact].toLowerCase().includes(searchString.toLowerCase())
       );
-      recieveGroups(
+      const recievedGroups = await recieveGroups(
         0,
         walletAddress,
         searchString,
         userState.accessToken,
         addressesList
+      );
+      chatStore.messagesStore.setGroups(
+        await recievedGroups.groups,
+        await recievedGroups.pagination
       );
     }
   }, 1000);
