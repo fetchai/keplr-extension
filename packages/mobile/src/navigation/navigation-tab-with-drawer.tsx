@@ -225,19 +225,20 @@ export const MainTabNavigation: FunctionComponent = () => {
               });
               break;
             case "Send":
-              return Toast.show({
-                type: "warning",
-                text1: `Send is under development`,
+              return navigation.navigate("Others", {
+                screen: "SendNew",
+                params: {
+                  currency: chainStore.current.stakeCurrency.coinMinimalDenom,
+                },
               });
-            case "Swap":
-              return Toast.show({
-                type: "warning",
-                text1: `Swap is under development`,
+            case "Earn":
+              return navigation.navigate("Others", {
+                screen: "Staking.Dashboard",
               });
 
             case "Bridge":
               return Toast.show({
-                type: "warning",
+                type: "success",
                 text1: `Bridge is under development`,
               });
           }

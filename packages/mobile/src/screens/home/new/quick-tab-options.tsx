@@ -68,7 +68,7 @@ export const QuickTabOption: FunctionComponent<{
             [
               style.flatten(["height-full", "justify-end"]),
               {
-                paddingBottom: Platform.OS === "ios" ? 58 : 16,
+                paddingBottom: Platform.OS === "ios" ? 58 : 26,
               },
             ] as ViewStyle
           }

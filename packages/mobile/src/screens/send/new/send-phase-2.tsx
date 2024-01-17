@@ -14,12 +14,12 @@ import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { useSmartNavigation } from "../../../navigation";
 import { Buffer } from "buffer/";
 import { AddressInputCard } from "components/new/card-view/address-card";
 import { BlurButton } from "components/new/button/blur-button";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { MemoInputView } from "components/new/card-view/memo-input";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 interface SendConfigs {
   amountConfig: AmountConfig;

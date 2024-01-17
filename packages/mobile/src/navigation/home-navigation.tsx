@@ -6,6 +6,7 @@ import { PortfolioScreen } from "screens/portfolio";
 import { WebpageScreenScreenOptionsPreset } from "screens/web/components/webpage-screen";
 import { FetchhubScreen } from "screens/web/webpages";
 import { Stack } from "./navigation";
+import { TokenDetail } from "screens/portfolio/token-detail";
 
 export const HomeNavigation: FunctionComponent = () => {
   return (
@@ -31,6 +32,13 @@ export const HomeNavigation: FunctionComponent = () => {
         }}
         name="Portfolio"
         component={PortfolioScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="NativeTokens"
+        component={TokenDetail}
       />
       <Stack.Screen
         options={{

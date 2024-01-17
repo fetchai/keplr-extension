@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Dimensions, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { LinearGradient, Stop } from "react-native-svg";
 import { useStyle } from "styles/index";
@@ -24,7 +24,6 @@ export const GraphChart: FunctionComponent<{
   );
 
   const chartMaxValue = Number((maxValue - minValue).toFixed(1));
-
   const noOfSection = Number((maxValue - minValue).toFixed(1)) * 10;
 
   return (
@@ -42,7 +41,6 @@ export const GraphChart: FunctionComponent<{
       }}
       data={data}
       curved={true}
-      width={Dimensions.get("window").width - 25}
       //   animation variable
       isAnimated={true}
       animationDuration={1200}
@@ -52,7 +50,8 @@ export const GraphChart: FunctionComponent<{
       hideDataPoints={true}
       adjustToWidth={true}
       thickness={2}
-      initialSpacing={4}
+      initialSpacing={0}
+      endSpacing={0}
       // y label variable
       showFractionalValues={true}
       maxValue={chartMaxValue}
@@ -92,7 +91,6 @@ export const GraphChart: FunctionComponent<{
             <View
               style={{
                 width: 100,
-                marginLeft: -22,
               }}
             >
               <Text

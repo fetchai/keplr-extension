@@ -15,8 +15,8 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import QRCode from "react-native-qrcode-svg";
 import { SimpleCardView } from "components/new/card-view/simple-card";
 import LottieView from "lottie-react-native";
-import { CopyIcon } from "components/icon";
 import { useSimpleTimer } from "hooks/use-simple-timer";
+import { CopyIcon } from "components/new/icon/copy-icon";
 
 export const ReceiveScreen: FunctionComponent = observer(() => {
   const route = useRoute<

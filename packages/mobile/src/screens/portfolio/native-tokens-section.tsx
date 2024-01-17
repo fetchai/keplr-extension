@@ -9,6 +9,11 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
 import { TokenSymbolUsingChainInfo } from "components/token-symbol/token-symbol-chain";
 import { separateNumericAndDenom } from "utils/format/format";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
 
 export const NativeTokensSection: FunctionComponent = observer(() => {
   const style = useStyle();
@@ -49,6 +54,7 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
   const stakableReward = rewards.stakableReward;
   const stakedSum = delegated.add(unbonding);
   const total = stakable.add(stakedSum).add(stakableReward);
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { denomPart: totalDenom } = separateNumericAndDenom(
     total.shrink(true).trim(true).maxDecimals(6).toString()
   );
@@ -58,6 +64,7 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
     <TokenCardView
       containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
       key={total.currency.coinMinimalDenom}
+      onPress={() => navigation.navigate("NativeTokens")}
       leadingIcon={
         <TokenSymbolUsingChainInfo
           size={36}

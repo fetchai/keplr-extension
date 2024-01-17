@@ -38,7 +38,6 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
   const [prevSelectedId, setPrevSelectedId] = useState(0);
-  // const [tokenState] = useState({});
   const renderItem = ({ item }: any) => {
     const selected = selectedId === item;
     return (
@@ -81,67 +80,58 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
-      contentContainerStyle={{
-        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
-      }}
+      contentContainerStyle={[
+        style.flatten(["margin-x-20"]) as ViewStyle,
+        { paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48 },
+      ]}
       ref={scrollViewRef}
     >
-      <View style={style.flatten(["margin-x-20"]) as ViewStyle}>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() => navigation.goBack()}
-        >
-          <IconView
-            borderRadius={32}
-            img={<HeaderBackButtonIcon color="white" size={21} />}
-            backgroundBlur={false}
-            iconStyle={
-              style.flatten([
-                "width-58",
-                "border-width-1",
-                "border-color-gray-300",
-                "padding-x-16",
-                "padding-y-6",
-                "justify-center",
-                "margin-y-10",
-              ]) as ViewStyle
-            }
-          />
-        </TouchableOpacity>
-        <Text
-          style={
-            style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle
-          }
-        >
-          Portfolio
-        </Text>
-        <FlatList
-          data={Object.values(AssertsSectionEnum)}
-          renderItem={renderItem}
-          horizontal={true}
-          extraData={selectedId}
-          ItemSeparatorComponent={renderSeparator}
-          contentContainerStyle={[
+      <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
+        <IconView
+          borderRadius={32}
+          img={<HeaderBackButtonIcon color="white" size={21} />}
+          backgroundBlur={false}
+          iconStyle={
             style.flatten([
-              "justify-between",
-              "width-full",
+              "width-58",
+              "border-width-1",
+              "border-color-gray-300",
+              "padding-x-16",
+              "padding-y-6",
+              "justify-center",
               "margin-y-10",
-            ]) as ViewStyle,
-          ]}
+            ]) as ViewStyle
+          }
         />
-        {selectedId === AssertsSectionEnum.Tokens && (
-          <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
-            <NativeTokensSection />
-            <TokensSection />
-          </View>
-        )}
-
-        {selectedId === AssertsSectionEnum.Stats && (
-          <StakingCard
-            cardStyle={style.flatten(["margin-y-20"]) as ViewStyle}
-          />
-        )}
-      </View>
+      </TouchableOpacity>
+      <Text
+        style={style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle}
+      >
+        Portfolio
+      </Text>
+      <FlatList
+        data={Object.values(AssertsSectionEnum)}
+        renderItem={renderItem}
+        horizontal={true}
+        extraData={selectedId}
+        ItemSeparatorComponent={renderSeparator}
+        contentContainerStyle={[
+          style.flatten([
+            "justify-between",
+            "width-full",
+            "margin-y-10",
+          ]) as ViewStyle,
+        ]}
+      />
+      {selectedId === AssertsSectionEnum.Tokens && (
+        <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+          <NativeTokensSection />
+          <TokensSection />
+        </View>
+      )}
+      {selectedId === AssertsSectionEnum.Stats && (
+        <StakingCard cardStyle={style.flatten(["margin-y-20"]) as ViewStyle} />
+      )}
     </PageWithScrollViewInBottomTabView>
   );
 });
