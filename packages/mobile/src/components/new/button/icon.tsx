@@ -1,22 +1,48 @@
 import React, { FunctionComponent, ReactElement } from "react";
-import { ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { BlurBackground } from "components/new/blur-background/blur-background";
+import { useStyle } from "styles/index";
 
-export const IconView: FunctionComponent<{
+export const IconButton: FunctionComponent<{
+  containerStyle?: ViewStyle;
   iconStyle?: ViewStyle;
-  img: ReactElement;
+  bottomTextStyle?: ViewStyle;
+  icon: ReactElement;
+  bottomText?: string;
   backgroundBlur?: boolean;
   blurIntensity?: number;
   borderRadius?: number;
-}> = ({ iconStyle, img, backgroundBlur, blurIntensity, borderRadius = 50 }) => {
+  onPress?: () => void;
+}> = ({
+  containerStyle,
+  iconStyle,
+  bottomTextStyle,
+  icon,
+  bottomText,
+  backgroundBlur,
+  blurIntensity,
+  borderRadius = 50,
+  onPress,
+}) => {
+  const style = useStyle();
   return (
-    <BlurBackground
-      borderRadius={borderRadius}
-      backgroundBlur={backgroundBlur}
-      blurIntensity={blurIntensity}
-      containerStyle={iconStyle}
-    >
-      {img}
-    </BlurBackground>
+    <View style={containerStyle}>
+      <BlurBackground
+        borderRadius={borderRadius}
+        backgroundBlur={backgroundBlur}
+        blurIntensity={blurIntensity}
+        containerStyle={iconStyle}
+        onPress={onPress}
+      >
+        {icon}
+      </BlurBackground>
+      {bottomText ? (
+        <Text
+          style={[style.flatten(["color-white"]), bottomTextStyle] as ViewStyle}
+        >
+          {bottomText}
+        </Text>
+      ) : null}
+    </View>
   );
 };

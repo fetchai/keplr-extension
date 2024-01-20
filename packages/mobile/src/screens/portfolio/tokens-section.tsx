@@ -13,6 +13,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { separateNumericAndDenom } from "utils/format/format";
 
 export const TokensSection: FunctionComponent = observer(() => {
   const style = useStyle();
@@ -94,11 +95,31 @@ export const TokensSection: FunctionComponent = observer(() => {
             ? tokenInUsd.toString().replace(/[^a-zA-Z ]/g, "")
             : "";
 
+          const { numericPart: totalNumber, denomPart: totalDenom } =
+            separateNumericAndDenom(
+              token.balance.shrink(true).trim(true).maxDecimals(6).toString()
+            );
+
+          const tokenString = encodeURIComponent(JSON.stringify(tokenInfo));
+          const tokenBalance = {
+            balance: totalNumber,
+            totalDenom: totalDenom,
+            balanceInUsd: tokenInUsd ? tokenInUsd : "",
+          };
+          const tokenBalanceString = encodeURIComponent(
+            JSON.stringify(tokenBalance)
+          );
+
           return (
             <TokenCardView
               containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
               key={token.currency.coinMinimalDenom}
-              onPress={() => navigation.navigate("NativeTokens")}
+              onPress={() =>
+                navigation.navigate("NativeTokens", {
+                  tokenString: tokenString,
+                  tokenBalanceString: tokenBalanceString,
+                })
+              }
               leadingIcon={
                 <TokenSymbol
                   size={36}

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -13,7 +13,7 @@ import {
 } from "@react-navigation/native";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { useStore } from "stores/index";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { WalletCardModel } from "components/new/wallet-card/wallet-card";
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
 import { EditAccountNameModal } from "modals/edit-account-name.tsx";
@@ -25,12 +25,14 @@ import { InboxIcon } from "components/new/icon/inbox-icon";
 import { separateNumericAndDenom } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
   tokenState: any;
 }> = observer(({ containtStyle, tokenState }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
   const style = useStyle();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -97,57 +99,54 @@ export const AccountSection: FunctionComponent<{
           ]) as ViewStyle
         }
       >
-        <TouchableOpacity
-          activeOpacity={0.6}
+        <SelectAccountButton
+          backgroundBlur={false}
+          containerStyle={
+            style.flatten([
+              "padding-x-12",
+              "border-width-1",
+              "border-color-gray-300",
+            ]) as ViewStyle
+          }
+          text={chainStore.current.chainName}
+          icon={<ChevronDownIcon />}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        >
-          <SelectAccountButton
+        />
+        <View style={style.flatten(["flex-row"])}>
+          <IconButton
+            borderRadius={32}
+            icon={<BarCodeIcon size={18} />}
             backgroundBlur={false}
-            containerStyle={
+            onPress={() => {
+              smartNavigation.navigateSmart("Camera", {
+                showMyQRButton: false,
+              });
+            }}
+            iconStyle={
               style.flatten([
-                "padding-x-12",
                 "border-width-1",
                 "border-color-gray-300",
+                "padding-x-18",
+                "padding-y-8",
+                "justify-center",
+                "margin-right-12",
               ]) as ViewStyle
             }
-            text={chainStore.current.chainName}
-            icon={<ChevronDownIcon />}
           />
-        </TouchableOpacity>
-        <View style={style.flatten(["flex-row"])}>
-          <TouchableOpacity activeOpacity={0.6}>
-            <IconView
-              borderRadius={32}
-              img={<BarCodeIcon size={18} />}
-              backgroundBlur={false}
-              iconStyle={
-                style.flatten([
-                  "border-width-1",
-                  "border-color-gray-300",
-                  "padding-x-18",
-                  "padding-y-8",
-                  "justify-center",
-                  "margin-right-12",
-                ]) as ViewStyle
-              }
-            />
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6}>
-            <IconView
-              borderRadius={32}
-              img={<InboxIcon size={18} />}
-              backgroundBlur={false}
-              iconStyle={
-                style.flatten([
-                  "border-width-1",
-                  "border-color-gray-300",
-                  "padding-x-18",
-                  "padding-y-8",
-                  "justify-center",
-                ]) as ViewStyle
-              }
-            />
-          </TouchableOpacity>
+          <IconButton
+            borderRadius={32}
+            icon={<InboxIcon size={18} />}
+            backgroundBlur={false}
+            iconStyle={
+              style.flatten([
+                "border-width-1",
+                "border-color-gray-300",
+                "padding-x-18",
+                "padding-y-8",
+                "justify-center",
+              ]) as ViewStyle
+            }
+          />
         </View>
       </View>
       <BlurBackground
@@ -190,12 +189,11 @@ export const AccountSection: FunctionComponent<{
           <AddressCopyable address={account.bech32Address} maxCharacters={16} />
         </View>
         <View style={style.flatten(["flex-row"])}>
-          <TouchableOpacity
-            activeOpacity={0.6}
+          <IconButton
+            backgroundBlur={false}
+            icon={<ThreeDotIcon />}
             onPress={() => setIsOpenModal(true)}
-          >
-            <IconView backgroundBlur={false} img={<ThreeDotIcon />} />
-          </TouchableOpacity>
+          />
         </View>
       </BlurBackground>
       <View style={style.flatten(["items-center"]) as ViewStyle}>

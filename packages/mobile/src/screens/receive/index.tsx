@@ -98,76 +98,76 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
           />
         )}
       </View>
-      <TouchableOpacity
-        onPress={async () => {
-          await Clipboard.setStringAsync(account.bech32Address);
-          setTimer(2000);
-        }}
-        activeOpacity={0.6}
-      >
-        <SimpleCardView
-          heading={account.bech32Address}
-          cardStyle={style.flatten(["margin-y-12"]) as ViewStyle}
-          trailingIconComponent={
-            isTimedOut ? (
-              <View style={style.flatten(["margin-left-2"]) as ViewStyle}>
+      <SimpleCardView
+        heading={account.bech32Address}
+        cardStyle={style.flatten(["margin-y-12"]) as ViewStyle}
+        trailingIconComponent={
+          isTimedOut ? (
+            <View style={style.flatten(["margin-left-2"]) as ViewStyle}>
+              <View
+                style={style.flatten(["width-20", "height-20"]) as ViewStyle}
+              >
                 <View
-                  style={style.flatten(["width-20", "height-20"]) as ViewStyle}
+                  style={StyleSheet.flatten([
+                    style.flatten([
+                      "absolute",
+                      "justify-center",
+                      "items-center",
+                    ]),
+                    {
+                      left: 0,
+                      right: 4,
+                      top: 0,
+                      bottom: 0,
+                    },
+                  ])}
                 >
-                  <View
-                    style={StyleSheet.flatten([
-                      style.flatten([
-                        "absolute",
-                        "justify-center",
-                        "items-center",
-                      ]),
+                  <LottieView
+                    // TODO: Change color of animated check button according to theme.
+                    source={require("assets/lottie/check.json")}
+                    colorFilters={[
                       {
-                        left: 0,
-                        right: 4,
-                        top: 0,
-                        bottom: 0,
+                        keypath: "Shape Layer 2",
+                        color: style.flatten([
+                          "color-gray-200",
+                          "dark:color-platinum-200",
+                        ]).color,
                       },
-                    ])}
-                  >
-                    <LottieView
-                      // TODO: Change color of animated check button according to theme.
-                      source={require("assets/lottie/check.json")}
-                      colorFilters={[
-                        {
-                          keypath: "Shape Layer 2",
-                          color: style.flatten([
-                            "color-gray-200",
-                            "dark:color-platinum-200",
-                          ]).color,
-                        },
-                        {
-                          keypath: "Shape Layer 1",
-                          color: style.flatten([
-                            "color-gray-300",
-                            "dark:color-platinum-200",
-                          ]).color,
-                        },
-                        {
-                          keypath: "Layer 1 Outlines",
-                          color: style.flatten(["color-white"]).color,
-                        },
-                      ]}
-                      autoPlay
-                      speed={2}
-                      loop={false}
-                      style={
-                        style.flatten(["width-80", "height-80"]) as ViewStyle
-                      }
-                    />
-                  </View>
+                      {
+                        keypath: "Shape Layer 1",
+                        color: style.flatten([
+                          "color-gray-300",
+                          "dark:color-platinum-200",
+                        ]).color,
+                      },
+                      {
+                        keypath: "Layer 1 Outlines",
+                        color: style.flatten(["color-white"]).color,
+                      },
+                    ]}
+                    autoPlay
+                    speed={2}
+                    loop={false}
+                    style={
+                      style.flatten(["width-80", "height-80"]) as ViewStyle
+                    }
+                  />
                 </View>
               </View>
-            ) : (
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={async () => {
+                await Clipboard.setStringAsync(account.bech32Address);
+                setTimer(2000);
+              }}
+              activeOpacity={0.6}
+            >
               <CopyIcon size={18} />
-            )
-          }
-        />
-      </TouchableOpacity>
+            </TouchableOpacity>
+          )
+        }
+      />
       <SimpleCardView
         heading="Deposits must be using the Dorado Network. Do not send token from other networks to this address or they may be lost."
         cardStyle={

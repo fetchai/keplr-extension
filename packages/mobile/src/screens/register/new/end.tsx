@@ -51,29 +51,18 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
     >
       <View style={style.get("flex-8")} />
       <View style={style.flatten(["items-center"])}>
-        {style.theme === "dark" ? (
-          <Image
-            style={{ width: 400, height: 260, marginRight: -80 }}
-            source={require("assets/image/wallet-connection.png")}
-            fadeDuration={0}
-            resizeMode="stretch"
-          />
-        ) : (
-          <Image
-            style={{ width: 400, height: 260, marginRight: -80 }}
-            source={require("assets/image/all-set.png")}
-            fadeDuration={0}
-            resizeMode="contain"
-          />
-        )}
+        <Image
+          style={{ width: 340, height: 180, marginRight: -60 }}
+          source={require("assets/image/all-set.png")}
+          fadeDuration={0}
+          resizeMode="contain"
+        />
+
         <LinearGradientText
           text="You’re all set!"
           color1="#CF447B"
           color2="#F9774B"
         />
-        {/* <Text style={style.flatten(["h1", "color-text-middle", "color-linear"]) as ViewStyle}>
-          You’re all set!
-        </Text> */}
         <Text
           style={
             style.flatten([
@@ -126,7 +115,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
           </View>
         }
         size="large"
-        text="Continue"
+        text="Start using your wallet"
         loading={isLoading}
         onPress={async () => {
           setIsLoading(true);

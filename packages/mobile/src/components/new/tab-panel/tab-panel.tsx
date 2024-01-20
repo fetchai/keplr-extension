@@ -20,7 +20,7 @@ export const TabPanel: FunctionComponent<{
         text={item.id}
         borderRadius={32}
         textStyle={style.flatten(["body3"]) as ViewStyle}
-        containerStyle={style.flatten(["padding-x-4"]) as ViewStyle}
+        containerStyle={style.flatten(["padding-x-16"]) as ViewStyle}
         onPress={() => {
           setActiveTab(item);
           setPrevSelectedId(item.index - 1);

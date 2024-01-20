@@ -2,14 +2,13 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { registerModal } from "modals/base";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { AddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { AddressBookIcon } from "components/icon";
+import { AddressBookIcon, PlusIcon } from "components/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
@@ -20,8 +19,9 @@ export const AddressBookCardModel: FunctionComponent<{
   close: () => void;
   title: string;
   addressBookConfig: AddressBookConfig;
+  addAddressBook?: (add: boolean | undefined) => void;
 }> = registerModal(
-  observer(({ close, title, isOpen, addressBookConfig }) => {
+  observer(({ close, title, isOpen, addressBookConfig, addAddressBook }) => {
     const style = useStyle();
     const [search, setSearch] = useState("");
 
@@ -48,22 +48,17 @@ export const AddressBookCardModel: FunctionComponent<{
         title={title}
         disableGesture={true}
         right={
-          <BorderlessButton
-            rippleColor={style.get("color-rect-button-default-ripple").color}
-            activeOpacity={0.3}
+          <IconButton
+            icon={<XmarkIcon />}
+            backgroundBlur={true}
+            blurIntensity={20}
+            borderRadius={50}
             onPress={() => {
               setSearch("");
               close();
             }}
-          >
-            <IconView
-              img={<XmarkIcon />}
-              backgroundBlur={true}
-              blurIntensity={20}
-              borderRadius={50}
-              iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-            />
-          </BorderlessButton>
+            iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          />
         }
       >
         <BlurBackground borderRadius={12} blurIntensity={20}>
@@ -84,6 +79,48 @@ export const AddressBookCardModel: FunctionComponent<{
             containerStyle={style.flatten(["padding-0"]) as ViewStyle}
             inputRight={<SearchIcon />}
           />
+        </BlurBackground>
+        <BlurBackground
+          borderRadius={12}
+          blurIntensity={15}
+          containerStyle={style.flatten(["margin-top-24"]) as ViewStyle}
+        >
+          <RectButton
+            style={style.flatten(["border-radius-12"]) as ViewStyle}
+            activeOpacity={0.5}
+            underlayColor={style.flatten(["color-gray-50"]).color}
+            onPress={() => {
+              addAddressBook(true);
+              close();
+            }}
+          >
+            <View
+              style={
+                style.flatten([
+                  "flex-row",
+                  "items-center",
+                  "padding-18",
+                ]) as ViewStyle
+              }
+            >
+              <IconButton
+                backgroundBlur={false}
+                icon={<PlusIcon color={"white"} size={13} />}
+                iconStyle={style.flatten(["padding-0"]) as ViewStyle}
+              />
+              <Text
+                style={
+                  style.flatten([
+                    "body2",
+                    "color-white",
+                    "margin-left-18",
+                  ]) as ViewStyle
+                }
+              >
+                Add new address book
+              </Text>
+            </View>
+          </RectButton>
         </BlurBackground>
         {filterAddressBook.length > 0 ? (
           <View style={style.flatten(["margin-y-24"]) as ViewStyle}>

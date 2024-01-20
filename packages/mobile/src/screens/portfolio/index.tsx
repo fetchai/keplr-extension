@@ -7,12 +7,11 @@ import {
   Platform,
   ScrollView,
   Text,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { useStyle } from "styles/index";
 import { HeaderBackButtonIcon } from "components/header/icon";
 import { BlurButton } from "components/new/button/blur-button";
@@ -38,6 +37,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
   const [prevSelectedId, setPrevSelectedId] = useState(0);
+
   const renderItem = ({ item }: any) => {
     const selected = selectedId === item;
     return (
@@ -46,7 +46,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         text={item}
         borderRadius={32}
         textStyle={style.flatten(["body3"]) as ViewStyle}
-        containerStyle={style.flatten(["padding-x-24"]) as ViewStyle}
+        containerStyle={style.flatten(["padding-x-36"]) as ViewStyle}
         onPress={() => {
           return (
             setSelectedId(item),
@@ -86,24 +86,24 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
       ]}
       ref={scrollViewRef}
     >
-      <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
-        <IconView
-          borderRadius={32}
-          img={<HeaderBackButtonIcon color="white" size={21} />}
-          backgroundBlur={false}
-          iconStyle={
-            style.flatten([
-              "width-58",
-              "border-width-1",
-              "border-color-gray-300",
-              "padding-x-16",
-              "padding-y-6",
-              "justify-center",
-              "margin-y-10",
-            ]) as ViewStyle
-          }
-        />
-      </TouchableOpacity>
+      <IconButton
+        borderRadius={32}
+        icon={<HeaderBackButtonIcon color="white" size={21} />}
+        backgroundBlur={false}
+        onPress={() => navigation.goBack()}
+        iconStyle={
+          style.flatten([
+            "width-54",
+            "border-width-1",
+            "border-color-gray-300",
+            "padding-x-14",
+            "padding-y-6",
+            "justify-center",
+            "items-center",
+            "margin-y-10",
+          ]) as ViewStyle
+        }
+      />
       <Text
         style={style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle}
       >
@@ -117,9 +117,9 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         ItemSeparatorComponent={renderSeparator}
         contentContainerStyle={[
           style.flatten([
-            "justify-between",
             "width-full",
             "margin-y-10",
+            "justify-between",
           ]) as ViewStyle,
         ]}
       />

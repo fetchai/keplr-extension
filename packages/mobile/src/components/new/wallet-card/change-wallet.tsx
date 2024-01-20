@@ -2,10 +2,9 @@ import React, { FunctionComponent } from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { registerModal } from "modals/base";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { RectButton } from "components/rect-button";
 import { CheckIcon } from "components/new/icon/check";
 import { useStore } from "stores/index";
@@ -38,25 +37,20 @@ export const ChangeWalletCardModel: FunctionComponent<{
         cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         disableGesture={true}
         right={
-          <BorderlessButton
-            rippleColor={style.get("color-rect-button-default-ripple").color}
-            activeOpacity={0.3}
+          <IconButton
+            icon={<XmarkIcon color={"white"} />}
+            backgroundBlur={false}
+            blurIntensity={20}
+            borderRadius={50}
             onPress={() => close()}
-          >
-            <IconView
-              img={<XmarkIcon color={"white"} />}
-              backgroundBlur={false}
-              blurIntensity={20}
-              borderRadius={50}
-              iconStyle={
-                style.flatten([
-                  "padding-12",
-                  "border-width-1",
-                  "border-color-gray-400",
-                ]) as ViewStyle
-              }
-            />
-          </BorderlessButton>
+            iconStyle={
+              style.flatten([
+                "padding-12",
+                "border-width-1",
+                "border-color-gray-400",
+              ]) as ViewStyle
+            }
+          />
         }
       >
         {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {

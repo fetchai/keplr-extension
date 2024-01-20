@@ -2,13 +2,12 @@ import React, { FunctionComponent } from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { registerModal } from "modals/base";
 import { LayerGroupIcon } from "../icon/layer-group";
 import { EditIcon } from "../icon/edit";
 import { DeleteIcon } from "../icon/color-delete";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { RectButton } from "components/rect-button";
 import { PlusIcon } from "../../icon";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -32,25 +31,20 @@ export const WalletCardModel: FunctionComponent<{
         cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
         disableGesture={true}
         right={
-          <BorderlessButton
-            rippleColor={style.get("color-rect-button-default-ripple").color}
-            activeOpacity={0.3}
+          <IconButton
+            icon={<XmarkIcon color={"white"} />}
+            backgroundBlur={false}
+            blurIntensity={20}
+            borderRadius={50}
             onPress={() => close()}
-          >
-            <IconView
-              img={<XmarkIcon color={"white"} />}
-              backgroundBlur={false}
-              blurIntensity={20}
-              borderRadius={50}
-              iconStyle={
-                style.flatten([
-                  "padding-12",
-                  "border-width-1",
-                  "border-color-gray-400",
-                ]) as ViewStyle
-              }
-            />
-          </BorderlessButton>
+            iconStyle={
+              style.flatten([
+                "padding-12",
+                "border-width-1",
+                "border-color-gray-400",
+              ]) as ViewStyle
+            }
+          />
         }
       >
         <View style={style.flatten(["margin-y-12"]) as ViewStyle}>
@@ -77,9 +71,10 @@ export const WalletCardModel: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <IconView
+                <IconButton
                   backgroundBlur={false}
-                  img={<PlusIcon color={"white"} size={13} />}
+                  icon={<PlusIcon color={"white"} size={13} />}
+                  iconStyle={style.flatten(["padding-0"]) as ViewStyle}
                 />
                 <Text
                   style={
@@ -117,9 +112,10 @@ export const WalletCardModel: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <IconView
+                <IconButton
                   backgroundBlur={false}
-                  img={<LayerGroupIcon size={17} />}
+                  icon={<LayerGroupIcon size={17} />}
+                  iconStyle={style.flatten(["padding-0"]) as ViewStyle}
                 />
                 <Text
                   style={
@@ -157,7 +153,11 @@ export const WalletCardModel: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <IconView backgroundBlur={false} img={<EditIcon size={18} />} />
+                <IconButton
+                  backgroundBlur={false}
+                  icon={<EditIcon size={18} />}
+                  iconStyle={style.flatten(["padding-0"]) as ViewStyle}
+                />
                 <Text
                   style={
                     style.flatten([
@@ -194,9 +194,10 @@ export const WalletCardModel: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <IconView
+                <IconButton
                   backgroundBlur={false}
-                  img={<DeleteIcon size={17} />}
+                  icon={<DeleteIcon size={17} />}
+                  iconStyle={style.flatten(["padding-0"]) as ViewStyle}
                 />
                 <Text
                   style={

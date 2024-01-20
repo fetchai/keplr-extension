@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from "react";
+import React, { FunctionComponent } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
 import { useStyle } from "styles/index";
@@ -11,8 +11,6 @@ import {
   Svg,
 } from "react-native-svg";
 import FastImage from "react-native-fast-image";
-import { Hash } from "@keplr-wallet/crypto";
-import { Buffer } from "buffer/";
 import { VectorCharacter } from "components/vector-character";
 
 export const StakedTokenSymbol: FunctionComponent<{
@@ -56,51 +54,13 @@ export const TokenSymbolUsingChainInfo: FunctionComponent<{
 }) => {
   const style = useStyle();
 
-  const isStakeCurrency =
-    currency.coinMinimalDenom === chainInfo.stakeCurrency.coinMinimalDenom;
-
   const currencyImageUrl =
     chainInfo?.["_chainInfo"]?.chainSymbolImageUrl ?? currency.coinImageUrl;
-
-  const deterministicNumber = useMemo(() => {
-    const bytes = Hash.sha256(Buffer.from(currency.coinMinimalDenom));
-    return (
-      (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24)) >>> 0
-    );
-  }, [currency.coinMinimalDenom]);
-
-  const profileColor = useMemo(() => {
-    const colors = [
-      "sky-blue",
-      "mint",
-      "green",
-      "yellow-green",
-      "purple",
-      "red",
-      "orange",
-      "yellow",
-    ];
-
-    return colors[deterministicNumber % colors.length];
-  }, [deterministicNumber]);
 
   return (
     <View
       style={StyleSheet.flatten([
-        {
-          width: size,
-          height: size,
-          borderRadius: size,
-        },
-        style.flatten(
-          [
-            "items-center",
-            "justify-center",
-            "overflow-hidden",
-            `background-color-profile-${profileColor}` as any,
-          ],
-          [isStakeCurrency && "background-color-blue-400"]
-        ),
+        style.flatten(["items-center", "justify-center", "overflow-hidden"]),
         propStyle,
       ])}
     >

@@ -18,9 +18,8 @@ import { RobotIcon } from "components/new/icon/robot-icon";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
-import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import { View, ViewStyle } from "react-native";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { HomeNavigation } from "navigation/home-navigation";
@@ -79,40 +78,45 @@ export const MainTabNavigation: FunctionComponent = () => {
             switch (route.name) {
               case "HomeTab":
                 return (
-                  <IconButtonWithText
+                  <IconButton
                     icon={screenIcons[screenNames.Home]}
-                    text={screenNames.Home}
+                    bottomText={screenNames.Home}
                     backgroundBlur={focused}
                     borderRadius={32}
                     iconStyle={
                       style.flatten([
                         "padding-y-8",
                         "padding-x-24",
+                        "margin-bottom-6",
                       ]) as ViewStyle
                     }
+                    containerStyle={style.flatten(["items-center"])}
                   />
                 );
               case "AgentsTab":
                 return (
-                  <IconButtonWithText
+                  <IconButton
                     icon={screenIcons[screenNames.Agents]}
-                    text={screenNames.Agents}
+                    bottomText={screenNames.Agents}
                     borderRadius={32}
                     backgroundBlur={focused}
                     iconStyle={
                       style.flatten([
                         "padding-y-8",
                         "padding-x-24",
+                        "margin-bottom-6",
                       ]) as ViewStyle
                     }
+                    containerStyle={style.flatten(["items-center"])}
                   />
                 );
               case "InboxTab":
                 return (
-                  <IconView
-                    img={screenIcons[screenNames.Inbox]}
+                  <IconButton
+                    icon={screenIcons[screenNames.Inbox]}
                     borderRadius={64}
                     backgroundBlur={false}
+                    onPress={() => setQuickOptionEnable(true)}
                     iconStyle={
                       style.flatten([
                         "padding-16",
@@ -123,32 +127,36 @@ export const MainTabNavigation: FunctionComponent = () => {
                 );
               case "ActivityTab":
                 return (
-                  <IconButtonWithText
+                  <IconButton
                     icon={screenIcons[screenNames.Activity]}
-                    text={screenNames.Activity}
+                    bottomText={screenNames.Activity}
                     borderRadius={32}
                     backgroundBlur={focused}
                     iconStyle={
                       style.flatten([
                         "padding-y-8",
                         "padding-x-24",
+                        "margin-bottom-6",
                       ]) as ViewStyle
                     }
+                    containerStyle={style.flatten(["items-center"])}
                   />
                 );
               case "MoreTab":
                 return (
-                  <IconButtonWithText
+                  <IconButton
                     icon={screenIcons[screenNames.More]}
-                    text={screenNames.More}
+                    bottomText={screenNames.More}
                     borderRadius={32}
                     backgroundBlur={focused}
                     iconStyle={
                       style.flatten([
                         "padding-y-8",
                         "padding-x-24",
+                        "margin-bottom-6",
                       ]) as ViewStyle
                     }
+                    containerStyle={style.flatten(["items-center"])}
                   />
                 );
             }
@@ -197,16 +205,7 @@ export const MainTabNavigation: FunctionComponent = () => {
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
         <Tab.Screen name="AgentsTab" component={HomeNavigation} />
-        <Tab.Screen
-          name="InboxTab"
-          component={OtherNavigation}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              setQuickOptionEnable(true);
-            },
-          }}
-        />
+        <Tab.Screen name="InboxTab" component={OtherNavigation} />
         <Tab.Screen name="ActivityTab" component={HomeNavigation} />
         <Tab.Screen name="MoreTab" component={SettingStackScreen} />
       </Tab.Navigator>

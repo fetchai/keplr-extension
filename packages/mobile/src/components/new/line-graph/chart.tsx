@@ -10,21 +10,14 @@ export const GraphChart: FunctionComponent<{
   const style = useStyle();
 
   const maxValue = Number(
-    (
-      Math.ceil(
-        Number(Math.max(...data.map((v: { value: any }) => v.value))) * 10
-      ) / 10
-    ).toFixed(1)
+    Math.max(...data.map((v: { value: any }) => v.value))
   );
 
   const minValue = Number(
-    Math.floor(
-      Number(Math.min(...data.map((v: { value: any }) => v.value))) * 10
-    ) / 10
+    Math.min(...data.map((v: { value: any }) => v.value))
   );
 
-  const chartMaxValue = Number((maxValue - minValue).toFixed(1));
-  const noOfSection = Number((maxValue - minValue).toFixed(1)) * 10;
+  const chartMaxValue = Number(maxValue - minValue);
 
   return (
     <LineChart
@@ -55,7 +48,6 @@ export const GraphChart: FunctionComponent<{
       // y label variable
       showFractionalValues={true}
       maxValue={chartMaxValue}
-      noOfSections={noOfSection}
       yAxisOffset={minValue}
       // y axis variable
       disableScroll={true}

@@ -1,17 +1,10 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
 import { observer } from "mobx-react-lite";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import {
   EmptyAddressError,
   ICNSFailedToFetchError,
@@ -51,7 +44,7 @@ export const AddressInputCard: FunctionComponent<{
     const style = useStyle();
     const smartNavigation = useSmartNavigation();
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const { chainStore } = useStore();
+    const { chainStore, analyticsStore } = useStore();
 
     const chainId = chainStore.current.chainId;
 
@@ -174,35 +167,27 @@ export const AddressInputCard: FunctionComponent<{
                     ]) as ViewStyle
                   }
                 />
-                <TouchableOpacity
-                  activeOpacity={0.6}
+                <IconButton
+                  icon={<QRCodeIcon />}
+                  backgroundBlur={false}
                   onPress={() => {
                     smartNavigation.navigateSmart("Camera", {
                       showMyQRButton: false,
                     });
                   }}
-                >
-                  <IconView
-                    img={<QRCodeIcon />}
-                    backgroundBlur={false}
-                    iconStyle={
-                      style.flatten([
-                        "padding-y-12",
-                        "padding-right-16",
-                      ]) as ViewStyle
-                    }
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.6}
+                  iconStyle={
+                    style.flatten([
+                      "padding-y-12",
+                      "padding-right-16",
+                    ]) as ViewStyle
+                  }
+                />
+                <IconButton
+                  icon={<ATIcon />}
+                  backgroundBlur={false}
                   onPress={() => setIsOpenModal(true)}
-                >
-                  <IconView
-                    img={<ATIcon />}
-                    backgroundBlur={false}
-                    iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
-                  />
-                </TouchableOpacity>
+                  iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
+                />
               </View>
             </View>
           </View>
@@ -224,9 +209,18 @@ export const AddressInputCard: FunctionComponent<{
         </BlurBackground>
         <AddressBookCardModel
           isOpen={isOpenModal}
-          title="Address book"
+          title="Choose recipient"
           close={() => setIsOpenModal(false)}
           addressBookConfig={addressBookConfig}
+          addAddressBook={(add) => {
+            if (add) {
+              analyticsStore.logEvent("Add additional account started");
+              smartNavigation.navigateSmart("AddAddressBook", {
+                chainId,
+                addressBookConfig,
+              });
+            }
+          }}
         />
       </React.Fragment>
     );

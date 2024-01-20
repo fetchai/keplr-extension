@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Text, View, ViewStyle } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -8,12 +8,24 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
 import { separateNumericAndDenom } from "utils/format/format";
+import { Button } from "components/button";
+import { Dec } from "@keplr-wallet/unit";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   cardStyle,
 }) => {
+  const [isSendingTx, setIsSendingTx] = useState(false);
+
   const style = useStyle();
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const smartNavigation = useSmartNavigation();
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
+
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -106,7 +118,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
 
   const renderLegendComponent = () => {
     return (
-      <View>
+      <View style={style.flatten(["flex-3"])}>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
           {renderLine("#F9774B")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
@@ -167,7 +179,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
       </Text>
       <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
         {renderLegendComponent()}
-        <View>
+        <View style={style.flatten(["flex-3"])}>
           <PieChart
             data={pieData}
             donut
@@ -179,6 +191,83 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           />
         </View>
       </View>
+      {!(
+        !networkIsConnected ||
+        !accountInfo.isReadyToSendTx ||
+        stakableReward.toDec().equals(new Dec(0)) ||
+        stakable.toDec().lte(new Dec(0)) ||
+        rewards.pendingRewardValidatorAddresses.length === 0
+      ) ? (
+        <Button
+          text="Claim staking rewards"
+          size="default"
+          color="gradient"
+          containerStyle={
+            style.flatten([
+              "background-color-white",
+              "border-radius-64",
+              "margin-top-20",
+            ]) as ViewStyle
+          }
+          rippleColor="black@50%"
+          onPress={async () => {
+            const validatorAddresses =
+              rewards.getDescendingPendingRewardValidatorAddresses(8);
+            const tx =
+              accountInfo.cosmos.makeWithdrawDelegationRewardTx(
+                validatorAddresses
+              );
+
+            setIsSendingTx(true);
+
+            try {
+              let gas =
+                accountInfo.cosmos.msgOpts.withdrawRewards.gas *
+                validatorAddresses.length;
+
+              // Gas adjustment is 1.5
+              // Since there is currently no convenient way to adjust the gas adjustment on the UI,
+              // Use high gas adjustment to prevent failure.
+              try {
+                gas = (await tx.simulate()).gasUsed * 1.5;
+              } catch (e) {
+                // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
+                // Therefore, the failure is expected. If the simulation fails, simply use the default value.
+                console.log(e);
+              }
+
+              await tx.send(
+                { amount: [], gas: gas.toString() },
+                "",
+                {},
+                {
+                  onBroadcasted: (txHash) => {
+                    analyticsStore.logEvent("Claim reward tx broadcasted", {
+                      chainId: chainStore.current.chainId,
+                      chainName: chainStore.current.chainName,
+                    });
+                    smartNavigation.pushSmart("TxPendingResult", {
+                      txHash: Buffer.from(txHash).toString("hex"),
+                    });
+                  },
+                }
+              );
+            } catch (e) {
+              if (e?.message === "Request rejected") {
+                return;
+              }
+              console.log(e);
+              smartNavigation.navigateSmart("Home", {});
+            } finally {
+              setIsSendingTx(false);
+            }
+          }}
+          loading={
+            isSendingTx || accountInfo.txTypeInProgress === "withdrawRewards"
+          }
+          loadingSpinnerColor="color-indigo-900"
+        />
+      ) : null}
     </BlurBackground>
   );
 };

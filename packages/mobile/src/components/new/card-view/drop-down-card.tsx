@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 
 export const DropDownCardView: FunctionComponent<{
   trailingIcon?: any;
@@ -22,7 +22,7 @@ export const DropDownCardView: FunctionComponent<{
   const style = useStyle();
 
   return (
-    <React.Fragment>
+    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       {mainHeading ? (
         <Text
           style={
@@ -81,10 +81,8 @@ export const DropDownCardView: FunctionComponent<{
             </Text>
           ) : null}
         </View>
-        <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-          <IconView backgroundBlur={false} img={trailingIcon} />
-        </TouchableOpacity>
+        <IconButton backgroundBlur={false} icon={trailingIcon} />
       </BlurBackground>
-    </React.Fragment>
+    </TouchableOpacity>
   );
 };

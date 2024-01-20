@@ -13,7 +13,11 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 
-export const TokenBalanceSection: FunctionComponent = observer(() => {
+export const TokenBalanceSection: FunctionComponent<{
+  totalNumber: string;
+  totalDenom: string;
+  totalPrice: string;
+}> = observer(({ totalNumber, totalDenom, totalPrice }) => {
   const style = useStyle();
   const { chainStore } = useStore();
   const chainId = chainStore.current.chainId;
@@ -32,7 +36,7 @@ export const TokenBalanceSection: FunctionComponent = observer(() => {
             style.flatten(["color-white", "h3", "items-center"]) as ViewStyle
           }
         >
-          {"13,424.21"}
+          {totalNumber}
         </Text>
         <Text
           style={
@@ -43,33 +47,35 @@ export const TokenBalanceSection: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          {"FET"}
+          {totalDenom}
         </Text>
       </View>
-      <View
-        style={
-          style.flatten([
-            "flex-row",
-            "items-center",
-            "margin-top-8",
-          ]) as ViewStyle
-        }
-      >
-        <Text style={style.flatten(["color-gray-300", "h5"]) as ViewStyle}>
-          {"$6,861.11"}
-        </Text>
-        <Text
+      {totalPrice ? (
+        <View
           style={
             style.flatten([
-              "color-gray-300",
-              "h5",
-              "margin-left-8",
+              "flex-row",
+              "items-center",
+              "margin-y-8",
             ]) as ViewStyle
           }
         >
-          {"USD"}
-        </Text>
-      </View>
+          <Text style={style.flatten(["color-gray-300", "h5"]) as ViewStyle}>
+            {totalPrice}
+          </Text>
+          <Text
+            style={
+              style.flatten([
+                "color-gray-300",
+                "h5",
+                "margin-left-8",
+              ]) as ViewStyle
+            }
+          >
+            {"USD"}
+          </Text>
+        </View>
+      ) : null}
 
       {/*Buttons*/}
       <View

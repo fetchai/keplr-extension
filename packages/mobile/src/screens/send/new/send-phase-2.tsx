@@ -182,6 +182,7 @@ export const SendPhase2: FunctionComponent<{
             style.flatten([
               "background-color-white",
               "border-radius-64",
+              "margin-top-24",
             ]) as ViewStyle
           }
           rippleColor="black@50%"

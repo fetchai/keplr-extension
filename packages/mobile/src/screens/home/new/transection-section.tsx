@@ -2,7 +2,6 @@ import React, { FunctionComponent } from "react";
 import { useStyle } from "styles/index";
 import { HeaderAddIcon } from "components/header/icon";
 import { FlatList, View, ViewStyle } from "react-native";
-import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import { useStore } from "stores/index";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
@@ -11,6 +10,7 @@ import { ArrowUpIcon } from "components/new/icon/arrow-up";
 import { SwapIcon } from "components/new/icon/swap-icon";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { BridgeIcon } from "components/new/icon/bridge-icon";
+import { IconButton } from "components/new/button/icon";
 
 export const TransectionSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -35,9 +35,11 @@ export const TransectionSection: FunctionComponent<{
         style={style.flatten(["padding-x-8"]) as ViewStyle}
         key={item.title.toLowerCase()}
       >
-        <IconButtonWithText
+        <IconButton
           icon={item.icon}
-          text={item.title}
+          bottomText={item.title}
+          containerStyle={style.flatten(["items-center"])}
+          iconStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
           onPress={() => {
             switch (item.title) {
               case "Receive":

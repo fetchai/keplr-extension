@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 
@@ -26,8 +26,8 @@ export const TokenSymbol: FunctionComponent<{
           }}
         />
       ) : (
-        <IconView
-          img={
+        <IconButton
+          icon={
             <VectorCharacter
               char={image}
               height={Math.floor(size * 0.35)}

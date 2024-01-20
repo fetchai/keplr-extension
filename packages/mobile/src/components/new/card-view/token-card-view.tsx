@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { View, Text, ViewStyle, TouchableOpacity } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 
 export const TokenCardView: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -42,7 +42,7 @@ export const TokenCardView: FunctionComponent<{
       >
         <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
           {leadingIcon ? (
-            <IconView img={leadingIcon} backgroundBlur={false} />
+            <IconButton icon={leadingIcon} backgroundBlur={false} />
           ) : null}
           <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
             <Text

@@ -55,19 +55,37 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
   const stakedSum = delegated.add(unbonding);
   const total = stakable.add(stakedSum).add(stakableReward);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const { denomPart: totalDenom } = separateNumericAndDenom(
-    total.shrink(true).trim(true).maxDecimals(6).toString()
-  );
+  const { numericPart: totalNumber, denomPart: totalDenom } =
+    separateNumericAndDenom(
+      total.shrink(true).trim(true).maxDecimals(6).toString()
+    );
   const totalPrice = priceStore.calculatePrice(total);
+
+  const NativeTokenDetailsString = encodeURIComponent(
+    JSON.stringify(balanceQuery.balances[0].balance?.currency)
+  );
+  const NativeTokenBalance = {
+    balance: totalNumber,
+    totalDenom: totalDenom,
+    balanceInUsd: totalPrice && totalPrice.toString(),
+  };
+  const NativeTokenBalanceString = encodeURIComponent(
+    JSON.stringify(NativeTokenBalance)
+  );
 
   return (
     <TokenCardView
       containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
       key={total.currency.coinMinimalDenom}
-      onPress={() => navigation.navigate("NativeTokens")}
+      onPress={() =>
+        navigation.navigate("NativeTokens", {
+          tokenString: NativeTokenDetailsString,
+          tokenBalanceString: NativeTokenBalanceString,
+        })
+      }
       leadingIcon={
         <TokenSymbolUsingChainInfo
-          size={36}
+          size={50}
           chainInfo={chainStore.current}
           currency={total.currency}
         />

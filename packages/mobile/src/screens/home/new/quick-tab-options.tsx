@@ -1,17 +1,10 @@
 import React, { FunctionComponent } from "react";
-import {
-  FlatList,
-  Platform,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { FlatList, Platform, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { registerModal } from "modals/base";
 import { observer } from "mobx-react-lite";
-import { IconButtonWithText } from "components/new/button/icon-button-with-text";
 import { Gradient } from "components/new/gradient";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { ArrowDownIcon } from "components/new/icon/arrow-down";
 import { ArrowUpIcon } from "components/new/icon/arrow-up";
 import { StakeIcon } from "components/new/icon/stake-icon";
@@ -39,16 +32,19 @@ export const QuickTabOption: FunctionComponent<{
 
     const renderItem = ({ item }: any) => {
       return (
-        <IconButtonWithText
+        <IconButton
           key={item.title.toLowerCase()}
           icon={item.icon}
-          text={item.title}
+          bottomText={item.title}
           iconStyle={
             style.flatten([
               "background-color-white",
               "margin-x-14",
+              "margin-bottom-6",
+              "padding-15",
             ]) as ViewStyle
           }
+          containerStyle={style.flatten(["items-center"])}
           onPress={() => {
             close();
             onPress(item.title);
@@ -90,14 +86,11 @@ export const QuickTabOption: FunctionComponent<{
             keyExtractor={(item) => item.title}
             showsHorizontalScrollIndicator={false}
           />
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={style.flatten(["items-center"]) as ViewStyle}
-            onPress={close}
-          >
-            <IconView
-              img={<XmarkIcon size={12} color={"white"} />}
+          <View style={style.flatten(["items-center"])}>
+            <IconButton
+              icon={<XmarkIcon size={12} color={"white"} />}
               blurIntensity={15}
+              onPress={close}
               iconStyle={
                 style.flatten([
                   "padding-16",
@@ -107,7 +100,7 @@ export const QuickTabOption: FunctionComponent<{
                 ]) as ViewStyle
               }
             />
-          </TouchableOpacity>
+          </View>
         </View>
       </Gradient>
     );

@@ -2,9 +2,8 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
 import { View, ViewStyle, Platform } from "react-native";
 import { useStyle } from "styles/index";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { registerModal } from "modals/base";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { observer } from "mobx-react-lite";
 import { XmarkIcon } from "components/new/icon/xmark";
@@ -75,22 +74,17 @@ export const AssetCardModel: FunctionComponent<{
         title={title}
         disableGesture={true}
         right={
-          <BorderlessButton
-            rippleColor={style.get("color-rect-button-default-ripple").color}
-            activeOpacity={0.3}
+          <IconButton
+            icon={<XmarkIcon />}
+            backgroundBlur={true}
+            blurIntensity={20}
+            borderRadius={50}
             onPress={() => {
               setSearch("");
               close();
             }}
-          >
-            <IconView
-              img={<XmarkIcon />}
-              backgroundBlur={true}
-              blurIntensity={20}
-              borderRadius={50}
-              iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-            />
-          </BorderlessButton>
+            iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          />
         }
         cardStyle={
           [

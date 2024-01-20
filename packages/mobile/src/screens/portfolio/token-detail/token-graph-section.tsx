@@ -3,14 +3,13 @@ import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { Text, View, ViewStyle } from "react-native";
 import { LineGraphView } from "components/new/line-graph";
-import { useStore } from "stores/index";
 
 export const TokenGraphSection: FunctionComponent<{
   totalNumber: string;
   totalDenom: string;
-}> = observer(({ totalNumber, totalDenom }) => {
+  tokenName?: string;
+}> = observer(({ totalNumber, totalDenom, tokenName }) => {
   const style = useStyle();
-  const { chainStore } = useStore();
 
   const [tokenState, setTokenState] = useState({
     diff: 0,
@@ -46,10 +45,7 @@ export const TokenGraphSection: FunctionComponent<{
           </Text>
         </View>
       ) : null}
-      <LineGraphView
-        setTokenState={setTokenState}
-        tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
-      />
+      <LineGraphView setTokenState={setTokenState} tokenName={tokenName} />
     </React.Fragment>
   );
 });

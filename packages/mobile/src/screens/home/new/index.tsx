@@ -136,10 +136,12 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     >
       <BIP44Selectable />
       <AccountSection tokenState={tokenState} />
-      <LineGraphView
-        setTokenState={setTokenState}
-        tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
-      />
+      {Platform.OS == "ios" ? (
+        <LineGraphView
+          setTokenState={setTokenState}
+          tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
+        />
+      ) : null}
     </PageWithScrollViewInBottomTabView>
   );
 });

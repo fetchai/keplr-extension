@@ -66,6 +66,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Portfolio: {
         upperScreenName: "Main",
       },
+      NativeTokens: {
+        upperScreenName: "Main",
+      },
       Tokens: {
         upperScreenName: "Others",
       },
@@ -207,6 +210,10 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         chainId?: string;
         currency?: string;
         recipient?: string;
+      };
+      NativeTokens: {
+        tokenString: string;
+        tokenBalanceString: string;
       };
       Camera: {
         showMyQRButton?: boolean;

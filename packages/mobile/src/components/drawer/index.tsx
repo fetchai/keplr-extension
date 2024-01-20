@@ -12,11 +12,10 @@ import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import FastImage from "react-native-fast-image";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { VectorCharacter } from "components/vector-character";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { CheckIcon } from "components/new/icon/check";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
@@ -106,24 +105,17 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                 ]) as ViewStyle
               }
             >
-              <BorderlessButton
-                rippleColor={
-                  style.get("color-rect-button-default-ripple").color
-                }
-                activeOpacity={0.3}
+              <IconButton
+                icon={<XmarkIcon />}
+                backgroundBlur={true}
+                blurIntensity={20}
+                borderRadius={50}
                 onPress={() => {
                   setSearch("");
                   navigation.dispatch(DrawerActions.closeDrawer());
                 }}
-              >
-                <IconView
-                  img={<XmarkIcon />}
-                  backgroundBlur={true}
-                  blurIntensity={20}
-                  borderRadius={50}
-                  iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-                />
-              </BorderlessButton>
+                iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+              />
             </View>
           </View>
           <BlurBackground

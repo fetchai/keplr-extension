@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import {
-  Platform,
   StyleSheet,
-  Switch,
   Text,
   TextStyle,
   View,
@@ -24,7 +22,6 @@ import { LoadingSpinner } from "components/spinner";
 import { RectButton } from "components/rect-button";
 import { observer } from "mobx-react-lite";
 import { BlurButton } from "../button/blur-button";
-import { InputCardView } from "../card-view/input-card";
 
 export interface FeeButtonsProps {
   labelStyle?: TextStyle;
@@ -62,10 +59,31 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
     // This may be not the good way to handle the states across the components.
     // But, rather than using the context API with boilerplate code, just use the mobx state to simplify the logic.
     const [feeButtonState] = useState(() => new FeeButtonState());
+    const style = useStyle();
 
     return (
       <React.Fragment>
         {props.feeConfig.feeCurrency ? <FeeButtonsInner {...props} /> : null}
+        <BlurButton
+          text="Advanced Settings"
+          blurIntensity={30}
+          borderRadius={32}
+          backgroundBlur={true}
+          containerStyle={
+            style.flatten(
+              ["padding-3", "width-160", "justify-center"],
+              [
+                feeButtonState.isGasInputOpen && "border-width-1",
+                "border-radius-64",
+                "border-color-indigo",
+              ]
+            ) as ViewStyle
+          }
+          textStyle={style.flatten(["text-caption1"]) as ViewStyle}
+          onPress={() =>
+            feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen)
+          }
+        />
         {feeButtonState.isGasInputOpen || !props.feeConfig.feeCurrency ? (
           <GasInput label={props.gasLabel} gasConfig={props.gasConfig} />
         ) : null}
@@ -87,10 +105,8 @@ export const getFeeErrorText = (error: Error): string | undefined => {
 
 export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
   ({ labelStyle, containerStyle, errorLabelStyle, label, feeConfig }) => {
-    const { priceStore } = useStore();
+    const { priceStore, chainStore } = useStore();
     const style = useStyle();
-    const [isButtonSelected, setIsButtonSelected] = useState<boolean>(false);
-    const [isEnabled, setIsEnabled] = useState(true);
 
     useEffect(() => {
       if (feeConfig.feeCurrency && !feeConfig.fee) {
@@ -139,6 +155,8 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
       selected: boolean,
       onPress: () => void
     ) => React.ReactElement = (label, price, amount, selected, onPress) => {
+      const isEvm = chainStore.current.features?.includes("evm") ?? false;
+
       return (
         <RectButton
           style={
@@ -167,6 +185,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                     "h7",
                     "color-gray-300",
                     "dark:color-platinum-400",
+                    "margin-left-6",
                   ]) as ViewStyle
                 }
               >
@@ -184,7 +203,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
               ]) as ViewStyle
             }
           >
-            {amount.maxDecimals(6).trim(true).separator("").toString()}
+            {amount.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)}
           </Text>
         </RectButton>
       );
@@ -243,91 +262,6 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
               feeConfig.setFeeType("high");
             }
           )}
-        </View>
-        <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
-          {/* <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => setIsButtonSelected(!isButtonSelected)}
-          > */}
-          <BlurButton
-            text="Advanced Settings"
-            blurIntensity={30}
-            borderRadius={32}
-            backgroundBlur={true}
-            containerStyle={
-              style.flatten(
-                ["padding-3", "width-160", "justify-center"],
-                [
-                  isButtonSelected && "border-width-1",
-                  "border-radius-64",
-                  "border-color-indigo",
-                ]
-              ) as ViewStyle
-            }
-            textStyle={style.flatten(["text-caption1"]) as ViewStyle}
-            onPress={() => setIsButtonSelected(!isButtonSelected)}
-          />
-          {/* </TouchableOpacity> */}
-          {isButtonSelected ? (
-            <View>
-              <View style={style.flatten(["flex-row", "items-center"])}>
-                <Text
-                  style={StyleSheet.flatten([
-                    style.flatten([
-                      "h6",
-                      "color-platinum-100",
-                      "margin-y-24",
-                      "margin-right-18",
-                    ]) as ViewStyle,
-                  ])}
-                >
-                  {"Auto"}
-                </Text>
-                <Switch
-                  trackColor={{
-                    false: "#767577",
-                    true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
-                  }}
-                  thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF"}
-                  style={[
-                    {
-                      borderRadius: 16,
-                      borderWidth: 1,
-                    },
-                    style.flatten(["border-color-pink-light@90%"]),
-                  ]}
-                  onValueChange={() =>
-                    setIsEnabled((previousState) => !previousState)
-                  }
-                  value={isEnabled}
-                  // style={style.flatten([])}
-                />
-              </View>
-              {!isEnabled ? (
-                <View
-                  style={
-                    style.flatten(["flex-row", "justify-between"]) as ViewStyle
-                  }
-                >
-                  <InputCardView
-                    label="Gas adjustment"
-                    placeholderText="-"
-                    containerStyle={
-                      style.flatten(["flex-2", "margin-right-16"]) as ViewStyle
-                    }
-                  />
-                  <InputCardView
-                    label="Estimated "
-                    placeholderText="-"
-                    containerStyle={style.flatten(["flex-2"]) as ViewStyle}
-                  />
-                </View>
-              ) : null}
-              <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
-                <InputCardView label="Gas amount" placeholderText="-" />
-              </View>
-            </View>
-          ) : null}
         </View>
         {isFeeLoading ? (
           <View>
