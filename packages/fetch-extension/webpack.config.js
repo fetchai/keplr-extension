@@ -124,6 +124,7 @@ const extensionConfig = () => {
       background: ["./src/background/background.ts"],
       popup: ["./src/index.tsx"],
       blocklist: ["./src/pages/blocklist/index.tsx"],
+      syncAuth: ["./src/pages/sync-auth/index.tsx"],
       ledgerGrant: ["./src/pages/ledger-grant/index.tsx"],
       contentScripts: ["./src/content-scripts/content-scripts.ts"],
       injectedScript: ["./src/content-scripts/inject/injected-script.ts"],
@@ -164,6 +165,11 @@ const extensionConfig = () => {
                 maxAsyncRequests: 100,
               },
               blocklist: {
+                maxSize: 3_000_000,
+                maxInitialRequests: 100,
+                maxAsyncRequests: 100,
+              },
+              syncAuth: {
                 maxSize: 3_000_000,
                 maxInitialRequests: 100,
                 maxAsyncRequests: 100,
@@ -266,6 +272,11 @@ const extensionConfig = () => {
         template: "./src/index.html",
         filename: "blocklist.html",
         chunks: ["blocklist"],
+      }),
+      new HtmlWebpackPlugin({
+        template: "./src/index.html",
+        filename: "sync-auth.html",
+        chunks: ["syncAuth"],
       }),
       new HtmlWebpackPlugin({
         template: "./src/index.html",

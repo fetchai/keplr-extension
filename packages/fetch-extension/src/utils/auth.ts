@@ -97,7 +97,7 @@ export const getJWT = async (chainId: string, url: string) => {
   };
 
   const r1 = await axios.post(
-    `${url}/auth/login/wallet/challenge`,
+    `${url}/v1/auth/login/wallet/challenge`,
     request,
     config
   );
@@ -135,7 +135,7 @@ export const getJWT = async (chainId: string, url: string) => {
   };
 
   const r2 = await axios.post(
-    `${url}/auth/login/wallet/verify`,
+    `${url}/v1/auth/login/wallet/verify`,
     loginRequest,
     config
   );
@@ -144,7 +144,7 @@ export const getJWT = async (chainId: string, url: string) => {
     throw new RequestError(r2.statusText);
   }
 
-  const r3 = await axios.post(`${url}/tokens`, r2.data, config);
+  const r3 = await axios.post(`${url}/v1/tokens`, r2.data, config);
   if (r3.status !== 200) {
     throw new RequestError(r3.statusText);
   }

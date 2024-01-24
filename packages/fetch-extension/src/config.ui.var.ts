@@ -23,7 +23,7 @@ export const ADDITIONAL_INTL_MESSAGES: IntlMessages = {};
 // export const SUBSCRIPTION_SERVER = "ws://localhost:4000/subscription";
 // export const AUTH_SERVER = "http://localhost:5500";
 
-export const AUTH_SERVER = "https://accounts.fetch.ai/v1";
+export const AUTH_SERVER = "https://accounts.fetch.ai";
 
 export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
 
@@ -34,17 +34,20 @@ export const CHAT_PAGE_COUNT = 30;
 
 let SUBSCRIPTION_SERVER, MESSAGING_SERVER;
 export let NOTYPHI_BASE_URL: string;
+export let DEVICE_SYNC_SERVER: string;
 
 if (process.env.NODE_ENV === "production") {
   SUBSCRIPTION_SERVER = "wss://messaging-server.prod.fetch-ai.com/subscription";
   MESSAGING_SERVER = "https://messaging-server.prod.fetch-ai.com/graphql";
   NOTYPHI_BASE_URL = "https://api.notyphi.com/v1";
+  DEVICE_SYNC_SERVER = "";
 } else {
   SUBSCRIPTION_SERVER =
     "wss://messaging-server.sandbox-london-b.fetch-ai.com/subscription";
   MESSAGING_SERVER =
     "https://messaging-server.sandbox-london-b.fetch-ai.com/graphql";
   NOTYPHI_BASE_URL = "https://api-staging.notyphi.com/v1";
+  DEVICE_SYNC_SERVER = "http://localhost:4000/graphql";
 }
 
 const ACTIVITY_SERVER: { [key: string]: string } = {

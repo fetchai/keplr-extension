@@ -7,10 +7,20 @@ import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
+import { AUTH_SERVER } from "../../config.ui.var";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
   const navigate = useNavigate();
+
+  const FAUNA_LOGIN_URL =
+    `${AUTH_SERVER}/login` +
+    `?redirect_uri=${encodeURIComponent(
+      browser.extension.getURL("sync-auth.html")
+    )}` +
+    `&client_id=fetch_wallet` +
+    `&response_type=code`;
+
   return (
     <div className={styleMenu["container"]}>
       <div
@@ -42,6 +52,14 @@ export const Menu: FunctionComponent = observer(() => {
         rel="noopener noreferrer"
       >
         <FormattedMessage id="main.menu.guide" />
+      </a>
+      <a
+        className={styleMenu["item"]}
+        href={`${FAUNA_LOGIN_URL}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FormattedMessage id="main.menu.sync" />
       </a>
       {(chainStore.current.features ?? []).find(
         (feature) =>

@@ -46,6 +46,7 @@
   "main.menu.fetch-name-service": ".FET Domain",
 
   "main.menu.guide": "Guide",
+  "main.menu.sync": "Sync device",
   "main.menu.sign-out": "Sign out",
   "main.menu.footer.github": "Check it out on GitHub",
 

@@ -13,6 +13,7 @@ import * as Interaction from "./interaction/internal";
 import * as Permission from "./permission/internal";
 import * as PhishingList from "./phishing-list/internal";
 import * as AutoLocker from "./auto-lock-account/internal";
+import * as DeviceSync from "./device-sync/internal";
 import * as Analytics from "./analytics/internal";
 import * as Umbral from "./umbral/internal";
 import * as Messaging from "./messaging/internal";
@@ -36,6 +37,7 @@ export * from "./permission";
 export * from "./phishing-list";
 export * from "./auto-lock-account";
 export * from "./analytics";
+export * from "./device-sync";
 
 export function init(
   router: Router,
@@ -117,6 +119,10 @@ export function init(
     storeCreator("auto-lock-account")
   );
 
+  const deviceSyncService = new DeviceSync.DeviceSyncService(
+    storeCreator("device-sync")
+  );
+
   const chainUpdaterService = new Updater.ChainUpdaterService(
     storeCreator("updator"),
     communityChainInfoRepo
@@ -146,6 +152,7 @@ export function init(
   BackgroundTx.init(router, backgroundTxService);
   PhishingList.init(router, phishingListService);
   AutoLocker.init(router, autoLockAccountService);
+  DeviceSync.init(router, deviceSyncService);
   Analytics.init(router, analyticsService);
   KeyRing.init(router, keyRingService);
   SecretWasm.init(router, secretWasmService);
@@ -191,6 +198,7 @@ export function init(
       await analyticsService.init();
       await umbralService.init(keyRingService, permissionService);
       await messagingService.init(keyRingService);
+      await deviceSyncService.init(keyRingService, chainsService);
     },
   };
 }

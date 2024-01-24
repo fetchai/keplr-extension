@@ -30,6 +30,7 @@
   "web_accessible_resources": [
     "injectedScript.bundle.js",
     "assets/logo-256.svg",
-    "blocklist.html"
+    "blocklist.html",
+    "sync-auth.html"
   ]
 }

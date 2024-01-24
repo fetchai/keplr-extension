@@ -38,6 +38,7 @@ import { observer } from "mobx-react-lite";
 import {
   KeyRingStatus,
   StartAutoLockMonitoringMsg,
+  // StartDeviceSyncMsg,
 } from "@keplr-wallet/background";
 import Modal from "react-modal";
 import { LedgerGrantPage } from "./pages/ledger";
@@ -107,6 +108,7 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
+// import { DEVICE_SYNC_SERVER } from "./config.ui.var";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -150,9 +152,12 @@ const StateRenderer: FunctionComponent = observer(() => {
   useEffect(() => {
     // Notify to auto lock service to start activation check whenever the keyring is unlocked.
     if (keyRingStore.status === KeyRingStatus.UNLOCKED) {
-      const msg = new StartAutoLockMonitoringMsg();
+      const startAutoLockMsg = new StartAutoLockMonitoringMsg();
+      // const startDeviceSyncMsg = new StartDeviceSyncMsg(DEVICE_SYNC_SERVER);
+
       const requester = new InExtensionMessageRequester();
-      requester.sendMessage(BACKGROUND_PORT, msg);
+      requester.sendMessage(BACKGROUND_PORT, startAutoLockMsg);
+      // requester.sendMessage(BACKGROUND_PORT, startDeviceSyncMsg);
     }
   }, [keyRingStore.status]);
 
@@ -269,6 +274,7 @@ ReactDOM.render(
                         path="/setting/set-keyring"
                         element={<SetKeyRingPage />}
                       />
+                      {/* <Route path="/sync-auth" element={<SyncAuthPage />} /> */}
                       <Route
                         path="/setting/export/:index"
                         element={<ExportPage />}

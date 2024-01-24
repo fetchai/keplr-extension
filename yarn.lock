@@ -9069,6 +9069,7 @@ __metadata:
     "@nucypher/umbral-pre": ^0.5.2
     "@types/aes-js": ^3.1.0
     "@types/ledgerhq__hw-transport-webusb": ^4.70.1
+    "@types/object-hash": ^3
     "@types/secp256k1": ^4.0.1
     "@types/w3c-web-hid": ^1.0.2
     "@types/w3c-web-usb": ^1.0.5
@@ -9085,6 +9086,7 @@ __metadata:
     miscreant: 0.3.2
     mobx: ^6.1.7
     mobx-utils: ^6.0.3
+    object-hash: ^3.0.0
     pbkdf2: ^3.1.2
     scrypt-js: ^3.0.1
     secp256k1: ^4.0.2
@@ -15096,6 +15098,13 @@ __metadata:
   version: 1.3.4
   resolution: "@types/object-hash@npm:1.3.4"
   checksum: fe4aa041427f3c69cbcf63434af6e788329b40d7208b30aa845cfc1aa6bf9b0c11b23fa33a567d85ba7f2574a95c3b4a227f4b9b9b55da1eaea68ab94b4058d9
+  languageName: node
+  linkType: hard
+
+"@types/object-hash@npm:^3":
+  version: 3.0.6
+  resolution: "@types/object-hash@npm:3.0.6"
+  checksum: 2c7979d4e540af817b99c09fb4c2fed1c0b0e14342df474d8dcde4165a82c440b038341fd66fe998d9f86acdd5cccc65ba8092315e39e7c2114f945fa70aaa56
   languageName: node
   linkType: hard
 
@@ -36527,6 +36536,13 @@ __metadata:
   version: 1.3.1
   resolution: "object-hash@npm:1.3.1"
   checksum: fdcb957a2f15a9060e30655a9f683ba1fc25dfb8809a73d32e9634bec385a2f1d686c707ac1e5f69fb773bc12df03fb64c77ce3faeed83e35f4eb1946cb1989e
+  languageName: node
+  linkType: hard
+
+"object-hash@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "object-hash@npm:3.0.0"
+  checksum: 80b4904bb3857c52cc1bfd0b52c0352532ca12ed3b8a6ff06a90cd209dfda1b95cee059a7625eb9da29537027f68ac4619363491eedb2f5d3dddbba97494fd6c
   languageName: node
   linkType: hard
 
