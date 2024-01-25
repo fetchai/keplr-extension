@@ -20,6 +20,7 @@ export const BlockUserPopup = ({
     setProcessing(true);
     try {
       await blockUser(userName, userState.accessToken);
+      chatStore.messagesStore.setBlockedUser({ blockedAddress: userName });
     } catch (e) {
       console.log(e);
     } finally {

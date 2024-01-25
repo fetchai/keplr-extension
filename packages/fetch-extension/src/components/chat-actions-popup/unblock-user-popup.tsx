@@ -12,6 +12,7 @@ export const UnblockUserPopup = ({
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
   accessToken: string;
 }) => {
+  const { chatStore } = useStore();
   const [processing, setProcessing] = useState(false);
   const { analyticsStore } = useStore();
 
@@ -22,6 +23,7 @@ export const UnblockUserPopup = ({
     setProcessing(true);
     try {
       await unblockUser(userName, accessToken);
+      chatStore.messagesStore.setUnblockedUser({ blockedAddress: userName });
     } catch (e) {
       console.log(e);
     } finally {

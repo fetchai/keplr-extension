@@ -148,7 +148,7 @@ export const blockUser = async (address: string, accessToken: string) => {
         channelId: "MESSAGING",
       },
     });
-    return data.block;
+    return data;
   } catch (e) {
     console.log(e);
     return {
