@@ -4,7 +4,7 @@ import { LineChart } from "react-native-gifted-charts";
 import { LinearGradient, Stop } from "react-native-svg";
 import { useStyle } from "styles/index";
 
-export const GraphChart: FunctionComponent<{
+export const IOSLineChart: FunctionComponent<{
   data: any;
 }> = ({ data }) => {
   const style = useStyle();

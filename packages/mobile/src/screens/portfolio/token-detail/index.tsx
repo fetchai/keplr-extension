@@ -48,7 +48,6 @@ export const TokenDetail: FunctionComponent = observer(() => {
 
   const decodedTokenInfo = JSON.parse(decodeURIComponent(tokenString));
   const tokenInfo = decodedTokenInfo;
-  console.log(tokenInfo);
 
   const style = useStyle();
   const safeAreaInsets = useSafeAreaInsets();
@@ -192,14 +191,12 @@ export const TokenDetail: FunctionComponent = observer(() => {
           </View>
         ) : null}
       </View>
-      {Platform.OS == "ios" ? (
-        tokenInfo.coinGeckoId ? (
-          <TokenGraphSection
-            totalNumber={totalNumber}
-            totalDenom={totalDenom}
-            tokenName={tokenInfo.coinGeckoId}
-          />
-        ) : null
+      {tokenInfo.coinGeckoId ? (
+        <TokenGraphSection
+          totalNumber={totalNumber}
+          totalDenom={totalDenom}
+          tokenName={tokenInfo.coinGeckoId}
+        />
       ) : null}
       <TokenBalanceSection
         totalNumber={balances.balance}

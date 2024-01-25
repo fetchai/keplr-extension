@@ -7,9 +7,10 @@ import React, {
 } from "react";
 import axios from "axios";
 import { formatTimestamp } from "utils/format-time-stamp/parse-timestamp-to-date";
-import { View, ViewStyle } from "react-native";
-import { GraphChart } from "components/new/line-graph/chart";
+import { Platform, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
+import { AndroidLineChart } from "./android-chart";
+import { IOSLineChart } from "./ios-chart";
 
 export enum DurationFilter {
   "24H" = "24H",
@@ -99,22 +100,34 @@ export const LineGraph: FunctionComponent<{
     setDuration(durationData);
   }, [tokenName, duration]);
 
+  function getChartData() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let newPrices = [];
+        const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
+        const params = { vs_currency: "usd", days: duration };
+
+        const response = await axios.get(apiUrl, { params });
+        newPrices = response.data.prices.map((price: number[]) => ({
+          timestamp: price[0],
+          price: price[1],
+        }));
+
+        resolve(newPrices);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   useEffect(() => {
     if (
       (durationData[cacheKey]?.prices.length ?? 0) == 0 ||
       (durationData[cacheKey]?.isError ?? false)
     ) {
-      (async function () {
-        try {
-          let newPrices = [];
+      getChartData()
+        .then((newPrices: any) => {
           let tokenState = {};
-          const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-          const params = { vs_currency: "usd", days: duration };
-          const response = await axios.get(apiUrl, { params });
-          newPrices = response.data.prices.map((price: number[]) => ({
-            timestamp: price[0],
-            price: price[1],
-          }));
 
           if (newPrices.length > 0) {
             const firstValue = newPrices[0].price || 0;
@@ -138,11 +151,11 @@ export const LineGraph: FunctionComponent<{
             isError: false,
           };
           setDuration(durationData);
-        } catch (error) {
+        })
+        .catch((error) => {
           setDefaultPricing();
           console.log("Error fetching data:", error.message);
-        }
-      })();
+        });
     } else {
       setTokenState(durationData[cacheKey].tokenState);
       setPrices(durationData[cacheKey].prices);
@@ -172,7 +185,11 @@ export const LineGraph: FunctionComponent<{
     <View
       style={[style.flatten(["margin-top-32", "overflow-hidden"])] as ViewStyle}
     >
-      <GraphChart data={chartData.datasets[0].data} />
+      {Platform.OS == "ios" ? (
+        <IOSLineChart data={chartData.datasets[0].data} />
+      ) : (
+        <AndroidLineChart data={chartData.datasets[0].data} />
+      )}
     </View>
   );
 };

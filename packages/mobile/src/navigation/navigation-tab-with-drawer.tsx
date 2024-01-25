@@ -215,7 +215,6 @@ export const MainTabNavigation: FunctionComponent = () => {
           setQuickOptionEnable(false);
         }}
         onPress={(event) => {
-          console.log("test", event);
           switch (event) {
             case "Receive":
               navigation.navigate("Others", {

@@ -12,6 +12,7 @@ import {
 } from "react-native-svg";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
+import { IconButton } from "components/new/button/icon";
 
 export const StakedTokenSymbol: FunctionComponent<{
   size: number;
@@ -76,10 +77,15 @@ export const TokenSymbolUsingChainInfo: FunctionComponent<{
           }}
         />
       ) : (
-        <VectorCharacter
-          char={chainInfo.chainName[0]}
-          height={Math.floor(size * 0.35)}
-          color="white"
+        <IconButton
+          icon={
+            <VectorCharacter
+              char={chainInfo.chainName[0]}
+              height={Math.floor(size * 0.35)}
+              color="white"
+            />
+          }
+          iconStyle={style.flatten(["padding-12"]) as ViewStyle}
         />
       )}
     </View>

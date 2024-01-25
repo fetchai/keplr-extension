@@ -9,7 +9,6 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { Toggle } from "components/toggle";
 import delay from "delay";
-import { ColorRightArrow } from "components/icon/color-rightt-arrow";
 import { LinearGradientText } from "components/svg/linear-gradient-text";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
@@ -109,14 +108,10 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         textStyle={{
           color: "#0B1742",
         }}
-        rightIcon={
-          <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-            <ColorRightArrow />
-          </View>
-        }
         size="large"
         text="Start using your wallet"
         loading={isLoading}
+        loadingSpinnerColor="color-indigo-900"
         onPress={async () => {
           setIsLoading(true);
           try {
