@@ -177,7 +177,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
               onChange={() => setCheckBox1Checked(!checkBox1Checked)}
             />{" "}
             I understand that if I lose my recovery phrase, I will not be able
-            to access my wallet
+            to access my wallet.
           </label>
           <label className={style["checkbox"]}>
             {" "}
@@ -185,7 +185,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
               type="checkbox"
               checked={checkBox2Checked}
               onChange={() => setCheckBox2Checked(!checkBox2Checked)}
-            />
+            />{" "}
             I understand that my assets can be stolen if I share my recovery
             phrase with someone else.
           </label>
@@ -300,7 +300,10 @@ export const VerifyMnemonicModePage: FunctionComponent<{
 
   const [randomizedWords, setRandomizedWords] = useState<string[]>([]);
   const [suggestedWords, setSuggestedWords] = useState<string[]>([]);
+  const [clickedButtons, setClickedButtons] = useState<number[]>([]);
+
   const firstButtonsPerRow = 6;
+
   function chunkArray(array: any, size: any) {
     const chunkedArray = [];
     for (let i = 0; i < array.length; i += size) {
@@ -310,6 +313,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   }
 
   const suggestedRows = chunkArray(suggestedWords, firstButtonsPerRow);
+
   useEffect(() => {
     // Set randomized words.
     const words = newMnemonicConfig.mnemonic.split(" ");
@@ -318,14 +322,14 @@ export const VerifyMnemonicModePage: FunctionComponent<{
       suggestedWords.push(" ");
     }
     words.sort((word1, word2) => {
-      // Sort alpahbetically.
+      // Sort alphabetically.
       return word1 > word2 ? 1 : -1;
     });
     setRandomizedWords(words);
-    // Clear suggested words.
-    // setSuggestedWords([]);
   }, [newMnemonicConfig.mnemonic]);
+
   const { analyticsStore } = useStore();
+  console.log(clickedButtons);
   return (
     <div>
       <div style={{ minHeight: "153px" }}>
@@ -337,14 +341,14 @@ export const VerifyMnemonicModePage: FunctionComponent<{
                 key={word + i.toString()}
                 onClick={() => {
                   const updatedSuggestedWords = suggestedWords.slice();
-                  updatedSuggestedWords.splice(
-                    rowIndex * firstButtonsPerRow + i,
-                    1
-                  );
-                  setSuggestedWords(updatedSuggestedWords);
+                  const buttonIndex = rowIndex * firstButtonsPerRow + i;
 
-                  const updatedRandomizedWords = randomizedWords.concat(word);
-                  setRandomizedWords(updatedRandomizedWords);
+                  if (!clickedButtons.includes(buttonIndex)) {
+                    updatedSuggestedWords.splice(buttonIndex, 1);
+                    setSuggestedWords(updatedSuggestedWords);
+                    setClickedButtons([...clickedButtons, buttonIndex]);
+                  }
+                  clickedButtons.push(rowIndex * firstButtonsPerRow + i);
                 }}
               >
                 {word}
@@ -353,32 +357,31 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           </div>
         ))}
       </div>
-
       <hr />
       <div style={{ minHeight: "153px" }}>
         <div className={style["buttons"]}>
-          {randomizedWords.map((word, i) => {
-            return (
-              <Button
-                className={style["button"]}
-                key={word + i.toString()}
-                onClick={() => {
-                  const word = randomizedWords[i];
-                  setRandomizedWords(
-                    randomizedWords
-                      .slice(0, i)
-                      .concat(randomizedWords.slice(i + 1))
-                  );
-                  suggestedWords.push(word);
-                  setSuggestedWords(suggestedWords.slice());
-                }}
-              >
-                {word}
-              </Button>
-            );
-          })}
+          {randomizedWords.map((word, i) => (
+            <Button
+              className={style["button"]}
+              key={word + i.toString()}
+              onClick={() => {
+                const buttonIndex = i;
+
+                if (!clickedButtons.includes(buttonIndex)) {
+                  const updatedSuggestedWords = suggestedWords.slice();
+                  updatedSuggestedWords.push(word);
+                  setSuggestedWords(updatedSuggestedWords);
+                  setClickedButtons([...clickedButtons, buttonIndex]);
+                }
+              }}
+              disabled={clickedButtons.includes(i)}
+            >
+              {word}
+            </Button>
+          ))}
         </div>
       </div>
+
       <ButtonV2
         text=""
         disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
@@ -407,6 +410,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
       >
         <FormattedMessage id="register.verify.button.register" />
       </ButtonV2>
+
       <BackButton
         onClick={() => {
           newMnemonicConfig.setMode("generate");

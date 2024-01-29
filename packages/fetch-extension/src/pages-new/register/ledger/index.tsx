@@ -121,9 +121,10 @@ export const ImportLedgerPage: FunctionComponent<{
         })}
       >
         <Input
-          label={intl.formatMessage({
-            id: "register.name",
-          })}
+          className={style["input"]}
+          // label={intl.formatMessage({
+          //   id: "register.name",
+          // })}
           type="text"
           {...register("name", {
             required: intl.formatMessage({
@@ -174,15 +175,9 @@ export const ImportLedgerPage: FunctionComponent<{
           </React.Fragment>
         ) : null}
         <AdvancedBIP44Option bip44Option={bip44Option} />
-        <Button
-          color="primary"
-          type="submit"
-          block
-          size="lg"
-          data-loading={registerConfig.isLoading}
-        >
+        <ButtonV2 data-loading={registerConfig.isLoading} text={""}>
           <FormattedMessage id="register.create.button.next" />
-        </Button>
+        </ButtonV2>
         <Button
           type="button"
           color="link"
