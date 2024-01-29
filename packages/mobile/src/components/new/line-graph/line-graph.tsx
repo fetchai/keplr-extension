@@ -11,29 +11,21 @@ import { Platform, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { AndroidLineChart } from "./android-chart";
 import { IOSLineChart } from "./ios-chart";
-
-export enum DurationFilter {
-  "24H" = "24H",
-  "1W" = "1W",
-  "1M" = "1M",
-  "3M" = "3M",
-  "1Y" = "1Y",
-  ALL = "ALL",
-}
+import { useStore } from "stores/index";
 
 interface DurationData {
   [key: string]: DurationObject;
 }
 
 interface DurationObject {
-  prices: PriceData[];
+  chartData: ChartData[];
   tokenState: TokenStateData;
   isError: boolean;
 }
 
-export interface PriceData {
-  timestamp: number;
-  price: number;
+export interface ChartData {
+  value: number;
+  date: string;
 }
 
 interface TokenStateData {
@@ -49,9 +41,9 @@ export const LineGraph: FunctionComponent<{
   tokenState?: any;
 }> = ({ tokenName, duration, setTokenState }) => {
   const style = useStyle();
-
+  const { priceStore } = useStore();
   const [durationData, setDuration] = useState<DurationData>({});
-  const [prices, setPrices] = useState<PriceData[]>([]);
+  const [chartsData, setChartData] = useState<ChartData[]>([]);
 
   const cacheKey = useMemo(
     () => `${tokenName}_${duration}`,
@@ -82,20 +74,21 @@ export const LineGraph: FunctionComponent<{
       time: getTimeLabel(),
       type: "positive",
     };
-    const prices = [];
+    const chartDataList: ChartData[] = [];
     const timestamp = new Date().getTime();
+    const date = formatTimestamp(timestamp);
 
     for (let i = 0; i < 5; i++) {
-      prices.push({ price: 0, timestamp });
+      chartDataList.push({ value: 0, date });
     }
 
     durationData[cacheKey] = {
-      prices: [...prices],
-      tokenState: tokenState as TokenStateData,
+      chartData: [...chartDataList],
+      tokenState: tokenState,
       isError: true,
     };
 
-    setPrices(prices);
+    setChartData(chartDataList);
     setTokenState(tokenState);
     setDuration(durationData);
   }, [tokenName, duration]);
@@ -103,17 +96,36 @@ export const LineGraph: FunctionComponent<{
   function getChartData() {
     return new Promise(async (resolve, reject) => {
       try {
-        let newPrices = [];
+        let chartDataList: ChartData[] = [];
         const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-        const params = { vs_currency: "usd", days: duration };
+        const params = {
+          vs_currency: priceStore.defaultVsCurrency,
+          days: duration,
+        };
 
         const response = await axios.get(apiUrl, { params });
-        newPrices = response.data.prices.map((price: number[]) => ({
-          timestamp: price[0],
-          price: price[1],
+        chartDataList = response.data.prices.map((price: number[]) => ({
+          date: formatTimestamp(price[0]),
+          value: Number(price[1].toFixed(3)),
         }));
 
-        resolve(newPrices);
+        let tokenState = {};
+
+        if (chartDataList.length > 0) {
+          const firstValue = chartDataList[0].value || 0;
+          const lastValue = chartDataList[chartDataList.length - 1].value || 0;
+          const diff = lastValue - firstValue;
+          const percentageDiff = (diff / lastValue) * 100;
+
+          const type = diff >= 0 ? "positive" : "negative";
+
+          tokenState = {
+            diff: Math.abs(percentageDiff),
+            time: getTimeLabel(),
+            type,
+          };
+        }
+        resolve({ chartDataList, tokenState });
       } catch (error) {
         reject(error);
       }
@@ -122,32 +134,17 @@ export const LineGraph: FunctionComponent<{
 
   useEffect(() => {
     if (
-      (durationData[cacheKey]?.prices.length ?? 0) == 0 ||
+      (durationData[cacheKey]?.chartData.length ?? 0) == 0 ||
       (durationData[cacheKey]?.isError ?? false)
     ) {
       getChartData()
-        .then((newPrices: any) => {
-          let tokenState = {};
+        .then((obj: any) => {
+          setTokenState(obj.tokenState);
 
-          if (newPrices.length > 0) {
-            const firstValue = newPrices[0].price || 0;
-            const lastValue = newPrices[newPrices.length - 1].price || 0;
-            const diff = lastValue - firstValue;
-            const percentageDiff = (diff / lastValue) * 100;
-
-            const type = diff >= 0 ? "positive" : "negative";
-
-            tokenState = {
-              diff: Math.abs(percentageDiff),
-              time: getTimeLabel(),
-              type,
-            };
-            setTokenState(tokenState);
-          }
-          setPrices(newPrices);
+          setChartData(obj.chartDataList);
           durationData[cacheKey] = {
-            prices: [...newPrices],
-            tokenState: tokenState as TokenStateData,
+            chartData: [...obj.chartDataList],
+            tokenState: obj.tokenState,
             isError: false,
           };
           setDuration(durationData);
@@ -158,37 +155,18 @@ export const LineGraph: FunctionComponent<{
         });
     } else {
       setTokenState(durationData[cacheKey].tokenState);
-      setPrices(durationData[cacheKey].prices);
+      setChartData(durationData[cacheKey].chartData);
     }
   }, [cacheKey]);
-
-  const chartData = {
-    labels:
-      prices.map((priceData: PriceData) => {
-        return formatTimestamp(priceData.timestamp);
-      }) ?? [],
-    datasets: [
-      {
-        label: "",
-        data:
-          prices.map((priceData: PriceData) => {
-            return {
-              value: Number(priceData.price.toFixed(3)),
-              date: formatTimestamp(priceData.timestamp),
-            };
-          }) ?? [],
-      },
-    ],
-  };
 
   return (
     <View
       style={[style.flatten(["margin-top-32", "overflow-hidden"])] as ViewStyle}
     >
       {Platform.OS == "ios" ? (
-        <IOSLineChart data={chartData.datasets[0].data} />
+        <IOSLineChart data={chartsData} />
       ) : (
-        <AndroidLineChart data={chartData.datasets[0].data} />
+        <AndroidLineChart data={chartsData} />
       )}
     </View>
   );
