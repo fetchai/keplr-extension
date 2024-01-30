@@ -12,6 +12,12 @@ import {
   UnsubscribeOnStatusChangeMsg,
   UnsubscribeOnTxFailedMsg,
   UnsubscribeOnTxSuccessfulMsg,
+  SubscribeOnEVMTxFailedMsg,
+  SubscribeOnEVMTxSuccessfulMsg,
+  UnsubscribeOnEVMTxFailedMsg,
+  UnsubscribeOnEVMTxSuccessfulMsg,
+  EmitOnEVMTxFailedMsg,
+  EmitOnEVMTxSuccessfulMsg,
 } from "./messages";
 import { EventService } from "./service";
 
@@ -26,6 +32,11 @@ export function init(router: Router, service: EventService): void {
   router.registerMessage(UnsubscribeOnTxSuccessfulMsg);
   router.registerMessage(SubscribeOnTxFailedMsg);
   router.registerMessage(UnsubscribeOnTxFailedMsg);
-
+  router.registerMessage(SubscribeOnEVMTxSuccessfulMsg);
+  router.registerMessage(UnsubscribeOnEVMTxSuccessfulMsg);
+  router.registerMessage(SubscribeOnEVMTxFailedMsg);
+  router.registerMessage(UnsubscribeOnEVMTxFailedMsg);
+  router.registerMessage(EmitOnEVMTxFailedMsg);
+  router.registerMessage(EmitOnEVMTxSuccessfulMsg);
   router.addHandler(ROUTE, getHandler(service));
 }

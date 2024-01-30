@@ -42,10 +42,8 @@ import {
   StatusMsg,
   UnlockWalletMsg,
   LockWalletMsg,
-  // CurrentAccountMsg,
   SwitchAccountMsg,
   ListAccountsMsg,
-  // GetAccountMsg,
   GetNetworkMsg,
   ListNetworksMsg,
   CurrentAccountMsg,
@@ -65,6 +63,10 @@ import {
   UnsubscribeOnTxSuccessfulMsg,
   SubscribeOnTxFailedMsg,
   UnsubscribeOnTxFailedMsg,
+  SubscribeOnEVMTxSuccessfulMsg,
+  UnsubscribeOnEVMTxSuccessfulMsg,
+  SubscribeOnEVMTxFailedMsg,
+  UnsubscribeOnEVMTxFailedMsg,
 } from "./types";
 
 import { KeplrEnigmaUtils } from "./enigma";
@@ -91,7 +93,6 @@ import {
   WalletStatus,
 } from "@fetchai/wallet-types";
 import { TxsResponse } from "@cosmjs/launchpad";
-// import { JSONUint8Array } from "@keplr-wallet/router";
 
 export class Keplr implements IKeplr, KeplrCoreTypes {
   protected enigmaUtils: Map<string, SecretUtils> = new Map();
@@ -788,6 +789,36 @@ export class FetchEvents implements EventsApi {
       await this.requester.sendMessage(
         BACKGROUND_PORT,
         new UnsubscribeOnTxFailedMsg(handler)
+      );
+    },
+  };
+
+  onEVMTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnEVMTxSuccessfulMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnEVMTxSuccessfulMsg(handler)
+      );
+    },
+  };
+
+  onEVMTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new SubscribeOnEVMTxFailedMsg(handler)
+      );
+    },
+    unsubscribe: async (handler: any) => {
+      await this.requester.sendMessage(
+        BACKGROUND_PORT,
+        new UnsubscribeOnEVMTxFailedMsg(handler)
       );
     },
   };

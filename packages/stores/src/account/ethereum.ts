@@ -28,6 +28,12 @@ import {
 import { isAddress } from "@ethersproject/address";
 import { KVStore } from "@keplr-wallet/common";
 import { BigNumber } from "@ethersproject/bignumber";
+import {
+  EmitOnEVMTxSuccessfulMsg,
+  EmitOnEVMTxFailedMsg,
+} from "@keplr-wallet/background";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { MessageRequester, BACKGROUND_PORT } from "@keplr-wallet/router";
 export interface EthereumAccount {
   ethereum: EthereumAccountImpl;
 }
@@ -46,7 +52,8 @@ export const EthereumAccount = {
           base,
           chainGetter,
           chainId,
-          options.queriesStore
+          options.queriesStore,
+          new InExtensionMessageRequester()
         ),
       };
     };
@@ -60,7 +67,8 @@ export class EthereumAccountImpl {
     protected readonly base: AccountSetBaseSuper & CosmosAccount,
     protected readonly chainGetter: ChainGetter,
     protected readonly chainId: string,
-    protected readonly queriesStore: IQueriesStore<EvmQueries>
+    protected readonly queriesStore: IQueriesStore<EvmQueries>,
+    protected readonly requester: MessageRequester
   ) {
     this.base.registerMakeSendTokenFn(this.processMakeSendTokenTx.bind(this));
     this.kvStore = new LocalKVStore("Transactions");
@@ -400,6 +408,7 @@ export class EthereumAccountImpl {
       if (txList === undefined || !txList.find((txn) => txn.hash === hash)) {
         return;
       }
+      console.log("updateTransactionStatus", status);
 
       // Find and update the transaction status by hash
       const updatedTxList = txList.map((txn) =>
@@ -412,6 +421,17 @@ export class EthereumAccountImpl {
           : txn
       );
 
+      if (status === "success") {
+        const msg = new EmitOnEVMTxSuccessfulMsg(
+          updatedTxList.find((txn) => txn.hash === hash)
+        );
+        this.requester.sendMessage(BACKGROUND_PORT, msg);
+      } else if (status === "failed") {
+        const msg = new EmitOnEVMTxFailedMsg(
+          updatedTxList.find((txn) => txn.hash === hash)
+        );
+        this.requester.sendMessage(BACKGROUND_PORT, msg);
+      }
       if (updatedTxList.length !== 0) {
         await this.kvStore.set(this.base.ethereumHexAddress, updatedTxList);
       }

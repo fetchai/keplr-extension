@@ -1,17 +1,24 @@
 import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import {
+  EmitOnEVMTxFailedMsg,
+  EmitOnEVMTxSuccessfulMsg,
   SubscribeOnAccountChangeMsg,
+  SubscribeOnEVMTxFailedMsg,
+  SubscribeOnEVMTxSuccessfulMsg,
   SubscribeOnNetworkChangeMsg,
   SubscribeOnStatusChangeMsg,
   SubscribeOnTxFailedMsg,
   SubscribeOnTxSuccessfulMsg,
   UnsubscribeOnAccountChangeMsg,
+  UnsubscribeOnEVMTxFailedMsg,
+  UnsubscribeOnEVMTxSuccessfulMsg,
   UnsubscribeOnNetworkChangeMsg,
   UnsubscribeOnStatusChangeMsg,
   UnsubscribeOnTxFailedMsg,
   UnsubscribeOnTxSuccessfulMsg,
 } from "./messages";
 import { EventService } from "./service";
+import { eventEmitter } from "./event-emitter";
 
 export const getHandler: (service: EventService) => Handler = (service) => {
   return (env: Env, msg: Message<unknown>) => {
@@ -65,6 +72,33 @@ export const getHandler: (service: EventService) => Handler = (service) => {
         return handleUnsubscribeOnTxFailedMsg(service)(
           env,
           msg as UnsubscribeOnTxFailedMsg
+        );
+      case SubscribeOnEVMTxSuccessfulMsg:
+        return handleSubscribeOnEVMTxSuccessfulMsg(service)(
+          env,
+          msg as SubscribeOnEVMTxSuccessfulMsg
+        );
+      case UnsubscribeOnEVMTxSuccessfulMsg:
+        return handleUnsubscribeOnEVMTxSuccessfulMsg(service)(
+          env,
+          msg as UnsubscribeOnEVMTxSuccessfulMsg
+        );
+      case SubscribeOnEVMTxFailedMsg:
+        return handleSubscribeOnEVMTxFailedMsg(service)(
+          env,
+          msg as SubscribeOnEVMTxFailedMsg
+        );
+      case UnsubscribeOnEVMTxFailedMsg:
+        return handleUnsubscribeOnEVMTxFailedMsg(service)(
+          env,
+          msg as UnsubscribeOnEVMTxFailedMsg
+        );
+      case EmitOnEVMTxFailedMsg:
+        return handleEmitOnEVMTxFailedMsg()(env, msg as EmitOnEVMTxFailedMsg);
+      case EmitOnEVMTxSuccessfulMsg:
+        return handleEmitOnEVMTxSuccessfulMsg()(
+          env,
+          msg as EmitOnEVMTxSuccessfulMsg
         );
       default:
         throw new Error("Unknown msg type");
@@ -171,3 +205,58 @@ const handleSubscribeOnTxFailedMsg: (
     service.subscribeTxFailed(handlerFunction);
   };
 };
+
+const handleSubscribeOnEVMTxSuccessfulMsg: (
+  service: EventService
+) => InternalHandler<SubscribeOnEVMTxSuccessfulMsg> = (service) => {
+  return async (_, msg) => {
+    const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("subscribing onEVMTxSuccessful event...");
+    service.subscribeEVMTxSuccessful(handlerFunction);
+  };
+};
+
+const handleUnsubscribeOnEVMTxSuccessfulMsg: (
+  service: EventService
+) => InternalHandler<UnsubscribeOnEVMTxSuccessfulMsg> = (service) => {
+  return async (_, msg) => {
+    const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("unsubscribing onEVMTxSuccessful event...");
+    service.unSubscribeEVMTxSuccessful(handlerFunction);
+  };
+};
+
+const handleUnsubscribeOnEVMTxFailedMsg: (
+  service: EventService
+) => InternalHandler<UnsubscribeOnEVMTxFailedMsg> = (service) => {
+  return async (_, msg) => {
+    const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("unsubscribing OnEVMTxFailed event...");
+    service.unSubscribeEVMTxFailed(handlerFunction);
+  };
+};
+
+const handleSubscribeOnEVMTxFailedMsg: (
+  service: EventService
+) => InternalHandler<SubscribeOnEVMTxFailedMsg> = (service) => {
+  return async (_, msg) => {
+    const handlerFunction = new Function(`return ${msg.handler}`)();
+    console.log("subscribing OnEVMTxFailed event...");
+    service.subscribeEVMTxFailed(handlerFunction);
+  };
+};
+
+const handleEmitOnEVMTxFailedMsg: () => InternalHandler<EmitOnEVMTxFailedMsg> =
+  () => {
+    return async (_, msg) => {
+      eventEmitter.emit("EVMTxFailed", msg.txn);
+    };
+  };
+
+const handleEmitOnEVMTxSuccessfulMsg: () => InternalHandler<EmitOnEVMTxSuccessfulMsg> =
+  () => {
+    return async (_, msg) => {
+      console.log("inside handler");
+      eventEmitter.emit("EVMTxSuccessful", msg.txn);
+    };
+  };

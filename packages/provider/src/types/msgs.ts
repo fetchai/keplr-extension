@@ -1401,3 +1401,99 @@ export class UnsubscribeOnTxSuccessfulMsg extends Message<void> {
     return UnsubscribeOnTxSuccessfulMsg.type();
   }
 }
+
+export class SubscribeOnEVMTxFailedMsg extends Message<void> {
+  public static type() {
+    return "subscribe-on-evm-tx-failed";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return SubscribeOnEVMTxFailedMsg.type();
+  }
+}
+
+export class UnsubscribeOnEVMTxFailedMsg extends Message<void> {
+  public static type() {
+    return "unsubscribe-on-evm-tx-failed";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return UnsubscribeOnEVMTxFailedMsg.type();
+  }
+}
+
+export class SubscribeOnEVMTxSuccessfulMsg extends Message<void> {
+  public static type() {
+    return "subscribe-on-evm-tx-successful";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return SubscribeOnEVMTxSuccessfulMsg.type();
+  }
+}
+
+export class UnsubscribeOnEVMTxSuccessfulMsg extends Message<void> {
+  public static type() {
+    return "unsubscribe-on-evm-tx-successful";
+  }
+
+  constructor(public readonly handler: any) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.handler) {
+      throw new Error("handler is empty");
+    }
+  }
+
+  route(): string {
+    return "events";
+  }
+
+  type(): string {
+    return UnsubscribeOnEVMTxSuccessfulMsg.type();
+  }
+}

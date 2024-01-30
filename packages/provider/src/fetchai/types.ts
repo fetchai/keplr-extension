@@ -60,11 +60,17 @@ export type EventsApiSubMethod =
   | "onTxSuccessful.subscribe"
   | "onTxSuccessful.unsubscribe"
   | "onTxFailed.subscribe"
-  | "onTxFailed.unsubscribe";
+  | "onTxFailed.unsubscribe"
+  | "onEVMTxSuccessful.subscribe"
+  | "onEVMTxSuccessful.unsubscribe"
+  | "onEVMTxFailed.subscribe"
+  | "onEVMTxFailed.unsubscribe";
 
 export type EventsApiMethod =
   | "onStatusChanged"
   | "onAccountChanged"
   | "onNetworkChanged"
   | "onTxFailed"
-  | "onTxSuccessful";
+  | "onTxSuccessful"
+  | "onEVMTxSuccessful"
+  | "onEVMTxFailed";

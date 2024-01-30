@@ -46,4 +46,20 @@ export class EventService {
   public unSubscribeTxFailed(handler: any) {
     this.eventEmitter.off("txFailed", handler);
   }
+
+  public subscribeEVMTxSuccessful(handler: any) {
+    this.eventEmitter.on("EVMTxSuccessful", handler);
+  }
+
+  public unSubscribeEVMTxSuccessful(handler: any) {
+    this.eventEmitter.off("EVMTxSuccessful", handler);
+  }
+
+  public subscribeEVMTxFailed(handler: any) {
+    this.eventEmitter.on("EVMTxFailed", handler);
+  }
+
+  public unSubscribeEVMTxFailed(handler: any) {
+    this.eventEmitter.off("EVMTxFailed", handler);
+  }
 }

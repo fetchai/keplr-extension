@@ -402,6 +402,26 @@ export class InjectedFetchEvents implements EventsApi {
     },
   };
 
+  onEVMTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: (handler: any) => {
+      this.requestViaProxy("onEVMTxSuccessful.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onEVMTxSuccessful.unsubscribe", [
+        handler.toString(),
+      ]);
+    },
+  };
+
+  onEVMTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
+    subscribe: (handler: any) => {
+      this.requestViaProxy("onEVMTxFailed.subscribe", [handler.toString()]);
+    },
+    unsubscribe: (handler: any) => {
+      this.requestViaProxy("onEVMTxFailed.unsubscribe", [handler.toString()]);
+    },
+  };
+
   protected async requestViaProxy(
     method: EventsApiSubMethod,
     args: any[]
