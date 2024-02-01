@@ -39,8 +39,7 @@ export const AmountInputSection: FunctionComponent<{
 
   const convertToUsd = (currency: any) => {
     const value = priceStore.calculatePrice(currency);
-    const inUsd = value && value.shrink(true).maxDecimals(6).toString();
-    return inUsd;
+    return value && value.shrink(true).maxDecimals(6).toString();
   };
 
   useEffect(() => {
@@ -78,10 +77,11 @@ export const AmountInputSection: FunctionComponent<{
 
   return (
     <React.Fragment>
+      <View style={style.flatten(["flex-1"])} />
       <TextInput
         style={
           style.flatten(
-            ["h1", "height-58", "text-center", "flex-0"],
+            ["h2", "height-58", "text-center", "flex-0"],
             [errorText ? "color-red-400" : "color-white"]
           ) as ViewStyle
         }
@@ -105,20 +105,18 @@ export const AmountInputSection: FunctionComponent<{
           <Text
             style={
               style.flatten([
-                "h1",
+                "h2",
                 "color-gray-300",
                 "margin-left-8",
               ]) as ViewStyle
             }
           >
-            {isToggleClicked === true
-              ? "USD"
-              : amountConfig.sendCurrency.coinDenom}
+            {isToggleClicked ? "USD" : amountConfig.sendCurrency.coinDenom}
           </Text>
         }
         placeholderTextColor={errorText ? "red" : "white"}
         value={
-          isToggleClicked === true
+          isToggleClicked
             ? parseDollarAmount(inputInUsd).toString()
             : amountConfig.amount
         }
@@ -135,7 +133,7 @@ export const AmountInputSection: FunctionComponent<{
               ] as ViewStyle
             }
           >
-            {"Amount"}
+            {"Enter amount"}
           </Text>
         }
         bottomInInputContainer={
@@ -148,7 +146,7 @@ export const AmountInputSection: FunctionComponent<{
               ]) as ViewStyle
             }
           >
-            {isToggleClicked === true
+            {isToggleClicked
               ? `${amountConfig.amount} ${amountConfig.sendCurrency.coinDenom}`
               : inputInUsd
               ? `${inputInUsd} USD`

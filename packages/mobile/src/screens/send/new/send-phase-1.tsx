@@ -8,7 +8,6 @@ import {
   SendGasConfig,
 } from "@keplr-wallet/hooks";
 import { useStore } from "stores/index";
-import { PageWithScrollView } from "components/page";
 import { View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
@@ -77,8 +76,7 @@ export const SendPhase1: FunctionComponent<{
 
   const convertToUsd = (currency: any) => {
     const value = priceStore.calculatePrice(currency);
-    const inUsd = value && value.shrink(true).maxDecimals(6).toString();
-    return inUsd;
+    return value && value.shrink(true).maxDecimals(6).toString();
   };
   useEffect(() => {
     const valueInUsd = convertToUsd(balance);
@@ -102,56 +100,53 @@ export const SendPhase1: FunctionComponent<{
 
   return (
     <React.Fragment>
-      <PageWithScrollView
-        backgroundMode="image"
-        contentContainerStyle={style.get("flex-grow-1")}
-        style={style.flatten(["padding-x-page"]) as ViewStyle}
-      >
-        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-        <AmountInputSection amountConfig={sendConfigs.amountConfig} />
-        {/* This is a send component */}
-        <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
-          <DropDownCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Asset"
-            heading={sendConfigs.amountConfig.sendCurrency.coinDenom}
-            subHeading={`Available: ${availableBalance}`}
-            trailingIcon={<ChevronDownIcon />}
-            onPress={() => setOpenAssetModel(true)}
-          />
-          <DropDownCardView
-            containerStyle={
-              style.flatten(["margin-bottom-card-gap"]) as ViewStyle
-            }
-            mainHeading="Send from"
-            heading={account.name}
-            trailingIcon={<ChevronDownIcon />}
-            onPress={() => setChangeWalletModal(true)}
-          />
-        </View>
-        <Button
-          text="Next"
-          size="large"
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+      <AmountInputSection amountConfig={sendConfigs.amountConfig} />
+      {/* This is a send component */}
+      <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
+        <DropDownCardView
           containerStyle={
-            style.flatten([
-              "background-color-white",
-              "border-radius-64",
-            ]) as ViewStyle
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
           }
-          rippleColor="black@50%"
-          textStyle={style.flatten(["color-indigo-900"]) as ViewStyle}
-          disabled={
-            sendConfigs.amountConfig.amount === "" ||
-            sendConfigs.amountConfig.amount == "0" ||
-            !txStateIsValid
-          }
-          loading={account.txTypeInProgress === "send"}
-          onPress={() => setIsNext(true)}
+          mainHeading="Asset"
+          heading={sendConfigs.amountConfig.sendCurrency.coinDenom}
+          subHeading={`Available: ${availableBalance}`}
+          trailingIcon={<ChevronDownIcon />}
+          onPress={() => setOpenAssetModel(true)}
         />
-        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-      </PageWithScrollView>
+        <DropDownCardView
+          containerStyle={
+            style.flatten(["margin-bottom-card-gap"]) as ViewStyle
+          }
+          mainHeading="Send from"
+          heading={account.name}
+          trailingIcon={<ChevronDownIcon />}
+          onPress={() => setChangeWalletModal(true)}
+        />
+      </View>
+      <Button
+        text="Next"
+        size="large"
+        containerStyle={
+          style.flatten(
+            ["border-radius-64"],
+            [
+              sendConfigs.amountConfig.amount === "" ||
+                sendConfigs.amountConfig.amount == "0",
+            ]
+          ) as ViewStyle
+        }
+        rippleColor="black@50%"
+        textStyle={style.flatten(["color-indigo-900"]) as ViewStyle}
+        disabled={
+          sendConfigs.amountConfig.amount === "" ||
+          sendConfigs.amountConfig.amount == "0" ||
+          !txStateIsValid
+        }
+        loading={account.txTypeInProgress === "send"}
+        onPress={() => setIsNext(true)}
+      />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <AssetCardModel
         title={"Change asset"}
         isOpen={openAssetModel}

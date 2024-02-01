@@ -75,6 +75,15 @@ export const ColorPalette = {
   "purple-800": "#0A0314",
 
   white: "#FFFFFF",
+  "white-10": "#F8F9FC",
+  "white-50": "#F2F2F7",
+  "white-100": "#DCDCE3",
+  "white-200": "#C6C6CD",
+  "white-300": "#9A9AA2",
+  "white-400": "#64646D",
+  "white-500": "#37373E",
+  "white-600": "#1E1E24",
+  "white-700": "#09090A",
   "white-transparent-100": "#f9f9f900",
 
   "gray-10": "#F8F9FC",

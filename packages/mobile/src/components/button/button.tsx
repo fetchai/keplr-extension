@@ -49,45 +49,28 @@ export const Button: FunctionComponent<{
   const style = useStyle();
 
   const backgroundColorDefinitions: string[] = (() => {
-    const baseColor = color === "primary" ? "blue" : "red";
+    const baseColor = color === "primary" ? "white" : "red";
 
     switch (mode) {
       case "fill":
         if (disabled) {
           if (color === "primary") {
-            return [
-              `background-color-${baseColor}-200`,
-              `dark:background-color-${baseColor}-600`,
-            ];
+            return [`background-color-${baseColor}-300`];
           } else {
-            return [
-              `background-color-${baseColor}-100`,
-              `dark:background-color-${baseColor}-700`,
-            ];
+            return [`background-color-${baseColor}-300`];
           }
         } else {
-          return [`background-color-${baseColor}-400`];
+          return [`background-color-${baseColor}`];
         }
       case "light":
         if (disabled) {
           if (color === "primary") {
-            return [
-              `background-color-${baseColor}-50`,
-              "dark:background-color-platinum-500",
-            ];
+            return [`background-color-${baseColor}-50`];
           } else {
-            return [
-              `background-color-${baseColor}-100`,
-              `dark:background-color-${baseColor}-700`,
-            ];
+            return [`background-color-${baseColor}-100`];
           }
         } else {
-          return [
-            `background-color-${baseColor}-100`,
-            color === "primary"
-              ? "dark:background-color-platinum-400"
-              : `dark:background-color-${baseColor}-600`,
-          ];
+          return [`background-color-${baseColor}-100`];
         }
       case "outline":
         return ["background-color-transparent", "border-color-gray-200"];

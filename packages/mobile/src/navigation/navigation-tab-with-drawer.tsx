@@ -23,7 +23,6 @@ import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { HomeNavigation } from "navigation/home-navigation";
-import { OtherNavigation } from "navigation/other-navigation";
 import { SettingStackScreen } from "navigation/setting-navigation";
 import { QuickTabOption } from "screens/home/new/quick-tab-options";
 import Toast from "react-native-toast-message";
@@ -164,7 +163,7 @@ export const MainTabNavigation: FunctionComponent = () => {
           tabBarButton: (props) => (
             <View
               style={{
-                display: route.name === "Web" ? "none" : "flex",
+                display: "flex",
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
@@ -205,7 +204,7 @@ export const MainTabNavigation: FunctionComponent = () => {
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
         <Tab.Screen name="AgentsTab" component={HomeNavigation} />
-        <Tab.Screen name="InboxTab" component={OtherNavigation} />
+        <Tab.Screen name="InboxTab" component={HomeNavigation} />
         <Tab.Screen name="ActivityTab" component={HomeNavigation} />
         <Tab.Screen name="MoreTab" component={SettingStackScreen} />
       </Tab.Navigator>

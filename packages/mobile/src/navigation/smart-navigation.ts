@@ -52,7 +52,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Register",
       },
       Home: {
-        upperScreenName: "Main",
+        upperScreenName: "HomeTab",
       },
       Send: {
         upperScreenName: "Others",
@@ -64,10 +64,10 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Others",
       },
       Portfolio: {
-        upperScreenName: "Main",
+        upperScreenName: "HomeTab",
       },
       NativeTokens: {
-        upperScreenName: "Main",
+        upperScreenName: "HomeTab",
       },
       Tokens: {
         upperScreenName: "Others",
@@ -163,7 +163,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Web",
       },
       Fetchhub: {
-        upperScreenName: "Main",
+        upperScreenName: "HomeTab",
       },
     }).withParams<{
       "Register.NewMnemonic": {

@@ -46,9 +46,17 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page", "padding-y-52"]) as ViewStyle}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <View style={style.flatten(["padding-x-36", "margin-y-12"]) as ViewStyle}>
+      <View
+        style={
+          style.flatten([
+            "padding-x-32",
+            "padding-top-52",
+            "padding-bottom-12",
+          ]) as ViewStyle
+        }
+      >
         <Text
           style={
             style.flatten([
@@ -60,18 +68,18 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          {"Deposit to your address to receive tokens"}
+          Deposit to your address to receive tokens
         </Text>
         <Text
           style={
             style.flatten([
-              "text-button3",
+              "h7",
               "color-platinum-100",
               "text-center",
             ]) as ViewStyle
           }
         >
-          {"Scan to code or use the address below to copy your deposit address"}
+          Scan to code or use the address below to copy your deposit address
         </Text>
       </View>
       <View style={style.flatten(["items-center", "margin-y-12"]) as ViewStyle}>
@@ -173,7 +181,8 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
         cardStyle={
           style.flatten([
             "background-color-coral-red@25%",
-            "margin-y-12",
+            "margin-top-12",
+            "margin-bottom-48",
           ]) as ViewStyle
         }
       />
