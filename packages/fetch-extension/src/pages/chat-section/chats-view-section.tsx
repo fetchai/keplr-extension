@@ -221,12 +221,7 @@ export const ChatsViewSection = observer(
           pagination: updatedPagination,
         } = await recieveMessages(
           targetAddress,
-          receiver?.lastSeenTimestamp &&
-            Number(group.lastMessageTimestamp) >
-              Number(receiver.lastSeenTimestamp) &&
-            page === 0
-            ? receiver?.lastSeenTimestamp
-            : null,
+          null,
           page,
           group.isDm,
           group.id,
