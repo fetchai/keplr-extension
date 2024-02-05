@@ -288,7 +288,8 @@ export const AddMember: FunctionComponent = observer(() => {
         0,
         group.isDm,
         group.id,
-        user.accessToken
+        user.accessToken,
+        chatStore.messagesStore
       );
       navigate(-1);
     }

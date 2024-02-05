@@ -115,18 +115,14 @@ export const GroupChatsViewSection = observer(
       const init = async () => {
         if (currentUser?.removedAt) {
           /// receive last updated message as message subscription not called
-          const recievedMessages = await recieveMessages(
+          await recieveMessages(
             groupId,
             null,
             0,
             false,
             groupId,
-            user.accessToken
-          );
-          chatStore.messagesStore.updateChatList(
-            recievedMessages.userAddress,
-            recievedMessages.messages,
-            recievedMessages.pagination
+            user.accessToken,
+            chatStore.messagesStore
           );
         }
         init();
@@ -179,19 +175,16 @@ export const GroupChatsViewSection = observer(
       if (group) {
         const page = pagination?.page + 1 || 0;
         setLoadingMessages(true);
-        const recievedMessages = await recieveMessages(
+        await recieveMessages(
           groupId,
           null,
           page,
           group.isDm,
           groupId,
-          user.accessToken
+          user.accessToken,
+          chatStore.messagesStore
         );
-        chatStore.messagesStore.updateChatList(
-          recievedMessages.userAddress,
-          recievedMessages.messages,
-          recievedMessages.pagination
-        );
+
         setLoadingMessages(false);
       } else {
         const newPagination = pagination;

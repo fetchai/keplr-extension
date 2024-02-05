@@ -109,19 +109,16 @@ export const ChatsViewSection = observer(
       if (group) {
         const page = pagination?.page + 1 || 0;
         setLoadingMessages(true);
-        const recievedMessages = await recieveMessages(
+        await recieveMessages(
           targetAddress,
           null,
           page,
           group.isDm,
           group.id,
-          user.accessToken
+          user.accessToken,
+          chatStore.messagesStore
         );
-        chatStore.messagesStore.updateChatList(
-          recievedMessages.userAddress,
-          recievedMessages.messages,
-          recievedMessages.pagination
-        );
+
         setLoadingMessages(false);
       } else {
         const newPagination = pagination;

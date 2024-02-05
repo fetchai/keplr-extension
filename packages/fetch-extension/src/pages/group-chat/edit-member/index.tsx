@@ -287,18 +287,14 @@ export const EditMember: FunctionComponent = observer(() => {
         const pagination = chatStore.messagesStore.groupsPagination;
         chatStore.messagesStore.setGroups(groups, pagination);
         /// fetching the group messages again
-        const recievedMessages = await recieveMessages(
+        await recieveMessages(
           group.id,
           null,
           0,
           group.isDm,
           group.id,
-          user.accessToken
-        );
-        chatStore.messagesStore.updateChatList(
-          recievedMessages.userAddress,
-          recievedMessages.messages,
-          recievedMessages.pagination
+          user.accessToken,
+          chatStore.messagesStore
         );
         analyticsStore.logEvent("remove_group_member_click", {
           action: "Remove",
@@ -371,18 +367,14 @@ export const EditMember: FunctionComponent = observer(() => {
           const pagintaion = chatStore.messagesStore.groupsPagination;
           chatStore.messagesStore.setGroups(groups, pagintaion);
           /// fetching the group messages again
-          const recievedMessages = await recieveMessages(
+          await recieveMessages(
             group.id,
             null,
             0,
             group.isDm,
             group.id,
-            user.accessToken
-          );
-          chatStore.messagesStore.updateChatList(
-            recievedMessages.userAddress,
-            recievedMessages.messages,
-            recievedMessages.pagination
+            user.accessToken,
+            chatStore.messagesStore
           );
         }
       } catch (e) {

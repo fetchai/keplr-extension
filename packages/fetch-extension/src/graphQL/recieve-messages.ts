@@ -8,7 +8,8 @@ export const recieveMessages = async (
   page: number,
   _isDm: boolean,
   _groupId: string,
-  accessToken: string
+  accessToken: string,
+  messageStore: MessagesStore
 ) => {
   const { messages, pagination } = await fetchMessages(
     _groupId,
@@ -32,11 +33,12 @@ export const recieveMessages = async (
         tmpPage,
         _isDm,
         _groupId,
-        accessToken
+        accessToken,
+        messageStore
       );
     }
+    messageStore.updateChatList(userAddress, messagesObj, pagination)
   }
-  return { userAddress, messages: messagesObj, pagination };
 };
 
 export const recieveGroups = async (
