@@ -29,27 +29,27 @@ export const ProposalDetail: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [closed, setClosed] = useState(true);
   const [isSendingTx, setIsSendingTx] = useState(false);
-  const reduxProposals: ProposalSetup = proposalStore.proposals;
+  const storedProposals: ProposalSetup = proposalStore.proposals;
   const [category, setCategory] = useState(1);
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   useEffect(() => {
-    let proposalItem = reduxProposals.activeProposals.find(
+    let proposalItem = storedProposals.activeProposals.find(
       (proposal) => proposal.proposal_id === id
     );
     if (!proposalItem) {
-      proposalItem = reduxProposals.closedProposals.find(
+      proposalItem = storedProposals.closedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
     if (!proposalItem) {
-      proposalItem = reduxProposals.votedProposals.find(
+      proposalItem = storedProposals.votedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
     setIsLoading(false);
     setProposal(proposalItem);
-    const cat = reduxProposals.votedProposals.find(
+    const cat = storedProposals.votedProposals.find(
       (proposal) => proposal.proposal_id === id
     )
       ? 3

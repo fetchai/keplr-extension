@@ -28,9 +28,9 @@ export const Proposals: FunctionComponent = () => {
     useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [proposals, setProposals] = useState<ProposalType[]>([]);
-  const reduxProposals = proposalStore.proposals;
+  const storedProposals = proposalStore.proposals;
   useEffect(() => {
-    if (reduxProposals.closedProposals.length === 0) {
+    if (storedProposals.closedProposals.length === 0) {
       setIsLoading(true);
     }
     (async () => {
@@ -102,13 +102,13 @@ export const Proposals: FunctionComponent = () => {
     let newProposal: ProposalType[];
 
     if (selectedIndex === 1) {
-      newProposal = reduxProposals.activeProposals;
+      newProposal = storedProposals.activeProposals;
     } else if (selectedIndex === 2) {
-      newProposal = reduxProposals.closedProposals;
+      newProposal = storedProposals.closedProposals;
     } else if (selectedIndex === 3) {
-      newProposal = reduxProposals.votedProposals;
+      newProposal = storedProposals.votedProposals;
     } else {
-      newProposal = reduxProposals.allProposals;
+      newProposal = storedProposals.allProposals;
     }
 
     newProposal = newProposal.filter((proposal: ProposalType) => {

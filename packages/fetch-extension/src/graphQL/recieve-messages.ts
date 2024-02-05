@@ -1,3 +1,4 @@
+import { MessagesStore } from "@keplr-wallet/stores/build/chat/message-store";
 import { CHAT_PAGE_COUNT } from "../config.ui.var";
 import { fetchGroups, fetchMessages } from "./messages-api";
 
@@ -42,6 +43,7 @@ export const recieveGroups = async (
   page: number,
   userAddress: string,
   accessToken: string,
+  messageStore: MessagesStore,
   addressQueryString: string = "",
   addressesList: string[] = []
 ) => {
@@ -66,10 +68,7 @@ export const recieveGroups = async (
       }
       groupsObj[contactAddress] = group;
     });
+    messageStore.setGroups(groupsObj, pagination);
+    messageStore.setIsChatGroupPopulated(true);
   }
-  return {
-    groups: groupsObj,
-    pagination: pagination,
-    isChatGroupPopulated: true,
-  };
 };

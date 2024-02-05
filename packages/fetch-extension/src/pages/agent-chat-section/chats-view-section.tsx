@@ -204,16 +204,12 @@ export const ChatsViewSection = observer(
             setProcessingLastMessage(true);
           }
           // scrollToBottom();
-          const recievedGroups = await recieveGroups(
+          await recieveGroups(
             0,
             accountInfo.bech32Address,
-            user.accessToken
+            user.accessToken,
+            chatStore.messagesStore
           );
-          chatStore.messagesStore.setGroups(
-            recievedGroups.groups,
-            recievedGroups.pagination
-          );
-          chatStore.messagesStore.setIsChatGroupPopulated(true);
           if (isCommand && commandFound) {
             analyticsStore.logEvent(commandFound.eventName);
           }

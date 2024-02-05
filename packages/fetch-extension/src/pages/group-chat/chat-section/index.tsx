@@ -128,15 +128,13 @@ export const GroupChatSection: FunctionComponent = observer(() => {
       chatStore.messagesStore.updateLatestSentMessage(message);
       if (message) {
         await leaveGroup(groupId, user.accessToken);
-        const receiveGroups = recieveGroups(
+        recieveGroups(
           0,
           accountInfo.bech32Address,
-          user.accessToken
+          user.accessToken,
+          chatStore.messagesStore
         );
-        chatStore.messagesStore.setGroups(
-          (await receiveGroups).groups,
-          (await receiveGroups).isChatGroupPopulated
-        );
+
         const messagesObj: any = { [message.id]: message };
         const messages = { ...userChats[groupId].messages, ...messagesObj };
         const pagination = chatStore.messagesStore.groupsPagination;

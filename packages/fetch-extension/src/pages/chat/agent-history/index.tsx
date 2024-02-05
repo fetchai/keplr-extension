@@ -42,16 +42,12 @@ export const AgentsHistory: React.FC<{
     if (!loadingGroups) {
       const page = groupsPagination?.page + 1 || 0;
       setLoadingGroups(true);
-      const recievedGroups = await recieveGroups(
+      await recieveGroups(
         page,
         accountInfo.bech32Address,
-        chatStore.userDetailsStore.accessToken
+        chatStore.userDetailsStore.accessToken,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.setGroups(
-        recievedGroups.groups,
-        recievedGroups.pagination
-      );
-      chatStore.messagesStore.setIsChatGroupPopulated(true);
       setLoadingGroups(false);
       setLoadingChats(false);
     }

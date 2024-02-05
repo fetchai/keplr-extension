@@ -7,7 +7,6 @@ import closeIcon from "@assets/icon/close-grey.png";
 import { observer } from "mobx-react-lite";
 
 export const ChatDisclaimer = observer(() => {
-  // const userState = useSelector(userDetails);
   const { chainStore, accountStore, keyRingStore, chatStore } = useStore();
   const userState = chatStore.userDetailsStore;
 

@@ -238,16 +238,12 @@ export const GroupChatsViewSection = observer(
             setNewMessage("");
           }
           // scrollToBottom();
-          const recievedGroups: any = recieveGroups(
+          recieveGroups(
             0,
             accountInfo.bech32Address,
-            user.accessToken
+            user.accessToken,
+            chatStore.messagesStore
           );
-          chatStore.messagesStore.setGroups(
-            recievedGroups.groups,
-            recievedGroups.pagination
-          );
-          chatStore.messagesStore.setIsChatGroupPopulated(true);
         } catch (error) {
           console.log("failed to send : ", error);
         } finally {

@@ -65,7 +65,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
             (followOrganisationList: any) => {
               setSelectedOrg(followOrganisationList);
 
-              /// Updating followed orgs in redux
+              /// Updating followed orgs
               chatStore.userDetailsStore.setNotifications({
                 organisations: followOrganisationList,
               });

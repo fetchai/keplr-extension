@@ -44,7 +44,6 @@ const ChatView = observer(() => {
     chatStore,
   } = useStore();
   const userState = chatStore.userDetailsStore;
-
   const chatStorePopulated = chatStore.messagesStore.userChatStorePopulated;
   const chatSubscriptionActive =
     chatStore.messagesStore.userChatSubscriptionActive;
@@ -102,16 +101,13 @@ const ChatView = observer(() => {
       const addressesList = Object.keys(addresses).filter((contact) =>
         addresses[contact].toLowerCase().includes(searchString.toLowerCase())
       );
-      const recievedGroups = await recieveGroups(
+      await recieveGroups(
         0,
         walletAddress,
-        searchString,
         userState.accessToken,
+        chatStore.messagesStore,
+        searchString,
         addressesList
-      );
-      chatStore.messagesStore.setGroups(
-        await recievedGroups.groups,
-        await recievedGroups.pagination
       );
     }
   }, 1000);
@@ -121,18 +117,23 @@ const ChatView = observer(() => {
       setLoadingChats(true);
       try {
         if (!chatSubscriptionActive) {
-          groupsListener(walletAddress, userState.accessToken);
-          messageListener(walletAddress, userState.accessToken);
+          groupsListener(
+            walletAddress,
+            userState.accessToken,
+            chatStore.messagesStore
+          );
+          messageListener(
+            walletAddress,
+            userState.accessToken,
+            chatStore.messagesStore
+          );
         }
         if (!chatStorePopulated) {
-          const recievedGroups = await recieveGroups(
+          await recieveGroups(
             0,
             walletAddress,
-            userState.accessToken
-          );
-          chatStore.messagesStore.setGroups(
-            await recievedGroups.groups,
-            await recievedGroups.pagination
+            userState.accessToken,
+            chatStore.messagesStore
           );
           const list = await fetchBlockList(userState.accessToken);
           chatStore.messagesStore.setBlockedList(list);

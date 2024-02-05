@@ -26,6 +26,7 @@ import {
 } from "./messages-queries";
 import { recieveGroups } from "./recieve-messages";
 import { NewMessageUpdate } from "@chatTypes";
+import { MessagesStore } from "@keplr-wallet/stores/build/chat/message-store";
 let querySubscription: ObservableSubscription;
 let queryGroupSubscription: ObservableSubscription;
 
@@ -282,7 +283,11 @@ export const deliverGroupMessages = async (
   }
 };
 
-export const messageListener = (userAddress: string, accessToken: string) => {
+export const messageListener = (
+  userAddress: string,
+  accessToken: string,
+  messageStore: MessagesStore
+) => {
   const wsLink = createWSLink(accessToken);
   const splitLink = split(
     ({ query }) => {
@@ -314,12 +319,11 @@ export const messageListener = (userAddress: string, accessToken: string) => {
         /// Distinguish between Group and Single chat
         const id = groupId.split("-").length == 2 ? target : userAddress;
 
+        messageStore.updateMessages(data.newMessageUpdate.message);
         /// Adding timeout for temporaray as Remove At Group subscription not working
         setTimeout(() => {
-          recieveGroups(0, id, accessToken);
+          recieveGroups(0, id, accessToken, messageStore);
         }, 100);
-
-        return data.newMessageUpdate.message;
       },
       error(err) {
         console.error("err", err);
@@ -335,7 +339,11 @@ export const messageListener = (userAddress: string, accessToken: string) => {
     });
 };
 
-export const groupsListener = (userAddress: string, accessToken: string) => {
+export const groupsListener = (
+  userAddress: string,
+  accessToken: string,
+  messageStore: MessagesStore
+) => {
   const wsLink = createWSLink(accessToken);
   const splitLink = split(
     ({ query }) => {
@@ -374,7 +382,7 @@ export const groupsListener = (userAddress: string, accessToken: string) => {
         } else {
           group.userAddress = group.id;
         }
-        return group;
+        messageStore.updateGroupsData(group);
       },
       error(err) {
         console.error("err", err);

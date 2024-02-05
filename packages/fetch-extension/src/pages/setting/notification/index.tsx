@@ -37,7 +37,7 @@ export const SettingNotifications: FunctionComponent = () => {
       notificationInfo.isNotificationOn ? "false" : "true"
     );
 
-    /// Updating the notification status in redux
+    /// Updating the notification status
     chatStore.userDetailsStore.setNotifications({
       isNotificationOn: !notificationInfo.isNotificationOn,
     });

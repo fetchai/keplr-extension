@@ -20,12 +20,13 @@ export const Proposal: FunctionComponent<Props> = (props) => {
     useStore();
   const navigate = useNavigate();
   let icon, color, background, name;
-  const reduxProposals: ProposalSetup = proposalStore.proposals;
+  const storedProposals: ProposalSetup = proposalStore.proposals;
+
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [alreadyVoted, setAlreadyVoted] = useState("");
   useEffect(() => {
     (async () => {
-      const proposalItem = reduxProposals.votedProposals.find(
+      const proposalItem = storedProposals.votedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
       if (!proposalItem) {

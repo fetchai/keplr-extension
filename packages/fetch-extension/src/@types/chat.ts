@@ -79,7 +79,6 @@ export interface Pagination {
   lastPage: number;
 }
 
-//Redux Selectors Type Definitions
 export interface Messages {
   [key: string]: Message;
 }

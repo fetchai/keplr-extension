@@ -47,16 +47,12 @@ export const ChatsGroupHistory: React.FC<ChatsGroupHistoryProps> = observer(
       if (!loadingGroups) {
         const page = groupsPagination?.page + 1 || 0;
         setLoadingGroups(true);
-        const recieveGroupsData = await recieveGroups(
+        await recieveGroups(
           page,
           accountInfo.bech32Address,
-          userState.accessToken
+          userState.accessToken,
+          chatStore.messagesStore
         );
-        chatStore.messagesStore.setGroups(
-          recieveGroupsData.groups,
-          recieveGroupsData.pagination
-        );
-        chatStore.messagesStore.setIsChatGroupPopulated(true);
         setLoadingGroups(false);
         setLoadingChats(false);
       }

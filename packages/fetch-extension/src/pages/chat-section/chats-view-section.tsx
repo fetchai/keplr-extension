@@ -42,12 +42,12 @@ export const ChatsViewSection = observer(
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
     const preLoadedChats = useMemo(() => {
-      return (
-        userChats[targetAddress] || {
-          messages: {},
-          pagination: { lastPage: 0, page: -1, pageCount: CHAT_PAGE_COUNT },
-        }
-      );
+      return userChats[targetAddress]
+        ? { ...userChats[targetAddress] }
+        : {
+            messages: {},
+            pagination: { lastPage: 0, page: -1, pageCount: CHAT_PAGE_COUNT },
+          };
     }, [Object.values(userChats[targetAddress]?.messages || []).length]);
     const [messages, setMessages] = useState<any[]>(
       Object.values(preLoadedChats?.messages) || []
@@ -292,14 +292,11 @@ export const ChatsViewSection = observer(
             setNewMessage("");
           }
           // scrollToBottom();
-          const receiveGroups = recieveGroups(
+          recieveGroups(
             0,
             accountInfo.bech32Address,
-            user.accessToken
-          );
-          chatStore.messagesStore.setGroups(
-            (await receiveGroups).groups,
-            (await receiveGroups).isChatGroupPopulated
+            user.accessToken,
+            chatStore.messagesStore
           );
         } catch (error) {
           console.log("failed to send : ", error);
