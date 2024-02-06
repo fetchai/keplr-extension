@@ -265,7 +265,6 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           loading={
             isSendingTx || accountInfo.txTypeInProgress === "withdrawRewards"
           }
-          loadingSpinnerColor="color-indigo-900"
         />
       ) : null}
     </BlurBackground>

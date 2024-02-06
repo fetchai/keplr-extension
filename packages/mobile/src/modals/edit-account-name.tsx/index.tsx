@@ -7,7 +7,7 @@ import { KeyboardSpacerView } from "components/keyboard";
 import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 
 export const EditAccountNameModal: FunctionComponent<{
@@ -58,8 +58,8 @@ export const EditAccountNameModal: FunctionComponent<{
             activeOpacity={0.3}
             onPress={() => close()}
           >
-            <IconView
-              img={<XmarkIcon color={"white"} />}
+            <IconButton
+              icon={<XmarkIcon color={"white"} />}
               backgroundBlur={false}
               blurIntensity={20}
               borderRadius={50}

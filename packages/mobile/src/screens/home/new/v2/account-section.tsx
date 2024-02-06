@@ -14,7 +14,10 @@ import {
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { useStore } from "stores/index";
 import { IconButton } from "components/new/button/icon";
-import { WalletCardModel } from "components/new/wallet-card/wallet-card";
+import {
+  ManageWalletOption,
+  WalletCardModel,
+} from "components/new/wallet-card/wallet-card";
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
 import { EditAccountNameModal } from "modals/edit-account-name.tsx";
 import { PasswordInputModal } from "modals/password-input/modal";
@@ -265,26 +268,34 @@ export const AccountSection: FunctionComponent<{
         isOpen={isOpenModal}
         title="Manage Wallet"
         close={() => setIsOpenModal(false)}
-        onSelectWallet={(option: string) => {
-          if (option === "change_wallet") {
-            setChangeWalletModal(true);
-            setIsOpenModal(false);
-          } else if (option === "rename_wallet") {
-            keyRingStore.multiKeyStoreInfo.map((keyStore) => {
-              if (keyStore.meta?.["name"] === account.name) {
-                setSelectedKeyStore(keyStore);
-              }
-            });
-            setIsRenameModalOpen(true);
-            setIsOpenModal(false);
-          } else if (option === "add_new_wallet") {
-            analyticsStore.logEvent("Add additional account started");
-            navigation.navigate("Register", {
-              screen: "Register.Intro",
-            });
-          } else {
-            setIsDeleteModalOpen(true);
-            setIsOpenModal(false);
+        onSelectWallet={(option: ManageWalletOption) => {
+          switch (option) {
+            case ManageWalletOption.addNewWallet:
+              analyticsStore.logEvent("Add additional account started");
+              navigation.navigate("Register", {
+                screen: "Register.Intro",
+              });
+              break;
+
+            case ManageWalletOption.changeWallet:
+              setChangeWalletModal(true);
+              setIsOpenModal(false);
+              break;
+
+            case ManageWalletOption.renameWallet:
+              keyRingStore.multiKeyStoreInfo.map((keyStore) => {
+                if (keyStore.meta?.["name"] === account.name) {
+                  setSelectedKeyStore(keyStore);
+                }
+              });
+              setIsRenameModalOpen(true);
+              setIsOpenModal(false);
+              break;
+
+            case ManageWalletOption.deleteWallet:
+              setIsDeleteModalOpen(true);
+              setIsOpenModal(false);
+              break;
           }
         }}
       />

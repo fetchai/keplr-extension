@@ -177,7 +177,6 @@ export const SendPhase2: FunctionComponent<{
           ) as ViewStyle
         }
         rippleColor="black@50%"
-        textStyle={style.flatten(["color-indigo-900"]) as ViewStyle}
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "send"}
         onPress={async () => {

@@ -268,9 +268,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                 "background-color-white",
                 "border-radius-32",
               ])}
-              textStyle={{
-                color: "#0B1742",
-              }}
               text="Sign in"
               rightIcon={
                 <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
@@ -279,7 +276,6 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               }
               size="large"
               loading={isLoading}
-              loadingSpinnerColor="color-indigo-900"
               rippleColor="black@50%"
               onPress={tryUnlock}
             />

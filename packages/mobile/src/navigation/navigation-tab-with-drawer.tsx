@@ -24,7 +24,10 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { HomeNavigation } from "navigation/home-navigation";
 import { SettingStackScreen } from "navigation/setting-navigation";
-import { QuickTabOption } from "screens/home/new/quick-tab-options";
+import {
+  QuickTabOption,
+  QuickTabOptions,
+} from "screens/home/new/quick-tab-options";
 import Toast from "react-native-toast-message";
 import { DrawerContent } from "components/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -213,27 +216,28 @@ export const MainTabNavigation: FunctionComponent = () => {
         close={() => {
           setQuickOptionEnable(false);
         }}
-        onPress={(event) => {
+        onPress={(event: QuickTabOptions) => {
           switch (event) {
-            case "Receive":
-              navigation.navigate("Others", {
+            case QuickTabOptions.receive:
+              return navigation.navigate("Others", {
                 screen: "Receive",
                 params: { chainId: chainId },
               });
-              break;
-            case "Send":
+
+            case QuickTabOptions.send:
               return navigation.navigate("Others", {
                 screen: "SendNew",
                 params: {
                   currency: chainStore.current.stakeCurrency.coinMinimalDenom,
                 },
               });
-            case "Earn":
+
+            case QuickTabOptions.earn:
               return navigation.navigate("Others", {
                 screen: "Staking.Dashboard",
               });
 
-            case "Bridge":
+            case QuickTabOptions.bridge:
               return Toast.show({
                 type: "success",
                 text1: `Bridge is under development`,

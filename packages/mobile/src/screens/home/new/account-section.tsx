@@ -21,14 +21,17 @@ import {
 } from "@react-navigation/native";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { useStore } from "stores/index";
-import { IconView } from "components/new/button/icon";
-import { WalletCardModel } from "components/new/wallet-card/wallet-card";
+import { IconButton } from "components/new/button/icon";
+import {
+  ManageWalletOption,
+  WalletCardModel,
+} from "components/new/wallet-card/wallet-card";
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
 import { EditAccountNameModal } from "modals/edit-account-name.tsx";
 import { PasswordInputModal } from "modals/password-input/modal";
 import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
-import { TreeDotIcon } from "components/new/icon/tree-dot";
+import { ThreeDotIcon } from "components/new/icon/three-dot";
 
 export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
   observer(({ containtStyle }) => {
@@ -87,7 +90,7 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
     ];
 
     const renderItem = ({ item }: any) => {
-      const selected = item.id === selectedId ? true : false;
+      const selected = item.id === selectedId;
       return (
         <BlurButton
           backgroundBlur={selected}
@@ -164,9 +167,9 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
                 activeOpacity={0.6}
                 onPress={() => setIsOpenModal(true)}
               >
-                <IconView
+                <IconButton
                   backgroundBlur={true}
-                  img={<TreeDotIcon />}
+                  icon={<ThreeDotIcon />}
                   iconStyle={
                     style.flatten([
                       "padding-10",
@@ -232,21 +235,27 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
           isOpen={isOpenModal}
           title="Manage Wallet"
           close={() => setIsOpenModal(false)}
-          onSelectWallet={(option: string) => {
-            if (option === "change_wallet") {
-              setChangeWalletModal(true);
-              setIsOpenModal(false);
-            } else if (option === "rename_wallet") {
-              keyRingStore.multiKeyStoreInfo.map((keyStore) => {
-                if (keyStore.meta?.["name"] === account.name) {
-                  setSelectedKeyStore(keyStore);
-                }
-              });
-              setIsRenameModalOpen(true);
-              setIsOpenModal(false);
-            } else {
-              setIsDeleteModalOpen(true);
-              setIsOpenModal(false);
+          onSelectWallet={(option: ManageWalletOption) => {
+            switch (option) {
+              case ManageWalletOption.changeWallet:
+                setChangeWalletModal(true);
+                setIsOpenModal(false);
+                break;
+
+              case ManageWalletOption.renameWallet:
+                keyRingStore.multiKeyStoreInfo.map((keyStore) => {
+                  if (keyStore.meta?.["name"] === account.name) {
+                    setSelectedKeyStore(keyStore);
+                  }
+                });
+                setIsRenameModalOpen(true);
+                setIsOpenModal(false);
+                break;
+
+              case ManageWalletOption.deleteWallet:
+                setIsDeleteModalOpen(true);
+                setIsOpenModal(false);
+                break;
             }
           }}
         />

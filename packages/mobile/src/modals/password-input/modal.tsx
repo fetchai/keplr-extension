@@ -7,7 +7,7 @@ import { TextInput } from "components/input";
 import { Button } from "components/button";
 import { KeyboardSpacerView } from "components/keyboard";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { IconView } from "components/new/button/icon";
+import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 
 export const PasswordInputModal: FunctionComponent<{
@@ -58,8 +58,8 @@ export const PasswordInputModal: FunctionComponent<{
             activeOpacity={0.3}
             onPress={() => close()}
           >
-            <IconView
-              img={<XmarkIcon color={"white"} />}
+            <IconButton
+              icon={<XmarkIcon color={"white"} />}
               backgroundBlur={false}
               blurIntensity={20}
               borderRadius={50}

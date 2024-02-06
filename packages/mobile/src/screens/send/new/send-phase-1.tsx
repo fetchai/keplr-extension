@@ -137,13 +137,11 @@ export const SendPhase1: FunctionComponent<{
           ) as ViewStyle
         }
         rippleColor="black@50%"
-        textStyle={style.flatten(["color-indigo-900"]) as ViewStyle}
         disabled={
           sendConfigs.amountConfig.amount === "" ||
           sendConfigs.amountConfig.amount == "0" ||
           !txStateIsValid
         }
-        loading={account.txTypeInProgress === "send"}
         onPress={() => setIsNext(true)}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

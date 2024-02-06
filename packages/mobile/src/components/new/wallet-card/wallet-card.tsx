@@ -12,11 +12,18 @@ import { RectButton } from "components/rect-button";
 import { PlusIcon } from "../../icon";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
+export enum ManageWalletOption {
+  addNewWallet,
+  changeWallet,
+  renameWallet,
+  deleteWallet,
+}
+
 export const WalletCardModel: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   title: string;
-  onSelectWallet: (option: string) => void;
+  onSelectWallet: (option: ManageWalletOption) => void;
 }> = registerModal(
   ({ close, title, isOpen, onSelectWallet }) => {
     const style = useStyle();
@@ -56,7 +63,7 @@ export const WalletCardModel: FunctionComponent<{
             <RectButton
               onPress={() => {
                 close();
-                onSelectWallet("add_new_wallet");
+                onSelectWallet(ManageWalletOption.addNewWallet);
               }}
               style={style.flatten(["border-radius-12"]) as ViewStyle}
               activeOpacity={0.5}
@@ -97,7 +104,7 @@ export const WalletCardModel: FunctionComponent<{
           >
             <RectButton
               onPress={() => {
-                onSelectWallet("change_wallet");
+                onSelectWallet(ManageWalletOption.changeWallet);
               }}
               style={style.flatten(["border-radius-12"]) as ViewStyle}
               activeOpacity={0.5}
@@ -138,7 +145,7 @@ export const WalletCardModel: FunctionComponent<{
           >
             <RectButton
               onPress={() => {
-                onSelectWallet("rename_wallet");
+                onSelectWallet(ManageWalletOption.renameWallet);
               }}
               style={style.flatten(["border-radius-12"]) as ViewStyle}
               activeOpacity={0.5}
@@ -179,7 +186,7 @@ export const WalletCardModel: FunctionComponent<{
           >
             <RectButton
               onPress={() => {
-                onSelectWallet("delete_wallet");
+                onSelectWallet(ManageWalletOption.deleteWallet);
               }}
               style={style.flatten(["border-radius-12"]) as ViewStyle}
               activeOpacity={0.5}

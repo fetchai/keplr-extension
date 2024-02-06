@@ -25,7 +25,7 @@ export const AssetsSection: FunctionComponent<{
   ];
 
   const renderItem = ({ item }: any) => {
-    const selected = selectId === item.id ? true : false;
+    const selected = selectId === item.id;
     return (
       <BlurButton
         backgroundBlur={selected}

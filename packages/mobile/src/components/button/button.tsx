@@ -18,7 +18,6 @@ export const Button: FunctionComponent<{
   leftIcon?: ReactElement | ((color: string) => ReactElement);
   rightIcon?: ReactElement | ((color: string) => ReactElement);
   loading?: boolean;
-  loadingSpinnerColor?: string;
   disabled?: boolean;
 
   onPress?: () => void;
@@ -38,7 +37,6 @@ export const Button: FunctionComponent<{
   rightIcon,
   loading = false,
   disabled = false,
-  loadingSpinnerColor,
   onPress,
   containerStyle,
   style: buttonStyle,
@@ -99,23 +97,23 @@ export const Button: FunctionComponent<{
       case "fill":
         if (disabled) {
           if (color === "primary") {
-            return ["color-white", "dark:color-platinum-200"];
+            return ["color-indigo-900"];
           } else {
-            return [`color-${baseColor}-200`, `dark:color-${baseColor}-500`];
+            return [`color-${baseColor}-200`];
           }
         }
 
         if (color === "primary") {
-          return ["color-white", `dark:color-${baseColor}-50`];
+          return ["color-indigo-900"];
         } else {
-          return ["color-white"];
+          return ["color-indigo-900"];
         }
       case "light":
         if (disabled) {
           if (color === "primary") {
-            return [`color-${baseColor}-200`, "dark:color-platinum-200"];
+            return [`color-${baseColor}-200`];
           } else {
-            return [`color-${baseColor}-200`, `dark:color-${baseColor}-500`];
+            return [`color-${baseColor}-200`];
           }
         }
 
@@ -127,23 +125,23 @@ export const Button: FunctionComponent<{
         ];
       case "outline":
         if (disabled) {
-          return [`color-${baseColor}-200`, `dark:color-${baseColor}-600`];
+          return [`color-${baseColor}-200`];
         }
 
         return [`color-${baseColor}-400`];
       case "text":
         if (disabled) {
           if (color === "primary") {
-            return ["color-gray-200", "dark:color-platinum-300"];
+            return ["color-gray-200"];
           } else {
-            return [`color-${baseColor}-200`, `dark:color-${baseColor}-600`];
+            return [`color-${baseColor}-200`];
           }
         }
 
         if (color === "primary") {
-          return [`color-${baseColor}-400`, "dark:color-platinum-50"];
+          return [`color-${baseColor}-400`];
         } else {
-          return [`color-${baseColor}-400`, `dark:color-${baseColor}-300`];
+          return [`color-${baseColor}-400`];
         }
     }
   })();
@@ -371,10 +369,7 @@ export const Button: FunctionComponent<{
             <LoadingSpinner
               color={
                 // TODO: Color for loading spinner in button is not yet determined.
-                style.flatten(
-                  [...(textColorDefinition as any)],
-                  [loadingSpinnerColor]
-                ).color
+                style.flatten([...(textColorDefinition as any)]).color
               }
               size={20}
             />

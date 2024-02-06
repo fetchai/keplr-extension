@@ -11,19 +11,43 @@ import { StakeIcon } from "components/new/icon/stake-icon";
 import { NewBridgeIcon } from "components/new/icon/new-bridge-icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 
+export enum QuickTabOptions {
+  receive,
+  send,
+  earn,
+  bridge,
+}
+
 export const QuickTabOption: FunctionComponent<{
   containerStyle?: ViewStyle;
   isOpen: boolean;
   close: () => void;
-  onPress: (event: string) => void;
+  onPress: (event: QuickTabOptions) => void;
 }> = registerModal(
   observer(({ containerStyle, isOpen, close, onPress }) => {
     const style = useStyle();
+
     const sectionCardList = [
-      { title: "Receive", icon: <ArrowDownIcon color={"#000D3D"} /> },
-      { title: "Send", icon: <ArrowUpIcon color={"#000D3D"} /> },
-      { title: "Earn", icon: <StakeIcon color={"#000D3D"} /> },
-      { title: "Bridge", icon: <NewBridgeIcon color={"#000D3D"} /> },
+      {
+        id: QuickTabOptions.receive,
+        title: "Receive",
+        icon: <ArrowDownIcon color={"#000D3D"} />,
+      },
+      {
+        id: QuickTabOptions.send,
+        title: "Send",
+        icon: <ArrowUpIcon color={"#000D3D"} />,
+      },
+      {
+        id: QuickTabOptions.earn,
+        title: "Earn",
+        icon: <StakeIcon color={"#000D3D"} />,
+      },
+      {
+        id: QuickTabOptions.bridge,
+        title: "Bridge",
+        icon: <NewBridgeIcon color={"#000D3D"} />,
+      },
     ];
 
     if (!isOpen) {
@@ -47,7 +71,7 @@ export const QuickTabOption: FunctionComponent<{
           containerStyle={style.flatten(["items-center"])}
           onPress={() => {
             close();
-            onPress(item.title);
+            onPress(item.id);
           }}
         />
       );
@@ -107,6 +131,5 @@ export const QuickTabOption: FunctionComponent<{
   }),
   {
     disableSafeArea: true,
-    // disableClosingOnBackdropPress: true,
   }
 );
