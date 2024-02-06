@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { HeaderLayout } from "../../../../new-layouts";
 import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
@@ -12,6 +12,7 @@ export const VerifyDomain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const notification = useNotification();
+
   const { domainName, agentName, verificationString } = location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
@@ -40,6 +41,7 @@ export const VerifyDomain = () => {
           },
         });
       }
+      window.localStorage.removeItem("verificationData");
     } catch (error) {
       console.error("Error verifying domain:", error);
       notification.push({
@@ -53,6 +55,7 @@ export const VerifyDomain = () => {
         },
       });
       setisVerified(false);
+      window.localStorage.removeItem("verificationData");
     }
     setIsVerifying(false);
   };
@@ -95,26 +98,6 @@ export const VerifyDomain = () => {
     }
   };
 
-  const handleUnload = useCallback(async () => {
-    const data = {
-      isVerified: isVerified,
-      timestamp: Date.now(),
-      pathname: window.location.hash,
-      domain: domainName,
-      agent: agentName,
-      verification_string: verificationString,
-      approval_token: approvalToken,
-    };
-    window.localStorage.setItem("verificationData", JSON.stringify(data));
-  }, [agentName, approvalToken, domainName, isVerified, verificationString]);
-
-  useEffect(() => {
-    window.addEventListener("unload", handleUnload);
-    return () => {
-      window.removeEventListener("unload", handleUnload);
-    };
-  }, [handleUnload]);
-
   const copyVerificationString = useCallback(
     async (verificationString) => {
       try {
@@ -145,7 +128,9 @@ export const VerifyDomain = () => {
       alternativeTitle={""}
       onBackButton={() => {
         navigate("/agent-name-service/register-new");
+        window.localStorage.removeItem("verificationData");
       }}
+      onNavbarClicked={() => window.localStorage.removeItem("verificationData")}
       showBottomMenu={true}
     >
       {isRegisterInProgress ? (

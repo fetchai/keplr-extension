@@ -234,7 +234,7 @@ export const ANS_CONFIG: {
           network: "testnet",
           rpc: "https://rpc-dorado.fetch.ai:443",
           contractAddress:
-            "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+            "fetch1kewgfwxwtuxcnppr547wj6sd0e5fkckyp48dazsh89hll59epgpspmh0tn",
           validateAgentAddressContract:
             "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
           oracleAgentContract:

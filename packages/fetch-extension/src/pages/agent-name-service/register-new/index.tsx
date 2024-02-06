@@ -150,7 +150,10 @@ export const RegisterAgentDomains = observer(() => {
       alternativeTitle={""}
       onBackButton={() => {
         navigate("/agent-name-service");
+        window.localStorage.removeItem("verificationData");
       }}
+      
+      // onNavbarClicked={() => window.localStorage.removeItem("verificationData")}
       showBottomMenu={true}
     >
       {isRegisterInProgress ? (

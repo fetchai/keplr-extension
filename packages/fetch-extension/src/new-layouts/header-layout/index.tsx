@@ -12,6 +12,7 @@ export interface Props extends HeaderProps {
   style?: CSSProperties;
   innerStyle?: CSSProperties;
   showBottomMenu?: boolean;
+  onNavbarClicked?: any;
 }
 
 export const HeaderLayout: FunctionComponent<Props> = (props) => {
@@ -42,7 +43,9 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
           {children}
         </div>
 
-        {(props.showBottomMenu ?? true) && <BottomNav />}
+        {(props.showBottomMenu ?? true) && (
+          <BottomNav onNavbarClicked={props.onNavbarClicked} />
+        )}
       </div>
     </MenuProvider>
   );

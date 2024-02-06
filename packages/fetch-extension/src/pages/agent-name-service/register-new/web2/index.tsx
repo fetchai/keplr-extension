@@ -94,6 +94,16 @@ export const Web2 = observer(() => {
           verificationString: verificationString,
         },
       });
+
+      const data = {
+        verification_string: verificationString,
+        timestamp: Date.now(),
+        pathname: "#/agent-name-service/register-new/verify-domain",
+        domain: domain,
+        agent: agentAddressSearchValue,
+      };
+      window.localStorage.setItem("verificationData", JSON.stringify(data));
+
     } catch (err) {
       console.log("Error minting domain:", err);
       notification.push({

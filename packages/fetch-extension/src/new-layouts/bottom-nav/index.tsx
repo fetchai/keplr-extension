@@ -35,9 +35,13 @@ const bottomNav = [
   },
 ];
 
-export const BottomNav = () => {
+export const BottomNav = ({
+  onNavbarClicked,
+}: {
+  onNavbarClicked?: () => void;
+}) => {
   return (
-    <div className={style["bottomNavContainer"]}>
+    <div className={style["bottomNavContainer"]} onClick={onNavbarClicked}>
       <HomeTab />
       <NotificationTab />
       <ChatTab />

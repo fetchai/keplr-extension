@@ -141,24 +141,26 @@ export const MainPage: FunctionComponent = observer(() => {
   useEffect(() => {
     const handleLoad = () => {
       const data: any = window.localStorage.getItem("verificationData");
+      if (!data) return;
       const VerificationData = JSON.parse(data);
       const CurrTime = Date.now();
       if (
+        VerificationData &&
         !VerificationData.isVerified &&
-        CurrTime - VerificationData.timestamp <= 300000
+        CurrTime - VerificationData.timestamp <= 1800000
       ) {
         navigate("/agent-name-service/register-new/verify-domain", {
           state: {
             domainName: VerificationData.domain,
             agentName: VerificationData.agent,
-            verificationString: VerificationData.approval_token,
+            verificationString: VerificationData.verification_string,
           },
         });
       }
     };
-
+    // Check if the load event is fired immediately
+    handleLoad();
     window.addEventListener("load", handleLoad);
-
     return () => {
       window.removeEventListener("load", handleLoad);
     };

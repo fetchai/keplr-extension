@@ -27,7 +27,7 @@ export const AgentDomainDetails = () => {
       canChangeChainInfo={false}
       alternativeTitle={domainName}
       onBackButton={() => {
-        navigate("/more");
+        navigate("/agent-name-service");
       }}
       showBottomMenu={true}
     >
