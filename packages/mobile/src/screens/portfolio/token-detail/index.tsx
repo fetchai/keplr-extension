@@ -1,21 +1,13 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Platform, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { PageWithScrollViewInBottomTabView } from "components/page";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TokenBalanceSection } from "screens/portfolio/token-detail/token-balance-section";
 import { TokenGraphSection } from "screens/portfolio/token-detail/token-graph-section";
 import { IconButton } from "components/new/button/icon";
-import { HeaderBackButtonIcon } from "components/header/icon";
 import { useStore } from "stores/index";
-import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { separateNumericAndDenom } from "utils/format/format";
 import { getTokenIcon } from "utils/get-token-icon";
 import FastImage from "react-native-fast-image";
@@ -41,19 +33,13 @@ export const TokenDetail: FunctionComponent = observer(() => {
   const tokenString = route.params.tokenString;
   const tokenBalanceString = route.params.tokenBalanceString;
 
-  const decodedBalancesString = JSON.parse(
-    decodeURIComponent(tokenBalanceString)
-  );
-  const balances = decodedBalancesString;
+  const balances = JSON.parse(decodeURIComponent(tokenBalanceString));
 
-  const decodedTokenInfo = JSON.parse(decodeURIComponent(tokenString));
-  const tokenInfo = decodedTokenInfo;
+  const tokenInfo = JSON.parse(decodeURIComponent(tokenString));
 
   const style = useStyle();
-  const safeAreaInsets = useSafeAreaInsets();
 
   const { chainStore, accountStore, queriesStore } = useStore();
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -93,31 +79,8 @@ export const TokenDetail: FunctionComponent = observer(() => {
   }, [tokenInfo?.coinGeckoId]);
 
   return (
-    <PageWithScrollViewInBottomTabView
-      backgroundMode={"image"}
-      contentContainerStyle={{
-        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
-      }}
-    >
+    <PageWithScrollViewInBottomTabView backgroundMode={"image"}>
       <View style={style.flatten(["margin-x-20"]) as ViewStyle}>
-        <IconButton
-          borderRadius={32}
-          icon={<HeaderBackButtonIcon color="white" size={21} />}
-          backgroundBlur={false}
-          onPress={() => navigation.goBack()}
-          iconStyle={
-            style.flatten([
-              "width-54",
-              "border-width-1",
-              "border-color-gray-300",
-              "padding-x-14",
-              "padding-y-6",
-              "justify-center",
-              "items-center",
-              "margin-y-10",
-            ]) as ViewStyle
-          }
-        />
         <View style={style.flatten(["items-center"])}>
           {tokenIcon ? (
             <View

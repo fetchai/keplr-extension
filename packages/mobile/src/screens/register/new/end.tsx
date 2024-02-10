@@ -85,7 +85,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+          <Text style={style.flatten(["subtitle1", "color-text-low"])}>
             Enable Biometric
           </Text>
           <View style={style.get("flex-1")} />
@@ -111,7 +111,6 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
         size="large"
         text="Start using your wallet"
         loading={isLoading}
-        loadingSpinnerColor="color-indigo-900"
         onPress={async () => {
           setIsLoading(true);
           try {

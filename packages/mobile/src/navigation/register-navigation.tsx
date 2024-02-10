@@ -8,11 +8,8 @@ import {
 import { RegisterIntroScreen } from "screens/register/new";
 import { RegisterNewUserScreen } from "screens/register/new-user";
 import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
-import {
-  NewMnemonicScreen,
-  RecoverMnemonicScreen,
-  VerifyMnemonicScreen,
-} from "screens/register/mnemonic";
+import { NewMnemonicScreen } from "screens/register/mnemonic";
+import { VerifyMnemonicScreen } from "screens/register/mnemonic/new/verify-mnemonic";
 import { NewLedgerScreen } from "screens/register/ledger";
 import { TorusSignInScreen } from "screens/register/torus";
 import {
@@ -22,6 +19,9 @@ import {
 } from "screens/register/import-from-extension";
 import { RegisterEndScreen } from "screens/register/new/end";
 import { Stack } from "./navigation";
+import { RecoverMnemonicScreen } from "screens/register/mnemonic/new/recover-mnemonic";
+import { CreateAccountScreen } from "screens/register/mnemonic/new/create-account";
+import { MigrateETHScreen } from "screens/register/migration";
 
 export const RegisterNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -69,19 +69,39 @@ export const RegisterNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Verify Mnemonic",
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
         }}
         name="Register.VerifyMnemonic"
         component={VerifyMnemonicScreen}
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Import Existing Wallet",
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
         }}
         name="Register.RecoverMnemonic"
         component={RecoverMnemonicScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="Register.MigrateETH"
+        component={MigrateETHScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="Register.CreateAccount"
+        component={CreateAccountScreen}
       />
       <Stack.Screen
         options={{

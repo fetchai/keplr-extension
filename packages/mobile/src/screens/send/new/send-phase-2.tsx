@@ -182,12 +182,18 @@ export const SendPhase2: FunctionComponent<{
         onPress={async () => {
           if (account.isReadyToSendTx && txStateIsValid) {
             try {
-              await account.sendToken(
+              const stdFee = sendConfigs.feeConfig.toStdFee();
+
+              const tx = account.makeSendTokenTx(
                 sendConfigs.amountConfig.amount,
-                sendConfigs.amountConfig.sendCurrency,
-                sendConfigs.recipientConfig.recipient,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                sendConfigs.amountConfig.sendCurrency!,
+                sendConfigs.recipientConfig.recipient
+              );
+
+              await tx.send(
+                stdFee,
                 sendConfigs.memoConfig.memo,
-                sendConfigs.feeConfig.toStdFee(),
                 {
                   preferNoSetFee: true,
                   preferNoSetMemo: true,

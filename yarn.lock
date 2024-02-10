@@ -41076,6 +41076,7 @@ __metadata:
     "@babel/plugin-transform-flow-strip-types": ^7.22.5
     "@babel/runtime": ^7.12.5
     "@ethersproject/shims": ^5.7.0
+    "@fetchai/eth-migration": ^0.8.8
     "@formatjs/intl-datetimeformat": ^6.10.0
     "@formatjs/intl-displaynames": ^6.5.0
     "@formatjs/intl-getcanonicallocales": ^2.2.1

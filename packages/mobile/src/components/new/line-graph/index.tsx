@@ -8,7 +8,7 @@ export enum DurationFilter {
   "1M" = "1M",
   "3M" = "3M",
   "1Y" = "1Y",
-  ALL = "ALL",
+  ALL = "All",
 }
 
 const tabs = [

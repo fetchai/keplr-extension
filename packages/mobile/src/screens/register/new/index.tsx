@@ -212,6 +212,15 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                 registerConfig,
               });
             }}
+            onMigrateFromETH={() => {
+              setImportWalletModalOpen(false);
+              analyticsStore.logEvent("Import account started", {
+                registerType: "seed",
+              });
+              smartNavigation.navigateSmart("Register.MigrateETH", {
+                registerConfig,
+              });
+            }}
             onImportFromFetch={() => {
               setImportWalletModalOpen(false);
               analyticsStore.logEvent("Import account started", {
@@ -396,6 +405,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
   onSelectApple: () => void;
   onImportExistingWallet: () => void;
   onImportFromFetch: () => void;
+  onMigrateFromETH: () => void;
 }> = registerModal(
   observer(
     ({
@@ -403,6 +413,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
       onSelectGoogle,
       onImportExistingWallet,
       onImportFromFetch,
+      onMigrateFromETH,
       onSelectApple,
     }) => {
       const style = useStyle();
@@ -553,6 +564,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
               style.flatten([
                 "background-color-white",
                 "border-radius-32",
+                "margin-bottom-10",
               ]) as ViewStyle
             }
             textStyle={{
@@ -562,6 +574,22 @@ export const ImportExistingWalletModal: FunctionComponent<{
             size="default"
             onPress={() => {
               onImportExistingWallet();
+            }}
+          />
+          <Button
+            containerStyle={
+              style.flatten([
+                "background-color-white",
+                "border-radius-32",
+              ]) as ViewStyle
+            }
+            textStyle={{
+              color: "#0B1742",
+            }}
+            text="Migrate from ETH"
+            size="default"
+            onPress={() => {
+              onMigrateFromETH();
             }}
           />
         </CardModal>

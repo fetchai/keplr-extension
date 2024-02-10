@@ -40,26 +40,13 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
 
     return balanceStakableQuery.balance;
   })();
-  const delegated = queries.cosmos.queryDelegations
-    .getQueryBech32Address(accountInfo.bech32Address)
-    .total.upperCase(true);
 
-  const unbonding = queries.cosmos.queryUnbondingDelegations
-    .getQueryBech32Address(accountInfo.bech32Address)
-    .total.upperCase(true);
-
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
-  const stakableReward = rewards.stakableReward;
-  const stakedSum = delegated.add(unbonding);
-  const total = stakable.add(stakedSum).add(stakableReward);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(
-      total.shrink(true).trim(true).maxDecimals(6).toString()
+      stakable.shrink(true).trim(true).maxDecimals(6).toString()
     );
-  const totalPrice = priceStore.calculatePrice(total);
+  const totalPrice = priceStore.calculatePrice(stakable);
 
   const NativeTokenDetailsString = encodeURIComponent(
     JSON.stringify(balanceQuery.balances[0].balance?.currency)
@@ -76,7 +63,7 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
   return (
     <TokenCardView
       containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
-      key={total.currency.coinMinimalDenom}
+      key={stakable.currency.coinMinimalDenom}
       onPress={() =>
         navigation.navigate("NativeTokens", {
           tokenString: NativeTokenDetailsString,
@@ -87,11 +74,11 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
         <TokenSymbolUsingChainInfo
           size={50}
           chainInfo={chainStore.current}
-          currency={total.currency}
+          currency={stakable.currency}
         />
       }
       title={totalDenom}
-      subtitle={total.shrink(true).trim(true).maxDecimals(6).toString()}
+      subtitle={stakable.shrink(true).maxDecimals(6).toString()}
       trailingStart={totalPrice ? `${totalPrice.toString()}` : ""}
       trailingEnd={totalPrice ? priceStore.defaultVsCurrency.toUpperCase() : ""}
     />

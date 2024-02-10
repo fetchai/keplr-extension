@@ -7,7 +7,7 @@ export const IconButton: FunctionComponent<{
   containerStyle?: ViewStyle;
   iconStyle?: ViewStyle;
   bottomTextStyle?: ViewStyle;
-  icon: ReactElement;
+  icon: ReactElement | undefined;
   bottomText?: string;
   backgroundBlur?: boolean;
   blurIntensity?: number;
@@ -20,7 +20,7 @@ export const IconButton: FunctionComponent<{
   icon,
   bottomText,
   backgroundBlur,
-  blurIntensity,
+  blurIntensity = 30,
   borderRadius = 50,
   onPress,
 }) => {

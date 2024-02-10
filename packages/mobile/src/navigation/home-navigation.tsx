@@ -28,14 +28,17 @@ export const HomeNavigation: FunctionComponent = () => {
       <Stack.Screen
         options={{
           ...TransparentHeaderOptionsPreset,
-          headerShown: false,
+          // Only show the back button.
+          title: "",
         }}
         name="Portfolio"
         component={PortfolioScreen}
       />
       <Stack.Screen
         options={{
-          headerShown: false,
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
         }}
         name="NativeTokens"
         component={TokenDetail}

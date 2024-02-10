@@ -33,6 +33,12 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.RecoverMnemonic": {
         upperScreenName: "Register",
       },
+      "Register.MigrateETH": {
+        upperScreenName: "Register",
+      },
+      "Register.CreateAccount": {
+        upperScreenName: "Register",
+      },
       "Register.NewLedger": {
         upperScreenName: "Register",
       },
@@ -176,6 +182,15 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       };
       "Register.RecoverMnemonic": {
         registerConfig: RegisterConfig;
+      };
+      "Register.MigrateETH": {
+        registerConfig: RegisterConfig;
+      };
+      "Register.CreateAccount": {
+        registerConfig: RegisterConfig;
+        mnemonic: string;
+        bip44HDPath?: BIP44HDPath;
+        title?: string;
       };
       "Register.NewLedger": {
         registerConfig: RegisterConfig;

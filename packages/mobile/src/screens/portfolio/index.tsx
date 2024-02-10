@@ -2,27 +2,12 @@ import React, { FunctionComponent, useRef, useState } from "react";
 import { PageWithScrollViewInBottomTabView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { StakingCard } from "components/new/staking/staking-card";
-import {
-  FlatList,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-  ViewStyle,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconButton } from "components/new/button/icon";
+import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { HeaderBackButtonIcon } from "components/header/icon";
-import { BlurButton } from "components/new/button/blur-button";
-import { CardDivider } from "components/card";
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from "@react-navigation/native";
+
 import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
 import { TokensSection } from "screens/portfolio/tokens-section";
+import { TabBarView } from "components/new/tab-bar/tab-bar";
 
 enum AssertsSectionEnum {
   Tokens = "Tokens",
@@ -31,97 +16,25 @@ enum AssertsSectionEnum {
 }
 
 export const PortfolioScreen: FunctionComponent = observer(() => {
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const style = useStyle();
-  const safeAreaInsets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
-  const [prevSelectedId, setPrevSelectedId] = useState(0);
-
-  const renderItem = ({ item }: any) => {
-    const selected = selectedId === item;
-    return (
-      <BlurButton
-        backgroundBlur={selected}
-        text={item}
-        borderRadius={32}
-        textStyle={style.flatten(["body3"]) as ViewStyle}
-        containerStyle={style.flatten(["padding-x-36"]) as ViewStyle}
-        onPress={() => {
-          return (
-            setSelectedId(item),
-            setPrevSelectedId(
-              Object.values(AssertsSectionEnum).indexOf(item) - 1
-            )
-          );
-        }}
-      />
-    );
-  };
-
-  const renderSeparator = (item: any) => {
-    const selected = item.leadingItem === selectedId;
-    const prevSelected =
-      Object.values(AssertsSectionEnum).indexOf(item.leadingItem) ===
-      prevSelectedId;
-
-    return (
-      <View>
-        {!selected && !prevSelected ? (
-          <CardDivider
-            vertical={true}
-            style={style.flatten(["height-12", "margin-y-10"]) as ViewStyle}
-          />
-        ) : null}
-      </View>
-    );
-  };
 
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
-      contentContainerStyle={[
-        style.flatten(["margin-x-20"]) as ViewStyle,
-        { paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48 },
-      ]}
+      contentContainerStyle={style.flatten(["margin-x-20"]) as ViewStyle}
       ref={scrollViewRef}
     >
-      <IconButton
-        borderRadius={32}
-        icon={<HeaderBackButtonIcon color="white" size={21} />}
-        backgroundBlur={false}
-        onPress={() => navigation.goBack()}
-        iconStyle={
-          style.flatten([
-            "width-54",
-            "border-width-1",
-            "border-color-gray-300",
-            "padding-x-14",
-            "padding-y-6",
-            "justify-center",
-            "items-center",
-            "margin-y-10",
-          ]) as ViewStyle
-        }
-      />
       <Text
         style={style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle}
       >
         Portfolio
       </Text>
-      <FlatList
-        data={Object.values(AssertsSectionEnum)}
-        renderItem={renderItem}
-        horizontal={true}
-        extraData={selectedId}
-        ItemSeparatorComponent={renderSeparator}
-        contentContainerStyle={[
-          style.flatten([
-            "width-full",
-            "margin-y-10",
-            "justify-between",
-          ]) as ViewStyle,
-        ]}
+      <TabBarView
+        listItem={AssertsSectionEnum}
+        selected={selectedId}
+        setSelected={setSelectedId}
       />
       {selectedId === AssertsSectionEnum.Tokens && (
         <View style={style.flatten(["margin-y-10"]) as ViewStyle}>

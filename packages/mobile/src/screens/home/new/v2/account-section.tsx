@@ -73,11 +73,16 @@ export const AccountSection: FunctionComponent<{
     queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
       account.bech32Address
     );
+  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+    account.bech32Address
+  );
+  const stakableReward = rewards.stakableReward;
+
   const unbonding = queryUnbonding.total;
 
   const stakedSum = delegated.add(unbonding);
 
-  const total = stakable.add(stakedSum);
+  const total = stakable.add(stakedSum).add(stakableReward);
 
   const totalPrice = priceStore.calculatePrice(total);
 
@@ -164,7 +169,7 @@ export const AccountSection: FunctionComponent<{
               "margin-x-16",
               "margin-top-18",
               "margin-bottom-12",
-              "padding-x-20",
+              "padding-x-10",
               "padding-y-10",
               "border-width-1",
               "border-color-indigo-200",
@@ -174,9 +179,7 @@ export const AccountSection: FunctionComponent<{
         }
       >
         <View
-          style={
-            style.flatten(["margin-right-6", "margin-bottom-6"]) as ViewStyle
-          }
+          style={style.flatten(["margin-x-10", "margin-bottom-6"]) as ViewStyle}
         >
           <Text
             style={
@@ -191,13 +194,12 @@ export const AccountSection: FunctionComponent<{
           </Text>
           <AddressCopyable address={account.bech32Address} maxCharacters={16} />
         </View>
-        <View style={style.flatten(["flex-row"])}>
-          <IconButton
-            backgroundBlur={false}
-            icon={<ThreeDotIcon />}
-            onPress={() => setIsOpenModal(true)}
-          />
-        </View>
+        <IconButton
+          backgroundBlur={false}
+          icon={<ThreeDotIcon />}
+          iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          onPress={() => setIsOpenModal(true)}
+        />
       </BlurBackground>
       <View style={style.flatten(["items-center"]) as ViewStyle}>
         <View style={style.flatten(["flex-row"]) as ViewStyle}>

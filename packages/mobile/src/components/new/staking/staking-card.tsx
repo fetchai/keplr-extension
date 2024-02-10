@@ -126,8 +126,10 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
               Available
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
-              {parseFloat(stakableBal).toFixed(4)} FET (
-              {stakablePercentage.toFixed(1)}%)
+              {`${parseFloat(stakableBal).toFixed(2)} ${
+                stakable.currency.coinDenom
+              }`}{" "}
+              ({stakablePercentage.toFixed(2)}%)
             </Text>
           </View>
         </View>
@@ -138,8 +140,10 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
               Staked
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
-              {parseFloat(stakedBal).toFixed(4)} FET (
-              {stakedPercentage.toFixed(1)}
+              {`${parseFloat(stakedBal).toFixed(2)} ${
+                stakable.currency.coinDenom
+              }`}{" "}
+              ({stakedPercentage.toFixed(2)}
               %)
             </Text>
           </View>
@@ -151,8 +155,10 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
               Staking rewards
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
-              {parseFloat(rewardsBal).toFixed(4)} FET (
-              {rewardsPercentage.toFixed(1)}%)
+              {`${parseFloat(rewardsBal).toFixed(2)} ${
+                stakable.currency.coinDenom
+              }`}{" "}
+              ({rewardsPercentage.toFixed(2)}%)
             </Text>
           </View>
         </View>

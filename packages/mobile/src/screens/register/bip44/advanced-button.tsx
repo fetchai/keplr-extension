@@ -11,34 +11,8 @@ import { useStyle } from "styles/index";
 import { registerModal } from "modals/base";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
-import { TextInput } from "components/input";
-
-export const BIP44AdvancedButton: FunctionComponent<{
-  bip44Option: BIP44Option;
-}> = observer(({ bip44Option }) => {
-  const style = useStyle();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  return (
-    <React.Fragment>
-      <BIP44SelectModal
-        isOpen={isModalOpen}
-        close={() => setIsModalOpen(false)}
-        bip44Option={bip44Option}
-      />
-      <Button
-        containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
-        text="Advanced"
-        mode="text"
-        size="small"
-        onPress={() => {
-          setIsModalOpen(true);
-        }}
-      />
-    </React.Fragment>
-  );
-});
+import { InputCardView } from "components/new/card-view/input-card";
+import { BlurButton } from "components/new/button/blur-button";
 
 const useZeroOrPositiveIntegerString = (initialValue: string) => {
   const [value, setValue] = useState(initialValue);
@@ -47,7 +21,7 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
     value,
     setValue: useCallback((text: string) => {
       if (!text) {
-        setValue("");
+        setValue("0");
         return;
       }
 
@@ -69,6 +43,186 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
     }, [value]),
   };
 };
+
+export const BIP44AdvancedButton: FunctionComponent<{
+  bip44Option: BIP44Option;
+}> = observer(({ bip44Option }) => {
+  const style = useStyle();
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selected, setIsSelected] = useState(false);
+
+  // const account = useZeroOrPositiveIntegerString(
+  //   bip44Option.account.toString()
+  // );
+  const change = useZeroOrPositiveIntegerString(bip44Option.change.toString());
+  // const index = useZeroOrPositiveIntegerString(bip44Option.index.toString());
+
+  const isChangeZeroOrOne =
+    change.isValid && (change.number === 0 || change.number === 1);
+
+  return (
+    <React.Fragment>
+      <BlurButton
+        text="Advanced Settings"
+        blurIntensity={30}
+        borderRadius={32}
+        backgroundBlur={true}
+        containerStyle={
+          style.flatten(
+            ["padding-3", "width-160", "justify-center", "margin-y-18"],
+            [
+              selected && "border-width-1",
+              "border-radius-64",
+              "border-color-indigo",
+            ]
+          ) as ViewStyle
+        }
+        textStyle={style.flatten(["text-caption1"]) as ViewStyle}
+        onPress={() => setIsSelected(!selected)}
+      />
+      {selected ? (
+        <React.Fragment>
+          <Text
+            style={
+              style.flatten([
+                "body2",
+                "color-gray-200",
+                "font-medium",
+                "margin-bottom-18",
+              ]) as ViewStyle
+            }
+          >
+            HD Derivation Path
+          </Text>
+          <View
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "margin-bottom-16",
+              ]) as ViewStyle
+            }
+          >
+            <Text
+              style={
+                style.flatten([
+                  "body2",
+                  "color-white",
+                  "margin-right-4",
+                ]) as ViewStyle
+              }
+            >{`m/44’/${bip44Option.coinType ?? "···"}’/`}</Text>
+            <InputCardView
+              value={bip44Option.account.toString()}
+              containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+              keyboardType="number-pad"
+              onChangeText={(value: string) => {
+                if (value) {
+                  if (value !== "0") {
+                    // Remove leading zeros
+                    for (let i = 0; i < value.length; i++) {
+                      if (value[i] === "0") {
+                        value = value.replace("0", "");
+                      } else {
+                        break;
+                      }
+                    }
+                  }
+                  const parsed = parseFloat(value);
+                  // Should be integer and positive.
+                  if (Number.isInteger(parsed) && parsed >= 0) {
+                    bip44Option.setAccount(parsed);
+                  }
+                } else {
+                  bip44Option.setAccount(0);
+                }
+              }}
+            />
+            <Text
+              style={style.flatten(["color-white", "margin-x-4"]) as ViewStyle}
+            >
+              ’/
+            </Text>
+            <InputCardView
+              value={bip44Option.change.toString()}
+              containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+              keyboardType="number-pad"
+              onChangeText={(value: string) => {
+                if (value) {
+                  if (value !== "0") {
+                    // Remove leading zeros
+                    for (let i = 0; i < value.length; i++) {
+                      if (value[i] === "0") {
+                        value = value.replace("0", "");
+                      } else {
+                        break;
+                      }
+                    }
+                  }
+                  const parsed = parseFloat(value);
+                  // Should be integer and positive.
+                  if (
+                    Number.isInteger(parsed) &&
+                    (parsed === 0 || parsed === 1)
+                  ) {
+                    bip44Option.setChange(parsed);
+                  }
+                } else {
+                  bip44Option.setChange(0);
+                }
+              }}
+            />
+            <Text
+              style={style.flatten(["color-white", "margin-x-4"]) as ViewStyle}
+            >
+              /
+            </Text>
+            <InputCardView
+              value={bip44Option.index.toString()}
+              containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+              keyboardType="number-pad"
+              onChangeText={(value: string) => {
+                if (value) {
+                  if (value !== "0") {
+                    // Remove leading zeros
+                    for (let i = 0; i < value.length; i++) {
+                      if (value[i] === "0") {
+                        value = value.replace("0", "");
+                      } else {
+                        break;
+                      }
+                    }
+                  }
+                  const parsed = parseFloat(value);
+                  // Should be integer and positive.
+                  if (Number.isInteger(parsed) && parsed >= 0) {
+                    bip44Option.setIndex(parsed);
+                  }
+                } else {
+                  bip44Option.setIndex(0);
+                }
+              }}
+            />
+          </View>
+          {change.isValid && !isChangeZeroOrOne ? (
+            <Text
+              style={
+                style.flatten([
+                  "text-caption2",
+                  "color-red-400",
+                  "margin-bottom-8",
+                ]) as ViewStyle
+              }
+            >
+              Change should be 0 or 1
+            </Text>
+          ) : null}
+        </React.Fragment>
+      ) : null}
+    </React.Fragment>
+  );
+});
 
 export const BIP44SelectModal: FunctionComponent<{
   isOpen: boolean;
@@ -95,12 +249,13 @@ export const BIP44SelectModal: FunctionComponent<{
           style={
             style.flatten([
               "body2",
-              "color-text-middle",
+              "color-gray-200",
+              "font-medium",
               "margin-bottom-18",
             ]) as ViewStyle
           }
         >
-          Set custom address derivation path by modifying the indexes below:
+          HD Derivation Path
         </Text>
         <View
           style={
@@ -111,37 +266,28 @@ export const BIP44SelectModal: FunctionComponent<{
             ]) as ViewStyle
           }
         >
-          <Text style={style.flatten(["body2", "color-text-middle"])}>{`m/44’/${
-            bip44Option.coinType ?? "-"
-          }’`}</Text>
-          <TextInput
+          <Text style={style.flatten(["body2", "color-white"])}>{`m/44’/${
+            bip44Option.coinType ?? "···"
+          }’/ `}</Text>
+          <InputCardView
             value={account.value}
-            containerStyle={
-              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
-            }
-            style={style.flatten(["text-right"])}
+            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
             keyboardType="number-pad"
             onChangeText={account.setValue}
           />
-          <Text>’/</Text>
-          <TextInput
-            value={change.value}
-            containerStyle={
-              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
-            }
-            style={style.flatten(["text-right"])}
+          <Text style={style.flatten(["color-white"])}> ’/ </Text>
+          <InputCardView
+            value={account.value}
+            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
             keyboardType="number-pad"
-            onChangeText={change.setValue}
+            onChangeText={account.setValue}
           />
-          <Text>/</Text>
-          <TextInput
-            value={index.value}
-            containerStyle={
-              style.flatten(["min-width-58", "padding-bottom-0"]) as ViewStyle
-            }
-            style={style.flatten(["text-right"])}
+          <Text style={style.flatten(["color-white"])}> / </Text>
+          <InputCardView
+            value={account.value}
+            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
             keyboardType="number-pad"
-            onChangeText={index.setValue}
+            onChangeText={account.setValue}
           />
         </View>
         {change.isValid && !isChangeZeroOrOne ? (

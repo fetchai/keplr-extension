@@ -78,7 +78,7 @@ export const TransparentHeaderOptionsPreset = {
     marginRight: 10,
   },
   // eslint-disable-next-line react/display-name
-  headerLeft: (props: any) => <HeaderLeftBackButton {...props} />,
+  headerLeft: (props: any) => <HeaderLeftBackBlurButton {...props} />,
   ...TransitionPresets.SlideFromRightIOS,
 };
 
@@ -216,7 +216,7 @@ const TransparentHeader: FunctionComponent<StackHeaderProps> = (props) => {
   const { ...restProps } = props;
 
   return (
-    <View>
+    <View style={{ paddingVertical: 6 }}>
       <View
         style={StyleSheet.flatten([
           {
