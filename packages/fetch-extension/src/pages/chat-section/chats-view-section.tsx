@@ -275,11 +275,11 @@ export const ChatsViewSection = observer(
             current.chainId,
             newMessage,
             accountInfo.bech32Address,
-            targetAddress
+            targetAddress,
+            chatStore.messagesStore
           );
           if (message) {
             const updatedMessagesList = [...messages, message];
-            chatStore.messagesStore.updateLatestSentMessage(message);
             setMessages(updatedMessagesList);
             setLastUnreadMesageId("");
             setNewMessage("");

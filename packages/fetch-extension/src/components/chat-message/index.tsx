@@ -5,19 +5,22 @@ import deliveredIcon from "@assets/icon/chat-unseen-status.png";
 import chatSeenIcon from "@assets/icon/chat-seen-status.png";
 import { decryptMessage } from "@utils/decrypt-message";
 import style from "./style.module.scss";
-import { isToday, isYesterday, format } from "date-fns";
 import { MessagePrimitive } from "@utils/encrypt-message";
 import parse from "react-html-parser";
 import { processHyperlinks } from "@utils/process-hyperlinks";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
+import { formatTime, getDate } from "@utils/format";
 
-const formatTime = (timestamp: number): string => {
-  const date = new Date(timestamp);
-  return format(date, "p");
-};
-
-export const ChatMessage = observer(
+interface ChatMessageProps {
+  chainId: string;
+  isSender: boolean;
+  message: string;
+  timestamp: number;
+  showDate: boolean;
+  groupLastSeenTimestamp: number;
+}
+export const ChatMessage: React.FC<ChatMessageProps> = observer(
   ({
     chainId,
     message,
@@ -25,13 +28,6 @@ export const ChatMessage = observer(
     timestamp,
     showDate,
     groupLastSeenTimestamp,
-  }: {
-    chainId: string;
-    isSender: boolean;
-    message: string;
-    timestamp: number;
-    showDate: boolean;
-    groupLastSeenTimestamp: number;
   }) => {
     const [decryptedMessage, setDecryptedMessage] =
       useState<MessagePrimitive>();
@@ -50,17 +46,6 @@ export const ChatMessage = observer(
           console.log("Error", e.message);
         });
     }, [chainId, isSender, message]);
-
-    const getDate = (timestamp: number): string => {
-      const d = new Date(timestamp);
-      if (isToday(d)) {
-        return "Today";
-      }
-      if (isYesterday(d)) {
-        return "Yesterday";
-      }
-      return format(d, "dd MMMM yyyy");
-    };
 
     function decideMessageView(): ReactElement {
       let messageView = <i className="fas fa-spinner fa-spin ml-1" />;

@@ -33,7 +33,7 @@ export const SignTransaction = ({
     try {
       const signResult = await signTransaction(data, chainId, accountInfo);
       navigate(-1);
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         chainId,
         {
@@ -42,9 +42,9 @@ export const SignTransaction = ({
           signature: signResult.signature.signature,
         },
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
     } catch (e) {
       console.log(e);
       notification.push({
@@ -57,28 +57,28 @@ export const SignTransaction = ({
           duration: 0.25,
         },
       });
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         chainId,
         TRANSACTION_FAILED,
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
       navigate(`/chat/agent/${AGENT_ADDRESS[current.chainId]}`);
     }
   };
 
   const cancel = async () => {
     try {
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         current.chainId,
         "/cancel",
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
     } catch (e) {
       console.log(e);
       notification.push({

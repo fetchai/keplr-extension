@@ -61,8 +61,6 @@ const BlockAddresses: React.FC<{
   addresses: NameAddress[];
   blockedAddresses: { [key: string]: boolean };
 }> = ({ addresses, blockedAddresses }) => {
-  const { chatStore } = useStore();
-  const user = chatStore.userDetailsStore;
   const [confirmAction, setConfirmAction] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>("");
 
@@ -72,7 +70,6 @@ const BlockAddresses: React.FC<{
         <UnblockUserPopup
           setConfirmAction={setConfirmAction}
           userName={userName}
-          accessToken={user.accessToken}
         />
       )}
       <div className={style["messagesContainer"]}>

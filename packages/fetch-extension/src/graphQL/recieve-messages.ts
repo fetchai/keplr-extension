@@ -37,7 +37,7 @@ export const recieveMessages = async (
         messageStore
       );
     }
-    messageStore.updateChatList(userAddress, messagesObj, pagination)
+    messageStore.updateChatList(userAddress, messagesObj, pagination);
   }
 };
 

@@ -85,14 +85,14 @@ export const TokenDropdown: FunctionComponent<{
       message: `Selected Token: ${amountConfig.sendCurrency.coinDenom}`,
     };
     try {
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         current.chainId,
         messagePayload,
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
     } catch (e) {
       console.log(e);
       notification.push({
@@ -115,7 +115,8 @@ export const TokenDropdown: FunctionComponent<{
         current.chainId,
         "/cancel",
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
     } catch (e) {
       console.log(e);

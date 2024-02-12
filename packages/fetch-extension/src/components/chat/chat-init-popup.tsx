@@ -13,11 +13,9 @@ import { observer } from "mobx-react-lite";
 
 export const ChatInitPopup = observer(
   ({
-    openDialog,
     setIsOpendialog,
     setLoadingChats,
   }: {
-    openDialog: boolean;
     setIsOpendialog: any;
     setLoadingChats: any;
   }) => {
@@ -71,7 +69,7 @@ export const ChatInitPopup = observer(
       }
     };
 
-    return openDialog && userState.accessToken.length > 0 ? (
+    return (
       <React.Fragment>
         <div className={style["overlay"]} />
         <div className={style["popupContainer"]}>
@@ -128,8 +126,6 @@ export const ChatInitPopup = observer(
           </button>
         </div>
       </React.Fragment>
-    ) : (
-      <React.Fragment />
     );
   }
 );

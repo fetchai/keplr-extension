@@ -6,7 +6,6 @@ import { BlockUserPopup } from "./block-user-popup";
 import { DeleteChatPopup } from "./delete-chat-popup";
 import { DeleteGroupPopup } from "./delete-group-popup";
 import { UnblockUserPopup } from "./unblock-user-popup";
-import { useStore } from "../../stores";
 
 export const ChatActionsPopup = ({
   action,
@@ -17,7 +16,6 @@ export const ChatActionsPopup = ({
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
   handleAction?: () => void;
 }) => {
-  const { chatStore } = useStore();
   const [processing, setProcessing] = useState(false);
   /// Target address for one to one chat
   const targetAddress = useLocation().pathname.split("/")[2];
@@ -36,7 +34,6 @@ export const ChatActionsPopup = ({
         <UnblockUserPopup
           setConfirmAction={setConfirmAction}
           userName={targetAddress}
-          accessToken={chatStore.userDetailsStore.accessToken}
         />
       )}
       {action === "delete" && (

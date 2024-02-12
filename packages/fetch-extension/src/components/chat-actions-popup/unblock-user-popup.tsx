@@ -6,23 +6,20 @@ import { useStore } from "../../stores";
 export const UnblockUserPopup = ({
   userName,
   setConfirmAction,
-  accessToken,
 }: {
   userName: string;
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
-  accessToken: string;
 }) => {
-  const { chatStore } = useStore();
+  const { chatStore, analyticsStore } = useStore();
   const [processing, setProcessing] = useState(false);
-  const { analyticsStore } = useStore();
-
+  const user = chatStore.userDetailsStore;
   const handleUnblock = async () => {
     analyticsStore.logEvent("unblock_contact_click", {
       action: "Unblock",
     });
     setProcessing(true);
     try {
-      await unblockUser(userName, accessToken);
+      await unblockUser(userName, user.accessToken);
       chatStore.messagesStore.setUnblockedUser({ blockedAddress: userName });
     } catch (e) {
       console.log(e);

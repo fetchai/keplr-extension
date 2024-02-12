@@ -260,11 +260,12 @@ const ChatView = observer(() => {
     >
       <ChatErrorPopup />
       <div className={style["chatContainer"]}>
-        <ChatInitPopup
-          openDialog={openDialog}
-          setIsOpendialog={setIsOpendialog}
-          setLoadingChats={setLoadingChats}
-        />
+        {openDialog && userState.accessToken.length > 0 && (
+          <ChatInitPopup
+            setIsOpendialog={setIsOpendialog}
+            setLoadingChats={setLoadingChats}
+          />
+        )}
 
         <div className={style["title"]}>Chats</div>
         <ChatSearchInput

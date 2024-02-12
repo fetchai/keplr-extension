@@ -48,14 +48,14 @@ export const RecipientAddressInput: FunctionComponent<{
   const sendAddressDetails = async () => {
     try {
       const messagePayload = sendConfigs.recipientConfig.recipient;
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         current.chainId,
         messagePayload,
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
     } catch (e) {
       console.log(e);
       notification.push({
@@ -73,14 +73,14 @@ export const RecipientAddressInput: FunctionComponent<{
 
   const cancel = async () => {
     try {
-      const message = await deliverMessages(
+      await deliverMessages(
         user.accessToken,
         current.chainId,
         "/cancel",
         accountInfo.bech32Address,
-        targetAddress
+        targetAddress,
+        chatStore.messagesStore
       );
-      chatStore.messagesStore.updateLatestSentMessage(message);
     } catch (e) {
       console.log(e);
       notification.push({

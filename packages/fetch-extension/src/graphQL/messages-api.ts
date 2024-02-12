@@ -191,7 +191,8 @@ export const deliverMessages = async (
   chainId: string,
   newMessage: any,
   senderAddress: string,
-  targetAddress: string
+  targetAddress: string,
+  messagesStore: MessagesStore
 ) => {
   try {
     if (newMessage) {
@@ -219,7 +220,7 @@ export const deliverMessages = async (
       });
 
       if (data?.dispatchMessages?.length > 0) {
-        return data?.dispatchMessages[0];
+        messagesStore.updateLatestSentMessage(data?.dispatchMessages[0]);
       }
       return null;
     }

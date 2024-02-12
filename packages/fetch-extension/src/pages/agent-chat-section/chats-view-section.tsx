@@ -190,11 +190,11 @@ export const ChatsViewSection = observer(
             current.chainId,
             newMessage,
             accountInfo.bech32Address,
-            targetAddress
+            targetAddress,
+            chatStore.messagesStore
           );
 
           if (message) {
-            chatStore.messagesStore.updateLatestSentMessage(message);
             const updatedMessagesList = [...messages, message];
             setMessages(updatedMessagesList);
             setNewMessage("");
