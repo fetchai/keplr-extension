@@ -69,7 +69,7 @@ export const ConfirmationPopup = observer(
           style={{ display: !address ? "none" : "" }}
         >
           <h4 style={{ color: "white" }}>
-            Are you sure you want to revoke {permission} permission from{" "}
+            Are you sure you want to revoke {permission} permission from
             {formatAddress(address || "")}?
           </h4>
 

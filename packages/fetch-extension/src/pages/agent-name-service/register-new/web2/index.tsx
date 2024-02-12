@@ -16,6 +16,8 @@ import { AgentAddressInput } from "../agent-input";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { toBech32 } from "@cosmjs/encoding";
+import { ExpirationField } from "@components/expiration-field";
+
 export const Web2 = observer(() => {
   const navigate = useNavigate();
   const notification = useNotification();
@@ -26,6 +28,8 @@ export const Web2 = observer(() => {
   ).ans;
   const [searchValue, setSearchValue] = useState("");
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
+  const regex = /^[\p{Ll}0-9\-.]+$/u;
+  const [_expiryDateTime, setExpiryDateTime] = useState("");
 
   function generateDomainDigest(domain: string, address: any) {
     const hasher = createHash("sha256");
@@ -33,6 +37,7 @@ export const Web2 = observer(() => {
     hasher.update(encode(address));
     return hasher.digest();
   }
+
   let domainAvailablityMessage;
   let domainAvailablity = false;
 
@@ -40,19 +45,28 @@ export const Web2 = observer(() => {
     const value = e.target.value;
     setAgentAddressSearchValue(value);
   };
+
   const handleInputChange = (e: any) => {
     const value = e.target.value;
     setSearchValue(value);
   };
+
   const { isFetching: isLoading, isValid: isValidAgentAddress } =
     queryVaildateAgentAddress.getQueryContract(
       ANS_CONFIG[current.chainId].validateAgentAddressContract,
       agentAddressSearchValue
     );
+
   function checkDomain(domain: string) {
     const currentChainId = current.chainId;
     const contractAddress = ANS_CONFIG[currentChainId].contractAddress;
     const parts = domain.split(".");
+
+    if (!regex.test(domain)) {
+      domainAvailablityMessage = `Invalid domain`;
+      domainAvailablity = false;
+      return;
+    }
 
     if (parts.length === 2) {
       const { isAvailable, record } = queryDomainRecord.getQueryContract(
@@ -72,7 +86,9 @@ export const Web2 = observer(() => {
       return;
     }
   }
+
   checkDomain(searchValue);
+
   const handleRegisterClick = async () => {
     try {
       const domain = searchValue;
@@ -103,7 +119,6 @@ export const Web2 = observer(() => {
         agent: agentAddressSearchValue,
       };
       window.localStorage.setItem("verificationData", JSON.stringify(data));
-
     } catch (err) {
       console.log("Error minting domain:", err);
       notification.push({
@@ -119,6 +134,7 @@ export const Web2 = observer(() => {
       navigate("/agent-name-service/register-new");
     }
   };
+
   return (
     <React.Fragment>
       <div
@@ -156,7 +172,7 @@ export const Web2 = observer(() => {
           onChange={handleInputChange}
         />
       </div>
-      {!domainAvailablity && searchValue !== "" && (
+      {!domainAvailablity && searchValue !== "" && !regex.test(searchValue) && (
         <div
           style={{ position: "absolute", top: "283px" }}
           className={style["domainTakenText"]}
@@ -173,6 +189,7 @@ export const Web2 = observer(() => {
         searchValue={searchValue}
         isLoading={isLoading}
       />
+      <ExpirationField setExpiryDateTime={setExpiryDateTime} />
       <button
         className={style["registerButton"]}
         disabled={!domainAvailablity || !isValidAgentAddress}

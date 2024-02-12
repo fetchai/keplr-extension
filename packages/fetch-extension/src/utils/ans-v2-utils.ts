@@ -13,3 +13,11 @@ export function encode(value: any) {
   }
   return encoded;
 }
+
+export function updateAmountAndDenom(amountObj: any, seconds: number) {
+  if (amountObj) {
+    const { amount, denom } = amountObj;
+    const updatedAmount = BigInt(amount) * BigInt(seconds);
+    return { amount: updatedAmount.toString(), denom };
+  }
+}

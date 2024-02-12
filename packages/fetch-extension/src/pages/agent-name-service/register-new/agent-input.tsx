@@ -29,8 +29,7 @@ export const AgentAddressInput: React.FC<AgentAddressInputProps> = ({
           !isValidAgentAddress && agentAddressSearchValue !== ""
             ? "1px solid var(--red-red-400, #D38989)"
             : "1px solid rgba(255, 255, 255, 0.4)",
-        position: "absolute",
-        top: "315px",
+            marginTop:"50px"
       }}
     >
       {isLoading ? (

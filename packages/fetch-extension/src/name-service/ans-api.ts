@@ -13,7 +13,7 @@ import {
 import { generateUUID } from "@utils/auth";
 import axios from "axios";
 import { createHash } from "crypto";
-import { ANS_CONFIG } from "../config.ui.var";
+import { ANS_AMOUNT, ANS_CONFIG } from "../config.ui.var";
 import { encode } from "@utils/ans-v2-utils";
 
 export const getAgentAddressByDomain = async (
@@ -46,33 +46,126 @@ export const getDomainDetails = async (chainId: string, domainName: string) => {
 export const registerDomain = async (
   chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
-  agent_address: any,
   domain: string,
   notification: ContextProps,
-  approval_token?: string
+  // agentAddress?: string,
+  amount: any,
+  approval_token?: string,
 ) => {
   const registerData: {
     domain: string;
-    agent_address: any;
     approval_token?: string;
+
   } = {
     domain,
-    agent_address,
   };
   if (approval_token !== undefined) {
     registerData.approval_token = approval_token;
   }
-
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
     ANS_CONFIG[chainId].contractAddress,
     {
       register: registerData,
     },
+    [amount]
+  );
+
+  await executeTxn(tx, ANS_AMOUNT, notification);
+};
+
+export const updateRecord = async (
+  chainId: string,
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  domain: string,
+  notification: ContextProps,
+  agentAddress: any,
+) => {
+  const tx = account.cosmwasm.makeExecuteContractTx(
+    `executeWasm`,
+    ANS_CONFIG[chainId].contractAddress,
+    {
+      update_record: { domain: domain, agent_records: [{ address: agentAddress, "weight": 123 }] }
+    },
     []
   );
 
-  await executeTxn(tx, notification);
+  await executeTxn(tx, ANS_AMOUNT, notification);
+};
+
+export const removeDomain = async (
+  chainId: string,
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  domain: string,
+  notification: ContextProps
+) => {
+  const tx = account.cosmwasm.makeExecuteContractTx(
+    `executeWasm`,
+    ANS_CONFIG[chainId].contractAddress,
+    {
+      remove_domain: {
+        domain: domain
+      },
+    },
+    []
+  );
+  await executeTxn(tx, ANS_AMOUNT, notification);
+};
+export const resetDomain = async (
+  chainId: string,
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  domain: string,
+  notification: ContextProps,
+  new_admin?: any,
+) => {
+  let resetData: {
+    domain: string;
+    new_admin?: string;
+
+  } = {
+    domain,
+    new_admin
+  };
+  if (new_admin !== undefined) {
+    resetData = {
+      domain: domain,
+      new_admin: new_admin
+    }
+  } else {
+
+  }
+
+  const tx = account.cosmwasm.makeExecuteContractTx(
+    `executeWasm`,
+    ANS_CONFIG[chainId].contractAddress,
+    {
+      reset_domain: resetData
+      ,
+    },
+    []
+  );
+  await executeTxn(tx, ANS_AMOUNT, notification);
+};
+
+export const extendDomainExpiration = async (
+  chainId: string,
+  account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
+  domain: string,
+  notification: ContextProps,
+
+) => {
+
+
+  const tx = account.cosmwasm.makeExecuteContractTx(
+    `executeWasm`,
+    ANS_CONFIG[chainId].contractAddress,
+    {
+      extend_expiration: { domain: domain }
+      ,
+    },
+    []
+  );
+  await executeTxn(tx, ANS_AMOUNT, notification);
 };
 
 export const updateDomainPermissions = async (
@@ -153,11 +246,11 @@ export const verifyDomain = async (chainId: string, domain: string) => {
   return JSON.parse(result);
 };
 
-const executeTxn = async (tx: MakeTxResponse, notification: ContextProps) => {
+const executeTxn = async (tx: MakeTxResponse, notification: any, amount?: any) => {
   const gasResponse = await tx.simulate();
   await tx.send(
     {
-      amount: [],
+      amount: [amount],
       gas: Math.floor(gasResponse.gasUsed * 1.5).toString(),
     },
     "",

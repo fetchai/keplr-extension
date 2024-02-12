@@ -1,7 +1,7 @@
 import searchButton from "@assets/icon/search.png";
 import { useNotification } from "@components/notification";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { ANS_CONFIG } from "../../../config.ui.var";
 import { registerDomain } from "../../../name-service/ans-api";
@@ -12,6 +12,9 @@ import style from "./style.module.scss";
 import style2 from "../../fetch-name-service/domain-details/style.module.scss";
 import { Web2 } from "./web2";
 import { AgentAddressInput } from "./agent-input";
+import { ExpirationField } from "@components/expiration-field";
+import { updateAmountAndDenom } from "@utils/ans-v2-utils";
+
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -22,6 +25,9 @@ export const RegisterAgentDomains = observer(() => {
   const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
   const [selectedWebVersion, setSelectedWebVersion] = useState("web3");
+  const regex = /^[\p{Ll}0-9\-.]+$/u;
+  const [expiryDateTime, setExpiryDateTime] = useState(0);
+  const [regsiterAmount, setRegsiterAmount] = useState<any>();
 
   const notification = useNotification();
   const {
@@ -29,11 +35,22 @@ export const RegisterAgentDomains = observer(() => {
     queryPermissions,
     queryDomainRecord,
     queryVaildateAgentAddress,
+    queryContractState,
   } = queriesStore.get(current.chainId).ans;
 
   const { publicDomains = [] } = queryPublicDomains.getQueryContract(
     ANS_CONFIG[current.chainId].contractAddress
   );
+  const price: any = queryContractState.getQueryContract(
+    ANS_CONFIG[current.chainId].contractAddress
+  ).response?.data;
+  useEffect(() => {
+    const amount = updateAmountAndDenom(
+      price?.price_per_second,
+      expiryDateTime
+    );
+    setRegsiterAmount(amount);
+  }, [price?.price_per_second, expiryDateTime]);
 
   let domainAvailablityMessage;
   let domainAvailablity = false;
@@ -47,6 +64,11 @@ export const RegisterAgentDomains = observer(() => {
     const parts = domain.split(".");
     let permissionsQueryDomain;
     let statusQueryDomain;
+    if (!regex.test(searchValue)) {
+      domainAvailablityMessage = `Invalid domain`;
+      domainAvailablity = false;
+      return;
+    }
     if (parts.length === 2) {
       const { isAvailable, record } = queryDomainRecord.getQueryContract(
         contractAddress,
@@ -115,9 +137,9 @@ export const RegisterAgentDomains = observer(() => {
       await registerDomain(
         current.chainId,
         account,
-        agentAddressSearchValue,
         domain,
-        notification
+        notification,
+        regsiterAmount
       );
       setIsRegisterInProgress(false);
       navigate(`/agent-name-service`, {
@@ -152,8 +174,6 @@ export const RegisterAgentDomains = observer(() => {
         navigate("/agent-name-service");
         window.localStorage.removeItem("verificationData");
       }}
-      
-      // onNavbarClicked={() => window.localStorage.removeItem("verificationData")}
       showBottomMenu={true}
     >
       {isRegisterInProgress ? (
@@ -203,7 +223,7 @@ export const RegisterAgentDomains = observer(() => {
               />
             ) : searchValue === "" ? (
               <img src={searchButton} className={style["searchIcon"]} alt="" />
-            ) : !domainAvailablity ? (
+            ) : !domainAvailablity || !regex.test(searchValue) ? (
               <div className={style["domainTakenIcon"]}>!</div>
             ) : (
               <img
@@ -227,14 +247,13 @@ export const RegisterAgentDomains = observer(() => {
           </div>
           {!domainAvailablity && searchValue !== "" && (
             <div
-              style={{ position: "absolute", top: "283px" }}
+              style={{ position: "absolute", top: "247px" }}
               className={style["domainTakenText"]}
             >
               <div className={style["domainTakenIcon2"]}>!</div>
               {domainAvailablityMessage}
             </div>
           )}
-
           <AgentAddressInput
             agentAddressSearchValue={agentAddressSearchValue}
             handleAgentAddressInputChange={handleAgentAddressInputChange}
@@ -243,6 +262,7 @@ export const RegisterAgentDomains = observer(() => {
             searchValue={searchValue}
             isLoading={isLoading}
           />
+          <ExpirationField setExpiryDateTime={setExpiryDateTime} />
           <button
             className={style["registerButton"]}
             disabled={!domainAvailablity || !isValidAgentAddress}

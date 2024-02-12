@@ -13,7 +13,7 @@ export const VerifyDomain = () => {
   const location = useLocation();
   const notification = useNotification();
 
-  const { domainName, agentName, verificationString } = location.state || {};
+  const { domainName,verificationString } = location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
@@ -67,7 +67,6 @@ export const VerifyDomain = () => {
       await registerDomain(
         current.chainId,
         account,
-        agentName,
         domain,
         notification,
         approvalToken
