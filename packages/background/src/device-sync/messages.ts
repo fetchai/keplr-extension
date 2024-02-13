@@ -2,9 +2,9 @@ import { Message } from "@keplr-wallet/router";
 import { ROUTE } from "./constants";
 import { AccessToken, SyncStatus } from "./types";
 
-export class GetDeviceSyncEmailMsg extends Message<string> {
+export class HasSyncRemoteDataMsg extends Message<boolean> {
   public static type() {
-    return "get-device-sync-email";
+    return "has-sync-remote-data";
   }
 
   constructor() {
@@ -20,7 +20,7 @@ export class GetDeviceSyncEmailMsg extends Message<string> {
   }
 
   type(): string {
-    return GetDeviceSyncEmailMsg.type();
+    return HasSyncRemoteDataMsg.type();
   }
 }
 
@@ -46,7 +46,7 @@ export class GetDeviceSyncStatusMsg extends Message<SyncStatus> {
   }
 }
 
-export class UpdateDeviceSyncCredentialsMsg extends Message<void> {
+export class UpdateDeviceSyncCredentialsMsg extends Message<SyncStatus> {
   public static type() {
     return "update-device-sync-credentials";
   }
@@ -77,15 +77,12 @@ export class UpdateDeviceSyncCredentialsMsg extends Message<void> {
   }
 }
 
-export class StartDeviceSyncMsg extends Message<void> {
+export class SyncDeviceMsg extends Message<void> {
   public static type() {
-    return "start-device-sync";
+    return "sync-device";
   }
 
-  constructor(
-    public readonly deviceSyncUrl: string,
-    public readonly password?: string
-  ) {
+  constructor(public readonly password?: string) {
     super();
   }
 
@@ -98,6 +95,50 @@ export class StartDeviceSyncMsg extends Message<void> {
   }
 
   type(): string {
-    return StartDeviceSyncMsg.type();
+    return SyncDeviceMsg.type();
+  }
+}
+
+export class SetKrPasswordMsg extends Message<void> {
+  public static type() {
+    return "set-kr-password";
+  }
+
+  constructor(public readonly password: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return SetKrPasswordMsg.type();
+  }
+}
+
+export class SetPauseMsg extends Message<void> {
+  public static type() {
+    return "set-pause";
+  }
+
+  constructor(public readonly value: boolean) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return SetPauseMsg.type();
   }
 }

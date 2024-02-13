@@ -1,9 +1,11 @@
 import { Env, Handler, InternalHandler, Message } from "@keplr-wallet/router";
 import {
-  GetDeviceSyncEmailMsg,
   GetDeviceSyncStatusMsg,
   UpdateDeviceSyncCredentialsMsg,
-  StartDeviceSyncMsg,
+  HasSyncRemoteDataMsg,
+  SyncDeviceMsg,
+  SetKrPasswordMsg,
+  SetPauseMsg,
 } from "./messages";
 import { DeviceSyncService } from "./service";
 
@@ -12,10 +14,10 @@ export const getHandler: (service: DeviceSyncService) => Handler = (
 ) => {
   return (env: Env, msg: Message<unknown>) => {
     switch (msg.constructor) {
-      case GetDeviceSyncEmailMsg:
-        return handleGetDeviceSyncEmailMsg(service)(
+      case HasSyncRemoteDataMsg:
+        return handleHasSyncRemoteDataMsg(service)(
           env,
-          msg as GetDeviceSyncEmailMsg
+          msg as HasSyncRemoteDataMsg
         );
       case GetDeviceSyncStatusMsg:
         return handleGetDeviceSyncStatusMsg(service)(
@@ -27,22 +29,23 @@ export const getHandler: (service: DeviceSyncService) => Handler = (
           env,
           msg as UpdateDeviceSyncCredentialsMsg
         );
-      case StartDeviceSyncMsg:
-        return handleStartDeviceSyncMsg(service)(
-          env,
-          msg as StartDeviceSyncMsg
-        );
+      case SyncDeviceMsg:
+        return handleSyncDeviceMsg(service)(env, msg as SyncDeviceMsg);
+      case SetKrPasswordMsg:
+        return handleSetKrPasswordMsg(service)(env, msg as SetKrPasswordMsg);
+      case SetPauseMsg:
+        return handleSetPauseMsg(service)(env, msg as SetPauseMsg);
       default:
         throw new Error("Unknown msg type");
     }
   };
 };
 
-const handleGetDeviceSyncEmailMsg: (
+const handleHasSyncRemoteDataMsg: (
   service: DeviceSyncService
-) => InternalHandler<GetDeviceSyncEmailMsg> = (service) => {
+) => InternalHandler<HasSyncRemoteDataMsg> = (service) => {
   return () => {
-    return service.getEmail();
+    return service.hasRemoteData();
   };
 };
 
@@ -62,10 +65,26 @@ const handleUpdateDeviceSyncCredentialsMsg: (
   };
 };
 
-const handleStartDeviceSyncMsg: (
+const handleSyncDeviceMsg: (
   service: DeviceSyncService
-) => InternalHandler<StartDeviceSyncMsg> = (service) => {
+) => InternalHandler<SyncDeviceMsg> = (service) => {
   return (_, msg) => {
-    return service.startSyncTimer(msg.deviceSyncUrl, msg.password);
+    return service.syncDevice(msg.password);
+  };
+};
+
+const handleSetKrPasswordMsg: (
+  service: DeviceSyncService
+) => InternalHandler<SetKrPasswordMsg> = (service) => {
+  return (_, msg) => {
+    return service.setPassword(msg.password);
+  };
+};
+
+const handleSetPauseMsg: (
+  service: DeviceSyncService
+) => InternalHandler<SetPauseMsg> = (service) => {
+  return (_, msg) => {
+    return service.setPause(msg.value);
   };
 };

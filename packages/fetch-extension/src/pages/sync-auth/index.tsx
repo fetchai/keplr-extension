@@ -4,16 +4,17 @@ import { observer } from "mobx-react-lite";
 import queryString from "querystring";
 import ReactDOM from "react-dom";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
-import { AUTH_SERVER, DEVICE_SYNC_SERVER } from "../../config.ui.var";
+import { AUTH_SERVER } from "../../config.ui.var";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import {
-  CheckPasswordMsg,
-  GetDeviceSyncStatusMsg,
-  StartDeviceSyncMsg,
+  GetMultiKeyStoreInfoMsg,
+  SetKrPasswordMsg,
+  SyncDeviceMsg,
   UpdateDeviceSyncCredentialsMsg,
 } from "@keplr-wallet/background";
-import { Button } from "reactstrap";
-import { PasswordInput } from "@components/form";
+import { EmptyLayout } from "@layouts/empty-layout";
+import style from "./style.module.scss";
+import classnames from "classnames";
 
 type QueryParams = {
   code: string | undefined;
@@ -33,11 +34,8 @@ type AccessTokenResponse = {
 export const SyncAuthPage: FunctionComponent = observer(() => {
   const [authError, setAuthError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [passwordLoading, setPasswordLoading] = useState(true);
-  const [passwordError, setPasswordError] = useState("");
-  const [password, setPassword] = useState("");
+  const [noRemote, setNoRemote] = useState(false);
   const [email, setEmail] = useState("");
-  const [passwordNeeded, setPasswordNeeded] = useState(false);
 
   const requester = new InExtensionMessageRequester();
 
@@ -93,15 +91,6 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
 
         setEmail(profileResponse.data.email);
 
-        const syncStatus = await requester.sendMessage(
-          BACKGROUND_PORT,
-          new GetDeviceSyncStatusMsg()
-        );
-
-        if (syncStatus.passwordNotAvailable) {
-          setPasswordNeeded(true);
-        }
-
         await requester.sendMessage(
           BACKGROUND_PORT,
           new UpdateDeviceSyncCredentialsMsg(profileResponse.data.email, {
@@ -111,6 +100,22 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
             refreshExpiresIn: token.refresh_expires_in,
           })
         );
+
+        await requester.sendMessage(BACKGROUND_PORT, new SyncDeviceMsg());
+
+        const { multiKeyStoreInfo } = await requester.sendMessage(
+          BACKGROUND_PORT,
+          new GetMultiKeyStoreInfoMsg()
+        );
+
+        setNoRemote(multiKeyStoreInfo.length === 0);
+
+        if (multiKeyStoreInfo.length === 0) {
+          await requester.sendMessage(
+            BACKGROUND_PORT,
+            new SetKrPasswordMsg("")
+          );
+        }
       } catch (e) {
         console.error(`Error authenticating: ${e}`);
         setAuthError(true);
@@ -123,7 +128,7 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
   }, []);
 
   if (loading) {
-    return <h1>Loading...</h1>;
+    return <h1>Syncing...</h1>;
   }
 
   if (authError) {
@@ -131,52 +136,43 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
   }
 
   return (
-    <div>
-      <h1> Hello {email}</h1>
-      {passwordNeeded && (
-        <div>
-          <PasswordInput
-            label={"password"}
-            required
-            error={passwordError}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+    <EmptyLayout
+      className={classnames(style["container"], {
+        large: true,
+      })}
+      style={{
+        backgroundColor: "white",
+        padding: 0,
+        margin: "auto",
+        width: "100vw",
+        height: "100vh",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ flex: 10 }} />
+      <div className={style["logoContainer"]}>
+        <div
+          className={classnames(style["logoInnerContainer"], {
+            [style["justifyCenter"]]: true,
+          })}
+        >
+          <img
+            className={style["icon"]}
+            src={require("@assets/logo-256.svg")}
+            alt="logo"
           />
-          <Button
-            type="submit"
-            color="primary"
-            block
-            data-loading={passwordLoading}
-            onSubmit={async () => {
-              setPasswordLoading(true);
-              try {
-                const valid = await requester.sendMessage(
-                  BACKGROUND_PORT,
-                  new CheckPasswordMsg(password)
-                );
-
-                if (!valid) {
-                  setPasswordError("Invalid password");
-                  return;
-                }
-
-                await requester.sendMessage(
-                  BACKGROUND_PORT,
-                  new StartDeviceSyncMsg(DEVICE_SYNC_SERVER, password)
-                );
-              } catch (e) {
-                setPasswordError("Error validating password");
-              } finally {
-                setPasswordLoading(false);
-              }
-            }}
-          >
-            Confirm
-          </Button>
+          <img
+            className={style["logo"]}
+            src={require("@assets/brand-text.png")}
+            alt="logo"
+          />
         </div>
-      )}
-    </div>
+      </div>
+      <h1> Hello {email}. Device sync is complete.</h1>
+      {noRemote && <h1>No sync data found, please create a new account.</h1>}
+      <div style={{ flex: 13 }} />
+    </EmptyLayout>
   );
 });
 

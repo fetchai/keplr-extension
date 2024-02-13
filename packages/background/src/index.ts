@@ -55,6 +55,7 @@ export function init(
   },
   commonCrypto: CommonCrypto,
   notification: Notification,
+  deviceSyncUrl: string,
   ledgerOptions: Partial<LedgerOptions> = {},
   experimentalOptions: Partial<{
     suggestChain: Partial<{
@@ -120,7 +121,8 @@ export function init(
   );
 
   const deviceSyncService = new DeviceSync.DeviceSyncService(
-    storeCreator("device-sync")
+    storeCreator("device-sync"),
+    deviceSyncUrl
   );
 
   const chainUpdaterService = new Updater.ChainUpdaterService(
@@ -187,7 +189,8 @@ export function init(
         permissionService,
         ledgerService,
         keystoneService,
-        analyticsService
+        analyticsService,
+        deviceSyncService
       );
       secretWasmService.init(chainsService, keyRingService, permissionService);
       backgroundTxService.init(chainsService, permissionService);

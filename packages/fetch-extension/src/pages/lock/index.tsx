@@ -17,13 +17,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { useNavigate } from "react-router";
 import delay from "delay";
-import {
-  StartAutoLockMonitoringMsg,
-  StartDeviceSyncMsg,
-} from "@keplr-wallet/background";
+import { StartAutoLockMonitoringMsg } from "@keplr-wallet/background";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { DEVICE_SYNC_SERVER } from "../../config.ui.var";
 
 interface FormData {
   password: string;
@@ -60,14 +56,10 @@ export const LockPage: FunctionComponent = observer(() => {
           try {
             await keyRingStore.unlock(data.password);
             const startAutoLockMsg = new StartAutoLockMonitoringMsg();
-            const startDeviceSyncMsg = new StartDeviceSyncMsg(
-              DEVICE_SYNC_SERVER,
-              data.password
-            );
             const requester = new InExtensionMessageRequester();
+
             // Make sure to notify that auto lock service to start check locking after duration.
             requester.sendMessage(BACKGROUND_PORT, startAutoLockMsg);
-            requester.sendMessage(BACKGROUND_PORT, startDeviceSyncMsg);
 
             if (interactionInfo.interaction) {
               if (!interactionInfo.interactionInternal) {

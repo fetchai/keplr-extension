@@ -225,6 +225,8 @@
 
   "register.ledger.title": "Connect ledger",
 
+  "register.sync.title": "Sync Device",
+
   "register.eth-migrate.title": "Migrate from ETH",
   "register.eth-migrate.metamask-private-key.title": "Migrate a Metamask Private Key",
   "register.eth-migrate.metamask-ledger.title": "Migrate a Metamask Ledger Device",

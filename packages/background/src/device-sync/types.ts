@@ -1,4 +1,4 @@
-import { ExportKeyRingData } from "src/keyring";
+import { ExportKeyRingData } from "../keyring";
 
 export interface AddressBookData {
   name: string;
@@ -14,8 +14,10 @@ export type AccessToken = {
 };
 
 export type SyncStatus = {
+  email: string;
   tokenExpired: boolean;
   passwordNotAvailable: boolean;
+  paused: boolean;
 };
 
 export type SyncData = {

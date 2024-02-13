@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
@@ -7,19 +7,29 @@ import styleMenu from "./menu.module.scss";
 
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router";
-import { AUTH_SERVER } from "../../config.ui.var";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { GetDeviceSyncStatusMsg } from "@keplr-wallet/background";
 
 export const Menu: FunctionComponent = observer(() => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
-  const navigate = useNavigate();
+  const [showSync, setShowSync] = useState<boolean>(true);
 
-  const FAUNA_LOGIN_URL =
-    `${AUTH_SERVER}/login` +
-    `?redirect_uri=${encodeURIComponent(
-      browser.extension.getURL("sync-auth.html")
-    )}` +
-    `&client_id=fetch_wallet` +
-    `&response_type=code`;
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getSyncStatus = async () => {
+      const requester = new InExtensionMessageRequester();
+
+      const syncStatus = await requester.sendMessage(
+        BACKGROUND_PORT,
+        new GetDeviceSyncStatusMsg()
+      );
+
+      setShowSync(syncStatus?.email ? false : true);
+    };
+
+    getSyncStatus();
+  }, []);
 
   return (
     <div className={styleMenu["container"]}>
@@ -53,14 +63,19 @@ export const Menu: FunctionComponent = observer(() => {
       >
         <FormattedMessage id="main.menu.guide" />
       </a>
-      <a
-        className={styleMenu["item"]}
-        href={`${FAUNA_LOGIN_URL}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FormattedMessage id="main.menu.sync" />
-      </a>
+      {showSync && (
+        <div
+          className={styleMenu["item"]}
+          onClick={(e) => {
+            e.preventDefault();
+            browser.tabs.create({
+              url: "/popup.html#/register?sync-page=1",
+            });
+          }}
+        >
+          <FormattedMessage id="main.menu.sync" />
+        </div>
+      )}
       {(chainStore.current.features ?? []).find(
         (feature) =>
           feature === "cosmwasm" ||

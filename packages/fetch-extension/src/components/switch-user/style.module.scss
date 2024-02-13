@@ -1,0 +1,25 @@
+.statusContainer {
+  padding: 5px;
+}
+
+.status {
+  color: grey;
+  height: 10px;
+  margin-right: 5px;
+}
+
+.dropdownIcon {
+  display: flex;
+  height: 15px;
+}
+
+.online {
+  color: green;
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

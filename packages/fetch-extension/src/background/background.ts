@@ -16,6 +16,7 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 import { init, ScryptParams } from "@keplr-wallet/background";
 import scrypt from "scrypt-js";
 import { Buffer } from "buffer/";
+import { DEVICE_SYNC_SERVER } from "../config.ui.var";
 
 import {
   CommunityChainInfoRepo,
@@ -65,7 +66,8 @@ const { initFn } = init(
         message: params.message,
       });
     },
-  }
+  },
+  DEVICE_SYNC_SERVER
 );
 
 router.listen(BACKGROUND_PORT, initFn);

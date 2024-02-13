@@ -1,54 +1,20 @@
 import { KVStore } from "@keplr-wallet/common";
 import generateHash from "object-hash";
 import axios from "axios";
-import {
-  BIP44HDPath,
-  ExportKeyRingData,
-  KeyRingStatus,
-  MultiKeyStoreInfoWithSelected,
-} from "../keyring";
+import { ExportKeyRingData, KeyRingService, KeyRingStatus } from "../keyring";
 import { AccessToken, AddressBookData, SyncData, SyncStatus } from "./types";
 import { getRemoteData, setRemoteData } from "./sync-client";
-import { KeyCurve } from "@keplr-wallet/crypto";
-import { ChainInfoWithCoreTypes } from "src/chains";
-
-interface IKeyRingService {
-  exportKeyRingDatas: (password: string) => Promise<ExportKeyRingData[]>;
-  addMnemonicKey: (
-    kdf: "scrypt" | "sha256" | "pbkdf2",
-    mnemonic: string,
-    meta: Record<string, string>,
-    bip44HDPath: BIP44HDPath,
-    curve?: KeyCurve
-  ) => Promise<{
-    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
-  }>;
-  addPrivateKey: (
-    kdf: "scrypt" | "sha256" | "pbkdf2",
-    privateKey: Uint8Array,
-    meta: Record<string, string>,
-    curve?: KeyCurve
-  ) => Promise<{
-    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
-  }>;
-  deleteKeyRing: (
-    index: number,
-    password: string
-  ) => Promise<{
-    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
-    status: KeyRingStatus;
-  }>;
-  readonly keyRingStatus: KeyRingStatus;
-}
+// import { KeyCurve } from "@keplr-wallet/crypto";
+import { ChainInfoWithCoreTypes } from "../chains";
 
 export class DeviceSyncService {
-  protected keyringService!: IKeyRingService;
-
+  protected keyringService!: KeyRingService;
   protected chainService!: {
     getChainInfos: () => Promise<ChainInfoWithCoreTypes[]>;
   };
 
   protected token: AccessToken | undefined;
+  protected paused: boolean | undefined;
 
   protected email: string = "";
   protected krPassword: string = "";
@@ -65,15 +31,16 @@ export class DeviceSyncService {
 
   constructor(
     protected readonly kvStore: KVStore,
+    protected deviceSyncUrl: string,
     protected readonly opts: {
       readonly monitoringInterval: number;
     } = {
-      monitoringInterval: 300000, // 5 mins
+      monitoringInterval: 10000, // 5 mins
     }
   ) {}
 
   async init(
-    keyringService: IKeyRingService,
+    keyringService: KeyRingService,
     chainService: {
       getChainInfos: () => Promise<ChainInfoWithCoreTypes[]>;
     }
@@ -81,37 +48,20 @@ export class DeviceSyncService {
     this.keyringService = keyringService;
     this.chainService = chainService;
 
-    browser.idle.onStateChanged.addListener((idle) => {
-      this.stateChangedHandler(idle);
-    });
-
     await this.loadKeyStoreValues();
+    this.startSyncTimer();
   }
 
-  private stateChangedHandler(newState: browser.idle.IdleState) {
-    if (this.email !== "") {
-      if ((newState as any) === "locked") {
-        this.stopSyncTimer();
-      }
-    }
+  public setPassword(password: string) {
+    this.krPassword = password;
   }
 
-  startSyncTimer(deviceSyncUrl: string, password?: string) {
+  private startSyncTimer() {
     this.stopSyncTimer();
 
-    if (password) {
-      this.krPassword = password;
-    }
-
-    try {
-      this.syncDevice(deviceSyncUrl);
-    } catch (e) {
-      console.error(`Error syncing device: ${e}`);
-    }
-
-    this.syncTimer = setInterval(() => {
+    this.syncTimer = setInterval(async () => {
       try {
-        this.syncDevice(deviceSyncUrl);
+        await this.syncDevice();
       } catch (e) {
         console.error(`Error syncing device: ${e}`);
       }
@@ -133,21 +83,32 @@ export class DeviceSyncService {
     return this.keyringService.keyRingStatus === KeyRingStatus.UNLOCKED;
   }
 
-  public getEmail(): string {
-    return this.email;
-  }
-
-  public setCredentials(
-    email: string,
-    accessToken?: AccessToken
-  ): Promise<void> {
-    this.email = email;
-    if (accessToken) {
-      this.token = accessToken;
-      this.kvStore.set("ds_access_token", accessToken);
+  get keyRingIsEmpty(): boolean {
+    if (this.keyringService == null) {
+      throw new Error("Keyring service is null");
     }
 
-    return this.kvStore.set("ds_email", email);
+    return this.keyringService.keyRingStatus === KeyRingStatus.EMPTY;
+  }
+
+  public async setCredentials(
+    email: string,
+    accessToken?: AccessToken
+  ): Promise<SyncStatus> {
+    this.email = email;
+    await this.kvStore.set("ds_email", email);
+
+    if (accessToken) {
+      this.token = accessToken;
+      await this.kvStore.set("ds_access_token", accessToken);
+    }
+
+    return this.getSyncStatus();
+  }
+
+  public async setPause(value: boolean) {
+    this.paused = value;
+    await this.kvStore.set("ds_paused", value);
   }
 
   public getSyncStatus(): SyncStatus {
@@ -156,14 +117,30 @@ export class DeviceSyncService {
       : false;
 
     return {
+      email: this.email,
       tokenExpired: !this.token || refreshTokenExpired,
       passwordNotAvailable: this.krPassword === "",
+      paused: this.paused ?? false,
     };
+  }
+
+  public async hasRemoteData(): Promise<boolean> {
+    if (!this.token) {
+      throw new Error("Access token not set");
+    }
+
+    const remoteData = await getRemoteData(
+      this.deviceSyncUrl,
+      this.token.accessToken
+    );
+
+    return remoteData.data.keyringData.length > 0;
   }
 
   private async loadKeyStoreValues() {
     this.email = (await this.kvStore.get<string>("ds_email")) ?? "";
     this.token = await this.kvStore.get<AccessToken>("ds_access_token");
+    this.paused = await this.kvStore.get<boolean>("ds_paused");
     this.localData = (await this.kvStore.get<SyncData>("ds_local_data")) ?? {
       version: 0,
       hash: "",
@@ -174,12 +151,17 @@ export class DeviceSyncService {
     };
   }
 
-  private async syncDevice(deviceSyncUrl: string) {
+  public async syncDevice(password?: string) {
+    if (password) {
+      this.krPassword = password;
+    }
+
     if (
       this.email === "" ||
       this.krPassword === "" ||
-      !this.keyRingIsUnlocked ||
-      !this.token
+      (!this.keyRingIsEmpty && !this.keyRingIsUnlocked) ||
+      !this.token ||
+      this.paused
     ) {
       return;
     }
@@ -192,14 +174,10 @@ export class DeviceSyncService {
       return;
     }
 
-    if (!this.token) {
-      return;
-    }
-
     await this.refreshAccessTokenIfExpired();
 
     const remoteData = await getRemoteData(
-      deviceSyncUrl,
+      this.deviceSyncUrl,
       this.token.accessToken
     );
 
@@ -213,14 +191,14 @@ export class DeviceSyncService {
     } else {
       const localData = await this.getLocalData();
       if (localData.hash !== this.localData.hash) {
-        this.localData = { ...this.localData, ...localData };
+        this.localData = { version: this.localData.version, ...localData };
         this.kvStore.set("ds_local_data", this.localData);
       }
     }
 
     // If local was updated
     if (this.localData.hash !== remoteHash) {
-      await setRemoteData(deviceSyncUrl, this.token.accessToken, {
+      await setRemoteData(this.deviceSyncUrl, this.token.accessToken, {
         ...this.localData,
         version: this.localData.version + 1,
       });
@@ -321,6 +299,9 @@ export class DeviceSyncService {
     const krsLocallyRemoved = prevKrs.filter((kr) => !localKrs.includes(kr));
 
     const duplicationCheck = new Map<string, boolean>();
+
+    let createKeyring = localKrs.length === 0;
+
     for (const key of remoteKrs) {
       if (
         !duplicationCheck.get(key) &&
@@ -330,20 +311,43 @@ export class DeviceSyncService {
         const kr = keyRings[key];
 
         if (kr.type === "mnemonic") {
-          await this.keyringService.addMnemonicKey(
-            "scrypt", //TODO: take as protected value
-            kr.key,
-            kr.meta,
-            kr.bip44HDPath
-          );
+          if (createKeyring) {
+            await this.keyringService.createMnemonicKey(
+              "scrypt", //TODO: take as protected value
+              kr.key,
+              this.krPassword,
+              kr.meta,
+              kr.bip44HDPath
+            );
+
+            createKeyring = false;
+          } else {
+            await this.keyringService.addMnemonicKey(
+              "scrypt", //TODO: take as protected value
+              kr.key,
+              kr.meta,
+              kr.bip44HDPath
+            );
+          }
         }
 
         if (kr.type === "privateKey") {
-          await this.keyringService.addPrivateKey(
-            "scrypt",
-            Buffer.from(kr.key, "hex"),
-            kr.meta
-          );
+          if (createKeyring) {
+            await this.keyringService.createPrivateKey(
+              "scrypt",
+              Buffer.from(kr.key, "hex"),
+              this.krPassword,
+              kr.meta
+            );
+
+            createKeyring = false;
+          } else {
+            await this.keyringService.addPrivateKey(
+              "scrypt",
+              Buffer.from(kr.key, "hex"),
+              kr.meta
+            );
+          }
         }
 
         duplicationCheck.set(key, true);

@@ -39,6 +39,7 @@ import { APP_PORT, Env, WEBPAGE_PORT } from "@keplr-wallet/router";
 import { AnalyticsService } from "../analytics";
 import { InteractionService } from "../interaction";
 import { PermissionService } from "../permission";
+import { DeviceSyncService } from "../device-sync";
 
 import {
   SignDoc,
@@ -61,6 +62,7 @@ export class KeyRingService {
   protected interactionService!: InteractionService;
   public chainsService!: ChainsService;
   public permissionService!: PermissionService;
+  public deviceSyncService!: DeviceSyncService;
 
   constructor(
     protected readonly kvStore: KVStore,
@@ -74,7 +76,8 @@ export class KeyRingService {
     permissionService: PermissionService,
     ledgerService: LedgerService,
     keystoneService: KeystoneService,
-    analyticsSerice: AnalyticsService
+    analyticsSerice: AnalyticsService,
+    deviceSyncService: DeviceSyncService
   ) {
     this.interactionService = interactionService;
     this.chainsService = chainsService;
@@ -90,6 +93,7 @@ export class KeyRingService {
 
     this.chainsService.addChainRemovedHandler(this.onChainRemoved);
     this.analyticsSerice = analyticsSerice;
+    this.deviceSyncService = deviceSyncService;
   }
 
   protected readonly onChainRemoved = (chainId: string) => {
@@ -181,6 +185,7 @@ export class KeyRingService {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    this.deviceSyncService.setPassword(password);
     // TODO: Check mnemonic checksum.
     return await this.keyRing.createMnemonicKey(
       kdf,
@@ -201,6 +206,8 @@ export class KeyRingService {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    this.deviceSyncService.setPassword(password);
+
     return await this.keyRing.createPrivateKey(
       kdf,
       privateKey,
@@ -256,6 +263,8 @@ export class KeyRingService {
   }
 
   async unlock(password: string): Promise<KeyRingStatus> {
+    this.deviceSyncService.setPassword(password);
+
     await this.keyRing.unlock(password);
 
     return this.keyRing.status;
@@ -1009,6 +1018,9 @@ Salt: ${salt}`;
   }
 
   async exportKeyRingDatas(password: string): Promise<ExportKeyRingData[]> {
+    if (this.keyRingStatus === KeyRingStatus.EMPTY) {
+      return [];
+    }
     return await this.keyRing.exportKeyRingDatas(password);
   }
 

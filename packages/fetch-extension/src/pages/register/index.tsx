@@ -2,6 +2,7 @@
 require("setimmediate");
 // Shim ------------
 import React, { FunctionComponent, useEffect } from "react";
+import { useLocation } from "react-router";
 
 import { EmptyLayout } from "@layouts/empty-layout";
 
@@ -41,6 +42,8 @@ import {
 } from "./migration";
 import { AuthIntro, AuthPage } from "./auth";
 import { configure } from "mobx";
+import { SyncIntro, SyncPage, TypeSync } from "./sync";
+
 configure({
   enforceActions: "always", // Make mobx to strict mode.
 });
@@ -64,6 +67,7 @@ export const BackButton: FunctionComponent<{ onClick: () => void }> = ({
 
 export const RegisterPage: FunctionComponent = observer(() => {
   const { keyRingStore, uiConfigStore, analyticsStore } = useStore();
+  const location = useLocation();
 
   useEffect(() => {
     analyticsStore.logEvent("Register page");
@@ -113,7 +117,19 @@ export const RegisterPage: FunctionComponent = observer(() => {
       intro: MigrateEthereumAddressIntro,
       page: MigrateEthereumAddressPage,
     },
+    {
+      type: TypeSync,
+      intro: SyncIntro,
+      page: SyncPage,
+    },
   ]);
+
+  const openSyncPage =
+    new URLSearchParams(location.search).get("sync-page") ?? "0";
+
+  if (openSyncPage === "1") {
+    registerConfig.setType(TypeSync);
+  }
 
   return (
     <EmptyLayout
