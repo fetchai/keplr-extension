@@ -113,20 +113,18 @@ export const GroupChatsViewSection = observer(
       setUserGroupAddress(currentUser);
 
       const init = async () => {
-        if (currentUser?.removedAt) {
-          /// receive last updated message as message subscription not called
-          await recieveMessages(
-            groupId,
-            null,
-            0,
-            false,
-            groupId,
-            user.accessToken,
-            chatStore.messagesStore
-          );
-        }
-        init();
+        /// receive last updated message as message subscription not called
+        await recieveMessages(
+          groupId,
+          null,
+          0,
+          false,
+          groupId,
+          user.accessToken,
+          chatStore.messagesStore
+        );
       };
+      if (currentUser?.removedAt) init();
     }, [userGroups]);
 
     const messagesEndRef: any = useCallback(
