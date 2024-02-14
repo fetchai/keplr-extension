@@ -78,6 +78,7 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
           console.log(paragraph);
           return (
             <Card
+              key={i}
               heading={
                 keyStore.meta?.["name"]
                   ? keyStore.meta["name"]
