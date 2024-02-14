@@ -234,6 +234,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
                 outline
                 onClick={() => setIsAddressBookOpen(true)}
                 disabled={disabled}
+                style={{ padding: "12px", width: "35px" }}
               >
                 <i className="fas fa-address-book" />
               </Button>

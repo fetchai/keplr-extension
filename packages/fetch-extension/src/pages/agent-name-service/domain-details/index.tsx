@@ -59,7 +59,7 @@ export const AgentDomainDetails = () => {
       )}
       {selectedOption !== "" && (
         <OptionConfirmationPopup
-          domain={domainName}
+          domain={domainName.toString()}
           setIsTrnsxLoading={setIsTrnsxLoading}
           handleCancel={() => setSelectedOption("")}
           selectedOption={selectedOption}
@@ -68,7 +68,10 @@ export const AgentDomainDetails = () => {
       {activeTab === "permissions" ? (
         <Permissions setIsTrnsxLoading={setIsTrnsxLoading} tabName={tabName} />
       ) : (
-        <Addresses domainName={domainName}  setIsTrnsxLoading={setIsTrnsxLoading}/>
+        <Addresses
+          domainName={domainName}
+          setIsTrnsxLoading={setIsTrnsxLoading}
+        />
       )}
     </HeaderLayout>
   );

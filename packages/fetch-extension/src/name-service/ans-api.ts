@@ -50,12 +50,11 @@ export const registerDomain = async (
   notification: ContextProps,
   // agentAddress?: string,
   amount: any,
-  approval_token?: string,
+  approval_token?: string
 ) => {
   const registerData: {
     domain: string;
     approval_token?: string;
-
   } = {
     domain,
   };
@@ -79,13 +78,16 @@ export const updateRecord = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   domain: string,
   notification: ContextProps,
-  agentAddress: any,
+  agentAddress: any
 ) => {
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
     ANS_CONFIG[chainId].contractAddress,
     {
-      update_record: { domain: domain, agent_records: [{ address: agentAddress, "weight": 123 }] }
+      update_record: {
+        domain: domain,
+        agent_records: [{ address: agentAddress, weight: 123 }],
+      },
     },
     []
   );
@@ -104,7 +106,7 @@ export const removeDomain = async (
     ANS_CONFIG[chainId].contractAddress,
     {
       remove_domain: {
-        domain: domain
+        domain: domain,
       },
     },
     []
@@ -116,31 +118,27 @@ export const resetDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   domain: string,
   notification: ContextProps,
-  new_admin?: any,
+  new_admin?: any
 ) => {
   let resetData: {
     domain: string;
     new_admin?: string;
-
   } = {
     domain,
-    new_admin
+    new_admin,
   };
   if (new_admin !== undefined) {
     resetData = {
       domain: domain,
-      new_admin: new_admin
-    }
-  } else {
-
+      new_admin: new_admin,
+    };
   }
 
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
     ANS_CONFIG[chainId].contractAddress,
     {
-      reset_domain: resetData
-      ,
+      reset_domain: resetData,
     },
     []
   );
@@ -151,17 +149,13 @@ export const extendDomainExpiration = async (
   chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   domain: string,
-  notification: ContextProps,
-
+  notification: ContextProps
 ) => {
-
-
   const tx = account.cosmwasm.makeExecuteContractTx(
     `executeWasm`,
     ANS_CONFIG[chainId].contractAddress,
     {
-      extend_expiration: { domain: domain }
-      ,
+      extend_expiration: { domain: domain },
     },
     []
   );
@@ -188,7 +182,7 @@ export const updateDomainPermissions = async (
     },
     []
   );
-  await executeTxn(tx, notification);
+  await executeTxn(tx, ANS_AMOUNT, notification);
 };
 
 export const verifyDomain = async (chainId: string, domain: string) => {
@@ -246,7 +240,11 @@ export const verifyDomain = async (chainId: string, domain: string) => {
   return JSON.parse(result);
 };
 
-const executeTxn = async (tx: MakeTxResponse, notification: any, amount?: any) => {
+const executeTxn = async (
+  tx: MakeTxResponse,
+  notification: any,
+  amount?: any
+) => {
   const gasResponse = await tx.simulate();
   await tx.send(
     {
@@ -255,6 +253,7 @@ const executeTxn = async (tx: MakeTxResponse, notification: any, amount?: any) =
     },
     "",
     {},
+
     {
       onFulfill: (tx: any) => {
         console.log(tx);
@@ -269,6 +268,7 @@ const executeTxn = async (tx: MakeTxResponse, notification: any, amount?: any) =
           },
         });
       },
+
       onBroadcastFailed: (tx: any) => {
         console.log(tx);
         notification.push({

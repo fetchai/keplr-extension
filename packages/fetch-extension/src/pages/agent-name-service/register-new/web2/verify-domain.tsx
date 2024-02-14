@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { HeaderLayout } from "../../../../new-layouts";
 import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
@@ -7,21 +7,37 @@ import { TooltipForDomainNames } from "../../../fetch-name-service/domain-detail
 import { useNotification } from "@components/notification";
 import { registerDomain, verifyDomain } from "../../../../name-service/ans-api";
 import { useStore } from "../../../../stores";
+import { updateAmountAndDenom } from "@utils/ans-v2-utils";
+import { ANS_CONFIG } from "../../../../config.ui.var";
 
 export const VerifyDomain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const notification = useNotification();
 
-  const { domainName,verificationString } = location.state || {};
+  const { domainName, verificationString, expiryDateTime } =
+    location.state || {};
   const [isVerified, setisVerified] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
   const [approvalToken, setApprovalToken] = useState<string>("");
-  const { chainStore, accountStore } = useStore();
+  const [regsiterAmount, setRegsiterAmount] = useState<any>();
+
+  const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
   const account = accountStore.getAccount(current.chainId);
 
+  const { queryContractState } = queriesStore.get(current.chainId).ans;
+  const price: any = queryContractState.getQueryContract(
+    ANS_CONFIG[current.chainId].contractAddress
+  ).response?.data;
+  useEffect(() => {
+    const amount = updateAmountAndDenom(
+      price?.price_per_second,
+      expiryDateTime
+    );
+    setRegsiterAmount(amount);
+  }, [price?.price_per_second, expiryDateTime]);
   const handleVerifyClick = async () => {
     try {
       setIsVerifying(true);
@@ -59,7 +75,6 @@ export const VerifyDomain = () => {
     }
     setIsVerifying(false);
   };
-
   const handleRegisterClick = async () => {
     try {
       const domain = domainName;
@@ -69,6 +84,7 @@ export const VerifyDomain = () => {
         account,
         domain,
         notification,
+        regsiterAmount,
         approvalToken
       );
       setIsRegisterInProgress(false);

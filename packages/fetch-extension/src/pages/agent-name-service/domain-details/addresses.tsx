@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getAgentAddressByDomain } from "../../../name-service/ans-api";
 import { useStore } from "../../../stores";
 import style from "../style.module.scss";
-import style1 from "../domain-details/permissions/style.module.scss";
+import style1 from "./permissions/style.module.scss";
 import { OptionConfirmationPopup } from "./update-options/option-confirmation-popup";
 
 export const Addresses = observer(

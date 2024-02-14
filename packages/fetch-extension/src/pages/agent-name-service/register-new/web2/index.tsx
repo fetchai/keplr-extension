@@ -29,7 +29,7 @@ export const Web2 = observer(() => {
   const [searchValue, setSearchValue] = useState("");
   const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
   const regex = /^[\p{Ll}0-9\-.]+$/u;
-  const [_expiryDateTime, setExpiryDateTime] = useState("");
+  const [expiryDateTime, setExpiryDateTime] = useState("");
 
   function generateDomainDigest(domain: string, address: any) {
     const hasher = createHash("sha256");
@@ -117,6 +117,7 @@ export const Web2 = observer(() => {
         pathname: "#/agent-name-service/register-new/verify-domain",
         domain: domain,
         agent: agentAddressSearchValue,
+        expiryDateTime: expiryDateTime,
       };
       window.localStorage.setItem("verificationData", JSON.stringify(data));
     } catch (err) {

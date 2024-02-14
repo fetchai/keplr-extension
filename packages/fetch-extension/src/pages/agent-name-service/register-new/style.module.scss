@@ -4,7 +4,7 @@
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
-  margin: 25px 0 66px 12px ;
+  margin: 25px 0 66px 12px;
 }
 .radioContainer {
   position: fixed;
@@ -27,6 +27,11 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   margin: 12px;
+}
+.searchContainer:hover {
+  border-color: #9075ff;
+  box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.2),
+    6px 6px 32px 0px rgba(243, 95, 73, 0.3);
 }
 .searchInput {
   color: #fff;

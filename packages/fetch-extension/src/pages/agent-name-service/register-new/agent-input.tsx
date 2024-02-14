@@ -9,17 +9,18 @@ interface AgentAddressInputProps {
   ) => void;
   isValidAgentAddress: boolean;
   domainAvailablity: boolean;
-  searchValue: string;
+  searchValue?: string;
   isLoading: boolean;
+  styleProp?: React.CSSProperties;
 }
 
 export const AgentAddressInput: React.FC<AgentAddressInputProps> = ({
   agentAddressSearchValue,
   handleAgentAddressInputChange,
   isValidAgentAddress,
-  domainAvailablity,
   searchValue,
   isLoading,
+  styleProp,
 }) => {
   return (
     <div
@@ -29,7 +30,8 @@ export const AgentAddressInput: React.FC<AgentAddressInputProps> = ({
           !isValidAgentAddress && agentAddressSearchValue !== ""
             ? "1px solid var(--red-red-400, #D38989)"
             : "1px solid rgba(255, 255, 255, 0.4)",
-            marginTop:"50px"
+        marginTop: "50px",
+        ...styleProp,
       }}
     >
       {isLoading ? (
@@ -55,7 +57,6 @@ export const AgentAddressInput: React.FC<AgentAddressInputProps> = ({
         style={{ width: "244px" }}
         value={agentAddressSearchValue}
         onChange={handleAgentAddressInputChange}
-        disabled={!domainAvailablity || searchValue === ""}
       />
     </div>
   );

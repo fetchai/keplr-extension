@@ -11,7 +11,6 @@ import { PublicDomainDropdown } from "./public-domains-dropdown";
 import style from "./style.module.scss";
 import style2 from "../../fetch-name-service/domain-details/style.module.scss";
 import { Web2 } from "./web2";
-import { AgentAddressInput } from "./agent-input";
 import { ExpirationField } from "@components/expiration-field";
 import { updateAmountAndDenom } from "@utils/ans-v2-utils";
 
@@ -21,7 +20,6 @@ export const RegisterAgentDomains = observer(() => {
   const account = accountStore.getAccount(current.chainId);
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-  const [agentAddressSearchValue, setAgentAddressSearchValue] = useState("");
   const [selectedPublicDomain, setSelectedPublicDomain] = useState("agent");
   const [isRegisterInProgress, setIsRegisterInProgress] = useState(false);
   const [selectedWebVersion, setSelectedWebVersion] = useState("web3");
@@ -34,13 +32,13 @@ export const RegisterAgentDomains = observer(() => {
     queryPublicDomains,
     queryPermissions,
     queryDomainRecord,
-    queryVaildateAgentAddress,
     queryContractState,
   } = queriesStore.get(current.chainId).ans;
 
-  const { publicDomains = [] } = queryPublicDomains.getQueryContract(
-    ANS_CONFIG[current.chainId].contractAddress
-  );
+  const { publicDomains = [], isFetching: isLoading } =
+    queryPublicDomains.getQueryContract(
+      ANS_CONFIG[current.chainId].contractAddress
+    );
   const price: any = queryContractState.getQueryContract(
     ANS_CONFIG[current.chainId].contractAddress
   ).response?.data;
@@ -117,15 +115,6 @@ export const RegisterAgentDomains = observer(() => {
   const handleInputChange = (e: any) => {
     const value = e.target.value;
     setSearchValue(value);
-  };
-  const { isFetching: isLoading, isValid: isValidAgentAddress } =
-    queryVaildateAgentAddress.getQueryContract(
-      ANS_CONFIG[current.chainId].validateAgentAddressContract,
-      agentAddressSearchValue
-    );
-  const handleAgentAddressInputChange = (e: any) => {
-    const value = e.target.value;
-    setAgentAddressSearchValue(value);
   };
 
   const handleRegisterClick = async () => {
@@ -254,18 +243,10 @@ export const RegisterAgentDomains = observer(() => {
               {domainAvailablityMessage}
             </div>
           )}
-          <AgentAddressInput
-            agentAddressSearchValue={agentAddressSearchValue}
-            handleAgentAddressInputChange={handleAgentAddressInputChange}
-            isValidAgentAddress={isValidAgentAddress}
-            domainAvailablity={domainAvailablity}
-            searchValue={searchValue}
-            isLoading={isLoading}
-          />
           <ExpirationField setExpiryDateTime={setExpiryDateTime} />
           <button
             className={style["registerButton"]}
-            disabled={!domainAvailablity || !isValidAgentAddress}
+            disabled={!domainAvailablity}
             onClick={() => {
               handleRegisterClick();
             }}
