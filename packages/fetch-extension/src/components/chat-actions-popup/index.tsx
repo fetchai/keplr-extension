@@ -6,6 +6,7 @@ import { BlockUserPopup } from "./block-user-popup";
 import { DeleteChatPopup } from "./delete-chat-popup";
 import { DeleteGroupPopup } from "./delete-group-popup";
 import { UnblockUserPopup } from "./unblock-user-popup";
+import { useStore } from "../../stores";
 
 export const ChatActionsPopup = ({
   action,
