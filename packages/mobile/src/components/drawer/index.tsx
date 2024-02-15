@@ -20,6 +20,7 @@ import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "components/new/empty";
+import { titleCase } from "utils/format/format";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;
@@ -215,7 +216,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                     )}
                   </BlurBackground>
                   <Text style={style.flatten(["h6", "color-white"])}>
-                    {chainInfo.chainName}
+                    {titleCase(chainInfo.chainName)}
                   </Text>
                 </View>
                 <View>{selected ? <CheckIcon /> : null}</View>

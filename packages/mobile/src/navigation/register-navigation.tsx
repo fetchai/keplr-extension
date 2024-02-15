@@ -8,7 +8,7 @@ import {
 import { RegisterIntroScreen } from "screens/register/new";
 import { RegisterNewUserScreen } from "screens/register/new-user";
 import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
-import { NewMnemonicScreen } from "screens/register/mnemonic";
+import { NewMnemonicScreen } from "screens/register/mnemonic/new/new-mnemonic";
 import { VerifyMnemonicScreen } from "screens/register/mnemonic/new/verify-mnemonic";
 import { NewLedgerScreen } from "screens/register/ledger";
 import { TorusSignInScreen } from "screens/register/torus";
@@ -61,8 +61,9 @@ export const RegisterNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Create New Mnemonic",
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
         }}
         name="Register.NewMnemonic"
         component={NewMnemonicScreen}
@@ -113,7 +114,8 @@ export const RegisterNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
+          ...TransparentHeaderOptionsPreset,
+          title: "",
         }}
         name="Register.TorusSignIn"
         component={TorusSignInScreen}

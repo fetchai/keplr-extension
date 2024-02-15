@@ -10,7 +10,6 @@ import { NewMnemonicConfig } from "../hook";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { RectButton } from "components/rect-button";
-import { BIP44HDPath } from "@keplr-wallet/background";
 import { BIP44AdvancedButton, useBIP44Option } from "screens/register/bip44";
 
 export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
@@ -21,7 +20,6 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
         {
           registerConfig: RegisterConfig;
           newMnemonicConfig: NewMnemonicConfig;
-          bip44HDPath: BIP44HDPath;
         }
       >,
       string
@@ -135,19 +133,13 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
           keyExtractor={(_, index) => index.toString()}
           renderItem={renderButtonItem}
           numColumns={4}
+          scrollEnabled={false}
         />
         <Button
           containerStyle={
-            style.flatten([
-              "background-color-white",
-              "border-radius-32",
-              "margin-y-24",
-            ]) as ViewStyle
+            style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
           }
-          textStyle={{
-            color: "#0B1742",
-          }}
-          text="Next"
+          text="Continue"
           size="large"
           loading={isCreating}
           disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
@@ -162,6 +154,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
             });
           }}
         />
+        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </View>
       {/* Mock element for bottom padding */}
     </PageWithScrollView>
@@ -230,6 +223,7 @@ const WordsCard: FunctionComponent<{
       keyExtractor={(_, index) => index.toString()}
       renderItem={renderItem}
       numColumns={3}
+      scrollEnabled={false}
     />
   );
 };

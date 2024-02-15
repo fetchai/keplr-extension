@@ -51,3 +51,7 @@ export function validatePrivateKey(value: string): boolean {
   }
   return false;
 }
+
+export function titleCase(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
+}

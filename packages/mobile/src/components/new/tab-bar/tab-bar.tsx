@@ -8,7 +8,8 @@ export const TabBarView: FunctionComponent<{
   listItem: any;
   selected: any;
   setSelected: any;
-}> = ({ listItem, selected, setSelected }) => {
+  blurButton?: boolean;
+}> = ({ listItem, selected, setSelected, blurButton = false }) => {
   const [prevSelected, setPrevSelected] = useState(0);
 
   const style = useStyle();
@@ -17,16 +18,19 @@ export const TabBarView: FunctionComponent<{
     const select = selected === item;
     return (
       <BlurButton
-        backgroundBlur={false}
+        backgroundBlur={select && blurButton}
         text={item}
-        borderRadius={12}
+        borderRadius={blurButton ? 64 : 12}
         textStyle={
-          style.flatten(["body3"], [select && "color-indigo-900"]) as ViewStyle
+          style.flatten(
+            ["body3"],
+            !blurButton ? [select && "color-indigo-900"] : []
+          ) as ViewStyle
         }
         containerStyle={
           style.flatten(
             ["padding-x-26"],
-            [select && "background-color-white"]
+            !blurButton ? [select && "background-color-white"] : []
           ) as ViewStyle
         }
         onPress={() => {
@@ -64,6 +68,7 @@ export const TabBarView: FunctionComponent<{
       contentContainerStyle={[
         style.flatten(["width-full", "justify-between"]) as ViewStyle,
       ]}
+      scrollEnabled={false}
     />
   );
 };

@@ -264,7 +264,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
           setSelected={setSelectedSeed}
         />
       </BlurBackground>
-      <React.Fragment>
+      <View>
         <FlatList
           data={seedWords}
           extraData={selectedSeed}
@@ -272,6 +272,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
           renderItem={renderInputItem}
           numColumns={3}
           contentContainerStyle={style.flatten(["margin-top-10"]) as ViewStyle}
+          scrollEnabled={false}
         />
         {seedWordErrorCheck() ? (
           <View
@@ -293,18 +294,10 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
           </View>
         ) : null}
         <BIP44AdvancedButton bip44Option={bip44Option} />
-      </React.Fragment>
+      </View>
       <View style={style.flatten(["flex-1"])} />
       <Button
-        containerStyle={
-          style.flatten([
-            "background-color-white",
-            "border-radius-32",
-          ]) as ViewStyle
-        }
-        textStyle={{
-          color: "#0B1742",
-        }}
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         text="Next"
         size="large"
         onPress={() => {

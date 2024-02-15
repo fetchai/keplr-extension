@@ -8,7 +8,7 @@ export const TokenCardView: FunctionComponent<{
   containerStyle?: ViewStyle;
   leadingIcon?: ReactElement;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   trailingStart?: string;
   trailingEnd?: string;
   onPress?: () => void;
@@ -57,13 +57,15 @@ export const TokenCardView: FunctionComponent<{
             >
               {title}
             </Text>
-            <Text
-              style={
-                style.flatten(["padding-4", "color-gray-200"]) as ViewStyle
-              }
-            >
-              {subtitle}
-            </Text>
+            {subtitle ? (
+              <Text
+                style={
+                  style.flatten(["padding-4", "color-gray-200"]) as ViewStyle
+                }
+              >
+                {subtitle}
+              </Text>
+            ) : null}
           </View>
         </View>
         <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>

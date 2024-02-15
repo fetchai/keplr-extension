@@ -12,12 +12,14 @@ export const LinearGradientText: FunctionComponent<{
   color1?: string;
   color2?: string;
   text: string;
+  textCenter?: boolean;
 }> = ({
   width = "100%",
   height = "30",
   color1 = "#CF447B",
   color2 = "#E7615F",
   text,
+  textCenter = true,
 }) => {
   return (
     <Svg width={width} height={height}>
@@ -34,9 +36,8 @@ export const LinearGradientText: FunctionComponent<{
         </LinearGradient>
       </Defs>
       <TextSvg
-        x="50%"
+        x={textCenter ? "25%" : "0%"}
         y="100%"
-        textAnchor="middle"
         fontSize="32"
         fill="url(#customGradient)"
       >

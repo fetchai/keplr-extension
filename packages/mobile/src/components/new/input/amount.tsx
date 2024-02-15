@@ -64,7 +64,7 @@ export const AmountInputSection: FunctionComponent<{
         case InvalidNumberAmountError:
           return "Invalid number";
         case ZeroAmountError:
-          return "Amount is zero";
+          return "Please enter a valid amount";
         case NegativeAmountError:
           return "Amount is negative";
         case InsufficientAmountError:
@@ -189,24 +189,37 @@ export const AmountInputSection: FunctionComponent<{
           backgroundBlur={false}
           leftIcon={
             <View style={style.flatten(["margin-right-8"]) as ViewStyle}>
-              <ReloadIcon size={21} />
+              <ReloadIcon
+                size={21}
+                color={
+                  amountConfig.sendCurrency["coinGeckoId"] ? "white" : "#323C4A"
+                }
+              />
             </View>
           }
+          disable={!amountConfig.sendCurrency["coinGeckoId"]}
           borderRadius={32}
-          onPress={() =>
-            amountConfig.sendCurrency["coinGeckoId"]
-              ? setIsToggleClicked(!isToggleClicked)
-              : null
-          }
+          onPress={() => {
+            setIsToggleClicked(!isToggleClicked);
+          }}
           containerStyle={
             style.flatten([
               "border-width-1",
-              "border-color-gray-300",
               "padding-x-20",
               "padding-y-6",
+              amountConfig.sendCurrency["coinGeckoId"]
+                ? "border-color-gray-300"
+                : "border-color-platinum-400",
             ]) as ViewStyle
           }
-          textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
+          textStyle={
+            style.flatten([
+              "body3",
+              amountConfig.sendCurrency["coinGeckoId"]
+                ? "color-white"
+                : "color-platinum-400",
+            ]) as ViewStyle
+          }
         />
         <BlurButton
           text="Use max available"

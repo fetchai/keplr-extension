@@ -11,18 +11,20 @@ export const BlurButton: FunctionComponent<{
   borderRadius?: number;
   blurType?: "extraLight" | "dark";
   onPress?: () => void;
+  disable?: boolean;
   text: string;
   leftIcon?: ReactElement;
   rightIcon?: ReactElement;
 }> = ({
   containerStyle,
   textStyle,
-  backgroundBlur,
+  backgroundBlur = true,
   text,
-  blurIntensity,
+  blurIntensity = 30,
   borderRadius = 8,
   blurType,
   onPress,
+  disable,
   leftIcon,
   rightIcon,
 }) => {
@@ -31,9 +33,9 @@ export const BlurButton: FunctionComponent<{
     <BlurBackground
       borderRadius={borderRadius}
       backgroundBlur={backgroundBlur}
-      blurIntensity={blurIntensity}
+      blurIntensity={!disable ? blurIntensity : 15}
       blurType={blurType}
-      onPress={onPress}
+      onPress={disable ? undefined : onPress}
       containerStyle={
         [
           style.flatten(["flex-row", "items-center"]),

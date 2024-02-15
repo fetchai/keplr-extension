@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { PageWithScrollViewInBottomTabView } from "components/page";
+import { PageWithScrollView } from "components/page";
 import { TokenBalanceSection } from "screens/portfolio/token-detail/token-balance-section";
 import { TokenGraphSection } from "screens/portfolio/token-detail/token-graph-section";
 import { IconButton } from "components/new/button/icon";
@@ -79,7 +79,10 @@ export const TokenDetail: FunctionComponent = observer(() => {
   }, [tokenInfo?.coinGeckoId]);
 
   return (
-    <PageWithScrollViewInBottomTabView backgroundMode={"image"}>
+    <PageWithScrollView
+      backgroundMode="image"
+      contentContainerStyle={style.get("flex-grow-1")}
+    >
       <View style={style.flatten(["margin-x-20"]) as ViewStyle}>
         <View style={style.flatten(["items-center"])}>
           {tokenIcon ? (
@@ -166,6 +169,6 @@ export const TokenDetail: FunctionComponent = observer(() => {
         totalDenom={balances.totalDenom}
         totalPrice={balances.balanceInUsd}
       />
-    </PageWithScrollViewInBottomTabView>
+    </PageWithScrollView>
   );
 });

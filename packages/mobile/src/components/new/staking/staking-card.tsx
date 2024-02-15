@@ -76,9 +76,14 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     parseFloat(stakedBalNumber) +
     parseFloat(rewardsBalNumber);
 
-  const stakablePercentage = (parseFloat(stakableBalNumber) / total) * 100;
-  const stakedPercentage = (parseFloat(stakedBalNumber) / total) * 100;
-  const rewardsPercentage = (parseFloat(rewardsBalNumber) / total) * 100;
+  let stakablePercentage = 0;
+  let stakedPercentage = 0;
+  let rewardsPercentage = 0;
+  if (total > 0) {
+    stakablePercentage = (parseFloat(stakableBalNumber) / total) * 100;
+    stakedPercentage = (parseFloat(stakedBalNumber) / total) * 100;
+    rewardsPercentage = (parseFloat(rewardsBalNumber) / total) * 100;
+  }
 
   const pieData = [
     {

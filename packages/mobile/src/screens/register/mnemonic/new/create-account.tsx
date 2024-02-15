@@ -17,6 +17,7 @@ import { isPrivateKey, trimWordsStr } from "utils/format/format";
 import { PasswordValidateView } from "components/new/password-validate/password-validate";
 import { CheckIcon } from "components/new/icon/check";
 import { XmarkIcon } from "components/new/icon/xmark";
+import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
 
 interface FormData {
   mnemonic: string;
@@ -222,11 +223,23 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
                   value={value}
                   refs={ref}
                   rightIcon={
-                    <IconButton
-                      icon={<EyeIcon color={showPassword ? "gray" : "white"} />}
-                      onPress={() => setShowPassword(!showPassword)}
-                      backgroundBlur={false}
-                    />
+                    !showPassword ? (
+                      <IconButton
+                        icon={<EyeIcon />}
+                        backgroundBlur={false}
+                        onPress={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      />
+                    ) : (
+                      <IconButton
+                        icon={<HideEyeIcon />}
+                        backgroundBlur={false}
+                        onPress={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      />
+                    )
                   }
                 />
               );

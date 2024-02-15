@@ -11,7 +11,7 @@ import { TabBarView } from "components/new/tab-bar/tab-bar";
 
 enum AssertsSectionEnum {
   Tokens = "Tokens",
-  NTFs = "NTFs",
+  NFTs = "NFTs",
   Stats = "Stats",
 }
 
@@ -35,11 +35,28 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         listItem={AssertsSectionEnum}
         selected={selectedId}
         setSelected={setSelectedId}
+        blurButton={true}
       />
       {selectedId === AssertsSectionEnum.Tokens && (
         <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
           <NativeTokensSection />
           <TokensSection />
+        </View>
+      )}
+      {selectedId === AssertsSectionEnum.NFTs && (
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "justify-center",
+              "items-center",
+              "height-214",
+            ]) as ViewStyle
+          }
+        >
+          <Text style={style.flatten(["h5", "color-white"])}>
+            Under development
+          </Text>
         </View>
       )}
       {selectedId === AssertsSectionEnum.Stats && (

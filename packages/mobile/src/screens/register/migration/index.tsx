@@ -79,8 +79,8 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
       }
 
       // check that the parsed private key matches
-      if (parsedKey.ethAddress !== getValues()["ethAddress"]) {
-        return "The key provided doesn't match the supplied ETH addres";
+      if (parsedKey.ethAddress !== getValues("ethAddress")) {
+        return "This private key does not match the address provided";
       }
     }
   };

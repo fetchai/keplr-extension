@@ -90,13 +90,18 @@ export const ChangeWalletCardModel: FunctionComponent<{
                 >
                   {keyStore.meta?.["name"] || "Fetch Account"}
                 </Text>
-                <Text
-                  style={
-                    style.flatten(["text-caption1", "color-white"]) as ViewStyle
-                  }
-                >
-                  {keyStore.selected ? accountInfo.bech32Address : ""}
-                </Text>
+                {keyStore.selected ? (
+                  <Text
+                    style={
+                      style.flatten([
+                        "text-caption1",
+                        "color-white",
+                      ]) as ViewStyle
+                    }
+                  >
+                    {accountInfo.bech32Address}
+                  </Text>
+                ) : null}
               </View>
               <View style={style.flatten(["flex-1", "items-end"]) as ViewStyle}>
                 {keyStore.selected ? <CheckIcon /> : null}

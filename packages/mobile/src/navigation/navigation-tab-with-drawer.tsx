@@ -31,6 +31,7 @@ import {
 import Toast from "react-native-toast-message";
 import { DrawerContent } from "components/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AgentsScreen } from "screens/agents";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -206,9 +207,9 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="AgentsTab" component={HomeNavigation} />
+        <Tab.Screen name="AgentsTab" component={AgentsScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
-        <Tab.Screen name="ActivityTab" component={HomeNavigation} />
+        <Tab.Screen name="ActivityTab" component={AgentsScreen} />
         <Tab.Screen name="MoreTab" component={SettingStackScreen} />
       </Tab.Navigator>
       <QuickTabOption

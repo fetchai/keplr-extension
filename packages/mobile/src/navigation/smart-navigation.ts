@@ -178,7 +178,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.VerifyMnemonic": {
         registerConfig: RegisterConfig;
         newMnemonicConfig: NewMnemonicConfig;
-        bip44HDPath: BIP44HDPath;
       };
       "Register.RecoverMnemonic": {
         registerConfig: RegisterConfig;

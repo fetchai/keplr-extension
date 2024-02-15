@@ -13982,6 +13982,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/checkbox@npm:^0.5.17":
+  version: 0.5.17
+  resolution: "@react-native-community/checkbox@npm:0.5.17"
+  peerDependencies:
+    react: "*"
+    react-native: ">= 0.62"
+    react-native-windows: ">=0.62"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 98cddff11b976a1f712bfc4d7de946d5e102108bedc016bbcb668b3917757dd5092b5b93f651f740508dd8437ba3a0ce5ca15cef3ebf7bcfc15a490b0b7d0d6b
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:11.3.5":
   version: 11.3.5
   resolution: "@react-native-community/cli-clean@npm:11.3.5"
@@ -41101,6 +41115,7 @@ __metadata:
     "@ledgerhq/react-native-hw-transport-ble": ^6.29.3
     "@react-native-async-storage/async-storage": ^1.17.10
     "@react-native-community/blur": ^4.3.2
+    "@react-native-community/checkbox": ^0.5.17
     "@react-native-community/cli": ^11.3.6
     "@react-native-community/cli-platform-android": ^11.3.6
     "@react-native-community/masked-view": ^0.1.11
@@ -41190,6 +41205,7 @@ __metadata:
     react-native-svg: ^13.10.0
     react-native-svg-charts: ^5.4.0
     react-native-svg-transformer: ^1.1.0
+    react-native-text-gradient: ^0.1.7
     react-native-toast-message: ^2.1.6
     react-native-url-polyfill: ^2.0.0
     react-native-webview: ^13.2.3
@@ -47160,6 +47176,18 @@ __metadata:
     react: ">=15.4.2"
     react-native: ">=0.41.0"
   checksum: 940f788d199a3a33e3ba35da314ae9bf1750cd4dea0e5cbba3ff837d5dc4176ef643f218fc8b7c1966ca7dc68aa6668846259288fb57c9f4b9c9f40f8fa23af8
+  languageName: node
+  linkType: hard
+
+"react-native-text-gradient@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "react-native-text-gradient@npm:0.1.7"
+  peerDependencies:
+    "@babel/runtime": "*"
+    fbjs: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 8c2d48c04a7dfd4ca92d3f6f2be33014890504f6a3504b6ad65fbc52eca3aa4d5fef53d5456dbcee92fb3cea3a5ce69cac1b5f7124a97d1411531d6075a8dadc
   languageName: node
   linkType: hard
 

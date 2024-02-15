@@ -130,10 +130,7 @@ export const TextInput = React.forwardRef<
                   "dark:color-platinum-50",
                   "flex-1",
                 ],
-                [
-                  !(props.editable ?? true) && "color-gray-300",
-                  !(props.editable ?? true) && "dark:color-platinum-200",
-                ]
+                [!(props.editable ?? true) && "color-gray-300"]
               ),
               Platform.select({
                 ios: {},

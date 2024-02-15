@@ -19,6 +19,8 @@ import { BlurButton } from "components/new/button/blur-button";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from "react-native-toast-message";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -57,6 +59,10 @@ export const SendPhase2: FunctionComponent<{
     : chainStore.current.chainId;
 
   const account = accountStore.getAccount(chainId);
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const convertToUsd = (currency: any) => {
     const value = priceStore.calculatePrice(currency);
@@ -165,7 +171,7 @@ export const SendPhase2: FunctionComponent<{
       />
       <View style={style.flatten(["flex-1"])} />
       <Button
-        text="Review order"
+        text="Review transaction"
         size="large"
         containerStyle={
           style.flatten(
@@ -180,6 +186,13 @@ export const SendPhase2: FunctionComponent<{
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "send"}
         onPress={async () => {
+          if (!networkIsConnected) {
+            Toast.show({
+              type: "error",
+              text1: "No internet connection",
+            });
+            return;
+          }
           if (account.isReadyToSendTx && txStateIsValid) {
             try {
               const stdFee = sendConfigs.feeConfig.toStdFee();

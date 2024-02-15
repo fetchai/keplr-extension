@@ -51,7 +51,6 @@ export const CardModal: FunctionComponent<{
                   "flex-row",
                   "items-center",
                   "justify-between",
-                  "padding-x-12",
                 ]) as ViewStyle
               }
             >

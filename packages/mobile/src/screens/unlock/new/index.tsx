@@ -5,11 +5,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import * as SplashScreen from "expo-splash-screen";
-import { TextInput } from "components/input";
 import { Button } from "components/button";
 import delay from "delay";
 import { useStore } from "stores/index";
@@ -20,9 +26,12 @@ import { KeychainStore } from "stores/keychain";
 import { IAccountStore } from "@keplr-wallet/stores";
 import { autorun } from "mobx";
 import { FingerprintIcon } from "components/icon/fingerprint";
-import { ScreenBackground } from "components/page/background";
-import { ColorRightArrow } from "components/icon/color-rightt-arrow";
-import { LinearGradientText } from "components/svg/linear-gradient-text";
+import { ScreenBackground } from "components/page";
+import { InputCardView } from "components/new/card-view/input-card";
+import { EyeIcon } from "components/new/icon/eye";
+import { FaceDetectIcon } from "components/new/icon/face-icon";
+import { IconButton } from "components/new/button/icon";
+import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -144,10 +153,11 @@ export const UnlockScreen: FunctionComponent = observer(() => {
     if (keyRingStore.status === KeyRingStatus.LOCKED) hideSplashScreen();
   }, [keyRingStore.status]);
 
-  const [password, setPassword] = useState("Test@1234");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isBiometricLoading, setIsBiometricLoading] = useState(false);
   const [isFailed, setIsFailed] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const tryBiometric = useCallback(async () => {
     try {
@@ -214,19 +224,18 @@ export const UnlockScreen: FunctionComponent = observer(() => {
   return (
     <React.Fragment>
       <ScreenBackground backgroundMode="image" backgroundBlur={true} />
-      <View style={style.flatten(["flex", "flex-1", "justify-between"])}>
+      <View
+        style={
+          style.flatten(["flex", "flex-1", "justify-between"]) as ViewStyle
+        }
+      >
         <KeyboardAwareScrollView
-          contentContainerStyle={style.flatten(["flex-grow-1"])}
-          indicatorStyle={style.theme === "dark" ? "white" : "black"}
+          contentContainerStyle={style.flatten(["flex-grow-1"]) as ViewStyle}
         >
-          <View style={style.get("flex-3")} />
-          <View style={style.flatten(["flex-5", "items-center"]) as ViewStyle}>
+          <View style={style.get("flex-1")} />
+          <View style={style.flatten(["items-center"]) as ViewStyle}>
             <Image
-              source={
-                style.theme === "dark"
-                  ? require("assets/logo/logo.png")
-                  : require("assets/logo/logo.png")
-              }
+              source={require("assets/logo/logo.png")}
               style={{
                 height: 80,
                 aspectRatio: 2.977,
@@ -235,48 +244,69 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               fadeDuration={0}
             />
           </View>
-          <View>
-            <LinearGradientText
-              text="Welcome back"
-              color1="#CF447B"
-              color2="#F9774B"
-            />
-
-            {/* <Text style={style.flatten(["text-center", "h1", "font-medium", "color-linear"])}>
+          <View
+            style={
+              style.flatten(["margin-x-page", "margin-top-28"]) as ViewStyle
+            }
+          >
+            <Text style={style.flatten(["h2", "font-medium", "color-white"])}>
               Welcome back
-            </Text> */}
-          </View>
-          <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
-            <TextInput
-              containerStyle={
+            </Text>
+            <Text
+              style={
                 style.flatten([
-                  "padding-top-40",
-                  "padding-bottom-40",
+                  "h6",
+                  "font-medium",
+                  "color-gray-100",
+                  "margin-top-12",
                 ]) as ViewStyle
               }
-              returnKeyType="done"
-              secureTextEntry={true}
+            >
+              Enter your password or use biometric authentication to sign in
+            </Text>
+            <InputCardView
+              label={"Password"}
+              rightIcon={
+                !showPassword ? (
+                  <IconButton
+                    icon={<EyeIcon />}
+                    backgroundBlur={false}
+                    onPress={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  />
+                ) : (
+                  <IconButton
+                    icon={<HideEyeIcon />}
+                    backgroundBlur={false}
+                    onPress={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  />
+                )
+              }
+              containerStyle={style.flatten(["margin-y-20"])}
+              secureTextEntry={!showPassword}
               value={password}
+              returnKeyType="done"
               error={isFailed ? "Invalid password" : undefined}
-              onChangeText={setPassword}
               onSubmitEditing={tryUnlock}
-              placeholder="Password"
-              placeholderTextColor={"white"}
+              onChangeText={(text: string) => {
+                setIsFailed(false);
+                setPassword(text);
+              }}
             />
             <Button
-              containerStyle={style.flatten([
-                "background-color-white",
-                "border-radius-32",
-              ])}
-              text="Sign in"
-              rightIcon={
-                <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-                  <ColorRightArrow />
-                </View>
+              containerStyle={
+                style.flatten([
+                  "border-radius-32",
+                  "margin-top-10",
+                ]) as ViewStyle
               }
+              text="Sign in"
               size="large"
               loading={isLoading}
-              rippleColor="black@50%"
+              rippleColor="black@10%"
               onPress={tryUnlock}
             />
           </View>
@@ -287,10 +317,14 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                 style={style.flatten(["flex", "margin-bottom-40"]) as ViewStyle}
               >
                 <View style={style.flatten(["items-center"]) as ViewStyle}>
-                  <FingerprintIcon color={style.get("color-blue-400").color} />
+                  {Platform.OS === "android" ? (
+                    <FingerprintIcon color={style.get("color-white").color} />
+                  ) : (
+                    <FaceDetectIcon color={style.get("color-blue-400").color} />
+                  )}
                 </View>
                 <Button
-                  textStyle={style.flatten(["color-black", "h5"]) as ViewStyle}
+                  textStyle={style.flatten(["color-white", "h5"]) as ViewStyle}
                   text="Use biometric authentication"
                   mode="text"
                   loading={isBiometricLoading}
@@ -303,13 +337,3 @@ export const UnlockScreen: FunctionComponent = observer(() => {
     </React.Fragment>
   );
 });
-
-// const UnlockScreenGradientBackground: FunctionComponent = () => {
-//   const style = useStyle();
-
-//   return (
-//     <View style={style.flatten(["absolute-fill"])}>
-//       <ScreenBackground backgroundMode="blurImage" />
-//     </View>
-//   );
-// };

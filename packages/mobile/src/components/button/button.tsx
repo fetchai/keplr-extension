@@ -53,7 +53,11 @@ export const Button: FunctionComponent<{
       case "fill":
         if (disabled) {
           if (color === "primary") {
-            return [`background-color-${baseColor}-300`];
+            return [
+              "background-color-transparent",
+              "border-color-platinum-400",
+              "border-width-1",
+            ];
           } else {
             return [`background-color-${baseColor}-300`];
           }
@@ -97,7 +101,7 @@ export const Button: FunctionComponent<{
       case "fill":
         if (disabled) {
           if (color === "primary") {
-            return ["color-indigo-900"];
+            return ["color-platinum-400"];
           } else {
             return [`color-${baseColor}-200`];
           }

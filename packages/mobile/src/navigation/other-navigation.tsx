@@ -13,6 +13,7 @@ import {
   HeaderOnSecondaryScreenOptionsPreset,
   HeaderOnTertiaryScreenOptionsPreset,
   HeaderRightButton,
+  TransparentHeaderOptionsPreset,
 } from "components/header";
 import { SendScreen } from "screens/send";
 import { NewSendScreen } from "screens/send/new";
@@ -40,6 +41,7 @@ import {
 } from "screens/setting/screens/token";
 import { HeaderAddIcon } from "components/header/icon";
 import { Stack } from "./navigation";
+import { TokenDetail } from "screens/portfolio/token-detail";
 
 export const OtherNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -77,6 +79,15 @@ export const OtherNavigation: FunctionComponent = () => {
         }}
         name="Receive"
         component={ReceiveScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="NativeTokens"
+        component={TokenDetail}
       />
       <Stack.Screen
         options={{

@@ -127,7 +127,11 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          tintColor={"white"}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
       }
       contentContainerStyle={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,

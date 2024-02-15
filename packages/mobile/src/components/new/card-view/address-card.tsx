@@ -191,22 +191,18 @@ export const AddressInputCard: FunctionComponent<{
               </View>
             </View>
           </View>
-          {errorText ? (
-            <View>
-              <Text
-                style={StyleSheet.flatten([
-                  style.flatten([
-                    "text-caption2",
-                    "color-red-400",
-                    "margin-top-2",
-                  ]) as ViewStyle,
-                ])}
-              >
-                {errorText}
-              </Text>
-            </View>
-          ) : null}
         </BlurBackground>
+        {errorText ? (
+          <View>
+            <Text
+              style={StyleSheet.flatten([
+                style.flatten(["text-caption2", "color-red-400"]) as ViewStyle,
+              ])}
+            >
+              {errorText}
+            </Text>
+          </View>
+        ) : null}
         <AddressBookCardModel
           isOpen={isOpenModal}
           title="Choose recipient"

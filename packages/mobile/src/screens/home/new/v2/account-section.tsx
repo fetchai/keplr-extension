@@ -25,10 +25,11 @@ import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
 import { InboxIcon } from "components/new/icon/inbox-icon";
-import { separateNumericAndDenom } from "utils/format/format";
+import { separateNumericAndDenom, titleCase } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import Toast from "react-native-toast-message";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -116,7 +117,7 @@ export const AccountSection: FunctionComponent<{
               "border-color-gray-300",
             ]) as ViewStyle
           }
-          text={chainStore.current.chainName}
+          text={titleCase(chainStore.current.chainName)}
           icon={<ChevronDownIcon />}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />
@@ -153,6 +154,12 @@ export const AccountSection: FunctionComponent<{
                 "padding-y-8",
                 "justify-center",
               ]) as ViewStyle
+            }
+            onPress={() =>
+              Toast.show({
+                type: "error",
+                text1: "Under development",
+              })
             }
           />
         </View>
@@ -234,6 +241,7 @@ export const AccountSection: FunctionComponent<{
                 ) as ViewStyle
               }
             >
+              {tokenState.type === "positive" && "+"}
               {changeInDollarsValue.toFixed(4)} {totalDenom}(
               {tokenState.type === "positive" ? "+" : "-"}
               {parseFloat(tokenState.diff).toFixed(2)})

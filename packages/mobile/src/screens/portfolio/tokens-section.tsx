@@ -115,9 +115,12 @@ export const TokensSection: FunctionComponent = observer(() => {
               containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
               key={token.currency.coinMinimalDenom}
               onPress={() =>
-                navigation.navigate("NativeTokens", {
-                  tokenString: tokenString,
-                  tokenBalanceString: tokenBalanceString,
+                navigation.navigate("Others", {
+                  screen: "NativeTokens",
+                  params: {
+                    tokenString: tokenString,
+                    tokenBalanceString: tokenBalanceString,
+                  },
                 })
               }
               leadingIcon={

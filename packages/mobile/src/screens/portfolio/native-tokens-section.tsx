@@ -65,9 +65,12 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
       containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
       key={stakable.currency.coinMinimalDenom}
       onPress={() =>
-        navigation.navigate("NativeTokens", {
-          tokenString: NativeTokenDetailsString,
-          tokenBalanceString: NativeTokenBalanceString,
+        navigation.navigate("Others", {
+          screen: "NativeTokens",
+          params: {
+            tokenString: NativeTokenDetailsString,
+            tokenBalanceString: NativeTokenBalanceString,
+          },
         })
       }
       leadingIcon={
