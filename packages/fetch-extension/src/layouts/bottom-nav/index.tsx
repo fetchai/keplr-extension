@@ -14,7 +14,12 @@ import style from "./style.module.scss";
 import { Tab } from "./tab";
 import { NotificationSetup } from "@notificationTypes";
 import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
-import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
+
+interface WalletConfig {
+  notiphyWhitelist: string[] | undefined;
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
 
 const bottomNav = [
   {

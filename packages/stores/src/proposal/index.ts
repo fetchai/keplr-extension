@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-// import { ProposalSetup } from "./types";
 
 export class ProposalStore {
   proposals = {

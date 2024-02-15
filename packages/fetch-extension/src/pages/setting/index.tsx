@@ -7,8 +7,12 @@ import { useLanguage } from "../../languages";
 import { useIntl } from "react-intl";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
-import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
 
+interface WalletConfig {
+  notiphyWhitelist: string[] | undefined;
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
 export const SettingPage: FunctionComponent = observer(() => {
   const language = useLanguage();
   const navigate = useNavigate();

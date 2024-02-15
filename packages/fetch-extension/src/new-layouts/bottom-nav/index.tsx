@@ -9,7 +9,12 @@ import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
+
+interface WalletConfig {
+  notiphyWhitelist: string[] | undefined;
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
 
 const bottomNav = [
   {
@@ -46,8 +51,7 @@ const NotificationTab = () => {
   const userState = chatStore.userDetailsStore;
   const accountInfo = accountStore.getAccount(current.chainId);
   const config: WalletConfig = userState.walletConfig;
-  const notificationInfo: NotificationSetup =
-    chatStore.userDetailsStore.notifications;
+  const notificationInfo: NotificationSetup = userState.notifications;
   const [isComingSoon, setIsComingSoon] = useState<boolean>(true);
 
   useEffect(() => {

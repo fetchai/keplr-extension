@@ -38,13 +38,12 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const [inputVal, setInputVal] = useState("");
-
+  const userState = chatStore.userDetailsStore;
   const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<any>([]);
 
-  const notificationInfo: NotificationSetup =
-    chatStore.userDetailsStore.notifications;
+  const notificationInfo: NotificationSetup = userState.notifications;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
@@ -66,7 +65,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
               setSelectedOrg(followOrganisationList);
 
               /// Updating followed orgs
-              chatStore.userDetailsStore.setNotifications({
+              userState.setNotifications({
                 organisations: followOrganisationList,
               });
             }
@@ -126,7 +125,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
     });
 
     Promise.allSettled(allPromises).then((_) => {
-      chatStore.userDetailsStore.setNotifications({
+      userState.setNotifications({
         organisations: selectedOrg,
       });
 

@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { NotificationSetup } from "./types";
+import { NotificationSetup } from "./user-details-types";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "./constants";
 
 export interface WalletConfig {

@@ -61,7 +61,7 @@ export const ChatInitPopup = observer(
         // Redirect to home
         navigate("/", { replace: true });
       } finally {
-        analyticsStore.logEvent("Privacy setting click", {
+        analyticsStore.logEvent("chat_privacy_click", {
           selectedPrivacySetting,
         });
         setIsOpendialog(false);

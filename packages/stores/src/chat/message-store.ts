@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { GROUP_PAGE_COUNT, CHAT_PAGE_COUNT } from "./constants";
-import { Groups, Message } from "./types";
+import { Groups, Message } from "./message-types";
 const initialState: any = {
   groups: {},
   agents: {},

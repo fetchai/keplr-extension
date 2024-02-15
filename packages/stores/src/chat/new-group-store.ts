@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { GroupDetails, GroupMembers, NewGroupDetails } from "./types";
+import { GroupDetails, GroupMembers, NewGroupDetails } from "./new-group-types";
 
 export class NewGroupStore {
   newGroup: NewGroupDetails = {

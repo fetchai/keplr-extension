@@ -171,7 +171,7 @@ const ChatView = observer(() => {
       setLoadingChats(true);
       try {
         const res = await getJWT(current.chainId, AUTH_SERVER);
-        chatStore.userDetailsStore.setAccessToken(res);
+        userState.setAccessToken(res);
 
         const pubKey = await fetchPublicKey(
           res,
@@ -180,7 +180,7 @@ const ChatView = observer(() => {
         );
         if (!pubKey || !pubKey.publicKey || !pubKey.privacySetting)
           return setIsOpendialog(true);
-        chatStore.userDetailsStore.setMessagingPubKey(pubKey);
+        userState.setMessagingPubKey(pubKey);
       } catch (e) {
         chatStore.messagesStore.setMessageError({
           type: "authorization",
