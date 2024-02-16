@@ -184,6 +184,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
               onClick={isClicked}
+              disabled
             >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
               Change to USD
