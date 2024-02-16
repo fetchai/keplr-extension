@@ -66,9 +66,15 @@ export const Stats = () => {
     parseFloat(stakedBalNumber) +
     parseFloat(rewardsBalNumber);
 
-  const stakablePercentage = (parseFloat(stakableBalNumber) / total) * 100;
-  const stakedPercentage = (parseFloat(stakedBalNumber) / total) * 100;
-  const rewardsPercentage = (parseFloat(rewardsBalNumber) / total) * 100;
+  const stakablePercentage = total
+    ? (parseFloat(stakableBalNumber) / total) * 100
+    : 0;
+  const stakedPercentage = total
+    ? (parseFloat(stakedBalNumber) / total) * 100
+    : 0;
+  const rewardsPercentage = total
+    ? (parseFloat(rewardsBalNumber) / total) * 100
+    : 0;
 
   const doughnutData = {
     labels: ["Balance", "Staked", "Rewards"],
