@@ -23,5 +23,16 @@
 }
 
 .label {
-  font-size: 12px;
+  font-size: 14px;
+}
+.calendar {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  width: 157px;
+  cursor: pointer;
+}
+.calendar::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }

@@ -31,6 +31,7 @@ export const ExpirationField: React.FC<ExpirationProps> = ({
     <div className={style["dateContainer"]} style={{ ...styleProps }}>
       <div className={style["label"]}>Expiration By:</div>
       <input
+        className={style["calendar"]}
         type="datetime-local"
         id="expiryDateTime"
         name="expiryDateTime"

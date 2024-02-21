@@ -1,4 +1,4 @@
-import { ContextProps } from "@components/notification";
+import { ContextProps, NotificationProperty } from "@components/notification";
 import { fromBase64, toBase64, toBech32, toHex } from "@cosmjs/encoding";
 import { PubKeyPayload, SignPayload } from "@keplr-wallet/background/build/ans";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
@@ -48,7 +48,6 @@ export const registerDomain = async (
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
   domain: string,
   notification: ContextProps,
-  // agentAddress?: string,
   amount: any,
   approval_token?: string
 ) => {
@@ -70,7 +69,7 @@ export const registerDomain = async (
     [amount]
   );
 
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 export const updateRecord = async (
   chainId: string,
@@ -91,7 +90,7 @@ export const updateRecord = async (
     []
   );
 
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 
 export const removeDomain = async (
@@ -110,7 +109,7 @@ export const removeDomain = async (
     },
     []
   );
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 export const resetDomain = async (
   chainId: string,
@@ -141,7 +140,7 @@ export const resetDomain = async (
     },
     []
   );
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 
 export const extendDomainExpiration = async (
@@ -158,7 +157,7 @@ export const extendDomainExpiration = async (
     },
     []
   );
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 
 export const updateDomainPermissions = async (
@@ -181,7 +180,7 @@ export const updateDomainPermissions = async (
     },
     []
   );
-  await executeTxn(tx, ANS_AMOUNT, notification);
+  await executeTxn(tx, notification, ANS_AMOUNT);
 };
 
 export const verifyDomain = async (chainId: string, domain: string) => {
@@ -239,9 +238,19 @@ export const verifyDomain = async (chainId: string, domain: string) => {
   return JSON.parse(result);
 };
 
+const notificationProperty: NotificationProperty = {
+  placement: "top-center",
+  type: "success",
+  duration: 2,
+  content: `Transaction Successful!`,
+  canDelete: true,
+  transition: {
+    duration: 0.25,
+  },
+};
 const executeTxn = async (
   tx: MakeTxResponse,
-  notification: any,
+  notification: ContextProps,
   amount?: any
 ) => {
   const gasResponse = await tx.simulate();
@@ -255,17 +264,8 @@ const executeTxn = async (
 
     {
       onFulfill: (tx: any) => {
-        console.log(tx);
-        notification.push({
-          placement: "top-center",
-          type: "success",
-          duration: 2,
-          content: `Transaction Successful!`,
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
+        console.log("trnsx hash: ", tx.hash);
+        notification.push(notificationProperty);
       },
 
       onBroadcastFailed: (tx: any) => {
