@@ -7790,13 +7790,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fetchai/umbral-types@^0.1.1, @fetchai/umbral-types@workspace:packages/umbral-types":
-  version: 0.0.0-use.local
-  resolution: "@fetchai/umbral-types@workspace:packages/umbral-types"
+"@fetchai/umbral-types@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@fetchai/umbral-types@npm:0.1.1"
   dependencies:
-    "@keplr-wallet/router": 0.12.12
-  languageName: unknown
-  linkType: soft
+    "@keplr-wallet/router": ^0.9.6
+  checksum: 75bcaa13dd5bb7950a51d4270e477f1a9ef464ed901dc7e75343a6efc643a8d1510e297d1eede72cd056432dc8f7288613300ee0547b4f8ba8476b6e89176b68
+  languageName: node
+  linkType: hard
 
 "@fetchai/wallet-types@^0.1.1, @fetchai/wallet-types@workspace:packages/wallet-types":
   version: 0.0.0-use.local
@@ -9043,7 +9044,6 @@ __metadata:
     "@ethersproject/transactions": ^5.7.0
     "@ethersproject/wallet": ^5.7.0
     "@fetchai/blst-ts": ^0.3.1
-    "@fetchai/umbral-types": ^0.1.1
     "@keplr-wallet/chain-validator": 0.12.12
     "@keplr-wallet/common": 0.12.12
     "@keplr-wallet/cosmos": 0.12.12
@@ -9066,7 +9066,6 @@ __metadata:
     "@ledgerhq/hw-transport-webhid": ^6.20.0
     "@ledgerhq/hw-transport-webusb": ^6.20.0
     "@noble/hashes": 1.0.0
-    "@nucypher/umbral-pre": ^0.5.2
     "@types/aes-js": ^3.1.0
     "@types/ledgerhq__hw-transport-webusb": ^4.70.1
     "@types/secp256k1": ^4.0.1
@@ -9426,6 +9425,13 @@ __metadata:
   resolution: "@keplr-wallet/router@workspace:packages/router"
   languageName: unknown
   linkType: soft
+
+"@keplr-wallet/router@npm:^0.9.6":
+  version: 0.9.6
+  resolution: "@keplr-wallet/router@npm:0.9.6"
+  checksum: 22c3519683615f11a07532c937d9430a5bd268c69ac5fa95ef285bea510dbb419714ac272e5dc768824df0d79689f193b4b447faeb7bd8a568dbacabf949f881
+  languageName: node
+  linkType: hard
 
 "@keplr-wallet/simple-fetch@0.12.12, @keplr-wallet/simple-fetch@workspace:packages/simple-fetch":
   version: 0.0.0-use.local
@@ -11028,13 +11034,6 @@ __metadata:
   version: 2.0.0
   resolution: "@npmcli/name-from-folder@npm:2.0.0"
   checksum: fb3ef891aa57315fb6171866847f298577c8bda98a028e93e458048477133e142b4eb45ce9f3b80454f7c257612cb01754ee782d608507698dd712164436f5bd
-  languageName: node
-  linkType: hard
-
-"@nucypher/umbral-pre@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "@nucypher/umbral-pre@npm:0.5.2"
-  checksum: d1fca6f593f6b04e80540e52875a4d1517bac021c539361a96e9a20e6130f61db923f6f5a261a6b521c6a8d5dc3699a378fe760e29ff04a770887c2edf7621a5
   languageName: node
   linkType: hard
 

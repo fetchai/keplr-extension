@@ -1,3 +1,4 @@
+//To be figured out
 export enum Method {
   UMBRAL_V1_GET_PUBLIC_KEY = 1,
   UMBRAL_V1_GET_SIGNING_KEY,
