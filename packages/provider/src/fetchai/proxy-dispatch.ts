@@ -30,17 +30,20 @@ function lookupUmbralMethod(method: Method): keyof UmbralApi | undefined {
 }
 
 async function dispatchRequest(
-  fetchApi: FetchBrowserWallet,
+  _fetchApi: FetchBrowserWallet,
   request: ProxyRequest
 ): Promise<any> {
   // if the method is an umbral method then execute it
   const umbralMethod = lookupUmbralMethod(request.method);
   if (umbralMethod !== undefined) {
-    return await fetchApi.umbral[umbralMethod](
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      ...JSONUint8Array.unwrap(request.args)
+    throw new Error(
+      `Unable to resolve request method ${request.method} as its in umbral`
     );
+    // return await fetchApi.umbral[umbralMethod](
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   ...JSONUint8Array.unwrap(request.args)
+    // );
   } else {
     throw new Error(`Unable to resolve request method ${request.method}`);
   }
