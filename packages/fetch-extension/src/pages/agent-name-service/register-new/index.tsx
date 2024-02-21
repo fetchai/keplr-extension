@@ -1,7 +1,7 @@
 import searchButton from "@assets/icon/search.png";
 import { useNotification } from "@components/notification";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { ANS_CONFIG } from "../../../config.ui.var";
 import { registerDomain } from "../../../name-service/ans-api";
@@ -12,8 +12,6 @@ import style from "./style.module.scss";
 import style2 from "../../fetch-name-service/domain-details/style.module.scss";
 import { Web2 } from "./web2";
 import { ExpirationField } from "@components/expiration-field";
-import { updateAmountAndDenom } from "@utils/ans-v2-utils";
-
 export const RegisterAgentDomains = observer(() => {
   const { chainStore, accountStore, queriesStore } = useStore();
   const current = chainStore.current;
@@ -25,30 +23,23 @@ export const RegisterAgentDomains = observer(() => {
   const [selectedWebVersion, setSelectedWebVersion] = useState("web3");
   const regex = /^[\p{Ll}0-9\-.]+$/u;
   const [expiryDateTime, setExpiryDateTime] = useState(0);
-  const [regsiterAmount, setRegsiterAmount] = useState<any>();
 
   const notification = useNotification();
   const {
     queryPublicDomains,
     queryPermissions,
     queryDomainRecord,
-    queryContractState,
+    queryRegisterPayment,
   } = queriesStore.get(current.chainId).ans;
 
-  const { publicDomains = [], isFetching: isLoading } =
-    queryPublicDomains.getQueryContract(
-      ANS_CONFIG[current.chainId].contractAddress
-    );
-  const price: any = queryContractState.getQueryContract(
+  const { isFetching: isLoading } = queryPublicDomains.getQueryContract(
     ANS_CONFIG[current.chainId].contractAddress
-  ).response?.data;
-  useEffect(() => {
-    const amount = updateAmountAndDenom(
-      price?.price_per_second,
-      expiryDateTime
-    );
-    setRegsiterAmount(amount);
-  }, [price?.price_per_second, expiryDateTime]);
+  );
+  const { value } = queryRegisterPayment.getQueryContract(
+    ANS_CONFIG[current.chainId].contractAddress,
+    `${searchValue}.${selectedPublicDomain}`,
+    expiryDateTime
+  );
 
   let domainAvailablityMessage;
   let domainAvailablity = false;
@@ -128,7 +119,7 @@ export const RegisterAgentDomains = observer(() => {
         account,
         domain,
         notification,
-        regsiterAmount
+        value.amount
       );
       setIsRegisterInProgress(false);
       navigate(`/agent-name-service`, {
@@ -229,7 +220,6 @@ export const RegisterAgentDomains = observer(() => {
               onChange={handleInputChange}
             />
             <PublicDomainDropdown
-              publicDomains={publicDomains}
               selectedPublicDomain={selectedPublicDomain}
               setSelectedPublicDomain={setSelectedPublicDomain}
             />

@@ -7,7 +7,7 @@ import { ObservableQueryPermissions } from "./permissions";
 import { ObservableQueryContractState } from "./contract-state";
 import { ObservableQueryPublicDomains } from "./public-domains";
 import { ObservableQueryvalidateAddress } from "./validate-address";
-
+import { ObservableQueryCalculatePayment } from "./calculate-registeration-payment";
 export interface ANSQueries {
   ans: ANSQueriesImpl;
 }
@@ -38,6 +38,7 @@ export class ANSQueriesImpl {
   public readonly queryContractState: DeepReadonly<ObservableQueryContractState>;
   public readonly queryPublicDomains: DeepReadonly<ObservableQueryPublicDomains>;
   public readonly queryVaildateAgentAddress: DeepReadonly<ObservableQueryvalidateAddress>;
+  public readonly queryRegisterPayment: DeepReadonly<ObservableQueryCalculatePayment>;
 
   constructor(
     _base: QueriesSetBase,
@@ -66,6 +67,11 @@ export class ANSQueriesImpl {
       chainGetter
     );
     this.queryVaildateAgentAddress = new ObservableQueryvalidateAddress(
+      kvStore,
+      chainId,
+      chainGetter
+    );
+    this.queryRegisterPayment = new ObservableQueryCalculatePayment(
       kvStore,
       chainId,
       chainGetter

@@ -8,17 +8,16 @@ import {
 import style from "./style.module.scss";
 
 interface DomainDropdownProps {
-  publicDomains: string[];
   selectedPublicDomain: string;
   setSelectedPublicDomain: (selectedDomain: string) => void;
 }
 
 export const PublicDomainDropdown: React.FC<DomainDropdownProps> = ({
-  publicDomains,
   selectedPublicDomain,
   setSelectedPublicDomain,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const publicDomains = ["agent", "world"];
   const toggleDropdown = () => {
     setDropdownOpen(dropdownOpen ? false : true);
   };

@@ -72,7 +72,6 @@ export const registerDomain = async (
 
   await executeTxn(tx, ANS_AMOUNT, notification);
 };
-
 export const updateRecord = async (
   chainId: string,
   account: AccountSetBase & CosmosAccount & CosmwasmAccount & SecretAccount,
