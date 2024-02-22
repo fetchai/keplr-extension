@@ -190,7 +190,10 @@ export const Web2 = observer(() => {
         searchValue={searchValue}
         isLoading={isLoading}
       />
-      <ExpirationField setExpiryDateTime={setExpiryDateTime} />
+      <ExpirationField
+        setExpiryDateTime={setExpiryDateTime}
+        styleProps={{ marginTop: "42px" }}
+      />
       <button
         className={style["registerButton"]}
         disabled={!domainAvailablity || !isValidAgentAddress}

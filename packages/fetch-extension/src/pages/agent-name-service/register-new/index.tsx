@@ -35,11 +35,12 @@ export const RegisterAgentDomains = observer(() => {
   const { isFetching: isLoading } = queryPublicDomains.getQueryContract(
     ANS_CONFIG[current.chainId].contractAddress
   );
-  const { value } = queryRegisterPayment.getQueryContract(
-    ANS_CONFIG[current.chainId].contractAddress,
-    `${searchValue}.${selectedPublicDomain}`,
-    expiryDateTime
-  );
+  const { value, isFetching: isPaymentAmtLoading } =
+    queryRegisterPayment.getQueryContract(
+      ANS_CONFIG[current.chainId].contractAddress,
+      `${searchValue}.${selectedPublicDomain}`,
+      expiryDateTime
+    );
 
   let domainAvailablityMessage;
   let domainAvailablity = false;
@@ -236,17 +237,22 @@ export const RegisterAgentDomains = observer(() => {
           <ExpirationField setExpiryDateTime={setExpiryDateTime} />
           <button
             className={style["registerButton"]}
-            disabled={!domainAvailablity}
+            disabled={!domainAvailablity && isPaymentAmtLoading}
             onClick={() => {
               handleRegisterClick();
             }}
           >
+            {" "}
             Register{" "}
-            <img
-              src={require("@assets/svg/arrow-right.svg")}
-              className={style["registerIcon"]}
-              alt=""
-            />
+            {isPaymentAmtLoading ? (
+              <i className="fas fa-spinner fa-spin ml-2" />
+            ) : (
+              <img
+                src={require("@assets/svg/arrow-right.svg")}
+                className={style["registerIcon"]}
+                alt=""
+              />
+            )}
           </button>
         </div>
       ) : (

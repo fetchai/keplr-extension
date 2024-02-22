@@ -27,11 +27,12 @@ export const VerifyDomain = () => {
 
   const { queryRegisterPayment } = queriesStore.get(current.chainId).ans;
 
-  const { value } = queryRegisterPayment.getQueryContract(
-    ANS_CONFIG[current.chainId].contractAddress,
-    domainName,
-    expiryDateTime
-  );
+  const { value, isFetching: isPaymentAmtLoading } =
+    queryRegisterPayment.getQueryContract(
+      ANS_CONFIG[current.chainId].contractAddress,
+      domainName,
+      expiryDateTime
+    );
   const handleVerifyClick = async () => {
     try {
       setIsVerifying(true);
@@ -177,10 +178,10 @@ export const VerifyDomain = () => {
       <button
         className={style["registerButton"]}
         onClick={!isVerified ? handleVerifyClick : handleRegisterClick}
-        disabled={isVerifying}
+        disabled={isVerifying && isPaymentAmtLoading}
       >
         {!isVerified ? "Verify" : "Register"}
-        {isVerifying ? (
+        {isVerifying || isPaymentAmtLoading ? (
           <i className="fas fa-spinner fa-spin ml-2" />
         ) : (
           <img
