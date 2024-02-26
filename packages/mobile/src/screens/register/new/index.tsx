@@ -27,7 +27,6 @@ import { BluetoothIcon } from "components/new/icon/bluetooth-icon";
 import { MetaMaskIcon } from "components/new/icon/metamask-icon";
 import { TokenCardView } from "components/new/card-view/token-card-view";
 import { AppleIcon } from "components/new/icon/apple";
-import Toast from "react-native-toast-message";
 import { FetchIcon } from "components/new/icon/fetch-icon";
 
 const SelectWalletOptionCard: FunctionComponent<{
@@ -83,7 +82,7 @@ const SelectWalletOptionCard: FunctionComponent<{
 };
 
 export const RegisterIntroScreen: FunctionComponent = observer(() => {
-  const { keyRingStore, analyticsStore } = useStore();
+  const { keyRingStore } = useStore();
 
   const style = useStyle();
 
@@ -163,9 +162,6 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             close={() => setIsModalOpen(false)}
             onSelectGoogle={() => {
               setIsModalOpen(false);
-              analyticsStore.logEvent("OAuth sign in started", {
-                registerType: "google",
-              });
               smartNavigation.navigateSmart("Register.TorusSignIn", {
                 registerConfig,
                 type: "google",
@@ -173,9 +169,6 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             }}
             onSelectApple={() => {
               setIsModalOpen(false);
-              analyticsStore.logEvent("OAuth sign in started", {
-                registerType: "apple",
-              });
               smartNavigation.navigateSmart("Register.TorusSignIn", {
                 registerConfig,
                 type: "apple",
@@ -183,9 +176,6 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             }}
             onSelectNewMnemonic={() => {
               setIsModalOpen(false);
-              analyticsStore.logEvent("Create account started", {
-                registerType: "seed",
-              });
               smartNavigation.navigateSmart("Register.NewMnemonic", {
                 registerConfig,
               });
@@ -196,9 +186,6 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             close={() => setImportWalletModalOpen(false)}
             onSelectGoogle={() => {
               setImportWalletModalOpen(false);
-              analyticsStore.logEvent("OAuth sign in started", {
-                registerType: "google",
-              });
               smartNavigation.navigateSmart("Register.TorusSignIn", {
                 registerConfig,
                 type: "google",
@@ -206,27 +193,18 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             }}
             onImportExistingWallet={() => {
               setImportWalletModalOpen(false);
-              analyticsStore.logEvent("Import account started", {
-                registerType: "seed",
-              });
               smartNavigation.navigateSmart("Register.RecoverMnemonic", {
                 registerConfig,
               });
             }}
             onMigrateFromETH={() => {
               setImportWalletModalOpen(false);
-              analyticsStore.logEvent("Import account started", {
-                registerType: "seed",
-              });
               smartNavigation.navigateSmart("Register.MigrateETH", {
                 registerConfig,
               });
             }}
             onImportFromFetch={() => {
               setImportWalletModalOpen(false);
-              analyticsStore.logEvent("Import account started", {
-                registerType: "qr",
-              });
               smartNavigation.navigateSmart(
                 "Register.ImportFromExtension.Intro",
                 {
@@ -236,9 +214,8 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
             }}
             onConnectLedger={() => {
               setImportWalletModalOpen(false);
-              Toast.show({
-                type: "error",
-                text1: "Under development",
+              smartNavigation.navigateSmart("Register.NewLedger", {
+                registerConfig,
               });
             }}
           />
@@ -362,7 +339,9 @@ export const ImportExistingWalletModal: FunctionComponent<{
               backgroundBlur={true}
               blurIntensity={20}
               borderRadius={50}
-              onPress={close}
+              onPress={() => {
+                close();
+              }}
               iconStyle={style.flatten(["padding-12"]) as ViewStyle}
             />
           }

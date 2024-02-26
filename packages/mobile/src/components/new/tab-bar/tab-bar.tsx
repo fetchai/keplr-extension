@@ -1,6 +1,6 @@
 import { CardDivider } from "components/card";
 import React, { FunctionComponent, useState } from "react";
-import { FlatList, View, ViewStyle } from "react-native";
+import { Dimensions, FlatList, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurButton } from "../button/blur-button";
 
@@ -28,10 +28,13 @@ export const TabBarView: FunctionComponent<{
           ) as ViewStyle
         }
         containerStyle={
-          style.flatten(
-            ["padding-x-26"],
-            !blurButton ? [select && "background-color-white"] : []
-          ) as ViewStyle
+          [
+            style.flatten(
+              ["justify-center"],
+              !blurButton ? [select && "background-color-white"] : []
+            ),
+            { width: (Dimensions.get("window").width - 41) / 3 },
+          ] as ViewStyle
         }
         onPress={() => {
           setSelected(item);
@@ -65,9 +68,7 @@ export const TabBarView: FunctionComponent<{
       horizontal={true}
       extraData={selected}
       ItemSeparatorComponent={renderSeparator}
-      contentContainerStyle={[
-        style.flatten(["width-full", "justify-between"]) as ViewStyle,
-      ]}
+      // contentContainerStyle={[style.flatten(["width-full"]) as ViewStyle]}
       scrollEnabled={false}
     />
   );

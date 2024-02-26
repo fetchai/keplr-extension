@@ -18,6 +18,7 @@ export const Button: FunctionComponent<{
   leftIcon?: ReactElement | ((color: string) => ReactElement);
   rightIcon?: ReactElement | ((color: string) => ReactElement);
   loading?: boolean;
+  loaderColor?: string;
   disabled?: boolean;
 
   onPress?: () => void;
@@ -37,6 +38,7 @@ export const Button: FunctionComponent<{
   rightIcon,
   loading = false,
   disabled = false,
+  loaderColor,
   onPress,
   containerStyle,
   style: buttonStyle,
@@ -88,7 +90,7 @@ export const Button: FunctionComponent<{
       case "large":
         return "text-button1";
       case "small":
-        return "text-button3";
+        return "text-caption2";
       default:
         return "text-button2";
     }
@@ -373,7 +375,10 @@ export const Button: FunctionComponent<{
             <LoadingSpinner
               color={
                 // TODO: Color for loading spinner in button is not yet determined.
-                style.flatten([...(textColorDefinition as any)]).color
+                style.flatten(
+                  [...(textColorDefinition as any)],
+                  loaderColor && [`color-${loaderColor}`]
+                ).color
               }
               size={20}
             />

@@ -157,83 +157,89 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => setToggleCheckBox(!toggleCheckBox)}
+        style={
+          style.flatten([
+            "flex-row",
+            "margin-bottom-16",
+            "margin-right-32",
+          ]) as ViewStyle
+        }
       >
-        <View style={style.flatten(["flex-row"]) as ViewStyle}>
-          <CheckBox
-            disabled={false}
-            value={toggleCheckBox}
-            onValueChange={(newValue) => setToggleCheckBox(newValue)}
-            onCheckColor="white"
-            onTintColor="white"
-            lineWidth={2}
-            boxType="square"
-            tintColors={{ true: "white", false: "#C6C6CD" }}
-            style={
-              style.flatten([
-                "width-16",
-                "height-16",
-                "margin-right-24",
-                "margin-bottom-16",
-                "margin-top-4",
-              ]) as ViewStyle
-            }
-          />
-          <Text
-            style={
-              style.flatten([
-                "color-gray-100",
-                "h6",
-                "font-normal",
-                "margin-bottom-16",
-              ]) as ViewStyle
-            }
-          >
-            I understand that if I lose my recovery phrase, I will not be able
-            to access my wallet
-          </Text>
-        </View>
+        <CheckBox
+          disabled={false}
+          value={toggleCheckBox}
+          onValueChange={(newValue) => setToggleCheckBox(newValue)}
+          onCheckColor="white"
+          onTintColor="white"
+          lineWidth={2}
+          boxType="square"
+          tintColors={{ true: "white", false: "#C6C6CD" }}
+          style={
+            style.flatten([
+              "width-16",
+              "height-16",
+              "margin-right-12",
+              "margin-top-4",
+            ]) as ViewStyle
+          }
+        />
+        <Text
+          style={
+            style.flatten([
+              "color-gray-100",
+              "h6",
+              "font-normal",
+              "margin-left-12",
+            ]) as ViewStyle
+          }
+        >
+          I understand that if I lose my recovery phrase, I will not be able to
+          access my wallet
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => setSelection(!isSelected)}
+        style={
+          style.flatten([
+            "flex-row",
+            "margin-bottom-16",
+            "margin-right-32",
+          ]) as ViewStyle
+        }
       >
-        <View
-          style={style.flatten(["flex-row", "margin-right-32"]) as ViewStyle}
+        <CheckBox
+          disabled={false}
+          value={isSelected}
+          onValueChange={(newValue) => setSelection(newValue)}
+          onCheckColor="white"
+          onTintColor="white"
+          lineWidth={2}
+          aria-busy={true}
+          boxType="square"
+          tintColors={{ true: "white", false: "#C6C6CD" }}
+          style={
+            style.flatten([
+              "width-16",
+              "height-16",
+              "margin-right-12",
+              "margin-top-4",
+            ]) as ViewStyle
+          }
+        />
+        <Text
+          style={
+            style.flatten([
+              "color-gray-100",
+              "h6",
+              "font-normal",
+              "margin-left-12",
+            ]) as ViewStyle
+          }
         >
-          <CheckBox
-            disabled={false}
-            value={isSelected}
-            onValueChange={(newValue) => setSelection(newValue)}
-            onCheckColor="white"
-            onTintColor="white"
-            lineWidth={2}
-            aria-busy={true}
-            boxType="square"
-            tintColors={{ true: "white", false: "#C6C6CD" }}
-            style={
-              style.flatten([
-                "width-16",
-                "height-16",
-                "margin-right-24",
-                "margin-bottom-16",
-                "margin-top-4",
-              ]) as ViewStyle
-            }
-          />
-          <Text
-            style={
-              style.flatten([
-                "color-gray-100",
-                "h6",
-                "font-normal",
-                "margin-bottom-16",
-              ]) as ViewStyle
-            }
-          >
-            I understand that my assets can be stolen if I share my recovery
-            phrase with someone else.
-          </Text>
-        </View>
+          I understand that my assets can be stolen if I share my recovery
+          phrase with someone else.
+        </Text>
       </TouchableOpacity>
       <View style={style.flatten(["flex-1"])} />
       <Button

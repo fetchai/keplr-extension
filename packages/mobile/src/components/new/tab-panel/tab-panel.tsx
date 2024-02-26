@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { FlatList, View, ViewStyle } from "react-native";
+import { Dimensions, FlatList, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurButton } from "../button/blur-button";
 import { CardDivider } from "components/card";
@@ -20,7 +20,12 @@ export const TabPanel: FunctionComponent<{
         text={item.id}
         borderRadius={32}
         textStyle={style.flatten(["body3"]) as ViewStyle}
-        containerStyle={style.flatten(["padding-x-16"]) as ViewStyle}
+        containerStyle={
+          [
+            style.flatten(["justify-center"]),
+            { width: (Dimensions.get("window").width - 41) / 6 },
+          ] as ViewStyle
+        }
         onPress={() => {
           setActiveTab(item);
           setPrevSelectedId(item.index - 1);

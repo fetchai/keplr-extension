@@ -1,11 +1,13 @@
 import React, { FunctionComponent, ReactElement } from "react";
-import { Text, ViewStyle } from "react-native";
+import { Text, ViewStyle, View } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
 export const BlurButton: FunctionComponent<{
   containerStyle?: ViewStyle;
   textStyle?: ViewStyle;
+  leftIconStyle?: ViewStyle;
+  rightIconStyle?: ViewStyle;
   backgroundBlur?: boolean;
   blurIntensity?: number;
   borderRadius?: number;
@@ -13,8 +15,8 @@ export const BlurButton: FunctionComponent<{
   onPress?: () => void;
   disable?: boolean;
   text: string;
-  leftIcon?: ReactElement;
-  rightIcon?: ReactElement;
+  leftIcon?: ReactElement | null;
+  rightIcon?: ReactElement | null;
 }> = ({
   containerStyle,
   textStyle,
@@ -27,6 +29,8 @@ export const BlurButton: FunctionComponent<{
   disable,
   leftIcon,
   rightIcon,
+  leftIconStyle,
+  rightIconStyle,
 }) => {
   const style = useStyle();
   return (
@@ -43,7 +47,15 @@ export const BlurButton: FunctionComponent<{
         ] as ViewStyle
       }
     >
-      {leftIcon ? leftIcon : null}
+      {leftIcon ? (
+        <View
+          style={
+            [style.flatten(["margin-right-6"]), leftIconStyle] as ViewStyle
+          }
+        >
+          {leftIcon}
+        </View>
+      ) : null}
       <Text
         style={[
           style.flatten([
@@ -57,7 +69,15 @@ export const BlurButton: FunctionComponent<{
       >
         {text}
       </Text>
-      {rightIcon ? rightIcon : null}
+      {rightIcon ? (
+        <View
+          style={
+            [style.flatten(["margin-left-6"]), rightIconStyle] as ViewStyle
+          }
+        >
+          {rightIcon}
+        </View>
+      ) : null}
     </BlurBackground>
   );
 };

@@ -14142,22 +14142,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/masked-view@npm:^0.1.11":
-  version: 0.1.11
-  resolution: "@react-native-community/masked-view@npm:0.1.11"
-  peerDependencies:
-    react: ">=16.0"
-    react-native: ">=0.57"
-  checksum: 246bcd94a6a2cafc415c7a192fb5a76ef7cd9b648b47ea4b2366f06128376ab377dcff3fab676261050fd3a97324bde5d64802aa3e8d1580fe6c0e3b0138cefc
-  languageName: node
-  linkType: hard
-
 "@react-native-community/netinfo@npm:^9.4.1":
   version: 9.4.1
   resolution: "@react-native-community/netinfo@npm:9.4.1"
   peerDependencies:
     react-native: ">=0.59"
   checksum: cf6471a50a5282f858797cda7531c61ac3d94de2e1c379b14a11f6b049f582606dae55a041dd900c56b01faf69eb5cfef9b4e84b0ea7f02de52804aa5a6e22df
+  languageName: node
+  linkType: hard
+
+"@react-native-masked-view/masked-view@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@react-native-masked-view/masked-view@npm:0.3.1"
+  peerDependencies:
+    react: ">=16"
+    react-native: ">=0.57"
+  checksum: 880059020709ce856c448657c2d67a905f2ebcd3f42c1c4d344d732761cb2de98efb600172df5591d943f562393dbca42802e8a903b974aa2b038b441c5718fb
   languageName: node
   linkType: hard
 
@@ -39551,8 +39551,8 @@ __metadata:
     "@react-native-community/checkbox": ^0.5.17
     "@react-native-community/cli": ^11.3.6
     "@react-native-community/cli-platform-android": ^11.3.6
-    "@react-native-community/masked-view": ^0.1.11
     "@react-native-community/netinfo": ^9.4.1
+    "@react-native-masked-view/masked-view": ^0.3.1
     "@react-navigation/bottom-tabs": ^6.5.8
     "@react-navigation/drawer": ^6.6.3
     "@react-navigation/elements": ^1.3.21
@@ -39628,6 +39628,7 @@ __metadata:
     react-native-keyboard-aware-scroll-view: ^0.9.5
     react-native-keychain: ^8.1.1
     react-native-linear-gradient: ^2.8.3
+    react-native-linear-gradient-text: ^1.2.8
     react-native-localize: ^3.0.2
     react-native-markdown-view: ^1.1.4
     react-native-qrcode-svg: ^6.2.0
@@ -39638,7 +39639,6 @@ __metadata:
     react-native-svg: ^13.10.0
     react-native-svg-charts: ^5.4.0
     react-native-svg-transformer: ^1.1.0
-    react-native-text-gradient: ^0.1.7
     react-native-toast-message: ^2.1.6
     react-native-url-polyfill: ^2.0.0
     react-native-webview: ^13.2.3
@@ -45038,6 +45038,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-linear-gradient-text@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "react-native-linear-gradient-text@npm:1.2.8"
+  peerDependencies:
+    "@react-native-masked-view/masked-view": "*"
+    react: "*"
+    react-native: "*"
+    react-native-linear-gradient: "*"
+  checksum: 6168ffb1e69f7d3bfd0bfe355278647e7bfea1165f888c81a916ea94b0e3780b2ad689a5548fe64c733bf74fe91bf02e27a0834b916e4e51b6f2f58ec90116bb
+  languageName: node
+  linkType: hard
+
 "react-native-linear-gradient@npm:^2.8.3":
   version: 2.8.3
   resolution: "react-native-linear-gradient@npm:2.8.3"
@@ -45208,18 +45220,6 @@ __metadata:
     react: ">=15.4.2"
     react-native: ">=0.41.0"
   checksum: 940f788d199a3a33e3ba35da314ae9bf1750cd4dea0e5cbba3ff837d5dc4176ef643f218fc8b7c1966ca7dc68aa6668846259288fb57c9f4b9c9f40f8fa23af8
-  languageName: node
-  linkType: hard
-
-"react-native-text-gradient@npm:^0.1.7":
-  version: 0.1.7
-  resolution: "react-native-text-gradient@npm:0.1.7"
-  peerDependencies:
-    "@babel/runtime": "*"
-    fbjs: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 8c2d48c04a7dfd4ca92d3f6f2be33014890504f6a3504b6ad65fbc52eca3aa4d5fef53d5456dbcee92fb3cea3a5ce69cac1b5f7124a97d1411531d6075a8dadc
   languageName: node
   linkType: hard
 

@@ -100,17 +100,18 @@ export const ColorPalette = {
 
   linear: "#CF447B",
 
-  "indigo-100": "#5f38fb12",
-  "indigo-200": "#fbfaff40",
-  "indigo-400": "#000D3D",
-
   transparent: "rgba(255,255,255,0)",
 
   "dark-blue": "#06103d",
   "pink-light": "#D0BCFF",
 
   indigo: "#5F38FB",
+  "indigo-100": "#5f38fb12",
+  "indigo-200": "#fbfaff40",
+  "indigo-400": "#000D3D",
+  "indigo-800": "#270E8D",
   "indigo-900": "#000D3D",
+
   "orange-400": "#fa8f6b",
 };
 

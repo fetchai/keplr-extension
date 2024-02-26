@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-// import { LinearTextGradient } from "react-native-text-gradient";
+import { LinearGradientText } from "react-native-linear-gradient-text";
 
 export type HeadingMode = "normal" | "gradient";
 
@@ -86,29 +86,13 @@ export const SimpleCardView: FunctionComponent<{
               {heading}
             </Text>
           ) : (
-            // Todo
-
-            // <LinearTextGradient
-            //   numberOfLines={4}
-            //   style={{ fontSize: 14 }}
-            //   locations={[1, 0]}
-            //   colors={["#F9774B", "#CF447B"]}
-            //   start={{ x: 0, y: 1 }}
-            //   end={{ x: 1, y: 0 }}
-            // >
-            <Text
-              style={
-                style.flatten([
-                  "h6",
-                  "padding-4",
-                  "color-white",
-                  "font-normal",
-                ]) as ViewStyle
-              }
-            >
-              {heading}
-            </Text>
-            // </LinearTextGradient>
+            <LinearGradientText
+              colors={["#F9774B", "#CF447B"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+              text={heading}
+              textStyle={style.flatten(["h7", "padding-4"]) as ViewStyle}
+            />
           )}
           {subHeading ? (
             <Text

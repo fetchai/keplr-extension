@@ -60,7 +60,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         </View>
       )}
       {selectedId === AssertsSectionEnum.Stats && (
-        <StakingCard cardStyle={style.flatten(["margin-y-20"]) as ViewStyle} />
+        <StakingCard cardStyle={style.flatten(["margin-y-14"]) as ViewStyle} />
       )}
     </PageWithScrollViewInBottomTabView>
   );

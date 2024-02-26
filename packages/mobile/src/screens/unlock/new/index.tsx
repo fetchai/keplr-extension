@@ -298,10 +298,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             />
             <Button
               containerStyle={
-                style.flatten([
-                  "border-radius-32",
-                  "margin-top-10",
-                ]) as ViewStyle
+                style.flatten(["border-radius-32", "margin-y-10"]) as ViewStyle
               }
               text="Sign in"
               size="large"
@@ -314,7 +311,13 @@ export const UnlockScreen: FunctionComponent = observer(() => {
           {keychainStore.isBiometryOn ? (
             <TouchableOpacity onPress={tryBiometric} activeOpacity={1}>
               <View
-                style={style.flatten(["flex", "margin-bottom-40"]) as ViewStyle}
+                style={
+                  style.flatten([
+                    "flex",
+                    "margin-bottom-40",
+                    "margin-top-10",
+                  ]) as ViewStyle
+                }
               >
                 <View style={style.flatten(["items-center"]) as ViewStyle}>
                   {Platform.OS === "android" ? (

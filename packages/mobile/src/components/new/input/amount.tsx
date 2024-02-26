@@ -207,6 +207,7 @@ export const AmountInputSection: FunctionComponent<{
               "border-width-1",
               "padding-x-20",
               "padding-y-6",
+              "margin-y-2",
               amountConfig.sendCurrency["coinGeckoId"]
                 ? "border-color-gray-300"
                 : "border-color-platinum-400",
@@ -235,6 +236,7 @@ export const AmountInputSection: FunctionComponent<{
               "border-color-gray-300",
               "padding-x-20",
               "padding-y-6",
+              "margin-y-2",
             ]) as ViewStyle
           }
           textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
