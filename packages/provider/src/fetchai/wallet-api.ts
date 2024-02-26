@@ -100,8 +100,8 @@ export class InjectedFetchAccount implements AccountsApi {
   /* This method will work when connection is established
    * with wallet therefore wallet will always give status "unlocked"
    */
-  async currentAccount(chainId: string): Promise<Account> {
-    return await this.requestViaProxy("currentAccount", [chainId]);
+  async currentAccount(): Promise<Account> {
+    return await this.requestViaProxy("currentAccount", []);
   }
 
   async switchAccount(address: string): Promise<void> {

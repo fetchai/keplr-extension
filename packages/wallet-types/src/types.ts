@@ -120,7 +120,7 @@ export interface AccountsApi {
    * @return the currently selected account
    * @throws An error if the wallet is locked or the dApp does not have permission to access the Accounts API
    */
-  currentAccount(chainId: string): Promise<Account>;
+  currentAccount(): Promise<Account>;
 
   /**
    * Change the current active account to the address specified

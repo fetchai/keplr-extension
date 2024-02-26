@@ -139,7 +139,7 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
           !keplr[message.method] ||
           typeof keplr[message.method] !== "function"
         ) {
-          throw new Error(`Invalid method keplr: ${String(message.method)}`);
+          throw new Error(`Invalid method: ${message.method}`);
         }
 
         if (message.method === "getOfflineSigner") {
@@ -362,7 +362,6 @@ export class InjectedKeplr implements IKeplr, KeplrCoreTypes {
   }
 
   async getKey(chainId: string): Promise<Key> {
-    // console.log("getkey inject");
     return await this.requestMethod("getKey", [chainId]);
   }
 

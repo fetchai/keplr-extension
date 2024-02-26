@@ -1211,14 +1211,12 @@ export class CurrentAccountMsg extends Message<Account> {
     return "current-account-msg";
   }
 
-  constructor(public readonly chainId: string) {
+  constructor() {
     super();
   }
 
   validateBasic(): void {
-    if (!this.chainId) {
-      throw new Error("Chain id not set");
-    }
+    // noop
   }
 
   route(): string {

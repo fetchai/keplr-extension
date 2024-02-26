@@ -171,6 +171,6 @@ const handleSwitchNetworkByChainId: (
     if (await service.hasChainInfo(msg.chainId)) {
       // If suggested chain info is registered then switch else just return.
       await service.switchChainByChainId(env, msg.chainId, msg.origin);
-    } else return;
+    }
   };
 };
