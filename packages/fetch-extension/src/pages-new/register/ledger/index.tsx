@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Form } from "reactstrap";
 import { useForm } from "react-hook-form";
 import style from "../style.module.scss";
-import { Input, PasswordInput } from "@components/form";
+import { Input, PasswordInput } from "@components-v2/form";
 import { AdvancedBIP44Option, useBIP44Option } from "../advanced-bip44";
 import { BackButton } from "../index";
 import { observer } from "mobx-react-lite";
@@ -93,99 +93,15 @@ export const ImportLedgerPage: FunctionComponent<{
 
   return (
     <div>
-      <div className={style["title"]}>
-        {intl.formatMessage({
-          id: "register.name",
-        })}
-      </div>
-      <Form
-        className={style["formContainer"]}
-        onSubmit={handleSubmit(async (data: FormData) => {
-          try {
-            await ensureUSBPermission();
-
-            await registerConfig.createLedger(
-              data.name,
-              data.password,
-              bip44Option.bip44HDPath,
-              "Cosmos"
-            );
-            analyticsStore.setUserProperties({
-              registerType: "ledger",
-              accountType: "ledger",
-            });
-          } catch (e) {
-            alert(e.message ? e.message : e.toString());
-            registerConfig.clear();
-          }
-        })}
-      >
-        <Input
-          className={style["input"]}
-          // label={intl.formatMessage({
-          //   id: "register.name",
-          // })}
-          type="text"
-          {...register("name", {
-            required: intl.formatMessage({
-              id: "register.name.error.required",
-            }),
-          })}
-          error={errors.name && errors.name.message}
-          maxLength={20}
-        />
-        {registerConfig.mode === "create" ? (
-          <React.Fragment>
-            <PasswordInput
-              label={intl.formatMessage({
-                id: "register.create.input.password",
-              })}
-              {...register("password", {
-                required: intl.formatMessage({
-                  id: "register.create.input.password.error.required",
-                }),
-                validate: (password: string): string | undefined => {
-                  if (password.length < 8) {
-                    return intl.formatMessage({
-                      id: "register.create.input.password.error.too-short",
-                    });
-                  }
-                },
-              })}
-              error={errors.password && errors.password.message}
-            />
-            <PasswordInput
-              label={intl.formatMessage({
-                id: "register.create.input.confirm-password",
-              })}
-              {...register("confirmPassword", {
-                required: intl.formatMessage({
-                  id: "register.create.input.confirm-password.error.required",
-                }),
-                validate: (confirmPassword: string): string | undefined => {
-                  if (confirmPassword !== getValues()["password"]) {
-                    return intl.formatMessage({
-                      id: "register.create.input.confirm-password.error.unmatched",
-                    });
-                  }
-                },
-              })}
-              error={errors.confirmPassword && errors.confirmPassword.message}
-            />
-          </React.Fragment>
-        ) : null}
-        <AdvancedBIP44Option bip44Option={bip44Option} />
-        <ButtonV2 data-loading={registerConfig.isLoading} text={""}>
-          <FormattedMessage id="register.create.button.next" />
-        </ButtonV2>
-        <Button
-          type="button"
-          color="link"
-          onClick={handleSubmit(async (data: FormData) => {
-            if (registerConfig.isLoading) {
-              return;
-            }
-
+      <BackButton
+        onClick={() => {
+          registerConfig.clear();
+        }}
+      />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Form
+          className={style["formContainer"]}
+          onSubmit={handleSubmit(async (data: FormData) => {
             try {
               await ensureUSBPermission();
 
@@ -193,7 +109,7 @@ export const ImportLedgerPage: FunctionComponent<{
                 data.name,
                 data.password,
                 bip44Option.bip44HDPath,
-                "Terra"
+                "Cosmos"
               );
               analyticsStore.setUserProperties({
                 registerType: "ledger",
@@ -205,14 +121,89 @@ export const ImportLedgerPage: FunctionComponent<{
             }
           })}
         >
-          <FormattedMessage id="register.create.button.ledger.terra" />
-        </Button>
-      </Form>
-      <BackButton
-        onClick={() => {
-          registerConfig.clear();
-        }}
-      />
+          <Input
+            className={style["input"]}
+            label={intl.formatMessage({
+              id: "register.name",
+            })}
+            type="text"
+            {...register("name", {
+              required: intl.formatMessage({
+                id: "register.name.error.required",
+              }),
+            })}
+            error={errors.name && errors.name.message}
+            maxLength={20}
+          />
+          {registerConfig.mode === "create" ? (
+            <React.Fragment>
+              <PasswordInput
+                {...register("password", {
+                  required: intl.formatMessage({
+                    id: "register.create.input.password.error.required",
+                  }),
+                  validate: (password: string): string | undefined => {
+                    if (password.length < 8) {
+                      return intl.formatMessage({
+                        id: "register.create.input.password.error.too-short",
+                      });
+                    }
+                  },
+                })}
+                error={errors.password && errors.password.message}
+              />
+              <PasswordInput
+                {...register("confirmPassword", {
+                  required: intl.formatMessage({
+                    id: "register.create.input.confirm-password.error.required",
+                  }),
+                  validate: (confirmPassword: string): string | undefined => {
+                    if (confirmPassword !== getValues()["password"]) {
+                      return intl.formatMessage({
+                        id: "register.create.input.confirm-password.error.unmatched",
+                      });
+                    }
+                  },
+                })}
+                error={errors.confirmPassword && errors.confirmPassword.message}
+              />
+            </React.Fragment>
+          ) : null}
+          <AdvancedBIP44Option bip44Option={bip44Option} />
+          <ButtonV2 data-loading={registerConfig.isLoading} text={""}>
+            <FormattedMessage id="register.create.button.next" />
+          </ButtonV2>
+          <Button
+            type="button"
+            color="link"
+            onClick={handleSubmit(async (data: FormData) => {
+              if (registerConfig.isLoading) {
+                return;
+              }
+
+              try {
+                await ensureUSBPermission();
+
+                await registerConfig.createLedger(
+                  data.name,
+                  data.password,
+                  bip44Option.bip44HDPath,
+                  "Terra"
+                );
+                analyticsStore.setUserProperties({
+                  registerType: "ledger",
+                  accountType: "ledger",
+                });
+              } catch (e) {
+                alert(e.message ? e.message : e.toString());
+                registerConfig.clear();
+              }
+            })}
+          >
+            <FormattedMessage id="register.create.button.ledger.terra" />
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 });

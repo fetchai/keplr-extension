@@ -17,16 +17,20 @@ export const MigrateEthereumAddressIntro: FunctionComponent<{
   registerConfig: RegisterConfig;
 }> = observer(({ registerConfig }) => {
   return (
-    <ButtonV2
-      onClick={(e: any) => {
-        e.preventDefault();
+    <React.Fragment>
+      {" "}
+      <ButtonV2
+        styleProps={{ width: "500px" }}
+        onClick={(e: any) => {
+          e.preventDefault();
 
-        registerConfig.setType(TypeMigrateEth);
-      }}
-      text={""}
-    >
-      <FormattedMessage id="register.eth-migrate.title" />
-    </ButtonV2>
+          registerConfig.setType(TypeMigrateEth);
+        }}
+        text={""}
+      >
+        <FormattedMessage id="register.eth-migrate.title" />
+      </ButtonV2>
+    </React.Fragment>
   );
 });
 
@@ -36,13 +40,13 @@ const MigrationSelectionPage: FunctionComponent<{
 }> = (props) => {
   return (
     <div>
+      <BackButton onClick={props.onBack} />
       <ButtonV2
         text=""
         onClick={() => props.setMode(MigrationMode.METAMASK_PRIVATE_KEY)}
       >
         <FormattedMessage id="register.eth-migrate.metamask-private-key.title" />
       </ButtonV2>
-      <BackButton onClick={props.onBack} />
     </div>
   );
 };

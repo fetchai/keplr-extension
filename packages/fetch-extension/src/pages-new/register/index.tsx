@@ -11,8 +11,6 @@ import style from "./style.module.scss";
 
 import { Button } from "reactstrap";
 
-import { FormattedMessage } from "react-intl";
-
 import { useRegisterConfig } from "@keplr-wallet/hooks";
 import { useStore } from "../../stores";
 import { NewMnemonicIntro, NewMnemonicPage, TypeNewMnemonic } from "./mnemonic";
@@ -21,24 +19,9 @@ import {
   RecoverMnemonicPage,
   TypeRecoverMnemonic,
 } from "./mnemonic";
-import {
-  ImportLedgerIntro,
-  ImportLedgerPage,
-  TypeImportLedger,
-} from "./ledger";
 import { WelcomePage } from "./welcome";
 import { AdditionalSignInPrepend } from "../../config.ui";
 import classnames from "classnames";
-import {
-  ImportKeystoneIntro,
-  ImportKeystonePage,
-  TypeImportKeystone,
-} from "./keystone";
-import {
-  MigrateEthereumAddressIntro,
-  MigrateEthereumAddressPage,
-  TypeMigrateEth,
-} from "./migration";
 import { AuthIntro, AuthPage } from "./auth";
 import { configure } from "mobx";
 configure({
@@ -54,16 +37,15 @@ export const BackButton: FunctionComponent<{ onClick: () => void }> = ({
 }) => {
   return (
     <div className={style["backButton"]}>
-      <Button color="link" onClick={onClick}>
-        <i className="fas fa-angle-left" style={{ marginRight: "8px" }} />
-        <FormattedMessage id="register.button.back" />
+      <Button style={{ padding: "0px" }} color="link" onClick={onClick}>
+        <img src={require("@assets/svg/wireframe/back-button.svg")} alt="" />
       </Button>
     </div>
   );
 };
 
 export const RegisterPage: FunctionComponent = observer(() => {
-  const { keyRingStore, uiConfigStore, analyticsStore } = useStore();
+  const { keyRingStore, analyticsStore } = useStore();
 
   useEffect(() => {
     analyticsStore.logEvent("Register page");
@@ -91,28 +73,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
       intro: RecoverMnemonicIntro,
       page: RecoverMnemonicPage,
     },
-    // Currently, there is no way to use ledger with keplr on firefox.
-    // Temporarily, hide the ledger usage.
-    ...(uiConfigStore.platform !== "firefox"
-      ? [
-          {
-            type: TypeImportLedger,
-            intro: ImportLedgerIntro,
-            page: ImportLedgerPage,
-          },
-        ]
-      : []),
-    {
-      type: TypeImportKeystone,
-      intro: ImportKeystoneIntro,
-      page: ImportKeystonePage,
-    },
-    // TODO: think about moving this into the configuration at some point
-    {
-      type: TypeMigrateEth,
-      intro: MigrateEthereumAddressIntro,
-      page: MigrateEthereumAddressPage,
-    },
   ]);
 
   return (
@@ -124,7 +84,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
       })}
       style={{ height: "100%", padding: 0 }}
     >
-      <div style={{ flex: 10 }} />
       <div className={style["logoContainer"]}>
         <div
           className={classnames(style["logoInnerContainer"], {
@@ -133,28 +92,13 @@ export const RegisterPage: FunctionComponent = observer(() => {
         >
           <img
             className={style["icon"]}
-            src={require("@assets/logo-256.svg")}
-            alt="logo"
-          />
-          <img
-            className={style["logo"]}
-            src={require("@assets/brand-text.png")}
+            src={require("@assets/svg/wireframe/logo-small.svg")}
             alt="logo"
           />
         </div>
       </div>
       {registerConfig.render()}
       {registerConfig.isFinalized ? <WelcomePage /> : null}
-      {registerConfig.isIntro ? (
-        <div className={style["subContent"]}>
-          <FormattedMessage
-            id="register.intro.sub-content"
-            values={{
-              br: <br />,
-            }}
-          />
-        </div>
-      ) : null}
       <div style={{ flex: 13 }} />
     </EmptyLayout>
   );

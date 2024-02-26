@@ -49,6 +49,7 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
 
   return (
     <React.Fragment>
+      <BackButton onClick={onBack} />
       <h1 style={{ color: "rgba(255,255,255)" }}>
         <FormattedMessage id="register.eth-migrate.metamask-private-key.title" />
       </h1>
@@ -208,7 +209,6 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
           <FormattedMessage id="register.create.button.next" />
         </ButtonV2>
       </Form>
-      <BackButton onClick={onBack} />
     </React.Fragment>
   );
 };

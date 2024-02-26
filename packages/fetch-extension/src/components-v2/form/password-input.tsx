@@ -4,14 +4,13 @@ import stylePasswordInput from "./password-input.module.scss";
 import { Tooltip } from "reactstrap";
 import { FormattedMessage } from "react-intl";
 
+interface PasswordInputProps extends Omit<InputProps & React.InputHTMLAttributes<HTMLInputElement>, "type" | "onKeyUp" | "onKeyDown"> {
+  passwordLabel?: string;
+}
+
 // eslint-disable-next-line react/display-name
-export const PasswordInput = forwardRef<
-  HTMLInputElement,
-  Omit<
-    InputProps & React.InputHTMLAttributes<HTMLInputElement>,
-    "type" | "onKeyUp" | "onKeyDown"
-  >
->((props, ref) => {
+export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>((props, ref) => {
+  const { passwordLabel, ...rest } = props;
   const otherRef = useRef<HTMLInputElement | null>(null);
 
   const [isOnCapsLock, setIsOnCapsLock] = useState(false);
@@ -19,7 +18,7 @@ export const PasswordInput = forwardRef<
 
   return (
     <React.Fragment>
-      <div className={stylePasswordInput["text"]}>Password</div>
+      <div className={stylePasswordInput["text"]}>{passwordLabel || "Password"}</div>
       <div className={stylePasswordInput["password-input-container"]}>
         <Input
           style={{
@@ -29,7 +28,7 @@ export const PasswordInput = forwardRef<
             top: "12px",
           }}
           className={stylePasswordInput["input"]}
-          {...props}
+          {...rest}
           type={isPasswordVisible ? "text" : "password"}
           ref={(argRef) => {
             otherRef.current = argRef;

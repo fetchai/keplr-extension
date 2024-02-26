@@ -15,13 +15,17 @@ import {
   useBIP44Option,
 } from "../advanced-bip44";
 import style from "../style.module.scss";
+import style2 from "./recover-mnemonic.module.scss";
 import { Button, ButtonGroup, Form } from "reactstrap";
-import { Input, PasswordInput } from "@components/form";
+import { Input, PasswordInput } from "@components-v2/form";
 import { BackButton } from "../index";
 import { NewMnemonicConfig, NumWords, useNewMnemonicConfig } from "./hook";
 import { useStore } from "../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
+import { AuthIntro } from "../auth";
+import { Card } from "@components-v2/card";
+import keyIcon from "@assets/svg/wireframe/key-icon.png";
 
 export const TypeNewMnemonic = "new-mnemonic";
 
@@ -38,19 +42,35 @@ export const NewMnemonicIntro: FunctionComponent<{
   const { analyticsStore } = useStore();
 
   return (
-    <ButtonV2
-      onClick={(e: any) => {
-        e.preventDefault();
+    <React.Fragment>
+      {" "}
+      <img
+        style={{ width: "450px" }}
+        src={require("@assets/svg/wireframe/Title.svg")}
+        alt="logo"
+      />
+      <div className={style["titleText"]}>Choose how you want to proceed</div>
+      <div
+        className={style["card"]}
+        onClick={(e: any) => {
+          e.preventDefault();
 
-        registerConfig.setType(TypeNewMnemonic);
-        analyticsStore.logEvent("Create account started", {
-          registerType: "seed",
-        });
-      }}
-      text={""}
-    >
-      <FormattedMessage id="register.intro.button.new-account.title" />
-    </ButtonV2>
+          registerConfig.setType(TypeNewMnemonic);
+          analyticsStore.logEvent("Create account started", {
+            registerType: "seed",
+          });
+        }}
+      >
+        <img src={require("@assets/svg/wireframe/plus-icon.svg")} alt="" />
+        <div>
+          <div className={style["cardTitle"]}>Create a new wallet </div>
+          <div className={style["cardText"]}>
+            Create a wallet to store, send, receive and invest in thousands of
+            crypto assets
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
   );
 });
 
@@ -59,17 +79,74 @@ export const NewMnemonicPage: FunctionComponent<{
 }> = observer(({ registerConfig }) => {
   const newMnemonicConfig = useNewMnemonicConfig(registerConfig);
   const bip44Option = useBIP44Option();
+  const [isMainPage, setIsMainPage] = useState(true);
+  const { analyticsStore } = useStore();
 
   return (
     <React.Fragment>
-      {newMnemonicConfig.mode === "generate" ? (
+      {isMainPage && (
+        <React.Fragment>
+          <BackButton
+            onClick={() => {
+              registerConfig.clear();
+            }}
+          />
+          <div className={style["newMnemonicTitle"]}>Create a new wallet</div>
+          <div className={style["newMnemonicText"]}>
+            Enter your password to sign in
+          </div>
+          <Card
+            leftImageStyle={{ height: "32px", width: "32px" }}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              height: "78px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+            onClick={(e: any) => {
+              e.preventDefault();
+              registerConfig.setType("google");
+              analyticsStore.logEvent("Create account started", {
+                registerType: "google",
+              });
+            }}
+            leftImage={require("@assets/svg/wireframe/google-icon.svg")}
+            subheading={"Powered by Web3Auth"}
+            heading={"Continue with Google"}
+          />
+          <Card
+            leftImageStyle={{ height: "32px", width: "32px" }}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              height: "78px",
+              fontSize: "14px",
+            }}
+            onClick={(e: any) => {
+              e.preventDefault();
+              setIsMainPage(false);
+              registerConfig.setType(TypeNewMnemonic);
+              analyticsStore.logEvent("Create account started", {
+                registerType: "seed",
+              });
+            }}
+            leftImage={keyIcon}
+            heading={"Create new seed phrase"}
+          />
+
+          <div onClick={() => setIsMainPage(false)}>
+            <AuthIntro registerConfig={registerConfig} />
+          </div>
+        </React.Fragment>
+      )}
+      {!isMainPage && newMnemonicConfig.mode === "generate" ? (
         <GenerateMnemonicModePage
           registerConfig={registerConfig}
           newMnemonicConfig={newMnemonicConfig}
           bip44Option={bip44Option}
+          isMainPage={isMainPage}
         />
       ) : null}
-      {newMnemonicConfig.mode === "verify" ? (
+      {!isMainPage && newMnemonicConfig.mode === "verify" ? (
         <VerifyMnemonicModePage
           registerConfig={registerConfig}
           newMnemonicConfig={newMnemonicConfig}
@@ -84,206 +161,207 @@ export const GenerateMnemonicModePage: FunctionComponent<{
   registerConfig: RegisterConfig;
   newMnemonicConfig: NewMnemonicConfig;
   bip44Option: BIP44Option;
-}> = observer(({ registerConfig, newMnemonicConfig, bip44Option }) => {
-  const intl = useIntl();
-  const notification = useNotification();
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: {
-      name: newMnemonicConfig.name,
-      words: newMnemonicConfig.mnemonic,
-      password: "",
-      confirmPassword: "",
-    },
-  });
-  const [continueClicked, setContinueClicked] = useState(false);
-  const [checkBox1Checked, setCheckBox1Checked] = useState(false);
-  const [checkBox2Checked, setCheckBox2Checked] = useState(false);
-
-  const handleCopyClicked = useCallback(async () => {
-    await navigator.clipboard.writeText(newMnemonicConfig.mnemonic);
-    notification.push({
-      placement: "top-center",
-      type: "success",
-      duration: 2,
-      content: "Copied Mnemonic",
-      canDelete: true,
-      transition: {
-        duration: 0.25,
+  isMainPage: boolean;
+}> = observer(
+  ({ registerConfig, newMnemonicConfig, bip44Option, isMainPage }) => {
+    const intl = useIntl();
+    const notification = useNotification();
+    const {
+      register,
+      handleSubmit,
+      getValues,
+      formState: { errors },
+    } = useForm<FormData>({
+      defaultValues: {
+        name: newMnemonicConfig.name,
+        words: newMnemonicConfig.mnemonic,
+        password: "",
+        confirmPassword: "",
       },
     });
-  }, []);
-  return (
-    <div>
-      {!continueClicked ? (
-        <div>
-          <div>
-            <h3 style={{ color: "white" }}>Save your recovery phrase</h3>
-            <ul style={{ color: "white" }}>
-              These words below will let you recover your wallet if you lose
-              your device. We recommend writing down your recovery phrase and
-              storing it in a secure offline location, and never share with
-              anyone!
-            </ul>
-          </div>
-          <div className={style["title"]}>
-            {intl.formatMessage({
-              id: "register.create.title",
-            })}
-            <div style={{ float: "right" }}>
-              <ButtonGroup size="sm" style={{ marginBottom: "4px" }}>
-                <Button
-                  type="button"
-                  color="primary"
-                  outline={newMnemonicConfig.numWords !== NumWords.WORDS12}
-                  onClick={() => {
-                    newMnemonicConfig.setNumWords(NumWords.WORDS12);
-                  }}
-                >
-                  <FormattedMessage id="register.create.toggle.word12" />
-                </Button>
-                <Button
-                  type="button"
-                  color="primary"
-                  outline={newMnemonicConfig.numWords !== NumWords.WORDS24}
-                  onClick={() => {
-                    newMnemonicConfig.setNumWords(NumWords.WORDS24);
-                  }}
-                >
-                  <FormattedMessage id="register.create.toggle.word24" />
-                </Button>
-              </ButtonGroup>
-            </div>
-          </div>
-          <div className={style["newMnemonicContainer"]}>
-            <div className={style["newMnemonic"]}>
-              {newMnemonicConfig.mnemonic}
-            </div>
-            <img
-              className={style["copyImage"]}
-              onClick={handleCopyClicked}
-              src={require("@assets/svg/wireframe/copy.svg")}
-              alt=""
-            />
-          </div>
-          <label className={style["checkbox"]}>
-            <input
-              type="checkbox"
-              checked={checkBox1Checked}
-              onChange={() => setCheckBox1Checked(!checkBox1Checked)}
-            />{" "}
-            I understand that if I lose my recovery phrase, I will not be able
-            to access my wallet.
-          </label>
-          <label className={style["checkbox"]}>
-            {" "}
-            <input
-              type="checkbox"
-              checked={checkBox2Checked}
-              onChange={() => setCheckBox2Checked(!checkBox2Checked)}
-            />{" "}
-            I understand that my assets can be stolen if I share my recovery
-            phrase with someone else.
-          </label>
-          <ButtonV2
-            disabled={!checkBox1Checked || !checkBox2Checked}
-            onClick={() => setContinueClicked(true)}
-            text=""
-          >
-            Continue
-          </ButtonV2>
-          <BackButton
-            onClick={() => {
-              registerConfig.clear();
-            }}
-          />
-        </div>
-      ) : (
-        <div>
-          <Form
-            className={style["formContainer"]}
-            onSubmit={handleSubmit(async (data: FormData) => {
-              newMnemonicConfig.setName(data.name);
-              newMnemonicConfig.setPassword(data.password);
+    const [continueClicked, setContinueClicked] = useState(false);
+    const [checkBox1Checked, setCheckBox1Checked] = useState(false);
+    const [checkBox2Checked, setCheckBox2Checked] = useState(false);
 
-              newMnemonicConfig.setMode("verify");
-            })}
-          >
-            <Input
-              className={style["input"]}
-              label={intl.formatMessage({
-                id: "register.name",
-              })}
-              type="text"
-              {...register("name", {
-                required: intl.formatMessage({
-                  id: "register.name.error.required",
-                }),
-              })}
-              error={errors.name && errors.name.message}
-              maxLength={20}
-            />
-            {registerConfig.mode === "create" ? (
-              <React.Fragment>
-                <PasswordInput
-                  label={intl.formatMessage({
-                    id: "register.create.input.password",
-                  })}
-                  {...register("password", {
-                    required: intl.formatMessage({
-                      id: "register.create.input.password.error.required",
-                    }),
-                    validate: (password: string): string | undefined => {
-                      if (password.length < 8) {
-                        return intl.formatMessage({
-                          id: "register.create.input.password.error.too-short",
-                        });
-                      }
-                    },
-                  })}
-                  error={errors.password && errors.password.message}
-                />
-                <PasswordInput
-                  label={intl.formatMessage({
-                    id: "register.create.input.confirm-password",
-                  })}
-                  {...register("confirmPassword", {
-                    required: intl.formatMessage({
-                      id: "register.create.input.confirm-password.error.required",
-                    }),
-                    validate: (confirmPassword: string): string | undefined => {
-                      if (confirmPassword !== getValues()["password"]) {
-                        return intl.formatMessage({
-                          id: "register.create.input.confirm-password.error.unmatched",
-                        });
-                      }
-                    },
-                  })}
-                  error={
-                    errors.confirmPassword && errors.confirmPassword.message
-                  }
-                />
-              </React.Fragment>
-            ) : null}
-            <AdvancedBIP44Option bip44Option={bip44Option} />
-            <ButtonV2 text={""}>
-              <FormattedMessage id="register.create.button.next" />
+    const handleCopyClicked = useCallback(async () => {
+      await navigator.clipboard.writeText(newMnemonicConfig.mnemonic);
+      notification.push({
+        placement: "top-center",
+        type: "success",
+        duration: 2,
+        content: "Copied Mnemonic",
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    }, []);
+    return (
+      <div>
+        <BackButton
+          onClick={() => {
+            registerConfig.clear();
+          }}
+        />
+        {!isMainPage && !continueClicked ? (
+          <div>
+            <div>
+              <div style={{ color: "white", fontSize: "32px" }}>
+                Save your recovery
+              </div>
+              <div style={{ color: "white", fontSize: "32px" }}> phrase</div>
+              <div
+                style={{
+                  color: "rgba(255,255,255,0.8)",
+                  fontSize: "16px",
+                  marginBottom: "5px",
+                }}
+              >
+                These words below will let you recover your wallet if you lose
+                your device. We recommend writing down your recovery phrase and
+                storing it in a secure offline location, and never share with
+                anyone!
+              </div>
+            </div>
+            <div className={style["title"]} style={{ display: "flex" }}>
+              <div style={{ float: "right" }}>
+                <ButtonGroup size="sm" style={{ marginBottom: "4px" }}>
+                  <Button
+                    type="button"
+                    color="primary"
+                    outline={newMnemonicConfig.numWords !== NumWords.WORDS12}
+                    onClick={() => {
+                      newMnemonicConfig.setNumWords(NumWords.WORDS12);
+                    }}
+                  >
+                    <FormattedMessage id="register.create.toggle.word12" />
+                  </Button>
+                  <Button
+                    type="button"
+                    color="primary"
+                    outline={newMnemonicConfig.numWords !== NumWords.WORDS24}
+                    onClick={() => {
+                      newMnemonicConfig.setNumWords(NumWords.WORDS24);
+                    }}
+                  >
+                    <FormattedMessage id="register.create.toggle.word24" />
+                  </Button>
+                </ButtonGroup>
+              </div>
+            </div>
+            <div className={style["newMnemonicContainer"]}>
+              <div className={style["newMnemonic"]}>
+                {newMnemonicConfig.mnemonic}
+              </div>
+              <img
+                className={style["copyImage"]}
+                onClick={handleCopyClicked}
+                src={require("@assets/svg/wireframe/copy.svg")}
+                alt=""
+              />
+            </div>
+            <label className={style["checkbox"]}>
+              <input
+                type="checkbox"
+                checked={checkBox1Checked}
+                onChange={() => setCheckBox1Checked(!checkBox1Checked)}
+              />{" "}
+              I understand that if I lose my recovery phrase, I will not be able
+              to access my wallet.
+            </label>
+            <label className={style["checkbox"]}>
+              {" "}
+              <input
+                type="checkbox"
+                checked={checkBox2Checked}
+                onChange={() => setCheckBox2Checked(!checkBox2Checked)}
+              />{" "}
+              I understand that my assets can be stolen if I share my recovery
+              phrase with someone else.
+            </label>
+            <ButtonV2
+              disabled={!checkBox1Checked || !checkBox2Checked}
+              onClick={() => setContinueClicked(true)}
+              text=""
+            >
+              Continue
             </ButtonV2>
-          </Form>
-          <BackButton
-            onClick={() => {
-              setContinueClicked(false);
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-});
+          </div>
+        ) : (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Form
+              className={style["formContainer"]}
+              onSubmit={handleSubmit(async (data: FormData) => {
+                newMnemonicConfig.setName(data.name);
+                newMnemonicConfig.setPassword(data.password);
+
+                newMnemonicConfig.setMode("verify");
+              })}
+            >
+              <Input
+                className={style2["addressInput"]}
+                label={intl.formatMessage({
+                  id: "register.name",
+                })}
+                type="text"
+                {...register("name", {
+                  required: intl.formatMessage({
+                    id: "register.name.error.required",
+                  }),
+                })}
+                error={errors.name && errors.name.message}
+                maxLength={20}
+              />
+              {registerConfig.mode === "create" ? (
+                <React.Fragment>
+                  <PasswordInput
+                    {...register("password", {
+                      required: intl.formatMessage({
+                        id: "register.create.input.password.error.required",
+                      }),
+                      validate: (password: string): string | undefined => {
+                        if (password.length < 8) {
+                          return intl.formatMessage({
+                            id: "register.create.input.password.error.too-short",
+                          });
+                        }
+                      },
+                    })}
+                    error={errors.password && errors.password.message}
+                  />
+                  <PasswordInput
+                    passwordLabel="Confirm Password"
+                    {...register("confirmPassword", {
+                      required: intl.formatMessage({
+                        id: "register.create.input.confirm-password.error.required",
+                      }),
+                      validate: (
+                        confirmPassword: string
+                      ): string | undefined => {
+                        if (confirmPassword !== getValues()["password"]) {
+                          return intl.formatMessage({
+                            id: "register.create.input.confirm-password.error.unmatched",
+                          });
+                        }
+                      },
+                    })}
+                    error={
+                      errors.confirmPassword && errors.confirmPassword.message
+                    }
+                  />
+                </React.Fragment>
+              ) : null}
+              <AdvancedBIP44Option bip44Option={bip44Option} />
+              <ButtonV2 text={""} styleProps={{ marginBottom: "20px" }}>
+                <FormattedMessage id="register.create.button.next" />
+              </ButtonV2>
+            </Form>
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 export const VerifyMnemonicModePage: FunctionComponent<{
   registerConfig: RegisterConfig;
@@ -332,6 +410,11 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   console.log(clickedButtons);
   return (
     <div>
+      <BackButton
+        onClick={() => {
+          newMnemonicConfig.setMode("generate");
+        }}
+      />
       <div style={{ minHeight: "153px" }}>
         {suggestedRows.map((row, rowIndex) => (
           <div className={style["buttons"]} key={rowIndex}>
@@ -410,12 +493,6 @@ export const VerifyMnemonicModePage: FunctionComponent<{
       >
         <FormattedMessage id="register.verify.button.register" />
       </ButtonV2>
-
-      <BackButton
-        onClick={() => {
-          newMnemonicConfig.setMode("generate");
-        }}
-      />
     </div>
   );
 });
