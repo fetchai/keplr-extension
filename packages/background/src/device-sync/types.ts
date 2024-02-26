@@ -1,4 +1,4 @@
-import { ExportKeyRingData } from "../keyring";
+import { ExportSyncData } from "../keyring";
 
 export interface AddressBookData {
   name: string;
@@ -18,13 +18,14 @@ export type SyncStatus = {
   tokenExpired: boolean;
   passwordNotAvailable: boolean;
   paused: boolean;
+  syncPasswordNotAvailable: boolean;
 };
 
 export type SyncData = {
   version: number;
   hash: string;
   data: {
-    keyringData: ExportKeyRingData[];
+    keyringData: ExportSyncData[];
     addressBooks: { [chainId: string]: AddressBookData[] | undefined };
   };
 };

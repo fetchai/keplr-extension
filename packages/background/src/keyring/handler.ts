@@ -160,6 +160,12 @@ const handleDeleteKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<DeleteKeyRingMsg> = (service) => {
   return async (_, msg) => {
+    const multiKeyStore = service.getMultiKeyStoreInfo();
+
+    if (multiKeyStore[msg.index].type === "synced") {
+      throw new Error("Cannot delete synced accounts");
+    }
+
     return await service.deleteKeyRing(msg.index, msg.password);
   };
 };
@@ -318,6 +324,7 @@ const handleGetKeyMsg: (
 
     return {
       name: service.getKeyStoreMeta("name"),
+      deviceName: service.getKeyStoreMeta("deviceName"),
       algo: "secp256k1",
       pubKey: key.pubKey,
       address: key.address,
@@ -327,6 +334,7 @@ const handleGetKeyMsg: (
       ),
       isNanoLedger: key.isNanoLedger,
       isKeystone: key.isKeystone,
+      isSynced: key.isSynced,
     };
   };
 };

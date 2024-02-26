@@ -18,6 +18,7 @@ import {
   BIP44HDPath,
   CommonCrypto,
   ExportKeyRingData,
+  ExportSyncData,
   SignMode,
 } from "./types";
 
@@ -211,6 +212,26 @@ export class KeyRingService {
     return await this.keyRing.createPrivateKey(
       kdf,
       privateKey,
+      password,
+      meta,
+      KeyCurves.secp256k1
+    );
+  }
+
+  async createSyncKey(
+    kdf: "scrypt" | "sha256" | "pbkdf2",
+    publicKey: ExportSyncData,
+    password: string,
+    meta: Record<string, string>
+  ): Promise<{
+    status: KeyRingStatus;
+    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
+  }> {
+    this.deviceSyncService.setPassword(password);
+
+    return await this.keyRing.createSyncKey(
+      kdf,
+      publicKey,
       password,
       meta,
       KeyCurves.secp256k1
@@ -914,6 +935,17 @@ Salt: ${salt}`;
     return this.keyRing.addPrivateKey(kdf, privateKey, meta, curve);
   }
 
+  async addSyncKey(
+    kdf: "scrypt" | "sha256" | "pbkdf2",
+    publicKey: ExportSyncData,
+    meta: Record<string, string>,
+    curve: KeyCurve = KeyCurves.secp256k1
+  ): Promise<{
+    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
+  }> {
+    return this.keyRing.addSyncKey(kdf, publicKey, meta, curve);
+  }
+
   async addKeystoneKey(
     env: Env,
     kdf: "scrypt" | "sha256" | "pbkdf2",
@@ -1022,6 +1054,16 @@ Salt: ${salt}`;
       return [];
     }
     return await this.keyRing.exportKeyRingDatas(password);
+  }
+
+  async exportSyncData(
+    password: string,
+    deviceName: string
+  ): Promise<ExportSyncData[]> {
+    if (this.keyRingStatus === KeyRingStatus.EMPTY) {
+      return [];
+    }
+    return await this.keyRing.exportSyncData(password, deviceName);
   }
 
   async initializeNonDefaultLedgerApp(env: Env, ledgerApp: LedgerApp) {

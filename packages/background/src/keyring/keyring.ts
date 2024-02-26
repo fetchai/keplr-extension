@@ -15,6 +15,7 @@ import {
   BIP44HDPath,
   CommonCrypto,
   ExportKeyRingData,
+  ExportSyncData,
   SignMode,
 } from "./types";
 import { ChainInfo, EthSignType } from "@keplr-wallet/types";
@@ -45,6 +46,7 @@ export interface Key {
   address: Uint8Array;
   isKeystone: boolean;
   isNanoLedger: boolean;
+  isSynced: boolean;
 }
 
 export type MultiKeyStoreInfoElem = Pick<
@@ -78,6 +80,7 @@ export class KeyRing {
   private _mnemonicMasterSeed?: Uint8Array;
   private _ledgerPublicKeyCache?: Record<string, Uint8Array | undefined>;
   private _keystonePublicKeyCache?: KeystoneKeyringData;
+  private _syncedPublicKeyCache?: ExportSyncData;
 
   private keyStore: KeyStore | null;
 
@@ -100,7 +103,7 @@ export class KeyRing {
 
   public static getTypeOfKeyStore(
     keyStore: Omit<KeyStore, "crypto">
-  ): "mnemonic" | "privateKey" | "ledger" | "keystone" {
+  ): "mnemonic" | "privateKey" | "ledger" | "keystone" | "synced" {
     const type = keyStore.type;
     if (type == null) {
       return "mnemonic";
@@ -110,7 +113,8 @@ export class KeyRing {
       type !== "mnemonic" &&
       type !== "privateKey" &&
       type !== "ledger" &&
-      type !== "keystone"
+      type !== "keystone" &&
+      type !== "synced"
     ) {
       throw new Error("Invalid type of key store");
     }
@@ -123,6 +127,7 @@ export class KeyRing {
     | "privateKey"
     | "ledger"
     | "keystone"
+    | "synced"
     | "none" {
     if (!this.keyStore) {
       return "none";
@@ -144,7 +149,8 @@ export class KeyRing {
       this.privateKey == null &&
       this.mnemonicMasterSeed == null &&
       this.ledgerPublicKeyCache == null &&
-      this.keystonePublicKey == null
+      this.keystonePublicKey == null &&
+      this.syncedPublicKeyCache == null
     );
   }
 
@@ -157,6 +163,7 @@ export class KeyRing {
     this._mnemonicMasterSeed = undefined;
     this._ledgerPublicKeyCache = undefined;
     this._keystonePublicKeyCache = undefined;
+    this._syncedPublicKeyCache = undefined;
     this.cached = new Map();
   }
 
@@ -169,6 +176,7 @@ export class KeyRing {
     this._privateKey = undefined;
     this._ledgerPublicKeyCache = undefined;
     this._keystonePublicKeyCache = undefined;
+    this._syncedPublicKeyCache = undefined;
     this.cached = new Map();
   }
 
@@ -181,6 +189,7 @@ export class KeyRing {
     this._mnemonicMasterSeed = undefined;
     this._privateKey = undefined;
     this._ledgerPublicKeyCache = undefined;
+    this._syncedPublicKeyCache = undefined;
     this.cached = new Map();
   }
 
@@ -196,6 +205,18 @@ export class KeyRing {
     this._mnemonicMasterSeed = undefined;
     this._privateKey = undefined;
     this._ledgerPublicKeyCache = publicKeys;
+    this.cached = new Map();
+  }
+
+  private get syncedPublicKeyCache(): ExportSyncData | undefined {
+    return this._syncedPublicKeyCache;
+  }
+
+  private set syncedPublicKeyCache(publicKey: ExportSyncData | undefined) {
+    this._mnemonicMasterSeed = undefined;
+    this._privateKey = undefined;
+    this._ledgerPublicKeyCache = undefined;
+    this._syncedPublicKeyCache = publicKey;
     this.cached = new Map();
   }
 
@@ -345,6 +366,42 @@ export class KeyRing {
     };
   }
 
+  public async createSyncKey(
+    kdf: "scrypt" | "sha256" | "pbkdf2",
+    syncData: ExportSyncData,
+    password: string,
+    meta: Record<string, string>,
+    curve: KeyCurve
+  ): Promise<{
+    status: KeyRingStatus;
+    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
+  }> {
+    if (this.status !== KeyRingStatus.EMPTY) {
+      throw new Error("Key ring is not loaded or not empty");
+    }
+
+    this.syncedPublicKeyCache = syncData;
+
+    this.keyStore = await Crypto.encrypt(
+      this.crypto,
+      kdf,
+      "synced",
+      curve,
+      JSON.stringify(syncData),
+      password,
+      await this.assignKeyStoreIdMeta(meta)
+    );
+    this.password = password;
+    this.multiKeyStore.push(this.keyStore);
+
+    await this.save();
+
+    return {
+      status: this.status,
+      multiKeyStoreInfo: this.getMultiKeyStoreInfo(),
+    };
+  }
+
   public async createKeystoneKey(
     env: Env,
     kdf: "scrypt" | "sha256" | "pbkdf2",
@@ -453,6 +510,7 @@ export class KeyRing {
     this.privateKey = undefined;
     this.ledgerPublicKeyCache = undefined;
     this.keystonePublicKey = undefined;
+    this.syncedPublicKeyCache = undefined;
     this.password = "";
   }
 
@@ -510,6 +568,16 @@ export class KeyRing {
         this.keystonePublicKey = JSON.parse(Buffer.from(cipherText).toString());
       } catch (e: any) {
         throw new Error("Unexpected content of Keystone public keys");
+      }
+    } else if (this.type === "synced") {
+      try {
+        this.syncedPublicKeyCache = JSON.parse(
+          Buffer.from(
+            await Crypto.decrypt(this.crypto, this.keyStore, password)
+          ).toString()
+        );
+      } catch (e: any) {
+        throw new Error("Unexpected content of Sync keys");
       }
     } else {
       throw new Error("Unexpected type of keyring");
@@ -683,6 +751,10 @@ export class KeyRing {
       throw new Error("Key store is empty");
     }
 
+    if (keyStore.type === "synced") {
+      throw new Error("Cannot delete synced accounts");
+    }
+
     const multiKeyStore = this.multiKeyStore
       .slice(0, index)
       .concat(this.multiKeyStore.slice(index + 1));
@@ -760,6 +832,51 @@ export class KeyRing {
       throw new Error("Key store is empty");
     }
 
+    if (this.keyStore.type === "synced") {
+      if (!this.syncedPublicKeyCache) {
+        throw new Error("Synced public key not set");
+      }
+
+      let syncedPubKey: Uint8Array;
+
+      if (this.syncedPublicKeyCache.type === "mnemonic") {
+        const pubkeyFromCoinType =
+          this.syncedPublicKeyCache.pubKeyByCoinType[coinType];
+
+        if (!pubkeyFromCoinType) {
+          throw new Error("Key not available for coin type");
+        }
+
+        syncedPubKey = Buffer.from(pubkeyFromCoinType, "hex");
+      } else {
+        syncedPubKey = Buffer.from(this.syncedPublicKeyCache.pubKey, "hex");
+      }
+
+      if (useEthereumAddress) {
+        // Generate the Ethereum address for this public key
+        const address = computeAddress(syncedPubKey);
+
+        return {
+          algo: "ethsecp256k1",
+          pubKey: syncedPubKey,
+          address: Buffer.from(address.replace("0x", ""), "hex"),
+          isKeystone: false,
+          isNanoLedger: false,
+          isSynced: true,
+        };
+      }
+
+      const pubKey = new PubKeySecp256k1(syncedPubKey);
+      return {
+        algo: "secp256k1",
+        pubKey: pubKey.toBytes(),
+        address: pubKey.getAddress(),
+        isKeystone: false,
+        isNanoLedger: false,
+        isSynced: true,
+      };
+    }
+
     if (this.keyStore.type === "ledger") {
       if (!this.ledgerPublicKeyCache) {
         throw new Error("Ledger public key not set");
@@ -776,6 +893,7 @@ export class KeyRing {
           address: Buffer.from(address.replace("0x", ""), "hex"),
           isKeystone: false,
           isNanoLedger: true,
+          isSynced: false,
         };
       }
 
@@ -790,6 +908,7 @@ export class KeyRing {
         address: pubKey.getAddress(),
         isKeystone: false,
         isNanoLedger: true,
+        isSynced: false,
       };
     } else if (this.keyStore.type === "keystone") {
       if (!this.keystonePublicKey || this.keystonePublicKey.keys.length === 0) {
@@ -810,6 +929,7 @@ export class KeyRing {
           address: Buffer.from(address.replace(/^0x/, ""), "hex"),
           isKeystone: true,
           isNanoLedger: false,
+          isSynced: false,
         };
       }
       const pubKey = new PubKeySecp256k1(Buffer.from(key.pubKey, "hex"));
@@ -819,6 +939,7 @@ export class KeyRing {
         address: pubKey.getAddress(),
         isKeystone: true,
         isNanoLedger: false,
+        isSynced: false,
       };
     } else {
       const privKey = this.loadPrivKey(coinType);
@@ -834,6 +955,7 @@ export class KeyRing {
           address: Buffer.from(wallet.address.replace("0x", ""), "hex"),
           isKeystone: false,
           isNanoLedger: false,
+          isSynced: false,
         };
       }
 
@@ -844,6 +966,7 @@ export class KeyRing {
         address: pubKey.getAddress(),
         isKeystone: false,
         isNanoLedger: false,
+        isSynced: false,
       };
     }
   }
@@ -929,6 +1052,10 @@ export class KeyRing {
       throw new Error("Env was not provided");
     }
 
+    if (this.keyStore.type === "synced") {
+      throw new Error("signing not possible for synced accounts");
+    }
+
     if (this.keyStore.type === "ledger") {
       if (!this.ledgerKeeper) {
         throw ErrUndefinedLedgerKeeper;
@@ -1011,6 +1138,10 @@ export class KeyRing {
 
     if (!this.keyStore) {
       throw new Error("Key store is empty");
+    }
+
+    if (this.keyStore.type === "synced") {
+      throw new Error("signing not possible for synced accounts");
     }
 
     if (this.keyStore.type === "ledger") {
@@ -1183,6 +1314,35 @@ export class KeyRing {
     };
   }
 
+  public async addSyncKey(
+    kdf: "scrypt" | "sha256" | "pbkdf2",
+    syncData: ExportSyncData,
+    meta: Record<string, string>,
+    curve: KeyCurve = KeyCurves.secp256k1
+  ): Promise<{
+    multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
+  }> {
+    if (this.status !== KeyRingStatus.UNLOCKED || this.password == "") {
+      throw new Error("Key ring is locked or not initialized");
+    }
+
+    const keyStore = await Crypto.encrypt(
+      this.crypto,
+      kdf,
+      "synced",
+      curve,
+      JSON.stringify(syncData),
+      this.password,
+      await this.assignKeyStoreIdMeta(meta)
+    );
+    this.multiKeyStore.push(keyStore);
+
+    await this.save();
+    return {
+      multiKeyStoreInfo: this.getMultiKeyStoreInfo(),
+    };
+  }
+
   public async addKeystoneKey(
     env: Env,
     kdf: "scrypt" | "sha256" | "pbkdf2",
@@ -1317,6 +1477,125 @@ export class KeyRing {
     }
 
     return this.password === password;
+  }
+
+  async exportSyncData(
+    password: string,
+    deviceName: string
+  ): Promise<ExportSyncData[]> {
+    if (!this.password) {
+      throw new Error("Keyring is locked");
+    }
+
+    if (this.password !== password) {
+      throw new Error("Invalid password");
+    }
+
+    const result: ExportSyncData[] = [];
+
+    for (const keyStore of this.multiKeyStore) {
+      const type = keyStore.type ?? "mnemonic";
+      switch (type) {
+        case "mnemonic": {
+          const mnemonic = Mnemonic.generateMasterSeedFromMnemonic(
+            Buffer.from(
+              await Crypto.decrypt(this.crypto, keyStore, password)
+            ).toString()
+          );
+
+          const bip44HDPath = keyStore.bip44HDPath ?? {
+            account: 0,
+            change: 0,
+            addressIndex: 0,
+          };
+
+          // TODO: support all coin types
+          const coinTypes = [60, 118];
+
+          const pubKeyByCoinType: {
+            [key: number]: string;
+          } = {};
+
+          let pubKey = "";
+
+          coinTypes.forEach((coinType) => {
+            const path = `m/44'/${coinType}'/${bip44HDPath.account}'/${bip44HDPath.change}/${bip44HDPath.addressIndex}`;
+
+            const privKey = Mnemonic.generatePrivateKeyFromMasterSeed(
+              mnemonic,
+              path
+            );
+            const key = new PrivKeySecp256k1(privKey);
+            const publicKey = Buffer.from(key.getPubKey().toBytes()).toString(
+              "hex"
+            );
+
+            if (coinType === 118) {
+              pubKey = publicKey;
+            }
+
+            pubKeyByCoinType[coinType] = publicKey;
+          });
+
+          if (pubKey === "") {
+            const path = `m/44'/118'/${bip44HDPath.account}'/${bip44HDPath.change}/${bip44HDPath.addressIndex}`;
+
+            const privKey = Mnemonic.generatePrivateKeyFromMasterSeed(
+              mnemonic,
+              path
+            );
+            const key = new PrivKeySecp256k1(privKey);
+            pubKey = Buffer.from(key.getPubKey().toBytes()).toString("hex");
+          }
+
+          result.push({
+            type: "mnemonic",
+            pubKey,
+            pubKeyByCoinType,
+            meta: { ...keyStore.meta, deviceName } ?? { deviceName },
+          });
+
+          break;
+        }
+        case "privateKey": {
+          const privateKey = Buffer.from(
+            Buffer.from(
+              await Crypto.decrypt(this.crypto, keyStore, password)
+            ).toString(),
+            "hex"
+          );
+
+          const key = new PrivKeySecp256k1(privateKey);
+
+          result.push({
+            type: "privateKey",
+            pubKey: Buffer.from(key.getPubKey().toBytes()).toString("hex"),
+            pubKeyByCoinType: {},
+            meta: { ...keyStore.meta, deviceName } ?? { deviceName },
+          });
+
+          break;
+        }
+        case "synced": {
+          const syncData: ExportSyncData = JSON.parse(
+            Buffer.from(
+              await Crypto.decrypt(this.crypto, keyStore, password)
+            ).toString()
+          );
+
+          result.push({
+            type: "synced",
+            pubKey: syncData.pubKey,
+            pubKeyByCoinType: syncData.pubKeyByCoinType,
+            meta: keyStore.meta ?? {},
+          });
+
+          break;
+        }
+      }
+    }
+
+    return result;
   }
 
   async exportKeyRingDatas(password: string): Promise<ExportKeyRingData[]> {

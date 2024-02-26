@@ -8,6 +8,8 @@ import { AUTH_SERVER } from "../../config.ui.var";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import {
   GetMultiKeyStoreInfoMsg,
+  GetRemoteDeviceNamesMsg,
+  GetRemoteVersionMsg,
   SetKrPasswordMsg,
   SyncDeviceMsg,
   UpdateDeviceSyncCredentialsMsg,
@@ -15,6 +17,14 @@ import {
 import { EmptyLayout } from "@layouts/empty-layout";
 import style from "./style.module.scss";
 import classnames from "classnames";
+import { PasswordInput, Input } from "@components/form";
+import "../../styles/global.scss";
+import { AppIntlProvider } from "../../languages";
+import {
+  AdditionalIntlMessages,
+  LanguageToFiatCurrency,
+} from "../../config.ui";
+import { Button } from "reactstrap";
 
 type QueryParams = {
   code: string | undefined;
@@ -31,10 +41,168 @@ type AccessTokenResponse = {
   refresh_expires_in: number;
 };
 
+const InitSyncData: FunctionComponent<{ email: string }> = observer(
+  ({ email }) => {
+    const [noRemote, setNoRemote] = useState(false);
+    const [deviceName, setDeviceName] = useState("");
+    const [submitError, setSubmitError] = useState("");
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [noRemoteData, setNoRemoteData] = useState(false);
+    const [syncComplete, setSyncComplete] = useState(false);
+    const [passwordRegistration, setPasswordRegistration] = useState({
+      password: "",
+      confirmPassword: "",
+    });
+
+    const requester = new InExtensionMessageRequester();
+
+    useEffect(() => {
+      const getVersion = async () => {
+        const version = await requester.sendMessage(
+          BACKGROUND_PORT,
+          new GetRemoteVersionMsg()
+        );
+
+        if (version === 0) {
+          setNoRemote(true);
+        }
+      };
+
+      getVersion();
+    }, []);
+
+    if (syncComplete) {
+      return (
+        <React.Fragment>
+          <h1> Hello {email}. Device sync is complete.</h1>
+          {noRemoteData && (
+            <h1>
+              No sync data found, please create a new account. We have signed
+              you up for sync anyway
+            </h1>
+          )}
+          <div style={{ flex: 13 }} />
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        <Input
+          label="Device Name"
+          required
+          onChange={(e) => {
+            e.preventDefault();
+            setDeviceName(e.target.value);
+          }}
+        />
+        <PasswordInput
+          label="password"
+          required
+          onChange={(e) => {
+            e.preventDefault();
+            setPasswordRegistration({
+              ...passwordRegistration,
+              password: e.target.value,
+            });
+          }}
+          error={
+            noRemote && passwordRegistration.password.length < 8
+              ? "Password too short"
+              : undefined
+          }
+        />
+        {noRemote && (
+          <PasswordInput
+            label="Confirm password"
+            required
+            onChange={(e) => {
+              e.preventDefault();
+              setPasswordRegistration({
+                ...passwordRegistration,
+                confirmPassword: e.target.value,
+              });
+            }}
+            error={
+              passwordRegistration.password !==
+              passwordRegistration.confirmPassword
+                ? "Password does not match"
+                : undefined
+            }
+          />
+        )}
+        <Button
+          color="primary"
+          type="submit"
+          block
+          size="lg"
+          data-loading={submitLoading}
+          disabled={
+            (noRemote &&
+              (passwordRegistration.password.length < 8 ||
+                passwordRegistration.password !==
+                  passwordRegistration.confirmPassword)) ||
+            deviceName === ""
+          }
+          onClick={() => {
+            const submitData = async () => {
+              setSubmitLoading(true);
+              try {
+                const deviceNames = await requester.sendMessage(
+                  BACKGROUND_PORT,
+                  new GetRemoteDeviceNamesMsg(passwordRegistration.password)
+                );
+
+                if (deviceNames.includes(deviceName)) {
+                  setSubmitError("Device name not unique");
+                  return;
+                }
+
+                await requester.sendMessage(
+                  BACKGROUND_PORT,
+                  new SyncDeviceMsg(passwordRegistration.password, deviceName)
+                );
+
+                const { multiKeyStoreInfo } = await requester.sendMessage(
+                  BACKGROUND_PORT,
+                  new GetMultiKeyStoreInfoMsg()
+                );
+
+                setNoRemoteData(multiKeyStoreInfo.length === 0);
+
+                if (multiKeyStoreInfo.length === 0) {
+                  await requester.sendMessage(
+                    BACKGROUND_PORT,
+                    new SetKrPasswordMsg("")
+                  );
+                }
+
+                setSyncComplete(true);
+              } catch (e) {
+                // TODO: specific error for password verification and any other error
+                setSubmitError("Password verification failed");
+              } finally {
+                setSubmitLoading(false);
+              }
+            };
+
+            submitData();
+          }}
+        >
+          Submit
+        </Button>
+        {submitError && <p>{submitError}</p>}
+      </React.Fragment>
+    );
+  }
+);
+
 export const SyncAuthPage: FunctionComponent = observer(() => {
   const [authError, setAuthError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [noRemote, setNoRemote] = useState(false);
+  const [noRemoteData, setNoRemoteData] = useState(false);
+  const [isInit, setIsInit] = useState(false);
+
   const [email, setEmail] = useState("");
 
   const requester = new InExtensionMessageRequester();
@@ -91,7 +259,7 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
 
         setEmail(profileResponse.data.email);
 
-        await requester.sendMessage(
+        const syncStatus = await requester.sendMessage(
           BACKGROUND_PORT,
           new UpdateDeviceSyncCredentialsMsg(profileResponse.data.email, {
             accessToken: token.access_token,
@@ -101,6 +269,10 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
           })
         );
 
+        if (syncStatus.syncPasswordNotAvailable) {
+          return setIsInit(true);
+        }
+
         await requester.sendMessage(BACKGROUND_PORT, new SyncDeviceMsg());
 
         const { multiKeyStoreInfo } = await requester.sendMessage(
@@ -108,7 +280,7 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
           new GetMultiKeyStoreInfoMsg()
         );
 
-        setNoRemote(multiKeyStoreInfo.length === 0);
+        setNoRemoteData(multiKeyStoreInfo.length === 0);
 
         if (multiKeyStoreInfo.length === 0) {
           await requester.sendMessage(
@@ -133,6 +305,10 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
 
   if (authError) {
     return <h1>Error setting up device sync</h1>;
+  }
+
+  if (isInit) {
+    return <InitSyncData email={email} />;
   }
 
   return (
@@ -170,10 +346,23 @@ export const SyncAuthPage: FunctionComponent = observer(() => {
         </div>
       </div>
       <h1> Hello {email}. Device sync is complete.</h1>
-      {noRemote && <h1>No sync data found, please create a new account.</h1>}
+      {noRemoteData && (
+        <h1>
+          No sync data found, please create a new account. We have signed you up
+          for sync anyway
+        </h1>
+      )}
       <div style={{ flex: 13 }} />
     </EmptyLayout>
   );
 });
 
-ReactDOM.render(<SyncAuthPage />, document.getElementById("app"));
+ReactDOM.render(
+  <AppIntlProvider
+    additionalMessages={AdditionalIntlMessages}
+    languageToFiatCurrency={LanguageToFiatCurrency}
+  >
+    <SyncAuthPage />
+  </AppIntlProvider>,
+  document.getElementById("app")
+);

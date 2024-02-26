@@ -34,6 +34,17 @@ export interface ExportKeyRingData {
   };
 }
 
+export interface ExportSyncData {
+  type: "mnemonic" | "privateKey" | "synced";
+  pubKey: string;
+  pubKeyByCoinType: {
+    [key: number]: string;
+  };
+  meta: {
+    [key: string]: string;
+  };
+}
+
 export enum SignMode {
   Amino = "amino",
   Direct = "direct",

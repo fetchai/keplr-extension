@@ -5,6 +5,26 @@ import {
   DefaultOptions,
 } from "@apollo/client";
 import { SyncData } from "./types";
+import { Crypto } from "../keyring/crypto";
+import { KeyCurves } from "@keplr-wallet/crypto";
+import { CommonCrypto, ScryptParams } from "../keyring";
+import scrypt from "scrypt-js";
+
+const commonCrypto: CommonCrypto = {
+  rng: (array) => {
+    return Promise.resolve(crypto.getRandomValues(array));
+  },
+  scrypt: async (text: string, params: ScryptParams) => {
+    return await scrypt.scrypt(
+      Buffer.from(text),
+      Buffer.from(params.salt, "hex"),
+      params.n,
+      params.r,
+      params.p,
+      params.dklen
+    );
+  },
+};
 
 const inMemCache = new InMemoryCache();
 
@@ -32,9 +52,32 @@ const getClient = (deviceSyncUrl: string) => {
   });
 };
 
-export const getRemoteData = async (
+export const getRemoteVersion = async (
   deviceSyncUrl: string,
   accessToken: string
+): Promise<number> => {
+  const client = getClient(deviceSyncUrl);
+  const { data } = await client.query({
+    query: gql(`query Query {
+        walletInfo {
+          data
+          version
+        }
+    }`),
+    context: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  });
+
+  return (data.walletInfo && data.walletInfo.version) ?? 0;
+};
+
+export const getRemoteData = async (
+  deviceSyncUrl: string,
+  accessToken: string,
+  syncPassword: string
 ): Promise<Omit<SyncData, "hash">> => {
   const client = getClient(deviceSyncUrl);
   const { data } = await client.query({
@@ -55,7 +98,7 @@ export const getRemoteData = async (
     version: (data.walletInfo && data.walletInfo.version) ?? 0,
     data:
       data.walletInfo && data.walletInfo.data
-        ? decryptData(data.walletInfo.data)
+        ? await decryptData(data.walletInfo.data, syncPassword)
         : emptyData,
   };
 };
@@ -63,7 +106,8 @@ export const getRemoteData = async (
 export const setRemoteData = async (
   deviceSyncUrl: string,
   accessToken: string,
-  syncData: SyncData
+  syncData: SyncData,
+  syncPassword: string
 ) => {
   try {
     const client = getClient(deviceSyncUrl);
@@ -75,7 +119,7 @@ export const setRemoteData = async (
         }
       }`),
       variables: {
-        data: encryptData(syncData.data),
+        data: await encryptData(syncData.data, syncPassword),
         version: syncData.version,
       },
       context: {
@@ -90,10 +134,30 @@ export const setRemoteData = async (
   }
 };
 
-const encryptData = (data: SyncData["data"]): string => {
-  return JSON.stringify(data);
+const encryptData = async (
+  data: SyncData["data"],
+  password: string
+): Promise<string> => {
+  const encryptedData = await Crypto.encrypt(
+    commonCrypto,
+    "scrypt",
+    "synced",
+    KeyCurves.secp256k1,
+    JSON.stringify(data),
+    password,
+    {}
+  );
+
+  return JSON.stringify(encryptedData);
 };
 
-const decryptData = (encryptedData: string): SyncData["data"] => {
-  return JSON.parse(encryptedData);
+const decryptData = async (
+  encryptedData: string,
+  password: string
+): Promise<SyncData["data"]> => {
+  const cipherText = Buffer.from(
+    await Crypto.decrypt(commonCrypto, JSON.parse(encryptedData), password)
+  ).toString();
+
+  return JSON.parse(cipherText);
 };

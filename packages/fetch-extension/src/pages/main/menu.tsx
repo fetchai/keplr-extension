@@ -25,7 +25,9 @@ export const Menu: FunctionComponent = observer(() => {
         new GetDeviceSyncStatusMsg()
       );
 
-      setShowSync(syncStatus?.email ? false : true);
+      setShowSync(
+        syncStatus?.email && !syncStatus.syncPasswordNotAvailable ? false : true
+      );
     };
 
     getSyncStatus();

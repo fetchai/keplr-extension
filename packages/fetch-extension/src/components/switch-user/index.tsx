@@ -72,7 +72,7 @@ export const SwitchUser: FunctionComponent = () => {
 
   return (
     <div>
-      {syncStatus?.email && (
+      {syncStatus?.email && !syncStatus.syncPasswordNotAvailable && (
         <div
           style={{
             float: "left",

@@ -19,7 +19,7 @@ export interface KeyStore {
    * Type can be "mnemonic" or "privateKey".
    * Below version "1", type is not defined and it is considered as "mnemonic".
    */
-  type?: "mnemonic" | "privateKey" | "ledger" | "keystone";
+  type?: "mnemonic" | "privateKey" | "ledger" | "keystone" | "synced";
   curve: KeyCurve;
   coinTypeForChain: CoinTypeForChain;
   bip44HDPath?: BIP44HDPath;
@@ -45,7 +45,7 @@ export class Crypto {
   public static async encrypt(
     crypto: CommonCrypto,
     kdf: "scrypt" | "sha256" | "pbkdf2",
-    type: "mnemonic" | "privateKey" | "ledger" | "keystone",
+    type: "mnemonic" | "privateKey" | "ledger" | "keystone" | "synced",
     curve: KeyCurve,
     text: string,
     password: string,

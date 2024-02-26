@@ -6,6 +6,9 @@ import {
   SyncDeviceMsg,
   SetKrPasswordMsg,
   SetPauseMsg,
+  SetDeviceSyncPasswordMsg,
+  GetRemoteVersionMsg,
+  GetRemoteDeviceNamesMsg,
 } from "./messages";
 import { DeviceSyncService } from "./service";
 
@@ -35,6 +38,21 @@ export const getHandler: (service: DeviceSyncService) => Handler = (
         return handleSetKrPasswordMsg(service)(env, msg as SetKrPasswordMsg);
       case SetPauseMsg:
         return handleSetPauseMsg(service)(env, msg as SetPauseMsg);
+      case SetDeviceSyncPasswordMsg:
+        return handleSetDeviceSyncPasswordMsg(service)(
+          env,
+          msg as SetDeviceSyncPasswordMsg
+        );
+      case GetRemoteVersionMsg:
+        return handleGetRemoteVersionMsg(service)(
+          env,
+          msg as GetRemoteVersionMsg
+        );
+      case GetRemoteDeviceNamesMsg:
+        return handleGetRemoteDeviceNamesMsg(service)(
+          env,
+          msg as GetRemoteDeviceNamesMsg
+        );
       default:
         throw new Error("Unknown msg type");
     }
@@ -68,8 +86,8 @@ const handleUpdateDeviceSyncCredentialsMsg: (
 const handleSyncDeviceMsg: (
   service: DeviceSyncService
 ) => InternalHandler<SyncDeviceMsg> = (service) => {
-  return (_, msg) => {
-    return service.syncDevice(msg.password);
+  return async (_, msg) => {
+    return await service.syncDevice(msg.syncPassword, msg.deviceName);
   };
 };
 
@@ -86,5 +104,29 @@ const handleSetPauseMsg: (
 ) => InternalHandler<SetPauseMsg> = (service) => {
   return (_, msg) => {
     return service.setPause(msg.value);
+  };
+};
+
+const handleSetDeviceSyncPasswordMsg: (
+  service: DeviceSyncService
+) => InternalHandler<SetKrPasswordMsg> = (service) => {
+  return (_, msg) => {
+    return service.setDeviceSyncPassword(msg.password);
+  };
+};
+
+const handleGetRemoteVersionMsg: (
+  service: DeviceSyncService
+) => InternalHandler<GetRemoteVersionMsg> = (service) => {
+  return async (_) => {
+    return await service.getRemoteVersion();
+  };
+};
+
+const handleGetRemoteDeviceNamesMsg: (
+  service: DeviceSyncService
+) => InternalHandler<GetRemoteDeviceNamesMsg> = (service) => {
+  return async (_, msg) => {
+    return await service.getRemoteDeviceNames(msg.password);
   };
 };

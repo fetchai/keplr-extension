@@ -214,6 +214,7 @@ export const AccountView: FunctionComponent = observer(() => {
             <div style={{ flex: 1 }} />
           </div>
         )}
+      {accountInfo.isSynced && <div>View only {accountInfo.deviceName}</div>}
       {[CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(current.chainId) && (
         <div
           className={styleAccount["containerAccount"]}

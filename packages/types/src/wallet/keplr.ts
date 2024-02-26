@@ -15,6 +15,7 @@ import Long from "long";
 export interface Key {
   // Name of the selected key store.
   readonly name: string;
+  readonly deviceName: string;
   readonly algo: string;
   readonly pubKey: Uint8Array;
   readonly address: Uint8Array;
@@ -24,6 +25,7 @@ export interface Key {
   // this can be used to select the amino or direct signer.
   readonly isNanoLedger: boolean;
   readonly isKeystone: boolean;
+  readonly isSynced: boolean;
 }
 
 export type ICNSAdr36Signatures = {

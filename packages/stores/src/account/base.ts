@@ -45,13 +45,16 @@ export class AccountSetBase {
 
   @observable
   protected _name: string = "";
-
+  @observable
+  protected _deviceName: string = "";
   @observable
   protected _bech32Address: string = "";
   @observable
   protected _isNanoLedger: boolean = false;
   @observable
   protected _isKeystone: boolean = false;
+  @observable
+  protected _isSynced: boolean = false;
 
   @observable
   protected _txTypeInProgress: string = "";
@@ -196,8 +199,10 @@ export class AccountSetBase {
       const key = yield* toGenerator(keplr.getKey(this.chainId));
       this._bech32Address = key.bech32Address;
       this._isNanoLedger = key.isNanoLedger;
+      this._isSynced = key.isSynced;
       this._isKeystone = key.isKeystone;
       this._name = key.name;
+      this._deviceName = key.deviceName;
       this._pubKey = key.pubKey;
 
       // Set the wallet status as loaded after getting all necessary infos.
@@ -209,7 +214,9 @@ export class AccountSetBase {
       this._bech32Address = "";
       this._isNanoLedger = false;
       this._isKeystone = false;
+      this._isSynced = false;
       this._name = "";
+      this._deviceName = "";
       this._pubKey = new Uint8Array(0);
 
       this._walletStatus = WalletStatus.Rejected;
@@ -233,7 +240,9 @@ export class AccountSetBase {
     this._bech32Address = "";
     this._isNanoLedger = false;
     this._isKeystone = false;
+    this._isSynced = false;
     this._name = "";
+    this._deviceName = "";
     this._pubKey = new Uint8Array(0);
     this._rejectionReason = undefined;
   }
@@ -327,6 +336,10 @@ export class AccountSetBase {
     return this._name;
   }
 
+  get deviceName(): string {
+    return this._deviceName;
+  }
+
   get bech32Address(): string {
     return this._bech32Address;
   }
@@ -337,6 +350,10 @@ export class AccountSetBase {
 
   get isNanoLedger(): boolean {
     return this._isNanoLedger;
+  }
+
+  get isSynced(): boolean {
+    return this._isSynced;
   }
 
   get isKeystone(): boolean {
