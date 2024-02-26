@@ -239,7 +239,7 @@ html[data-register-page="true"] #app .container {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 5px;
 }
 
@@ -251,20 +251,38 @@ html[data-register-page="true"] #app .container {
   gap: 24px;
   flex: 1 0 0;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  width: 114px;
+  background: rgba(255, 255, 255, 0.2);
+  width: 124px;
   color: white;
   justify-content: center;
   margin-bottom: 5px;
+  border: transparent;
 }
 .button:hover {
   color: white;
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   border: 1px solid var(--Indigo-Indigo-400, #7655fc);
 }
 .button:focus {
   background: rgba(255, 255, 255, 0.1);
   color: white;
+}
+.btn2 {
+  width: 91.5px;
+  height: 32px;
+  background: transparent;
+  color: white;
+  border: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn2:hover {
+  color: white;
+  background: transparent !important;
+  border: 1px solid var(--Indigo-Indigo-400, #7655fc);
 }
 
 .introIcon {
@@ -338,7 +356,7 @@ html[data-register-page="true"] #app .container {
 }
 
 .mainpageTitle {
-  font-size: 31px;
+  font-size: 32px;
   font-weight: 500;
   color: white;
   margin-right: 38px;
@@ -354,9 +372,8 @@ html[data-register-page="true"] #app .container {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.newMnemonicText{
+.newMnemonicText {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 10px;
-
 }

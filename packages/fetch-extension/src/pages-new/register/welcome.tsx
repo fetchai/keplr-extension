@@ -2,23 +2,26 @@ import React, { FunctionComponent } from "react";
 
 import styleWelcome from "./welcome.module.scss";
 // import { Button } from "reactstrap";
-import { useIntl } from "react-intl";
 import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const WelcomePage: FunctionComponent = () => {
-  const intl = useIntl();
-
   return (
-    <div style={{ paddingTop: "20px" }}>
-      <div className={styleWelcome["title"]}>
-        {intl.formatMessage({
-          id: "register.welcome.title",
-        })}
-      </div>
-      <div className={styleWelcome["content"]}>
-        {intl.formatMessage({
-          id: "register.welcome.content",
-        })}
+    <div style={{ paddingTop: "20px", marginLeft: "-27px" }}>
+      <img
+        className={styleWelcome["pinWalletArrow"]}
+        src={require("@assets/svg/wireframe/pin-arrow.svg")}
+        alt=""
+      />
+      <img
+        className={styleWelcome["pinWallet"]}
+        src={require("@assets/svg/wireframe/welcome-frame.svg")}
+        alt=""
+      />
+      <div>
+        <img
+          src={require("@assets/svg/wireframe/welcome-content.svg")}
+          alt=""
+        />
       </div>
       <ButtonV2
         onClick={() => {
@@ -34,14 +37,9 @@ export const WelcomePage: FunctionComponent = () => {
             window.close();
           }
         }}
-        text={""} // block
-        // style={{
-        //   marginTop: "60px",
-        // }}
+        text={""}
       >
-        {intl.formatMessage({
-          id: "register.welcome.button.done",
-        })}
+        Start using your wallet
       </ButtonV2>
     </div>
   );

@@ -279,7 +279,9 @@ export const GenerateMnemonicModePage: FunctionComponent<{
               I understand that my assets can be stolen if I share my recovery
               phrase with someone else.
             </label>
+            <AdvancedBIP44Option bip44Option={bip44Option} />
             <ButtonV2
+              styleProps={{ marginBottom: "20px" }}
               disabled={!checkBox1Checked || !checkBox2Checked}
               onClick={() => setContinueClicked(true)}
               text=""
@@ -311,6 +313,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                 })}
                 error={errors.name && errors.name.message}
                 maxLength={20}
+                style={{ width: "333px !important" }}
               />
               {registerConfig.mode === "create" ? (
                 <React.Fragment>
@@ -351,7 +354,6 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                   />
                 </React.Fragment>
               ) : null}
-              <AdvancedBIP44Option bip44Option={bip44Option} />
               <ButtonV2 text={""} styleProps={{ marginBottom: "20px" }}>
                 <FormattedMessage id="register.create.button.next" />
               </ButtonV2>
@@ -380,7 +382,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   const [suggestedWords, setSuggestedWords] = useState<string[]>([]);
   const [clickedButtons, setClickedButtons] = useState<number[]>([]);
 
-  const firstButtonsPerRow = 6;
+  const firstButtonsPerRow = 3;
 
   function chunkArray(array: any, size: any) {
     const chunkedArray = [];
@@ -393,7 +395,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   const suggestedRows = chunkArray(suggestedWords, firstButtonsPerRow);
 
   useEffect(() => {
-    // Set randomized words.
+    // Set randomized words and initial suggested words.
     const words = newMnemonicConfig.mnemonic.split(" ");
     for (let i = 0; i < words.length; i++) {
       words[i] = words[i].trim();
@@ -407,7 +409,55 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   }, [newMnemonicConfig.mnemonic]);
 
   const { analyticsStore } = useStore();
-  console.log(clickedButtons);
+
+  const handleClickFirstButton = (word: string, index: number) => {
+    if (!clickedButtons.includes(index)) {
+      // Update suggested words and clicked buttons
+      const updatedSuggestedWords = [...suggestedWords];
+      const updatedClickedButtons = [...clickedButtons];
+
+      if (updatedSuggestedWords[index] === " ") {
+        updatedSuggestedWords[index] = word;
+        updatedClickedButtons.push(index);
+      } else {
+        // If button already has a word, find its index in randomizedWords
+        const existingIndex = randomizedWords.findIndex(
+          (w) => w === updatedSuggestedWords[index]
+        );
+        if (existingIndex !== -1) {
+          updatedClickedButtons.splice(
+            updatedClickedButtons.indexOf(existingIndex),
+            1
+          );
+        }
+        updatedSuggestedWords[index] = word;
+      }
+
+      setSuggestedWords(updatedSuggestedWords);
+      setClickedButtons(updatedClickedButtons);
+    }
+  };
+
+  const handleClickSecondButton = (index: number) => {
+    // Add text from button 2 to button 1
+    const wordToAdd = randomizedWords[index];
+    const firstEmptyButtonIndex = suggestedWords.findIndex(
+      (word) => word === " "
+    );
+
+    if (firstEmptyButtonIndex !== -1) {
+      // Update button 1 with text from button 2
+      const updatedSuggestedWords = [...suggestedWords];
+      updatedSuggestedWords[firstEmptyButtonIndex] = wordToAdd;
+      setSuggestedWords(updatedSuggestedWords);
+
+      // Disable button 2
+      const updatedRandomizedWords = [...randomizedWords];
+      updatedRandomizedWords[index] = " ";
+      setRandomizedWords(updatedRandomizedWords);
+    }
+  };
+
   return (
     <div>
       <BackButton
@@ -415,24 +465,22 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           newMnemonicConfig.setMode("generate");
         }}
       />
+      <div className={style["newMnemonicTitle"]}>
+        Verify your recovery <br></br> phrase
+      </div>
       <div style={{ minHeight: "153px" }}>
         {suggestedRows.map((row, rowIndex) => (
           <div className={style["buttons"]} key={rowIndex}>
-            {row.map((word: any, i: any) => (
+            {row.map((word: string, i: number) => (
               <Button
                 className={style["button"]}
                 key={word + i.toString()}
-                onClick={() => {
-                  const updatedSuggestedWords = suggestedWords.slice();
-                  const buttonIndex = rowIndex * firstButtonsPerRow + i;
-
-                  if (!clickedButtons.includes(buttonIndex)) {
-                    updatedSuggestedWords.splice(buttonIndex, 1);
-                    setSuggestedWords(updatedSuggestedWords);
-                    setClickedButtons([...clickedButtons, buttonIndex]);
-                  }
-                  clickedButtons.push(rowIndex * firstButtonsPerRow + i);
-                }}
+                onClick={() =>
+                  handleClickFirstButton(
+                    word,
+                    rowIndex * firstButtonsPerRow + i
+                  )
+                }
               >
                 {word}
               </Button>
@@ -441,30 +489,20 @@ export const VerifyMnemonicModePage: FunctionComponent<{
         ))}
       </div>
       <hr />
-      <div style={{ minHeight: "153px" }}>
+      <div>
         <div className={style["buttons"]}>
           {randomizedWords.map((word, i) => (
             <Button
-              className={style["button"]}
+              className={style["btn2"]}
               key={word + i.toString()}
-              onClick={() => {
-                const buttonIndex = i;
-
-                if (!clickedButtons.includes(buttonIndex)) {
-                  const updatedSuggestedWords = suggestedWords.slice();
-                  updatedSuggestedWords.push(word);
-                  setSuggestedWords(updatedSuggestedWords);
-                  setClickedButtons([...clickedButtons, buttonIndex]);
-                }
-              }}
-              disabled={clickedButtons.includes(i)}
+              onClick={() => handleClickSecondButton(i)}
+              disabled={word === " "}
             >
               {word}
             </Button>
           ))}
         </div>
       </div>
-
       <ButtonV2
         text=""
         disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
