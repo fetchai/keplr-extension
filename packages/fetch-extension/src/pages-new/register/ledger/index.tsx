@@ -92,12 +92,16 @@ export const ImportLedgerPage: FunctionComponent<{
   };
 
   return (
-    <div>
+    <div className={style["ledgerContainer"]}>
       <BackButton
         onClick={() => {
           registerConfig.clear();
         }}
       />
+      <div className={style["pageTitle"]}>Connect hardware wallet</div>
+      <div className={style["newMnemonicText"]}>
+        To keep your account safe, avoid any personal information or words
+      </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Form
           className={style["formContainer"]}
@@ -122,7 +126,7 @@ export const ImportLedgerPage: FunctionComponent<{
           })}
         >
           <Input
-            className={style["input"]}
+            className={style["addressInput"]}
             label={intl.formatMessage({
               id: "register.name",
             })}
@@ -169,7 +173,9 @@ export const ImportLedgerPage: FunctionComponent<{
               />
             </React.Fragment>
           ) : null}
-          <AdvancedBIP44Option bip44Option={bip44Option} />
+          <div style={{ width: "339px" }}>
+            <AdvancedBIP44Option bip44Option={bip44Option} />
+          </div>
           <ButtonV2 data-loading={registerConfig.isLoading} text={""}>
             <FormattedMessage id="register.create.button.next" />
           </ButtonV2>

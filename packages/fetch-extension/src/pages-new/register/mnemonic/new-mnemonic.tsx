@@ -91,7 +91,7 @@ export const NewMnemonicPage: FunctionComponent<{
               registerConfig.clear();
             }}
           />
-          <div className={style["newMnemonicTitle"]}>Create a new wallet</div>
+          <div className={style["pageTitle"]}>Create a new wallet</div>
           <div className={style["newMnemonicText"]}>
             Enter your password to sign in
           </div>
@@ -395,14 +395,12 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   const suggestedRows = chunkArray(suggestedWords, firstButtonsPerRow);
 
   useEffect(() => {
-    // Set randomized words and initial suggested words.
     const words = newMnemonicConfig.mnemonic.split(" ");
     for (let i = 0; i < words.length; i++) {
       words[i] = words[i].trim();
       suggestedWords.push(" ");
     }
     words.sort((word1, word2) => {
-      // Sort alphabetically.
       return word1 > word2 ? 1 : -1;
     });
     setRandomizedWords(words);
@@ -412,7 +410,6 @@ export const VerifyMnemonicModePage: FunctionComponent<{
 
   const handleClickFirstButton = (word: string, index: number) => {
     if (!clickedButtons.includes(index)) {
-      // Update suggested words and clicked buttons
       const updatedSuggestedWords = [...suggestedWords];
       const updatedClickedButtons = [...clickedButtons];
 
@@ -420,7 +417,6 @@ export const VerifyMnemonicModePage: FunctionComponent<{
         updatedSuggestedWords[index] = word;
         updatedClickedButtons.push(index);
       } else {
-        // If button already has a word, find its index in randomizedWords
         const existingIndex = randomizedWords.findIndex(
           (w) => w === updatedSuggestedWords[index]
         );
@@ -439,19 +435,16 @@ export const VerifyMnemonicModePage: FunctionComponent<{
   };
 
   const handleClickSecondButton = (index: number) => {
-    // Add text from button 2 to button 1
     const wordToAdd = randomizedWords[index];
     const firstEmptyButtonIndex = suggestedWords.findIndex(
       (word) => word === " "
     );
 
     if (firstEmptyButtonIndex !== -1) {
-      // Update button 1 with text from button 2
       const updatedSuggestedWords = [...suggestedWords];
       updatedSuggestedWords[firstEmptyButtonIndex] = wordToAdd;
       setSuggestedWords(updatedSuggestedWords);
 
-      // Disable button 2
       const updatedRandomizedWords = [...randomizedWords];
       updatedRandomizedWords[index] = " ";
       setRandomizedWords(updatedRandomizedWords);
@@ -465,7 +458,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           newMnemonicConfig.setMode("generate");
         }}
       />
-      <div className={style["newMnemonicTitle"]}>
+      <div className={style["pageTitle"]}>
         Verify your recovery <br></br> phrase
       </div>
       <div style={{ minHeight: "153px" }}>
@@ -508,6 +501,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
         disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
         styleProps={{
           marginTop: "30px",
+          marginBottom: "20px",
         }}
         onClick={async (e: any) => {
           e.preventDefault();

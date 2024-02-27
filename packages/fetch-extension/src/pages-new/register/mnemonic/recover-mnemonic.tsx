@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
 import { Form } from "reactstrap";
 import keyIcon from "@assets/svg/wireframe/key-icon.png";
@@ -114,6 +114,10 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
         </div>
         <div className={style["mainpageTitle"]}>Import existing wallet</div>
         <Card
+          leftImageStyle={{
+            width: "32px",
+            height: "32px",
+          }}
           style={{
             backgroundColor: "rgba(255,255,255,0.1)",
             height: "60px",
@@ -136,6 +140,10 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
           heading={undefined}
         />
         <Card
+          leftImageStyle={{
+            width: "32px",
+            height: "32px",
+          }}
           style={{
             backgroundColor: "rgba(255,255,255,0.1)",
             height: "60px",
@@ -160,8 +168,11 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
             </div>
           }
         />
-
         <Card
+          leftImageStyle={{
+            width: "32px",
+            height: "32px",
+          }}
           style={{
             backgroundColor: "rgba(255,255,255,0.1)",
             height: "60px",
@@ -341,15 +352,20 @@ export const RecoverMnemonicPage: FunctionComponent<{
   const tabs = [{ id: "12 words" }, { id: "24 words" }, { id: "Private key" }];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [selectedCard, setSelectedCard] = useState("main");
-  const handleTabChange = (activeTab: any) => {
-    if (activeTab === "12 words") {
-      setSeedType(SeedType.WORDS12);
-    } else if (activeTab === "24 words") {
-      setSeedType(SeedType.WORDS24);
-    } else if (activeTab === "Private key") {
-      setSeedType(SeedType.PRIVATE_KEY);
-    }
-  };
+
+  useEffect(() => {
+    const handleTabChange = (activeTab: any) => {
+      if (activeTab === "12 words") {
+        setSeedType(SeedType.WORDS12);
+      } else if (activeTab === "24 words") {
+        setSeedType(SeedType.WORDS24);
+      } else if (activeTab === "Private key") {
+        setSeedType(SeedType.PRIVATE_KEY);
+      }
+    };
+
+    handleTabChange(activeTab);
+  }, [activeTab]);
 
   return (
     <React.Fragment>
@@ -372,7 +388,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
           <div className={styleRecoverMnemonic["container"]}>
             <div className={styleRecoverMnemonic["tabsContainer"]}>
               <TabsPanel
-                onTabChange={() => handleTabChange(activeTab)}
+                // onTabChange={() => handleTabChange(activeTab)}
                 tabs={tabs}
                 setActiveTab={setActiveTab}
               />
@@ -441,7 +457,11 @@ export const RecoverMnemonicPage: FunctionComponent<{
                     ? { gridTemplateColumns: "1fr 1fr 1fr" }
                     : {}),
                   ...(seedType === SeedType.PRIVATE_KEY
-                    ? { marginLeft: "170px", width: "333px",gridTemplateColumns: "1fr" }
+                    ? {
+                        marginLeft: "170px",
+                        width: "333px",
+                        gridTemplateColumns: "1fr",
+                      }
                     : {}),
                 }}
                 className={classnames(
@@ -620,7 +640,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                 <ButtonV2
                   text=""
                   styleProps={{
-                    marginBottom:"20px"
+                    marginBottom: "20px",
                   }}
                   data-loading={registerConfig.isLoading}
                 >

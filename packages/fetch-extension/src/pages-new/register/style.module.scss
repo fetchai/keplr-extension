@@ -154,6 +154,18 @@ html[data-register-page="true"] #app .container {
     padding: 20px 30px;
     text-align: center;
   }
+  .addressInput {
+    height: 53px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 333px !important;
+  }
+  .addressInput:hover {
+    border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+  }
+
   .advanced {
     color: var(--Grey-White, #fff);
     width: 114px;
@@ -354,6 +366,13 @@ html[data-register-page="true"] #app .container {
   justify-content: center;
   gap: 10px;
 }
+.migrateContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 390px;
+  margin-left: 22%;
+}
 
 .mainpageTitle {
   font-size: 32px;
@@ -366,7 +385,7 @@ html[data-register-page="true"] #app .container {
   text-align: left;
   padding: 0px;
 }
-.newMnemonicTitle {
+.pageTitle {
   font-size: 32px;
   color: #fff;
   margin-top: 10px;
@@ -376,4 +395,11 @@ html[data-register-page="true"] #app .container {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 10px;
+}
+.ledgerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 333px;
+  margin-left: 25%;
 }

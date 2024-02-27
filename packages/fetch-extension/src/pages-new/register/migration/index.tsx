@@ -5,6 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { BackButton } from "../index";
 import { MigrateMetamaskPrivateKeyPage } from "./metamask-privatekey";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import style from "../style.module.scss";
 
 export const TypeMigrateEth = "migrate-from-eth";
 
@@ -20,7 +21,7 @@ export const MigrateEthereumAddressIntro: FunctionComponent<{
     <React.Fragment>
       {" "}
       <ButtonV2
-        styleProps={{ width: "500px" }}
+        styleProps={{ width: "390px" }}
         onClick={(e: any) => {
           e.preventDefault();
 
@@ -39,7 +40,7 @@ const MigrationSelectionPage: FunctionComponent<{
   onBack: () => void;
 }> = (props) => {
   return (
-    <div>
+    <div className={style["migrateContainer"]}>
       <BackButton onClick={props.onBack} />
       <ButtonV2
         text=""
