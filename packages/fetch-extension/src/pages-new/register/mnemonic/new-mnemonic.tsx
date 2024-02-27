@@ -95,25 +95,7 @@ export const NewMnemonicPage: FunctionComponent<{
           <div className={style["newMnemonicText"]}>
             Enter your password to sign in
           </div>
-          <Card
-            leftImageStyle={{ height: "32px", width: "32px" }}
-            style={{
-              backgroundColor: "rgba(255,255,255,0.1)",
-              height: "78px",
-              fontSize: "14px",
-              marginBottom: "10px",
-            }}
-            onClick={(e: any) => {
-              e.preventDefault();
-              registerConfig.setType("google");
-              analyticsStore.logEvent("Create account started", {
-                registerType: "google",
-              });
-            }}
-            leftImage={require("@assets/svg/wireframe/google-icon.svg")}
-            subheading={"Powered by Web3Auth"}
-            heading={"Continue with Google"}
-          />
+          <AuthIntro registerConfig={registerConfig} />
           <Card
             leftImageStyle={{ height: "32px", width: "32px" }}
             style={{
@@ -133,9 +115,7 @@ export const NewMnemonicPage: FunctionComponent<{
             heading={"Create new seed phrase"}
           />
 
-          <div onClick={() => setIsMainPage(false)}>
-            <AuthIntro registerConfig={registerConfig} />
-          </div>
+          <div onClick={() => setIsMainPage(false)}></div>
         </React.Fragment>
       )}
       {!isMainPage && newMnemonicConfig.mode === "generate" ? (
@@ -198,13 +178,13 @@ export const GenerateMnemonicModePage: FunctionComponent<{
     }, []);
     return (
       <div>
-        <BackButton
-          onClick={() => {
-            registerConfig.clear();
-          }}
-        />
         {!isMainPage && !continueClicked ? (
           <div>
+            <BackButton
+              onClick={() => {
+                registerConfig.clear();
+              }}
+            />
             <div>
               <div style={{ color: "white", fontSize: "32px" }}>
                 Save your recovery
@@ -290,7 +270,24 @@ export const GenerateMnemonicModePage: FunctionComponent<{
             </ButtonV2>
           </div>
         ) : (
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              width: "333px",
+              marginLeft: "7%",
+            }}
+          >
+            <BackButton
+              onClick={() => {
+                registerConfig.clear();
+              }}
+            />
+            <div className={style["pageTitle"]}>Create a new wallet</div>
+            <div className={style["newMnemonicText"]}>
+              To keep your account safe, avoid any personal information or words
+            </div>
             <Form
               className={style["formContainer"]}
               onSubmit={handleSubmit(async (data: FormData) => {

@@ -22,7 +22,6 @@ import {
 import { WelcomePage } from "./welcome";
 import { AdditionalSignInPrepend } from "../../config.ui";
 import classnames from "classnames";
-import { AuthIntro, AuthPage } from "./auth";
 import { configure } from "mobx";
 configure({
   enforceActions: "always", // Make mobx to strict mode.
@@ -58,11 +57,6 @@ export const RegisterPage: FunctionComponent = observer(() => {
 
   const registerConfig = useRegisterConfig(keyRingStore, [
     ...(AdditionalSignInPrepend ?? []),
-    {
-      type: "auth",
-      intro: AuthIntro,
-      page: AuthPage,
-    },
     {
       type: TypeNewMnemonic,
       intro: NewMnemonicIntro,

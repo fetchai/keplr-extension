@@ -7,19 +7,19 @@ import {
   OpenloginAdapter,
 } from "@web3auth/openlogin-adapter";
 import style from "./style.module.scss";
-import { Image } from "./image";
-import classNames from "classnames";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import CosmosRpc from "./cosmos-rpc";
-import { Button, Form } from "reactstrap";
+import { Form } from "reactstrap";
 import { FormattedMessage, useIntl } from "react-intl";
 import { BackButton } from "..";
 import { useForm } from "react-hook-form";
-import { Input, PasswordInput } from "@components/form";
+import { Input, PasswordInput } from "@components-v2/form";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { AuthApiKey } from "../../../config.ui";
 import { useStore } from "../../../stores";
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { Card } from "@components-v2/card";
 // get from https://dashboard.web3auth.io
 
 export const AuthIntro: FunctionComponent<{
@@ -96,17 +96,18 @@ export const AuthIntro: FunctionComponent<{
     return user.email;
   };
 
-  const imageId = `login-google-light`;
-  const hoverImage = `login-google-active`;
-  const [image, setImage] = useState(`login-google-light`);
   return (
     <React.Fragment>
       {AuthApiKey && (
-        <div
-          className={style["container"]}
-          onMouseEnter={() => setImage("login-google-active")}
-          onMouseLeave={() => setImage("login-google-light")}
-          onClick={async (e) => {
+        <Card
+          leftImageStyle={{ height: "32px", width: "32px" }}
+          style={{
+            backgroundColor: "rgba(255,255,255,0.1)",
+            height: "78px",
+            fontSize: "14px",
+            marginBottom: "10px",
+          }}
+          onClick={async (e: any) => {
             e.preventDefault();
             const target = e.target as HTMLElement;
             if (target.tagName === "A") {
@@ -132,30 +133,10 @@ export const AuthIntro: FunctionComponent<{
               });
             }
           }}
-        >
-          <button
-            type="button"
-            className={classNames(
-              style["w3abutton"],
-              style["wfull"],
-              style["w3abuttonlogin"]
-            )}
-          >
-            <Image
-              width="20"
-              imageId={imageId}
-              hoverImageId={hoverImage}
-              isButton
-              image={`https://images.web3auth.io/${image}.svg`}
-            />
-            <span className={style["gTitle"]}>
-              <FormattedMessage id="sign.in.google" />
-            </span>
-            <a href="https://web3auth.io/" className={style["authPoweredBy"]}>
-              <FormattedMessage id="sign.in.auth-powered" />
-            </a>
-          </button>
-        </div>
+          leftImage={require("@assets/svg/wireframe/google-icon.svg")}
+          subheading={"Powered by Web3Auth"}
+          heading={"Continue with Google"}
+        />
       )}
     </React.Fragment>
   );
@@ -189,6 +170,11 @@ export const AuthPage: FunctionComponent<{
   );
   return (
     <React.Fragment>
+      <BackButton
+        onClick={() => {
+          registerConfig.clear();
+        }}
+      />
       <Form
         className={style["formContainer"]}
         onSubmit={handleSubmit(async (data: FormData) => {
@@ -201,6 +187,7 @@ export const AuthPage: FunctionComponent<{
         })}
       >
         <Input
+          className={style["addressInput"]}
           label={intl.formatMessage({
             id: "register.name",
           })}
@@ -212,13 +199,11 @@ export const AuthPage: FunctionComponent<{
           })}
           error={errors.name && errors.name.message}
           maxLength={20}
+          style={{ width: "333px !important" }}
         />
         {registerConfig.mode === "create" ? (
           <React.Fragment>
             <PasswordInput
-              label={intl.formatMessage({
-                id: "register.create.input.password",
-              })}
               {...register("password", {
                 required: intl.formatMessage({
                   id: "register.create.input.password.error.required",
@@ -234,9 +219,6 @@ export const AuthPage: FunctionComponent<{
               error={errors.password && errors.password.message}
             />
             <PasswordInput
-              label={intl.formatMessage({
-                id: "register.create.input.confirm-password",
-              })}
               {...register("confirmPassword", {
                 required: intl.formatMessage({
                   id: "register.create.input.confirm-password.error.required",
@@ -253,21 +235,10 @@ export const AuthPage: FunctionComponent<{
             />
           </React.Fragment>
         ) : null}
-        <Button
-          color="primary"
-          type="submit"
-          block
-          size="lg"
-          data-loading={registerConfig.isLoading}
-        >
+        <ButtonV2 text="" data-loading={registerConfig.isLoading}>
           <FormattedMessage id="register.create.button.next" />
-        </Button>
+        </ButtonV2>
       </Form>
-      <BackButton
-        onClick={() => {
-          registerConfig.clear();
-        }}
-      />
     </React.Fragment>
   );
 });
