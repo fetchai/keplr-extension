@@ -10,7 +10,7 @@ import style from "./style.module.scss";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import CosmosRpc from "./cosmos-rpc";
-import { Form } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import { FormattedMessage, useIntl } from "react-intl";
 import { BackButton } from "..";
 import { useForm } from "react-hook-form";
@@ -186,11 +186,18 @@ export const AuthPage: FunctionComponent<{
           );
         })}
       >
+        <Label
+          for="name"
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            fontWeight: 550,
+            fontSize: "15px",
+          }}
+        >
+          {intl.formatMessage({ id: "register.name" })}
+        </Label>
         <Input
           className={style["addressInput"]}
-          label={intl.formatMessage({
-            id: "register.name",
-          })}
           type="text"
           {...register("name", {
             required: intl.formatMessage({

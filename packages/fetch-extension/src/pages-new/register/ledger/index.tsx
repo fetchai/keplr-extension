@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { FormattedMessage, useIntl } from "react-intl";
-import { Button, Form } from "reactstrap";
+import { Button, Form, Label } from "reactstrap";
 import { useForm } from "react-hook-form";
 import style from "../style.module.scss";
 import { Input, PasswordInput } from "@components-v2/form";
@@ -125,11 +125,18 @@ export const ImportLedgerPage: FunctionComponent<{
             }
           })}
         >
+          <Label
+            for="name"
+            style={{
+              color: "rgba(255,255,255,0.6)",
+              fontWeight: 550,
+              fontSize: "15px",
+            }}
+          >
+            {intl.formatMessage({ id: "register.name" })}
+          </Label>
           <Input
             className={style["addressInput"]}
-            label={intl.formatMessage({
-              id: "register.name",
-            })}
             type="text"
             {...register("name", {
               required: intl.formatMessage({

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 
-import { Form } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import keyIcon from "@assets/svg/wireframe/key-icon.png";
 import { FormattedMessage, useIntl } from "react-intl";
 import style from "../style.module.scss";
@@ -479,10 +479,20 @@ export const RecoverMnemonicPage: FunctionComponent<{
                       className={styleRecoverMnemonic["mnemonicWordContainer"]}
                     >
                       <Input
-                        style={{
-                          color: "white",
-                          background: "rgba(255,255,255,0.1)",
-                        }}
+                        style={
+                          seedType === SeedType.PRIVATE_KEY
+                            ? {
+                                color: "white",
+                                background: "rgba(255,255,255,0.1)",
+                                width: "335px",
+                                height: "53px",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                              }
+                            : {
+                                color: "white",
+                                background: "rgba(255,255,255,0.1)",
+                              }
+                        }
                         type={
                           shownMnemonicIndex === index ? "text" : "password"
                         }
@@ -575,12 +585,19 @@ export const RecoverMnemonicPage: FunctionComponent<{
                 </div>
               ) : null}
               <div className={styleRecoverMnemonic["formInnerContainer"]}>
+                <Label
+                  for="name"
+                  style={{
+                    color: "rgba(255,255,255,0.6)",
+                    fontWeight: 550,
+                    fontSize: "15px",
+                  }}
+                >
+                  {intl.formatMessage({ id: "register.name" })}
+                </Label>
                 <Input
                   className={styleRecoverMnemonic["addressInput"]}
                   style={{ width: "333px" }}
-                  label={intl.formatMessage({
-                    id: "register.name",
-                  })}
                   type="text"
                   {...register("name", {
                     required: intl.formatMessage({

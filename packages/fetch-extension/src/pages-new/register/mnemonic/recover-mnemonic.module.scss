@@ -111,6 +111,7 @@
 .formInnerContainer {
   width: 335px;
   margin: auto;
+  margin-bottom: 0px;
 }
 .tabsContainer {
   width: 390px;
@@ -136,6 +137,11 @@
 }
 .addressInput:hover {
   border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+}
+.addressInput:focus {
+  border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 .mainpageBackButton {
   margin-right: 300px;

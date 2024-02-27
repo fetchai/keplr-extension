@@ -16,7 +16,7 @@ import {
 } from "../advanced-bip44";
 import style from "../style.module.scss";
 import style2 from "./recover-mnemonic.module.scss";
-import { Button, ButtonGroup, Form } from "reactstrap";
+import { Button, ButtonGroup, Form, Label } from "reactstrap";
 import { Input, PasswordInput } from "@components-v2/form";
 import { BackButton } from "../index";
 import { NewMnemonicConfig, NumWords, useNewMnemonicConfig } from "./hook";
@@ -297,11 +297,18 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                 newMnemonicConfig.setMode("verify");
               })}
             >
+              <Label
+                for="name"
+                style={{
+                  color: "rgba(255,255,255,0.6)",
+                  fontWeight: 550,
+                  fontSize: "15px",
+                }}
+              >
+                {intl.formatMessage({ id: "register.name" })}
+              </Label>
               <Input
                 className={style2["addressInput"]}
-                label={intl.formatMessage({
-                  id: "register.name",
-                })}
                 type="text"
                 {...register("name", {
                   required: intl.formatMessage({
@@ -310,10 +317,12 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                 })}
                 error={errors.name && errors.name.message}
                 maxLength={20}
-                style={{ width: "333px !important" }}
+                style={{
+                  width: "333px !important",
+                }}
               />
               {registerConfig.mode === "create" ? (
-                <React.Fragment>
+                <div style={{ marginTop: "-27px" }}>
                   <PasswordInput
                     {...register("password", {
                       required: intl.formatMessage({
@@ -349,7 +358,7 @@ export const GenerateMnemonicModePage: FunctionComponent<{
                       errors.confirmPassword && errors.confirmPassword.message
                     }
                   />
-                </React.Fragment>
+                </div>
               ) : null}
               <ButtonV2 text={""} styleProps={{ marginBottom: "20px" }}>
                 <FormattedMessage id="register.create.button.next" />
@@ -374,12 +383,11 @@ export const VerifyMnemonicModePage: FunctionComponent<{
     }
     return words;
   }, [newMnemonicConfig.mnemonic]);
-
   const [randomizedWords, setRandomizedWords] = useState<string[]>([]);
   const [suggestedWords, setSuggestedWords] = useState<string[]>([]);
   const [clickedButtons, setClickedButtons] = useState<number[]>([]);
 
-  const firstButtonsPerRow = 3;
+  const firstButtonsPerRow = randomizedWords.length > 12 ? 4 : 3;
 
   function chunkArray(array: any, size: any) {
     const chunkedArray = [];
