@@ -61,54 +61,42 @@ export const RegisterNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.NewMnemonic"
         component={NewMnemonicScreen}
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.VerifyMnemonic"
         component={VerifyMnemonicScreen}
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.RecoverMnemonic"
         component={RecoverMnemonicScreen}
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.MigrateETH"
         component={MigrateETHScreen}
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.CreateAccount"
         component={CreateAccountScreen}
       />
       <Stack.Screen
         options={{
-          ...TransparentHeaderOptionsPreset,
-          // Only show the back button.
-          title: "",
+          headerShown: false,
         }}
         name="Register.NewLedger"
         component={NewLedgerScreen}

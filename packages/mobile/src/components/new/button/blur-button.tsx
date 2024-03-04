@@ -37,7 +37,7 @@ export const BlurButton: FunctionComponent<{
     <BlurBackground
       borderRadius={borderRadius}
       backgroundBlur={backgroundBlur}
-      blurIntensity={!disable ? blurIntensity : 15}
+      blurIntensity={!disable ? blurIntensity : blurIntensity}
       blurType={blurType}
       onPress={disable ? undefined : onPress}
       containerStyle={

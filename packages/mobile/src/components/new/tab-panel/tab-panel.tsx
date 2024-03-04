@@ -17,6 +17,7 @@ export const TabPanel: FunctionComponent<{
     return (
       <BlurButton
         backgroundBlur={selected}
+        disable={selected}
         text={item.id}
         borderRadius={32}
         textStyle={style.flatten(["body3"]) as ViewStyle}

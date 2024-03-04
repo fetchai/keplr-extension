@@ -4,7 +4,6 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { BIP44AdvancedButton, useBIP44Option } from "../../bip44";
 import { FlatList, Text, View, ViewStyle } from "react-native";
-import { PageWithScrollView } from "components/page";
 import { Button } from "components/button";
 import { InputCardView } from "components/new/card-view/input-card";
 import { useStyle } from "styles/index";
@@ -13,6 +12,7 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { isPrivateKey, validatePrivateKey } from "utils/format/format";
+import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bip39 = require("bip39");
@@ -237,23 +237,42 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   };
 
   return (
-    <PageWithScrollView
+    <PageWithScrollViewHeader
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
+      headerTitle="Import your wallet"
+      fixed={
+        <React.Fragment>
+          <View style={style.flatten(["flex-1"])} />
+          <Button
+            containerStyle={
+              style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
+            }
+            text="Next"
+            size="large"
+            onPress={() => {
+              const seedWordsError = validateSeedWords(seedWords);
+              if (seedWordsError) {
+                setSeedWordsError(seedWordsError);
+              } else {
+                setSeedWordsError(undefined);
+                if (seedWords) {
+                  const encodeSeedWords = encodeURIComponent(
+                    JSON.stringify(seedWords.join(" ").trim())
+                  );
+                  smartNavigation.navigateSmart("Register.CreateAccount", {
+                    registerConfig: registerConfig,
+                    mnemonic: encodeSeedWords,
+                    bip44HDPath: bip44Option.bip44HDPath,
+                  });
+                }
+              }
+            }}
+          />
+        </React.Fragment>
+      }
     >
-      <Text
-        style={
-          style.flatten([
-            "h1",
-            "color-white",
-            "margin-y-10",
-            "font-medium",
-          ]) as ViewStyle
-        }
-      >
-        Import your wallet
-      </Text>
       <BlurBackground
         borderRadius={12}
         containerStyle={style.flatten(["margin-y-10"]) as ViewStyle}
@@ -295,32 +314,6 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
         ) : null}
         <BIP44AdvancedButton bip44Option={bip44Option} />
       </View>
-      <View style={style.flatten(["flex-1"])} />
-      <Button
-        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
-        text="Next"
-        size="large"
-        onPress={() => {
-          const seedWordsError = validateSeedWords(seedWords);
-          if (seedWordsError) {
-            setSeedWordsError(seedWordsError);
-          } else {
-            setSeedWordsError(undefined);
-            if (seedWords) {
-              const encodeSeedWords = encodeURIComponent(
-                JSON.stringify(seedWords.join(" ").trim())
-              );
-              smartNavigation.navigateSmart("Register.CreateAccount", {
-                registerConfig: registerConfig,
-                mnemonic: encodeSeedWords,
-                bip44HDPath: bip44Option.bip44HDPath,
-              });
-            }
-          }
-        }}
-      />
-      {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-    </PageWithScrollView>
+    </PageWithScrollViewHeader>
   );
 });

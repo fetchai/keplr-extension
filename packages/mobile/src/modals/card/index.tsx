@@ -55,11 +55,18 @@ export const CardModal: FunctionComponent<{
               }
             >
               <Text
-                style={style.flatten(["h4", "color-text-high", "color-white"])}
+                style={style.flatten([
+                  "h4",
+                  "color-text-high",
+                  "color-white",
+                  "flex-3",
+                ])}
               >
                 {title}
               </Text>
-              {right}
+              <View style={style.flatten(["flex-1", "items-end"])}>
+                {right}
+              </View>
             </View>
           </React.Fragment>
         ) : null}

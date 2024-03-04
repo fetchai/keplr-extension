@@ -331,6 +331,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                   text="Use biometric authentication"
                   mode="text"
                   loading={isBiometricLoading}
+                  loaderColor="white"
                 />
               </View>
             </TouchableOpacity>

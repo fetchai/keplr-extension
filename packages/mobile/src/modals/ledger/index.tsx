@@ -5,6 +5,7 @@ import {
   AppState,
   AppStateStatus,
   Image,
+  PermissionsAndroid,
   Platform,
   Text,
   View,
@@ -20,6 +21,8 @@ import TransportBLE, {
 import { Ledger, LedgerApp, LedgerInitErrorOn } from "@keplr-wallet/background";
 import { getLastUsedLedgerDeviceId } from "utils/ledger";
 import Svg, { Path } from "react-native-svg";
+import * as Location from "expo-location";
+import { LocationAccuracy } from "expo-location";
 import { useUnmount } from "hooks/use-unmount";
 import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
@@ -28,7 +31,6 @@ import { Button } from "components/button";
 import { BlurButton } from "components/new/button/blur-button";
 import { CheckIcon } from "components/new/icon/check";
 import Toast from "react-native-toast-message";
-import delay from "delay";
 
 const AlertIcon: FunctionComponent<{
   size: number;
@@ -85,34 +87,14 @@ export const LedgerGranterModal: FunctionComponent<{
 
     const resumed = useRef(false);
     const [isBLEAvailable, setIsBLEAvailable] = useState(false);
+    const [location, setLocation] = useState<
+      Location.LocationObject | undefined
+    >();
     const [mainContent, setMainContent] = useState<string>("");
     const [pairingText, setIsPairingText] = useState<string>(
       "Waiting for bluetooth signal..."
     );
     const [paired, setIsPaired] = useState<boolean>(false);
-    const [isFinding, setIsFinding] = useState(false);
-
-    const [devices, setDevices] = useState<
-      {
-        id: string;
-        name: string;
-      }[]
-    >([]);
-    const [errorOnListen, setErrorOnListen] = useState<string | undefined>();
-    const [bluetoothMode, setBluetoothMode] = useState<BluetoothMode>(
-      BluetoothMode.Ledger
-    );
-    const [permissionStatus, setPermissionStatus] =
-      useState<BLEPermissionGrantStatus>(() => {
-        if (Platform.OS === "android") {
-          // If android, there is need to request the permission.
-          // You should ask for the permission on next effect.
-          return BLEPermissionGrantStatus.Granted;
-        } else {
-          // If not android, there is no need to request the permission
-          return BLEPermissionGrantStatus.Granted;
-        }
-      });
 
     useEffect(() => {
       // If this modal appears, it's probably because there was a problem with the ledger connection.
@@ -127,13 +109,6 @@ export const LedgerGranterModal: FunctionComponent<{
     }, []);
 
     useUnmount(() => {
-      ///Resetting the state
-      setIsBLEAvailable(false);
-      setMainContent("");
-      setIsPairingText("Waiting for bluetooth signal...");
-      setIsPaired(false);
-      setIsFinding(false);
-      setErrorOnListen(undefined);
       // When the modal is closed without resuming, abort all the ledger init interactions.
       if (!resumed.current) {
         ledgerInitStore.abortAll();
@@ -154,6 +129,31 @@ export const LedgerGranterModal: FunctionComponent<{
       };
     }, []);
 
+    const [isFinding, setIsFinding] = useState(false);
+
+    const [devices, setDevices] = useState<
+      {
+        id: string;
+        name: string;
+      }[]
+    >([]);
+    const [errorOnListen, setErrorOnListen] = useState<string | undefined>();
+
+    const [permissionStatus, setPermissionStatus] =
+      useState<BLEPermissionGrantStatus>(() => {
+        if (Platform.OS === "android") {
+          // If android, there is need to request the permission.
+          // You should ask for the permission on next effect.
+          return BLEPermissionGrantStatus.Granted;
+        } else {
+          // If not android, there is no need to request the permission
+          return BLEPermissionGrantStatus.Granted;
+        }
+      });
+    const [bluetoothMode, setBluetoothMode] = useState<BluetoothMode>(
+      BluetoothMode.Ledger
+    );
+
     useEffect(() => {
       const listener = (state: AppStateStatus) => {
         if (
@@ -170,6 +170,16 @@ export const LedgerGranterModal: FunctionComponent<{
       return () => {
         callback.remove();
       };
+    }, [permissionStatus]);
+
+    useEffect(() => {
+      // It is processed only in case of not init at first or re-request after failure.
+      if (
+        permissionStatus === BLEPermissionGrantStatus.NotInit ||
+        permissionStatus === BLEPermissionGrantStatus.FailedAndRetry
+      ) {
+        checkAndRequestBluetoothPermission();
+      }
     }, [permissionStatus]);
 
     useEffect(() => {
@@ -240,7 +250,48 @@ export const LedgerGranterModal: FunctionComponent<{
         }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isBLEAvailable, permissionStatus]);
+    }, [isBLEAvailable, permissionStatus, location]);
+
+    const checkAndRequestBluetoothPermission = () => {
+      if (Platform.OS === "android") {
+        PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS["BLUETOOTH_CONNECT"],
+          PermissionsAndroid.PERMISSIONS["BLUETOOTH_SCAN"],
+          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"],
+        ]).then((result) => {
+          fetchCurrentLocation(
+            result["android.permission.ACCESS_FINE_LOCATION"] ===
+              PermissionsAndroid.RESULTS["GRANTED"]
+          );
+          if (
+            result["android.permission.BLUETOOTH_CONNECT"] ===
+            PermissionsAndroid.RESULTS["GRANTED"]
+          ) {
+            setPermissionStatus(BLEPermissionGrantStatus.Granted);
+          } else {
+            setPermissionStatus(BLEPermissionGrantStatus.Failed);
+          }
+        });
+      }
+    };
+
+    useEffect(() => {
+      if (Platform.OS === "android" && location == undefined) {
+        PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
+        ).then((result) => fetchCurrentLocation(result));
+      }
+    }, [location]);
+
+    const fetchCurrentLocation = (isPermissionGranted: boolean) => {
+      if (isPermissionGranted) {
+        Location.getCurrentPositionAsync({
+          accuracy: LocationAccuracy.Highest,
+        }).then((location) => {
+          setLocation(location);
+        });
+      }
+    };
 
     if (!isOpen) {
       return null;
@@ -479,8 +530,9 @@ export const LedgerGranterModal: FunctionComponent<{
                 </View>
               </React.Fragment>
             )}
-            {BluetoothMode.Ledger == bluetoothMode ||
-            BluetoothMode.Pairing == bluetoothMode ? (
+            {(BluetoothMode.Ledger == bluetoothMode ||
+              BluetoothMode.Pairing == bluetoothMode) &&
+            !errorOnListen ? (
               <Button
                 text="Stuck? Read our ‘how to’ article"
                 size="large"
@@ -548,14 +600,16 @@ const LedgerErrorView: FunctionComponent<{
   const style = useStyle();
 
   return (
-    <View style={style.flatten(["items-center"])}>
+    <View
+      style={style.flatten(["items-center", "margin-bottom-16"]) as ViewStyle}
+    >
       <AlertIcon size={100} color={style.get("color-red-400").color} />
       <Text style={style.flatten(["h4", "color-red-400"])}>Error</Text>
       <Text
         style={
           style.flatten([
             "subtitle3",
-            "color-text-middle",
+            "color-white",
             "margin-top-16",
           ]) as ViewStyle
         }
@@ -586,6 +640,8 @@ const LedgerNanoBLESelector: FunctionComponent<{
   setIsPaired,
 }) => {
   const style = useStyle();
+
+  // const [pairingText, setIsPairingText] = useState<string>("");
   const [isConnecting, setIsConnecting] = useState(false);
 
   const testLedgerConnection = async (): Promise<boolean> => {
@@ -597,7 +653,6 @@ const LedgerNanoBLESelector: FunctionComponent<{
       setMainContent("");
       setBluetoothMode(BluetoothMode.Connecting);
       setIsPairingText(`Connecting to ${name}`);
-      await delay(1000);
       const ledger = await Ledger.init(
         () => TransportBLE.open(deviceId),
         undefined,
@@ -609,13 +664,17 @@ const LedgerNanoBLESelector: FunctionComponent<{
       );
       setBluetoothMode(BluetoothMode.Pairing);
       setIsPairingText("Waiting to pair...");
-      await delay(2000);
-      setIsPaired(true);
-      setBluetoothMode(BluetoothMode.Paired);
-      setIsPairingText(`Paired with ${name}`);
-      await delay(2000);
+      setTimeout(function () {
+        setIsPaired(true);
+        setBluetoothMode(BluetoothMode.Paired);
+        setIsPairingText("Paired with Nano X Hemant");
+      }, 2000);
       await ledger.close();
+      setTimeout(function () {
+        onCanResume();
+      }, 6000);
 
+      // onCanResume();
       return true;
     } catch (e) {
       console.log(e);
@@ -632,9 +691,7 @@ const LedgerNanoBLESelector: FunctionComponent<{
           setIsConnecting(false);
         }
       } else {
-        //initErrorOn = LedgerInitErrorOn.Unknown;
-        setMainContent("Something went wrong!");
-        setIsConnecting(false);
+        initErrorOn = LedgerInitErrorOn.Unknown;
       }
 
       await TransportBLE.disconnect(deviceId);
@@ -655,7 +712,7 @@ const LedgerNanoBLESelector: FunctionComponent<{
           }
           onPress={async () => {
             if (await testLedgerConnection()) {
-              onCanResume();
+              // onCanResume();
             }
           }}
         />

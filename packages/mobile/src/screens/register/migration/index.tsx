@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
-import { PageWithScrollView } from "components/page";
-import { Text, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { useStyle } from "styles/index";
 import { InputCardView } from "components/new/card-view/input-card";
@@ -11,6 +10,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { parseEthPrivateKey } from "@fetchai/eth-migration";
 import { isPrivateKey } from "utils/format/format";
+import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 interface FormData {
   ethAddress: string;
@@ -86,14 +86,35 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
   };
 
   return (
-    <PageWithScrollView
+    <PageWithScrollViewHeader
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
+      headerTitle="Migrate from ETH"
+      fixed={
+        <React.Fragment>
+          <View style={style.flatten(["flex-1"])} />
+          <Button
+            containerStyle={
+              style.flatten([
+                "background-color-white",
+                "border-radius-32",
+                "margin-top-24",
+              ]) as ViewStyle
+            }
+            textStyle={{
+              color: "#0B1742",
+            }}
+            text="Next"
+            size="large"
+            rippleColor="black@10%"
+            onPress={() => {
+              submit();
+            }}
+          />
+        </React.Fragment>
+      }
     >
-      <Text style={style.flatten(["color-white", "h2"]) as ViewStyle}>
-        Migrate from ETH
-      </Text>
       <Controller
         control={control}
         rules={{
@@ -151,26 +172,6 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
         name="ethPrivateKey"
         defaultValue=""
       />
-
-      <View style={style.flatten(["flex-1"])} />
-      <Button
-        containerStyle={
-          style.flatten([
-            "background-color-white",
-            "border-radius-32",
-            "margin-y-24",
-          ]) as ViewStyle
-        }
-        textStyle={{
-          color: "#0B1742",
-        }}
-        text="Next"
-        size="large"
-        rippleColor="black@10%"
-        onPress={() => {
-          submit();
-        }}
-      />
-    </PageWithScrollView>
+    </PageWithScrollViewHeader>
   );
 });
