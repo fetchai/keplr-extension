@@ -62,7 +62,7 @@ export const ChatInitPopup = observer(
         navigate("/", { replace: true });
       } finally {
         analyticsStore.logEvent("chat_privacy_click", {
-          selectedPrivacySetting,
+          action: selectedPrivacySetting,
         });
         setIsOpendialog(false);
         setLoadingChats(false);
