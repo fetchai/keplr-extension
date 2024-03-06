@@ -73,10 +73,6 @@ export const InteractionModalsProivder: FunctionComponent = observer(
             }}
           />
         ) : null*/}
-        <LedgerGranterModal
-          isOpen={ledgerInitStore.isInitNeeded}
-          close={() => ledgerInitStore.abortAll()}
-        />
         {permissionStore.waitingDatas.map((data) => {
           if (data.data.origins.length === 1) {
             if (
@@ -101,12 +97,27 @@ export const InteractionModalsProivder: FunctionComponent = observer(
 
           return null;
         })}
-        <SignModal
-          isOpen={signInteractionStore.waitingData !== undefined}
-          close={() => {
-            signInteractionStore.rejectAll();
-          }}
-        />
+        {signInteractionStore.waitingData ? (
+          <SignModal
+            isOpen={true}
+            close={() => {
+              signInteractionStore.rejectAll();
+            }}
+          />
+        ) : (
+          <SignModal
+            isOpen={false}
+            close={() => {
+              signInteractionStore.rejectAll();
+            }}
+          />
+        )}
+        {
+          <LedgerGranterModal
+            isOpen={ledgerInitStore.isInitNeeded}
+            close={() => ledgerInitStore.abortAll()}
+          />
+        }
         {children}
       </React.Fragment>
     );

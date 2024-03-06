@@ -220,7 +220,14 @@ export const SendPhase2: FunctionComponent<{
                 }
               );
             } catch (e) {
-              if (e?.message === "Request rejected") {
+              if (
+                e?.message === "Request rejected" ||
+                e?.message === "Transaction rejected"
+              ) {
+                Toast.show({
+                  type: "error",
+                  text1: "Transaction rejected",
+                });
                 return;
               }
               console.log(e);

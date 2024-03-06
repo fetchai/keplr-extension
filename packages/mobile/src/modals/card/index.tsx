@@ -43,33 +43,31 @@ export const CardModal: FunctionComponent<{
             <View style={style.flatten(["margin-top-10"]) as ViewStyle} />
           ) : null}
         </View>
-        {title ? (
-          <React.Fragment>
-            <View
-              style={
-                style.flatten([
-                  "flex-row",
-                  "items-center",
-                  "justify-between",
-                ]) as ViewStyle
-              }
+
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "justify-between",
+              "margin-x-10",
+            ]) as ViewStyle
+          }
+        >
+          {title ? (
+            <Text
+              style={style.flatten([
+                "h4",
+                "color-text-high",
+                "color-white",
+                "flex-3",
+              ])}
             >
-              <Text
-                style={style.flatten([
-                  "h4",
-                  "color-text-high",
-                  "color-white",
-                  "flex-3",
-                ])}
-              >
-                {title}
-              </Text>
-              <View style={style.flatten(["flex-1", "items-end"])}>
-                {right}
-              </View>
-            </View>
-          </React.Fragment>
-        ) : null}
+              {title}
+            </Text>
+          ) : null}
+          <View style={style.flatten(["flex-1", "items-end"])}>{right}</View>
+        </View>
       </View>
       <View
         style={StyleSheet.flatten([

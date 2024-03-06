@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { useStyle } from "styles/index";
+import { PageWithScrollView } from "components/page/scroll-view";
 import CheckBox from "@react-native-community/checkbox";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
@@ -20,7 +21,6 @@ import { useSimpleTimer } from "hooks/use-simple-timer";
 import LottieView from "lottie-react-native";
 import { useNewMnemonicConfig } from "../hook";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 export const NewMnemonicScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -49,34 +49,24 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
   const { isTimedOut, setTimer } = useSimpleTimer();
 
   return (
-    <PageWithScrollViewHeader
+    <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
-      headerTitle="Save your recovery phrase"
-      parallaxHeaderHeight={170}
-      fixed={
-        <React.Fragment>
-          <View style={style.flatten(["flex-1"])} />
-          <Button
-            containerStyle={
-              style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
-            }
-            text="Continue"
-            size="large"
-            rippleColor="black@10%"
-            disabled={!isSelected || !toggleCheckBox}
-            onPress={() => {
-              smartNavigation.navigateSmart("Register.VerifyMnemonic", {
-                registerConfig,
-                newMnemonicConfig,
-              });
-            }}
-          />
-        </React.Fragment>
-      }
+      style={style.flatten(["margin-x-page"]) as ViewStyle}
     >
       <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+        <Text
+          style={
+            style.flatten([
+              "h1",
+              "color-white",
+              "font-normal",
+              "margin-bottom-16",
+            ]) as ViewStyle
+          }
+        >
+          Save your recovery phrase
+        </Text>
         <Text
           style={
             style.flatten([
@@ -251,6 +241,21 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
           phrase with someone else.
         </Text>
       </TouchableOpacity>
-    </PageWithScrollViewHeader>
+      <View style={style.flatten(["flex-1"])} />
+      <Button
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+        text="Continue"
+        size="large"
+        rippleColor="black@10%"
+        disabled={!isSelected || !toggleCheckBox}
+        onPress={() => {
+          smartNavigation.navigateSmart("Register.VerifyMnemonic", {
+            registerConfig,
+            newMnemonicConfig,
+          });
+        }}
+      />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+    </PageWithScrollView>
   );
 });

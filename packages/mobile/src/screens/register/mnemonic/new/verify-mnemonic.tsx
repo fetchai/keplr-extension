@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
+import { PageWithScrollView } from "components/page";
 import { FlatList, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { WordChip } from "components/mnemonic";
@@ -10,7 +11,6 @@ import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { RectButton } from "components/rect-button";
 import { BIP44AdvancedButton, useBIP44Option } from "screens/register/bip44";
-import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -104,50 +104,17 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
   };
 
   return (
-    <PageWithScrollViewHeader
+    <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
-      headerTitle="Verify your recovery phrase"
-      parallaxHeaderHeight={170}
-      fixed={
-        <React.Fragment>
-          <View style={style.flatten(["flex-1"])} />
-          <View>
-            <FlatList
-              data={candidateWords}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={renderButtonItem}
-              numColumns={4}
-              scrollEnabled={false}
-            />
-            <Button
-              containerStyle={
-                style.flatten([
-                  "border-radius-32",
-                  "margin-top-24",
-                ]) as ViewStyle
-              }
-              text="Continue"
-              size="large"
-              loading={isCreating}
-              disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
-              onPress={async () => {
-                setIsCreating(true);
-                smartNavigation.navigateSmart("Register.CreateAccount", {
-                  registerConfig: registerConfig,
-                  mnemonic: encodeURIComponent(
-                    JSON.stringify(newMnemonicConfig.mnemonic.trim())
-                  ),
-                  bip44HDPath: bip44Option.bip44HDPath,
-                });
-              }}
-            />
-          </View>
-        </React.Fragment>
-      }
     >
-      <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
+      <Text
+        style={style.flatten(["h1", "color-white", "margin-y-18"]) as ViewStyle}
+      >
+        Verify your recovery phrase
+      </Text>
+      <View>
         <WordsCard
           wordSet={wordSet.map((word, i) => {
             return {
@@ -159,7 +126,38 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
         />
         <BIP44AdvancedButton bip44Option={bip44Option} />
       </View>
-    </PageWithScrollViewHeader>
+      <View style={style.flatten(["flex-1"])} />
+      <View>
+        <FlatList
+          data={candidateWords}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={renderButtonItem}
+          numColumns={4}
+          scrollEnabled={false}
+        />
+        <Button
+          containerStyle={
+            style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
+          }
+          text="Continue"
+          size="large"
+          loading={isCreating}
+          disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
+          onPress={async () => {
+            setIsCreating(true);
+            smartNavigation.navigateSmart("Register.CreateAccount", {
+              registerConfig: registerConfig,
+              mnemonic: encodeURIComponent(
+                JSON.stringify(newMnemonicConfig.mnemonic.trim())
+              ),
+              bip44HDPath: bip44Option.bip44HDPath,
+            });
+          }}
+        />
+        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+      </View>
+      {/* Mock element for bottom padding */}
+    </PageWithScrollView>
   );
 });
 

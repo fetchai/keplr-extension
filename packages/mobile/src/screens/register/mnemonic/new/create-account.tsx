@@ -4,6 +4,7 @@ import { RegisterConfig } from "@keplr-wallet/hooks";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { IconButton } from "components/new/button/icon";
 import { InputCardView } from "components/new/card-view/input-card";
+import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { Text, ViewStyle, View } from "react-native";
 import { useStyle } from "styles/index";
@@ -17,7 +18,6 @@ import { PasswordValidateView } from "components/new/password-validate/password-
 import { CheckIcon } from "components/new/icon/check";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
-import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 interface FormData {
   mnemonic: string;
@@ -139,38 +139,24 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
   };
 
   return (
-    <PageWithScrollViewHeader
+    <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
-      headerTitle={title}
-      fixed={
-        <React.Fragment>
-          <View style={style.flatten(["flex-1"])} />
-          <Button
-            containerStyle={
-              style.flatten([
-                "margin-top-24",
-                "background-color-white",
-                "border-radius-32",
-              ]) as ViewStyle
-            }
-            textStyle={{
-              color: "#0B1742",
-            }}
-            text="Confirm"
-            size="large"
-            loading={isCreating}
-            onPress={submit}
-          />
-        </React.Fragment>
-      }
     >
       <Text
         style={
-          style.flatten(["h6", "color-gray-200", "margin-top-10"]) as ViewStyle
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-y-10",
+            "font-medium",
+          ]) as ViewStyle
         }
       >
+        {title}
+      </Text>
+      <Text style={style.flatten(["h6", "color-gray-200"]) as ViewStyle}>
         To keep your account safe, avoid any personal information or words
       </Text>
       <Controller
@@ -364,6 +350,24 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
           </View>
         </React.Fragment>
       ) : null}
-    </PageWithScrollViewHeader>
+
+      <View style={style.flatten(["flex-1"])} />
+      <Button
+        containerStyle={
+          style.flatten([
+            "margin-y-18",
+            "background-color-white",
+            "border-radius-32",
+          ]) as ViewStyle
+        }
+        textStyle={{
+          color: "#0B1742",
+        }}
+        text="Confirm"
+        size="large"
+        loading={isCreating}
+        onPress={submit}
+      />
+    </PageWithScrollView>
   );
 });

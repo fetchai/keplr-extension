@@ -21,9 +21,7 @@ export const AgentsScreen: FunctionComponent = observer(() => {
       }}
       ref={scrollViewRef}
     >
-      <Text style={style.flatten(["h5", "color-white"])}>
-        Under development
-      </Text>
+      <Text style={style.flatten(["h5", "color-white"])}>Coming Soon</Text>
     </PageWithScrollViewInBottomTabView>
   );
 });

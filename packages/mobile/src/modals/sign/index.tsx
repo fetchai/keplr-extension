@@ -263,11 +263,7 @@ export const SignModal: FunctionComponent<{
               blurIntensity={16}
               containerStyle={
                 [
-                  style.flatten([
-                    "border-radius-8",
-                    "border-width-1",
-                    "overflow-hidden",
-                  ]),
+                  style.flatten(["border-radius-8", "overflow-hidden"]),
                 ] as ViewStyle
               }
             >

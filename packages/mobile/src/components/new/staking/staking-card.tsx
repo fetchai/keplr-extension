@@ -12,6 +12,7 @@ import { Button } from "components/button";
 import { Dec } from "@keplr-wallet/unit";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import Toast from "react-native-toast-message";
 
 export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   cardStyle,
@@ -264,7 +265,14 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
                 }
               );
             } catch (e) {
-              if (e?.message === "Request rejected") {
+              if (
+                e?.message === "Request rejected" ||
+                e?.message === "Transaction rejected"
+              ) {
+                Toast.show({
+                  type: "error",
+                  text1: "Transaction rejected",
+                });
                 return;
               }
               console.log(e);

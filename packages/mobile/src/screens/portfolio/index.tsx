@@ -55,9 +55,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          <Text style={style.flatten(["h5", "color-white"])}>
-            Under development
-          </Text>
+          <Text style={style.flatten(["h5", "color-white"])}>Coming soon</Text>
         </View>
       )}
       {selectedId === AssertsSectionEnum.Stats && (

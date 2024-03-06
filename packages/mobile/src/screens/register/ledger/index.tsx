@@ -5,6 +5,7 @@ import { RegisterConfig } from "@keplr-wallet/hooks";
 import { useStyle } from "styles/index";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { Controller, useForm } from "react-hook-form";
+import { PageWithScrollView } from "components/page";
 import {
   Alert,
   AppState,
@@ -31,7 +32,6 @@ import { State } from "react-native-ble-plx";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
 import DeviceInfo from "react-native-device-info";
-import { PageWithScrollViewHeader } from "components/new/page/scroll-view-in-header";
 
 interface FormData {
   name: string;
@@ -105,8 +105,13 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         }
       }
     })();
+  }, []);
 
+  useEffect(() => {
     const bleManagerSubscription = bleManager.onStateChange((newState) => {
+      /// Do not remove this log
+      console.log("State", newState);
+
       if (newState === State.PoweredOn) {
         setIsBLEAvailable(true);
         setBLEAlert(false);
@@ -281,33 +286,24 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
   };
 
   return (
-    <PageWithScrollViewHeader
+    <PageWithScrollView
       backgroundMode="image"
+      contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
-      contentContainerStyle={style.flatten(["flex-grow-1"]) as ViewStyle}
-      headerTitle="Connect hardware wallet"
-      parallaxHeaderHeight={170}
-      fixed={
-        <React.Fragment>
-          <View style={style.flatten(["flex-1"])} />
-          <Button
-            text="Next"
-            size="large"
-            containerStyle={
-              style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
-            }
-            disabled={!isBLEAvailable}
-            loading={isCreating}
-            onPress={submit}
-          />
-        </React.Fragment>
-      }
     >
       <Text
         style={
-          style.flatten(["h6", "color-gray-200", "margin-top-10"]) as ViewStyle
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-y-10",
+            "font-medium",
+          ]) as ViewStyle
         }
       >
+        Connect hardware wallet
+      </Text>
+      <Text style={style.flatten(["h6", "color-gray-200"]) as ViewStyle}>
         To keep your account safe, avoid any personal information or words
       </Text>
       <Controller
@@ -501,6 +497,16 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
           </View>
         </React.Fragment>
       ) : null}
-    </PageWithScrollViewHeader>
+      <View style={style.flatten(["flex-1"])} />
+      <Button
+        text="Next"
+        size="large"
+        disabled={!isBLEAvailable}
+        loading={isCreating}
+        onPress={submit}
+      />
+      {/* Mock element for bottom padding */}
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+    </PageWithScrollView>
   );
 });
