@@ -17,7 +17,7 @@ export const WelcomePage: FunctionComponent = () => {
         src={require("@assets/svg/wireframe/welcome-frame.svg")}
         alt=""
       />
-      <div>
+      <div className={styleWelcome["content"]}>
         <img
           src={require("@assets/svg/wireframe/welcome-content.svg")}
           alt=""
