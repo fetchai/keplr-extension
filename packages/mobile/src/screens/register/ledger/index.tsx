@@ -286,7 +286,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       contentContainerStyle={style.flatten(["flex-grow-1"]) as ViewStyle}
       headerTitle="Connect hardware wallet"
-      parallaxHeaderHeight={192}
+      parallaxHeaderHeight={170}
       fixed={
         <React.Fragment>
           <View style={style.flatten(["flex-1"])} />

@@ -164,7 +164,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
       custom: {
         h1: {
           fontSize: 32,
-          lineHeight: 56,
+          lineHeight: 40,
           letterSpacing: 0.3,
           ...getPlatformFontWeight("700"),
         },
@@ -543,6 +543,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         "104": 104,
         "116": 116,
         "122": 122,
+        "180": 180,
         "214": 214,
         "400": 400,
         "600": 600,

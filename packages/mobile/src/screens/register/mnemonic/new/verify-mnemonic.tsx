@@ -109,7 +109,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       headerTitle="Verify your recovery phrase"
-      parallaxHeaderHeight={192}
+      parallaxHeaderHeight={170}
       fixed={
         <React.Fragment>
           <View style={style.flatten(["flex-1"])} />

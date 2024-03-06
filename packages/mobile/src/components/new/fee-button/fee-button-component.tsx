@@ -169,14 +169,6 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
         >
           <View style={style.flatten(["flex-row"])}>
             <Text style={style.flatten(["h6", "color-white"])}>{label}</Text>
-            {/* <Text
-              style={style.flatten(
-                ["h6", "color-platinum-100", "text-caption1"],
-                [selected && "color-white"]
-              )}
-            >
-              {" ~ 15 min"}
-            </Text> */}
             {price ? (
               <Text
                 style={
@@ -218,12 +210,12 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
       >
         <Text
           style={StyleSheet.flatten([
-            style.flatten([
-              "h6",
-              "color-platinum-100",
-              "margin-bottom-18",
-            ]) as ViewStyle,
-            labelStyle,
+            labelStyle ??
+              (style.flatten([
+                "h6",
+                "color-platinum-100",
+                "margin-bottom-18",
+              ]) as ViewStyle),
           ])}
         >
           {label}

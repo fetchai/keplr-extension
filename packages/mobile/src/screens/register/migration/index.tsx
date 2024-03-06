@@ -125,7 +125,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
             <InputCardView
               label="Ethereum Address"
               containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
+                style.flatten(["margin-bottom-4", "margin-top-10"]) as ViewStyle
               }
               error={errors.ethAddress?.message}
               onBlur={onBlur}

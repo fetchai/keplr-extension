@@ -9,7 +9,14 @@ export const TabBarView: FunctionComponent<{
   selected: any;
   setSelected: any;
   blurButton?: boolean;
-}> = ({ listItem, selected, setSelected, blurButton = false }) => {
+  contentContainerStyle?: ViewStyle;
+}> = ({
+  listItem,
+  selected,
+  setSelected,
+  blurButton = false,
+  contentContainerStyle,
+}) => {
   const [prevSelected, setPrevSelected] = useState(0);
 
   const style = useStyle();
@@ -68,7 +75,7 @@ export const TabBarView: FunctionComponent<{
       horizontal={true}
       extraData={selected}
       ItemSeparatorComponent={renderSeparator}
-      // contentContainerStyle={[style.flatten(["width-full"]) as ViewStyle]}
+      contentContainerStyle={contentContainerStyle}
       scrollEnabled={false}
     />
   );

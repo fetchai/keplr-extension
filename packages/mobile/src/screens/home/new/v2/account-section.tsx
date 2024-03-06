@@ -24,12 +24,10 @@ import { PasswordInputModal } from "modals/password-input/modal";
 import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
-import { InboxIcon } from "components/new/icon/inbox-icon";
 import { separateNumericAndDenom, titleCase } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import Toast from "react-native-toast-message";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -138,11 +136,11 @@ export const AccountSection: FunctionComponent<{
                 "padding-x-18",
                 "padding-y-8",
                 "justify-center",
-                "margin-right-12",
+                // "margin-right-12",
               ]) as ViewStyle
             }
           />
-          <IconButton
+          {/* <IconButton
             borderRadius={32}
             icon={<InboxIcon size={18} />}
             backgroundBlur={false}
@@ -161,7 +159,7 @@ export const AccountSection: FunctionComponent<{
                 text1: "Under development",
               })
             }
-          />
+          /> */}
         </View>
       </View>
       <BlurBackground
@@ -209,8 +207,12 @@ export const AccountSection: FunctionComponent<{
         />
       </BlurBackground>
       <View style={style.flatten(["items-center"]) as ViewStyle}>
-        <View style={style.flatten(["flex-row"]) as ViewStyle}>
-          <Text style={style.flatten(["h1", "color-white"]) as ViewStyle}>
+        <View style={style.flatten(["flex-row", "margin-top-14"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten(["h1", "color-white", "font-medium"]) as ViewStyle
+            }
+          >
             {totalNumber}
           </Text>
           <Text

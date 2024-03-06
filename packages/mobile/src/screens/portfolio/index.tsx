@@ -36,6 +36,7 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         selected={selectedId}
         setSelected={setSelectedId}
         blurButton={true}
+        contentContainerStyle={style.flatten(["margin-y-10"]) as ViewStyle}
       />
       {selectedId === AssertsSectionEnum.Tokens && (
         <View style={style.flatten(["margin-y-10"]) as ViewStyle}>

@@ -34,7 +34,7 @@ export const SendPhase2: FunctionComponent<{
   sendConfigs: SendConfigs;
   setIsNext: any;
 }> = observer(({ sendConfigs, setIsNext }) => {
-  const { chainStore, accountStore, analyticsStore, priceStore } = useStore();
+  const { chainStore, accountStore, priceStore } = useStore();
 
   const route = useRoute<
     RouteProp<
@@ -213,11 +213,6 @@ export const SendPhase2: FunctionComponent<{
                 },
                 {
                   onBroadcasted: (txHash) => {
-                    analyticsStore.logEvent("Send token tx broadcasted", {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                      feeType: sendConfigs.feeConfig.feeType,
-                    });
                     smartNavigation.pushSmart("TxPendingResult", {
                       txHash: Buffer.from(txHash).toString("hex"),
                     });

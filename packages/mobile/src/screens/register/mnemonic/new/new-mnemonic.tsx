@@ -54,7 +54,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       headerTitle="Save your recovery phrase"
-      parallaxHeaderHeight={192}
+      parallaxHeaderHeight={170}
       fixed={
         <React.Fragment>
           <View style={style.flatten(["flex-1"])} />

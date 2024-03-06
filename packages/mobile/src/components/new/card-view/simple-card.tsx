@@ -24,22 +24,6 @@ export const SimpleCardView: FunctionComponent<{
 }) => {
   const style = useStyle();
 
-  // function populateGradientText() {
-  //   const headingArray = heading.split(" ");
-  //   if (headingArray.length / 6 === 2) {
-  //     return [headingArray.slice(0, 5), headingArray.slice(6, 11)];
-  //   } else if (headingArray.length / 6 === 4) {
-  //     return [
-  //       headingArray.slice(0, 5),
-  //       headingArray.slice(6, 11),
-  //       headingArray.slice(12, 17),
-  //       headingArray.slice(18, 23),
-  //     ];
-  //   }
-  //
-  //   return [] as string[];
-  // }
-
   return (
     <React.Fragment>
       {mainHeading ? (
@@ -98,7 +82,7 @@ export const SimpleCardView: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "text-button3",
+                  "text-caption1",
                   "padding-4",
                   "color-gray-200",
                 ]) as ViewStyle

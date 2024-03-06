@@ -4,7 +4,6 @@ import { CardModal } from "../card";
 import { Animated, ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
-import { MemoInput } from "components/input";
 import {
   useFeeConfig,
   useMemoConfig,
@@ -16,7 +15,6 @@ import { Button } from "components/button";
 import { Msg as AminoMsg } from "@keplr-wallet/types";
 import { Msg } from "./msg";
 import { observer } from "mobx-react-lite";
-import { FeeInSign } from "./fee";
 import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
 import { WCAppLogoAndName } from "components/wallet-connect";
 import WalletConnect from "@walletconnect/client";
@@ -26,6 +24,11 @@ import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUnmount } from "hooks/use-unmount";
+import { IconButton } from "components/new/button/icon";
+import { XmarkIcon } from "components/new/icon/xmark";
+import { MemoInputView } from "components/new/card-view/memo-input";
+import { BlurBackground } from "components/new/blur-background/blur-background";
+import { FeeInSign } from "modals/sign/fee";
 const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
   KeyboardAwareScrollView
 );
@@ -34,7 +37,7 @@ export const SignModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
 }> = registerModal(
-  observer(({ isOpen }) => {
+  observer(({ isOpen, close }) => {
     const {
       chainStore,
       accountStore,
@@ -154,16 +157,15 @@ export const SignModal: FunctionComponent<{
             <View key={i.toString()}>
               <Msg title={title}>
                 {scrollViewHorizontal ? (
-                  <ScrollView
-                    horizontal={true}
-                    indicatorStyle={style.theme === "dark" ? "white" : "black"}
-                  >
+                  <ScrollView showsHorizontalScrollIndicator={false}>
                     <Text style={style.flatten(["body3", "color-text-low"])}>
                       {content}
                     </Text>
                   </ScrollView>
                 ) : (
-                  <Text style={style.flatten(["body3", "color-text-low"])}>
+                  <Text
+                    style={style.flatten(["text-caption2", "color-gray-300"])}
+                  >
                     {content}
                   </Text>
                 )}
@@ -223,9 +225,22 @@ export const SignModal: FunctionComponent<{
     }
 
     return (
-      <CardModal title="Confirm Transaction">
+      <CardModal
+        title="Confirm transaction"
+        right={
+          <IconButton
+            icon={<XmarkIcon />}
+            backgroundBlur={true}
+            blurIntensity={20}
+            borderRadius={50}
+            onPress={() => close()}
+            iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          />
+        }
+      >
         <AnimatedKeyboardAwareScrollView
-          indicatorStyle={style.theme === "dark" ? "white" : "black"}
+          style={style.flatten(["max-height-600"]) as ViewStyle}
+          showsVerticalScrollIndicator={false}
           extraScrollHeight={30}
         >
           {wcSession ? (
@@ -236,38 +251,37 @@ export const SignModal: FunctionComponent<{
           ) : null}
           <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
             <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
-              <Text style={style.flatten(["subtitle3", "color-blue-400"])}>
+              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
                 {`${msgs.length.toString()} `}
               </Text>
-              <Text style={style.flatten(["subtitle3", "color-text-middle"])}>
-                Messages
+              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+                {msgs.length > 1 ? "Messages" : "Message"}
               </Text>
             </Text>
-            <View
-              style={style.flatten([
-                "border-radius-8",
-                "border-width-1",
-                "border-color-gray-50",
-                "dark:border-color-platinum-400",
-                "overflow-hidden",
-              ])}
+            <BlurBackground
+              borderRadius={12}
+              blurIntensity={16}
+              containerStyle={
+                [
+                  style.flatten([
+                    "border-radius-8",
+                    "border-width-1",
+                    "overflow-hidden",
+                  ]),
+                ] as ViewStyle
+              }
             >
               <ScrollView
-                style={
-                  style.flatten([
-                    "max-height-214",
-                    "background-color-white",
-                    "dark:background-color-platinum-500",
-                  ]) as ViewStyle
-                }
+                style={style.flatten(["max-height-180"]) as ViewStyle}
                 persistentScrollbar={true}
-                indicatorStyle={style.theme === "dark" ? "white" : "black"}
+                indicatorStyle={"white"}
               >
                 {renderedMsgs}
               </ScrollView>
-            </View>
+            </BlurBackground>
           </View>
-          <MemoInput label="Memo" memoConfig={memoConfig} />
+          <MemoInputView label="Memo" memoConfig={memoConfig} />
+          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
           <FeeInSign
             feeConfig={feeConfig}
             gasConfig={gasConfig}
@@ -275,8 +289,11 @@ export const SignModal: FunctionComponent<{
             isInternal={isInternal}
           />
           <Button
-            text="Approve"
+            text="Approve transaction"
             size="large"
+            containerStyle={
+              style.flatten(["border-radius-64", "margin-top-20"]) as ViewStyle
+            }
             disabled={
               signDocWapper == null ||
               signDocHelper.signDocWrapper == null ||
@@ -297,12 +314,12 @@ export const SignModal: FunctionComponent<{
             }}
           />
         </AnimatedKeyboardAwareScrollView>
+        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </CardModal>
     );
   }),
   {
     disableSafeArea: true,
     blurBackdropOnIOS: true,
-    // disableClosingOnBackdropPress: true,
   }
 );

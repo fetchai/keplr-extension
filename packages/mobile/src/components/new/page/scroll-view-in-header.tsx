@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import {
+  Animated,
   Platform,
   ScrollView,
   ScrollViewProps,
@@ -12,7 +13,10 @@ import { HeaderBackButtonIcon } from "components/header/icon/back";
 import { IconButton } from "components/new/button/icon";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { useStyle } from "styles/index";
-import { useSetFocusedScreen } from "components/page/utils";
+import {
+  usePageRegisterScrollYValue,
+  useSetFocusedScreen,
+} from "components/page/utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackgroundMode, ScreenBackground } from "components/page/background";
 import {
@@ -20,6 +24,11 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
+  KeyboardAwareScrollView
+);
 
 export const PageWithScrollViewHeader = forwardRef<
   ScrollView,
@@ -46,15 +55,16 @@ export const PageWithScrollViewHeader = forwardRef<
     backgroundMode,
     backgroundBlur,
     headerTitle,
-    parallaxHeaderHeight = 140,
+    parallaxHeaderHeight = 130,
     ...restProps
   } = props;
 
   useSetFocusedScreen();
+  const scrollY = usePageRegisterScrollYValue();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const safeAreaInsets = useSafeAreaInsets();
   const STICKY_HEADER_HEIGHT =
-    Platform.OS === "ios" ? safeAreaInsets.top + 30 : 48 + 30;
+    Platform.OS === "ios" ? safeAreaInsets.top + 30 : 48 + 20;
   const ContainerElement = View;
 
   return (
@@ -98,6 +108,38 @@ export const PageWithScrollViewHeader = forwardRef<
             ]) as ViewStyle,
             propStyle,
           ])}
+          renderScrollComponent={() => (
+            <AnimatedKeyboardAwareScrollView
+              innerRef={(_ref) => {
+                if (ref) {
+                  // I don't know why the _ref's type is JSX.Element
+                  if (typeof ref === "function") {
+                    ref(_ref as any);
+                  } else {
+                    ref.current = _ref as any;
+                  }
+                }
+              }}
+              style={StyleSheet.flatten([
+                style.flatten([
+                  "flex-1",
+                  "padding-0",
+                  "overflow-visible",
+                ]) as ViewStyle,
+                propStyle,
+              ])}
+              keyboardOpeningTime={0}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: { contentOffset: { y: scrollY } },
+                  },
+                ],
+                { useNativeDriver: true, listener: onScroll }
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
           renderForeground={() => (
             <View style={styles.parallaxHeader}>
               <Text style={style.flatten(["color-white", "h1", "font-medium"])}>
@@ -164,7 +206,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     textAlign: "center",
-    top: 30,
+    top: 28,
     left: 16,
   },
   fixedSection: {
