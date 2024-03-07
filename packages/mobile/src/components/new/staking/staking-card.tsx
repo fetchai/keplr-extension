@@ -13,6 +13,7 @@ import { Dec } from "@keplr-wallet/unit";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
+import { TransactionModal } from "modals/transaction";
 
 export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   cardStyle,
@@ -108,6 +109,9 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     },
   ];
 
+  const [txnHash, setTxnHash] = useState<string>("");
+  const [openModal, setOpenModal] = useState(false);
+
   const renderLine = (color: string) => {
     return (
       <CardDivider
@@ -172,6 +176,59 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     );
   };
 
+  async function onSubmit() {
+    const validatorAddresses =
+      rewards.getDescendingPendingRewardValidatorAddresses(8);
+    const tx =
+      accountInfo.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
+
+    setIsSendingTx(true);
+
+    try {
+      let gas =
+        accountInfo.cosmos.msgOpts.withdrawRewards.gas *
+        validatorAddresses.length;
+
+      // Gas adjustment is 1.5
+      // Since there is currently no convenient way to adjust the gas adjustment on the UI,
+      // Use high gas adjustment to prevent failure.
+      try {
+        gas = (await tx.simulate()).gasUsed * 1.5;
+      } catch (e) {
+        // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
+        // Therefore, the failure is expected. If the simulation fails, simply use the default value.
+        console.log(e);
+      }
+
+      await tx.send(
+        { amount: [], gas: gas.toString() },
+        "",
+        {},
+        {
+          onBroadcasted: (txHash) => {
+            setTxnHash(Buffer.from(txHash).toString("hex"));
+            setOpenModal(true);
+          },
+        }
+      );
+    } catch (e) {
+      if (
+        e?.message === "Request rejected" ||
+        e?.message === "Transaction rejected"
+      ) {
+        Toast.show({
+          type: "error",
+          text1: "Transaction rejected",
+        });
+        return;
+      }
+      console.log(e);
+      smartNavigation.navigateSmart("Home", {});
+    } finally {
+      setIsSendingTx(false);
+    }
+  }
+
   return (
     <BlurBackground
       blurIntensity={10}
@@ -222,70 +279,24 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
             ]) as ViewStyle
           }
           rippleColor="black@50%"
-          onPress={async () => {
-            const validatorAddresses =
-              rewards.getDescendingPendingRewardValidatorAddresses(8);
-            const tx =
-              accountInfo.cosmos.makeWithdrawDelegationRewardTx(
-                validatorAddresses
-              );
-
-            setIsSendingTx(true);
-
-            try {
-              let gas =
-                accountInfo.cosmos.msgOpts.withdrawRewards.gas *
-                validatorAddresses.length;
-
-              // Gas adjustment is 1.5
-              // Since there is currently no convenient way to adjust the gas adjustment on the UI,
-              // Use high gas adjustment to prevent failure.
-              try {
-                gas = (await tx.simulate()).gasUsed * 1.5;
-              } catch (e) {
-                // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
-                // Therefore, the failure is expected. If the simulation fails, simply use the default value.
-                console.log(e);
-              }
-
-              await tx.send(
-                { amount: [], gas: gas.toString() },
-                "",
-                {},
-                {
-                  onBroadcasted: (txHash) => {
-                    analyticsStore.logEvent("Claim reward tx broadcasted", {
-                      chainId: chainStore.current.chainId,
-                      chainName: chainStore.current.chainName,
-                    });
-                    smartNavigation.pushSmart("TxPendingResult", {
-                      txHash: Buffer.from(txHash).toString("hex"),
-                    });
-                  },
-                }
-              );
-            } catch (e) {
-              if (
-                e?.message === "Request rejected" ||
-                e?.message === "Transaction rejected"
-              ) {
-                Toast.show({
-                  type: "error",
-                  text1: "Transaction rejected",
-                });
-                return;
-              }
-              console.log(e);
-              smartNavigation.navigateSmart("Home", {});
-            } finally {
-              setIsSendingTx(false);
-            }
-          }}
+          onPress={onSubmit}
           loading={
             isSendingTx || accountInfo.txTypeInProgress === "withdrawRewards"
           }
         />
       ) : null}
+      <TransactionModal
+        isOpen={openModal}
+        close={() => {
+          setOpenModal(false);
+        }}
+        txnHash={txnHash}
+        chainId={chainStore.current.chainId}
+        onHomeClick={() => {
+          smartNavigation.navigateSmart("Home", {});
+        }}
+        onTryAgainClick={onSubmit}
+      />
     </BlurBackground>
   );
 };

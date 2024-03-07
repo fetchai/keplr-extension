@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
   AmountConfig,
@@ -21,6 +21,7 @@ import { MemoInputView } from "components/new/card-view/memo-input";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
+import { TransactionModal } from "modals/transaction";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -35,6 +36,9 @@ export const SendPhase2: FunctionComponent<{
   setIsNext: any;
 }> = observer(({ sendConfigs, setIsNext }) => {
   const { chainStore, accountStore, priceStore } = useStore();
+
+  const [txnHash, setTxnHash] = useState<string>("");
+  const [openModal, setOpenModal] = useState(false);
 
   const route = useRoute<
     RouteProp<
@@ -92,6 +96,56 @@ export const SendPhase2: FunctionComponent<{
     sendConfigs.gasConfig.error ??
     sendConfigs.feeConfig.error;
   const txStateIsValid = sendConfigError == null;
+
+  async function onSubmit() {
+    if (!networkIsConnected) {
+      Toast.show({
+        type: "error",
+        text1: "No internet connection",
+      });
+      return;
+    }
+    if (account.isReadyToSendTx && txStateIsValid) {
+      try {
+        const stdFee = sendConfigs.feeConfig.toStdFee();
+
+        const tx = account.makeSendTokenTx(
+          sendConfigs.amountConfig.amount,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          sendConfigs.amountConfig.sendCurrency!,
+          sendConfigs.recipientConfig.recipient
+        );
+
+        await tx.send(
+          stdFee,
+          sendConfigs.memoConfig.memo,
+          {
+            preferNoSetFee: true,
+            preferNoSetMemo: true,
+          },
+          {
+            onBroadcasted: (txHash) => {
+              setTxnHash(Buffer.from(txHash).toString("hex"));
+              setOpenModal(true);
+            },
+          }
+        );
+      } catch (e) {
+        if (
+          e?.message === "Request rejected" ||
+          e?.message === "Transaction rejected"
+        ) {
+          Toast.show({
+            type: "error",
+            text1: "Transaction rejected",
+          });
+          return;
+        }
+        console.log(e);
+        smartNavigation.navigateSmart("Home", {});
+      }
+    }
+  }
 
   const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
 
@@ -185,58 +239,21 @@ export const SendPhase2: FunctionComponent<{
         rippleColor="black@50%"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "send"}
-        onPress={async () => {
-          if (!networkIsConnected) {
-            Toast.show({
-              type: "error",
-              text1: "No internet connection",
-            });
-            return;
-          }
-          if (account.isReadyToSendTx && txStateIsValid) {
-            try {
-              const stdFee = sendConfigs.feeConfig.toStdFee();
-
-              const tx = account.makeSendTokenTx(
-                sendConfigs.amountConfig.amount,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                sendConfigs.amountConfig.sendCurrency!,
-                sendConfigs.recipientConfig.recipient
-              );
-
-              await tx.send(
-                stdFee,
-                sendConfigs.memoConfig.memo,
-                {
-                  preferNoSetFee: true,
-                  preferNoSetMemo: true,
-                },
-                {
-                  onBroadcasted: (txHash) => {
-                    smartNavigation.pushSmart("TxPendingResult", {
-                      txHash: Buffer.from(txHash).toString("hex"),
-                    });
-                  },
-                }
-              );
-            } catch (e) {
-              if (
-                e?.message === "Request rejected" ||
-                e?.message === "Transaction rejected"
-              ) {
-                Toast.show({
-                  type: "error",
-                  text1: "Transaction rejected",
-                });
-                return;
-              }
-              console.log(e);
-              smartNavigation.navigateSmart("Home", {});
-            }
-          }
-        }}
+        onPress={onSubmit}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+      <TransactionModal
+        isOpen={openModal}
+        close={() => {
+          setOpenModal(false);
+        }}
+        txnHash={txnHash}
+        chainId={chainId}
+        onHomeClick={() => {
+          smartNavigation.navigateSmart("Home", {});
+        }}
+        onTryAgainClick={onSubmit}
+      />
     </React.Fragment>
   );
 });
