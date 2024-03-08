@@ -81,6 +81,7 @@ export const NewMnemonicPage: FunctionComponent<{
   const bip44Option = useBIP44Option();
   const [isMainPage, setIsMainPage] = useState(true);
   const { analyticsStore } = useStore();
+  const [continueClicked, setContinueClicked] = useState(false);
 
   return (
     <React.Fragment>
@@ -92,9 +93,9 @@ export const NewMnemonicPage: FunctionComponent<{
             }}
           />
           <div className={style["pageTitle"]}>Create a new wallet</div>
-          <div className={style["newMnemonicText"]}>
+          {/* <div className={style["newMnemonicText"]}>
             Enter your password to sign in
-          </div>
+          </div> */}
           <AuthIntro registerConfig={registerConfig} />
           <Card
             leftImageStyle={{ height: "32px", width: "32px" }}
@@ -124,6 +125,8 @@ export const NewMnemonicPage: FunctionComponent<{
           newMnemonicConfig={newMnemonicConfig}
           bip44Option={bip44Option}
           isMainPage={isMainPage}
+          continueClicked={continueClicked}
+          setContinueClicked={setContinueClicked}
         />
       ) : null}
       {!isMainPage && newMnemonicConfig.mode === "verify" ? (
@@ -131,405 +134,440 @@ export const NewMnemonicPage: FunctionComponent<{
           registerConfig={registerConfig}
           newMnemonicConfig={newMnemonicConfig}
           bip44Option={bip44Option}
+          setContinueClicked={setContinueClicked}
         />
       ) : null}
     </React.Fragment>
   );
 });
 
-export const GenerateMnemonicModePage: FunctionComponent<{
+interface GenerateMnemonicModePageProps {
   registerConfig: RegisterConfig;
   newMnemonicConfig: NewMnemonicConfig;
   bip44Option: BIP44Option;
   isMainPage: boolean;
-}> = observer(
-  ({ registerConfig, newMnemonicConfig, bip44Option, isMainPage }) => {
-    const intl = useIntl();
-    const notification = useNotification();
-    const {
-      register,
-      handleSubmit,
-      getValues,
-      formState: { errors },
-    } = useForm<FormData>({
-      defaultValues: {
-        name: newMnemonicConfig.name,
-        words: newMnemonicConfig.mnemonic,
-        password: "",
-        confirmPassword: "",
-      },
-    });
-    const [continueClicked, setContinueClicked] = useState(false);
-    const [checkBox1Checked, setCheckBox1Checked] = useState(false);
-    const [checkBox2Checked, setCheckBox2Checked] = useState(false);
-
-    const handleCopyClicked = useCallback(async () => {
-      await navigator.clipboard.writeText(newMnemonicConfig.mnemonic);
-      notification.push({
-        placement: "top-center",
-        type: "success",
-        duration: 2,
-        content: "Copied Mnemonic",
-        canDelete: true,
-        transition: {
-          duration: 0.25,
+  continueClicked: boolean;
+  setContinueClicked: any;
+}
+export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
+  observer(
+    ({
+      registerConfig,
+      newMnemonicConfig,
+      bip44Option,
+      isMainPage,
+      continueClicked,
+      setContinueClicked,
+    }) => {
+      const intl = useIntl();
+      const notification = useNotification();
+      const {
+        register,
+        handleSubmit,
+        getValues,
+        formState: { errors },
+      } = useForm<FormData>({
+        defaultValues: {
+          name: newMnemonicConfig.name,
+          words: newMnemonicConfig.mnemonic,
+          password: "",
+          confirmPassword: "",
         },
       });
-    }, []);
-    return (
-      <div>
-        {!isMainPage && !continueClicked ? (
-          <div>
-            <BackButton
-              onClick={() => {
-                registerConfig.clear();
-              }}
-            />
-            <div>
-              <div style={{ color: "white", fontSize: "32px" }}>
-                Save your recovery
-              </div>
-              <div style={{ color: "white", fontSize: "32px" }}> phrase</div>
-              <div
-                style={{
-                  color: "rgba(255,255,255,0.8)",
-                  fontSize: "16px",
-                  marginBottom: "5px",
-                }}
-              >
-                These words below will let you recover your wallet if you lose
-                your device. We recommend writing down your recovery phrase and
-                storing it in a secure offline location, and never share with
-                anyone!
-              </div>
-            </div>
-            <div className={style["title"]} style={{ display: "flex" }}>
-              <div style={{ float: "right" }}>
-                <ButtonGroup size="sm" style={{ marginBottom: "4px" }}>
-                  <Button
-                    type="button"
-                    color="primary"
-                    outline={newMnemonicConfig.numWords !== NumWords.WORDS12}
-                    onClick={() => {
-                      newMnemonicConfig.setNumWords(NumWords.WORDS12);
-                    }}
-                  >
-                    <FormattedMessage id="register.create.toggle.word12" />
-                  </Button>
-                  <Button
-                    type="button"
-                    color="primary"
-                    outline={newMnemonicConfig.numWords !== NumWords.WORDS24}
-                    onClick={() => {
-                      newMnemonicConfig.setNumWords(NumWords.WORDS24);
-                    }}
-                  >
-                    <FormattedMessage id="register.create.toggle.word24" />
-                  </Button>
-                </ButtonGroup>
-              </div>
-            </div>
-            <div className={style["newMnemonicContainer"]}>
-              <div className={style["newMnemonic"]}>
-                {newMnemonicConfig.mnemonic}
-              </div>
-              <img
-                className={style["copyImage"]}
-                onClick={handleCopyClicked}
-                src={require("@assets/svg/wireframe/copy.svg")}
-                alt=""
-              />
-            </div>
-            <label className={style["checkbox"]}>
-              <input
-                type="checkbox"
-                checked={checkBox1Checked}
-                onChange={() => setCheckBox1Checked(!checkBox1Checked)}
-              />{" "}
-              I understand that if I lose my recovery phrase, I will not be able
-              to access my wallet.
-            </label>
-            <label className={style["checkbox"]}>
-              {" "}
-              <input
-                type="checkbox"
-                checked={checkBox2Checked}
-                onChange={() => setCheckBox2Checked(!checkBox2Checked)}
-              />{" "}
-              I understand that my assets can be stolen if I share my recovery
-              phrase with someone else.
-            </label>
-            <AdvancedBIP44Option bip44Option={bip44Option} />
-            <ButtonV2
-              styleProps={{ marginBottom: "20px" }}
-              disabled={!checkBox1Checked || !checkBox2Checked}
-              onClick={() => setContinueClicked(true)}
-              text=""
-            >
-              Continue
-            </ButtonV2>
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              width: "333px",
-              marginLeft: "7%",
-            }}
-          >
-            <BackButton
-              onClick={() => {
-                registerConfig.clear();
-              }}
-            />
-            <div className={style["pageTitle"]}>Create a new wallet</div>
-            <div className={style["newMnemonicText"]}>
-              To keep your account safe, avoid any personal information or words
-            </div>
-            <Form
-              className={style["formContainer"]}
-              onSubmit={handleSubmit(async (data: FormData) => {
-                newMnemonicConfig.setName(data.name);
-                newMnemonicConfig.setPassword(data.password);
+      const [checkBox1Checked, setCheckBox1Checked] = useState(false);
+      const [checkBox2Checked, setCheckBox2Checked] = useState(false);
 
-                newMnemonicConfig.setMode("verify");
-              })}
-            >
-              <Label
-                for="name"
-                style={{
-                  color: "rgba(255,255,255,0.6)",
-                  fontWeight: 550,
-                  fontSize: "15px",
-                }}
-              >
-                {intl.formatMessage({ id: "register.name" })}
-              </Label>
-              <Input
-                className={style2["addressInput"]}
-                type="text"
-                {...register("name", {
-                  required: intl.formatMessage({
-                    id: "register.name.error.required",
-                  }),
-                })}
-                error={errors.name && errors.name.message}
-                maxLength={20}
-                style={{
-                  width: "333px !important",
+      const handleCopyClicked = useCallback(async () => {
+        await navigator.clipboard.writeText(newMnemonicConfig.mnemonic);
+        notification.push({
+          placement: "top-center",
+          type: "success",
+          duration: 2,
+          content: "Copied Mnemonic",
+          canDelete: true,
+          transition: {
+            duration: 0.25,
+          },
+        });
+      }, []);
+      return (
+        <div>
+          {!isMainPage && !continueClicked ? (
+            <div>
+              <BackButton
+                onClick={() => {
+                  registerConfig.clear();
                 }}
               />
-              {registerConfig.mode === "create" ? (
-                <div style={{ marginTop: "-27px" }}>
-                  <PasswordInput
-                    {...register("password", {
-                      required: intl.formatMessage({
-                        id: "register.create.input.password.error.required",
-                      }),
-                      validate: (password: string): string | undefined => {
-                        if (password.length < 8) {
-                          return intl.formatMessage({
-                            id: "register.create.input.password.error.too-short",
-                          });
-                        }
-                      },
-                    })}
-                    error={errors.password && errors.password.message}
-                  />
-                  <PasswordInput
-                    passwordLabel="Confirm Password"
-                    {...register("confirmPassword", {
-                      required: intl.formatMessage({
-                        id: "register.create.input.confirm-password.error.required",
-                      }),
-                      validate: (
-                        confirmPassword: string
-                      ): string | undefined => {
-                        if (confirmPassword !== getValues()["password"]) {
-                          return intl.formatMessage({
-                            id: "register.create.input.confirm-password.error.unmatched",
-                          });
-                        }
-                      },
-                    })}
-                    error={
-                      errors.confirmPassword && errors.confirmPassword.message
-                    }
-                  />
+              <div>
+                <div style={{ color: "white", fontSize: "32px" }}>
+                  Save your recovery
                 </div>
-              ) : null}
-              <ButtonV2 text={""} styleProps={{ marginBottom: "20px" }}>
-                <FormattedMessage id="register.create.button.next" />
+                <div style={{ color: "white", fontSize: "32px" }}> phrase</div>
+                <div
+                  style={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: "16px",
+                    marginBottom: "5px",
+                  }}
+                >
+                  These words below will let you recover your wallet if you lose
+                  your device. We recommend writing down your recovery phrase
+                  and storing it in a secure offline location, and never share
+                  with anyone!
+                </div>
+              </div>
+              <div className={style["title"]} style={{ display: "flex" }}>
+                <div style={{ float: "right" }}>
+                  <ButtonGroup size="sm" style={{ marginBottom: "4px" }}>
+                    <Button
+                      type="button"
+                      color="primary"
+                      outline={newMnemonicConfig.numWords !== NumWords.WORDS12}
+                      onClick={() => {
+                        newMnemonicConfig.setNumWords(NumWords.WORDS12);
+                      }}
+                    >
+                      <FormattedMessage id="register.create.toggle.word12" />
+                    </Button>
+                    <Button
+                      type="button"
+                      color="primary"
+                      outline={newMnemonicConfig.numWords !== NumWords.WORDS24}
+                      onClick={() => {
+                        newMnemonicConfig.setNumWords(NumWords.WORDS24);
+                      }}
+                    >
+                      <FormattedMessage id="register.create.toggle.word24" />
+                    </Button>
+                  </ButtonGroup>
+                </div>
+              </div>
+              <div className={style["newMnemonicContainer"]}>
+                <div className={style["newMnemonic"]}>
+                  {newMnemonicConfig.mnemonic}
+                </div>
+                <img
+                  className={style["copyImage"]}
+                  onClick={handleCopyClicked}
+                  src={require("@assets/svg/wireframe/copy.svg")}
+                  alt=""
+                />
+              </div>
+              <label className={style["checkbox"]}>
+                <input
+                  type="checkbox"
+                  checked={checkBox1Checked}
+                  onChange={() => setCheckBox1Checked(!checkBox1Checked)}
+                />{" "}
+                I understand that if I lose my recovery phrase, I will not be
+                able to access my wallet.
+              </label>
+              <label className={style["checkbox"]}>
+                {" "}
+                <input
+                  type="checkbox"
+                  checked={checkBox2Checked}
+                  onChange={() => setCheckBox2Checked(!checkBox2Checked)}
+                />{" "}
+                I understand that my assets can be stolen if I share my recovery
+                phrase with someone else.
+              </label>
+              <AdvancedBIP44Option bip44Option={bip44Option} />
+              <ButtonV2
+                styleProps={{ marginBottom: "20px" }}
+                disabled={!checkBox1Checked || !checkBox2Checked}
+                onClick={() => setContinueClicked(true)}
+                text=""
+              >
+                Continue
               </ButtonV2>
-            </Form>
-          </div>
-        )}
-      </div>
-    );
-  }
-);
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                width: "333px",
+                marginLeft: "7%",
+              }}
+            >
+              <BackButton
+                onClick={() => {
+                  setContinueClicked(false);
+                }}
+              />
+              <div className={style["pageTitle"]}>Create a new wallet</div>
+              <div className={style["newMnemonicText"]}>
+                To keep your account safe, avoid any personal information or
+                words
+              </div>
+              <Form
+                className={style["formContainer"]}
+                onSubmit={handleSubmit(async (data: FormData) => {
+                  newMnemonicConfig.setName(data.name);
+                  newMnemonicConfig.setPassword(data.password);
+
+                  newMnemonicConfig.setMode("verify");
+                })}
+              >
+                <Label
+                  for="name"
+                  style={{
+                    color: "rgba(255,255,255,0.6)",
+                    fontWeight: 550,
+                    fontSize: "15px",
+                  }}
+                >
+                  {intl.formatMessage({ id: "register.name" })}
+                </Label>
+                <Input
+                  className={style2["addressInput"]}
+                  type="text"
+                  {...register("name", {
+                    required: intl.formatMessage({
+                      id: "register.name.error.required",
+                    }),
+                  })}
+                  // error={errors.name && errors.name.message}
+                  maxLength={20}
+                  style={{
+                    width: "333px !important",
+                  }}
+                />
+                {errors.name && errors.name.message && (
+                  <div className={style2["addressErrorText"]}>
+                    address is required
+                  </div>
+                )}
+                {registerConfig.mode === "create" ? (
+                  <div style={{ marginTop: "-27px" }}>
+                    <PasswordInput
+                      {...register("password", {
+                        required: intl.formatMessage({
+                          id: "register.create.input.password.error.required",
+                        }),
+                        validate: (password: string): string | undefined => {
+                          if (password.length < 8) {
+                            return intl.formatMessage({
+                              id: "register.create.input.password.error.too-short",
+                            });
+                          }
+                        },
+                      })}
+                      error={errors.password && errors.password.message}
+                    />
+                    <PasswordInput
+                      passwordLabel="Confirm Password"
+                      {...register("confirmPassword", {
+                        required: intl.formatMessage({
+                          id: "register.create.input.confirm-password.error.required",
+                        }),
+                        validate: (
+                          confirmPassword: string
+                        ): string | undefined => {
+                          if (confirmPassword !== getValues()["password"]) {
+                            return intl.formatMessage({
+                              id: "register.create.input.confirm-password.error.unmatched",
+                            });
+                          }
+                        },
+                      })}
+                      error={
+                        errors.confirmPassword && errors.confirmPassword.message
+                      }
+                    />
+                  </div>
+                ) : null}
+                <ButtonV2
+                  disabled={!!errors.password?.message}
+                  text={""}
+                  styleProps={{ marginBottom: "20px" }}
+                >
+                  <FormattedMessage id="register.create.button.next" />
+                </ButtonV2>
+              </Form>
+            </div>
+          )}
+        </div>
+      );
+    }
+  );
 
 export const VerifyMnemonicModePage: FunctionComponent<{
   registerConfig: RegisterConfig;
   newMnemonicConfig: NewMnemonicConfig;
   bip44Option: BIP44Option;
-}> = observer(({ registerConfig, newMnemonicConfig, bip44Option }) => {
-  const wordsSlice = useMemo(() => {
-    const words = newMnemonicConfig.mnemonic.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      words[i] = words[i].trim();
-    }
-    return words;
-  }, [newMnemonicConfig.mnemonic]);
-  const [randomizedWords, setRandomizedWords] = useState<string[]>([]);
-  const [suggestedWords, setSuggestedWords] = useState<string[]>([]);
-  const [clickedButtons, setClickedButtons] = useState<number[]>([]);
-
-  const firstButtonsPerRow = randomizedWords.length > 12 ? 4 : 3;
-
-  function chunkArray(array: any, size: any) {
-    const chunkedArray = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunkedArray.push(array.slice(i, i + size));
-    }
-    return chunkedArray;
-  }
-
-  const suggestedRows = chunkArray(suggestedWords, firstButtonsPerRow);
-
-  useEffect(() => {
-    const words = newMnemonicConfig.mnemonic.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      words[i] = words[i].trim();
-      suggestedWords.push(" ");
-    }
-    words.sort((word1, word2) => {
-      return word1 > word2 ? 1 : -1;
-    });
-    setRandomizedWords(words);
-  }, [newMnemonicConfig.mnemonic]);
-
-  const { analyticsStore } = useStore();
-
-  const handleClickFirstButton = (word: string, index: number) => {
-    if (!clickedButtons.includes(index)) {
-      const updatedSuggestedWords = [...suggestedWords];
-      const updatedClickedButtons = [...clickedButtons];
-
-      if (updatedSuggestedWords[index] === " ") {
-        updatedSuggestedWords[index] = word;
-        updatedClickedButtons.push(index);
-      } else {
-        const existingIndex = randomizedWords.findIndex(
-          (w) => w === updatedSuggestedWords[index]
-        );
-        if (existingIndex !== -1) {
-          updatedClickedButtons.splice(
-            updatedClickedButtons.indexOf(existingIndex),
-            1
-          );
-        }
-        updatedSuggestedWords[index] = word;
+  setContinueClicked: any;
+}> = observer(
+  ({ registerConfig, newMnemonicConfig, bip44Option, setContinueClicked }) => {
+    const wordsSlice = useMemo(() => {
+      const words = newMnemonicConfig.mnemonic.split(" ");
+      for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].trim();
       }
+      return words;
+    }, [newMnemonicConfig.mnemonic]);
+    const [randomizedWords, setRandomizedWords] = useState<string[]>([]);
+    const [suggestedWords, setSuggestedWords] = useState<string[]>([]);
+    const [clickedButtons, setClickedButtons] = useState<number[]>([]);
+    const [disabledButtons, setDisabledButtons] = useState<number[]>([]);
 
-      setSuggestedWords(updatedSuggestedWords);
-      setClickedButtons(updatedClickedButtons);
+    const firstButtonsPerRow = randomizedWords.length > 12 ? 4 : 3;
+
+    function chunkArray(array: any, size: any) {
+      const chunkedArray = [];
+      for (let i = 0; i < array.length; i += size) {
+        chunkedArray.push(array.slice(i, i + size));
+      }
+      return chunkedArray;
     }
-  };
 
-  const handleClickSecondButton = (index: number) => {
-    const wordToAdd = randomizedWords[index];
-    const firstEmptyButtonIndex = suggestedWords.findIndex(
-      (word) => word === " "
-    );
+    const suggestedRows = chunkArray(suggestedWords, firstButtonsPerRow);
 
-    if (firstEmptyButtonIndex !== -1) {
-      const updatedSuggestedWords = [...suggestedWords];
-      updatedSuggestedWords[firstEmptyButtonIndex] = wordToAdd;
-      setSuggestedWords(updatedSuggestedWords);
+    useEffect(() => {
+      const words = newMnemonicConfig.mnemonic.split(" ");
+      for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].trim();
+        suggestedWords.push(" ");
+      }
+      words.sort((word1, word2) => {
+        return word1 > word2 ? 1 : -1;
+      });
+      setRandomizedWords(words);
+    }, [newMnemonicConfig.mnemonic]);
 
-      const updatedRandomizedWords = [...randomizedWords];
-      updatedRandomizedWords[index] = " ";
-      setRandomizedWords(updatedRandomizedWords);
-    }
-  };
+    const { analyticsStore } = useStore();
 
-  return (
-    <div>
-      <BackButton
-        onClick={() => {
-          newMnemonicConfig.setMode("generate");
-        }}
-      />
-      <div className={style["pageTitle"]}>
-        Verify your recovery <br></br> phrase
-      </div>
-      <div style={{ minHeight: "153px" }}>
-        {suggestedRows.map((row, rowIndex) => (
-          <div className={style["buttons"]} key={rowIndex}>
-            {row.map((word: string, i: number) => (
+    const handleClickFirstButton = (word: string, index: number) => {
+      if (!clickedButtons.includes(index)) {
+        const updatedSuggestedWords = [...suggestedWords];
+        const updatedClickedButtons = [...clickedButtons];
+        const updatedDisabledButtons = [...disabledButtons];
+
+        // Update suggested word based on current state
+        updatedSuggestedWords[index] =
+          word === updatedSuggestedWords[index] ? " " : word;
+
+        // Update clicked buttons based on the change
+        if (updatedSuggestedWords[index] === " ") {
+          // Remove button from clicked if clicked again (becomes empty)
+          const existingIndex = updatedClickedButtons.indexOf(index);
+          if (existingIndex !== -1) {
+            updatedClickedButtons.splice(existingIndex, 1);
+          }
+        } else {
+          // Add button to clicked if not already clicked
+          if (!updatedClickedButtons.includes(index)) {
+            updatedClickedButtons.push(index);
+          }
+        }
+
+        // Update disabled buttons based on clicked buttons
+        const buttonIndex = randomizedWords.indexOf(word);
+        updatedDisabledButtons.splice(
+          updatedDisabledButtons.indexOf(buttonIndex),
+          updatedClickedButtons.includes(index) ? 0 : 1 // Enable if clicked, disable otherwise
+        );
+
+        setSuggestedWords(updatedSuggestedWords);
+        setClickedButtons(updatedClickedButtons);
+        setDisabledButtons(updatedDisabledButtons);
+      }
+    };
+
+    const handleClickSecondButton = (index: number) => {
+      const wordToAdd = randomizedWords[index];
+      const firstEmptyButtonIndex = suggestedWords.findIndex(
+        (word) => word === " "
+      );
+
+      if (firstEmptyButtonIndex !== -1) {
+        const updatedSuggestedWords = [...suggestedWords];
+        updatedSuggestedWords[firstEmptyButtonIndex] = wordToAdd;
+        setSuggestedWords(updatedSuggestedWords);
+
+        // Disable the clicked button instead of removing the word:
+        setDisabledButtons([...disabledButtons, index]);
+      }
+    };
+    return (
+      <div>
+        <BackButton
+          onClick={() => {
+            setContinueClicked(true);
+            newMnemonicConfig.setMode("generate");
+          }}
+        />
+        <div className={style["pageTitle"]}>
+          Verify your recovery <br></br> phrase
+        </div>
+        <div style={{ minHeight: "153px" }}>
+          {suggestedRows.map((row, rowIndex) => (
+            <div className={style["buttons"]} key={rowIndex}>
+              {row.map((word: string, i: number) => (
+                <Button
+                  className={style["button"]}
+                  key={word + i.toString()}
+                  onClick={() =>
+                    handleClickFirstButton(
+                      word,
+                      rowIndex * firstButtonsPerRow + i
+                    )
+                  }
+                >
+                  {word}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+        <hr />
+        <div>
+          <div className={style["buttons"]}>
+            {randomizedWords.map((word, i) => (
               <Button
-                className={style["button"]}
+                className={style["btn2"]}
                 key={word + i.toString()}
-                onClick={() =>
-                  handleClickFirstButton(
-                    word,
-                    rowIndex * firstButtonsPerRow + i
-                  )
-                }
+                onClick={() => handleClickSecondButton(i)}
+                disabled={disabledButtons.includes(i)}
               >
                 {word}
               </Button>
             ))}
           </div>
-        ))}
-      </div>
-      <hr />
-      <div>
-        <div className={style["buttons"]}>
-          {randomizedWords.map((word, i) => (
-            <Button
-              className={style["btn2"]}
-              key={word + i.toString()}
-              onClick={() => handleClickSecondButton(i)}
-              disabled={word === " "}
-            >
-              {word}
-            </Button>
-          ))}
         </div>
+        <ButtonV2
+          text=""
+          disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
+          styleProps={{
+            marginTop: "30px",
+            marginBottom: "20px",
+          }}
+          onClick={async (e: any) => {
+            e.preventDefault();
+            try {
+              await registerConfig.createMnemonic(
+                newMnemonicConfig.name,
+                newMnemonicConfig.mnemonic,
+                newMnemonicConfig.password,
+                bip44Option.bip44HDPath
+              );
+              analyticsStore.setUserProperties({
+                registerType: "seed",
+                accountType: "mnemonic",
+              });
+            } catch (e) {
+              alert(e.message ? e.message : e.toString());
+              registerConfig.clear();
+            }
+          }}
+          data-loading={registerConfig.isLoading}
+        >
+          <FormattedMessage id="register.verify.button.register" />
+        </ButtonV2>
       </div>
-      <ButtonV2
-        text=""
-        disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
-        styleProps={{
-          marginTop: "30px",
-          marginBottom: "20px",
-        }}
-        onClick={async (e: any) => {
-          e.preventDefault();
-          try {
-            await registerConfig.createMnemonic(
-              newMnemonicConfig.name,
-              newMnemonicConfig.mnemonic,
-              newMnemonicConfig.password,
-              bip44Option.bip44HDPath
-            );
-            analyticsStore.setUserProperties({
-              registerType: "seed",
-              accountType: "mnemonic",
-            });
-          } catch (e) {
-            alert(e.message ? e.message : e.toString());
-            registerConfig.clear();
-          }
-        }}
-        data-loading={registerConfig.isLoading}
-      >
-        <FormattedMessage id="register.verify.button.register" />
-      </ButtonV2>
-    </div>
-  );
-});
+    );
+  }
+);

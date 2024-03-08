@@ -134,6 +134,7 @@ export const AdvancedBIP44Option: FunctionComponent<{
               display: "flex",
               alignItems: "baseline",
               color: "white",
+              width: "410px",
             }}
           >
             <div style={{ margin: "5px" }}>{`m/44'/${

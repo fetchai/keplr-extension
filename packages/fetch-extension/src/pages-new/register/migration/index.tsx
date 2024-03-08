@@ -54,7 +54,8 @@ const MigrationSelectionPage: FunctionComponent<{
 
 export const MigrateEthereumAddressPage: FunctionComponent<{
   registerConfig: RegisterConfig;
-}> = observer(({ registerConfig }) => {
+  setSelectedCard:any;
+}> = observer(({ registerConfig, setSelectedCard }) => {
   const [mode, setMode] = useState<MigrationMode>(MigrationMode.SELECT_MODE);
 
   switch (mode) {
@@ -62,7 +63,7 @@ export const MigrateEthereumAddressPage: FunctionComponent<{
       return (
         <MigrationSelectionPage
           setMode={setMode}
-          onBack={() => registerConfig.clear()}
+          onBack={() => setSelectedCard("main")}
         />
       );
     case MigrationMode.METAMASK_PRIVATE_KEY:

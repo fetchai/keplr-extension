@@ -7,6 +7,7 @@ interface Props {
   valuesArray: any[];
   renderResult: (value: any, index: number) => React.ReactNode;
   onSearchTermChange: (term: string) => void;
+  itemsStyleProp?:any;
 }
 
 export const SearchBar: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const SearchBar: React.FC<Props> = ({
   valuesArray,
   renderResult,
   onSearchTermChange,
+  itemsStyleProp
 }) => {
   const [suggestedValues, setSuggestedValues] = useState<any[]>([]);
 
@@ -49,7 +51,7 @@ export const SearchBar: React.FC<Props> = ({
       />
 
       {suggestedValues.length > 0 && (
-        <div>
+        <div style={itemsStyleProp}>
           {suggestedValues.map((value, index) => (
             <div key={index}>{renderResult(value, index)}</div>
           ))}

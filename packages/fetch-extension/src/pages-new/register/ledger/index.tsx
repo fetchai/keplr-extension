@@ -43,7 +43,8 @@ export const ImportLedgerIntro: FunctionComponent<{
 
 export const ImportLedgerPage: FunctionComponent<{
   registerConfig: RegisterConfig;
-}> = observer(({ registerConfig }) => {
+  setSelectedCard:any;
+}> = observer(({ registerConfig, setSelectedCard }) => {
   const intl = useIntl();
 
   const bip44Option = useBIP44Option(118);
@@ -95,7 +96,7 @@ export const ImportLedgerPage: FunctionComponent<{
     <div className={style["ledgerContainer"]}>
       <BackButton
         onClick={() => {
-          registerConfig.clear();
+          setSelectedCard("main");
         }}
       />
       <div className={style["pageTitle"]}>Connect hardware wallet</div>

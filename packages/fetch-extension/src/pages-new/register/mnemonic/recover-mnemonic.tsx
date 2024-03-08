@@ -380,18 +380,15 @@ export const RecoverMnemonicPage: FunctionComponent<{
           <div className={styleRecoverMnemonic["backButtonContainer"]}>
             <BackButton
               onClick={() => {
-                registerConfig.clear();
+                // registerConfig.clear();
+                setSelectedCard("main");
               }}
             />
           </div>
           <h1 className={styleRecoverMnemonic["title"]}>Import your wallet</h1>
           <div className={styleRecoverMnemonic["container"]}>
             <div className={styleRecoverMnemonic["tabsContainer"]}>
-              <TabsPanel
-                // onTabChange={() => handleTabChange(activeTab)}
-                tabs={tabs}
-                setActiveTab={setActiveTab}
-              />
+              <TabsPanel tabs={tabs} setActiveTab={setActiveTab} />
             </div>
             <div
               className={classnames(
@@ -479,6 +476,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                       className={styleRecoverMnemonic["mnemonicWordContainer"]}
                     >
                       <Input
+                        maxLength={seedType === SeedType.PRIVATE_KEY ? 50 : 16}
                         style={
                           seedType === SeedType.PRIVATE_KEY
                             ? {
@@ -669,10 +667,16 @@ export const RecoverMnemonicPage: FunctionComponent<{
         </React.Fragment>
       )}
       {selectedCard == "connect-hardware" && (
-        <ImportLedgerPage registerConfig={registerConfig} />
+        <ImportLedgerPage
+          registerConfig={registerConfig}
+          setSelectedCard={setSelectedCard}
+        />
       )}
       {selectedCard == "migrate-eth" && (
-        <MigrateEthereumAddressPage registerConfig={registerConfig} />
+        <MigrateEthereumAddressPage
+          registerConfig={registerConfig}
+          setSelectedCard={setSelectedCard}
+        />
       )}
     </React.Fragment>
   );

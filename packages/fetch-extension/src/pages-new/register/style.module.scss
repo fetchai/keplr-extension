@@ -14,7 +14,7 @@ html[data-register-page="true"] {
   justify-content: center;
   background: #000d3d;
   background-image: url("../../public/assets/svg/wireframe/bg-register.svg");
-  background-size: auto;
+  background-size: cover;
 }
 
 html[data-register-page="true"] body {
@@ -292,6 +292,13 @@ html[data-register-page="true"] #app .container {
 }
 .btn2:hover {
   color: white;
+  background: transparent !important;
+  border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+}
+.btn2:disabled {
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.6;
   background: transparent !important;
   border: 1px solid var(--Indigo-Indigo-400, #7655fc);
 }
