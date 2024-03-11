@@ -59,7 +59,7 @@ export const AgentNameService = observer(() => {
         </div>
       }
       onBackButton={() => {
-        navigate("/");
+        navigate("/more");
       }}
       showBottomMenu={true}
     >

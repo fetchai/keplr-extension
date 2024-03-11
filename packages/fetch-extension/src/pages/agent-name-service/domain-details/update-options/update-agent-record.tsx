@@ -36,7 +36,7 @@ export const UpdateAgentRecords: React.FC<UpdateAgentRecordsProps> = observer(
     const handleUpdateRecord = async () => {
       try {
         setIsTrnsxLoading(true);
-        updateRecord(
+        await updateRecord(
           current.chainId,
           account,
           domain,

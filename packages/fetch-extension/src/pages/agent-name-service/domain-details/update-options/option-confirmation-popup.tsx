@@ -5,7 +5,7 @@ import style from "../confirmation-popup/style.module.scss";
 import { ExtendDomainExpiration } from "./extend-expiration";
 import { ResetDomain } from "./reset-domain";
 import { RemoveDomain } from "./remove-domain";
-import { UpdateAgentRecords } from "./update-domain-record";
+import { UpdateAgentRecords } from "./update-agent-record";
 
 export const OptionConfirmationPopup = observer(
   ({
