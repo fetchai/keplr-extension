@@ -14,7 +14,7 @@
   background-image: url("../../public/assets/svg/wireframe/bg-returning-user.svg");
 }
 .banner {
-  margin-top: 60px;
+  margin-top: 15px;
   width: 108.996px;
   height: 18px;
   flex-shrink: 0;
@@ -25,15 +25,20 @@
   right: 122.5px;
 }
 .password-field {
-  margin-top: 172px;
+  margin-top: 110px;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
 }
-
+.text {
+  color: #fff;
+  font-family: Lexend;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 25.6px */
+  opacity: 0.6;
+}
 .welcome-text {
-  text-align: center;
   font-family: Lexend;
   font-size: 24px;
   font-style: normal;
@@ -42,7 +47,7 @@
   letter-spacing: -0.48px;
 
   font-size: 24px;
-  background: linear-gradient(64deg, #cf447b 37.86%, #f9774b 78.96%);
+  background: white;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

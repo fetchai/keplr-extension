@@ -94,22 +94,21 @@ export const LockPage: FunctionComponent = observer(() => {
 
         <div className={style["password-field"]}>
           <div className={style["welcome-text"]}>Welcome back</div>
-          <PasswordInput
-            placeholder="Password"
-            error={errors.password && errors.password.message}
-            {...register("password", {
-              required: intl.formatMessage({
-                id: "lock.input.password.error.required",
-              }),
-            })}
-          />
+          <div className={style["text"]}>Enter your password to sign in</div>
+          <div>
+            <PasswordInput
+              placeholder="Password"
+              error={errors.password && errors.password.message}
+              {...register("password", {
+                required: intl.formatMessage({
+                  id: "lock.input.password.error.required",
+                }),
+              })}
+            />
+          </div>
 
           <Button className={style["sign-in"]} block data-loading={loading}>
             Sign in
-            <img
-              src={require("@assets/svg/wireframe/arrow-right.svg")}
-              alt=""
-            />
           </Button>
         </div>
       </Form>

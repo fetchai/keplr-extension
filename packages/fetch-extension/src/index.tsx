@@ -20,7 +20,7 @@ import { LockPage } from "./pages-new/lock";
 // import { MainPage } from "./pages/main";
 import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
-import { RegisterPage } from "./pages/register";
+import { RegisterPage } from "./pages-new/register";
 import { SendPage } from "./pages-new/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
 
