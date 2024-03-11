@@ -21,12 +21,7 @@ import {
   SignMode,
 } from "./types";
 
-import {
-  escapeHTML,
-  ExtensionKVStore,
-  KVStore,
-  sortObjectByKey,
-} from "@keplr-wallet/common";
+import { escapeHTML, KVStore, sortObjectByKey } from "@keplr-wallet/common";
 
 import { ChainsService } from "../chains";
 import { LedgerApp, LedgerService } from "../ledger";
@@ -58,8 +53,6 @@ import { RequestICNSAdr36SignaturesMsg, SwitchAccountMsg } from "./messages";
 import { PubKeySecp256k1 } from "@keplr-wallet/crypto";
 import { closePopupWindow } from "@keplr-wallet/popup";
 import { Msg } from "@keplr-wallet/types/build";
-import { eventEmitter } from "../events";
-import { Account } from "@fetchai/wallet-types";
 
 export class KeyRingService {
   private keyRing!: KeyRing;
@@ -946,27 +939,6 @@ Salt: ${salt}`;
     try {
       return await this.keyRing.changeKeyStoreFromMultiKeyStore(index);
     } finally {
-      const kvStore = new ExtensionKVStore("store_chain_config");
-      const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-      if (!chainId) {
-        throw Error("could not detect current chainId");
-      }
-
-      const key = await this.getKey(chainId);
-      const account: Account = {
-        name: this.getKeyStoreMeta("name"),
-        algo: "secp256k1",
-        pubKey: key.pubKey,
-        address: key.address,
-        bech32Address: new Bech32Address(key.address).toBech32(
-          (await this.chainsService.getChainInfo(chainId)).bech32Config
-            .bech32PrefixAccAddr
-        ),
-        isNanoLedger: key.isNanoLedger,
-        isKeystone: key.isKeystone,
-      };
-
-      eventEmitter.emit("accountChanged", account);
       this.interactionService.dispatchEvent(
         WEBPAGE_PORT,
         "keystore-changed",
@@ -1094,6 +1066,6 @@ Salt: ${salt}`;
       }
     }
 
-    return await this.keyRing.getKeys(chainId, false);
+    return await this.keyRing.getKeys(chainId, isEvm);
   }
 }

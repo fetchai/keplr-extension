@@ -22,14 +22,14 @@ export class ChainSwitchStore {
   }
 
   @flow
-  *approve(chaiId: string) {
+  *approve(chainId: string) {
     this._isLoading = true;
 
     try {
       const data = this.waitingSuggestedChainId;
 
       if (data) {
-        yield this.interactionStore.approve(data.type, data.id, chaiId);
+        yield this.interactionStore.approve(data.type, data.id, chainId);
       }
     } finally {
       this._isLoading = false;

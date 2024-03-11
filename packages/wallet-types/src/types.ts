@@ -12,8 +12,6 @@ import {
 } from "@keplr-wallet/types";
 import { UmbralApi } from "@fetchai/umbral-types";
 import { PublicKey } from "./public-keys";
-// import { NetworkConfig } from "./network-info";
-import { TxsResponse } from "@cosmjs/launchpad";
 
 /**
  * The representation of the Account
@@ -43,6 +41,11 @@ export interface Account {
    * The bech32Address of the account
    */
   readonly bech32Address: string;
+
+  /**
+   * The Hex Address of the account
+   */
+  readonly EVMAddress: string;
 
   /**
    * Is Nano Ledger account
@@ -146,7 +149,7 @@ export interface AccountsApi {
    * @throws An error if the account can't be found, the wallet is locked or the dApp does not have permission to access
    * the Accounts API
    */
-  getAccount(address: string): Promise<Account>;
+  getAccount(address: string): Promise<Account | null>;
 }
 
 /**
@@ -169,7 +172,12 @@ export interface AddressBookEntry {
   /**
    * A set of chain IDs to which this address book entry is applicable
    */
-  chainIds: string[];
+  // chainIds: string[];
+
+  /**
+   * The human-readable memo associated with the address
+   */
+  memo: string;
 }
 
 /**
@@ -233,51 +241,6 @@ export interface EventHandler<T> {
    * @param handler The handler function that should unsubscribe
    */
   unsubscribe(handler: T): void;
-}
-
-/**
- * The Events API
- *
- * This allows dApp developers to subscribe to wallet events in order to dynamically track wallet state updated
- */
-export interface EventsApi {
-  /**
-   * The event handler for the status update changes i.e. locked vs unlocked
-   */
-  onStatusChanged: EventHandler<(status: WalletStatus) => void | Promise<void>>;
-
-  /**
-   * The event handler for the network updates and changes.
-   *
-   * When the wallet is unlocked it will fire a network changed event
-   */
-  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>>;
-
-  /**
-   * The event handler for the account updates and changes
-   *
-   * When the wallet is unlocked it will fire a account changed event
-   */
-  onAccountChanged: EventHandler<(account: Account) => void | Promise<void>>;
-
-  /**
-   * The event handler for successful transaction events
-   */
-  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
-
-  /**
-   * The event handler for unsuccessful transaction events
-   */
-  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
-  /**
-   * The event handler for successful EVM transaction events
-   */
-  onEVMTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
-
-  /**
-   * The event handler for unsuccessful EVM transaction events
-   */
-  onEVMTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>>;
 }
 
 /**
@@ -427,17 +390,12 @@ export interface WalletApi {
   /**
    * The address book API
    */
-  // addressBook: AddressBookApi;
+  addressBook: AddressBookApi;
 
   /**
    * The signing API
    */
   signing: SigningApi;
-
-  /**
-   * The events API
-   */
-  events: EventsApi;
 }
 
 /**

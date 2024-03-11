@@ -5,30 +5,48 @@ import { Button } from "reactstrap";
 import style from "./style.module.scss";
 import { EmptyLayout } from "@layouts/empty-layout";
 import { FormattedMessage } from "react-intl";
-import { useInteractionInfo } from "@keplr-wallet/hooks";
+import { useAddressBookConfig, useInteractionInfo } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { ToolTip } from "@components/tooltip";
+// import { ToolTip } from "@components/tooltip";
 import classNames from "classnames";
-import { GithubIcon } from "@components/icon";
+// import { GithubIcon, InformationCircleOutline } from "@components/icon";
 import { useStore } from "../../stores";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 
-export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
-  const { chainSwitchStore, analyticsStore, chainStore } = useStore();
-
+export const ApproveUpdateEntry: FunctionComponent = observer(() => {
+  const { addressBookStore, analyticsStore, chainStore } = useStore();
   const [isLoadingPlaceholder, setIsLoadingPlaceholder] = useState(true);
   const navigate = useNavigate();
 
+  const chainId = chainStore.current.chainId;
+  if (!chainId) {
+    throw Error("Chain Id not found");
+  }
+  const addressBookConfig = useAddressBookConfig(
+    new ExtensionKVStore("address-book"),
+    chainStore,
+    chainId,
+    {
+      setRecipient: (): void => {
+        // noop
+      },
+      setMemo: (): void => {
+        // noop
+      },
+    }
+  );
   const interactionInfo = useInteractionInfo(() => {
-    chainSwitchStore.rejectAll();
+    addressBookStore.rejectAllUpdateEntry();
   });
 
   useEffect(() => {
-    if (chainSwitchStore.waitingSuggestedChainId) {
-      analyticsStore.logEvent("Chain switch suggested", {
-        chainId: chainSwitchStore.waitingSuggestedChainId.data.chainId,
-      });
+    if (addressBookStore.waitingSuggestedEntryToUpdate) {
+      // analyticsStore.logEvent("AddressBook listed", {
+      //   // TODO change event params
+      //   chainId: addressBookStore.waitingSuggestedEntryToUpdate.data.entry,
+      // });
     }
-  }, [analyticsStore, chainSwitchStore.waitingSuggestedChainId]);
+  }, [analyticsStore, addressBookStore.waitingSuggestedEntryToUpdate]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -36,7 +54,7 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
     }, 1000);
   }, []);
 
-  if (!chainSwitchStore.waitingSuggestedChainId) {
+  if (!addressBookStore.waitingSuggestedEntryToUpdate) {
     return null;
   }
 
@@ -156,48 +174,15 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                 </div>
               </div>
               <h1 className={style["header"]}>
-                <FormattedMessage
-                  id="chain.switch.title"
-                  values={{
-                    chainName:
-                      chainSwitchStore.waitingSuggestedChainId?.data.chainId,
-                  }}
-                />
+                <FormattedMessage id="addressBook.add.title" />
               </h1>
-
-              <ToolTip
-                tooltip={
-                  <div className={style["tooltip"]}>
-                    <FormattedMessage id="chain.switch.tooltip" />
-                  </div>
-                }
-                trigger="hover"
-              >
-                <div className={style["tag"]}>
-                  {/* <a
-                    href={chainSwitchStore.getCommunityChainInfoUrl(
-                      chainSwitchStore.waitingSuggestedChainId?.data.chainId
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                  > */}
-                  <div className={style["item"]}>
-                    <FormattedMessage id="chain.suggested.community-driven" />
-                    <GithubIcon />
-                  </div>
-                  {/* </a> */}
-                </div>
-              </ToolTip>
 
               <div className={style["paragraph"]}>
                 <FormattedMessage
-                  id="chain.switch.paragraph"
+                  id="addressBook.add.paragraph"
                   values={{
-                    host: chainSwitchStore.waitingSuggestedChainId?.data.origin,
-                    chainId:
-                      chainSwitchStore.waitingSuggestedChainId?.data.chainId,
-                    // eslint-disable-next-line react/display-name
-                    b: (...chunks: any) => <b>{chunks}</b>,
+                    host: addressBookStore.waitingSuggestedEntryToUpdate?.data
+                      .origin,
                   }}
                 />
               </div>
@@ -208,12 +193,12 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
               className={style["button"]}
               color="danger"
               outline
-              disabled={!chainSwitchStore.waitingSuggestedChainId}
-              data-loading={chainSwitchStore.isLoading}
-              onClick={async (e: any) => {
+              disabled={!addressBookStore.waitingSuggestedEntryToUpdate}
+              data-loading={addressBookStore.isLoading}
+              onClick={async (e) => {
                 e.preventDefault();
 
-                await chainSwitchStore.reject();
+                addressBookStore.rejectUpdateEntry();
 
                 if (
                   interactionInfo.interaction &&
@@ -230,17 +215,33 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
             <Button
               className={style["button"]}
               color="primary"
-              disabled={!chainSwitchStore.waitingSuggestedChainId}
-              data-loading={chainSwitchStore.isLoading}
-              onClick={async (e: any) => {
+              disabled={!addressBookStore.waitingSuggestedEntryToUpdate}
+              data-loading={addressBookStore.isLoading}
+              onClick={async (e) => {
                 e.preventDefault();
 
-                const chainId =
-                  chainSwitchStore.waitingSuggestedChainId?.data.chainId;
-                if (chainId) {
-                  chainSwitchStore.approve(chainId);
-                  chainStore.selectChain(chainId);
-                  chainStore.saveLastViewChainId();
+                const entry =
+                  addressBookStore.waitingSuggestedEntryToUpdate?.data.entry;
+
+                if (entry) {
+                  await addressBookStore.approveUpdateEntry(entry);
+                  await addressBookConfig.loadAddressBookDatas();
+                  const addresses = addressBookConfig.addressBookDatas;
+                  let found: boolean = false;
+                  for (let i = 0; i < addresses.length; i++) {
+                    if (
+                      addresses[i].address === entry.address ||
+                      addresses[i].name === entry.name
+                    ) {
+                      await addressBookConfig.editAddressBookAt(i, entry);
+                      found = true;
+                      break;
+                    }
+                  }
+
+                  if (!found) {
+                    throw new Error("Address not found");
+                  }
                 }
 
                 if (

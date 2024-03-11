@@ -7,7 +7,7 @@ export type FetchWalletApiMethod =
   | `signing.${WalletSigningMethod}`
   | `networks.${NetworksApiMethod}`
   | `accounts.${AccountsApiMethod}`
-  | `events.${EventsApiSubMethod}`;
+  | `addressBook.${AddressBookApiMethods}`;
 
 export type FetchWalletMethod =
   | WalletMethod
@@ -15,7 +15,7 @@ export type FetchWalletMethod =
   | WalletSigningMethod
   | NetworksApiMethod
   | AccountsApiMethod
-  | EventsApiSubMethod;
+  | AddressBookApiMethods;
 
 export type UmbralMethod =
   | "getPublicKey"
@@ -50,27 +50,8 @@ export type AccountsApiMethod =
   | "listAccounts"
   | "getAccount";
 
-export type EventsApiSubMethod =
-  | "onStatusChanged.subscribe"
-  | "onStatusChanged.unsubscribe"
-  | "onAccountChanged.subscribe"
-  | "onAccountChanged.unsubscribe"
-  | "onNetworkChanged.subscribe"
-  | "onNetworkChanged.unsubscribe"
-  | "onTxSuccessful.subscribe"
-  | "onTxSuccessful.unsubscribe"
-  | "onTxFailed.subscribe"
-  | "onTxFailed.unsubscribe"
-  | "onEVMTxSuccessful.subscribe"
-  | "onEVMTxSuccessful.unsubscribe"
-  | "onEVMTxFailed.subscribe"
-  | "onEVMTxFailed.unsubscribe";
-
-export type EventsApiMethod =
-  | "onStatusChanged"
-  | "onAccountChanged"
-  | "onNetworkChanged"
-  | "onTxFailed"
-  | "onTxSuccessful"
-  | "onEVMTxSuccessful"
-  | "onEVMTxFailed";
+export type AddressBookApiMethods =
+  | "listEntries"
+  | "addEntry"
+  | "updateEntry"
+  | "deleteEntry";

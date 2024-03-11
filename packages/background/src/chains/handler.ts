@@ -9,11 +9,9 @@ import {
   ListNetworksMsg,
   AddNetworkAndSwitchMsg,
   SwitchNetworkByChainIdMsg,
-  NetworkChangedEventMsg,
 } from "./messages";
 import { ChainInfo } from "@keplr-wallet/types";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { eventEmitter } from "../events";
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -31,11 +29,6 @@ export const getHandler: (service: ChainsService) => Handler = (service) => {
         return handleSuggestChainInfoMsg(service)(
           env,
           msg as SuggestChainInfoMsg
-        );
-      case NetworkChangedEventMsg:
-        return handleNetworkChangedEventMsg(service)(
-          env,
-          msg as NetworkChangedEventMsg
         );
       case AddNetworkAndSwitchMsg:
         return handleAddNetworkAndSwitch(service)(
@@ -88,14 +81,6 @@ const handleGetChainInfosWithoutEndpointsMsg: (
     return {
       chainInfos,
     };
-  };
-};
-
-const handleNetworkChangedEventMsg: (
-  service: ChainsService
-) => InternalHandler<NetworkChangedEventMsg> = () => {
-  return async (_, msg) => {
-    eventEmitter.emit("networkChanged", msg.chainInfo);
   };
 };
 

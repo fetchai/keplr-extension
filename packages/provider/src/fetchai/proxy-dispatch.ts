@@ -9,7 +9,7 @@ import {
 } from "./proxy";
 import {
   AccountsApiMethod,
-  EventsApiMethod,
+  AddressBookApiMethods,
   NetworksApiMethod,
   UmbralMethod,
   WalletMethod,
@@ -57,25 +57,14 @@ async function dispatchRequest(
           // @ts-ignore
           ...JSONUint8Array.unwrap(request.args)
         );
-      } else if (methodArray[1] === "events") {
-        // fetchApi.wallet.events.onStatusChanged.subscribe
-        const property = await fetchApi.wallet.events[
-          methodArray[methodArray.length - 2] as EventsApiMethod
-        ];
-
-        if (methodArray[methodArray.length - 1] === "subscribe") {
-          property.subscribe(
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            ...JSONUint8Array.unwrap(request.args)
-          );
-        } else if (methodArray[methodArray.length - 1] === "subscribe") {
-          property.unsubscribe(
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            ...JSONUint8Array.unwrap(request.args)
-          );
-        }
+      } else if (methodArray[1] === "addressBook") {
+        return await fetchApi.wallet.addressBook[
+          methodArray[methodArray.length - 1] as AddressBookApiMethods
+        ](
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          ...JSONUint8Array.unwrap(request.args)
+        );
       } else {
         const method = methodArray[methodArray.length - 1] as WalletMethod;
         return await fetchApi.wallet[method](

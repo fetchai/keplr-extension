@@ -259,6 +259,19 @@
 
   "chain.remove.confirm.paragraph": "Are you sure to remove the {chainName}?",
 
+  "account.switch.paragraph": "<b>{host}</b> would like to switch to account <b>{address}</b>",
+  "account.suggested.community-driven": "Community Driven",
+  "account.switch.title": "Switch to {address}",
+
+  "addressBook.add.paragraph": "<b>{host}</b> is requesting to add entry to Address-Book",
+  "addressBook.add.title": "Add entry to Address-Book",
+  "addressBook.list.paragraph": "<b>{host}</b> is requesting to list Address-Book",
+  "addressBook.list.title": "List Address-Book",
+  "addressBook.update.paragraph": "<b>{host}</b> is requesting to update an entry in Address-Book",
+  "addressBook.update.title": "Update entry from Address-Book",
+  "addressBook.delete.paragraph": "<b>{host}</b> is requesting to delete an entry from Address-Book",
+  "addressBook.delete.title": "Delete entry from Address-Book",
+
   "access.title": "Requesting Connection",
   "access.paragraph": "<b>{host}</b> is requesting to connect to your Fetch Wallet account on <b>{chainId}</b>.",
   "access.permission.title": "By approving this request, the website will:",

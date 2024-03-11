@@ -1,4 +1,4 @@
-import { Account, WalletStatus } from "@fetchai/wallet-types";
+import { Account, AddressBookEntry, WalletStatus } from "@fetchai/wallet-types";
 import { Message } from "@keplr-wallet/router";
 import {
   ChainInfo,
@@ -785,7 +785,7 @@ export class CurrentAccountMsg extends Message<Account> {
   }
 
   validateBasic(): void {
-    // noop
+    //noop
   }
 
   route(): string {
@@ -843,17 +843,19 @@ export class ListAccountsMsg extends Message<Account[]> {
   }
 }
 
-export class GetAccountMsg extends Message<Account> {
+export class GetAccountMsg extends Message<Account | null> {
   public static type() {
     return "get-account-msg";
   }
 
-  constructor() {
+  constructor(public readonly address: string) {
     super();
   }
 
   validateBasic(): void {
-    // noop
+    if (!this.address) {
+      throw new Error("address is empty");
+    }
   }
 
   route(): string {
@@ -874,7 +876,9 @@ export class GetNetworkMsg extends Message<ChainInfo> {
     super();
   }
 
-  validateBasic(): void {}
+  validateBasic(): void {
+    //noop
+  }
 
   route(): string {
     return "chains";
@@ -1493,5 +1497,114 @@ export class UnsubscribeOnEVMTxSuccessfulMsg extends Message<void> {
 
   type(): string {
     return UnsubscribeOnEVMTxSuccessfulMsg.type();
+  }
+}
+
+export class ListEntriesMsg extends Message<AddressBookEntry[]> {
+  public static type() {
+    return "list-entries-msg";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "address-book";
+  }
+
+  type(): string {
+    return ListEntriesMsg.type();
+  }
+}
+
+export class AddEntryMsg extends Message<void> {
+  public static type() {
+    return "add-entry-msg";
+  }
+
+  constructor(public readonly entry: AddressBookEntry) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "address-book";
+  }
+
+  type(): string {
+    return AddEntryMsg.type();
+  }
+}
+
+export class UpdateEntryMsg extends Message<void> {
+  public static type() {
+    return "update-entry-msg";
+  }
+
+  constructor(public readonly entry: AddressBookEntry) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "address-book";
+  }
+
+  type(): string {
+    return UpdateEntryMsg.type();
+  }
+}
+export class DeleteEntryMsg extends Message<void> {
+  public static type() {
+    return "delete-entry-msg";
+  }
+
+  constructor(public readonly address: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "address-book";
+  }
+
+  type(): string {
+    return DeleteEntryMsg.type();
+  }
+}
+
+export class SyncAddressBookDataMsg extends Message<void> {
+  public static type() {
+    return "sync-address-book-msg";
+  }
+
+  constructor(public readonly addressBook: AddressBookEntry[]) {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "address-book";
+  }
+
+  type(): string {
+    return SyncAddressBookDataMsg.type();
   }
 }

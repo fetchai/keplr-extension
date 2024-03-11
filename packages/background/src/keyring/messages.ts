@@ -1274,17 +1274,19 @@ export class ListAccountsMsg extends Message<Account[]> {
   }
 }
 
-export class GetAccountMsg extends Message<Account> {
+export class GetAccountMsg extends Message<Account | null> {
   public static type() {
     return "get-account-msg";
   }
 
-  constructor() {
+  constructor(public readonly address: string) {
     super();
   }
 
   validateBasic(): void {
-    // noop
+    if (!this.address) {
+      throw new Error("address is empty");
+    }
   }
 
   route(): string {

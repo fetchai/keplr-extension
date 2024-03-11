@@ -15,7 +15,7 @@ import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
 import {
   InjectedFetchAccount,
-  InjectedFetchEvents,
+  InjectedFetchAddressBook,
   InjectedFetchNetworks,
   InjectedFetchSigning,
   InjectedFetchWalletApi,
@@ -141,7 +141,7 @@ export class BrowserInjectedFetchWallet implements FetchBrowserWallet {
       new InjectedFetchNetworks(createBrowserWindowProxy()),
       new InjectedFetchAccount(createBrowserWindowProxy()),
       new InjectedFetchSigning(createBrowserWindowProxy()),
-      new InjectedFetchEvents(createBrowserWindowProxy()),
+      new InjectedFetchAddressBook(createBrowserWindowProxy()),
       createBrowserWindowProxy()
     );
   }

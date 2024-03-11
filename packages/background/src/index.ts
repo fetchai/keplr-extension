@@ -16,7 +16,7 @@ import * as AutoLocker from "./auto-lock-account/internal";
 import * as Analytics from "./analytics/internal";
 import * as Umbral from "./umbral/internal";
 import * as Messaging from "./messaging/internal";
-import * as Events from "./events/internal";
+import * as AddressBook from "./address-book/internal";
 
 export * from "./persistent-memory";
 export * from "./chains";
@@ -32,7 +32,7 @@ export * from "./permission";
 export * from "./phishing-list";
 export * from "./auto-lock-account";
 export * from "./analytics";
-export * from "./events";
+export * from "./address-book";
 
 import { KVStore } from "@keplr-wallet/common";
 import { ChainInfo } from "@keplr-wallet/types";
@@ -80,7 +80,7 @@ export function init(
     }
   );
 
-  const eventService = new Events.EventService();
+  const addressBookService = new AddressBook.AddressBookService();
 
   const tokensService = new Tokens.TokensService(storeCreator("tokens"));
 
@@ -148,7 +148,7 @@ export function init(
   PersistentMemory.init(router, persistentMemoryService);
   Permission.init(router, permissionService);
   Chains.init(router, chainsService);
-  Events.init(router, eventService);
+  AddressBook.init(router, addressBookService);
   BackgroundTx.init(router, backgroundTxService);
   PhishingList.init(router, phishingListService);
   AutoLocker.init(router, autoLockAccountService);
@@ -178,7 +178,7 @@ export function init(
         interactionService,
         permissionService
       );
-
+      addressBookService.init(interactionService);
       ledgerService.init(interactionService);
       keystoneService.init(interactionService);
       keyRingService.init(

@@ -1,8 +1,8 @@
 import {
   Account,
   AccountsApi,
-  EventHandler,
-  EventsApi,
+  AddressBookApi,
+  AddressBookEntry,
   NetworksApi,
   SigningApi,
   WalletApi,
@@ -29,13 +29,12 @@ import {
 } from "../cosmjs";
 import { Proxy, createProxyRequest, toProxyResponse } from "./proxy";
 import { JSONUint8Array } from "@keplr-wallet/router";
-import { TxsResponse } from "@cosmjs/launchpad";
 import {
   AccountsApiMethod,
   NetworksApiMethod,
   WalletSigningMethod,
   WalletMethod,
-  EventsApiSubMethod,
+  AddressBookApiMethods,
 } from "./types";
 
 export class InjectedFetchWalletApi implements WalletApi {
@@ -43,7 +42,7 @@ export class InjectedFetchWalletApi implements WalletApi {
     public networks: NetworksApi,
     public accounts: AccountsApi,
     public signing: SigningApi,
-    public events: EventsApi,
+    public addressBook: InjectedFetchAddressBook,
     protected readonly proxy: Proxy
   ) {}
 
@@ -346,87 +345,37 @@ export class InjectedFetchSigning implements SigningApi {
   }
 }
 
-export class InjectedFetchEvents implements EventsApi {
+export class InjectedFetchAddressBook implements AddressBookApi {
   constructor(protected readonly proxy: Proxy) {}
 
-  onStatusChanged: EventHandler<
-    (status: WalletStatus) => void | Promise<void>
-  > = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onStatusChanged.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onStatusChanged.unsubscribe", [handler.toString()]);
-    },
-  };
+  /* This method will work when connection is established
+   * with wallet therefore wallet will always give status "unlocked"
+   */
+  async listEntries(): Promise<AddressBookEntry[]> {
+    return await this.requestViaProxy("listEntries", []);
+  }
 
-  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>> =
-    {
-      subscribe: (handler: any) => {
-        this.requestViaProxy("onNetworkChanged.subscribe", [
-          handler.toString(),
-        ]);
-      },
-      unsubscribe: (handler: any) => {
-        this.requestViaProxy("onNetworkChanged.unsubscribe", [
-          handler.toString(),
-        ]);
-      },
-    };
+  async addEntry(entry: AddressBookEntry): Promise<void> {
+    await this.requestViaProxy("addEntry", [entry]);
+  }
 
-  onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onAccountChanged.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onAccountChanged.unsubscribe", [
-        handler.toString(),
-      ]);
-    },
-  };
+  async updateEntry(entry: AddressBookEntry): Promise<void> {
+    return await this.requestViaProxy("updateEntry", [entry]);
+  }
 
-  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onTxSuccessful.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onTxSuccessful.unsubscribe", [handler.toString()]);
-    },
-  };
-  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onTxFailed.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onTxFailed.unsubscribe", [handler.toString()]);
-    },
-  };
-
-  onEVMTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onEVMTxSuccessful.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onEVMTxSuccessful.unsubscribe", [
-        handler.toString(),
-      ]);
-    },
-  };
-
-  onEVMTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: (handler: any) => {
-      this.requestViaProxy("onEVMTxFailed.subscribe", [handler.toString()]);
-    },
-    unsubscribe: (handler: any) => {
-      this.requestViaProxy("onEVMTxFailed.unsubscribe", [handler.toString()]);
-    },
-  };
+  async deleteEntry(address: string): Promise<void> {
+    return await this.requestViaProxy("deleteEntry", [address]);
+  }
 
   protected async requestViaProxy(
-    method: EventsApiSubMethod,
+    method: AddressBookApiMethods,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(`wallet.events.${method}`, args);
+    const proxyRequest = createProxyRequest(
+      `wallet.addressBook.${method}`,
+      args
+    );
+
     return new Promise((resolve, reject) => {
       const messageHandler = (e: any) => {
         const proxyResponse = toProxyResponse(e.data);

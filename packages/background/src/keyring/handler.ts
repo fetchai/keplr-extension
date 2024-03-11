@@ -38,6 +38,7 @@ import {
   RequestVerifyADR36AminoSignDocFetchSigning,
   SwitchAccountMsg,
   ListAccountsMsg,
+  GetAccountMsg,
 } from "./messages";
 import { KeyRingService } from "./service";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -45,7 +46,6 @@ import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { KeyRingStatus } from "./keyring";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Account } from "@fetchai/wallet-types";
-import { eventEmitter } from "../events";
 
 export const getHandler: (service: KeyRingService) => Handler = (
   service: KeyRingService
@@ -97,6 +97,8 @@ export const getHandler: (service: KeyRingService) => Handler = (
         return handleUnlockKeyRingMsg(service)(env, msg as UnlockKeyRingMsg);
       case GetKeyMsg:
         return handleGetKeyMsg(service)(env, msg as GetKeyMsg);
+      case GetAccountMsg:
+        return handleGetAccountMsg(service)(env, msg as GetAccountMsg);
       case RequestSignAminoMsg:
         return handleRequestSignAminoMsg(service)(
           env,
@@ -331,7 +333,6 @@ const handleLockKeyRingMsg: (
   service: KeyRingService
 ) => InternalHandler<LockKeyRingMsg> = (service) => {
   const status = service.lock();
-  eventEmitter.emit("statusChanged", service.keyRingStatus);
   return () => {
     return {
       status,
@@ -344,7 +345,6 @@ const handleUnlockKeyRingMsg: (
 ) => InternalHandler<UnlockKeyRingMsg> = (service) => {
   return async (_, msg) => {
     const status = await service.unlock(msg.password);
-    eventEmitter.emit("statusChanged", service.keyRingStatus);
     return {
       status,
     };
@@ -604,7 +604,6 @@ const handleLockWallet: (
 ) => InternalHandler<LockWalletMsg> = (service) => {
   return () => {
     service.lock();
-    eventEmitter.emit("statusChanged", service.keyRingStatus);
   };
 };
 
@@ -613,8 +612,6 @@ const handleUnlockWallet: (
 ) => InternalHandler<UnlockWalletMsg> = (service) => {
   return async (env, _) => {
     await service.enable(env);
-
-    eventEmitter.emit("statusChanged", service.keyRingStatus);
   };
 };
 
@@ -629,18 +626,29 @@ const handleCurrentAccountMsg: (
     }
 
     const key = await service.getKey(chainId);
-    return {
+
+    const chainInfo = await service.chainsService.getChainInfo(chainId);
+    const isEVM = chainInfo.features?.includes("evm");
+    const bech32Add = new Bech32Address(key.address).toBech32(
+      chainInfo.bech32Config.bech32PrefixAccAddr
+    );
+
+    const hexadd = Bech32Address.fromBech32(
+      bech32Add,
+      chainInfo.bech32Config.bech32PrefixAccAddr
+    ).toHex(true);
+
+    const acc: Account = {
       name: service.getKeyStoreMeta("name"),
-      algo: "secp256k1",
+      algo: key.algo,
       pubKey: key.pubKey,
       address: key.address,
-      bech32Address: new Bech32Address(key.address).toBech32(
-        (await service.chainsService.getChainInfo(chainId)).bech32Config
-          .bech32PrefixAccAddr
-      ),
+      bech32Address: isEVM ? "" : bech32Add,
       isNanoLedger: key.isNanoLedger,
       isKeystone: key.isKeystone,
+      EVMAddress: isEVM ? hexadd : "",
     };
+    return acc;
   };
 };
 
@@ -655,6 +663,7 @@ const handleSwitchAccountMsg: (
     }
     const keys = await service.getKeys(chainId);
     const chainInfo = await service.chainsService.getChainInfo(chainId);
+    const isEVM = chainInfo.features?.includes("evm");
     let addressFound = false;
 
     keys.forEach(async (key, i) => {
@@ -662,7 +671,17 @@ const handleSwitchAccountMsg: (
         chainInfo.bech32Config.bech32PrefixAccAddr
       );
 
-      if (bech32Address === msg.address) {
+      if (isEVM) {
+        const hexAddress = Bech32Address.fromBech32(
+          bech32Address,
+          chainInfo.bech32Config.bech32PrefixAccAddr
+        ).toHex(true);
+
+        if (hexAddress === msg.address) {
+          addressFound = true;
+          await service.switchAccountByAddress(env, msg.address, msg.origin, i);
+        }
+      } else if (bech32Address === msg.address) {
         addressFound = true;
         await service.switchAccountByAddress(env, msg.address, msg.origin, i);
       }
@@ -686,20 +705,27 @@ const handleListAccountsMsg: (
     const keys = await service.getKeys(chainId);
 
     const chainInfo = await service.chainsService.getChainInfo(chainId);
-
+    const isEVM = chainInfo.features?.includes("evm");
     const returnData: Account[] = [];
 
     keys.forEach((key) => {
+      const bech32Add = new Bech32Address(key.address).toBech32(
+        chainInfo.bech32Config.bech32PrefixAccAddr
+      );
       returnData.push({
         name: key.name,
-        algo: "secp256k1",
+        algo: key.algo,
         pubKey: key.pubKey,
         address: key.address,
-        bech32Address: new Bech32Address(key.address).toBech32(
-          chainInfo.bech32Config.bech32PrefixAccAddr
-        ),
+        bech32Address: isEVM ? "" : bech32Add,
         isNanoLedger: key.isNanoLedger,
         isKeystone: key.isKeystone,
+        EVMAddress: isEVM
+          ? Bech32Address.fromBech32(
+              bech32Add,
+              chainInfo.bech32Config.bech32PrefixAccAddr
+            ).toHex(true)
+          : "",
       });
     });
 
@@ -817,5 +843,45 @@ const handleRequestVerifyADR36AminoSignDocFetchSigning: (
       msg.data,
       msg.signature
     );
+  };
+};
+
+const handleGetAccountMsg: (
+  service: KeyRingService
+) => InternalHandler<GetAccountMsg> = (service) => {
+  return async (_, msg) => {
+    const kvStore = new ExtensionKVStore("store_chain_config");
+    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
+    if (!chainId) {
+      throw Error("could not detect current chainId");
+    }
+
+    const keys = await service.getKeys(chainId);
+
+    const chainInfo = await service.chainsService.getChainInfo(chainId);
+    const isEVM = chainInfo.features?.includes("evm");
+    let foundAccount: Account | null = null;
+    keys.forEach((key) => {
+      const bech32Add = new Bech32Address(key.address).toBech32(
+        chainInfo.bech32Config.bech32PrefixAccAddr
+      );
+      const hexAdd = Bech32Address.fromBech32(
+        bech32Add,
+        chainInfo.bech32Config.bech32PrefixAccAddr
+      ).toHex(true);
+      if (msg.address === bech32Add || msg.address === hexAdd) {
+        foundAccount = {
+          name: key.name,
+          algo: key.algo,
+          pubKey: key.pubKey,
+          address: key.address,
+          bech32Address: isEVM ? "" : bech32Add,
+          isNanoLedger: key.isNanoLedger,
+          isKeystone: key.isKeystone,
+          EVMAddress: isEVM ? hexAdd : "",
+        } as Account;
+      }
+    });
+    return foundAccount;
   };
 };

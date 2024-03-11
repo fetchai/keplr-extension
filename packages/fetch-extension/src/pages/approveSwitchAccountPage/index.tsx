@@ -7,9 +7,7 @@ import { EmptyLayout } from "@layouts/empty-layout";
 import { FormattedMessage } from "react-intl";
 import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { ToolTip } from "@components/tooltip";
 import classNames from "classnames";
-import { GithubIcon } from "@components/icon";
 import { useStore } from "../../stores";
 import { store } from "@chatStore/index";
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
@@ -173,42 +171,18 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                 </div>
                 <h1 className={style["header"]}>
                   <FormattedMessage
-                    id="chain.switch.title"
+                    id="account.switch.title"
                     values={{
-                      chainName:
+                      address:
                         accountSwitchStore.waitingSuggestedAccount?.data
                           .address,
                     }}
                   />
                 </h1>
 
-                <ToolTip
-                  tooltip={
-                    <div className={style["tooltip"]}>
-                      <FormattedMessage id="chain.switch.tooltip" />
-                    </div>
-                  }
-                  trigger="hover"
-                >
-                  <div className={style["tag"]}>
-                    {/* <a
-                    href={accountSwitchStore.getCommunityChainInfoUrl(
-                      accountSwitchStore.waitingSuggestedAccount?.data.address
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                  > */}
-                    <div className={style["item"]}>
-                      <FormattedMessage id="chain.suggested.community-driven" />
-                      <GithubIcon />
-                    </div>
-                    {/* </a> */}
-                  </div>
-                </ToolTip>
-
                 <div className={style["paragraph"]}>
                   <FormattedMessage
-                    id="chain.switch.paragraph"
+                    id="account.switch.paragraph"
                     values={{
                       host: accountSwitchStore.waitingSuggestedAccount?.data
                         .origin,
@@ -258,17 +232,22 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     accountSwitchStore.waitingSuggestedAccount?.data.address;
                   const index =
                     accountSwitchStore.waitingSuggestedAccount?.data.index;
-
-                  if (address && index) {
-                    accountSwitchStore.approve(address);
-
-                    await keyRingStore.changeKeyRing(index);
-                    analyticsStore.logEvent("Account changed");
-                    store.dispatch(resetUser({}));
-                    store.dispatch(resetProposals({}));
-                    store.dispatch(resetChatList({}));
-                    store.dispatch(setIsChatSubscriptionActive(false));
-                    messageAndGroupListenerUnsubscribe();
+                  if (address !== undefined && index !== undefined) {
+                    try {
+                      accountSwitchStore.approve(address);
+                      await keyRingStore.changeKeyRing(index);
+                      analyticsStore.logEvent("Account changed");
+                      store.dispatch(resetUser({}));
+                      store.dispatch(resetProposals({}));
+                      store.dispatch(resetChatList({}));
+                      store.dispatch(setIsChatSubscriptionActive(false));
+                      messageAndGroupListenerUnsubscribe();
+                    } catch (error) {
+                      console.log(
+                        "error while trying to switch account",
+                        error
+                      );
+                    }
                   }
 
                   if (

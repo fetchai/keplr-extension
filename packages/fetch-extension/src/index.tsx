@@ -110,6 +110,10 @@ import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
 import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
 import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
 import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
+import { ApproveListEntries } from "./pages/approveListEntries";
+import { ApproveAddEntry } from "./pages/approveAddEntry";
+import { ApproveUpdateEntry } from "./pages/approveUpdateEntry";
+import { ApproveDeleteEntry } from "./pages/approveDeleteEntry";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -316,6 +320,19 @@ ReactDOM.render(
                       <Route
                         path="/add-chain-by-network"
                         element={<ApproveAddChainByNetworkPage />}
+                      />
+                      <Route
+                        path="/list-entries"
+                        element={<ApproveListEntries />}
+                      />
+                      <Route path="/add-entry" element={<ApproveAddEntry />} />
+                      <Route
+                        path="/update-entry"
+                        element={<ApproveUpdateEntry />}
+                      />
+                      <Route
+                        path="/delete-entry"
+                        element={<ApproveDeleteEntry />}
                       />
                       <Route
                         path="/switch-chain-by-chainid"

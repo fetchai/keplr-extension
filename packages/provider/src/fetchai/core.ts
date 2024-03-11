@@ -26,7 +26,6 @@ import {
 
 import {
   EnableAccessMsg,
-  GetKeyMsg,
   StatusMsg,
   UnlockWalletMsg,
   LockWalletMsg,
@@ -41,20 +40,11 @@ import {
   RequestVerifyADR36AminoSignDocFetchSigning,
   AddNetworkAndSwitchMsg,
   SwitchNetworkByChainIdMsg,
-  UnsubscribeOnStatusChangeMsg,
-  SubscribeOnStatusChangeMsg,
-  SubscribeOnAccountChangeMsg,
-  UnsubscribeOnAccountChangeMsg,
-  SubscribeOnNetworkChangeMsg,
-  UnsubscribeOnNetworkChangeMsg,
-  SubscribeOnTxSuccessfulMsg,
-  UnsubscribeOnTxSuccessfulMsg,
-  SubscribeOnTxFailedMsg,
-  UnsubscribeOnTxFailedMsg,
-  SubscribeOnEVMTxSuccessfulMsg,
-  UnsubscribeOnEVMTxSuccessfulMsg,
-  SubscribeOnEVMTxFailedMsg,
-  UnsubscribeOnEVMTxFailedMsg,
+  GetAccountMsg,
+  ListEntriesMsg,
+  AddEntryMsg,
+  UpdateEntryMsg,
+  DeleteEntryMsg,
 } from "../types";
 import deepmerge from "deepmerge";
 
@@ -64,12 +54,12 @@ import {
   FetchBrowserWallet,
   Account,
   AccountsApi,
-  EventHandler,
-  EventsApi,
   NetworksApi,
   SigningApi,
   WalletApi,
   WalletStatus,
+  AddressBookApi,
+  AddressBookEntry,
 } from "@fetchai/wallet-types";
 
 import {
@@ -79,7 +69,6 @@ import {
 } from "../cosmjs";
 
 import Long from "long";
-import { TxsResponse } from "@cosmjs/launchpad";
 
 class ExtensionCoreUmbral implements UmbralApi {
   constructor(protected readonly requester: MessageRequester) {}
@@ -181,7 +170,7 @@ export class FetchWalletApi implements WalletApi {
     public networks: NetworksApi,
     public accounts: AccountsApi,
     public signing: SigningApi,
-    public events: EventsApi,
+    public addressBook: AddressBookApi,
     protected readonly requester: MessageRequester
   ) {}
 
@@ -222,10 +211,10 @@ export class FetchAccount implements AccountsApi {
     );
   }
 
-  async getAccount(address: string): Promise<Account> {
+  async getAccount(address: string): Promise<Account | null> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
-      new GetKeyMsg(address)
+      new GetAccountMsg(address)
     );
   }
 }
@@ -417,116 +406,33 @@ export class FetchSigning implements SigningApi {
   }
 }
 
-export class FetchEvents implements EventsApi {
+export class FetchAddressBook implements AddressBookApi {
   constructor(protected readonly requester: MessageRequester) {}
 
-  onStatusChanged: EventHandler<
-    (status: WalletStatus) => void | Promise<void>
-  > = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnStatusChangeMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnStatusChangeMsg(handler)
-      );
-    },
-  };
+  async listEntries(): Promise<AddressBookEntry[]> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new ListEntriesMsg()
+    );
+  }
 
-  onAccountChanged: EventHandler<(account: Account) => void | Promise<void>> = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnAccountChangeMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnAccountChangeMsg(handler)
-      );
-    },
-  };
+  async addEntry(entry: AddressBookEntry): Promise<void> {
+    await this.requester.sendMessage(BACKGROUND_PORT, new AddEntryMsg(entry));
+  }
 
-  onNetworkChanged: EventHandler<(network: ChainInfo) => void | Promise<void>> =
-    {
-      subscribe: async (handler: any) => {
-        await this.requester.sendMessage(
-          BACKGROUND_PORT,
-          new SubscribeOnNetworkChangeMsg(handler)
-        );
-      },
-      unsubscribe: async (handler: any) => {
-        await this.requester.sendMessage(
-          BACKGROUND_PORT,
-          new UnsubscribeOnNetworkChangeMsg(handler)
-        );
-      },
-    };
+  async updateEntry(entry: AddressBookEntry): Promise<void> {
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new UpdateEntryMsg(entry)
+    );
+  }
 
-  onTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnTxSuccessfulMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnTxSuccessfulMsg(handler)
-      );
-    },
-  };
-
-  onTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnTxFailedMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnTxFailedMsg(handler)
-      );
-    },
-  };
-
-  onEVMTxSuccessful: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnEVMTxSuccessfulMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnEVMTxSuccessfulMsg(handler)
-      );
-    },
-  };
-
-  onEVMTxFailed: EventHandler<(tx: TxsResponse) => void | Promise<void>> = {
-    subscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new SubscribeOnEVMTxFailedMsg(handler)
-      );
-    },
-    unsubscribe: async (handler: any) => {
-      await this.requester.sendMessage(
-        BACKGROUND_PORT,
-        new UnsubscribeOnEVMTxFailedMsg(handler)
-      );
-    },
-  };
+  async deleteEntry(address: string): Promise<void> {
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new DeleteEntryMsg(address)
+    );
+  }
 }
 
 export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
@@ -543,7 +449,7 @@ export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
       new FetchNetworks(requester),
       new FetchAccount(requester),
       new FetchSigning(requester),
-      new FetchEvents(requester),
+      new FetchAddressBook(requester),
       requester
     );
   }
