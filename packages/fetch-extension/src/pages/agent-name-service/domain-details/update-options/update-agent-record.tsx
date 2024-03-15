@@ -70,7 +70,7 @@ export const UpdateAgentRecords: React.FC<UpdateAgentRecordsProps> = observer(
     return (
       <React.Fragment>
         <h4 style={{ color: "white" }}>
-          Are you sure you want to updtae agent record for {domain} ?
+          Are you sure you want to update agent record for {domain} ?
         </h4>
         <AgentAddressInput
           agentAddressSearchValue={agentAddress}

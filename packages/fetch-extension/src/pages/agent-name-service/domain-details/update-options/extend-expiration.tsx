@@ -30,15 +30,16 @@ export const ExtendDomainExpiration: React.FC<ExtendDomainExpirationProps> =
     const navigate = useNavigate();
     const [expiryDateTime, setExpiryDateTime] = useState();
 
-    const handleTransaction = async (
-      action: any,
-      notificationConfig: any,
-      redirectPath?: any
-    ) => {
+    const handleExtendExpiration = async () => {
       try {
-        const a = await action();
+        const a = await extendDomainExpiration(
+          chainId,
+          account,
+          domain,
+          notification
+        );
         console.log("hash:", a);
-        navigate(`/agent-name-service/${redirectPath}`, {
+        navigate(`/agent-name-service`, {
           state: {
             disclaimer: "Changes can take up to 5 mins to take effect.",
           },
@@ -55,21 +56,9 @@ export const ExtendDomainExpiration: React.FC<ExtendDomainExpirationProps> =
           transition: {
             duration: 0.25,
           },
-          ...notificationConfig,
         });
         navigate(`/agent-name-service/`);
       }
-    };
-
-    const handleExtendExpiration = async () => {
-      const notificationConfig = {
-        content: "Changes can take up to 5 mins to take effect.",
-      };
-      await handleTransaction(
-        extendDomainExpiration(chainId, account, domain, notification),
-        notificationConfig,
-        ""
-      );
     };
 
     return (
@@ -79,8 +68,7 @@ export const ExtendDomainExpiration: React.FC<ExtendDomainExpirationProps> =
         </h4>
 
         <div className={style["note"]}>
-          Domain expiry can only be extended earlier than 3hrs before
-          expiration!
+          Domain expiry can only be extended within 3hrs before expiration!
           <ExpirationField
             setExpiryDateTime={setExpiryDateTime}
             styleProps={{ width: "273px", margin: "0px" }}

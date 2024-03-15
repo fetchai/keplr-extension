@@ -9,7 +9,6 @@ export const AddressList = observer(
   ({
     addresses,
     domain,
-    isAdmin,
     isWriter,
     setIsTrnsxLoading,
   }: {
@@ -36,15 +35,6 @@ export const AddressList = observer(
                 )}
                 {formatAddressInANS(address)}
               </div>
-              {isAdmin && (addresses.length > 1 || isWriter) && (
-                <div
-                  onClick={() => setDenyAddress(address)}
-                  className={style["cancel"]}
-                  style={{ width: "12px", height: "18px" }}
-                >
-                  X
-                </div>
-              )}
             </div>
 
             <ConfirmationPopup
