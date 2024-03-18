@@ -140,7 +140,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
     return (
       <div>
-
         <div className={style["editCard"]}>
           <div>
             <div className={style["amountInUsd"]}>
@@ -228,19 +227,33 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         chainName: chainStore.current.chainName,
                         feeType: sendConfigs.feeConfig.feeType,
                       });
-                      navigate("/send", { replace: true, state: { trnsxStatus: "pending" }  });
-
+                      navigate("/send", {
+                        replace: true,
+                        state: { trnsxStatus: "pending" },
+                      });
+                    },
+                    onFulfill: () => {
+                      navigate("/send", {
+                        replace: true,
+                        state: { trnsxStatus: "success" },
+                      });
                     },
                   }
                 );
                 if (!isDetachedPage) {
-                  navigate("/send", { replace: true, state: { trnsxStatus: "success" }  });
+                  navigate("/send", {
+                    replace: true,
+                    state: { trnsxStatus: "pending" },
+                  });
                 }
               } catch (e) {
                 if (!isDetachedPage) {
-                  navigate("/send", { replace: true, state: { trnsxStatus: "failed" }  });
+                  navigate("/send", {
+                    replace: true,
+                    state: { trnsxStatus: "failed" },
+                  });
                 }
-                
+
                 notification.push({
                   type: "warning",
                   placement: "top-center",

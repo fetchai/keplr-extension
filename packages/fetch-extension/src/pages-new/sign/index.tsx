@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { Button } from "reactstrap";
 
-import { HeaderLayout } from "@layouts-v2/header-layout";
-
 import style from "./style.module.scss";
 
 import { useStore } from "../../stores";
@@ -32,14 +30,12 @@ import { ButtonV2 } from "@components-v2/buttons/button";
 export const SignPageV2: FunctionComponent = observer(() => {
   const navigate = useNavigate();
 
-
   const {
     chainStore,
     keyRingStore,
     signInteractionStore,
     accountStore,
     queriesStore,
-    analyticsStore,
   } = useStore();
 
   const [signer, setSigner] = useState("");
@@ -187,21 +183,6 @@ export const SignPageV2: FunctionComponent = observer(() => {
 
   // If this is undefined, show the chain name on the header.
   // If not, show the alternative title.
-  const alternativeTitle = (() => {
-    if (!isLoaded) {
-      return "";
-    }
-
-    if (
-      signDocHelper.signDocWrapper &&
-      signDocHelper.signDocWrapper.isADR36SignDoc &&
-      !ethSignType
-    ) {
-      return "Prove Ownership";
-    }
-
-    return undefined;
-  })();
 
   const approveIsDisabled = (() => {
     if (!isLoaded) {
@@ -259,21 +240,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
     },
   ];
   return (
-    <HeaderLayout
-      showChainName={alternativeTitle == null}
-      alternativeTitle={alternativeTitle != null ? alternativeTitle : undefined}
-      canChangeChainInfo={false}
-      onBackButton={
-        interactionInfo.interactionInternal
-          ? () => {
-              analyticsStore.logEvent("back_click", { pageName: "Sign" });
-              navigate(-1);
-            }
-          : undefined
-      }
-      style={{ background: "white", minHeight: "100%" }}
-      innerStyle={{ display: "flex", flexDirection: "column" }}
-    >
+    <div>
       {
         /*
          Show the informations of tx when the sign data is delivered.
@@ -289,8 +256,10 @@ export const SignPageV2: FunctionComponent = observer(() => {
               }}
               setIsOpen={setIsOpen}
               isOpen={isOpen}
-            ><div style={{ marginBottom: "50px" }}>
-              <TabsPanel tabs={tabs} /></div>
+            >
+              <div style={{ marginBottom: "50px" }}>
+                <TabsPanel tabs={tabs} />
+              </div>
               <div className={style["buttons"]}>
                 {keyRingStore.keyRingType === "ledger" &&
                 signInteractionStore.isLoading ? (
@@ -356,6 +325,6 @@ export const SignPageV2: FunctionComponent = observer(() => {
           </div>
         )
       }
-    </HeaderLayout>
+    </div>
   );
 });
