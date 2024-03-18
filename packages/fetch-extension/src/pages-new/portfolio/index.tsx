@@ -28,7 +28,7 @@ export const Portfolio = () => {
       onBackButton={() => navigate("/")}
     >
       <div className={style["title"]}>Portfolio</div>
-      <TabsPanel tabs={tabs} />
+      <TabsPanel  tabs={tabs}  />
     </HeaderLayout>
   );
 };

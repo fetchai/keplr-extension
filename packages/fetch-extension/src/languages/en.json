@@ -303,7 +303,7 @@
 
   "sign.tab.details": "Details",
   "sign.tab.data": "Data",
-  "sign.list.messages.label": "Messages",
+  "sign.list.messages.label": "Message",
   "sign.info.fee": "Fee",
   "sign.info.memo": "Memo",
   "sign.info.warning.empty-memo": "(Empty memo)",

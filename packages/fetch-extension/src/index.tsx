@@ -91,7 +91,7 @@ import { ChainActivePage } from "./pages/setting/chain-active";
 import { SettingPermissionsGetChainInfosPage } from "./pages/setting/security-privacy/permissions/get-chain-infos";
 import { AuthZPage } from "./pages/authz";
 import { ICNSAdr36SignPage } from "./pages/icns/sign";
-import { SignPage } from "./pages/sign";
+import { SignPageV2 } from "./pages-new/sign";
 import { ChainSuggestedPage } from "./pages/chain/suggest";
 import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant";
 import { ValidatorList } from "./pages/validator-list";
@@ -309,7 +309,9 @@ ReactDOM.render(
                         path="/setting/security-privacy"
                         element={<SettingSecurityPrivacyPage />}
                       />
-                      <Route path="/sign" element={<SignPage />} />
+                      {/* <Route path="/sign" element={<SignPage />} /> */}
+                      <Route path="/sign" element={<SignPageV2 />} />
+
                       <Route
                         path="/icns/adr36-signatures"
                         element={<ICNSAdr36SignPage />}

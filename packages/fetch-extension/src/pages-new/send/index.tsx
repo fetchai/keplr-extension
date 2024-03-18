@@ -22,6 +22,7 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 
 import { SendPhase1 } from "./send-phase-1";
 import { SendPhase2 } from "./send-phase-2";
+import { TransxStatus } from "@components-v2/transx-status";
 
 export const SendPage: FunctionComponent = observer(() => {
   const [isNext, setIsNext] = useState(false);
@@ -208,7 +209,10 @@ export const SendPage: FunctionComponent = observer(() => {
     sendConfigs.gasConfig.error ??
     sendConfigs.feeConfig.error;
   const txStateIsValid = sendConfigError == null;
-
+  const location = useLocation();
+const { trnsxStatus } = location.state || {};
+  // const [trnsxStatus, setTrnsxStatus] = useState("");
+console.log("trnsxStatus",trnsxStatus);
   return (
     <HeaderLayout
       showTopMenu={true}
@@ -275,6 +279,8 @@ export const SendPage: FunctionComponent = observer(() => {
         )
       }
     >
+      {trnsxStatus !== undefined && <TransxStatus status={trnsxStatus} />}
+
       <form
         className={style["formContainer"]}
         onSubmit={async (e) => {
