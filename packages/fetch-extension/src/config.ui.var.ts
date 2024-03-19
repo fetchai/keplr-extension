@@ -25,8 +25,6 @@ export const ADDITIONAL_INTL_MESSAGES: IntlMessages = {};
 
 export const AUTH_SERVER = "https://accounts.fetch.ai/v1";
 
-export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
-
 export const CHAIN_ID_DORADO = "dorado-1";
 export const CHAIN_ID_FETCHHUB = "fetchhub-4";
 export const GROUP_PAGE_COUNT = 30;
@@ -202,6 +200,90 @@ export const FNS_CONFIG: {
   },
 };
 
+export const ANS_CONFIG: {
+  [key: string]: {
+    network: "mainnet" | "testnet";
+    rpc: string;
+    contractAddress: string;
+    validateAgentAddressContract: string;
+    oracleAgentContract: string;
+    isEditable: boolean;
+    apiUrl: string;
+    oracleApi: string;
+    schemaDigest: string;
+  };
+} =
+  process.env.NODE_ENV === "production"
+    ? {
+        [CHAIN_ID_FETCHHUB]: {
+          network: "mainnet",
+          rpc: "https://rpc-fetchhub.fetch.ai:443",
+          contractAddress:
+            "fetch1479lwv5vy8skute5cycuz727e55spkhxut0valrcm38x9caa2x8q99ef0q",
+          validateAgentAddressContract:
+            "fetch1mezzhfj7qgveewzwzdk6lz5sae4dunpmmsjr9u7z0tpmdsae8zmquq3y0y",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+        [CHAIN_ID_DORADO]: {
+          network: "testnet",
+          rpc: "https://rpc-dorado.fetch.ai:443",
+          contractAddress:
+            "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+          validateAgentAddressContract:
+            "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+      }
+    : {
+        [CHAIN_ID_DORADO]: {
+          network: "testnet",
+          rpc: "https://rpc-dorado.fetch.ai:443",
+          contractAddress:
+            "fetch1mxz8kn3l5ksaftx8a9pj9a6prpzk2uhxnqdkwuqvuh37tw80xu6qges77l",
+          validateAgentAddressContract:
+            "fetch1tjagw8g8nn4cwuw00cf0m5tl4l6wfw9c0ue507fhx9e3yrsck8zs0l3q4w",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://staging.agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+        [CHAIN_ID_FETCHHUB]: {
+          network: "mainnet",
+          rpc: "https://rpc-fetchhub.fetch.ai:443",
+          contractAddress:
+            "fetch1479lwv5vy8skute5cycuz727e55spkhxut0valrcm38x9caa2x8q99ef0q",
+          validateAgentAddressContract:
+            "fetch1mezzhfj7qgveewzwzdk6lz5sae4dunpmmsjr9u7z0tpmdsae8zmquq3y0y",
+          oracleAgentContract:
+            "agent1q2v2gegkl9syp6m93aycfv8djwqwtywyumlnlhqrj3pcnyel6y9dy8r2g5w",
+          isEditable: true,
+          apiUrl: "https://staging.agentverse.ai/v1/almanac",
+          oracleApi: "https://oracle.sandbox-london-b.fetch-ai.com/submit",
+          schemaDigest:
+            "model:a8a8aab82fd00e7dfbe0733ea13f4b1c1432143ea133e832a75bc1a3fb0f0860",
+        },
+      };
+export const ANS_AMOUNT = { amount: "600000", denom: "afet" };
+export const ANS_TRNSX_AMOUNT = {
+  denom: "atestfet",
+  amount: "5000000000000000",
+};
+
 export const TRANSACTION_APPROVED = "Transaction approved";
 export const TRANSACTION_SENT = "Transaction sent";
 export const TRANSACTION_SIGNED = "Transaction signed";
@@ -211,3 +293,5 @@ export const AXL_BRIDGE_EVM_TRNSX_FEE = {
   gas: "2730000",
   amount: [{ denom: "eth", amount: "4000000000000000" }],
 };
+export const ANS_REGISTERATION_REGEX =
+  /^[0-9\-.]*[\u203C\u2049\u20E3\u2122\u2139\u2194-\u2199\u21A9-\u21AA\u231A-\u231B\u23E9-\u23EC\u23F0\u23F3\u24C2\u25AA-\u25AB\u25B6\u25C0\u25FB-\u25FE\u2600-\u2601\u260E\u2611\u2614-\u2615\u261D\u263A\u2648-\u2653\u2660\u2663\u2665-\u2666\u2668\u267B\u267F\u2693\u26A0-\u26A1\u26AA-\u26AB\u26BD-\u26BE\u26C4-\u26C5\u26CE\u26D4\u26EA\u26F2-\u26F3\u26F5\u26FA\u26FD\u2702\u2705\u2708-\u270C\u270F\u2712\u2714\u2716\u2728\u2733-\u2734\u2744\u2747\u274C\u274E\u2753-\u2755\u2757\u2764\u2795-\u2797\u27A1\u27B0\u2934-\u2935\u2B05-\u2B07\u2B1B-\u2B1C\u2B50\u2B55\u3030\u303D\u3297\u3299\u1F004\u1F0CF\u1F170-\u1F171\u1F17E-\u1F17F\u1F18E\u1F191-\u1F19A\u1F1E7-\u1F1EC\u1F1EE-\u1F1F0\u1F1F3\u1F1F5\u1F1F7-\u1F1FA\u1F201-\u1F202\u1F21A\u1F22F\u1F232-\u1F23A\u1F250-\u1F251\u1F300-\u1F320\u1F330-\u1F335\u1F337-\u1F37C\u1F380-\u1F393\u1F3A0-\u1F3C4\u1F3C6-\u1F3CA\u1F3E0-\u1F3F0\u1F400-\u1F43E\u1F440\u1F442-\u1F4F7\u1F4F9-\u1F4FC\u1F500-\u1F507\u1F509-\u1F53D\u1F550-\u1F567\u1F5FB-\u1F640\u1F645-\u1F64F\u1F680-\u1F68A]+$/u;

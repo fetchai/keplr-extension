@@ -151,7 +151,7 @@ export const getJWT = async (chainId: string, url: string) => {
 
   return r3.data.access_token;
 };
-function generateUUID() {
+export function generateUUID() {
   // Public Domain/MIT
   let d = new Date().getTime(); //Timestamp
   let d2 =

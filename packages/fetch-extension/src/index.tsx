@@ -107,7 +107,10 @@ import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { AddEvmChain } from "./pages/setting/addEvmChain";
 import { AxelarBridgeEVM } from "./pages/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages/axelar-bridge/axelar-bridge-cosmos";
-
+import { AgentNameService } from "./pages/agent-name-service";
+import { AgentDomainDetails } from "./pages/agent-name-service/domain-details";
+import { RegisterAgentDomains } from "./pages/agent-name-service/register-new";
+import { VerifyDomain } from "./pages/agent-name-service/register-new/web2/verify-domain";
 window.keplr = new Keplr(
   manifest.version,
   "core",
@@ -264,6 +267,22 @@ ReactDOM.render(
                       <Route
                         path="/fetch-name-service/domain-details/:domain"
                         element={<DomainDetails />}
+                      />
+                      <Route
+                        path="/agent-name-service"
+                        element={<AgentNameService />}
+                      />
+                      <Route
+                        path="/agent-name-service/domain-details/:domain/:tab"
+                        element={<AgentDomainDetails />}
+                      />
+                      <Route
+                        path="/agent-name-service/register-new/"
+                        element={<RegisterAgentDomains />}
+                      />
+                      <Route
+                        path="/agent-name-service/register-new/verify-domain"
+                        element={<VerifyDomain />}
                       />
                       <Route
                         path="/setting/set-keyring"

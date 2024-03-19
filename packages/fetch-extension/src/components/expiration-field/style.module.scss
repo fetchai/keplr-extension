@@ -1,0 +1,38 @@
+.dateContainer {
+  display: flex;
+  color: white;
+  align-items: baseline;
+  justify-content: space-around;
+  font-size: 14px;
+  display: flex;
+  width: 312px;
+  height: 56px;
+  padding: 0px 16px;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  margin: 12px;
+  margin-top: 50px;
+}
+
+.dateContainer:hover {
+  box-shadow: -6px 6px 32px 0px rgba(157, 115, 232, 0.2),
+    6px 6px 32px 0px rgba(243, 95, 73, 0.3);
+}
+
+.label {
+  font-size: 14px;
+}
+.calendar {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  width: 157px;
+  cursor: pointer;
+}
+.calendar::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

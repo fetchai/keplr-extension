@@ -9,3 +9,4 @@ export * from "./osmosis";
 export * from "./icns";
 export * from "./fns";
 export * from "./evm";
+export * from "./ans";

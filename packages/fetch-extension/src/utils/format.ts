@@ -10,6 +10,17 @@ export const formatAddress = (address: string) => {
     );
   else return address;
 };
+export const formatAddressInANS = (address: string) => {
+  if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
+  if (address?.length > 15) {
+    const firstPart = address.substring(0, 15);
+    const lastPart = address.substring(address.length - 5);
+
+    return `${firstPart}...${lastPart}`;
+  } else {
+    return address;
+  }
+};
 
 export const formatGroupName = (address: string) => {
   if (address?.length > 15)

@@ -5,13 +5,14 @@ import { HeaderLayout } from "@layouts/index";
 import classnames from "classnames";
 import React, { FunctionComponent } from "react";
 import { Card, CardBody } from "reactstrap";
-import { FNS_CONFIG } from "../../config.ui.var";
+import { ANS_CONFIG, FNS_CONFIG } from "../../config.ui.var";
 import { useStore } from "../../stores";
 import { IBCTransferView } from "../main/ibc-transfer";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
 import { CHAINS } from "../../config.axl-brdige.var";
 import { AXLView } from "@components/axl-view";
+import { ANSView } from "@components/ans-view";
 
 export const MorePage: FunctionComponent = () => {
   const { chainStore } = useStore();
@@ -48,7 +49,6 @@ export const MorePage: FunctionComponent = () => {
           </CardBody>
         </Card>
       )}
-
       {isAxlViewVisible &&
         !AxlBrdigeDisabledChainIds.includes(chainStore.current.chainId) && (
           <Card className={classnames(style["card"], "shadow")}>
@@ -57,6 +57,13 @@ export const MorePage: FunctionComponent = () => {
             </CardBody>
           </Card>
         )}
+      {Object.keys(ANS_CONFIG).includes(chainStore.current.chainId) && (
+        <Card className={classnames(style["card"], "shadow")}>
+          <CardBody>
+            <ANSView />
+          </CardBody>
+        </Card>
+      )}
     </HeaderLayout>
   );
 };
