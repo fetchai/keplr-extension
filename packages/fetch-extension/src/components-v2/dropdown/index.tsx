@@ -25,10 +25,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <React.Fragment>
       <div
         style={showTopNav ? { top: "62px" } : {}}
-        onClick={() => {
-          closeClicked();
-          setIsOpen(false);
-        }}
         className={style["overlay"]}
       />
       <div style={styleProp} className={style["dropdownContainer"]}>
