@@ -17,7 +17,6 @@ import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages-new/lock";
-// import { MainPage } from "./pages/main";
 import { MainPage } from "./pages-new/main";
 import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages-new/register";
@@ -51,7 +50,6 @@ import {
 } from "./pages/setting/connections";
 import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
-// import { ChangeNamePage } from "./pages/setting/keyring/change";
 import { SettingLanguagePage } from "./pages/setting/language";
 import { AddTokenPage } from "./pages/setting/token/add";
 import { ManageTokenPage } from "./pages/setting/token/manage";
@@ -113,6 +111,7 @@ import { Portfolio } from "./pages-new/portfolio";
 import { AssetView } from "./pages-new/asset-view";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 import { MoreLanguagePage } from "./pages-new/more/language";
+import { MoreNotifications } from "./pages-new/more/notification";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -393,6 +392,10 @@ ReactDOM.render(
                       <Route
                         path="/setting/notifications"
                         element={<SettingNotifications />}
+                      />
+                      <Route
+                        path="/more/notifications"
+                        element={<MoreNotifications />}
                       />
                       <Route path="/setting/chat" element={<ChatSettings />} />
                       <Route
