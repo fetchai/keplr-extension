@@ -1,0 +1,22 @@
+.dropdown-container {
+  position: relative; 
+}
+
+.dropdown {
+  color: white !important;
+  font-size: 12px;
+  position: absolute;
+  top: -130px;
+  right: 0%;
+  height: 32px;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  width: 22%;
+}
+
+.dropdownHeading {
+  display: flex;
+  gap: 5px;
+}

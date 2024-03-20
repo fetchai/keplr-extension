@@ -97,7 +97,7 @@ import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant
 import { ValidatorList } from "./pages/validator-list";
 import { Validator } from "./pages/validator";
 import { StakeComplete } from "./pages/validator/stake-complete";
-import { ActivityPage } from "./pages/activity";
+import { ActivityPage } from "./pages-new/activity";
 import { Proposals } from "./pages/proposals";
 import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";

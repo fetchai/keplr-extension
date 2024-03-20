@@ -13,6 +13,7 @@ export interface TabsProps {
   showTabsOnBottom?: boolean;
   setActiveTab?: any;
   onTabChange?: any;
+  styleProps?: React.CSSProperties;
 }
 
 export const TabsPanel: React.FC<TabsProps> = ({
@@ -20,6 +21,7 @@ export const TabsPanel: React.FC<TabsProps> = ({
   showTabsOnBottom,
   setActiveTab,
   onTabChange,
+  styleProps,
 }) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(tabs[0].id);
 
@@ -37,7 +39,10 @@ export const TabsPanel: React.FC<TabsProps> = ({
   };
 
   return (
-    <div className={style["tab-container"]}>
+    <div
+      className={style["tab-container"]}
+      style={styleProps ? { ...styleProps } : {}}
+    >
       {!showTabsOnBottom && (
         <div className={style["tab-bar"]}>
           {tabs.map((tab) => (
