@@ -48,7 +48,6 @@ import {
   SettingConnectionsPage,
   SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages/setting/connections";
-import { ExportPage } from "./pages/setting/export";
 import { SettingFiatPage } from "./pages/setting/fiat";
 import { SettingLanguagePage } from "./pages/setting/language";
 import { AddTokenPage } from "./pages/setting/token/add";
@@ -112,6 +111,7 @@ import { AssetView } from "./pages-new/asset-view";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 import { MoreLanguagePage } from "./pages-new/more/language";
 import { MoreNotifications } from "./pages-new/more/notification";
+import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -249,6 +249,10 @@ ReactDOM.render(
                         element={<MoreLanguagePage />}
                       />
                       <Route
+                        path="/more/export/:index"
+                        element={<ExportPage />}
+                      />
+                      <Route
                         path="/setting/fiat"
                         element={<SettingFiatPage />}
                       />
@@ -280,10 +284,6 @@ ReactDOM.render(
                       <Route
                         path="/setting/set-keyring"
                         element={<SetKeyRingPage />}
-                      />
-                      <Route
-                        path="/setting/export/:index"
-                        element={<ExportPage />}
                       />
                       <Route
                         path="/setting/clear/:index"
