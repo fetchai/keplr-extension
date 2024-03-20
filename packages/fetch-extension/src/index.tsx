@@ -112,6 +112,7 @@ import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
 import { AssetView } from "./pages-new/asset-view";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
+import { MoreLanguagePage } from "./pages-new/more/language";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -243,6 +244,10 @@ ReactDOM.render(
                       <Route
                         path="/setting/language"
                         element={<SettingLanguagePage />}
+                      />
+                      <Route
+                        path="/more/language"
+                        element={<MoreLanguagePage />}
                       />
                       <Route
                         path="/setting/fiat"
