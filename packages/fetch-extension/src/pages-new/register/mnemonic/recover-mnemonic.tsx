@@ -395,7 +395,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                 style["title"],
                 styleRecoverMnemonic["title"]
               )}
-            ></div>
+            />
             <Form
               className={style["formContainer"]}
               onSubmit={(e) => {

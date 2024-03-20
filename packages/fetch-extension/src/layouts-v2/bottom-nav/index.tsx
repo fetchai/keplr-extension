@@ -145,7 +145,6 @@ const ActivityTab = () => {
       path={"/activity"}
       disabled={z}
       tooltip={activityTooltip}
-
     />
   );
 };

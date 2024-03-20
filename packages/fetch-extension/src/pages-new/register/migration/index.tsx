@@ -54,7 +54,7 @@ const MigrationSelectionPage: FunctionComponent<{
 
 export const MigrateEthereumAddressPage: FunctionComponent<{
   registerConfig: RegisterConfig;
-  setSelectedCard:any;
+  setSelectedCard: any;
 }> = observer(({ registerConfig, setSelectedCard }) => {
   const [mode, setMode] = useState<MigrationMode>(MigrationMode.SELECT_MODE);
 

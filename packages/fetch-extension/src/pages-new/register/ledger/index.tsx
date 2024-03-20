@@ -43,7 +43,7 @@ export const ImportLedgerIntro: FunctionComponent<{
 
 export const ImportLedgerPage: FunctionComponent<{
   registerConfig: RegisterConfig;
-  setSelectedCard:any;
+  setSelectedCard: any;
 }> = observer(({ registerConfig, setSelectedCard }) => {
   const intl = useIntl();
 

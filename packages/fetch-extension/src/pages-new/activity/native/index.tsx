@@ -121,32 +121,32 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
   };
 
   const handleCheckboxChange = (value: string) => {
-    const newFilters = filter.slice(); 
+    const newFilters = filter.slice();
     if (newFilters.includes(value)) {
-      setIsSelectAll(false); 
+      setIsSelectAll(false);
       setFilter(newFilters.filter((item) => item !== value));
     } else {
       setFilter([...newFilters, value]);
       setIsSelectAll(filter.length === options.length);
     }
-    setIsSaveChangesButtonDisabled(false); 
+    setIsSaveChangesButtonDisabled(false);
   };
 
   const handleDeselectClicks = () => {
     setIsSelectAll(false);
     setFilter([]);
-    setIsSaveChangesButtonDisabled(false); 
+    setIsSaveChangesButtonDisabled(false);
   };
 
   const handleSelectClicks = () => {
     setIsSelectAll(true);
     setFilter(options.map((option) => option.value));
-    setIsSaveChangesButtonDisabled(false); 
+    setIsSaveChangesButtonDisabled(false);
   };
 
   const handleSaveChanges = () => {
-    setIsSaveChangesButtonDisabled(true); 
-    handleFilterChange(filter); 
+    setIsSaveChangesButtonDisabled(true);
+    handleFilterChange(filter);
     setIsOpen(false);
   };
 
