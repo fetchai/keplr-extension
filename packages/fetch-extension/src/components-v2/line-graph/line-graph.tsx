@@ -113,14 +113,13 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           }
 
           const gradient = ctx.createLinearGradient(
-            chartArea.left,
+            0, // Change this to 0
             chartArea.top,
-            chartArea.right,
+            0, // Change this to 0
             chartArea.bottom
           );
-          gradient.addColorStop(0.226488, "#5F38FB");
-          gradient.addColorStop(0.547025, "#CF447B");
-          gradient.addColorStop(0.856046, "#F9774B");
+          gradient.addColorStop(0, "#5F38FB"); // Start color
+          gradient.addColorStop(1, "#F9774B"); // End color
 
           return gradient;
         },

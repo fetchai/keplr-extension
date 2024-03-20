@@ -22,9 +22,9 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 
 import { SendPhase1 } from "./send-phase-1";
 import { SendPhase2 } from "./send-phase-2";
-
 export const SendPage: FunctionComponent = observer(() => {
   const [isNext, setIsNext] = useState(false);
+  const [fromPhase1, setFromPhase1] = useState(true);
 
   const navigate = useNavigate();
   let search = useLocation().search;
@@ -208,6 +208,15 @@ export const SendPage: FunctionComponent = observer(() => {
     sendConfigs.gasConfig.error ??
     sendConfigs.feeConfig.error;
   const txStateIsValid = sendConfigError == null;
+  const location = useLocation();
+  const { trnsxStatus, isNext: next, configs } = location.state || {};
+  useEffect(() => {
+    if (next) {
+      setIsNext(next);
+    }
+  }, [trnsxStatus, next]);
+
+  console.log("index fromPhase1:", fromPhase1);
 
   return (
     <HeaderLayout
@@ -219,7 +228,7 @@ export const SendPage: FunctionComponent = observer(() => {
         isDetachedPage
           ? undefined
           : () => {
-              navigate(-1);
+              isNext ? setIsNext(false) : navigate("/");
             }
       }
       rightRenderer={
@@ -341,14 +350,21 @@ export const SendPage: FunctionComponent = observer(() => {
       >
         <div className={style["formInnerContainer"]}>
           <div className={style["cardContainer"]}>
-            {isNext === false && (
-              <SendPhase1 setIsNext={setIsNext} sendConfigs={sendConfigs} />
-            )}
-            {isNext === true && (
+            {isNext === false ? (
+              <SendPhase1
+                setIsNext={setIsNext}
+                sendConfigs={sendConfigs}
+                setFromPhase1={setFromPhase1}
+              />
+            ) : (
               <SendPhase2
                 isDetachedPage={isDetachedPage}
                 sendConfigs={sendConfigs}
                 setIsNext={setIsNext}
+                trnsxStatus={trnsxStatus}
+                fromPhase1={fromPhase1}
+                configs={configs}
+                setFromPhase1={setFromPhase1}
               />
             )}
           </div>

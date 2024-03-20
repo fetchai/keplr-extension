@@ -7,24 +7,38 @@ import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useGasSimulator } from "@keplr-wallet/hooks";
 import { useNavigate } from "react-router";
-import { useNotification } from "@components/notification";
 import { Button } from "reactstrap";
 import { useLanguage } from "../../languages";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
+import { TransxStatus } from "@components-v2/transx-status";
+import { useLocation } from "react-router";
 
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;
   isDetachedPage: any;
+  trnsxStatus: string;
+  fromPhase1: boolean;
+  configs: any;
+  setFromPhase1: any;
 }
 
 export const SendPhase2: React.FC<SendPhase2Props> = observer(
-  ({ sendConfigs, isDetachedPage, setIsNext }) => {
+  ({
+    sendConfigs,
+    isDetachedPage,
+    setIsNext,
+    trnsxStatus,
+    fromPhase1,
+    configs,
+    setFromPhase1,
+  }) => {
     const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
-    const notification = useNotification();
+    const location = useLocation();
+    const { isFromPhase1 } = location.state || {};
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
     const convertToUsd = (currency: any) => {
@@ -33,6 +47,14 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
       return inUsd;
     };
     const intl = useIntl();
+
+    useEffect(() => {
+      if (isFromPhase1 !== undefined) setFromPhase1(isFromPhase1);
+      if (configs?.amount && fromPhase1 == false && sendConfigs) {
+        sendConfigs.amountConfig.setAmount(configs.amount);
+        sendConfigs.amountConfig.setSendCurrency(configs.sendCurr);
+      }
+    }, [configs, fromPhase1, sendConfigs]);
 
     const gasSimulatorKey = useMemo(() => {
       if (sendConfigs.amountConfig.sendCurrency) {
@@ -146,11 +168,11 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
               {convertToUsd(
                 sendConfigs.amountConfig
                   ? new CoinPretty(
-                      sendConfigs.amountConfig.sendCurrency,
+                      sendConfigs.amountConfig?.sendCurrency,
                       new Int(sendConfigs.amountConfig.amount * 10 ** decimals)
                     )
                   : new CoinPretty(
-                      sendConfigs.amountConfig.sendCurrency,
+                      sendConfigs.amountConfig?.sendCurrency,
                       new Int(0)
                     )
               )}{" "}
@@ -169,13 +191,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
         </div>
         <AddressInput
           recipientConfig={sendConfigs.recipientConfig}
-          memoConfig={sendConfigs.memoConfig}
+          memoConfig={configs ? configs.memo : sendConfigs.memoConfig}
           label={intl.formatMessage({ id: "send.input.recipient" })}
-          value={""}
+          value={configs ? configs.recipient : ""}
         />
 
         <MemoInput
-          memoConfig={sendConfigs.memoConfig}
+          memoConfig={configs ? configs.memo : sendConfigs.memoConfig}
           label={intl.formatMessage({ id: "send.input.memo" })}
         />
         <FeeButtons
@@ -198,7 +220,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           gradientText=""
           onClick={async (e: any) => {
             e.preventDefault();
-
             if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
               try {
                 const stdFee = sendConfigs.feeConfig.toStdFee();
@@ -220,6 +241,10 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                   {
                     onBroadcastFailed: (e: any) => {
                       console.log(e);
+                      navigate("/send", {
+                        replace: true,
+                        state: { trnsxStatus: "failed", isNext: true },
+                      });
                     },
                     onBroadcasted: () => {
                       analyticsStore.logEvent("Send token tx broadcasted", {
@@ -227,26 +252,41 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         chainName: chainStore.current.chainName,
                         feeType: sendConfigs.feeConfig.feeType,
                       });
+                      navigate("/send", {
+                        replace: true,
+                        state: { trnsxStatus: "pending", isNext: true },
+                      });
+                    },
+                    onFulfill: () => {
+                      navigate("/send", {
+                        replace: true,
+                        state: { trnsxStatus: "success", isNext: true },
+                      });
                     },
                   }
                 );
                 if (!isDetachedPage) {
-                  navigate("/", { replace: true });
+                  navigate("/send", {
+                    replace: true,
+                    state: { trnsxStatus: "pending", isNext: true },
+                  });
                 }
               } catch (e) {
                 if (!isDetachedPage) {
-                  navigate("/", { replace: true });
+                  navigate("/send", {
+                    replace: true,
+                    state: {
+                      isNext: true,
+                      isFromPhase1: false,
+                      configs: {
+                        amount: sendConfigs.amountConfig.amount,
+                        sendCurr: sendConfigs.amountConfig.sendCurrency,
+                        recipient: sendConfigs.recipientConfig.recipient,
+                        memo: sendConfigs.memoConfig.memo,
+                      },
+                    },
+                  });
                 }
-                notification.push({
-                  type: "warning",
-                  placement: "top-center",
-                  duration: 5,
-                  content: `Fail to send token: ${e.message}`,
-                  canDelete: true,
-                  transition: {
-                    duration: 0.25,
-                  },
-                });
               } finally {
                 // XXX: If the page is in detached state,
                 // close the window without waiting for tx to commit. analytics won't work.
@@ -259,6 +299,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           data-loading={accountInfo.isSendingMsg === "send"}
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
         />
+        {trnsxStatus !== undefined && <TransxStatus status={trnsxStatus} />}
       </div>
     );
   }

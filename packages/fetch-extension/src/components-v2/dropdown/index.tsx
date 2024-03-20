@@ -1,12 +1,14 @@
 import React from "react";
 import style from "./style.module.scss";
-import closeIcon from "../../public/assets/svg/wireframe/closeImage.svg";
+
 export interface DropdownProps {
   isOpen?: boolean;
   title: string;
   setIsOpen?: any;
   closeClicked: any;
   styleProp?: any;
+  showCloseIcon?: boolean;
+  showTopNav?: boolean;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -16,27 +18,28 @@ export const Dropdown: React.FC<DropdownProps> = ({
   isOpen,
   closeClicked,
   styleProp,
+  showCloseIcon = true,
+  showTopNav,
 }) => {
   return isOpen ? (
     <React.Fragment>
       <div
-        onClick={() => {
-          closeClicked;
-          setIsOpen(false);
-        }}
+        style={showTopNav ? { top: "62px" } : {}}
         className={style["overlay"]}
       />
       <div style={styleProp} className={style["dropdownContainer"]}>
         <div className={style["header"]}>
           {title}
-          <img
-            className={style["closeIcon"]}
-            onClick={() => {
-              closeClicked;
-              setIsOpen(false);
-            }}
-            src={closeIcon}
-          />
+          {showCloseIcon && (
+            <img
+              className={style["closeIcon"]}
+              onClick={() => {
+                closeClicked();
+                setIsOpen(false);
+              }}
+              src={require("@assets/svg/wireframe/close.svg")}
+            />
+          )}
         </div>
         {children}
       </div>

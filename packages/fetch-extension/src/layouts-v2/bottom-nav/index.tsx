@@ -54,27 +54,7 @@ export const BottomNav = () => {
       <MoreTab />
     </div>
   ) : (
-    <div style={{ position: "absolute", top: "405px", right: "10px" }}>
-      <div className={style["overlay"]} />
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <button
-          className={style["toggle"]}
-          onClick={() => setIsAssetsOpen(!isAssetsOpen)}
-        >
-          <WalletActions />
-          <img
-            style={{
-              height: "43px",
-              width: "42px",
-              marginBottom: "21px",
-              cursor: "pointer",
-            }}
-            src={require("@assets/svg/wireframe/btn-close.svg")}
-            alt=""
-          />
-        </button>
-      </div>
-    </div>
+    <WalletActions isOpen={isAssetsOpen} setIsOpen={setIsAssetsOpen} />
   );
 };
 

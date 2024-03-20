@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useIntl } from "react-intl";
 import { CoinInput, TokenSelectorDropdown } from "@components-v2/form";
 import { DenomHelper } from "@keplr-wallet/common";
@@ -9,20 +9,25 @@ import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { Label } from "reactstrap";
 import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router";
 
 interface SendPhase1Props {
   sendConfigs: any;
   setIsNext: any;
+  setFromPhase1: any;
 }
 
 export const SendPhase1: React.FC<SendPhase1Props> = observer(
-  ({ setIsNext, sendConfigs }) => {
+  ({ setIsNext, sendConfigs, setFromPhase1 }) => {
     const [isChangeWalletOpen, setIsChangeWalletOpen] = useState(false);
     const { chainStore, accountStore } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-
+    const navigate = useNavigate();
     const intl = useIntl();
-
+    useEffect(() => {
+      setIsNext(false);
+      setFromPhase1(true);
+    }, []);
     return (
       <div>
         <CoinInput
@@ -92,7 +97,10 @@ export const SendPhase1: React.FC<SendPhase1Props> = observer(
             sendConfigs.amountConfig.error
           }
           text="Next"
-          onClick={() => setIsNext(true)}
+          onClick={() => {
+            setIsNext(true);
+            navigate("/send", { state: { isFromPhase1: true } });
+          }}
         />
         <Dropdown
           isOpen={isChangeWalletOpen}
