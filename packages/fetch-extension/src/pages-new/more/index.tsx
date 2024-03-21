@@ -99,7 +99,7 @@ export const MorePageV2: FunctionComponent = () => {
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
         leftImage={require("@assets/svg/wireframe/wallet-version.svg")}
         heading={"Fetch Wallet version"}
-        onClick={() => navigate("")}
+        onClick={() => navigate("/app-version")}
       />
     </HeaderLayout>
   );

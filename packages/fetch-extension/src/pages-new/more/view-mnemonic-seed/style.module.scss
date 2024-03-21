@@ -10,15 +10,16 @@
 }
 
 .mnemonic {
-  font-family: "Courier Prime", serif;
+  font-family: Lexend;
   font-size: 16px;
   letter-spacing: -0.36px;
 
   padding: 20px 30px;
   text-align: center;
 
-  background: white;
-  border-radius: 6px;
+  background: transparent;
+  color: white;
+  font-size: 30px;
 
   box-shadow: $input-alternative-box-shadow !important;
 

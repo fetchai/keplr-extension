@@ -1,7 +1,7 @@
 import { fetchTransactions } from "@graphQL/activity-api";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../../../stores";
-import FilterDropdown, { FilterActivities } from "../filter";
+import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
 import style from "../style.module.scss";
 import { NoActivity } from "../no-activity";
@@ -150,7 +150,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
 
   return (
     <React.Fragment>
-       <FilterDropdown
+      <FilterDropdown
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         options={options}

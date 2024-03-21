@@ -49,7 +49,7 @@ interface FilterDropdownProps {
   handleDeselectClicks: any;
   isSaveChangesButtonDisabled: boolean;
 }
-const FilterDropdown: React.FC<FilterDropdownProps> = ({
+export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   isOpen,
   setIsOpen,
   options,
@@ -124,5 +124,3 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     </Dropdown>
   );
 };
-
-export default FilterDropdown;

@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from "react";
 import { useNavigate } from "react-router";
-import { PageButton } from "../../page-button";
 
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
@@ -16,6 +15,7 @@ import {
 import { useIntl } from "react-intl";
 import { ToolTip } from "@components/tooltip";
 import { HeaderLayout } from "@layouts-v2/header-layout";
+import { Card } from "@components-v2/card";
 
 export const ManageTokenPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -182,18 +182,23 @@ export const ManageTokenPage: FunctionComponent = observer(() => {
             );
 
           return (
-            <PageButton
+            <Card
               key={cosmwasmToken.contractAddress}
               style={{
-                cursor: "auto",
+                background: "rgba(255,255,255,0.1)",
+                width: "92%",
               }}
-              title={cosmwasmToken.coinDenom}
-              paragraph={Bech32Address.shortenAddress(
+              heading={cosmwasmToken.coinDenom}
+              subheading={Bech32Address.shortenAddress(
                 cosmwasmToken.contractAddress,
                 30,
                 cosmwasmToken.type === "erc20"
               )}
-              icons={icons}
+              rightContent={
+                <div className={style["edit"]} style={{ display: "flex" }}>
+                  {icons}
+                </div>
+              }
             />
           );
         })}

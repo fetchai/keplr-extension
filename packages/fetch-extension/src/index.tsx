@@ -113,6 +113,7 @@ import { MorePageV2 } from "./pages-new/more";
 import { MoreLanguagePage } from "./pages-new/more/language";
 import { MoreNotifications } from "./pages-new/more/notification";
 import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
+import { AppVersion } from "./pages-new/more/app-version";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -237,6 +238,7 @@ ReactDOM.render(
                         path="/keystone/sign"
                         element={<KeystoneSignPage />}
                       />
+                      <Route path="/app-version" element={<AppVersion />} />
                       <Route
                         path="/ledger-grant"
                         element={<LedgerGrantPage />}

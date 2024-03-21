@@ -2,7 +2,7 @@ import { fetchGovProposalTransactions } from "@graphQL/activity-api";
 import React, { useEffect, useState } from "react";
 import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
-import FilterDropdown, { FilterActivities } from "../filter";
+import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
 import style from "../style.module.scss";
 import { NoActivity } from "../no-activity";

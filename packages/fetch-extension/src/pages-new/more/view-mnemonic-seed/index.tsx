@@ -19,7 +19,7 @@ import { flowResult } from "mobx";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { PasswordInput } from "@components-v2/form";
-
+import { useNotification } from "@components/notification";
 interface FormData {
   password: string;
 }
@@ -30,7 +30,7 @@ export const ExportPage: FunctionComponent = observer(() => {
   const { index = "-1 " } = useParams<{ index: string; type?: string }>();
 
   const intl = useIntl();
-
+  const notification = useNotification();
   const { keyRingStore, analyticsStore } = useStore();
 
   const query = queryString.parse(location.search);
@@ -56,6 +56,23 @@ export const ExportPage: FunctionComponent = observer(() => {
       throw new Error("Invalid index");
     }
   }, [index]);
+
+  const copyMnemonic = useCallback(
+    async (address: string) => {
+      await navigator.clipboard.writeText(address);
+      notification.push({
+        placement: "top-center",
+        type: "success",
+        duration: 5,
+        content: "Mnemonic copied to clipboard!",
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    },
+    [notification]
+  );
 
   return (
     <HeaderLayout
@@ -83,6 +100,16 @@ export const ExportPage: FunctionComponent = observer(() => {
             })}
           >
             {keyRing}
+            <ButtonV2
+              styleProps={{
+                position: "absolute",
+                width: "333px",
+                bottom: "24%",
+                right: "4%",
+              }}
+              text={"Copy mnemonic"}
+              onClick={() => copyMnemonic(keyRing)}
+            />
           </div>
         ) : (
           <React.Fragment>
