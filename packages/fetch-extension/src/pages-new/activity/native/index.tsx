@@ -1,13 +1,11 @@
 import { fetchTransactions } from "@graphQL/activity-api";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../../../stores";
-import { FilterActivities } from "../filter";
+import FilterDropdown, { FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
 import style from "../style.module.scss";
 import { NoActivity } from "../no-activity";
 import { ButtonV2 } from "@components-v2/buttons/button";
-import { Dropdown } from "@components-v2/dropdown";
-import { Card } from "@components-v2/card";
 
 const options = [
   { value: "/cosmos.bank.v1beta1.MsgSend", label: "Funds transfers" },
@@ -152,58 +150,18 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
 
   return (
     <React.Fragment>
-      <Dropdown
+       <FilterDropdown
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        title={"Filter"}
-        closeClicked={() => {
-          setIsOpen(false);
-        }}
-        styleProp={{ position: "block" }}
-      >
-        <div className={style["select"]}>
-          {!isSelectAll ? (
-            <div className={style["selectAll"]} onClick={handleSelectClicks}>
-              Select all
-            </div>
-          ) : (
-            <div className={style["selectAll"]} onClick={handleDeselectClicks}>
-              Unselect all
-            </div>
-          )}
-        </div>
-        <div className={style["dropdownMenu"]}>
-          {options.map((option) => (
-            <label key={option.value} className={style["dropdownItem"]}>
-              <Card
-                style={
-                  filter.includes(option.value)
-                    ? {
-                        width: "333px",
-                        background: "var(--Indigo---Fetch, #5F38FB)",
-                      }
-                    : { width: "333px", background: "rgba(255,255,255,0.1)" }
-                }
-                rightContent={
-                  <input
-                    type="checkbox"
-                    className="mx-2"
-                    value={option.value}
-                    checked={filter.includes(option.value)}
-                    onChange={() => handleCheckboxChange(option.value)}
-                  />
-                }
-                heading={option.label}
-              />
-            </label>
-          ))}
-        </div>
-        <ButtonV2
-          disabled={isSaveChangesButtonDisabled}
-          onClick={handleSaveChanges}
-          text="Save Changes"
-        />
-      </Dropdown>
+        options={options}
+        selectedFilter={filter}
+        handleCheckboxChange={handleCheckboxChange}
+        handleSaveChanges={handleSaveChanges}
+        isSelectAll={isSelectAll}
+        handleSelectClicks={handleSelectClicks}
+        handleDeselectClicks={handleDeselectClicks}
+        isSaveChangesButtonDisabled={isSaveChangesButtonDisabled}
+      />
       <div className={style["filter"]}>
         <FilterActivities
           onFilterChange={handleFilterChange}

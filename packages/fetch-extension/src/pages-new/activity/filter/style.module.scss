@@ -1,5 +1,5 @@
 .dropdown-container {
-  position: relative; 
+  position: relative;
 }
 
 .dropdown {
@@ -19,4 +19,27 @@
 .dropdownHeading {
   display: flex;
   gap: 5px;
+}
+.selectAll {
+  display: flex;
+  height: 32px;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 0;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  margin-bottom: 10px;
+}
+.hidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
 }

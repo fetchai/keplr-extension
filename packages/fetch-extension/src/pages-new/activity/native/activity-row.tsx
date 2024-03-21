@@ -94,8 +94,10 @@ export const ActivityRow = ({ node }: { node: any }) => {
         verb = "IBC transfer";
         break;
       case "/cosmos.staking.v1beta1.MsgDelegate":
+        verb = "Staked";
+        break;
       case "/cosmos.staking.v1beta1.MsgUndelegate":
-        verb = isAmountDeducted ? "Staked" : "Unstaked";
+        verb = "Unstaked";
         break;
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
         verb = "Claimed";
@@ -159,17 +161,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
           </div>
           <div className={style["rightContent"]}>
             <div className={style["amountWrapper"]}>
-              <div
-                className={style["amountNumber"]}
-                style={
-                  !isAmountDeducted
-                    ? {
-                        color:
-                          "var(--Green-Green-500---Vibrant-green, #2DE376)",
-                      }
-                    : {}
-                }
-              >
+              <div className={style["amountNumber"]}>
                 {details.amountNumber}
               </div>
               <div className={style["amountAlphabetic"]}>
