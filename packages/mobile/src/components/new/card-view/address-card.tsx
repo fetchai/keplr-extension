@@ -22,6 +22,12 @@ import { AsyncKVStore } from "../../../common";
 import { Divider } from "../../divider";
 import { QRCodeIcon } from "../icon/qrcode-icon";
 import { ATIcon } from "../icon/at-icon";
+import { Camera, PermissionStatus } from "expo-camera";
+import { CameraPermissionModal } from "../camera-permission-model/camera-permission";
+import {
+  handleOpenSettings,
+  ModelStatus,
+} from "screens/register/import-from-extension/intro";
 
 function numOfCharacter(str: string, c: string): number {
   return str.split(c).length - 1;
@@ -45,6 +51,10 @@ export const AddressInputCard: FunctionComponent<{
     const smartNavigation = useSmartNavigation();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const { chainStore, analyticsStore } = useStore();
+
+    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [openCameraModel, setIsOpenCameraModel] = useState(false);
+    const [modelStatus, setModelStatus] = useState(ModelStatus.First);
 
     const chainId = chainStore.current.chainId;
 
@@ -171,9 +181,18 @@ export const AddressInputCard: FunctionComponent<{
                   icon={<QRCodeIcon />}
                   backgroundBlur={false}
                   onPress={() => {
-                    smartNavigation.navigateSmart("Camera", {
-                      showMyQRButton: false,
-                    });
+                    if (permission?.status == PermissionStatus.UNDETERMINED) {
+                      setIsOpenCameraModel(true);
+                    } else {
+                      if (!permission?.granted) {
+                        setModelStatus(ModelStatus.Second);
+                        setIsOpenCameraModel(true);
+                      } else {
+                        smartNavigation.navigateSmart("Camera", {
+                          showMyQRButton: false,
+                        });
+                      }
+                    }
                   }}
                   iconStyle={
                     style.flatten([
@@ -215,6 +234,41 @@ export const AddressInputCard: FunctionComponent<{
                 chainId,
                 addressBookConfig,
               });
+            }
+          }}
+        />
+        <CameraPermissionModal
+          title={
+            modelStatus == ModelStatus.First
+              ? "Camera permission"
+              : "Camera permission is disabled"
+          }
+          buttonText={
+            modelStatus == ModelStatus.First
+              ? "Allow Fetch to use camera"
+              : "Enable camera permission in settings"
+          }
+          isOpen={openCameraModel}
+          close={() => setIsOpenCameraModel(false)}
+          onPress={async () => {
+            const permissionStatus = await requestPermission();
+            if (
+              !permission?.granted &&
+              permissionStatus.status === PermissionStatus.DENIED
+            ) {
+              if (permissionStatus.canAskAgain) {
+                setIsOpenCameraModel(false);
+              } else {
+                await handleOpenSettings();
+                setIsOpenCameraModel(false);
+              }
+            } else {
+              setIsOpenCameraModel(false);
+              if (permissionStatus.status === PermissionStatus.GRANTED) {
+                smartNavigation.navigateSmart("Camera", {
+                  showMyQRButton: false,
+                });
+              }
             }
           }}
         />

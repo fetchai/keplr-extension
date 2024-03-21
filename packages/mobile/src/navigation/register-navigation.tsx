@@ -1,10 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { useStyle } from "styles/index";
 import { TransitionPresets } from "@react-navigation/stack";
-import {
-  HeaderOnTertiaryScreenOptionsPreset,
-  TransparentHeaderOptionsPreset,
-} from "components/header";
+import { TransparentHeaderOptionsPreset } from "components/header";
 import { RegisterIntroScreen } from "screens/register/new";
 import { RegisterNewUserScreen } from "screens/register/new-user";
 import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
@@ -139,8 +136,9 @@ export const RegisterNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Import Extension",
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
         }}
         name="Register.ImportFromExtension.SetPassword"
         component={ImportFromExtensionSetPasswordScreen}

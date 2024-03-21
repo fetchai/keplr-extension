@@ -19,8 +19,8 @@ import {
 } from "screens/setting/screens/address-book";
 import { PageScrollPositionProvider } from "providers/page-scroll-position";
 import {
+  BlurHeaderOptionsPreset,
   HeaderOnSecondaryScreenOptionsPreset,
-  HeaderOnTertiaryScreenOptionsPreset,
 } from "components/header";
 import { FocusedScreenProvider } from "providers/focused-screen";
 
@@ -45,24 +45,25 @@ export const AddressBookStackScreen: FunctionComponent = () => {
     >
       <Stack.Screen
         options={{
-          ...HeaderOnSecondaryScreenOptionsPreset,
-          title: "Address Book",
+          ...BlurHeaderOptionsPreset,
+
+          title: "Address book",
         }}
         name="AddressBook"
         component={AddressBookScreen}
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "New Address Book",
+          ...BlurHeaderOptionsPreset,
+          title: "Add an address",
         }}
         name="AddAddressBook"
         component={AddAddressBookScreen}
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Edit Address Book",
+          ...BlurHeaderOptionsPreset,
+          title: "Edit address book",
         }}
         name="EditAddressBook"
         component={EditAddressBookScreen}

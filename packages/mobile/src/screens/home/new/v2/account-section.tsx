@@ -11,7 +11,6 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { useStore } from "stores/index";
 import { IconButton } from "components/new/button/icon";
 import {
@@ -19,8 +18,6 @@ import {
   WalletCardModel,
 } from "components/new/wallet-card/wallet-card";
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
-import { EditAccountNameModal } from "modals/edit-account-name.tsx";
-import { PasswordInputModal } from "modals/password-input/modal";
 import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
@@ -28,6 +25,12 @@ import { separateNumericAndDenom, titleCase } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { CameraPermissionModal } from "components/new/camera-permission-model/camera-permission";
+import { Camera, PermissionStatus } from "expo-camera";
+import {
+  ModelStatus,
+  handleOpenSettings,
+} from "screens/register/import-from-extension/intro";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -39,10 +42,11 @@ export const AccountSection: FunctionComponent<{
   const style = useStyle();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [changeWalletModal, setChangeWalletModal] = useState(false);
-  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedKeyStore, setSelectedKeyStore] =
-    useState<MultiKeyStoreInfoWithSelectedElem>();
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [openCameraModel, setIsOpenCameraModel] = useState(false);
+  const [modelStatus, setModelStatus] = useState(ModelStatus.First);
+
   const {
     chainStore,
     accountStore,
@@ -50,10 +54,7 @@ export const AccountSection: FunctionComponent<{
     priceStore,
     keyRingStore,
     analyticsStore,
-    keychainStore,
   } = useStore();
-
-  const waitingNameData = keyRingStore.waitingNameData?.data;
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -125,9 +126,18 @@ export const AccountSection: FunctionComponent<{
             icon={<BarCodeIcon size={18} />}
             backgroundBlur={false}
             onPress={() => {
-              smartNavigation.navigateSmart("Camera", {
-                showMyQRButton: false,
-              });
+              if (permission?.status == PermissionStatus.UNDETERMINED) {
+                setIsOpenCameraModel(true);
+              } else {
+                if (!permission?.granted) {
+                  setModelStatus(ModelStatus.Second);
+                  setIsOpenCameraModel(true);
+                } else {
+                  smartNavigation.navigateSmart("Camera", {
+                    showMyQRButton: false,
+                  });
+                }
+              }
             }}
             iconStyle={
               style.flatten([
@@ -295,17 +305,12 @@ export const AccountSection: FunctionComponent<{
               break;
 
             case ManageWalletOption.renameWallet:
-              keyRingStore.multiKeyStoreInfo.map((keyStore) => {
-                if (keyStore.meta?.["name"] === account.name) {
-                  setSelectedKeyStore(keyStore);
-                }
-              });
-              setIsRenameModalOpen(true);
+              smartNavigation.navigateSmart("RenameWallet", {});
               setIsOpenModal(false);
               break;
 
             case ManageWalletOption.deleteWallet:
-              setIsDeleteModalOpen(true);
+              smartNavigation.navigateSmart("DeleteWallet", {});
               setIsOpenModal(false);
               break;
           }
@@ -325,48 +330,36 @@ export const AccountSection: FunctionComponent<{
           }
         }}
       />
-      <EditAccountNameModal
-        isOpen={isRenameModalOpen}
-        close={() => setIsRenameModalOpen(false)}
-        title="Edit Account Name"
-        isReadOnly={waitingNameData !== undefined && !waitingNameData?.editable}
-        onEnterName={async (name) => {
-          try {
-            const selectedIndex = keyRingStore.multiKeyStoreInfo.findIndex(
-              (keyStore) => keyStore == selectedKeyStore
-            );
-
-            await keyRingStore.updateNameKeyRing(selectedIndex, name.trim());
-            setSelectedKeyStore(undefined);
-            setIsRenameModalOpen(false);
-          } catch (e) {
-            console.log("Fail to decrypt: " + e.message);
-          }
-        }}
-      />
-      <PasswordInputModal
-        isOpen={isDeleteModalOpen}
-        close={() => setIsDeleteModalOpen(false)}
-        title="Remove Account"
-        onEnterPassword={async (password) => {
-          const index = keyRingStore.multiKeyStoreInfo.findIndex(
-            (keyStore) => keyStore.selected
-          );
-
-          if (index >= 0) {
-            await keyRingStore.deleteKeyRing(index, password);
-            analyticsStore.logEvent("Account removed");
-
-            if (keyRingStore.multiKeyStoreInfo.length === 0) {
-              await keychainStore.reset();
-
-              navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: "Unlock",
-                  },
-                ],
+      <CameraPermissionModal
+        title={
+          modelStatus == ModelStatus.First
+            ? "Camera permission"
+            : "Camera permission is disabled"
+        }
+        buttonText={
+          modelStatus == ModelStatus.First
+            ? "Allow Fetch to use camera"
+            : "Enable camera permission in settings"
+        }
+        isOpen={openCameraModel}
+        close={() => setIsOpenCameraModel(false)}
+        onPress={async () => {
+          const permissionStatus = await requestPermission();
+          if (
+            !permission?.granted &&
+            permissionStatus.status === PermissionStatus.DENIED
+          ) {
+            if (permissionStatus.canAskAgain) {
+              setIsOpenCameraModel(false);
+            } else {
+              await handleOpenSettings();
+              setIsOpenCameraModel(false);
+            }
+          } else {
+            setIsOpenCameraModel(false);
+            if (permissionStatus.status === PermissionStatus.GRANTED) {
+              smartNavigation.navigateSmart("Camera", {
+                showMyQRButton: false,
               });
             }
           }

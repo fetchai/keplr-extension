@@ -3,19 +3,20 @@ import React, { FunctionComponent, useState } from "react";
 import { Dimensions, FlatList, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurButton } from "../button/blur-button";
+import { BlurBackground } from "../blur-background/blur-background";
 
 export const TabBarView: FunctionComponent<{
   listItem: any;
   selected: any;
   setSelected: any;
-  blurButton?: boolean;
   contentContainerStyle?: ViewStyle;
+  containerStyle?: ViewStyle;
 }> = ({
   listItem,
   selected,
   setSelected,
-  blurButton = false,
   contentContainerStyle,
+  containerStyle,
 }) => {
   const [prevSelected, setPrevSelected] = useState(0);
 
@@ -25,22 +26,22 @@ export const TabBarView: FunctionComponent<{
     const select = selected === item;
     return (
       <BlurButton
-        backgroundBlur={select && blurButton}
+        backgroundBlur={false}
         text={item}
-        borderRadius={blurButton ? 64 : 12}
         textStyle={
-          style.flatten(
-            ["body3"],
-            !blurButton ? [select && "color-indigo-900"] : []
-          ) as ViewStyle
+          style.flatten(["body3"], [select && "color-indigo-900"]) as ViewStyle
         }
         containerStyle={
           [
             style.flatten(
               ["justify-center"],
-              !blurButton ? [select && "background-color-white"] : []
+              [select && "background-color-white"]
             ),
-            { width: (Dimensions.get("window").width - 41) / 3 },
+            {
+              width:
+                (Dimensions.get("window").width - 41) /
+                Object.values(listItem).length,
+            },
           ] as ViewStyle
         }
         onPress={() => {
@@ -69,14 +70,21 @@ export const TabBarView: FunctionComponent<{
   };
 
   return (
-    <FlatList
-      data={Object.values(listItem)}
-      renderItem={renderItem}
-      horizontal={true}
-      extraData={selected}
-      ItemSeparatorComponent={renderSeparator}
-      contentContainerStyle={contentContainerStyle}
-      scrollEnabled={false}
-    />
+    <BlurBackground
+      borderRadius={12}
+      containerStyle={
+        [style.flatten(["margin-y-10"]), containerStyle] as ViewStyle
+      }
+    >
+      <FlatList
+        data={Object.values(listItem)}
+        renderItem={renderItem}
+        horizontal={true}
+        extraData={selected}
+        ItemSeparatorComponent={renderSeparator}
+        contentContainerStyle={contentContainerStyle}
+        scrollEnabled={false}
+      />
+    </BlurBackground>
   );
 };

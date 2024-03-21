@@ -9,6 +9,8 @@ import { WCGoBackToBrowserModal } from "modals/wc-go-back-to-browser";
 import { BackHandler, Platform } from "react-native";
 import { LoadingScreenModal } from "../loading-screen/modal";
 import { KeyRingStatus } from "@keplr-wallet/background";
+import { NetworkErrorModal } from "modals/network";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const InteractionModalsProivder: FunctionComponent = observer(
   ({ children }) => {
@@ -19,6 +21,10 @@ export const InteractionModalsProivder: FunctionComponent = observer(
       signInteractionStore,
       walletConnectStore,
     } = useStore();
+
+    const netInfo = useNetInfo();
+    const networkIsConnected =
+      typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
     useEffect(() => {
       if (walletConnectStore.needGoBackToBrowser && Platform.OS === "android") {
@@ -116,6 +122,14 @@ export const InteractionModalsProivder: FunctionComponent = observer(
           <LedgerGranterModal
             isOpen={ledgerInitStore.isInitNeeded}
             close={() => ledgerInitStore.abortAll()}
+          />
+        }
+        {
+          <NetworkErrorModal
+            isOpen={!networkIsConnected}
+            close={() => {
+              // noop
+            }}
           />
         }
         {children}

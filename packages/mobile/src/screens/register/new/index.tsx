@@ -93,6 +93,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportWalletModalOpen, setImportWalletModalOpen] = useState(false);
 
+  console.log("Click: Register", isModalOpen, isImportWalletModalOpen);
   return (
     <PageWithScrollView
       backgroundMode="image"

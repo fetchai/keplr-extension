@@ -115,10 +115,13 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Settings",
       },
       "Setting.ViewPrivateData": {
-        upperScreenName: "Settings",
+        upperScreenName: "Others",
+      },
+      "Setting.Currency": {
+        upperScreenName: "Others",
       },
       "Setting.Version": {
-        upperScreenName: "Settings",
+        upperScreenName: "Others",
       },
       "Setting.ChainList": {
         upperScreenName: "ChainList",
@@ -131,6 +134,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       },
       AddressBook: {
         upperScreenName: "AddressBooks",
+      },
+      SecurityAndPrivacy: {
+        upperScreenName: "Others",
       },
       AddAddressBook: {
         upperScreenName: "AddressBooks",
@@ -170,6 +176,12 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       },
       Fetchhub: {
         upperScreenName: "HomeTab",
+      },
+      RenameWallet: {
+        upperScreenName: "Others",
+      },
+      DeleteWallet: {
+        upperScreenName: "Others",
       },
     }).withParams<{
       "Register.NewMnemonic": {

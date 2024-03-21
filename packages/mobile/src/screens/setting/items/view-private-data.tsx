@@ -5,11 +5,14 @@ import { PasswordInputModal } from "modals/password-input/modal";
 import { useStore } from "stores/index";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { getPrivateDataTitle } from "screens/setting/screens/view-private-data";
+import { useStyle } from "styles/index";
+import { ViewStyle } from "react-native";
+import { KeyIcon } from "components/new/icon/key";
 
-export const SettingViewPrivateDataItem: FunctionComponent<{
-  topBorder?: boolean;
-}> = observer(({ topBorder }) => {
+export const SettingViewPrivateDataItem: FunctionComponent = observer(() => {
   const { keyRingStore } = useStore();
+
+  const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
 
@@ -19,15 +22,16 @@ export const SettingViewPrivateDataItem: FunctionComponent<{
     <React.Fragment>
       <SettingItem
         label={getPrivateDataTitle(keyRingStore.keyRingType)}
+        left={<KeyIcon />}
         onPress={() => {
           setIsOpenModal(true);
         }}
-        topBorder={topBorder}
+        style={style.flatten(["height-80", "padding-x-20"]) as ViewStyle}
       />
       <PasswordInputModal
         isOpen={isOpenModal}
         close={() => setIsOpenModal(false)}
-        title={getPrivateDataTitle(keyRingStore.keyRingType, true)}
+        title={"Enter your password to view your mnemonic seed"}
         onEnterPassword={async (password) => {
           const index = keyRingStore.multiKeyStoreInfo.findIndex(
             (keyStore) => keyStore.selected

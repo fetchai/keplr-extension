@@ -11,7 +11,6 @@ import { useStyle } from "styles/index";
 import * as Clipboard from "expo-clipboard";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
-import { BlurBackground } from "components/new/blur-background/blur-background";
 import { isPrivateKey, validatePrivateKey } from "utils/format/format";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -254,16 +253,12 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       >
         Import your wallet
       </Text>
-      <BlurBackground
-        borderRadius={12}
-        containerStyle={style.flatten(["margin-y-10"]) as ViewStyle}
-      >
-        <TabBarView
-          listItem={SeedType}
-          selected={selectedSeed}
-          setSelected={setSelectedSeed}
-        />
-      </BlurBackground>
+
+      <TabBarView
+        listItem={SeedType}
+        selected={selectedSeed}
+        setSelected={setSelectedSeed}
+      />
       <View>
         <FlatList
           data={seedWords}

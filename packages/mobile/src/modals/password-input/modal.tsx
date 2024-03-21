@@ -1,31 +1,31 @@
 import React, { FunctionComponent, useState } from "react";
 import { registerModal } from "../base";
-import { Text, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { CardModal } from "../card";
-import { TextInput } from "components/input";
 import { Button } from "components/button";
 import { KeyboardSpacerView } from "components/keyboard";
-import { BorderlessButton } from "react-native-gesture-handler";
+import { InputCardView } from "components/new/card-view/input-card";
 import { IconButton } from "components/new/button/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
+import { EyeIcon } from "components/new/icon/eye";
+import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
 
 export const PasswordInputModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   title: string;
-  paragraph?: string;
   /**
    * If any error thrown in the `onEnterPassword`, the password considered as invalid password.
    * @param password
    */
   onEnterPassword: (password: string) => Promise<void>;
 }> = registerModal(
-  ({ close, title, paragraph, onEnterPassword, isOpen }) => {
+  ({ close, title, onEnterPassword, isOpen }) => {
     const style = useStyle();
 
     const [password, setPassword] = useState("");
     const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -51,57 +51,48 @@ export const PasswordInputModal: FunctionComponent<{
     return (
       <CardModal
         title={title}
-        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-        right={
-          <BorderlessButton
-            rippleColor={style.get("color-rect-button-default-ripple").color}
-            activeOpacity={0.3}
-            onPress={() => close()}
-          >
-            <IconButton
-              icon={<XmarkIcon color={"white"} />}
-              backgroundBlur={false}
-              blurIntensity={20}
-              borderRadius={50}
-              iconStyle={
-                style.flatten([
-                  "padding-12",
-                  "border-width-1",
-                  "border-color-gray-400",
-                ]) as ViewStyle
-              }
-            />
-          </BorderlessButton>
-        }
+        cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
+        titleStyle={style.flatten(["margin-x-24", "text-center"]) as ViewStyle}
       >
-        <Text
-          style={
-            style.flatten([
-              "body2",
-              "color-text-middle",
-              "margin-bottom-32",
-            ]) as ViewStyle
-          }
-        >
-          {paragraph || "Enter your password to continue"}
-        </Text>
-        <TextInput
+        <InputCardView
           label="Password"
+          rightIcon={
+            !showPassword ? (
+              <IconButton
+                icon={<EyeIcon />}
+                backgroundBlur={false}
+                onPress={() => {
+                  setShowPassword(!showPassword);
+                }}
+              />
+            ) : (
+              <IconButton
+                icon={<HideEyeIcon />}
+                backgroundBlur={false}
+                onPress={() => {
+                  setShowPassword(!showPassword);
+                }}
+              />
+            )
+          }
+          secureTextEntry={!showPassword}
           error={isInvalidPassword ? "Invalid password" : undefined}
-          onChangeText={(text) => {
+          onChangeText={(text: string) => {
             setPassword(text);
           }}
           value={password}
           returnKeyType="done"
-          secureTextEntry={true}
           onSubmitEditing={submitPassword}
         />
         <Button
-          text="Approve"
+          text="Continue"
           size="large"
           loading={isLoading}
           onPress={submitPassword}
           disabled={!password}
+          containerStyle={
+            style.flatten(["border-radius-32", "margin-y-20"]) as ViewStyle
+          }
         />
         <KeyboardSpacerView />
       </CardModal>

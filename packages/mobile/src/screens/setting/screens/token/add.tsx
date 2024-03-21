@@ -3,11 +3,12 @@ import { PageWithScrollView } from "components/page";
 import { View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
-import { AddressInput, TextInput } from "components/input";
+import { AddressInput } from "components/input";
 import { observer } from "mobx-react-lite";
 import { useRecipientConfig } from "@keplr-wallet/hooks";
 import { useStore } from "stores/index";
 import { useNavigation } from "@react-navigation/native";
+import { InputCardView } from "components/new/card-view/input-card";
 
 export const SettingAddTokenScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, tokensStore } = useStore();
@@ -27,7 +28,7 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
 
   return (
     <PageWithScrollView
-      backgroundMode="tertiary"
+      backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
@@ -37,17 +38,17 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
         recipientConfig={recipientConfig}
         disableAddressBook={true}
       />
-      <TextInput
+      <InputCardView
         label="Name"
         editable={false}
         value={queryTokenInfo.tokenInfo?.name ?? ""}
       />
-      <TextInput
+      <InputCardView
         label="Symbol"
         editable={false}
         value={queryTokenInfo.tokenInfo?.symbol ?? ""}
       />
-      <TextInput
+      <InputCardView
         label="Decimals"
         editable={false}
         value={queryTokenInfo.tokenInfo?.decimals.toString() ?? ""}
@@ -56,6 +57,7 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
       <Button
         text="Submit"
         size="large"
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         disabled={!queryTokenInfo.tokenInfo || queryTokenInfo.error != null}
         loading={!queryTokenInfo.tokenInfo && queryTokenInfo.isFetching}
         onPress={async () => {

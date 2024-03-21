@@ -1,5 +1,12 @@
 import React, { ReactElement, useState } from "react";
-import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -19,10 +26,12 @@ export const InputCardView: React.forwardRef<
     rightIcon?: ReactElement;
     error?: string;
     errorMassageShow?: boolean;
+    paragraph?: React.ReactNode;
   }
 > = observer((props, ref) => {
   const [isFocused, setIsFocused] = useState(false);
   const {
+    keyboardType,
     label,
     labelStyle,
     containerStyle,
@@ -31,6 +40,7 @@ export const InputCardView: React.forwardRef<
     inputStyle,
     rightIcon,
     error,
+    paragraph,
 
     onBlur,
     onFocus,
@@ -79,6 +89,11 @@ export const InputCardView: React.forwardRef<
         <View style={style.flatten(["flex-row"]) as ViewStyle}>
           <View style={style.flatten(["flex-3"]) as ViewStyle}>
             <TextInput
+              keyboardType={
+                keyboardType ?? Platform.OS === "ios"
+                  ? "ascii-capable"
+                  : "default"
+              }
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
                 [
@@ -116,6 +131,29 @@ export const InputCardView: React.forwardRef<
           ) : null}
         </View>
       </BlurBackground>
+      {paragraph && !error ? (
+        typeof paragraph === "string" ? (
+          <View>
+            <Text
+              style={StyleSheet.flatten([
+                style.flatten([
+                  "absolute",
+                  "text-caption2",
+                  "color-blue-400",
+                  "dark:color-blue-300",
+                  "margin-top-2",
+                  "margin-left-4",
+                ]) as ViewStyle,
+                errorLabelStyle,
+              ])}
+            >
+              {paragraph}
+            </Text>
+          </View>
+        ) : (
+          paragraph
+        )
+      ) : null}
       {errorMassageShow ? (
         error ? (
           <View>

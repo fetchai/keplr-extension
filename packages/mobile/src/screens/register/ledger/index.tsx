@@ -310,6 +310,11 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         control={control}
         rules={{
           required: "Name is required",
+          validate: (value: string) => {
+            if (value.length < 3) {
+              return "Name at least 3 characters";
+            }
+          },
         }}
         render={({ field: { onChange, onBlur, value, ref } }) => {
           return (
@@ -328,7 +333,6 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
                 }
               }}
               error={errors.name?.message}
-              errorMassageShow={false}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}

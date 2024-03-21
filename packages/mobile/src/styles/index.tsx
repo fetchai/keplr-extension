@@ -100,6 +100,8 @@ export const ColorPalette = {
 
   linear: "#CF447B",
 
+  cardColor: "#4BA1E7",
+
   transparent: "rgba(255,255,255,0)",
 
   "dark-blue": "#06103d",

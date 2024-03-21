@@ -329,7 +329,7 @@ export const LedgerGranterModal: FunctionComponent<{
           >
             {BluetoothMode.Ledger == bluetoothMode ? (
               <Image
-                source={require(`assets/image/ledger/Ledger.png`)}
+                source={require(`assets/image/ledger/ledger.png`)}
                 style={{
                   height: 52,
                   width: 292,
@@ -341,7 +341,7 @@ export const LedgerGranterModal: FunctionComponent<{
               />
             ) : BluetoothMode.Device == bluetoothMode ? (
               <Image
-                source={require(`assets/image/ledger/DeviceLedger.png`)}
+                source={require(`assets/image/ledger/device-ledger.png`)}
                 style={{
                   height: 52,
                   width: 292,
@@ -353,7 +353,7 @@ export const LedgerGranterModal: FunctionComponent<{
               />
             ) : BluetoothMode.Connecting == bluetoothMode ? (
               <Image
-                source={require(`assets/image/ledger/ConnectingLedger.png`)}
+                source={require(`assets/image/ledger/connecting-ledger.png`)}
                 style={{
                   height: 52,
                   width: 292,
@@ -365,7 +365,7 @@ export const LedgerGranterModal: FunctionComponent<{
               />
             ) : BluetoothMode.Pairing == bluetoothMode ? (
               <Image
-                source={require(`assets/image/ledger/PairingLedger.png`)}
+                source={require(`assets/image/ledger/pairing-ledger.png`)}
                 style={{
                   height: 52,
                   width: 292,
@@ -377,7 +377,7 @@ export const LedgerGranterModal: FunctionComponent<{
               />
             ) : (
               <Image
-                source={require(`assets/image/ledger/PairedLedger.png`)}
+                source={require(`assets/image/ledger/paired-ledger.png`)}
                 style={{
                   height: 52,
                   width: 292,

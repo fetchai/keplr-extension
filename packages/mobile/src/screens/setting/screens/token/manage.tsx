@@ -27,7 +27,7 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
     );
 
   return (
-    <PageWithScrollView backgroundMode="secondary">
+    <PageWithScrollView backgroundMode="image">
       {tokensOf.tokens.length > 0 ? (
         <Card style={style.flatten(["padding-bottom-14"]) as ViewStyle}>
           {tokensOf.tokens.map((token) => {

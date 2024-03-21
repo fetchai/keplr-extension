@@ -5,11 +5,14 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import delay from "delay";
 import { PasswordInputModal } from "modals/password-input/modal";
+import { ViewStyle } from "react-native";
+import { useStyle } from "styles/index";
+import { FingerPrintIconWithoutCircle } from "components/new/icon/finger-print";
 
-export const SettingBiometricLockItem: FunctionComponent<{
-  topBorder?: boolean;
-}> = observer(({ topBorder }) => {
+export const SettingBiometricLockItem: FunctionComponent = observer(() => {
   const { keychainStore } = useStore();
+
+  const style = useStyle();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   /*
@@ -47,6 +50,7 @@ export const SettingBiometricLockItem: FunctionComponent<{
       />
       <SettingItem
         label="Use biometric authentication"
+        left={<FingerPrintIconWithoutCircle size={18} />}
         right={
           <Toggle
             on={keychainStore.isBiometryOn}
@@ -66,7 +70,7 @@ export const SettingBiometricLockItem: FunctionComponent<{
             }}
           />
         }
-        topBorder={topBorder}
+        style={style.flatten(["height-80", "padding-x-20"]) as ViewStyle}
       />
     </React.Fragment>
   );

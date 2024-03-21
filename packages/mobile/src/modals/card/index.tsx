@@ -8,6 +8,7 @@ export const CardModal: FunctionComponent<{
   right?: React.ReactElement;
   childrenContainerStyle?: ViewStyle;
   cardStyle?: ViewStyle;
+  titleStyle?: ViewStyle;
   disableGesture?: boolean;
 }> = ({
   title,
@@ -16,6 +17,7 @@ export const CardModal: FunctionComponent<{
   childrenContainerStyle,
   disableGesture = false,
   cardStyle,
+  titleStyle,
 }) => {
   const style = useStyle();
 
@@ -56,22 +58,27 @@ export const CardModal: FunctionComponent<{
         >
           {title ? (
             <Text
-              style={style.flatten([
-                "h4",
-                "color-text-high",
-                "color-white",
-                "flex-3",
-              ])}
+              style={[
+                style.flatten([
+                  "h4",
+                  "color-text-high",
+                  "color-white",
+                  "flex-3",
+                ]),
+                titleStyle,
+              ]}
             >
               {title}
             </Text>
           ) : null}
-          <View style={style.flatten(["flex-1", "items-end"])}>{right}</View>
+          {right ? (
+            <View style={style.flatten(["flex-1", "items-end"])}>{right}</View>
+          ) : null}
         </View>
       </View>
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-x-16", "padding-y-10"]) as ViewStyle,
+          style.flatten(["padding-x-20", "padding-y-10"]) as ViewStyle,
           childrenContainerStyle,
         ])}
       >

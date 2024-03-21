@@ -8,15 +8,12 @@ import {
 import { useStore } from "stores/index";
 import { TransitionPresets } from "@react-navigation/stack";
 import {
-  HeaderAtSecondaryScreenOptionsPreset,
   HeaderOnSecondaryScreenOptionsPreset,
   HeaderRightButton,
 } from "components/header";
 import { SettingScreen } from "screens/setting";
 import { HeaderAddIcon } from "components/header/icon";
 import { SettingSelectAccountScreen } from "screens/setting/screens/select-account";
-import { ViewPrivateDataScreen } from "screens/setting/screens/view-private-data";
-import { FetchVersionScreen } from "screens/setting/screens/version";
 import { Stack } from "./navigation";
 
 export const SettingStackScreen: FunctionComponent = () => {
@@ -36,9 +33,7 @@ export const SettingStackScreen: FunctionComponent = () => {
     >
       <Stack.Screen
         options={{
-          ...HeaderAtSecondaryScreenOptionsPreset,
-          title: "Settings",
-          headerTitleStyle: style.flatten(["h3", "color-text-high"]),
+          headerShown: false,
         }}
         name="Setting"
         component={SettingScreen}
@@ -62,21 +57,6 @@ export const SettingStackScreen: FunctionComponent = () => {
           ),
         }}
         component={SettingSelectAccountScreen}
-      />
-      <Stack.Screen
-        name="Setting.ViewPrivateData"
-        options={{
-          ...HeaderOnSecondaryScreenOptionsPreset,
-        }}
-        component={ViewPrivateDataScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...HeaderAtSecondaryScreenOptionsPreset,
-          title: "Version",
-        }}
-        name="Setting.Version"
-        component={FetchVersionScreen}
       />
     </Stack.Navigator>
   );

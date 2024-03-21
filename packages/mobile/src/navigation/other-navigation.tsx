@@ -42,6 +42,14 @@ import {
 import { HeaderAddIcon } from "components/header/icon";
 import { Stack } from "./navigation";
 import { TokenDetail } from "screens/portfolio/token-detail";
+import { IconButton } from "components/new/button/icon";
+import { ViewStyle } from "react-native";
+import { SecurityAndPrivacyScreen } from "screens/setting/screens/Security-and-privacy";
+import { ViewPrivateDataScreen } from "screens/setting/screens/view-private-data";
+import { FetchVersionScreen } from "screens/setting/screens/version";
+import { CurrencyScreen } from "screens/setting/screens/currency";
+import { RenameWalletScreen } from "screens/rename-account";
+import { DeleteWalletScreen } from "screens/delete-account";
 
 export const OtherNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -210,28 +218,93 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Add Token",
+          ...BlurHeaderOptionsPreset,
+          title: "Add a token",
         }}
         name="Setting.AddToken"
         component={SettingAddTokenScreen}
       />
       <Stack.Screen
         options={{
-          ...HeaderOnSecondaryScreenOptionsPreset,
-          title: "Manage Tokens",
+          ...BlurHeaderOptionsPreset,
+          title: "Manage tokens",
           headerRight: () => (
             <HeaderRightButton
               onPress={() => {
                 navigation.navigate("Setting.AddToken");
               }}
             >
-              <HeaderAddIcon />
+              <IconButton
+                icon={<HeaderAddIcon size={20} color="white" />}
+                backgroundBlur={false}
+                iconStyle={
+                  style.flatten([
+                    "width-54",
+                    "border-width-1",
+                    "border-color-gray-300",
+                    "padding-x-14",
+                    "padding-y-6",
+                    "justify-center",
+                    "items-center",
+                    "margin-y-10",
+                    "margin-left-10",
+                  ]) as ViewStyle
+                }
+              />
             </HeaderRightButton>
           ),
         }}
         name="Setting.ManageTokens"
         component={SettingManageTokensScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...BlurHeaderOptionsPreset,
+
+          title: "Security & Privacy",
+        }}
+        name="SecurityAndPrivacy"
+        component={SecurityAndPrivacyScreen}
+      />
+      <Stack.Screen
+        name="Setting.ViewPrivateData"
+        options={{
+          ...BlurHeaderOptionsPreset,
+        }}
+        component={ViewPrivateDataScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...BlurHeaderOptionsPreset,
+          title: "App version",
+        }}
+        name="Setting.Version"
+        component={FetchVersionScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...BlurHeaderOptionsPreset,
+          title: "Currency",
+        }}
+        name="Setting.Currency"
+        component={CurrencyScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...BlurHeaderOptionsPreset,
+          title: "Rename wallet",
+        }}
+        name="RenameWallet"
+        component={RenameWalletScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="DeleteWallet"
+        component={DeleteWalletScreen}
       />
     </Stack.Navigator>
   );

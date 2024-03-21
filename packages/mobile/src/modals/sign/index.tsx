@@ -12,7 +12,7 @@ import {
   useZeroAllowedGasConfig,
 } from "@keplr-wallet/hooks";
 import { Button } from "components/button";
-import { Msg as AminoMsg } from "@keplr-wallet/types";
+import { Msg as AminoMsg, EthSignType } from "@keplr-wallet/types";
 import { Msg } from "./msg";
 import { observer } from "mobx-react-lite";
 import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
@@ -29,9 +29,16 @@ import { XmarkIcon } from "components/new/icon/xmark";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { FeeInSign } from "modals/sign/fee";
+import { TabBarView } from "components/new/tab-bar/tab-bar";
+import { DataTab } from "./data-tab";
 const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
   KeyboardAwareScrollView
 );
+
+enum TransactionTabEnum {
+  Details = "Details",
+  Data = "Data",
+}
 
 export const SignModal: FunctionComponent<{
   isOpen: boolean;
@@ -60,6 +67,7 @@ export const SignModal: FunctionComponent<{
     const [signer, setSigner] = useState("");
 
     const [chainId, setChainId] = useState(chainStore.current.chainId);
+    const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
 
     // There are services that sometimes use invalid tx to sign arbitrary data on the sign page.
     // In this case, there is no obligation to deal with it, but 0 gas is favorably allowed.
@@ -85,6 +93,7 @@ export const SignModal: FunctionComponent<{
     amountConfig.setSignDocHelper(signDocHelper);
 
     const [isInternal, setIsInternal] = useState(false);
+    const [selectedId, setSelectedId] = useState(TransactionTabEnum.Details);
 
     useEffect(() => {
       if (signInteractionStore.waitingData) {
@@ -122,6 +131,9 @@ export const SignModal: FunctionComponent<{
           setWCSession(walletConnectStore.getSession(sessionId));
         } else {
           setWCSession(undefined);
+        }
+        if (data.data.ethSignType) {
+          setEthSignType(data.data.ethSignType);
         }
       }
     }, [
@@ -238,6 +250,11 @@ export const SignModal: FunctionComponent<{
           />
         }
       >
+        <TabBarView
+          listItem={TransactionTabEnum}
+          selected={selectedId}
+          setSelected={setSelectedId}
+        />
         <AnimatedKeyboardAwareScrollView
           style={style.flatten(["max-height-600"]) as ViewStyle}
           showsVerticalScrollIndicator={false}
@@ -249,41 +266,48 @@ export const SignModal: FunctionComponent<{
               peerMeta={wcSession.peerMeta}
             />
           ) : null}
-          <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
-            <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
-              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
-                {`${msgs.length.toString()} `}
-              </Text>
-              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
-                {msgs.length > 1 ? "Messages" : "Message"}
-              </Text>
-            </Text>
-            <BlurBackground
-              borderRadius={12}
-              blurIntensity={16}
-              containerStyle={
-                [
-                  style.flatten(["border-radius-8", "overflow-hidden"]),
-                ] as ViewStyle
-              }
-            >
-              <ScrollView
-                style={style.flatten(["max-height-180"]) as ViewStyle}
-                persistentScrollbar={true}
-                indicatorStyle={"white"}
-              >
-                {renderedMsgs}
-              </ScrollView>
-            </BlurBackground>
-          </View>
-          <MemoInputView label="Memo" memoConfig={memoConfig} />
-          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-          <FeeInSign
-            feeConfig={feeConfig}
-            gasConfig={gasConfig}
-            signOptions={signInteractionStore.waitingData?.data.signOptions}
-            isInternal={isInternal}
-          />
+          {selectedId === TransactionTabEnum.Details ? (
+            <React.Fragment>
+              <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
+                <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
+                  <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+                    {`${msgs.length.toString()} `}
+                  </Text>
+                  <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+                    {msgs.length > 1 ? "Messages" : "Message"}
+                  </Text>
+                </Text>
+                <BlurBackground
+                  borderRadius={12}
+                  blurIntensity={16}
+                  containerStyle={
+                    [
+                      style.flatten(["border-radius-8", "overflow-hidden"]),
+                    ] as ViewStyle
+                  }
+                >
+                  <ScrollView
+                    style={style.flatten(["max-height-180"]) as ViewStyle}
+                    persistentScrollbar={true}
+                    indicatorStyle={"white"}
+                  >
+                    {renderedMsgs}
+                  </ScrollView>
+                </BlurBackground>
+              </View>
+              <MemoInputView label="Memo" memoConfig={memoConfig} />
+              <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+              <FeeInSign
+                feeConfig={feeConfig}
+                gasConfig={gasConfig}
+                signOptions={signInteractionStore.waitingData?.data.signOptions}
+                isInternal={isInternal}
+              />
+            </React.Fragment>
+          ) : (
+            <DataTab signDocHelper={signDocHelper} ethSignType={ethSignType} />
+          )}
+
           <Button
             text="Approve transaction"
             size="large"
