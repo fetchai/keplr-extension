@@ -7,8 +7,7 @@ import React, {
 
 import { useNavigate, useLocation, useParams } from "react-router";
 import { FormattedMessage, useIntl } from "react-intl";
-import { PasswordInput } from "@components/form";
-import { Button, Form } from "reactstrap";
+import { Form } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { WarningView } from "./warning-view";
 import classnames from "classnames";
@@ -18,6 +17,8 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { flowResult } from "mobx";
 import { HeaderLayout } from "@layouts-v2/header-layout";
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { PasswordInput } from "@components-v2/form";
 
 interface FormData {
   password: string;
@@ -58,6 +59,7 @@ export const ExportPage: FunctionComponent = observer(() => {
 
   return (
     <HeaderLayout
+      smallTitle={true}
       showTopMenu={true}
       showChainName={false}
       canChangeChainInfo={false}
@@ -107,9 +109,6 @@ export const ExportPage: FunctionComponent = observer(() => {
               })}
             >
               <PasswordInput
-                label={intl.formatMessage({
-                  id: "setting.export.input.password",
-                })}
                 error={errors.password && errors.password.message}
                 {...register("password", {
                   required: intl.formatMessage({
@@ -117,14 +116,9 @@ export const ExportPage: FunctionComponent = observer(() => {
                   }),
                 })}
               />
-              <Button
-                type="submit"
-                color="primary"
-                block
-                data-loading={loading}
-              >
+              <ButtonV2 text="" data-loading={loading}>
                 <FormattedMessage id="setting.export.button.confirm" />
-              </Button>
+              </ButtonV2>
             </Form>
           </React.Fragment>
         )}

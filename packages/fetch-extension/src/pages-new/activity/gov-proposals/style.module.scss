@@ -1,11 +1,9 @@
-.activityRow {
-  color: #808da0;
-  font-size: small;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+.rowSubtitle {
+  font-size: 13px;
+  font-weight: 650;
+  color: rgba(255, 255, 255, 0.6);
+  // margin-left: 10px;
 }
-
 
 .container {
   padding: 16px;
@@ -36,4 +34,26 @@
   width: 16px;
   height: 16px;
   margin-right: 10px;
+}
+.hr {
+  border: none;
+  height: 0.5px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.activityRow {
+  font-style: Lexend;
+  color: white;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  // justify-content: space-between;
+  height: 83px;
+}
+.middle {
+  // margin-left: 15px;
+  align-items: baseline;
+  display: flex;
+  flex-direction: column;
 }

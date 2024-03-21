@@ -2,8 +2,6 @@ import style from "./style.module.scss";
 import sendIcon from "@assets/svg/wireframe/activity-send.svg";
 import recieveIcon from "@assets/svg/wireframe/activity-recieve.svg";
 import stakeIcon from "@assets/svg/wireframe/activity-stake.svg";
-// import contractIcon from "@assets/svg/wireframe/activity-stake.svg";
-// import claimIcon from "@assets/icon/claim-grey.png";
 import React, { useEffect, useState } from "react";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "../../../stores";
@@ -15,14 +13,11 @@ const getActivityIcon = (
   switch (type) {
     case "/cosmos.bank.v1beta1.MsgSend":
       return isAmountDeducted ? sendIcon : recieveIcon;
-
     case "/cosmos.staking.v1beta1.MsgDelegate":
     case "/cosmos.staking.v1beta1.MsgUndelegate":
     case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
-      return stakeIcon;
-    case "contract":
-      return stakeIcon;
     case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
+    case "contract":
       return stakeIcon;
     default:
       return stakeIcon;
@@ -68,6 +63,9 @@ export const ActivityRow = ({ node }: { node: any }) => {
       return `${amountValue}${amountCurrency.coinDenom}`;
     } else return `${amount} ${denom}`;
   };
+  useEffect(() => {
+    setIsAmountDeducted(isAmountDeducted);
+  }, [isAmountDeducted]);
 
   const getDetails = (node: any): any => {
     const { nodes } = node.transaction.messages;
@@ -75,9 +73,6 @@ export const ActivityRow = ({ node }: { node: any }) => {
     const parsedJson = JSON.parse(json);
     let currency = "afet";
     const isAmountDeducted = parseFloat(node.balanceOffset) < 0;
-    useEffect(() => {
-      setIsAmountDeducted(isAmountDeducted);
-    }, [isAmountDeducted]);
     if (parsedJson.amount) {
       currency = Array.isArray(parsedJson.amount)
         ? parsedJson.amount[0].denom
@@ -152,8 +147,8 @@ export const ActivityRow = ({ node }: { node: any }) => {
               />
             </div>
             <div className={style["middleSection"]}>
-              <div className={style["title"]}>{details.verb}</div>
-              <div className={style["subTitle"]}>
+              <div className={style["rowTitle"]}>{details.verb}</div>
+              <div className={style["rowSubtitle"]}>
                 {node.transaction.status === "Success" ? (
                   <div>Confirmed</div>
                 ) : (

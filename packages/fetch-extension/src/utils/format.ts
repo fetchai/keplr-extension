@@ -47,6 +47,10 @@ export const formatActivityHash = (address: string) => {
   if (address?.length > 12) return address.substring(0, 10) + "...";
   else return address;
 };
+export const formatString = (address: string) => {
+  if (address?.length > 30) return address.substring(0, 30) + "...";
+  else return address;
+};
 
 export const formatDomain = (domainName: string): string => {
   const maxLength = 15;

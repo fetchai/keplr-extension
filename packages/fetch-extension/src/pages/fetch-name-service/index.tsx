@@ -29,7 +29,7 @@ export const FetchnameService = () => {
         analyticsStore.logEvent("back_click", {
           pageName: "Fetch Name Server",
         });
-        navigate("/more");
+        navigate("/more-new");
       }}
       showBottomMenu={true}
     >

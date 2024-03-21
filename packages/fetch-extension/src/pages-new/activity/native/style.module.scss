@@ -43,11 +43,13 @@
   gap: 6px;
   align-items: baseline;
 }
-.title {
+.rowTitle {
   font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+}
+.rowSubtitle {
+  font-size: 13px;
+  font-weight: 650;
+  color: rgba(255, 255, 255, 0.6);
 }
 .confirmed {
   color: var(--green-green-500-vibrant-green, #2de376);

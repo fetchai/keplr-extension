@@ -34,7 +34,7 @@ const bottomNav = [
     title: "More",
     icon: moreTabIcon,
     activeIcon: selectedMoreTabIcon,
-    path: "/more",
+    path: "/more-new",
     disabled: false,
   },
 ];
