@@ -19,7 +19,7 @@ import {
   SignMode,
 } from "./types";
 import { ChainInfo, EthSignType } from "@keplr-wallet/types";
-import { Env } from "@keplr-wallet/router";
+import { Env, WEBPAGE_PORT } from "@keplr-wallet/router";
 
 import { Buffer } from "buffer/";
 import { ChainIdHelper, EthermintChainIdHelper } from "@keplr-wallet/cosmos";
@@ -32,6 +32,7 @@ import { domainHash, messageHash } from "./utils";
 import { KeystoneService } from "../keystone";
 import { publicKeyConvert } from "secp256k1";
 import { KeystoneKeyringData } from "../keystone/cosmos-keyring";
+import { InteractionService } from "../interaction";
 
 export enum KeyRingStatus {
   NOTLOADED,
@@ -92,6 +93,7 @@ export class KeyRing {
     // TODO: use an interface instead of `LedgerService` class for easier testing.
     private readonly ledgerKeeper: LedgerService,
     private readonly keystoneService: KeystoneService,
+    private readonly interactionService: InteractionService,
     private readonly crypto: CommonCrypto
   ) {
     this.loaded = false;
@@ -305,6 +307,7 @@ export class KeyRing {
     this.multiKeyStore.push(this.keyStore);
 
     await this.save();
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
 
     return {
       status: this.status,
@@ -339,6 +342,7 @@ export class KeyRing {
     this.multiKeyStore.push(this.keyStore);
 
     await this.save();
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
 
     return {
       status: this.status,
@@ -381,6 +385,7 @@ export class KeyRing {
     this.keystonePublicKey = publicKey;
 
     await this.save();
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
 
     return {
       status: this.status,
@@ -438,7 +443,7 @@ export class KeyRing {
     this.ledgerPublicKeyCache = pubKeys;
 
     await this.save();
-
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
     return {
       status: this.status,
       multiKeyStoreInfo: this.getMultiKeyStoreInfo(),
@@ -455,6 +460,8 @@ export class KeyRing {
     this.ledgerPublicKeyCache = undefined;
     this.keystonePublicKey = undefined;
     this.password = "";
+
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
   }
 
   public async unlock(password: string) {
@@ -517,6 +524,7 @@ export class KeyRing {
     }
 
     this.password = password;
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
   }
 
   public async save() {
@@ -574,6 +582,7 @@ export class KeyRing {
     }
 
     this.loaded = true;
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "status-changed", {});
   }
 
   private updateLegacyKeyStore(keyStore: KeyStore) {

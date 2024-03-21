@@ -54,6 +54,28 @@ export class RestoreKeyRingMsg extends Message<{
   }
 }
 
+export class RestoreWalletMsg extends Message<WalletStatus> {
+  public static type() {
+    return "restore-wallet";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return RestoreWalletMsg.type();
+  }
+}
+
 export class DeleteKeyRingMsg extends Message<{
   status: KeyRingStatus;
   multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
@@ -1298,7 +1320,7 @@ export class GetAccountMsg extends Message<Account | null> {
   }
 }
 
-export class GetKeyMsgFetchSigning extends Message<Key> {
+export class GetKeyMsgFetchSigning extends Message<Account> {
   public static type() {
     return "get-key-fetch-signing";
   }

@@ -1,6 +1,4 @@
-export type Method =
-  | `umbral.${UmbralMethod}`
-  | `wallet.${FetchWalletApiMethod}`;
+export type Method = `wallet.${FetchWalletApiMethod}`;
 
 export type FetchWalletApiMethod =
   | WalletMethod
@@ -11,20 +9,10 @@ export type FetchWalletApiMethod =
 
 export type FetchWalletMethod =
   | WalletMethod
-  | UmbralMethod
   | WalletSigningMethod
   | NetworksApiMethod
   | AccountsApiMethod
   | AddressBookApiMethods;
-
-export type UmbralMethod =
-  | "getPublicKey"
-  | "getSigningPublicKey"
-  | "encrypt"
-  | "generateKeyFragments"
-  | "decrypt"
-  | "decryptReEncrypted"
-  | "verifyCapsuleFragment";
 
 export type WalletSigningMethod =
   | "getCurrentKey"
@@ -36,7 +24,11 @@ export type WalletSigningMethod =
   | "getOfflineDirectSigner"
   | "getOfflineAminoSigner";
 
-export type WalletMethod = "status" | "lockWallet" | "unlockWallet";
+export type WalletMethod =
+  | "status"
+  | "lockWallet"
+  | "unlockWallet"
+  | "restoreWallet";
 
 export type NetworksApiMethod =
   | "getNetwork"

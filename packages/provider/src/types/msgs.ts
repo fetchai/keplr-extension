@@ -1,4 +1,9 @@
-import { Account, AddressBookEntry, WalletStatus } from "@fetchai/wallet-types";
+import {
+  Account,
+  AddressBookEntry,
+  NetworkConfig,
+  WalletStatus,
+} from "@fetchai/wallet-types";
 import { Message } from "@keplr-wallet/router";
 import {
   ChainInfo,
@@ -775,6 +780,28 @@ export class LockWalletMsg extends Message<void> {
   }
 }
 
+export class RestoreWalletMsg extends Message<WalletStatus> {
+  public static type() {
+    return "restore-wallet";
+  }
+
+  constructor() {
+    super();
+  }
+
+  validateBasic(): void {
+    // noop
+  }
+
+  route(): string {
+    return "keyring";
+  }
+
+  type(): string {
+    return RestoreWalletMsg.type();
+  }
+}
+
 export class CurrentAccountMsg extends Message<Account> {
   public static type() {
     return "current-account-msg";
@@ -867,7 +894,7 @@ export class GetAccountMsg extends Message<Account | null> {
   }
 }
 
-export class GetNetworkMsg extends Message<ChainInfo> {
+export class GetNetworkMsg extends Message<NetworkConfig> {
   public static type() {
     return "current-network-msg";
   }
@@ -889,7 +916,7 @@ export class GetNetworkMsg extends Message<ChainInfo> {
   }
 }
 
-export class ListNetworksMsg extends Message<ChainInfo[]> {
+export class ListNetworksMsg extends Message<NetworkConfig[]> {
   public static type() {
     return "list-network-msg";
   }
@@ -911,7 +938,7 @@ export class ListNetworksMsg extends Message<ChainInfo[]> {
   }
 }
 
-export class GetKeyMsgFetchSigning extends Message<Key> {
+export class GetKeyMsgFetchSigning extends Message<Account> {
   public static type() {
     return "get-key-fetch-signing";
   }
@@ -1121,12 +1148,12 @@ export class AddNetworkAndSwitchMsg extends Message<void> {
     return "add-chain-by-network";
   }
 
-  constructor(public readonly chainInfo: ChainInfo) {
+  constructor(public readonly network: NetworkConfig) {
     super();
   }
 
   validateBasic(): void {
-    if (!this.chainInfo) {
+    if (!this.network) {
       throw new Error("chain info not set");
     }
   }

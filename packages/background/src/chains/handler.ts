@@ -9,9 +9,9 @@ import {
   ListNetworksMsg,
   AddNetworkAndSwitchMsg,
   SwitchNetworkByChainIdMsg,
+  SetSelectedChainMsg,
 } from "./messages";
 import { ChainInfo } from "@keplr-wallet/types";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -29,6 +29,11 @@ export const getHandler: (service: ChainsService) => Handler = (service) => {
         return handleSuggestChainInfoMsg(service)(
           env,
           msg as SuggestChainInfoMsg
+        );
+      case SetSelectedChainMsg:
+        return handleSetSelectedChainMsg(service)(
+          env,
+          msg as SetSelectedChainMsg
         );
       case AddNetworkAndSwitchMsg:
         return handleAddNetworkAndSwitch(service)(
@@ -84,6 +89,14 @@ const handleGetChainInfosWithoutEndpointsMsg: (
   };
 };
 
+const handleSetSelectedChainMsg: (
+  service: ChainsService
+) => InternalHandler<SetSelectedChainMsg> = (service) => {
+  return async (_, msg) => {
+    service.setSelectedChain(msg.chainId);
+  };
+};
+
 const handleSuggestChainInfoMsg: (
   service: ChainsService
 ) => InternalHandler<SuggestChainInfoMsg> = (service) => {
@@ -114,22 +127,24 @@ const handleGetNetworkMsg: (
   service: ChainsService
 ) => InternalHandler<GetNetworkMsg> = (service) => {
   return async () => {
-    const kvStore = new ExtensionKVStore("store_chain_config");
-    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-
-    if (!chainId) {
-      throw Error("could not detect current chainId");
-    }
-
-    return await service.getChainInfo(chainId);
+    const chainId = service.getSelectedChain();
+    const chainInfo = await service.getChainInfo(chainId);
+    return service.getNetworkConfig(chainInfo);
   };
 };
 
 const handleListNetworksMsg: (
   service: ChainsService
 ) => InternalHandler<ListNetworksMsg> = (service) => {
-  return async () => {
-    return await service.getChainInfos();
+  return async (env, msg) => {
+    await service.permissionService.checkOrGrantGlobalPermission(
+      env,
+      "/permissions/grant/get-chain-infos",
+      "get-chain-infos",
+      msg.origin
+    );
+
+    return await service.getAllNetworks();
   };
 };
 
@@ -137,15 +152,12 @@ const handleAddNetworkAndSwitch: (
   service: ChainsService
 ) => InternalHandler<AddNetworkAndSwitchMsg> = (service) => {
   return async (env, msg) => {
-    if (await service.hasChainInfo(msg.chainInfo.chainId)) {
+    if (await service.hasChainInfo(msg.networkConfig.chainId)) {
       // If suggested chain info is already registered, just return.
       return;
     }
-    const chainInfo = msg.chainInfo as Writeable<ChainInfo>;
-    // And, always handle it as beta.
-    chainInfo.beta = true;
 
-    await service.addChainByNetwork(env, chainInfo, msg.origin);
+    await service.addChainByNetwork(env, msg.networkConfig, msg.origin);
   };
 };
 

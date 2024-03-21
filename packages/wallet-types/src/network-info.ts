@@ -12,11 +12,6 @@ export interface BIP44 {
 }
 
 /**
- * A useful type alias to representing string values that only contain large numeric values
- */
-export type LargeNumber = string;
-
-/**
  * The network configuration represents all the information needed by the wallet in order to interact with a target
  * network
  */
@@ -34,7 +29,7 @@ export interface NetworkConfig {
   /**
    * The network type
    */
-  readonly networkType: "cosmos";
+  readonly networkType: "cosmos" | "evm";
 
   /**
    * The base RPC used for interacting with the network
@@ -93,8 +88,10 @@ export interface NetworkConfig {
    * The gas price configuration for the network
    */
   readonly gasPriceStep?: {
-    low: LargeNumber;
-    average: LargeNumber;
-    high: LargeNumber;
+    low: number;
+    average: number;
+    high: number;
   };
+
+  readonly features?: string[];
 }

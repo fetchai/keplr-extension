@@ -32,7 +32,7 @@ export interface BaseCurrency {
   /**
    * The currency type field
    */
-  readonly type: "native" | "cw20" | "ibc";
+  readonly type: "native" | "cw20" | "ibc" | "erc20";
 
   /**
    * An optional description for the currency
@@ -57,7 +57,7 @@ export interface BaseCurrency {
   /**
    * The canonical symbol for the currency
    */
-  readonly symbol: string;
+  readonly decimals: number;
 
   /**
    * This is used to fetch asset's fiat value from coingecko.
@@ -112,6 +112,18 @@ export interface CW20Currency extends BaseCurrency {
   readonly contractAddress: string;
 }
 
+export interface ERC20Currency extends BaseCurrency {
+  /**
+   * The type id for the currency
+   */
+  readonly type: "erc20";
+
+  /**
+   * The contract address for the currency
+   */
+  readonly contractAddress: string;
+}
+
 /**
  * Determines if the input currency is a CW20 currency
  *
@@ -121,6 +133,12 @@ export function isCw20Currency(
   currency: BaseCurrency
 ): currency is CW20Currency {
   return currency.type === "cw20";
+}
+
+export function isErc20Currency(
+  currency: BaseCurrency
+): currency is CW20Currency {
+  return currency.type === "erc20";
 }
 
 /**
@@ -169,4 +187,8 @@ export interface IBCCurrency extends BaseCurrency {
 /**
  * A type alias representing all possible concrete currency types
  */
-export type Currency = NativeCurrency | IBCCurrency | CW20Currency;
+export type Currency =
+  | NativeCurrency
+  | IBCCurrency
+  | CW20Currency
+  | ERC20Currency;

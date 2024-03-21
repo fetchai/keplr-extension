@@ -1,17 +1,22 @@
 import {
   Keplr,
   KeplrSignOptions,
-  Key,
   OfflineDirectSigner,
   OfflineAminoSigner,
   AminoSignResponse,
   StdSignDoc,
   DirectSignResponse,
   StdSignature,
-  ChainInfo,
 } from "@keplr-wallet/types";
-import { UmbralApi } from "@fetchai/umbral-types";
 import { PublicKey } from "./public-keys";
+import { NetworkConfig } from "./network-info";
+
+export enum WalletStatus {
+  NOTLOADED,
+  EMPTY,
+  LOCKED,
+  UNLOCKED,
+}
 
 /**
  * The representation of the Account
@@ -87,7 +92,7 @@ export interface NetworksApi {
    *
    * @throws An error if the wallet is locked or if the dApp does not have permission to the networks API
    */
-  getNetwork(): Promise<ChainInfo>;
+  getNetwork(): Promise<NetworkConfig>;
 
   /**
    * Switch a specified network
@@ -95,7 +100,7 @@ export interface NetworksApi {
    * @param network The new network to target the Wallet at.
    * @throws An error if the dApp does not have permission to the networks API
    */
-  switchToNetwork(network: ChainInfo): Promise<void>;
+  switchToNetwork(network: NetworkConfig): Promise<void>;
 
   /**
    * Switch to a previous network by chain id
@@ -110,7 +115,7 @@ export interface NetworksApi {
    *
    * @throws An error if the dApp does not have permission to the networks API
    */
-  listNetworks(): Promise<ChainInfo[]>;
+  listNetworks(): Promise<NetworkConfig[]>;
 }
 
 /**
@@ -225,36 +230,13 @@ export interface AddressBookApi {
 }
 
 /**
- * The EventHandler specifies an interface that allows users to subscribe to specific set of events
- */
-export interface EventHandler<T> {
-  /**
-   * Subscribe to events
-   *
-   * @param handler The handler that should be called when a new event is generated
-   */
-  subscribe(handler: T): void;
-
-  /**
-   * Unsubscribe from events
-   *
-   * @param handler The handler function that should unsubscribe
-   */
-  unsubscribe(handler: T): void;
-}
-
-/**
  * The signing API is used be dApp developers to be able to sign transactions and other interactions with the network
  *
  * By design, we expect most users to build and sign transactions by using CosmJS. By comparison with the original
  * Keplr we do not allow other signing messages
  */
 export interface SigningApi {
-  /**
-   *
-   *
-   */
-  getCurrentKey(chainId: string): Promise<Key>;
+  getCurrentKey(chainId: string): Promise<Account>;
 
   signAmino(
     chainId: string,
@@ -344,16 +326,6 @@ export interface SigningApi {
 }
 
 /**
- * The status of the wallet.
- */
-export type WalletStatus =
-  | "locked"
-  | "unlocked"
-  | "notLoaded"
-  | "empty"
-  | undefined;
-
-/**
  * The WalletAPI
  *
  * The main goal of the wallet api is to provide a good interface for dApp builders in order to build compelling
@@ -368,6 +340,11 @@ export interface WalletApi {
   status(): Promise<WalletStatus>;
 
   /**
+   * Allows the user to restore the wallet from the UI in case the wallet keyring is not loaded
+   */
+  restoreWallet(): Promise<WalletStatus>;
+
+  /**
    * Allows the user to lock the wallet from the UI. This can implement logout like functionality
    */
   lockWallet(): Promise<void>;
@@ -375,7 +352,7 @@ export interface WalletApi {
   /**
    * Allows the dApp to
    */
-  unlockWallet(password: string): Promise<void>;
+  unlockWallet(): Promise<void>;
 
   /**
    * The networks API
@@ -408,13 +385,6 @@ export interface FetchBrowserWallet {
    * The version of the installed browser wallet extension
    */
   readonly version: string;
-
-  /**
-   * The Umbral Api
-   *
-   * Allows users to interact with the Proxy Re-encryption API
-   */
-  readonly umbral: UmbralApi;
 
   /**
    * The main Wallet API

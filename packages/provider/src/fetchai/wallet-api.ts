@@ -3,6 +3,7 @@ import {
   AccountsApi,
   AddressBookApi,
   AddressBookEntry,
+  NetworkConfig,
   NetworksApi,
   SigningApi,
   WalletApi,
@@ -10,11 +11,9 @@ import {
 } from "@fetchai/wallet-types";
 import {
   AminoSignResponse,
-  ChainInfo,
   DirectSignResponse,
   KeplrIntereactionOptions,
   KeplrSignOptions,
-  Key,
   OfflineAminoSigner,
   OfflineDirectSigner,
   StdSignDoc,
@@ -42,7 +41,7 @@ export class InjectedFetchWalletApi implements WalletApi {
     public networks: NetworksApi,
     public accounts: AccountsApi,
     public signing: SigningApi,
-    public addressBook: InjectedFetchAddressBook,
+    public addressBook: AddressBookApi,
     protected readonly proxy: Proxy
   ) {}
 
@@ -56,6 +55,10 @@ export class InjectedFetchWalletApi implements WalletApi {
 
   async lockWallet(): Promise<void> {
     await this.requestViaProxy("lockWallet", []);
+  }
+
+  async restoreWallet(): Promise<WalletStatus> {
+    return await this.requestViaProxy("restoreWallet", []);
   }
 
   protected async requestViaProxy(
@@ -153,11 +156,11 @@ export class InjectedFetchAccount implements AccountsApi {
 export class InjectedFetchNetworks implements NetworksApi {
   constructor(protected readonly proxy: Proxy) {}
 
-  async getNetwork(): Promise<ChainInfo> {
+  async getNetwork(): Promise<NetworkConfig> {
     return await this.requestViaProxy("getNetwork", []);
   }
 
-  async switchToNetwork(network: ChainInfo): Promise<void> {
+  async switchToNetwork(network: NetworkConfig): Promise<void> {
     return await this.requestViaProxy("switchToNetwork", [network]);
   }
 
@@ -165,7 +168,7 @@ export class InjectedFetchNetworks implements NetworksApi {
     return await this.requestViaProxy("switchToNetworkByChainId", [chainId]);
   }
 
-  async listNetworks(): Promise<ChainInfo[]> {
+  async listNetworks(): Promise<NetworkConfig[]> {
     return await this.requestViaProxy("listNetworks", []);
   }
 
@@ -208,7 +211,7 @@ export class InjectedFetchSigning implements SigningApi {
 
   public defaultOptions: KeplrIntereactionOptions = {};
 
-  async getCurrentKey(chainId: string): Promise<Key> {
+  async getCurrentKey(chainId: string): Promise<Account> {
     const k = await this.requestViaProxy("getCurrentKey", [chainId]);
     return k;
   }

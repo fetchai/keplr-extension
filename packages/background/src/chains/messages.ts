@@ -2,7 +2,7 @@ import { Message } from "@keplr-wallet/router";
 import { ChainInfoWithCoreTypes } from "./types";
 import { ChainInfo, ChainInfoWithoutEndpoints } from "@keplr-wallet/types";
 import { ROUTE } from "./constants";
-// import { NetworkConfig } from "@fetchai/wallet-types";
+import { NetworkConfig } from "@fetchai/wallet-types";
 
 export class GetChainInfosMsg extends Message<{
   chainInfos: ChainInfoWithCoreTypes[];
@@ -102,7 +102,7 @@ export class RemoveSuggestedChainInfoMsg extends Message<
   }
 }
 
-export class GetNetworkMsg extends Message<ChainInfo> {
+export class GetNetworkMsg extends Message<NetworkConfig> {
   public static type() {
     return "current-network-msg";
   }
@@ -111,7 +111,9 @@ export class GetNetworkMsg extends Message<ChainInfo> {
     super();
   }
 
-  validateBasic(): void {}
+  validateBasic(): void {
+    //  noop
+  }
 
   route(): string {
     return ROUTE;
@@ -122,7 +124,7 @@ export class GetNetworkMsg extends Message<ChainInfo> {
   }
 }
 
-export class ListNetworksMsg extends Message<ChainInfo[]> {
+export class ListNetworksMsg extends Message<NetworkConfig[]> {
   public static type() {
     return "list-network-msg";
   }
@@ -149,12 +151,12 @@ export class AddNetworkAndSwitchMsg extends Message<void> {
     return "add-chain-by-network";
   }
 
-  constructor(public readonly chainInfo: ChainInfo) {
+  constructor(public readonly networkConfig: NetworkConfig) {
     super();
   }
 
   validateBasic(): void {
-    if (!this.chainInfo) {
+    if (!this.networkConfig) {
       throw new Error("chain info not set");
     }
   }
@@ -193,5 +195,33 @@ export class SwitchNetworkByChainIdMsg extends Message<void> {
 
   type(): string {
     return SwitchNetworkByChainIdMsg.type();
+  }
+}
+
+export class SetSelectedChainMsg extends Message<void> {
+  public static type() {
+    return "network-changed-event";
+  }
+
+  constructor(public readonly chainId: string) {
+    super();
+  }
+
+  validateBasic(): void {
+    if (!this.chainId) {
+      throw new Error("Chain info not set");
+    }
+  }
+
+  override approveExternal(): boolean {
+    return true;
+  }
+
+  route(): string {
+    return ROUTE;
+  }
+
+  type(): string {
+    return SetSelectedChainMsg.type();
   }
 }

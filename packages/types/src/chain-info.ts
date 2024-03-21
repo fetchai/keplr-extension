@@ -64,6 +64,12 @@ export interface ChainInfo {
   readonly chainSymbolImageUrl?: string;
 
   readonly explorerUrl?: string;
+
+  readonly grpcUrl?: string;
+
+  readonly type?: "mainnet" | "testnet";
+
+  readonly status?: "alpha" | "beta" | "production";
 }
 
 export type ChainInfoWithoutEndpoints = Omit<

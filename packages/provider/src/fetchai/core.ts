@@ -1,21 +1,6 @@
 import {
-  UmbralApi,
-  UmbralDecryptMsg,
-  UmbralDecryptReEncryptedMsg,
-  UmbralEncryptionResult,
-  UmbralEncryptMsg,
-  UmbralGenerateKeyFragsMsg,
-  UmbralGetPublicKeyMsg,
-  UmbralGetSigningPublicKeyMsg,
-  UmbralKeyFragment,
-  UmbralVerifyCapsuleFragMsg,
-} from "@fetchai/umbral-types";
-
-import {
-  ChainInfo,
   KeplrIntereactionOptions,
   KeplrSignOptions,
-  Key,
   AminoSignResponse,
   StdSignDoc,
   OfflineAminoSigner,
@@ -34,7 +19,6 @@ import {
   GetNetworkMsg,
   ListNetworksMsg,
   CurrentAccountMsg,
-  GetKeyMsgFetchSigning,
   RequestSignAminoMsgFetchSigning,
   RequestSignDirectMsgFetchSigning,
   RequestVerifyADR36AminoSignDocFetchSigning,
@@ -45,6 +29,8 @@ import {
   AddEntryMsg,
   UpdateEntryMsg,
   DeleteEntryMsg,
+  RestoreWalletMsg,
+  GetKeyMsgFetchSigning,
 } from "../types";
 import deepmerge from "deepmerge";
 
@@ -60,6 +46,7 @@ import {
   WalletStatus,
   AddressBookApi,
   AddressBookEntry,
+  NetworkConfig,
 } from "@fetchai/wallet-types";
 
 import {
@@ -69,101 +56,6 @@ import {
 } from "../cosmjs";
 
 import Long from "long";
-
-class ExtensionCoreUmbral implements UmbralApi {
-  constructor(protected readonly requester: MessageRequester) {}
-
-  async getPublicKey(chainId: string): Promise<Uint8Array> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralGetPublicKeyMsg(chainId)
-    );
-  }
-
-  async getSigningPublicKey(chainId: string): Promise<Uint8Array> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralGetSigningPublicKeyMsg(chainId)
-    );
-  }
-
-  async encrypt(
-    pubKey: Uint8Array,
-    plainTextBytes: Uint8Array
-  ): Promise<UmbralEncryptionResult> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralEncryptMsg(pubKey, plainTextBytes)
-    );
-  }
-
-  async generateKeyFragments(
-    chainId: string,
-    receiverPublicKey: Uint8Array,
-    threshold: number,
-    shares: number
-  ): Promise<UmbralKeyFragment[]> {
-    const result = await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralGenerateKeyFragsMsg(
-        chainId,
-        receiverPublicKey,
-        threshold,
-        shares
-      )
-    );
-    return result.fragments;
-  }
-
-  async decrypt(
-    chainId: string,
-    capsuleBytes: Uint8Array,
-    cipherTextBytes: Uint8Array
-  ): Promise<Uint8Array> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralDecryptMsg(chainId, capsuleBytes, cipherTextBytes)
-    );
-  }
-
-  async decryptReEncrypted(
-    chainId: string,
-    senderPublicKey: Uint8Array,
-    capsule: Uint8Array,
-    capsuleFragments: Uint8Array[],
-    cipherTextBytes: Uint8Array
-  ): Promise<Uint8Array> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralDecryptReEncryptedMsg(
-        chainId,
-        senderPublicKey,
-        capsule,
-        capsuleFragments,
-        cipherTextBytes
-      )
-    );
-  }
-
-  async verifyCapsuleFragment(
-    capsuleFragment: Uint8Array,
-    capsule: Uint8Array,
-    verifyingPublicKey: Uint8Array,
-    senderPublicKey: Uint8Array,
-    receiverPublicKey: Uint8Array
-  ): Promise<boolean> {
-    return await this.requester.sendMessage(
-      BACKGROUND_PORT,
-      new UmbralVerifyCapsuleFragMsg(
-        capsuleFragment,
-        capsule,
-        verifyingPublicKey,
-        senderPublicKey,
-        receiverPublicKey
-      )
-    );
-  }
-}
 
 export class FetchWalletApi implements WalletApi {
   constructor(
@@ -184,6 +76,13 @@ export class FetchWalletApi implements WalletApi {
 
   async lockWallet(): Promise<void> {
     await this.requester.sendMessage(BACKGROUND_PORT, new LockWalletMsg());
+  }
+
+  async restoreWallet(): Promise<WalletStatus> {
+    return await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new RestoreWalletMsg()
+    );
   }
 }
 
@@ -222,14 +121,14 @@ export class FetchAccount implements AccountsApi {
 export class FetchNetworks implements NetworksApi {
   constructor(protected readonly requester: MessageRequester) {}
 
-  async getNetwork(): Promise<ChainInfo> {
+  async getNetwork(): Promise<NetworkConfig> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new GetNetworkMsg()
     );
   }
 
-  async switchToNetwork(network: ChainInfo): Promise<void> {
+  async switchToNetwork(network: NetworkConfig): Promise<void> {
     // Add network
     await this.requester.sendMessage(
       BACKGROUND_PORT,
@@ -250,7 +149,7 @@ export class FetchNetworks implements NetworksApi {
     );
   }
 
-  async listNetworks(): Promise<ChainInfo[]> {
+  async listNetworks(): Promise<NetworkConfig[]> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new ListNetworksMsg()
@@ -263,7 +162,7 @@ export class FetchSigning implements SigningApi {
 
   constructor(protected readonly requester: MessageRequester) {}
 
-  async getCurrentKey(chainId: string): Promise<Key> {
+  async getCurrentKey(chainId: string): Promise<Account> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new GetKeyMsgFetchSigning(chainId)
@@ -437,14 +336,12 @@ export class FetchAddressBook implements AddressBookApi {
 
 export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
   readonly keplr: Keplr;
-  readonly umbral: UmbralApi;
   readonly version: string;
   readonly wallet: WalletApi;
 
   constructor(keplr: Keplr, version: string, requester: MessageRequester) {
     this.keplr = keplr;
     this.version = version;
-    this.umbral = new ExtensionCoreUmbral(requester);
     this.wallet = new FetchWalletApi(
       new FetchNetworks(requester),
       new FetchAccount(requester),

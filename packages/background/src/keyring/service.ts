@@ -85,6 +85,7 @@ export class KeyRingService {
       this.kvStore,
       ledgerService,
       keystoneService,
+      interactionService,
       this.crypto
     );
 

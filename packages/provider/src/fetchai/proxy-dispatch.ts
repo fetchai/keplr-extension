@@ -11,7 +11,6 @@ import {
   AccountsApiMethod,
   AddressBookApiMethods,
   NetworksApiMethod,
-  UmbralMethod,
   WalletMethod,
   WalletSigningMethod,
 } from "./types";
@@ -24,15 +23,7 @@ async function dispatchRequest(
 
   const api = methodArray[0];
   if (request.method !== undefined) {
-    if (api === "umbral") {
-      return await fetchApi.umbral[
-        methodArray[methodArray.length - 1] as UmbralMethod
-      ](
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ...JSONUint8Array.unwrap(request.args)
-      );
-    } else if (api === "wallet") {
+    if (api === "wallet") {
       if (methodArray[1] === "signing") {
         return await fetchApi.wallet.signing[
           methodArray[methodArray.length - 1] as WalletSigningMethod

@@ -32,20 +32,20 @@ import {
   LockWalletMsg,
   UnlockWalletMsg,
   CurrentAccountMsg,
-  GetKeyMsgFetchSigning,
   RequestSignAminoMsgFetchSigning,
   RequestSignDirectMsgFetchSigning,
   RequestVerifyADR36AminoSignDocFetchSigning,
   SwitchAccountMsg,
   ListAccountsMsg,
   GetAccountMsg,
+  RestoreWalletMsg,
 } from "./messages";
 import { KeyRingService } from "./service";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { SignDoc } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { KeyRingStatus } from "./keyring";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { Account } from "@fetchai/wallet-types";
+import { Account, WalletStatus } from "@fetchai/wallet-types";
 
 export const getHandler: (service: KeyRingService) => Handler = (
   service: KeyRingService
@@ -160,6 +160,8 @@ export const getHandler: (service: KeyRingService) => Handler = (
         );
       case StatusMsg:
         return handleStatusMsg(service)(env, msg as StatusMsg);
+      case RestoreWalletMsg:
+        return handleRestoreWalletMsg(service)(env, msg as StatusMsg);
       case LockWalletMsg:
         return handleLockWallet(service)(env, msg as LockWalletMsg);
       case UnlockWalletMsg:
@@ -170,8 +172,6 @@ export const getHandler: (service: KeyRingService) => Handler = (
         return handleSwitchAccountMsg(service)(env, msg as SwitchAccountMsg);
       case ListAccountsMsg:
         return handleListAccountsMsg(service)(env, msg as ListAccountsMsg);
-      case GetKeyMsgFetchSigning:
-        return handleGetKeyMsgFetchSigning(service)(env, msg as GetKeyMsg);
       case RequestSignAminoMsgFetchSigning:
         return handleRequestSignAminoMsgFetchSigning(service)(
           env,
@@ -582,20 +582,37 @@ const handleChangeKeyNameMsg: (
   };
 };
 
+const handleRestoreWalletMsg: (
+  service: KeyRingService
+) => InternalHandler<RestoreWalletMsg> = (service) => {
+  return async () => {
+    const { status } = await service.restore();
+    if (status === KeyRingStatus.EMPTY) {
+      return WalletStatus.EMPTY;
+    } else if (status === KeyRingStatus.LOCKED) {
+      return WalletStatus.LOCKED;
+    } else if (status === KeyRingStatus.NOTLOADED) {
+      return WalletStatus.NOTLOADED;
+    } else if (status === KeyRingStatus.UNLOCKED) {
+      return WalletStatus.UNLOCKED;
+    } else return WalletStatus.NOTLOADED;
+  };
+};
+
 const handleStatusMsg: (
   service: KeyRingService
 ) => InternalHandler<StatusMsg> = (service) => {
   return () => {
     const status = service.keyRingStatus;
     if (status === KeyRingStatus.EMPTY) {
-      return "empty";
+      return WalletStatus.EMPTY;
     } else if (status === KeyRingStatus.LOCKED) {
-      return "locked";
+      return WalletStatus.LOCKED;
     } else if (status === KeyRingStatus.NOTLOADED) {
-      return "notLoaded";
+      return WalletStatus.NOTLOADED;
     } else if (status === KeyRingStatus.UNLOCKED) {
-      return "unlocked";
-    } else return undefined;
+      return WalletStatus.UNLOCKED;
+    } else return WalletStatus.NOTLOADED;
   };
 };
 
@@ -618,12 +635,13 @@ const handleUnlockWallet: (
 const handleCurrentAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<CurrentAccountMsg> = (service) => {
-  return async () => {
-    const kvStore = new ExtensionKVStore("store_chain_config");
-    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-    if (!chainId) {
-      throw Error("could not detect current chainId");
-    }
+  return async (env, msg) => {
+    const chainId = service.chainsService.getSelectedChain();
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      chainId,
+      msg.origin
+    );
 
     const key = await service.getKey(chainId);
 
@@ -656,11 +674,13 @@ const handleSwitchAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<SwitchAccountMsg> = (service) => {
   return async (env, msg) => {
-    const kvStore = new ExtensionKVStore("store_chain_config");
-    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-    if (!chainId) {
-      throw Error("could not detect current chainId");
-    }
+    const chainId = service.chainsService.getSelectedChain();
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      chainId,
+      msg.origin
+    );
+
     const keys = await service.getKeys(chainId);
     const chainInfo = await service.chainsService.getChainInfo(chainId);
     const isEVM = chainInfo.features?.includes("evm");
@@ -695,15 +715,15 @@ const handleSwitchAccountMsg: (
 const handleListAccountsMsg: (
   service: KeyRingService
 ) => InternalHandler<ListAccountsMsg> = (service) => {
-  return async () => {
-    const kvStore = new ExtensionKVStore("store_chain_config");
-    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-    if (!chainId) {
-      throw Error("could not detect current chainId");
-    }
+  return async (env, msg) => {
+    const chainId = service.chainsService.getSelectedChain();
+    await service.permissionService.checkOrGrantBasicAccessPermission(
+      env,
+      chainId,
+      msg.origin
+    );
 
     const keys = await service.getKeys(chainId);
-
     const chainInfo = await service.chainsService.getChainInfo(chainId);
     const isEVM = chainInfo.features?.includes("evm");
     const returnData: Account[] = [];
@@ -730,32 +750,6 @@ const handleListAccountsMsg: (
     });
 
     return returnData;
-  };
-};
-
-const handleGetKeyMsgFetchSigning: (
-  service: KeyRingService
-) => InternalHandler<GetKeyMsgFetchSigning> = (service) => {
-  return async (env, msg) => {
-    await service.permissionService.checkOrGrantBasicAccessPermission(
-      env,
-      msg.chainId,
-      msg.origin
-    );
-
-    const key = await service.getKey(msg.chainId);
-    return {
-      name: service.getKeyStoreMeta("name"),
-      algo: "secp256k1",
-      pubKey: key.pubKey,
-      address: key.address,
-      bech32Address: new Bech32Address(key.address).toBech32(
-        (await service.chainsService.getChainInfo(msg.chainId)).bech32Config
-          .bech32PrefixAccAddr
-      ),
-      isNanoLedger: key.isNanoLedger,
-      isKeystone: key.isKeystone,
-    };
   };
 };
 
