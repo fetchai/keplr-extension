@@ -93,5 +93,18 @@ export interface NetworkConfig {
     high: number;
   };
 
+  /**
+   * Set of features enabled for the network.
+   */
   readonly features?: string[];
+
+  /**
+   * Explorer url for the network
+   */
+  readonly explorerUrl?: string;
+
+  /**
+   * Network logo
+   */
+  readonly chainSymbolImageUrl?: string;
 }

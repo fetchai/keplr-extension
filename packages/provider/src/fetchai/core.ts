@@ -31,6 +31,7 @@ import {
   DeleteEntryMsg,
   RestoreWalletMsg,
   GetKeyMsgFetchSigning,
+  DisableAccessMsg,
 } from "../types";
 import deepmerge from "deepmerge";
 
@@ -82,6 +83,28 @@ export class FetchWalletApi implements WalletApi {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
       new RestoreWalletMsg()
+    );
+  }
+
+  async enable(chainIds: string | string[]): Promise<void> {
+    if (typeof chainIds === "string") {
+      chainIds = [chainIds];
+    }
+
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new EnableAccessMsg(chainIds)
+    );
+  }
+
+  async disable(chainIds?: string | string[]): Promise<void> {
+    if (typeof chainIds === "string") {
+      chainIds = [chainIds];
+    }
+
+    await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new DisableAccessMsg(chainIds ?? [])
     );
   }
 }

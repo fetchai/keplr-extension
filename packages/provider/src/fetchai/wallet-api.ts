@@ -61,6 +61,14 @@ export class InjectedFetchWalletApi implements WalletApi {
     return await this.requestViaProxy("restoreWallet", []);
   }
 
+  async enable(chainIds: string | string[]): Promise<void> {
+    return await this.requestViaProxy("enable", [chainIds]);
+  }
+
+  async disable(chainIds?: string | string[]): Promise<void> {
+    return await this.requestViaProxy("disable", [chainIds]);
+  }
+
   protected async requestViaProxy(
     method: WalletMethod,
     args: any[]

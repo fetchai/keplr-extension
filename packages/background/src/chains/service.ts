@@ -200,6 +200,8 @@ export class ChainsService {
       ])[0] as NativeCurrency,
       gasPriceStep: chainInfo.feeCurrencies[0].gasPriceStep,
       features: chainInfo.features,
+      explorerUrl: chainInfo.explorerUrl,
+      chainSymbolImageUrl: chainInfo.chainSymbolImageUrl,
     };
   }
 
@@ -577,6 +579,8 @@ export class ChainsService {
       grpcUrl: networkConfig.grpcUrl,
       type: networkConfig.type,
       status: networkConfig.status,
+      explorerUrl: networkConfig.explorerUrl,
+      chainSymbolImageUrl: networkConfig.chainSymbolImageUrl,
     };
     chainInfo = await validateBasicChainInfoType(chainInfo);
 

@@ -355,6 +355,17 @@ export interface WalletApi {
   unlockWallet(): Promise<void>;
 
   /**
+   * Allows the user to grant global permissions for selected chain ids to the origin (dApp)
+   */
+  enable(chainIds: string | string[]): Promise<void>;
+
+  /**
+   * Delete permissions granted to origin.
+   * If chain ids are specified, only the permissions granted to each chain id are deleted (In this case, permissions such as listNetworks() are not deleted).
+   * Else, remove all permissions granted to origin (In this case, permissions that are not assigned to each chain, such as listNetworks(), are also deleted).
+   */
+  disable(chainIds?: string | string[]): Promise<void>;
+  /**
    * The networks API
    */
   networks: NetworksApi;

@@ -12,7 +12,9 @@ export class AddressBookService {
   protected interactionService!: InteractionService;
   protected addressBook: AddressBookEntry[] = [];
 
-  constructor() {}
+  constructor() {
+    //noop
+  }
 
   init(interactionService: InteractionService) {
     this.interactionService = interactionService;

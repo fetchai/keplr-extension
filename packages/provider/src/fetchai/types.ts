@@ -28,7 +28,9 @@ export type WalletMethod =
   | "status"
   | "lockWallet"
   | "unlockWallet"
-  | "restoreWallet";
+  | "restoreWallet"
+  | "enable"
+  | "disable";
 
 export type NetworksApiMethod =
   | "getNetwork"
