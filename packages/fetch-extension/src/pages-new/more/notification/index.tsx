@@ -78,9 +78,8 @@ export const MoreNotifications: FunctionComponent = () => {
         )}
       </div>
 
-      {(Object.values(notificationInfo.organisations).length !== 0 &&
-        notificationInfo.isNotificationOn) ||
-      true ? (
+      {Object.values(notificationInfo.organisations).length !== 0 &&
+      notificationInfo.isNotificationOn ? (
         <React.Fragment>
           <Card
             heading="Organisations"

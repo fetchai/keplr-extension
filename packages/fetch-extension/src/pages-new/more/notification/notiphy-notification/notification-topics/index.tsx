@@ -9,7 +9,7 @@ import style from "./style.module.scss";
 import { FormattedMessage } from "react-intl";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { ButtonV2 } from "@components-v2/buttons/button";
-import { SearchBar } from "@components-v2/search-bar";
+import { Card } from "@components-v2/card";
 const pageOptions = {
   edit: "edit",
   add: "add",
@@ -23,6 +23,7 @@ export const NotificationTopics: FunctionComponent = () => {
   const accountInfo = accountStore.getAccount(current.chainId);
 
   const [topicsList, setTopicsList] = useState<NotyphiTopic[]>([]);
+  const [mainTopicsList, setMainTopicsList] = useState<NotyphiTopic[]>([]);
   const followUnfollowTopicsObj = useRef<NotyphiTopic[]>(
     JSON.parse(
       localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
@@ -40,6 +41,7 @@ export const NotificationTopics: FunctionComponent = () => {
   useEffect(() => {
     fetchTopics().then((res) => {
       setTopicsList(res.items);
+      setMainTopicsList(res.items);
       setIsLoading(false);
     });
   }, []);
@@ -57,6 +59,20 @@ export const NotificationTopics: FunctionComponent = () => {
       return;
     }
     navigate("/notification/review");
+  };
+
+  const handleSearch = () => {
+    const searchString = inputVal.trim();
+
+    if (searchString.length == 0) {
+      setTopicsList(mainTopicsList);
+    } else {
+      const filteredOrg: NotyphiTopic[] = mainTopicsList.filter(
+        (org: NotyphiTopic) =>
+          org.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setTopicsList(filteredOrg);
+    }
   };
 
   const handleCheck = (isChecked: boolean, index: number) => {
@@ -88,53 +104,61 @@ export const NotificationTopics: FunctionComponent = () => {
         navigate(-1);
       }}
     >
+      <Card
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "24px" }}
+        heading={
+          <input
+            className={style["searchInput"]}
+            type="text"
+            id="searchInput"
+            placeholder="Search"
+            value={inputVal}
+            onKeyUp={handleSearch}
+            onChange={(e) => setInputVal(e.target.value)}
+          />
+        }
+        rightContent={require("@assets/svg/wireframe/search.svg")}
+      />
       <div className={style["topicsContainer"]}>
-        <SearchBar
-          searchTerm={inputVal}
-          onSearchTermChange={setInputVal}
-          valuesArray={topicsList}
-          renderResult={(topicsList) => {
-            <React.Fragment>
-              {isLoading ? (
-                <div className={style["isLoading"]}>
-                  <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
-                </div>
-              ) : (
-                <div className={style["topicChipsContainer"]}>
-                  {!topicsList.length && (
-                    <div className={style["resultText"]}>
-                      <p>
-                        <FormattedMessage id="search.no-result-found" />
-                        {inputVal !== "" && (
-                          <React.Fragment>
-                            <br />
-                            <FormattedMessage id="search.refine.search" />
-                          </React.Fragment>
-                        )}
-                      </p>
-                    </div>
+        {isLoading ? (
+          <div className={style["isLoading"]}>
+            <i
+              className="fa fa-spinner fa-spin fa-2x fa-fw"
+              style={{ color: "white" }}
+            />
+          </div>
+        ) : (
+          <div className={style["topicChipsContainer"]}>
+            {!topicsList.length && (
+              <div className={style["resultText"]}>
+                <p>
+                  <FormattedMessage id="search.no-result-found" />
+                  {inputVal !== "" && (
+                    <React.Fragment>
+                      <br />
+                      <FormattedMessage id="search.refine.search" />
+                    </React.Fragment>
                   )}
-                  {topicsList.map((topic: NotyphiTopic, index: number) => (
-                    <Chip
-                      key={topic.name}
-                      topic={topic}
-                      checked={
-                        !!selectedTopics.find(
-                          (item) => item.name === topic.name
-                        )
-                      }
-                      handleCheck={(isChecked) => handleCheck(isChecked, index)}
-                    />
-                  ))}
-                </div>
-              )}
+                </p>
+              </div>
+            )}
+            {topicsList.map((topic: NotyphiTopic, index: number) => (
+              <Chip
+                key={topic.name}
+                topic={topic}
+                checked={
+                  !!selectedTopics.find((item) => item.name === topic.name)
+                }
+                handleCheck={(isChecked) => handleCheck(isChecked, index)}
+              />
+            ))}
+          </div>
+        )}
 
-              <p className={style["selectedTopics"]}>
-                {selectedTopics.length} notification types selected
-              </p>
-            </React.Fragment>;
-          }}
-        />
+        <p className={style["selectedTopics"]}>
+          {selectedTopics.length} notification types selected
+        </p>
+
         <div className={style["topicButton"]}>
           <ButtonV2
             text=""

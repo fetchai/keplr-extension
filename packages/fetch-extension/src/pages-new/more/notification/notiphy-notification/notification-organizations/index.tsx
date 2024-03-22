@@ -2,7 +2,6 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useLocation, useNavigate, useParams } from "react-router";
 import style from "./style.module.scss";
-import { NotificationOrg } from "@components/notification-org/notification-org";
 import {
   fetchFollowedOrganisations,
   fetchOrganisations,
@@ -21,7 +20,9 @@ import { useSelector } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { ButtonV2 } from "@components-v2/buttons/button";
-import { SearchBar } from "@components-v2/search-bar";
+import { Card } from "@components-v2/card";
+import { jazzicon } from "@metamask/jazzicon";
+import ReactHtmlParser from "react-html-parser";
 const pageOptions = {
   edit: "edit",
   add: "add",
@@ -41,6 +42,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
 
   const [inputVal, setInputVal] = useState("");
 
+  const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<NotyphiOrganisation[]>([]);
 
@@ -54,6 +56,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   useEffect(() => {
     fetchOrganisations().then((res) => {
       setIsLoading(false);
+      setMainOrgList(res.items);
       setOrgList(res.items);
 
       if (type === pageOptions.edit) {
@@ -141,6 +144,19 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
       }
     });
   };
+
+  const handleSearch = () => {
+    const searchString = inputVal.trim();
+    if (searchString.length == 0) {
+      setOrgList(mainOrgList);
+    } else {
+      const filteredOrg: NotyphiOrganisation[] = mainOrgList.filter(
+        (org: NotyphiOrganisation) =>
+          org.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setOrgList(filteredOrg);
+    }
+  };
   return (
     <HeaderLayout
       showTopMenu={true}
@@ -156,51 +172,84 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         navigate(-1);
       }}
     >
-      <SearchBar
-        onSearchTermChange={setInputVal}
-        searchTerm={inputVal}
-        valuesArray={orgList}
-        renderResult={(orgList, i) => {
-          <div className={style["listContainer"]}>
-            {isLoading ? (
-              <div className={style["isLoading"]}>
-                <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
-              </div>
-            ) : (
-              <React.Fragment>
-                {!orgList.length && (
-                  <div key={i} className={style["resultText"]}>
-                    <p>
-                      <FormattedMessage id="search.no-result-found" />
-                      {inputVal !== "" && (
-                        <React.Fragment>
-                          <br />
-                          <FormattedMessage id="search.refine.search" />
-                        </React.Fragment>
-                      )}
-                    </p>
-                  </div>
-                )}
-
-                {orgList.map((elem: NotyphiOrganisation, index: number) => {
-                  return (
-                    <NotificationOrg
-                      handleCheck={(isChecked) => handleCheck(isChecked, index)}
-                      isChecked={
-                        !!selectedOrg.find((item) => item.id === elem.id)
-                      }
-                      elem={elem}
-                      key={elem.id}
-                      isNew={newOrg && newOrg.indexOf(elem.id) != -1}
-                    />
-                  );
-                })}
-              </React.Fragment>
-            )}
-          </div>;
-        }}
+      <Card
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "24px" }}
+        heading={
+          <input
+            className={style["searchInput"]}
+            type="text"
+            id="searchInput"
+            placeholder="Search"
+            value={inputVal}
+            onKeyUp={handleSearch}
+            onChange={(e) => setInputVal(e.target.value)}
+          />
+        }
+        rightContent={require("@assets/svg/wireframe/search.svg")}
       />
+      <div className={style["listContainer"]}>
+        {isLoading ? (
+          <div className={style["isLoading"]}>
+            <i
+              className="fa fa-spinner fa-spin fa-2x fa-fw"
+              style={{ color: "white" }}
+            />
+          </div>
+        ) : (
+          <React.Fragment>
+            {!orgList.length && (
+              <div className={style["resultText"]}>
+                <p>
+                  <FormattedMessage id="search.no-result-found" />
+                  {inputVal !== "" && (
+                    <React.Fragment>
+                      <br />
+                      <FormattedMessage id="search.refine.search" />
+                    </React.Fragment>
+                  )}
+                </p>
+              </div>
+            )}
 
+            {orgList.map((elem: NotyphiOrganisation, index: number) => {
+              return (
+                <Card
+                  heading={elem.name}
+                  leftImage={
+                    elem.logo_href ? (
+                      <img
+                        draggable={false}
+                        src={elem.logo_href}
+                        width={24}
+                        height={24}
+                      />
+                    ) : (
+                      ReactHtmlParser(jazzicon(28, elem.id).outerHTML)
+                    )
+                  }
+                  onClick={() =>
+                    handleCheck(
+                      !selectedOrg.some((item) => item.id === elem.id),
+                      index
+                    )
+                  }
+                  isActive={selectedOrg.some((item) => item.id === elem.id)}
+                  rightContent={
+                    selectedOrg.some((item) => item.id === elem.id)
+                      ? require("@assets/svg/wireframe/check.svg")
+                      : ""
+                  }
+                  key={elem.id}
+                  subheading={
+                    newOrg && newOrg.indexOf(elem.id) != -1 ? "New" : ""
+                  }
+                  style={{ width: "100%" }}
+                />
+              );
+            })}
+          </React.Fragment>
+        )}
+      </div>
       <div className={style["buttonContainer"]}>
         <p>{selectedOrg.length} selected</p>
         <ButtonV2

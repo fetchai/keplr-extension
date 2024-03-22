@@ -54,7 +54,7 @@
   .topicButton {
     // margin-bottom: 0;
     position: absolute;
-    bottom: 14%;
+    bottom: 3%;
     width: 333px;
     .button {
       padding: 8px;
@@ -72,5 +72,15 @@
       display: flex;
       width: 100%;
     }
+  }
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  width: 290px;
+  color: white;
+  &::placeholder {
+    color: white;
   }
 }
