@@ -28,7 +28,7 @@ export const AppVersion = () => {
       <div className={style["hr"]} />
       <div className={style["container"]}>
         <div>Build number</div>
-        <div className={style["version"]}>None</div>
+        <div className={style["version"]}>3</div>
       </div>
       <div className={style["hr"]} />
       <div className={style["container"]}>

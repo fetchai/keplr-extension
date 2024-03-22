@@ -18,13 +18,10 @@ import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages-new/lock";
 import { MainPage } from "./pages-new/main";
-import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages-new/register";
 import { SendPage } from "./pages-new/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
-
 import { Banner } from "@components/banner";
-
 import { ConfirmProvider } from "@components/confirm";
 import { LoadingIndicatorProvider } from "@components/loading-indicator";
 import {
@@ -109,7 +106,7 @@ import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
 import { AssetView } from "./pages-new/asset-view";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
-import { MorePageV2 } from "./pages-new/more";
+import { MorePage } from "./pages-new/more";
 import { MoreLanguagePage } from "./pages-new/more/language";
 import { MoreNotifications } from "./pages-new/more/notification";
 import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
@@ -247,7 +244,7 @@ ReactDOM.render(
                         path="/setting/language"
                         element={<SettingLanguagePage />}
                       />
-                      <Route path="/more-new" element={<MorePageV2 />} />
+                      <Route path="/more" element={<MorePage />} />
                       <Route
                         path="/more/language"
                         element={<MoreLanguagePage />}
@@ -389,7 +386,6 @@ ReactDOM.render(
                         path="/chat/agent/:name"
                         element={<AgentChatSection />}
                       />
-                      <Route path="/more" element={<MorePage />} />
                       <Route
                         path="/setting/notifications"
                         element={<SettingNotifications />}

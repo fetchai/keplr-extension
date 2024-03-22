@@ -6,8 +6,8 @@ import { CHAINS } from "../../config.axl-brdige.var";
 import { Card } from "@components-v2/card";
 import { useNavigate } from "react-router";
 
-export const MorePageV2: FunctionComponent = () => {
-  const { chainStore } = useStore();
+export const MorePage: FunctionComponent = () => {
+  const { chainStore, analyticsStore } = useStore();
   const navigate = useNavigate();
   const isAxlViewVisible = CHAINS.some((chain) => {
     return chain.chainId?.toString() === chainStore.current.chainId;
@@ -61,6 +61,32 @@ export const MorePageV2: FunctionComponent = () => {
       />
 
       <div className={style["subTitle"]}>Others</div>
+      <Card
+        leftImageStyle={{ background: "transparent" }}
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
+        leftImage={require("@assets/svg/wireframe/axl-bridge.svg")}
+        heading={"IBC Transfer"}
+        onClick={(e: any) => {
+          e.preventDefault();
+          analyticsStore.logEvent("ibc_transfer_click", {
+            pageName: "More Tab",
+          });
+          navigate("/ibc-transfer");
+        }}
+      />
+      {chainStore.current.govUrl && (
+        <Card
+          leftImageStyle={{ background: "transparent" }}
+          style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
+          leftImage={require("@assets/svg/wireframe/guide.svg")}
+          heading={"Proposals"}
+          onClick={(e: any) => {
+            e.preventDefault();
+            analyticsStore.logEvent("proposal_view_click");
+            navigate("/proposal");
+          }}
+        />
+      )}
       <Card
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
