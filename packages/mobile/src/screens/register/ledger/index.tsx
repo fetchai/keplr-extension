@@ -503,11 +503,12 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
       ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
-        text="Next"
+        text="Continue"
         size="large"
         disabled={!isBLEAvailable}
         loading={isCreating}
         onPress={submit}
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
       />
       {/* Mock element for bottom padding */}
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

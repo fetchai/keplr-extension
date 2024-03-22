@@ -143,7 +143,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                 ]) as ViewStyle
               }
             >
-              Chose how you want to proceed
+              Choose how you want to proceed
             </Text>
           </View>
           <SelectWalletOptionCard
