@@ -55,7 +55,7 @@ export const MoreLanguagePage: FunctionComponent = () => {
             : undefined
         }
       />
-      <Card
+      {/* <Card
         isActive={language.language == "ko"}
         heading={intl.formatMessage({
           id: "setting.language.ko",
@@ -69,7 +69,7 @@ export const MoreLanguagePage: FunctionComponent = () => {
             ? selectedIcon
             : undefined
         }
-      />
+      /> */}
     </HeaderLayout>
   );
 };
