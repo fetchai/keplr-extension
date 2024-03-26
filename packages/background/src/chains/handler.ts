@@ -152,12 +152,11 @@ const handleAddNetworkAndSwitch: (
   service: ChainsService
 ) => InternalHandler<AddNetworkAndSwitchMsg> = (service) => {
   return async (env, msg) => {
-    if (await service.hasChainInfo(msg.networkConfig.chainId)) {
+    if (await service.hasChainInfo(msg.network.chainId)) {
       // If suggested chain info is already registered, just return.
       return;
     }
-
-    await service.addChainByNetwork(env, msg.networkConfig, msg.origin);
+    await service.addChainByNetwork(env, msg.network, msg.origin);
   };
 };
 

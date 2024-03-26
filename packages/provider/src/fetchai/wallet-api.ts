@@ -219,8 +219,8 @@ export class InjectedFetchSigning implements SigningApi {
 
   public defaultOptions: KeplrIntereactionOptions = {};
 
-  async getCurrentKey(chainId: string): Promise<Account> {
-    const k = await this.requestViaProxy("getCurrentKey", [chainId]);
+  async getCurrentKey(): Promise<Account> {
+    const k = await this.requestViaProxy("getCurrentKey", []);
     return k;
   }
 

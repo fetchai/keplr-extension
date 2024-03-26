@@ -299,7 +299,6 @@ export class ChainsService {
   ): AppCurrency[] | FeeCurrency[] | LegacyCurrency[] {
     return currencies.map((c) => {
       const baseCurrency = this.getLegacyBaseCurrency(c, gasPriceStep);
-
       if (["cw20", "erc20"].includes(c.type) && "contractAddress" in c) {
         return {
           ...baseCurrency,
@@ -348,7 +347,6 @@ export class ChainsService {
           } as LegacyIBCCurrency;
         }
       }
-
       return baseCurrency;
     });
   }
@@ -369,11 +367,11 @@ export class ChainsService {
       coinImageUrl: c.imageUrl,
       coinDecimals: c.decimals,
       coinDenom:
-        c.denomUnits.find((d) => {
+        (c.denomUnits || []).find((d) => {
           return d.exponent === c.decimals;
         })?.name ?? "unknown",
       coinMinimalDenom:
-        c.denomUnits.find((d) => {
+        (c.denomUnits || []).find((d) => {
           return d.exponent === 0;
         })?.name ?? "unknown",
     };
@@ -547,14 +545,9 @@ export class ChainsService {
     origin: string
   ): Promise<void> {
     const features = networkConfig.features ?? [];
-
-    if (
-      networkConfig.networkType === "evm" &&
-      !features.find((f) => f === "evm")
-    ) {
+    if (networkConfig.networkType === "evm" && !features.includes("evm")) {
       features.push("evm");
     }
-
     let chainInfo: ChainInfo = {
       rpc: networkConfig.rpcUrl,
       rest: networkConfig.restUrl ?? "",
@@ -582,8 +575,9 @@ export class ChainsService {
       explorerUrl: networkConfig.explorerUrl,
       chainSymbolImageUrl: networkConfig.chainSymbolImageUrl,
     };
-    chainInfo = await validateBasicChainInfoType(chainInfo);
 
+    chainInfo = await validateBasicChainInfoType(chainInfo);
+    console.log("first");
     let receivedChainInfo = (await this.interactionService.waitApprove(
       env,
       "/add-chain-by-network",
@@ -593,7 +587,7 @@ export class ChainsService {
         origin,
       }
     )) as ChainInfoWithRepoUpdateOptions;
-
+    console.log("second");
     receivedChainInfo = {
       ...(await validateBasicChainInfoType(receivedChainInfo)),
       // Beta should be from suggested chain info itself.
