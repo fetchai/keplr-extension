@@ -78,7 +78,7 @@ export const MorePage: FunctionComponent = () => {
         <Card
           leftImageStyle={{ background: "transparent" }}
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
-          leftImage={require("@assets/svg/wireframe/guide.svg")}
+          leftImage={require("@assets/svg/wireframe/proposal.svg")}
           heading={"Proposals"}
           onClick={(e: any) => {
             e.preventDefault();

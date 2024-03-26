@@ -5,6 +5,8 @@ import stakeIcon from "@assets/svg/wireframe/activity-stake.svg";
 import React, { useEffect, useState } from "react";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "../../../stores";
+import moment from "moment";
+import { useNavigate } from "react-router";
 
 const getActivityIcon = (
   type: string,
@@ -51,8 +53,10 @@ export const shortenNumber = (value: string, decimal = 18) => {
 };
 
 export const ActivityRow = ({ node }: { node: any }) => {
+  const navigate = useNavigate();
   const { chainStore } = useStore();
   const [isAmountDeducted, setIsAmountDeducted] = useState<boolean>();
+
   const getAmount = (denom: string, amount: string) => {
     const amountCurrency = chainStore.current.currencies.find(
       (currency: AppCurrency) => currency.coinMinimalDenom === denom
@@ -69,8 +73,20 @@ export const ActivityRow = ({ node }: { node: any }) => {
 
   const getDetails = (node: any): any => {
     const { nodes } = node.transaction.messages;
+    const { timestamp } = node.block;
     const { typeUrl, json } = nodes[0];
     const parsedJson = JSON.parse(json);
+    const toAddress = parsedJson.toAddress;
+    const delegatorAddress = parsedJson.delegatorAddress;
+    const validatorAddress = parsedJson.validatorAddress;
+
+    const fees = node.transaction.fees;
+    const memo = node.transaction.memo;
+    const signerAddress = node.transaction.signerAddress;
+    const hash = node.transaction.id;
+    const gasUsed = node.transaction.gasUsed;
+
+    const amt = parsedJson.amount;
     let currency = "afet";
     const isAmountDeducted = parseFloat(node.balanceOffset) < 0;
     if (parsedJson.amount) {
@@ -112,8 +128,21 @@ export const ActivityRow = ({ node }: { node: any }) => {
     }
     const amount = getAmount(currency, node.balanceOffset);
     const [amountNumber, amountAlphabetic] = parseAmount(amount);
-
-    return { amountNumber, amountAlphabetic, verb };
+    return {
+      amountNumber,
+      amountAlphabetic,
+      verb,
+      timestamp,
+      fees,
+      memo,
+      signerAddress,
+      hash,
+      amt,
+      gasUsed,
+      toAddress,
+      validatorAddress,
+      delegatorAddress
+    };
   };
 
   const parseAmount = (amount: string): [string, string] => {
@@ -129,48 +158,55 @@ export const ActivityRow = ({ node }: { node: any }) => {
 
   const details = getDetails(node);
   const { typeUrl } = node.transaction.messages.nodes[0];
+  console.log(node);
   return (
     <React.Fragment>
-      <a
-        href={
-          "https://fetchstation.azoyalabs.com/mainnet/explorer/transactions/" +
-          node.transaction.id
+      <div className={style["rowSubtitle"]}>
+        {" "}
+        {moment(details.timestamp).utc().format("ddd, DD MMM YYYY")}
+      </div>
+
+      <div
+        className={style["activityRow"]}
+        onClick={() =>
+          navigate("/activity-details", {
+            state: {
+              details: details,
+            },
+          })
         }
-        target="_blank"
-        rel="noreferrer"
       >
-        <div className={style["activityRow"]}>
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <div className={style["leftImage"]}>
-              <img
-                className={style["img"]}
-                src={getActivityIcon(typeUrl, isAmountDeducted)}
-                alt={typeUrl}
-              />
-            </div>
-            <div className={style["middleSection"]}>
-              <div className={style["rowTitle"]}>{details.verb}</div>
-              <div className={style["rowSubtitle"]}>
-                {node.transaction.status === "Success" ? (
-                  <div>Confirmed</div>
-                ) : (
-                  <div>Error</div>
-                )}
-              </div>
-            </div>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <div className={style["leftImage"]}>
+            <img
+              className={style["img"]}
+              src={getActivityIcon(typeUrl, isAmountDeducted)}
+              alt={typeUrl}
+            />
           </div>
-          <div className={style["rightContent"]}>
-            <div className={style["amountWrapper"]}>
-              <div className={style["amountNumber"]}>
-                {details.amountNumber}
-              </div>
-              <div className={style["amountAlphabetic"]}>
-                {details.amountAlphabetic}
-              </div>
+          <div className={style["middleSection"]}>
+            <div className={style["rowTitle"]}>{details.verb}</div>
+            <div className={style["rowSubtitle"]}>
+              {node.transaction.status === "Success" ? (
+                <div>
+                  Confirmed{" ● "}
+                  {moment(details.timestamp).format("hh:mm A")}
+                </div>
+              ) : (
+                <div>Error</div>
+              )}
             </div>
           </div>
         </div>
-      </a>
+        <div className={style["rightContent"]}>
+          <div className={style["amountWrapper"]}>
+            <div className={style["amountNumber"]}>{details.amountNumber}</div>
+            <div className={style["amountAlphabetic"]}>
+              {details.amountAlphabetic}
+            </div>
+          </div>
+        </div>
+      </div>
       <div className={style["hr"]} />
     </React.Fragment>
   );

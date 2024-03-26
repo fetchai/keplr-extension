@@ -92,6 +92,7 @@ import { ValidatorList } from "./pages/validator-list";
 import { Validator } from "./pages/validator";
 import { StakeComplete } from "./pages/validator/stake-complete";
 import { ActivityPage } from "./pages-new/activity";
+import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { Proposals } from "./pages/proposals";
 import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
@@ -214,6 +215,10 @@ ReactDOM.render(
                       <Route
                         path="/access/viewing-key"
                         element={<Secret20ViewingKeyAccessPage />}
+                      />
+                      <Route
+                        path="/activity-details"
+                        element={<ActivityDetails />}
                       />
                       <Route path="/register" element={<RegisterPage />} />
                       <Route path="/send" element={<SendPage />} />

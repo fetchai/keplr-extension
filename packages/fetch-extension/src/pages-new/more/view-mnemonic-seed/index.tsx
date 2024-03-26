@@ -107,7 +107,7 @@ export const ExportPage: FunctionComponent = observer(() => {
                 bottom: "24%",
                 right: "4%",
               }}
-              text={"Copy mnemonic"}
+              text={"Copy to clipboard"}
               onClick={() => copyMnemonic(keyRing)}
             />
           </div>

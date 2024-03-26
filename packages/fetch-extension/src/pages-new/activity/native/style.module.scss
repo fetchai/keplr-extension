@@ -2,6 +2,13 @@
   padding: 16px;
   margin: 0px -12px;
   width: 333px;
+  color: #fff;
+  text-align: center;
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .title {
@@ -45,11 +52,19 @@
 }
 .rowTitle {
   font-size: 14px;
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 .rowSubtitle {
-  font-size: 13px;
-  font-weight: 650;
   color: rgba(255, 255, 255, 0.6);
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 .confirmed {
   color: var(--green-green-500-vibrant-green, #2de376);
@@ -85,6 +100,11 @@
 .amountWrapper {
   display: flex;
   gap: 4px;
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 .amountNumber {
   color: white;

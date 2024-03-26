@@ -15,6 +15,9 @@
   backdrop-filter: blur(10px);
   width: 22%;
 }
+.dropdown:hover {
+  border: 1px solid white;
+}
 
 .dropdownHeading {
   display: flex;
