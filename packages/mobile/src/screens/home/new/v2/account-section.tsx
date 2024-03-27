@@ -21,6 +21,7 @@ import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet"
 import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { BarCodeIcon } from "components/new/icon/bar-code";
+import { InboxIcon } from "components/new/icon/inbox-icon";
 import { separateNumericAndDenom, titleCase } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
@@ -146,14 +147,15 @@ export const AccountSection: FunctionComponent<{
                 "padding-x-18",
                 "padding-y-8",
                 "justify-center",
-                // "margin-right-12",
+                "margin-right-12",
               ]) as ViewStyle
             }
           />
-          {/* <IconButton
+          <IconButton
             borderRadius={32}
             icon={<InboxIcon size={18} />}
             backgroundBlur={false}
+            onPress={() => smartNavigation.navigateSmart("Inbox", {})}
             iconStyle={
               style.flatten([
                 "border-width-1",
@@ -163,13 +165,7 @@ export const AccountSection: FunctionComponent<{
                 "justify-center",
               ]) as ViewStyle
             }
-            onPress={() =>
-              Toast.show({
-                type: "error",
-                text1: "Under development",
-              })
-            }
-          /> */}
+          />
         </View>
       </View>
       <BlurBackground

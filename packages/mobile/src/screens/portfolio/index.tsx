@@ -9,7 +9,7 @@ import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
 import { TokensSection } from "screens/portfolio/tokens-section";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 
-enum AssertsSectionEnum {
+enum AssetsSectionEnum {
   Tokens = "Tokens",
   Stats = "Stats",
 }
@@ -17,7 +17,7 @@ enum AssertsSectionEnum {
 export const PortfolioScreen: FunctionComponent = observer(() => {
   const style = useStyle();
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const [selectedId, setSelectedId] = useState(AssertsSectionEnum.Tokens);
+  const [selectedId, setSelectedId] = useState(AssetsSectionEnum.Tokens);
 
   return (
     <PageWithScrollViewInBottomTabView
@@ -31,17 +31,17 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         Portfolio
       </Text>
       <TabBarView
-        listItem={AssertsSectionEnum}
+        listItem={AssetsSectionEnum}
         selected={selectedId}
         setSelected={setSelectedId}
       />
-      {selectedId === AssertsSectionEnum.Tokens && (
+      {selectedId === AssetsSectionEnum.Tokens && (
         <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
           <NativeTokensSection />
           <TokensSection />
         </View>
       )}
-      {selectedId === AssertsSectionEnum.Stats && (
+      {selectedId === AssetsSectionEnum.Stats && (
         <StakingCard cardStyle={style.flatten(["margin-y-14"]) as ViewStyle} />
       )}
     </PageWithScrollViewInBottomTabView>

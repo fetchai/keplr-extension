@@ -1,11 +1,6 @@
 import { CardModal } from "modals/card";
-import React, {
-  FunctionComponent,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
-import { ViewStyle } from "react-native";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { NodeRequire, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { registerModal } from "modals/base";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
@@ -25,7 +20,7 @@ interface TransactionProcess {
   status: TransactionStatus;
   title: string;
   subTitle: string;
-  img: ReactElement;
+  img: NodeRequire;
 }
 export const TransactionModal: FunctionComponent<{
   isOpen: boolean;
@@ -44,7 +39,7 @@ export const TransactionModal: FunctionComponent<{
         title: "Transaction pending",
         subTitle:
           "Transaction has been broadcasted to blockchain and pending confirmation",
-        img: require("assets/lottie/tn-pending-icon.json"),
+        img: require("assets/lottie/txn-pending-icon.json"),
       });
 
     const style = useStyle();
@@ -62,16 +57,15 @@ export const TransactionModal: FunctionComponent<{
               status: TransactionStatus.Success,
               title: "Transaction successful",
               subTitle:
-                "Congratulations!" +
-                "Your transaction has been completed and confirmed by the blockchain",
-              img: require("assets/lottie/tnx-success-icon.json"),
+                "Congratulations!\nYour transaction has been completed and confirmed by the blockchain",
+              img: require("assets/lottie/txn-success-icon.json"),
             });
           } else {
             setTransactionState({
               status: TransactionStatus.Failed,
               title: "Transaction failed",
               subTitle: "Unfortunately your transaction has failed.",
-              img: require("assets/lottie/tnx-error-icon.json"),
+              img: require("assets/lottie/txn-error-icon.json"),
             });
           }
         })
@@ -102,7 +96,9 @@ export const TransactionModal: FunctionComponent<{
                 source={transactionState.img}
                 autoPlay
                 loop
-                style={style.flatten(["width-160"]) as ViewStyle}
+                style={
+                  style.flatten(["width-90", "margin-bottom-16"]) as ViewStyle
+                }
               />
             }
             title={transactionState.title}

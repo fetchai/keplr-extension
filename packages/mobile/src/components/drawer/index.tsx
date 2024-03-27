@@ -107,15 +107,21 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               }
             >
               <IconButton
-                icon={<XmarkIcon />}
-                backgroundBlur={true}
+                icon={<XmarkIcon color={"white"} />}
+                backgroundBlur={false}
                 blurIntensity={20}
                 borderRadius={50}
                 onPress={() => {
                   setSearch("");
                   navigation.dispatch(DrawerActions.closeDrawer());
                 }}
-                iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+                iconStyle={
+                  style.flatten([
+                    "padding-12",
+                    "border-width-1",
+                    "border-color-gray-400",
+                  ]) as ViewStyle
+                }
               />
             </View>
           </View>

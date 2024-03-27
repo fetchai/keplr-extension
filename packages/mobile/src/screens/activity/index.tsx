@@ -6,7 +6,7 @@ import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { useStyle } from "styles/index";
 import { ColumnFrame } from "components/new/icon/column-frame";
 
-export const AgentTab: FunctionComponent = () => {
+export const ActivityTab: FunctionComponent = () => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const safeAreaInsets = useSafeAreaInsets();
   const style = useStyle();
@@ -21,7 +21,7 @@ export const AgentTab: FunctionComponent = () => {
       ref={scrollViewRef}
     >
       <IconWithText
-        title={"Chat with autonomous agents"}
+        title={"Activity"}
         subtitle={"This feature will be available\nin the next releases"}
         icon={<ColumnFrame />}
         isComingSoon={true}

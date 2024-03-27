@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
+import { Button } from "components/button";
 
 export const IconWithText: FunctionComponent<{
   icon?: React.ReactElement;
@@ -9,6 +10,7 @@ export const IconWithText: FunctionComponent<{
   iconStyle?: ViewStyle;
   titleStyle?: ViewStyle;
   subtitleStyle?: ViewStyle;
+  isComingSoon?: boolean;
 }> = ({
   icon,
   title,
@@ -16,6 +18,7 @@ export const IconWithText: FunctionComponent<{
   iconStyle,
   titleStyle,
   subtitleStyle,
+  isComingSoon = false,
   children,
 }) => {
   const style = useStyle();
@@ -24,7 +27,23 @@ export const IconWithText: FunctionComponent<{
     <View style={style.flatten(["flex-column"]) as ViewStyle}>
       <View style={style.flatten(["items-center"]) as ViewStyle}>
         {icon && <View style={iconStyle}>{icon}</View>}
-        {title ? (
+        {isComingSoon && (
+          <Button
+            text="COMING SOON"
+            size="small"
+            textStyle={style.flatten(["h7", "color-white"]) as ViewStyle}
+            containerStyle={
+              style.flatten([
+                "background-color-indigo",
+                "border-radius-4",
+                "margin-16",
+                "height-32",
+              ]) as ViewStyle
+            }
+            disabled={true}
+          />
+        )}
+        {title && (
           <Text
             style={
               [
@@ -35,8 +54,8 @@ export const IconWithText: FunctionComponent<{
           >
             {title}
           </Text>
-        ) : null}
-        {subtitle ? (
+        )}
+        {subtitle && (
           <Text
             style={
               [
@@ -53,7 +72,7 @@ export const IconWithText: FunctionComponent<{
           >
             {subtitle}
           </Text>
-        ) : null}
+        )}
       </View>
       {children}
     </View>

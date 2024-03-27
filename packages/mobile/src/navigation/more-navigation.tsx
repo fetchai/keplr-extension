@@ -16,7 +16,7 @@ import { HeaderAddIcon } from "components/header/icon";
 import { SettingSelectAccountScreen } from "screens/setting/screens/select-account";
 import { Stack } from "./navigation";
 
-export const SettingStackScreen: FunctionComponent = () => {
+export const MoreNavigation: FunctionComponent = () => {
   const style = useStyle();
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();

@@ -23,12 +23,13 @@ import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { HomeNavigation } from "navigation/home-navigation";
-import { SettingStackScreen } from "navigation/setting-navigation";
 import { QuickTabOptions } from "screens/home/new/quick-tab-options";
 import { DrawerContent } from "components/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AgentsScreen } from "screens/agents";
 import { QuickTabOptionModel } from "components/new/quick-tab-card/quick-tab-card";
+import { AgentTab } from "screens/agents";
+import { MoreNavigation } from "./more-navigation";
+import { ActivityTab } from "screens/activity";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -204,10 +205,10 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="AgentsTab" component={AgentsScreen} />
+        <Tab.Screen name="AgentsTab" component={AgentTab} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
-        <Tab.Screen name="ActivityTab" component={AgentsScreen} />
-        <Tab.Screen name="MoreTab" component={SettingStackScreen} />
+        <Tab.Screen name="ActivityTab" component={ActivityTab} />
+        <Tab.Screen name="MoreTab" component={MoreNavigation} />
       </Tab.Navigator>
       <QuickTabOptionModel
         isOpen={isQuickOptionEnable}
@@ -244,7 +245,6 @@ export const MainTabNavigation: FunctionComponent = () => {
 
 export const MainTabNavigationWithDrawer: FunctionComponent = () => {
   const style = useStyle();
-
   const focused = useFocusedScreen();
 
   return (

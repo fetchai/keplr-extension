@@ -6,6 +6,7 @@ import { PortfolioScreen } from "screens/portfolio";
 import { WebpageScreenScreenOptionsPreset } from "screens/web/components/webpage-screen";
 import { FetchhubScreen } from "screens/web/webpages";
 import { Stack } from "./navigation";
+import { InboxScreen } from "screens/inbox";
 
 export const HomeNavigation: FunctionComponent = () => {
   return (
@@ -40,6 +41,14 @@ export const HomeNavigation: FunctionComponent = () => {
         }}
         name="Fetchhub"
         component={FetchhubScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "",
+        }}
+        name="Inbox"
+        component={InboxScreen}
       />
     </Stack.Navigator>
   );

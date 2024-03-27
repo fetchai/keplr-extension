@@ -81,6 +81,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Camera: {
         upperScreenName: "Others",
       },
+      Inbox: {
+        upperScreenName: "HomeTab",
+      },
       ManageWalletConnect: {
         upperScreenName: "Others",
       },
