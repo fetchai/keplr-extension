@@ -88,7 +88,7 @@ export class CosmJSFetchOfflineSignerOnlyAmino implements OfflineAminoSigner {
   ) {}
 
   async getAccounts(): Promise<AccountData[]> {
-    const key = await this.signingApi.getCurrentKey();
+    const key = await this.signingApi.getCurrentKey(this.chainId);
 
     return [
       {
@@ -108,7 +108,7 @@ export class CosmJSFetchOfflineSignerOnlyAmino implements OfflineAminoSigner {
       throw new Error("Unmatched chain id with the offline signer");
     }
 
-    const key = await this.signingApi.getCurrentKey();
+    const key = await this.signingApi.getCurrentKey(signDoc.chain_id);
 
     if (key.bech32Address !== signerAddress) {
       throw new Error("Unknown signer address");
@@ -146,7 +146,7 @@ export class CosmJSFetchOfflineSigner
       throw new Error("Unmatched chain id with the offline signer");
     }
 
-    const key = await this.signingApi.getCurrentKey();
+    const key = await this.signingApi.getCurrentKey(signDoc.chainId);
 
     if (key.bech32Address !== signerAddress) {
       throw new Error("Unknown signer address");
@@ -167,7 +167,7 @@ export class CosmJSFetchOfflineSignerOnlyDirect implements OfflineDirectSigner {
   ) {}
 
   async getAccounts(): Promise<AccountData[]> {
-    const key = await this.signingApi.getCurrentKey();
+    const key = await this.signingApi.getCurrentKey(this.chainId);
 
     return [
       {
@@ -187,7 +187,7 @@ export class CosmJSFetchOfflineSignerOnlyDirect implements OfflineDirectSigner {
       throw new Error("Unmatched chain id with the offline signer");
     }
 
-    const key = await this.signingApi.getCurrentKey();
+    const key = await this.signingApi.getCurrentKey(signDoc.chainId);
 
     if (key.bech32Address !== signerAddress) {
       throw new Error("Unknown signer address");

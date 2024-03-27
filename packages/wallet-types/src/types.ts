@@ -236,7 +236,7 @@ export interface AddressBookApi {
  * Keplr we do not allow other signing messages
  */
 export interface SigningApi {
-  getCurrentKey(): Promise<Account>;
+  getCurrentKey(chainId: string): Promise<Account>;
 
   signAmino(
     chainId: string,

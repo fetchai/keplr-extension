@@ -185,10 +185,10 @@ export class FetchSigning implements SigningApi {
 
   constructor(protected readonly requester: MessageRequester) {}
 
-  async getCurrentKey(): Promise<Account> {
+  async getCurrentKey(chainId: string): Promise<Account> {
     return await this.requester.sendMessage(
       BACKGROUND_PORT,
-      new GetKeyMsgFetchSigning()
+      new GetKeyMsgFetchSigning(chainId)
     );
   }
 

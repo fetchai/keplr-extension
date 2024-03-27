@@ -151,12 +151,12 @@ export class AddNetworkAndSwitchMsg extends Message<void> {
     return "add-chain-by-network";
   }
 
-  constructor(public readonly network: NetworkConfig) {
+  constructor(public readonly networkConfig: NetworkConfig) {
     super();
   }
 
   validateBasic(): void {
-    if (!this.network) {
+    if (!this.networkConfig) {
       throw new Error("chain info not set");
     }
   }

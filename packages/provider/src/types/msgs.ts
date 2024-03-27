@@ -943,12 +943,14 @@ export class GetKeyMsgFetchSigning extends Message<Account> {
     return "get-key-fetch-signing";
   }
 
-  constructor() {
+  constructor(public readonly chainId: string) {
     super();
   }
 
   validateBasic(): void {
-    // noop
+    if (!this.chainId) {
+      throw new Error("chain id not set");
+    }
   }
 
   route(): string {
