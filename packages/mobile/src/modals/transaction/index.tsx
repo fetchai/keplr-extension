@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Image, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { registerModal } from "modals/base";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
@@ -13,6 +13,7 @@ import { Button } from "components/button";
 import { TendermintTxTracer } from "@keplr-wallet/cosmos";
 import { Buffer } from "buffer";
 import { useStore } from "stores/index";
+import LottieView from "lottie-react-native";
 
 enum TransactionStatus {
   Pending,
@@ -43,12 +44,7 @@ export const TransactionModal: FunctionComponent<{
         title: "Transaction pending",
         subTitle:
           "Transaction has been broadcasted to blockchain and pending confirmation",
-        img: (
-          <Image
-            source={require("assets/image/icon/ic_txn_pending.png")}
-            fadeDuration={0}
-          />
-        ),
+        img: require("assets/lottie/tn-pending-icon.json"),
       });
 
     const style = useStyle();
@@ -68,24 +64,14 @@ export const TransactionModal: FunctionComponent<{
               subTitle:
                 "Congratulations!" +
                 "Your transaction has been completed and confirmed by the blockchain",
-              img: (
-                <Image
-                  source={require("assets/image/icon/ic_txn_success.png")}
-                  fadeDuration={0}
-                />
-              ),
+              img: require("assets/lottie/tnx-success-icon.json"),
             });
           } else {
             setTransactionState({
               status: TransactionStatus.Failed,
               title: "Transaction failed",
               subTitle: "Unfortunately your transaction has failed.",
-              img: (
-                <Image
-                  source={require("assets/image/icon/ic_txn_error.png")}
-                  fadeDuration={0}
-                />
-              ),
+              img: require("assets/lottie/tnx-error-icon.json"),
             });
           }
         })
@@ -111,7 +97,14 @@ export const TransactionModal: FunctionComponent<{
           cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         >
           <IconWithText
-            icon={transactionState.img}
+            icon={
+              <LottieView
+                source={transactionState.img}
+                autoPlay
+                loop
+                style={style.flatten(["width-160"]) as ViewStyle}
+              />
+            }
             title={transactionState.title}
             subtitle={transactionState.subTitle}
           >

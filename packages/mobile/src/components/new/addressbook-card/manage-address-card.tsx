@@ -3,7 +3,6 @@ import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { IconButton } from "components/new/button/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { registerModal } from "modals/base";
 import { EditIcon } from "../icon/edit";
 import { DeleteIcon } from "../icon/color-delete";
@@ -33,22 +32,7 @@ export const ManageAddressCardModel: FunctionComponent<{
         title={title}
         cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
         disableGesture={true}
-        right={
-          <IconButton
-            icon={<XmarkIcon color={"white"} />}
-            backgroundBlur={false}
-            blurIntensity={20}
-            borderRadius={50}
-            onPress={() => close()}
-            iconStyle={
-              style.flatten([
-                "padding-12",
-                "border-width-1",
-                "border-color-gray-400",
-              ]) as ViewStyle
-            }
-          />
-        }
+        close={() => close()}
       >
         <View style={style.flatten(["margin-y-12"]) as ViewStyle}>
           <BlurBackground

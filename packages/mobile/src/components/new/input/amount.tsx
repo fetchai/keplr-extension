@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Platform, Text, View, ViewStyle } from "react-native";
 import {
+  BridgeAmountError,
   EmptyAmountError,
   IAmountConfig,
   InsufficientAmountError,
@@ -69,11 +70,21 @@ export const AmountInputSection: FunctionComponent<{
           return "Amount is negative";
         case InsufficientAmountError:
           return "Insufficient fund";
+        case BridgeAmountError:
+          return error.message;
         default:
           return "Unknown error";
       }
     }
   }, [error]);
+
+  const validateDecimalNumber = (input: string) => {
+    // Use the match() method with a regular expression
+    const isDecimal = input.match(/^\d*\.?\d*$/);
+
+    // Return true if it's a valid decimal number, otherwise return false
+    return isDecimal !== null;
+  };
 
   return (
     <React.Fragment>
@@ -81,7 +92,7 @@ export const AmountInputSection: FunctionComponent<{
       <TextInput
         style={
           style.flatten(
-            ["h2", "height-58", "text-center", "flex-0"],
+            ["h2", "height-58", "text-center", "flex-0", "width-full"],
             [errorText ? "color-red-400" : "color-white"]
           ) as ViewStyle
         }
@@ -95,7 +106,7 @@ export const AmountInputSection: FunctionComponent<{
         containerStyle={
           style.flatten(["margin-top-12", "padding-y-0"]) as ViewStyle
         }
-        maxLength={18}
+        maxLength={20}
         placeholder="0"
         innerInputContainerStyle={style.flatten([
           "justify-center",
@@ -122,8 +133,22 @@ export const AmountInputSection: FunctionComponent<{
         }
         selection={selection}
         onSelectionChange={handleFocus}
-        onChangeText={(text) => {
-          amountConfig.setAmount(text);
+        onChangeText={(value) => {
+          if (validateDecimalNumber(value)) {
+            if (value !== "0") {
+              // Remove leading zeros
+              for (let i = 0; i < value.length; i++) {
+                if (value[i] === "0" && value[i + 1] !== ".") {
+                  value = value.replace("0", "");
+                } else {
+                  break;
+                }
+              }
+            }
+            isToggleClicked === true
+              ? parseDollarAmount(inputInUsd)
+              : amountConfig.setAmount(value);
+          }
         }}
         topInInputContainer={
           <Text

@@ -72,12 +72,14 @@ export const GasInput: FunctionComponent<{
                 style.flatten(["flex-2", "margin-right-16"]) as ViewStyle
               }
               editable={false}
+              keyboardType="numeric"
             />
             <InputCardView
               label="Estimated "
               placeholder="-"
               containerStyle={style.flatten(["flex-2"]) as ViewStyle}
               editable={false}
+              keyboardType="numeric"
             />
           </View>
         ) : null}
@@ -86,10 +88,13 @@ export const GasInput: FunctionComponent<{
             label="Gas amount"
             placeholder="-"
             value={gasConfig.gasRaw}
-            onChangeText={(text) => {
-              gasConfig.setGas(text);
+            onChangeText={(value: string) => {
+              if (value.match(/^\d*$/)) {
+                gasConfig.setGas(value);
+              }
             }}
-            keyboardType="number-pad"
+            maxLength={8}
+            keyboardType="numeric"
             editable={isEnabled}
           />
         </View>

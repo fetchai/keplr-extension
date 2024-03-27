@@ -24,8 +24,6 @@ import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUnmount } from "hooks/use-unmount";
-import { IconButton } from "components/new/button/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { FeeInSign } from "modals/sign/fee";
@@ -237,19 +235,7 @@ export const SignModal: FunctionComponent<{
     }
 
     return (
-      <CardModal
-        title="Confirm transaction"
-        right={
-          <IconButton
-            icon={<XmarkIcon />}
-            backgroundBlur={true}
-            blurIntensity={20}
-            borderRadius={50}
-            onPress={() => close()}
-            iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-          />
-        }
-      >
+      <CardModal title="Confirm transaction" close={() => close()}>
         <TabBarView
           listItem={TransactionTabEnum}
           selected={selectedId}

@@ -1,3 +1,5 @@
+import { IconButton } from "components/new/button/icon";
+import { XmarkIcon } from "components/new/icon/xmark";
 import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
@@ -5,14 +7,14 @@ import { useStyle } from "styles/index";
 // CONTRACT: Use with { disableSafeArea: true, align: "bottom" } modal options.
 export const CardModal: FunctionComponent<{
   title?: string;
-  right?: React.ReactElement;
+  close?: () => void;
   childrenContainerStyle?: ViewStyle;
   cardStyle?: ViewStyle;
   titleStyle?: ViewStyle;
   disableGesture?: boolean;
 }> = ({
   title,
-  right,
+  close,
   children,
   childrenContainerStyle,
   disableGesture = false,
@@ -71,8 +73,23 @@ export const CardModal: FunctionComponent<{
               {title}
             </Text>
           ) : null}
-          {right ? (
-            <View style={style.flatten(["flex-1", "items-end"])}>{right}</View>
+          {close ? (
+            <View style={style.flatten(["flex-1", "items-end"])}>
+              <IconButton
+                icon={<XmarkIcon color={"white"} />}
+                backgroundBlur={false}
+                blurIntensity={20}
+                borderRadius={50}
+                onPress={() => close()}
+                iconStyle={
+                  style.flatten([
+                    "padding-12",
+                    "border-width-1",
+                    "border-color-gray-400",
+                  ]) as ViewStyle
+                }
+              />
+            </View>
           ) : null}
         </View>
       </View>

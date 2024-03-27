@@ -2,8 +2,6 @@ import React, { FunctionComponent } from "react";
 import { CardModal } from "modals/card";
 import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { IconButton } from "components/new/button/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { registerModal } from "modals/base";
 import { RectButton } from "components/rect-button";
 import { CheckIcon } from "components/new/icon/check";
@@ -36,22 +34,7 @@ export const ChangeWalletCardModel: FunctionComponent<{
         title={title}
         cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         disableGesture={true}
-        right={
-          <IconButton
-            icon={<XmarkIcon color={"white"} />}
-            backgroundBlur={false}
-            blurIntensity={20}
-            borderRadius={50}
-            onPress={() => close()}
-            iconStyle={
-              style.flatten([
-                "padding-12",
-                "border-width-1",
-                "border-color-gray-400",
-              ]) as ViewStyle
-            }
-          />
-        }
+        close={() => close()}
       >
         <ScrollView
           style={style.flatten(["max-height-600"]) as ViewStyle}

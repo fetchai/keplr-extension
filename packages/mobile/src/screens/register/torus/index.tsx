@@ -276,8 +276,15 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
               }}
               error={errors.name?.message}
               errorMassageShow={false}
-              onBlur={onBlur}
-              onChangeText={onChange}
+              onBlur={() => {
+                onBlur();
+                onChange(value.trim());
+              }}
+              onChangeText={(text: string) =>
+                onChange(
+                  text.replace(/[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/, "")
+                )
+              }
               value={value}
               maxLength={30}
               refs={ref}
@@ -313,7 +320,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   error={errors.password?.message}
                   errorMassageShow={false}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text: string) => onChange(text.trim())}
                   value={value}
                   refs={ref}
                   rightIcon={

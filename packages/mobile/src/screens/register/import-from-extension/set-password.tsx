@@ -160,7 +160,7 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
                 error={errors.password?.message}
                 errorMassageShow={false}
                 onBlur={onBlur}
-                onChangeText={onChange}
+                onChangeText={(text: string) => onChange(text.trim())}
                 value={value}
                 refs={ref}
                 rightIcon={

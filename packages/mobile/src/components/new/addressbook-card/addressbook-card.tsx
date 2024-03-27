@@ -9,7 +9,6 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { AddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { AddressBookIcon, PlusIcon } from "components/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "../empty";
@@ -63,19 +62,10 @@ export const AddressBookCardModel: FunctionComponent<{
         <CardModal
           title={title}
           disableGesture={true}
-          right={
-            <IconButton
-              icon={<XmarkIcon />}
-              backgroundBlur={true}
-              blurIntensity={20}
-              borderRadius={50}
-              onPress={() => {
-                setSearch("");
-                close();
-              }}
-              iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-            />
-          }
+          close={() => {
+            setSearch("");
+            close();
+          }}
         >
           <BlurBackground borderRadius={12} blurIntensity={20}>
             <TextInput

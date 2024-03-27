@@ -1,6 +1,6 @@
 import { CardModal } from "modals/card";
-import React, { FunctionComponent } from "react";
-import { Image, ViewStyle } from "react-native";
+import React, { FunctionComponent, ReactElement } from "react";
+import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { registerModal } from "modals/base";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
@@ -12,8 +12,9 @@ export const CameraPermissionModal: FunctionComponent<{
   onPress: () => void;
   title: string;
   buttonText: string;
+  icon: ReactElement;
 }> = registerModal(
-  ({ isOpen, onPress, title, buttonText }) => {
+  ({ isOpen, onPress, title, buttonText, icon, close }) => {
     const style = useStyle();
 
     if (!isOpen) {
@@ -25,14 +26,10 @@ export const CameraPermissionModal: FunctionComponent<{
         <CardModal
           disableGesture={true}
           cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+          close={close}
         >
           <IconWithText
-            icon={
-              <Image
-                source={require("assets/image/icon/ic_nw_error.png")}
-                fadeDuration={0}
-              />
-            }
+            icon={icon}
             title={title}
             subtitle={
               "We need your permission to access the camera to scan the QR code in the next step."

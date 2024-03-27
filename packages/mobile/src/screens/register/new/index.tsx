@@ -22,7 +22,6 @@ import { LinearGradientText } from "components/svg/linear-gradient-text";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { IconButton } from "components/new/button/icon";
 import { KeyIcon } from "components/new/icon/key_icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { BluetoothIcon } from "components/new/icon/bluetooth-icon";
 import { MetaMaskIcon } from "components/new/icon/metamask-icon";
 import { TokenCardView } from "components/new/card-view/token-card-view";
@@ -245,18 +244,7 @@ export const NewWalletModal: FunctionComponent<{
         <CardModal
           title="Create a new wallet"
           cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-          right={
-            <IconButton
-              icon={<XmarkIcon />}
-              backgroundBlur={true}
-              blurIntensity={20}
-              borderRadius={50}
-              onPress={() => {
-                close();
-              }}
-              iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-            />
-          }
+          close={() => close()}
         >
           <TokenCardView
             title="Continue with Google"
@@ -334,18 +322,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
         <CardModal
           title="Import existing wallet"
           cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-          right={
-            <IconButton
-              icon={<XmarkIcon />}
-              backgroundBlur={true}
-              blurIntensity={20}
-              borderRadius={50}
-              onPress={() => {
-                close();
-              }}
-              iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-            />
-          }
+          close={() => close()}
         >
           <TokenCardView
             title="Import from Fetch extension"

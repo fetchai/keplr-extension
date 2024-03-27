@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import { Image, Text, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -335,6 +335,19 @@ export const AccountSection: FunctionComponent<{
           modelStatus == ModelStatus.First
             ? "Camera permission"
             : "Camera permission is disabled"
+        }
+        icon={
+          modelStatus == ModelStatus.First ? (
+            <Image
+              source={require("assets/image/icon/camera_permission.png")}
+              fadeDuration={0}
+            />
+          ) : (
+            <Image
+              source={require("assets/image/icon/camera_permission_disabled.png")}
+              fadeDuration={0}
+            />
+          )
         }
         buttonText={
           modelStatus == ModelStatus.First

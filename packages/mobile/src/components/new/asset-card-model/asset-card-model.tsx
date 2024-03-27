@@ -2,11 +2,9 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
 import { View, ViewStyle, Platform } from "react-native";
 import { useStyle } from "styles/index";
-import { IconButton } from "components/new/button/icon";
 import { registerModal } from "modals/base";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { observer } from "mobx-react-lite";
-import { XmarkIcon } from "components/new/icon/xmark";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { IAmountConfig } from "@keplr-wallet/hooks";
@@ -73,19 +71,10 @@ export const AssetCardModel: FunctionComponent<{
       <CardModal
         title={title}
         disableGesture={true}
-        right={
-          <IconButton
-            icon={<XmarkIcon />}
-            backgroundBlur={true}
-            blurIntensity={20}
-            borderRadius={50}
-            onPress={() => {
-              setSearch("");
-              close();
-            }}
-            iconStyle={style.flatten(["padding-12"]) as ViewStyle}
-          />
-        }
+        close={() => {
+          setSearch("");
+          close();
+        }}
         cardStyle={
           [
             style.flatten(["height-full", "border-radius-0"]) as ViewStyle,

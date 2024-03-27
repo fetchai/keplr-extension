@@ -78,7 +78,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
 
     if (!isPrivateKey(mnemonic)) {
       await registerConfig.createMnemonic(
-        getValues("name"),
+        getValues("name").trim(),
         mnemonic,
         getValues("password"),
         bip44HDPath
@@ -164,7 +164,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
         rules={{
           required: "Name is required",
           validate: (value: string) => {
-            if (value.length < 3) {
+            if (value.trim().length < 3) {
               return "Name at least 3 characters";
             }
           },
@@ -186,8 +186,21 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
                 }
               }}
               error={errors.name?.message}
-              onBlur={onBlur}
-              onChangeText={onChange}
+              onBlur={() => {
+                onBlur();
+                onChange(value.trim());
+              }}
+              onChangeText={(text: string) => {
+                text = text.replace(
+                  /[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/,
+                  ""
+                );
+                if (text[0] === " ") {
+                  text = text.replace(/\s+/g, "");
+                }
+                text = text.replace(/ {1,}/g, " ");
+                onChange(text);
+              }}
               value={value}
               maxLength={30}
               refs={ref}
@@ -223,7 +236,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
                   error={errors.password?.message}
                   errorMassageShow={false}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text: string) => onChange(text.trim())}
                   value={value}
                   refs={ref}
                   rightIcon={

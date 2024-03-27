@@ -1,5 +1,12 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -242,6 +249,19 @@ export const AddressInputCard: FunctionComponent<{
             modelStatus == ModelStatus.First
               ? "Camera permission"
               : "Camera permission is disabled"
+          }
+          icon={
+            modelStatus == ModelStatus.First ? (
+              <Image
+                source={require("assets/image/icon/camera_permission.png")}
+                fadeDuration={0}
+              />
+            ) : (
+              <Image
+                source={require("assets/image/icon/camera_permission_disabled.png")}
+                fadeDuration={0}
+              />
+            )
           }
           buttonText={
             modelStatus == ModelStatus.First

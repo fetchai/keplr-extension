@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { PageWithView } from "components/page";
-import { Linking, Platform, Text, View, ViewStyle } from "react-native";
+import { Image, Linking, Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
@@ -123,6 +123,19 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = observer(
             modelStatus == ModelStatus.First
               ? "Camera permission"
               : "Camera permission is disabled"
+          }
+          icon={
+            modelStatus == ModelStatus.First ? (
+              <Image
+                source={require("assets/image/icon/camera_permission.png")}
+                fadeDuration={0}
+              />
+            ) : (
+              <Image
+                source={require("assets/image/icon/camera_permission_disabled.png")}
+                fadeDuration={0}
+              />
+            )
           }
           buttonText={
             modelStatus == ModelStatus.First

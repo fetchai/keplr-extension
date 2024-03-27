@@ -293,7 +293,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               onSubmitEditing={tryUnlock}
               onChangeText={(text: string) => {
                 setIsFailed(false);
-                setPassword(text);
+                setPassword(text.trim());
               }}
             />
             <Button
@@ -305,6 +305,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
               loading={isLoading}
               rippleColor="black@10%"
               onPress={tryUnlock}
+              disabled={password.length === 0}
             />
           </View>
           <View style={style.get("flex-4")} />

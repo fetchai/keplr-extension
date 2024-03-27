@@ -22,8 +22,6 @@ import { getLastUsedLedgerDeviceId } from "utils/ledger";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
 import { useUnmount } from "hooks/use-unmount";
-import { IconButton } from "components/new/button/icon";
-import { XmarkIcon } from "components/new/icon/xmark";
 import LottieView from "lottie-react-native";
 import { Button } from "components/button";
 import { BlurButton } from "components/new/button/blur-button";
@@ -294,25 +292,7 @@ export const LedgerGranterModal: FunctionComponent<{
     }
 
     return (
-      <CardModal
-        title="Pair hardware wallet to continue"
-        right={
-          <IconButton
-            icon={<XmarkIcon color={"white"} />}
-            backgroundBlur={false}
-            blurIntensity={20}
-            borderRadius={50}
-            onPress={() => close()}
-            iconStyle={
-              style.flatten([
-                "padding-12",
-                "border-width-1",
-                "border-color-gray-400",
-              ]) as ViewStyle
-            }
-          />
-        }
-      >
+      <CardModal title="Pair hardware wallet to continue" close={() => close()}>
         {isFinding ? (
           <View
             style={

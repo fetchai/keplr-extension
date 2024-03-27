@@ -139,8 +139,7 @@ export const InputCardView: React.forwardRef<
                 style.flatten([
                   "absolute",
                   "text-caption2",
-                  "color-blue-400",
-                  "dark:color-blue-300",
+                  "color-gray-300",
                   "margin-top-2",
                   "margin-left-4",
                 ]) as ViewStyle,
