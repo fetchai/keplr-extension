@@ -80,7 +80,7 @@ export function init(
     }
   );
 
-  const addressBookService = new AddressBook.AddressBookService();
+  const addressBookService = new AddressBook.AddressBookService(chainsService);
 
   const tokensService = new Tokens.TokensService(storeCreator("tokens"));
 
@@ -178,7 +178,6 @@ export function init(
         interactionService,
         permissionService
       );
-      addressBookService.init(interactionService);
       ledgerService.init(interactionService);
       keystoneService.init(interactionService);
       keyRingService.init(

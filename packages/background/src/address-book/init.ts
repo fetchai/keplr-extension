@@ -5,7 +5,6 @@ import {
   AddEntryMsg,
   DeleteEntryMsg,
   ListEntriesMsg,
-  SyncAddressBookDataMsg,
   UpdateEntryMsg,
 } from "./messages";
 import { AddressBookService } from "./service";
@@ -15,7 +14,6 @@ export function init(router: Router, service: AddressBookService): void {
   router.registerMessage(UpdateEntryMsg);
   router.registerMessage(DeleteEntryMsg);
   router.registerMessage(AddEntryMsg);
-  router.registerMessage(SyncAddressBookDataMsg);
 
   router.addHandler(ROUTE, getHandler(service));
 }
