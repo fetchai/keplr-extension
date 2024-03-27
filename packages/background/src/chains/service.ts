@@ -193,7 +193,7 @@ export class ChainsService {
         chainInfo.currencies
       ) as Currency[],
       feeCurrencies: this.mapLegacyToNewCurrencies(
-        chainInfo.currencies
+        chainInfo.feeCurrencies
       ) as NativeCurrency[],
       stakeCurrency: this.mapLegacyToNewCurrencies([
         chainInfo.stakeCurrency,
@@ -261,7 +261,7 @@ export class ChainsService {
         }
       }
 
-      return baseCurrency as NativeCurrency;
+      return { ...baseCurrency, denom: c.coinDenom } as NativeCurrency;
     });
   }
 

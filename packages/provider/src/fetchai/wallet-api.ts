@@ -249,7 +249,7 @@ export class InjectedFetchSigning implements SigningApi {
     },
     signOptions: KeplrSignOptions = {}
   ): Promise<DirectSignResponse> {
-    const result = await this.requestViaProxy("signDirect", [
+    return await this.requestViaProxy("signDirect", [
       chainId,
       signer,
       // We can't send the `Long` with remaing the type.
@@ -264,25 +264,6 @@ export class InjectedFetchSigning implements SigningApi {
       },
       deepmerge(this.defaultOptions.sign ?? {}, signOptions),
     ]);
-
-    const signed: {
-      bodyBytes: Uint8Array;
-      authInfoBytes: Uint8Array;
-      chainId: string;
-      accountNumber: string;
-    } = result.signed;
-
-    return {
-      signed: {
-        bodyBytes: signed.bodyBytes,
-        authInfoBytes: signed.authInfoBytes,
-        chainId: signed.chainId,
-        // We can't send the `Long` with remaing the type.
-        // Sender should change the `Long` to `string`.
-        accountNumber: Long.fromString(signed.accountNumber),
-      },
-      signature: result.signature,
-    };
   }
 
   async signArbitrary(

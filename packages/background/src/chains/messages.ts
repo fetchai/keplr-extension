@@ -151,18 +151,18 @@ export class AddNetworkAndSwitchMsg extends Message<void> {
     return "add-chain-by-network";
   }
 
-  constructor(public readonly networkConfig: NetworkConfig) {
+  constructor(public readonly network: NetworkConfig) {
     super();
   }
 
   validateBasic(): void {
-    if (!this.networkConfig) {
+    if (!this.network) {
       throw new Error("chain info not set");
     }
   }
 
   route(): string {
-    return "chains";
+    return ROUTE;
   }
 
   type(): string {
@@ -190,7 +190,7 @@ export class SwitchNetworkByChainIdMsg extends Message<void> {
   }
 
   route(): string {
-    return "chains";
+    return ROUTE;
   }
 
   type(): string {
