@@ -52,7 +52,15 @@ export const shortenNumber = (value: string, decimal = 18) => {
   return result;
 };
 
-export const ActivityRow = ({ node }: { node: any }) => {
+export const ActivityRow = ({
+  node,
+
+  setDate,
+}: {
+  node: any;
+
+  setDate: any;
+}) => {
   const navigate = useNavigate();
   const { chainStore } = useStore();
   const [isAmountDeducted, setIsAmountDeducted] = useState<boolean>();
@@ -71,21 +79,28 @@ export const ActivityRow = ({ node }: { node: any }) => {
     setIsAmountDeducted(isAmountDeducted);
   }, [isAmountDeducted]);
 
+  useEffect(() => {
+    const details = getDetails(node);
+    const currentDate = moment(details.timestamp)
+      .utc()
+      .format("ddd, DD MMM YYYY");
+
+    setDate(currentDate);
+  }, [node, setDate]);
+
   const getDetails = (node: any): any => {
     const { nodes } = node.transaction.messages;
     const { timestamp } = node.block;
     const { typeUrl, json } = nodes[0];
     const parsedJson = JSON.parse(json);
     const toAddress = parsedJson.toAddress;
-    const delegatorAddress = parsedJson.delegatorAddress;
-    const validatorAddress = parsedJson.validatorAddress;
-
-    const fees = node.transaction.fees;
-    const memo = node.transaction.memo;
-    const signerAddress = node.transaction.signerAddress;
-    const hash = node.transaction.id;
-    const gasUsed = node.transaction.gasUsed;
-
+    const {
+      delegatorAddress,
+      validatorAddress,
+      validatorDstAddress,
+      receiver,
+    } = parsedJson;
+    const { fees, memo, id: hash, signerAddress, gasUsed } = node.transaction;
     const amt = parsedJson.amount;
     let currency = "afet";
     const isAmountDeducted = parseFloat(node.balanceOffset) < 0;
@@ -121,7 +136,7 @@ export const ActivityRow = ({ node }: { node: any }) => {
       case "/cosmos.authz.v1beta1.MsgExec":
       case "/cosmwasm.wasm.v1.MsgExecuteContract":
       case "/cosmos.authz.v1beta1.MsgRevoke":
-        verb = isAmountDeducted ? "Transferred" : "Received";
+        verb = "Smart Contract Interaction";
         break;
       default:
         verb = isAmountDeducted ? "Transferred" : "Received";
@@ -141,7 +156,9 @@ export const ActivityRow = ({ node }: { node: any }) => {
       gasUsed,
       toAddress,
       validatorAddress,
-      delegatorAddress
+      delegatorAddress,
+      validatorDstAddress,
+      receiver,
     };
   };
 
@@ -158,14 +175,8 @@ export const ActivityRow = ({ node }: { node: any }) => {
 
   const details = getDetails(node);
   const { typeUrl } = node.transaction.messages.nodes[0];
-  console.log(node);
   return (
     <React.Fragment>
-      <div className={style["rowSubtitle"]}>
-        {" "}
-        {moment(details.timestamp).utc().format("ddd, DD MMM YYYY")}
-      </div>
-
       <div
         className={style["activityRow"]}
         onClick={() =>
@@ -207,7 +218,6 @@ export const ActivityRow = ({ node }: { node: any }) => {
           </div>
         </div>
       </div>
-      <div className={style["hr"]} />
     </React.Fragment>
   );
 };

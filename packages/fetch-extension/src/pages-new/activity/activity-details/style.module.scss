@@ -20,6 +20,7 @@
 }
 
 .card {
+  position: relative;
   margin-top: 12px;
   display: flex;
   flex-direction: column;
@@ -60,4 +61,12 @@
 }
 .inUSD {
   color: rgba(255, 255, 255, 0.6);
+}
+.verticalLine {
+  position: absolute;
+  border: 0.75px solid rgba(255, 255, 255, 0.2);
+  width: 1px;
+  height: 46px;
+  left: 29px;
+  top: 47px;
 }

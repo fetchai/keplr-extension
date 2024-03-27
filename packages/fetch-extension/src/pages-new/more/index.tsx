@@ -62,9 +62,9 @@ export const MorePage: FunctionComponent = () => {
 
       <div className={style["subTitle"]}>Others</div>
       <Card
-        leftImageStyle={{ background: "transparent" }}
+        leftImageStyle={{ background: "transparent", height: "16px" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
-        leftImage={require("@assets/svg/wireframe/axl-bridge.svg")}
+        leftImage={require("@assets/svg/wireframe/ibc-transfer.svg")}
         heading={"IBC Transfer"}
         onClick={(e: any) => {
           e.preventDefault();
@@ -120,13 +120,13 @@ export const MorePage: FunctionComponent = () => {
           }
         />
       )}
-      <Card
+      {/* <Card
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
         leftImage={require("@assets/svg/wireframe/wallet-version.svg")}
         heading={"Fetch Wallet version"}
         onClick={() => navigate("/app-version")}
-      />
+      /> */}
     </HeaderLayout>
   );
 };

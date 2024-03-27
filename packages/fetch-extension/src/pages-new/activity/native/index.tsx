@@ -4,8 +4,11 @@ import { useStore } from "../../../stores";
 import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
 import style from "../style.module.scss";
+import styles from "./style.module.scss";
+
 import { NoActivity } from "../no-activity";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import moment from "moment";
 
 const options = [
   { value: "/cosmos.bank.v1beta1.MsgSend", label: "Funds transfers" },
@@ -59,7 +62,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [_date, setDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [loadingRequest, setLoadingRequest] = useState(true);
   const [fetchedData, setFetchedData] = useState<any>();
@@ -147,7 +150,35 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     handleFilterChange(filter);
     setIsOpen(false);
   };
-
+  const renderNodes = (nodes: any) => {
+    const renderedNodes: JSX.Element[] = [];
+    Object.values(nodes).forEach(async (node: any, index) => {
+      const currentDate = moment(node.block.timestamp)
+        .utc()
+        .format("ddd, DD MMM YYYY");
+      const previousNode: any =
+        index > 0 ? Object.values(nodes)[index - 1] : null;
+      const previousDate = previousNode
+        ? moment(previousNode.block.timestamp).utc().format("ddd, DD MMM YYYY")
+        : null;
+      const shouldDisplayDate = currentDate !== previousDate;
+      renderedNodes.push(
+        <React.Fragment key={index}>
+          {!shouldDisplayDate && <div className={styles["hr"]} />}
+          {shouldDisplayDate && (
+            <div
+              className={styles["rowSubtitle"]}
+              style={{ marginTop: "12px" }}
+            >
+              {currentDate}
+            </div>
+          )}
+          <ActivityRow setDate={setDate} node={node} />
+        </React.Fragment>
+      );
+    });
+    return renderedNodes;
+  };
   return (
     <React.Fragment>
       <FilterDropdown
@@ -171,21 +202,14 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
           isOpen={isOpen}
         />
       </div>
+
       {Object.values(nodes).filter((node: any) =>
         processFilters(filter).includes(
           node.transaction.messages.nodes[0].typeUrl
         )
       ).length > 0 ? (
         <React.Fragment>
-          {Object.values(nodes)
-            .filter((node: any) =>
-              processFilters(filter).includes(
-                node.transaction.messages.nodes[0].typeUrl
-              )
-            )
-            .map((node, index) => (
-              <ActivityRow node={node} key={index} />
-            ))}
+          {renderNodes(nodes)}
           {pageInfo?.hasNextPage && (
             <ButtonV2
               disabled={!pageInfo?.hasNextPage || loadingRequest}
