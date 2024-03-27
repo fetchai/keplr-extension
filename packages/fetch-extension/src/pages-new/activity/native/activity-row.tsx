@@ -7,6 +7,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "../../../stores";
 import moment from "moment";
 import { useNavigate } from "react-router";
+import { shortenNumber } from "@utils/format";
 
 const getActivityIcon = (
   type: string,
@@ -26,41 +27,7 @@ const getActivityIcon = (
   }
 };
 
-export const shortenNumber = (value: string, decimal = 18) => {
-  const number = Math.abs(parseFloat(value)) / 10 ** decimal;
-  let result = "";
-  if (number >= 1000000) {
-    result = (number / 1000000).toFixed(2) + " M";
-  } else if (number >= 1000) {
-    result = (number / 1000).toFixed(2) + " K";
-  } else if (number >= 1) {
-    result = number.toFixed(2) + " ";
-  } else if (number >= 10 ** -3) {
-    result = (number * 1000).toFixed(2) + " m";
-  } else if (number >= 10 ** -6) {
-    result = (number * 10 ** 6).toFixed(2) + " u";
-  } else if (number >= 10 ** -9) {
-    result = (number * 10 ** 9).toFixed(2) + " n";
-  } else if (number >= 10 ** -12) {
-    result = (number * 10 ** 9).toFixed(3) + " n";
-  } else if (number >= 10 ** -18) {
-    result = (number * 10 ** 18).toFixed(0) + " a";
-  } else {
-    result = number.toFixed(2) + " ";
-  }
-
-  return result;
-};
-
-export const ActivityRow = ({
-  node,
-
-  setDate,
-}: {
-  node: any;
-
-  setDate: any;
-}) => {
+export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
   const navigate = useNavigate();
   const { chainStore } = useStore();
   const [isAmountDeducted, setIsAmountDeducted] = useState<boolean>();

@@ -3,11 +3,11 @@ import { useNavigate, useParams } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../../stores";
 import style from "../../style.module.scss";
-import { PageButton } from "../../page-button";
 import { useIntl } from "react-intl";
 import { useConfirm } from "@components/confirm";
 import { Secret20ViewingKeyPermissionInnerStore } from "@keplr-wallet/stores";
 import { HeaderLayout } from "@layouts-v2/header-layout";
+import { Card } from "@components-v2/card";
 
 export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
   observer(() => {
@@ -63,10 +63,10 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
           >{`${tokenInfo?.tokenInfo?.name} (${tokenInfo?.tokenInfo?.symbol})`}</div>
           {accessInfo?.origins.map((origin) => {
             return (
-              <PageButton
-                title={origin}
+              <Card
+                heading={origin}
                 key={origin}
-                onClick={async (e) => {
+                onClick={async (e: any) => {
                   e.preventDefault();
 
                   if (
@@ -89,7 +89,7 @@ export const SettingSecret20ViewingKeyConnectionsPage: FunctionComponent =
                     await accessInfo?.removeOrigin(origin);
                   }
                 }}
-                icons={xIcon}
+                rightContent={xIcon}
               />
             );
           })}

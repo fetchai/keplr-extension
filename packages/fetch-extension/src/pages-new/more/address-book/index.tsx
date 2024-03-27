@@ -3,14 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { useNavigate, useLocation } from "react-router";
 import style from "../style.module.scss";
-import {
-  ButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import { DropdownItem, Modal, ModalBody } from "reactstrap";
 import styleAddressBook from "./style.module.scss";
 import { useStore } from "../../../stores";
 import { AddAddressModal } from "./add-address-modal";
@@ -80,8 +73,8 @@ export const AddressBookPage: FunctionComponent<{
           }
     );
 
-    const [dropdownOpen, setOpen] = useState(false);
-    const toggle = () => setOpen(!dropdownOpen);
+    // const [dropdownOpen, setOpen] = useState(false);
+    // const toggle = () => setOpen(!dropdownOpen);
 
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
       chatSectionParams.openModal || false
@@ -245,29 +238,20 @@ export const AddressBookPage: FunctionComponent<{
                     setIsOpen={setIsOpen}
                     closeClicked={() => setIsOpen(!isOpen)}
                   >
-                    dsaf
-                    <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
-                      <DropdownToggle caret style={{ boxShadow: "none" }}>
-                        {chainStore.getChain(selectedChainId).chainName}
-                      </DropdownToggle>
-
-                      <DropdownMenu>
-                        <div className={styleAddressBook["dropdownWrapper"]}>
-                          {chainStore.chainInfos.map((chainInfo) => {
-                            return (
-                              <DropdownItem
-                                key={chainInfo.chainId}
-                                onClick={() => {
-                                  setSelectedChainId(chainInfo.chainId);
-                                }}
-                              >
-                                {chainInfo.chainName}
-                              </DropdownItem>
-                            );
-                          })}
-                        </div>
-                      </DropdownMenu>
-                    </ButtonDropdown>
+                    <div className={styleAddressBook["dropdownWrapper"]}>
+                      {chainStore.chainInfos.map((chainInfo) => {
+                        return (
+                          <DropdownItem
+                            key={chainInfo.chainId}
+                            onClick={() => {
+                              setSelectedChainId(chainInfo.chainId);
+                            }}
+                          >
+                            {chainInfo.chainName}
+                          </DropdownItem>
+                        );
+                      })}
+                    </div>
                   </Dropdown>
                 </div>
               )}
