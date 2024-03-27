@@ -1613,25 +1613,3 @@ export class DeleteEntryMsg extends Message<void> {
     return DeleteEntryMsg.type();
   }
 }
-
-export class SyncAddressBookDataMsg extends Message<void> {
-  public static type() {
-    return "sync-address-book-msg";
-  }
-
-  constructor(public readonly addressBook: AddressBookEntry[]) {
-    super();
-  }
-
-  validateBasic(): void {
-    // noop
-  }
-
-  route(): string {
-    return "address-book";
-  }
-
-  type(): string {
-    return SyncAddressBookDataMsg.type();
-  }
-}

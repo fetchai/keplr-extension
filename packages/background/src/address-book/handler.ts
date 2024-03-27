@@ -4,7 +4,6 @@ import {
   AddEntryMsg,
   DeleteEntryMsg,
   ListEntriesMsg,
-  SyncAddressBookDataMsg,
   UpdateEntryMsg,
 } from "./messages";
 import { ExtensionKVStore } from "@keplr-wallet/common";
@@ -22,11 +21,6 @@ export const getHandler: (service: AddressBookService) => Handler = (
         return handleUpdateEntryMsg(service)(env, msg as UpdateEntryMsg);
       case DeleteEntryMsg:
         return handleDeleteEntryMsg(service)(env, msg as DeleteEntryMsg);
-      case SyncAddressBookDataMsg:
-        return handleSyncAddressBookDataMsg(service)(
-          env,
-          msg as SyncAddressBookDataMsg
-        );
       default:
         throw new Error("Unknown msg type");
     }
@@ -42,7 +36,7 @@ const handleListEntriesMsg: (
     if (!chainId) {
       throw Error("could not detect current chainId");
     }
-    return service.listEntries(_env, chainId, _msg.origin);
+    return service.listEntries(chainId);
   };
 };
 
@@ -50,7 +44,7 @@ const handleAddEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<AddEntryMsg> = (service) => {
   return async (_env, _msg) => {
-    return service.addEntry(_env, _msg.entry, _msg.origin);
+    return service.addEntry(_msg.entry);
   };
 };
 
@@ -58,7 +52,7 @@ const handleUpdateEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<UpdateEntryMsg> = (service) => {
   return async (_env, _msg) => {
-    return service.updateEntry(_env, _msg.entry, _msg.origin);
+    return service.updateEntry(_msg.entry);
   };
 };
 
@@ -66,14 +60,6 @@ const handleDeleteEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<DeleteEntryMsg> = (service) => {
   return async (_env, _msg) => {
-    return service.deleteEntry(_env, _msg.address, _msg.origin);
-  };
-};
-
-const handleSyncAddressBookDataMsg: (
-  service: AddressBookService
-) => InternalHandler<SyncAddressBookDataMsg> = (service) => {
-  return async (_env, _msg) => {
-    return service.syncAddressBookData(_msg.addressBook);
+    return service.deleteEntry(_msg.address);
   };
 };
