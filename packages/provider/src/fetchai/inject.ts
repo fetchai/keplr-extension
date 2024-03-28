@@ -1,13 +1,7 @@
 import { createBrowserWindowProxy } from "./proxy";
 import { FetchBrowserWallet, WalletApi } from "@fetchai/wallet-types";
 import { Keplr } from "@keplr-wallet/types";
-import {
-  InjectedFetchAccount,
-  InjectedFetchAddressBook,
-  InjectedFetchNetworks,
-  InjectedFetchSigning,
-  InjectedFetchWalletApi,
-} from "./wallet-api";
+import { InjectedFetchWalletApi } from "./wallet-api";
 import { defineUnwritablePropertyIfPossible } from "../inject";
 
 export class BrowserInjectedFetchWallet implements FetchBrowserWallet {
@@ -18,13 +12,9 @@ export class BrowserInjectedFetchWallet implements FetchBrowserWallet {
   constructor(keplr: Keplr, version: string) {
     this.keplr = keplr;
     this.version = version;
-    this.wallet = new InjectedFetchWalletApi(
-      new InjectedFetchNetworks(createBrowserWindowProxy()),
-      new InjectedFetchAccount(createBrowserWindowProxy()),
-      new InjectedFetchSigning(createBrowserWindowProxy()),
-      new InjectedFetchAddressBook(createBrowserWindowProxy()),
-      createBrowserWindowProxy()
-    );
+
+    const proxy = createBrowserWindowProxy();
+    this.wallet = new InjectedFetchWalletApi(proxy);
   }
 }
 

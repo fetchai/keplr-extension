@@ -26,8 +26,7 @@ import {
   CosmJSFetchOfflineSignerOnlyAmino,
   CosmJSFetchOfflineSignerOnlyDirect,
 } from "../cosmjs";
-import { Proxy, createProxyRequest, toProxyResponse } from "./proxy";
-import { JSONUint8Array } from "@keplr-wallet/router";
+import { Proxy, requestViaProxy } from "./proxy";
 import {
   AccountsApiMethod,
   NetworksApiMethod,
@@ -37,13 +36,17 @@ import {
 } from "./types";
 
 export class InjectedFetchWalletApi implements WalletApi {
-  constructor(
-    public networks: NetworksApi,
-    public accounts: AccountsApi,
-    public signing: SigningApi,
-    public addressBook: AddressBookApi,
-    protected readonly proxy: Proxy
-  ) {}
+  public networks: NetworksApi;
+  public accounts: AccountsApi;
+  public signing: SigningApi;
+  public addressBook: AddressBookApi;
+
+  constructor(protected readonly proxy: Proxy) {
+    this.networks = new InjectedFetchNetworks(proxy);
+    this.accounts = new InjectedFetchAccount(proxy);
+    this.signing = new InjectedFetchSigning(proxy);
+    this.addressBook = new InjectedFetchAddressBook(proxy);
+  }
 
   async status(): Promise<WalletStatus> {
     return await this.requestViaProxy("status", []);
@@ -73,34 +76,7 @@ export class InjectedFetchWalletApi implements WalletApi {
     method: WalletMethod,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(`wallet.${method}`, args);
-
-    return new Promise((resolve, reject) => {
-      const messageHandler = (e: any) => {
-        const proxyResponse = toProxyResponse(e.data);
-        if (proxyResponse === undefined) {
-          return;
-        }
-
-        this.proxy.removeMessageHandler(messageHandler);
-
-        const result = JSONUint8Array.unwrap(proxyResponse.result);
-        if (!result) {
-          reject(new Error("Result is null"));
-          return;
-        }
-
-        if (result.error) {
-          reject(new Error(result.error));
-          return;
-        }
-
-        resolve(result.return);
-      };
-
-      this.proxy.addMessageHandler(messageHandler);
-      this.proxy.sendMessage(proxyRequest);
-    });
+    return requestViaProxy(`wallet.${method}`, args, this.proxy);
   }
 }
 
@@ -130,34 +106,7 @@ export class InjectedFetchAccount implements AccountsApi {
     method: AccountsApiMethod,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(`wallet.accounts.${method}`, args);
-
-    return new Promise((resolve, reject) => {
-      const messageHandler = (e: any) => {
-        const proxyResponse = toProxyResponse(e.data);
-        if (proxyResponse === undefined) {
-          return;
-        }
-
-        this.proxy.removeMessageHandler(messageHandler);
-
-        const result = JSONUint8Array.unwrap(proxyResponse.result);
-        if (!result) {
-          reject(new Error("Result is null"));
-          return;
-        }
-
-        if (result.error) {
-          reject(new Error(result.error));
-          return;
-        }
-
-        resolve(result.return);
-      };
-
-      this.proxy.addMessageHandler(messageHandler);
-      this.proxy.sendMessage(proxyRequest);
-    });
+    return requestViaProxy(`wallet.accounts.${method}`, args, this.proxy);
   }
 }
 
@@ -184,33 +133,7 @@ export class InjectedFetchNetworks implements NetworksApi {
     method: NetworksApiMethod,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(`wallet.networks.${method}`, args);
-    return new Promise((resolve, reject) => {
-      const messageHandler = (e: any) => {
-        const proxyResponse = toProxyResponse(e.data);
-        if (proxyResponse === undefined) {
-          return;
-        }
-
-        this.proxy.removeMessageHandler(messageHandler);
-
-        const result = JSONUint8Array.unwrap(proxyResponse.result);
-        if (!result) {
-          reject(new Error("Result is null"));
-          return;
-        }
-
-        if (result.error) {
-          reject(new Error(result.error));
-          return;
-        }
-
-        resolve(result.return);
-      };
-
-      this.proxy.addMessageHandler(messageHandler);
-      this.proxy.sendMessage(proxyRequest);
-    });
+    return requestViaProxy(`wallet.networks.${method}`, args, this.proxy);
   }
 }
 
@@ -306,34 +229,7 @@ export class InjectedFetchSigning implements SigningApi {
     method: WalletSigningMethod,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(`wallet.signing.${method}`, args);
-
-    return new Promise((resolve, reject) => {
-      const messageHandler = (e: any) => {
-        const proxyResponse = toProxyResponse(e.data);
-        if (proxyResponse === undefined) {
-          return;
-        }
-
-        this.proxy.removeMessageHandler(messageHandler);
-
-        const result = JSONUint8Array.unwrap(proxyResponse.result);
-        if (!result) {
-          reject(new Error("Result is null"));
-          return;
-        }
-
-        if (result.error) {
-          reject(new Error(result.error));
-          return;
-        }
-
-        resolve(result.return);
-      };
-
-      this.proxy.addMessageHandler(messageHandler);
-      this.proxy.sendMessage(proxyRequest);
-    });
+    return requestViaProxy(`wallet.signing.${method}`, args, this.proxy);
   }
 }
 
@@ -363,36 +259,6 @@ export class InjectedFetchAddressBook implements AddressBookApi {
     method: AddressBookApiMethods,
     args: any[]
   ): Promise<any> {
-    const proxyRequest = createProxyRequest(
-      `wallet.addressBook.${method}`,
-      args
-    );
-
-    return new Promise((resolve, reject) => {
-      const messageHandler = (e: any) => {
-        const proxyResponse = toProxyResponse(e.data);
-        if (proxyResponse === undefined) {
-          return;
-        }
-
-        this.proxy.removeMessageHandler(messageHandler);
-
-        const result = JSONUint8Array.unwrap(proxyResponse.result);
-        if (!result) {
-          reject(new Error("Result is null"));
-          return;
-        }
-
-        if (result.error) {
-          reject(new Error(result.error));
-          return;
-        }
-
-        resolve(result.return);
-      };
-
-      this.proxy.addMessageHandler(messageHandler);
-      this.proxy.sendMessage(proxyRequest);
-    });
+    return requestViaProxy(`wallet.addressBook.${method}`, args, this.proxy);
   }
 }
