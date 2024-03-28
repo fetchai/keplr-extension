@@ -13,7 +13,7 @@ import { useLocation } from "react-router";
 import { chatSectionParams, defaultParamValues } from "../index";
 import { useNotification } from "@components/notification";
 import { validateAgentAddress } from "@utils/validate-agent";
-import style from "./style.module.scss";
+import style from "../style.module.scss";
 import { ButtonV2 } from "@components-v2/buttons/button";
 /**
  *
