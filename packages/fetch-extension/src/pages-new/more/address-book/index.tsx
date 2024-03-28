@@ -1,27 +1,22 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { useIntl } from "react-intl";
-import { useNavigate, useLocation } from "react-router";
-import style from "../style.module.scss";
-import { DropdownItem, Modal, ModalBody } from "reactstrap";
-import styleAddressBook from "./style.module.scss";
-import { useStore } from "../../../stores";
-import { AddAddressModal } from "./add-address-modal";
+import { Dropdown } from "@components-v2/dropdown";
 import { ExtensionKVStore } from "@keplr-wallet/common";
-import { Bech32Address } from "@keplr-wallet/cosmos";
-import { useConfirm } from "@components/confirm";
 import {
   AddressBookSelectHandler,
   IIBCChannelConfig,
   useAddressBookConfig,
-  useMemoConfig,
-  useRecipientConfig,
 } from "@keplr-wallet/hooks";
-import { shortenAgentAddress } from "@utils/validate-agent";
 import { HeaderLayout } from "@layouts-v2/header-layout";
-import { Dropdown } from "@components-v2/dropdown";
+import { observer } from "mobx-react-lite";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useIntl } from "react-intl";
+import { useLocation, useNavigate } from "react-router";
+import { DropdownItem } from "reactstrap";
+import { useStore } from "../../../stores";
+import style from "../style.module.scss";
 import styles from "../token/manage/style.module.scss";
-import { Card } from "@components-v2/card";
+import { AddAddressModal } from "./add-address-modal";
+import { AddressRow } from "./address-row";
+import styleAddressBook from "./style.module.scss";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -40,7 +35,7 @@ export const AddressBookPage: FunctionComponent<{
   ({ onBackButton, hideChainDropdown, selectHandler, ibcChannelConfig }) => {
     const intl = useIntl();
     const navigate = useNavigate();
-    const { chainStore, uiConfigStore, analyticsStore } = useStore();
+    const { chainStore, analyticsStore } = useStore();
     const current = chainStore.current;
     const location = useLocation();
     const chatSectionParams =
@@ -50,13 +45,6 @@ export const AddressBookPage: FunctionComponent<{
         ? ibcChannelConfig.channel.counterpartyChainId
         : current.chainId
     );
-
-    const recipientConfig = useRecipientConfig(chainStore, selectedChainId, {
-      allowHexAddressOnEthermint: true,
-      icns: uiConfigStore.icnsInfo,
-    });
-    const memoConfig = useMemoConfig(chainStore, selectedChainId);
-
     const addressBookConfig = useAddressBookConfig(
       new ExtensionKVStore("address-book"),
       chainStore,
@@ -73,9 +61,6 @@ export const AddressBookPage: FunctionComponent<{
           }
     );
 
-    // const [dropdownOpen, setOpen] = useState(false);
-    // const toggle = () => setOpen(!dropdownOpen);
-
     const [addAddressModalOpen, setAddAddressModalOpen] = useState(
       chatSectionParams.openModal || false
     );
@@ -91,84 +76,6 @@ export const AddressBookPage: FunctionComponent<{
         setLoading(false);
       }
     }, [chatSectionParams.openModal]);
-
-    const confirm = useConfirm();
-    const closeModal = () => {
-      if (chatSectionParams.openModal) {
-        navigate(-1);
-      }
-      setAddAddressModalOpen(false);
-      setAddAddressModalIndex(-1);
-    };
-    const addressBookIcons = (index: number) => {
-      return [
-        <i
-          key="edit"
-          className="fas fa-pen"
-          style={{ cursor: "pointer" }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            analyticsStore.logEvent("edit_address_book_click");
-            setAddAddressModalOpen(true);
-            setAddAddressModalIndex(index);
-          }}
-        />,
-        <i
-          key="remove"
-          className="fas fa-trash"
-          style={{ cursor: "pointer" }}
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            analyticsStore.logEvent("delete_address_book_click", {
-              action: "No",
-            });
-
-            if (
-              await confirm.confirm({
-                img: (
-                  <img
-                    alt=""
-                    src={require("@assets/img/trash.svg")}
-                    style={{ height: "80px" }}
-                  />
-                ),
-                title: intl.formatMessage({
-                  id: "setting.address-book.confirm.delete-address.title",
-                }),
-                paragraph: intl.formatMessage({
-                  id: "setting.address-book.confirm.delete-address.paragraph",
-                }),
-              })
-            ) {
-              analyticsStore.logEvent("delete_address_book_click", {
-                action: "Yes",
-              });
-              setAddAddressModalOpen(false);
-              setAddAddressModalIndex(-1);
-              addressBookConfig.removeAddressBook(index);
-            }
-          }}
-        />,
-      ];
-    };
-
-    const handleAddressClick = (
-      e: React.MouseEvent<HTMLDivElement>,
-      address: string,
-      i: number
-    ) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!address.startsWith("agent")) {
-        addressBookConfig.selectAddressAt(i);
-
-        if (onBackButton) {
-          onBackButton();
-        }
-      }
-    };
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -207,24 +114,14 @@ export const AddressBookPage: FunctionComponent<{
           </button>
         }
       >
-        <Modal
-          isOpen={addAddressModalOpen}
-          backdrop={false}
-          className={styleAddressBook["fullModal"]}
-          wrapClassName={styleAddressBook["fullModal"]}
-          contentClassName={styleAddressBook["fullModal"]}
-        >
-          <ModalBody className={styleAddressBook["fullModal"]}>
-            <AddAddressModal
-              closeModal={() => closeModal()}
-              recipientConfig={recipientConfig}
-              memoConfig={memoConfig}
-              addressBookConfig={addressBookConfig}
-              index={addAddressModalIndex}
-              chainId={selectedChainId}
-            />
-          </ModalBody>
-        </Modal>
+        <AddAddressModal
+          chainId={selectedChainId}
+          selectHandler={selectHandler}
+          addAddressModalOpen={addAddressModalOpen}
+          setAddAddressModalOpen={setAddAddressModalOpen}
+          addAddressModalIndex={addAddressModalIndex}
+          setAddAddressModalIndex={setAddAddressModalIndex}
+        />
         {loading ? (
           <div className={styleAddressBook["loader"]}>Loading ....</div>
         ) : (
@@ -265,43 +162,18 @@ export const AddressBookPage: FunctionComponent<{
               />
             </div>
             <div style={{ flex: "1 1 0", overflowY: "auto" }}>
-              {addressBookConfig.addressBookDatas.map((data, i) => {
-                return (
-                  <Card
-                    key={i.toString()}
-                    heading={data.name}
-                    subheading={
-                      <div>
-                        {data.address.indexOf(
-                          chainStore.getChain(selectedChainId).bech32Config
-                            .bech32PrefixAccAddr
-                        ) === 0
-                          ? Bech32Address.shortenAddress(data.address, 34)
-                          : data.address.startsWith("agent")
-                          ? shortenAgentAddress(data.address)
-                          : data.address}
-                        <div>{data.memo}</div>
-                      </div>
-                    }
-                    rightContent={
-                      <div style={{ display: "flex", gap: "5px" }}>
-                        {addressBookIcons(i)}
-                      </div>
-                    }
-                    data-index={i}
-                    // disabled={onBackButton && data.address.startsWith("agent")}
-                    onClick={(e: any) =>
-                      !onBackButton &&
-                      !data.address.startsWith("agent") &&
-                      handleAddressClick(e, data.address, i)
-                    }
-                    style={{
-                      cursor: selectHandler ? undefined : "auto",
-                      background: "rgba(255,255,255,0.1)",
-                    }}
-                  />
-                );
-              })}
+              {addressBookConfig.addressBookDatas.map((data, i) => (
+                <AddressRow
+                  key={i.toString()}
+                  data={data}
+                  i={i}
+                  onBackButton={onBackButton}
+                  setAddAddressModalIndex={setAddAddressModalIndex}
+                  setAddAddressModalOpen={setAddAddressModalOpen}
+                  selectedChainId={selectedChainId}
+                  selectHandler={selectHandler}
+                />
+              ))}
             </div>
           </div>
         )}
