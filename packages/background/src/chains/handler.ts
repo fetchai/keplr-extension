@@ -127,7 +127,7 @@ const handleGetNetworkMsg: (
   service: ChainsService
 ) => InternalHandler<GetNetworkMsg> = (service) => {
   return async () => {
-    const chainId = service.getSelectedChain();
+    const chainId = await service.getSelectedChain();
     const chainInfo = await service.getChainInfo(chainId);
     return service.getNetworkConfig(chainInfo);
   };

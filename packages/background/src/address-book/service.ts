@@ -12,29 +12,34 @@ export class AddressBookService {
     this.kvStore = new ExtensionKVStore("address-book");
   }
 
-  public async listEntries(chainId: string) {
-    const chainInfo = await this.chainService.getChainInfo(chainId);
+  public async listEntries() {
+    const chainInfo = await this.chainService.getChainInfo(
+      await this.chainService.getSelectedChain()
+    );
     const addressBook = await this.kvStore.get(`${chainInfo.chainName}`);
-    console.log(addressBook);
     return addressBook as AddressBookEntry[];
   }
 
   public async addEntry(entry: AddressBookEntry) {
     const chainInfo = await this.chainService.getChainInfo(
-      this.chainService.getSelectedChain()
+      await this.chainService.getSelectedChain()
     );
     const addressBook: AddressBookEntry[] | undefined =
       (await this.kvStore.get(`${chainInfo.chainName}`)) ?? [];
 
-    addressBook.push(entry);
+    const entryExists = addressBook.find((a) => {
+      return a.address === entry.address;
+    });
 
-    await this.kvStore.set(`${chainInfo.chainName}`, addressBook);
-    console.log(addressBook);
+    if (!entryExists) {
+      addressBook.push(entry);
+      await this.kvStore.set(`${chainInfo.chainName}`, addressBook);
+    }
   }
 
   public async updateEntry(entry: AddressBookEntry) {
     const chainInfo = await this.chainService.getChainInfo(
-      this.chainService.getSelectedChain()
+      await this.chainService.getSelectedChain()
     );
     const addressBook: AddressBookEntry[] | undefined =
       (await this.kvStore.get(`${chainInfo.chainName}`)) ?? [];
@@ -48,12 +53,11 @@ export class AddressBookService {
     });
 
     await this.kvStore.set(`${chainInfo.chainName}`, updatedAddressBook);
-    console.log(updatedAddressBook);
   }
 
   public async deleteEntry(address: string) {
     const chainInfo = await this.chainService.getChainInfo(
-      this.chainService.getSelectedChain()
+      await this.chainService.getSelectedChain()
     );
     const addressBook: AddressBookEntry[] | undefined =
       (await this.kvStore.get(`${chainInfo.chainName}`)) ?? [];
@@ -62,7 +66,6 @@ export class AddressBookService {
       return entry.address !== address;
     });
 
-    console.log(updatedAddressBook);
     await this.kvStore.set(`${chainInfo.chainName}`, updatedAddressBook);
   }
 }

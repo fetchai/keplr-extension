@@ -636,7 +636,7 @@ const handleCurrentAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<CurrentAccountMsg> = (service) => {
   return async (env, msg) => {
-    const chainId = service.chainsService.getSelectedChain();
+    const chainId = await service.chainsService.getSelectedChain();
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       chainId,
@@ -674,7 +674,7 @@ const handleSwitchAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<SwitchAccountMsg> = (service) => {
   return async (env, msg) => {
-    const chainId = service.chainsService.getSelectedChain();
+    const chainId = await service.chainsService.getSelectedChain();
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       chainId,
@@ -716,7 +716,7 @@ const handleListAccountsMsg: (
   service: KeyRingService
 ) => InternalHandler<ListAccountsMsg> = (service) => {
   return async (env, msg) => {
-    const chainId = service.chainsService.getSelectedChain();
+    const chainId = await service.chainsService.getSelectedChain();
     await service.permissionService.checkOrGrantBasicAccessPermission(
       env,
       chainId,

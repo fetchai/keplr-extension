@@ -6,7 +6,6 @@ import {
   ListEntriesMsg,
   UpdateEntryMsg,
 } from "./messages";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 
 export const getHandler: (service: AddressBookService) => Handler = (
   service: AddressBookService
@@ -31,12 +30,7 @@ const handleListEntriesMsg: (
   service: AddressBookService
 ) => InternalHandler<ListEntriesMsg> = (service) => {
   return async (_env, _msg) => {
-    const kvStore = new ExtensionKVStore("store_chain_config");
-    const chainId = await kvStore.get<string>("extension_last_view_chain_id");
-    if (!chainId) {
-      throw Error("could not detect current chainId");
-    }
-    return service.listEntries(chainId);
+    return service.listEntries();
   };
 };
 

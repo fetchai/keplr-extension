@@ -650,9 +650,9 @@ export class ChainsService {
     );
   }
 
-  getSelectedChain(): string {
+  async getSelectedChain(): Promise<string> {
     if (!this.selectedChainId) {
-      throw new Error("Could not detect current chain");
+      return (await this.getChainInfos())[0].chainId;
     }
 
     return this.selectedChainId;
