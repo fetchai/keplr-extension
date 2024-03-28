@@ -61,9 +61,7 @@ export const ADR36SignDocDetailsTab: FunctionComponent<{
 
         evmRenderedMessage = (
           <React.Fragment>
-            <MsgRender title={msgContent.title}>
-              {msgContent.content}
-            </MsgRender>
+            <MsgRender title={msgContent.title}>{msgContent.content}</MsgRender>
             <hr />
             {txnParams.data &&
             accountStore.getAccount(chainStore.current.chainId).isNanoLedger ? (
@@ -99,9 +97,7 @@ export const ADR36SignDocDetailsTab: FunctionComponent<{
         {evmRenderedMessage ? (
           evmRenderedMessage
         ) : (
-          <MsgRender  title={renderTitleText()}>
-            {origin ?? "Unknown"}
-          </MsgRender>
+          <MsgRender title={renderTitleText()}>{origin ?? "Unknown"}</MsgRender>
         )}
       </div>
       {!evmRenderedMessage && (

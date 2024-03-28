@@ -4,6 +4,7 @@ import { formatActivityHash } from "@utils/format";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNavigate } from "react-router";
 import { AppCurrency } from "@keplr-wallet/types";
+import { DetailRow } from "./detail-row";
 
 export const DetailRows = ({ details }: { details: any }) => {
   const currency: AppCurrency = {
@@ -40,52 +41,33 @@ export const DetailRows = ({ details }: { details: any }) => {
   };
   return (
     <div className={style["detail-rows"]}>
-      <div className={style["container"]}>
-        <div>Transaction Hash</div>
-        <div className={style["version"]}>
-          {formatActivityHash(details.hash)}
-        </div>
-      </div>
-      <div className={style["hr"]} />
-      <div className={style["container"]}>
-        <div>Chain ID</div>
-        <div className={style["version"]}>fetchhub-4</div>
-      </div>
-      <div className={style["hr"]} />
+      <DetailRow
+        label="Transaction Hash"
+        value={formatActivityHash(details.hash)}
+      />
+      <DetailRow label="Chain ID" value="fetchhub-4" />
       {details.verb !== "Received" &&
         details.verb !== "Unstaked" &&
         details.verb !== "Smart Contract Interaction" && (
           <React.Fragment>
-            <div className={style["container"]}>
-              <div>Gas used/wanted</div>
-              <div className={style["version"]}>
-                {details.gasUsed ? details.gasUsed : "-"}
-              </div>
-            </div>
-            <div className={style["hr"]} />
-            <div className={style["container"]}>
-              <div>Fees</div>
-              <div className={style["version"]}>
-                {`${fees[0].amount} ${fees[0].denom}`}
-              </div>
-            </div>
-            <div className={style["hr"]} />
-            <div className={style["container"]}>
-              <div>Memo</div>
-              <div className={style["version"]}>
-                {details.memo == "" ? "-" : details.memo}
-              </div>
-            </div>
-            <div className={style["hr"]} />
+            <DetailRow
+              label="Gas used/wanted"
+              value={details.gasUsed ? details.gasUsed : "-"}
+            />
+            <DetailRow
+              label="Fees"
+              value={`${fees[0].amount} ${fees[0].denom}`}
+            />
+            <DetailRow
+              label="Memo"
+              value={details.memo == "" ? "-" : details.memo}
+            />
           </React.Fragment>
         )}
-      <div className={style["container"]}>
-        <div>Total amount</div>
-        <div className={style["version"]}>
-          {`${details.amountNumber} ${details.amountAlphabetic}`}
-        </div>
-      </div>
-      <div className={style["hr"]} />
+      <DetailRow
+        label="Total amount"
+        value={`${details.amountNumber} ${details.amountAlphabetic}`}
+      />
       <div className={style["buttons"]}>
         {details.verb == "Staked" || details.verb == "Sent" ? (
           <div className={style["buttons"]} style={{ width: "100%" }}>

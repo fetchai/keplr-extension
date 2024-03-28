@@ -6,13 +6,7 @@ import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
 import style from "../style.module.scss";
 import { NoActivity } from "../no-activity";
-
-const options = [
-  { value: "YES", label: "Voted Yes" },
-  { value: "NO", label: "Voted No" },
-  { value: "ABSTAIN", label: "Voted Abstain" },
-  { value: "NO_WITH_VETO", label: "Voted No With Veto" },
-];
+import { govOptions } from "../utils";
 
 export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
   const { chainStore, accountStore, analyticsStore } = useStore();
@@ -25,7 +19,7 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
   const [nodes, setNodes] = useState<any>({});
   const [pageInfo, setPageInfo] = useState<any>();
   const [filter, setFilter] = useState<string[]>(
-    options.map((option) => option.value)
+    govOptions.map((option) => option.value)
   );
   const [isSelectAll, setIsSelectAll] = useState(true);
   const [isSaveChangesButtonDisabled, setIsSaveChangesButtonDisabled] =
@@ -85,7 +79,7 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
       setFilter(newFilters.filter((item) => item !== value));
     } else {
       setFilter([...newFilters, value]);
-      setIsSelectAll(filter.length === options.length);
+      setIsSelectAll(filter.length === govOptions.length);
     }
     setIsSaveChangesButtonDisabled(false);
   };
@@ -98,7 +92,7 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
 
   const handleSelectClicks = () => {
     setIsSelectAll(true);
-    setFilter(options.map((option) => option.value));
+    setFilter(govOptions.map((option) => option.value));
     setIsSaveChangesButtonDisabled(false);
   };
 
@@ -114,7 +108,7 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
       <FilterDropdown
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        options={options}
+        options={govOptions}
         selectedFilter={filter}
         handleCheckboxChange={handleCheckboxChange}
         handleSaveChanges={handleSaveChanges}
@@ -125,7 +119,7 @@ export const GovProposalsTab = ({ latestBlock }: { latestBlock: any }) => {
       />
       <FilterActivities
         onFilterChange={handleFilterChange}
-        options={options}
+        options={govOptions}
         selectedFilter={filter}
         setIsOpen={setIsOpen}
         isOpen={isOpen}

@@ -30,9 +30,5 @@ export const DataTab: FunctionComponent<{
     return JSON.stringify(JSON.parse(jsonStr), undefined, 2);
   }, [signDocHelper.signDocWrapper?.aminoSignDoc.msgs, ethSignType]);
 
-  return (
-    <pre className={style["message"]} >
-      {content}
-    </pre>
-  );
+  return <pre className={style["message"]}>{content}</pre>;
 });
