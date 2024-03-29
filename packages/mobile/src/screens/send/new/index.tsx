@@ -105,10 +105,11 @@ export const NewSendScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      {!isNext && (
+      {!isNext ? (
         <SendPhase1 setIsNext={setIsNext} sendConfigs={sendConfigs} />
+      ) : (
+        <SendPhase2 sendConfigs={sendConfigs} setIsNext={setIsNext} />
       )}
-      {isNext && <SendPhase2 sendConfigs={sendConfigs} setIsNext={setIsNext} />}
     </PageWithScrollView>
   );
 });

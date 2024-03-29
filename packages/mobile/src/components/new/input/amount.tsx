@@ -145,7 +145,7 @@ export const AmountInputSection: FunctionComponent<{
                 }
               }
             }
-            isToggleClicked === true
+            isToggleClicked
               ? parseDollarAmount(inputInUsd)
               : amountConfig.setAmount(value);
           }

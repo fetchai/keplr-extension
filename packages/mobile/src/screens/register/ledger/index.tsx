@@ -32,6 +32,7 @@ import { State } from "react-native-ble-plx";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
 import DeviceInfo from "react-native-device-info";
+import { LedgerLocationErrorModel } from "modals/ledger/ledger-error";
 
 interface FormData {
   name: string;
@@ -84,6 +85,8 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
   const [password, setPassword] = useState("");
   const [isBLEAvailable, setIsBLEAvailable] = useState(false);
   const [showBLEAlert, setBLEAlert] = useState(false);
+  const [retryLocation, setRetryLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | undefined>();
   const [location, setLocation] = useState<
     Location.LocationObject | undefined
   >();
@@ -94,7 +97,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
       ).then((result) => fetchCurrentLocation(result));
     }
-  }, []);
+  }, [retryLocation]);
 
   useEffect(() => {
     (async () => {
@@ -198,12 +201,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
       PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS["BLUETOOTH_CONNECT"],
         PermissionsAndroid.PERMISSIONS["BLUETOOTH_SCAN"],
-        PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"],
       ]).then((result) => {
-        fetchCurrentLocation(
-          result["android.permission.ACCESS_FINE_LOCATION"] ===
-            PermissionsAndroid.RESULTS["GRANTED"]
-        );
         if (
           result["android.permission.BLUETOOTH_CONNECT"] ===
           PermissionsAndroid.RESULTS["GRANTED"]
@@ -222,11 +220,16 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         accuracy: LocationAccuracy.Highest,
       }).then((location) => {
         setLocation(location);
+        setLocationError(undefined);
       });
     }
   };
 
   const submit = handleSubmit(async () => {
+    if (Platform.OS === "android" && location == undefined) {
+      setLocationError("Location services are disabled");
+      return;
+    }
     setIsCreating(true);
 
     try {
@@ -517,6 +520,18 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
         onPress={submit}
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
       />
+      {
+        <LedgerLocationErrorModel
+          isOpen={!!locationError}
+          close={() => {
+            setLocationError(undefined);
+          }}
+          error={locationError ? locationError : ""}
+          retry={() => {
+            setRetryLocation(true);
+          }}
+        />
+      }
       {/* Mock element for bottom padding */}
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>

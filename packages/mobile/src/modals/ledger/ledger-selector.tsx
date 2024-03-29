@@ -29,7 +29,7 @@ export const LedgerNanoBLESelector: FunctionComponent<{
   // const [pairingText, setIsPairingText] = useState<string>("");
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const testLedgerConnection = async (): Promise<boolean> => {
+  const testLedgerConnection = async () => {
     let initErrorOn: LedgerInitErrorOn | undefined;
 
     try {
@@ -64,7 +64,6 @@ export const LedgerNanoBLESelector: FunctionComponent<{
         );
         setIsPaired(false);
       }, 6000);
-      return true;
     } catch (e) {
       console.log(e);
       if (e.errorOn != null) {
@@ -84,8 +83,6 @@ export const LedgerNanoBLESelector: FunctionComponent<{
       }
 
       await TransportBLE.disconnect(deviceId);
-
-      return false;
     }
   };
 
@@ -100,9 +97,7 @@ export const LedgerNanoBLESelector: FunctionComponent<{
             style.flatten(["padding-12", "margin-y-4"]) as ViewStyle
           }
           onPress={async () => {
-            if (await testLedgerConnection()) {
-              // onCanResume();
-            }
+            await testLedgerConnection();
           }}
         />
       ) : null}

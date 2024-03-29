@@ -251,17 +251,14 @@ export const AddressInputCard: FunctionComponent<{
               : "Camera permission is disabled"
           }
           icon={
-            modelStatus == ModelStatus.First ? (
-              <Image
-                source={require("assets/image/icon/camera_permission.png")}
-                fadeDuration={0}
-              />
-            ) : (
-              <Image
-                source={require("assets/image/icon/camera_permission_disabled.png")}
-                fadeDuration={0}
-              />
-            )
+            <Image
+              source={
+                modelStatus == ModelStatus.First
+                  ? require("assets/image/icon/camera_permission.png")
+                  : require("assets/image/icon/camera_permission_disabled.png")
+              }
+              fadeDuration={0}
+            />
           }
           buttonText={
             modelStatus == ModelStatus.First

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { SignModal } from "modals/sign";
@@ -11,6 +11,7 @@ import { LoadingScreenModal } from "../loading-screen/modal";
 import { KeyRingStatus } from "@keplr-wallet/background";
 import { NetworkErrorModal } from "modals/network";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { LedgerTransectionGuideModel } from "modals/ledger/ledger-transection";
 
 export const InteractionModalsProivder: FunctionComponent = observer(
   ({ children }) => {
@@ -23,8 +24,19 @@ export const InteractionModalsProivder: FunctionComponent = observer(
     } = useStore();
 
     const netInfo = useNetInfo();
-    const networkIsConnected =
-      typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
+
+    const [openNetworkModel, setIsNetworkModel] = useState(false);
+    const [showLedgerGuide, setShowLedgerGuide] = useState(false);
+
+    useEffect(() => {
+      setShowLedgerGuide(ledgerInitStore.isShowSignTxnGuide);
+    }, [ledgerInitStore.isShowSignTxnGuide]);
+
+    useEffect(() => {
+      const networkIsConnected =
+        typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
+      setIsNetworkModel(!networkIsConnected);
+    }, [netInfo.isConnected]);
 
     useEffect(() => {
       if (walletConnectStore.needGoBackToBrowser && Platform.OS === "android") {
@@ -103,21 +115,14 @@ export const InteractionModalsProivder: FunctionComponent = observer(
 
           return null;
         })}
-        {signInteractionStore.waitingData ? (
+        {
           <SignModal
-            isOpen={true}
+            isOpen={signInteractionStore.waitingData !== undefined}
             close={() => {
               signInteractionStore.rejectAll();
             }}
           />
-        ) : (
-          <SignModal
-            isOpen={false}
-            close={() => {
-              signInteractionStore.rejectAll();
-            }}
-          />
-        )}
+        }
         {
           <LedgerGranterModal
             isOpen={ledgerInitStore.isInitNeeded}
@@ -125,10 +130,16 @@ export const InteractionModalsProivder: FunctionComponent = observer(
           />
         }
         {
+          <LedgerTransectionGuideModel
+            isOpen={showLedgerGuide}
+            close={() => setShowLedgerGuide(false)}
+          />
+        }
+        {
           <NetworkErrorModal
-            isOpen={!networkIsConnected}
+            isOpen={openNetworkModel}
             close={() => {
-              // noop
+              setIsNetworkModel(false);
             }}
           />
         }

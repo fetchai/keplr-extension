@@ -5,7 +5,6 @@ import {
   AppState,
   AppStateStatus,
   Image,
-  PermissionsAndroid,
   Platform,
   Text,
   View,
@@ -19,8 +18,6 @@ import TransportBLE, {
   bleManager,
 } from "@ledgerhq/react-native-hw-transport-ble";
 import { getLastUsedLedgerDeviceId } from "utils/ledger";
-import * as Location from "expo-location";
-import { LocationAccuracy } from "expo-location";
 import { useUnmount } from "hooks/use-unmount";
 import LottieView from "lottie-react-native";
 import { Button } from "components/button";
@@ -58,9 +55,6 @@ export const LedgerGranterModal: FunctionComponent<{
 
     const resumed = useRef(false);
     const [isBLEAvailable, setIsBLEAvailable] = useState(false);
-    const [location, setLocation] = useState<
-      Location.LocationObject | undefined
-    >();
     const [mainContent, setMainContent] = useState<string>(
       "press and hold two buttons at the same time and enter your pin"
     );
@@ -82,7 +76,6 @@ export const LedgerGranterModal: FunctionComponent<{
     const [permissionStatus, setPermissionStatus] =
       useState<BLEPermissionGrantStatus>(() => {
         if (Platform.OS === "android") {
-          // Todo
           // If android, there is need to request the permission.
           // You should ask for the permission on next effect.
           return BLEPermissionGrantStatus.Granted;
@@ -147,16 +140,6 @@ export const LedgerGranterModal: FunctionComponent<{
     }, [permissionStatus]);
 
     useEffect(() => {
-      // It is processed only in case of not init at first or re-request after failure.
-      if (
-        permissionStatus === BLEPermissionGrantStatus.NotInit ||
-        permissionStatus === BLEPermissionGrantStatus.FailedAndRetry
-      ) {
-        checkAndRequestBluetoothPermission();
-      }
-    }, [permissionStatus]);
-
-    useEffect(() => {
       let unsubscriber: (() => void) | undefined;
       setErrorOnListen(undefined);
 
@@ -215,6 +198,11 @@ export const LedgerGranterModal: FunctionComponent<{
         })();
       } else {
         setDevices([]);
+        setIsPairingText("Waiting for bluetooth signal...");
+        setMainContent(
+          "press and hold two buttons at the same time and enter your pin"
+        );
+        setBluetoothMode(BluetoothMode.Ledger);
         setIsFinding(false);
       }
 
@@ -224,51 +212,9 @@ export const LedgerGranterModal: FunctionComponent<{
         }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isBLEAvailable, permissionStatus, location]);
+    }, [isBLEAvailable, permissionStatus]);
 
-    const checkAndRequestBluetoothPermission = () => {
-      if (Platform.OS === "android") {
-        PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS["BLUETOOTH_CONNECT"],
-          PermissionsAndroid.PERMISSIONS["BLUETOOTH_SCAN"],
-          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"],
-        ]).then((result) => {
-          fetchCurrentLocation(
-            result["android.permission.ACCESS_FINE_LOCATION"] ===
-              PermissionsAndroid.RESULTS["GRANTED"]
-          );
-          if (
-            result["android.permission.BLUETOOTH_CONNECT"] ===
-            PermissionsAndroid.RESULTS["GRANTED"]
-          ) {
-            setPermissionStatus(BLEPermissionGrantStatus.Granted);
-          } else {
-            setPermissionStatus(BLEPermissionGrantStatus.Failed);
-          }
-        });
-      }
-    };
-
-    useEffect(() => {
-      if (Platform.OS === "android" && location == undefined) {
-        PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
-        ).then((result) => fetchCurrentLocation(result));
-      }
-    }, [location]);
-
-    // Todo remove
-    const fetchCurrentLocation = (isPermissionGranted: boolean) => {
-      if (isPermissionGranted) {
-        Location.getCurrentPositionAsync({
-          accuracy: LocationAccuracy.Highest,
-        }).then((location) => {
-          setLocation(location);
-        });
-      }
-    };
-
-    const checkLedgerImage = (bluetoothMode: BluetoothMode) => {
+    const decideLedgerImage = (bluetoothMode: BluetoothMode) => {
       switch (bluetoothMode) {
         case BluetoothMode.Ledger:
           return require(`assets/image/ledger/ledger.png`);
@@ -299,12 +245,12 @@ export const LedgerGranterModal: FunctionComponent<{
               style.flatten([
                 "justify-center",
                 "items-center",
-                "margin-y-34",
+                "margin-y-14",
               ]) as ViewStyle
             }
           >
             <Image
-              source={checkLedgerImage(bluetoothMode)}
+              source={decideLedgerImage(bluetoothMode)}
               style={{
                 height: 52,
                 width: 292,
@@ -346,14 +292,16 @@ export const LedgerGranterModal: FunctionComponent<{
                     }
                   />
                 </React.Fragment>
-              ) : null}
+              ) : (
+                <View style={style.flatten(["height-44"]) as ViewStyle} />
+              )}
             </View>
           </View>
         ) : undefined}
         {isBLEAvailable &&
         permissionStatus === BLEPermissionGrantStatus.Granted ? (
           <React.Fragment>
-            {bluetoothMode == BluetoothMode.Ledger ? (
+            {!errorOnListen && bluetoothMode == BluetoothMode.Ledger ? (
               <Text
                 style={style.flatten([
                   "subtitle3",
@@ -364,7 +312,7 @@ export const LedgerGranterModal: FunctionComponent<{
                 To unlock your ledger device,
               </Text>
             ) : null}
-            {mainContent ? (
+            {!errorOnListen && mainContent ? (
               <Text
                 style={
                   style.flatten([
@@ -379,7 +327,7 @@ export const LedgerGranterModal: FunctionComponent<{
               </Text>
             ) : null}
 
-            {bluetoothMode !== BluetoothMode.Device ? (
+            {!errorOnListen && bluetoothMode !== BluetoothMode.Device ? (
               <View style={style.flatten(["items-center"]) as ViewStyle}>
                 <BlurButton
                   text={pairingText}

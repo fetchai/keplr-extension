@@ -9,14 +9,19 @@ export const NetworkErrorModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
 }> = registerModal(
-  () => {
+  ({ isOpen, close }) => {
     const style = useStyle();
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <React.Fragment>
         <CardModal
           disableGesture={true}
           cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+          close={close}
         >
           <IconWithText
             icon={
@@ -35,6 +40,5 @@ export const NetworkErrorModal: FunctionComponent<{
   {
     disableSafeArea: true,
     blurBackdropOnIOS: true,
-    disableClosingOnBackdropPress: true,
   }
 );
