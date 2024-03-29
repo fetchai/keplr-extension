@@ -21,6 +21,7 @@
   box-shadow: none !important;
   background: transparent !important;
   border: none;
+  margin-top: -4px;
 
   &:focus {
     box-shadow: none !important;
@@ -68,6 +69,16 @@
   background: transparent !important;
   cursor: not-allowed;
 }
-.righContent{
+.righContent {
   display: flex;
+}
+.label {
+  color: #fff;
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  opacity: 0.6;
+  margin-bottom: 2px;
 }
