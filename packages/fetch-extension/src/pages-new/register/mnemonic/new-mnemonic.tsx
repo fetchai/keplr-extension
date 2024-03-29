@@ -116,7 +116,7 @@ export const NewMnemonicPage: FunctionComponent<{
             heading={"Create new seed phrase"}
           />
 
-          <div onClick={() => setIsMainPage(false)}></div>
+          <div onClick={() => setIsMainPage(false)} />
         </React.Fragment>
       )}
       {!isMainPage && newMnemonicConfig.mode === "generate" ? (
@@ -501,7 +501,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           }}
         />
         <div className={style["pageTitle"]}>
-          Verify your recovery <br></br> phrase
+          Verify your recovery <br /> phrase
         </div>
         <div style={{ minHeight: "153px" }}>
           {suggestedRows.map((row, rowIndex) => (

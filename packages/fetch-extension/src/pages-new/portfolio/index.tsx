@@ -12,7 +12,6 @@ export const Portfolio = () => {
   const { chainStore } = useStore();
   const tabs = [
     { id: "Tokens", component: <TokensView /> },
-    { id: "NFTs", disabled: true },
     {
       id: "Stats",
       disabled:
@@ -28,7 +27,7 @@ export const Portfolio = () => {
       onBackButton={() => navigate("/")}
     >
       <div className={style["title"]}>Portfolio</div>
-      <TabsPanel  tabs={tabs}  />
+      <TabsPanel tabs={tabs} />
     </HeaderLayout>
   );
 };

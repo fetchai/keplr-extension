@@ -101,14 +101,7 @@ export const NativeTokens = observer(() => {
           leftImage={tokenIcon ? tokenIcon : totalDenom.toUpperCase()[0]}
           heading={totalDenom}
           subheading={total.shrink(true).trim(true).maxDecimals(6).toString()}
-          rightContent={
-            totalPrice && (
-              <div>
-                {totalPrice.toString()}
-                <span style={{ color: "rgba(255,255,255,0.6" }}> USD</span>
-              </div>
-            )
-          }
+          rightContent={totalPrice && <div>{totalPrice.toString()}</div>}
           onClick={() => {
             navigate({
               pathname: "/asset",
@@ -129,14 +122,7 @@ export const NativeTokens = observer(() => {
               search: `?tokenDetails=${NativeTokenDetailsString}&balance=${NativeTokenBalanceString}`,
             });
           }}
-          rightContent={
-            totalPrice && (
-              <div>
-                {totalPrice.toString()}
-                <span style={{ color: "rgba(255,255,255,0.6" }}> USD</span>
-              </div>
-            )
-          }
+          rightContent={totalPrice && <div>{totalPrice.toString()}</div>}
         />
       )}
     </React.Fragment>

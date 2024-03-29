@@ -87,7 +87,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
             {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
           </div>
           <div className={style["inUsd"]}>
-            {totalPrice && ` ${totalPrice.toString()} USD`}
+            {totalPrice && ` ${totalPrice.toString()} `}
           </div>
           {tokenState?.diff && (
             <div
@@ -119,7 +119,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
           </div>
           <div className={style["inUsd"]}>
             {totalPrice
-              ? ` ${totalPrice.toString()} USD`
+              ? ` ${totalPrice.toString()} `
               : ` ${total
                   .shrink(true)
                   .trim(true)

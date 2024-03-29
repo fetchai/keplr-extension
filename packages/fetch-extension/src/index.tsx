@@ -17,15 +17,11 @@ import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
 import { IBCTransferPage } from "./pages/ibc-transfer";
 import { LockPage } from "./pages-new/lock";
-// import { MainPage } from "./pages/main";
 import { MainPage } from "./pages-new/main";
-import { MorePage } from "./pages/more";
 import { RegisterPage } from "./pages-new/register";
 import { SendPage } from "./pages-new/send";
 import { SetKeyRingPage } from "./pages/setting/keyring";
-
 import { Banner } from "@components/banner";
-
 import { ConfirmProvider } from "@components/confirm";
 import { LoadingIndicatorProvider } from "@components/loading-indicator";
 import {
@@ -43,18 +39,16 @@ import {
 import Modal from "react-modal";
 import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
-import { AddressBookPage } from "./pages/setting/address-book";
+import { AddressBookPage } from "./pages-new/more/address-book";
 import { ClearPage } from "./pages/setting/clear";
 import {
   SettingConnectionsPage,
   SettingSecret20ViewingKeyConnectionsPage,
-} from "./pages/setting/connections";
-import { ExportPage } from "./pages/setting/export";
-import { SettingFiatPage } from "./pages/setting/fiat";
-// import { ChangeNamePage } from "./pages/setting/keyring/change";
+} from "./pages-new/more/security-privacy/connections";
+import { CurrencyPge } from "./pages-new/more/currency";
 import { SettingLanguagePage } from "./pages/setting/language";
-import { AddTokenPage } from "./pages/setting/token/add";
-import { ManageTokenPage } from "./pages/setting/token/manage";
+import { AddTokenPage } from "./pages-new/more/token/add";
+import { ManageTokenPage } from "./pages-new/more/token/manage";
 import { StoreProvider, useStore } from "./stores";
 
 import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
@@ -78,17 +72,17 @@ import { ReviewGroupChat } from "./pages/group-chat/review-details";
 import { GroupChatSection } from "./pages/group-chat/chat-section";
 import { EditMember } from "./pages/group-chat/edit-member";
 import { AgentChatSection } from "./pages/agent-chat-section";
-import { NotificationOrganizations } from "./pages/notiphy-notification/notification-organizations";
-import { NotificationTopics } from "./pages/notiphy-notification/notification-topics";
+import { NotificationOrganizations } from "./pages-new/more/notification/notiphy-notification/notification-organizations";
+import { NotificationTopics } from "./pages-new/more/notification/notiphy-notification/notification-topics";
 import { SettingNotifications } from "./pages/setting/notification";
 import { ReviewNotification } from "./pages/notiphy-notification/review-notification";
 import { KeystoneImportPubkeyPage } from "./pages/keystone";
 import { KeystoneSignPage } from "./pages/keystone/sign";
 import { SettingEndpointsPage } from "./pages/setting/endpoints";
-import { SettingAutoLockPage } from "./pages/setting/autolock";
-import { SettingSecurityPrivacyPage } from "./pages/setting/security-privacy";
+import { SettingAutoLockPage } from "./pages-new/more/security-privacy/autolock";
+import { SettingSecurityPrivacyPage } from "./pages-new/more/security-privacy";
 import { ChainActivePage } from "./pages/setting/chain-active";
-import { SettingPermissionsGetChainInfosPage } from "./pages/setting/security-privacy/permissions/get-chain-infos";
+import { SettingPermissionsGetChainInfosPage } from "./pages-new/more/security-privacy/permissions/get-chain-infos";
 import { AuthZPage } from "./pages/authz";
 import { ICNSAdr36SignPage } from "./pages/icns/sign";
 import { SignPageV2 } from "./pages-new/sign";
@@ -97,7 +91,8 @@ import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant
 import { ValidatorList } from "./pages/validator-list";
 import { Validator } from "./pages/validator";
 import { StakeComplete } from "./pages/validator/stake-complete";
-import { ActivityPage } from "./pages/activity";
+import { ActivityPage } from "./pages-new/activity";
+import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { Proposals } from "./pages/proposals";
 import { ProposalDetail } from "./pages/proposals/proposal-detail";
 import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
@@ -112,6 +107,11 @@ import { Receive } from "./pages-new/receive";
 import { Portfolio } from "./pages-new/portfolio";
 import { AssetView } from "./pages-new/asset-view";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
+import { MorePage } from "./pages-new/more";
+import { MoreLanguagePage } from "./pages-new/more/language";
+import { MoreNotifications } from "./pages-new/more/notification";
+import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
+import { AppVersion } from "./pages-new/more/app-version";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -216,6 +216,10 @@ ReactDOM.render(
                         path="/access/viewing-key"
                         element={<Secret20ViewingKeyAccessPage />}
                       />
+                      <Route
+                        path="/activity-details"
+                        element={<ActivityDetails />}
+                      />
                       <Route path="/register" element={<RegisterPage />} />
                       <Route path="/send" element={<SendPage />} />
                       <Route
@@ -236,6 +240,7 @@ ReactDOM.render(
                         path="/keystone/sign"
                         element={<KeystoneSignPage />}
                       />
+                      <Route path="/app-version" element={<AppVersion />} />
                       <Route
                         path="/ledger-grant"
                         element={<LedgerGrantPage />}
@@ -244,20 +249,26 @@ ReactDOM.render(
                         path="/setting/language"
                         element={<SettingLanguagePage />}
                       />
+                      <Route path="/more" element={<MorePage />} />
                       <Route
-                        path="/setting/fiat"
-                        element={<SettingFiatPage />}
+                        path="/more/language"
+                        element={<MoreLanguagePage />}
                       />
                       <Route
-                        path="/setting/connections"
+                        path="/more/export/:index"
+                        element={<ExportPage />}
+                      />
+                      <Route path="/more/currency" element={<CurrencyPge />} />
+                      <Route
+                        path="more/security-privacy/connections"
                         element={<SettingConnectionsPage />}
                       />
                       <Route
-                        path="/setting/connections/viewing-key/:contractAddress"
+                        path="/more/connections/viewing-key/:contractAddress"
                         element={<SettingSecret20ViewingKeyConnectionsPage />}
                       />
                       <Route
-                        path="/setting/address-book"
+                        path="/more/address-book"
                         element={<AddressBookPage />}
                       />
                       <Route path="/activity" element={<ActivityPage />} />
@@ -278,10 +289,6 @@ ReactDOM.render(
                         element={<SetKeyRingPage />}
                       />
                       <Route
-                        path="/setting/export/:index"
-                        element={<ExportPage />}
-                      />
-                      <Route
                         path="/setting/clear/:index"
                         element={<ClearPage />}
                       />
@@ -290,11 +297,11 @@ ReactDOM.render(
                         element={<ChangeNamePageV2 />}
                       />
                       <Route
-                        path="/setting/token/add"
+                        path="/more/token/add"
                         element={<AddTokenPage />}
                       />
                       <Route
-                        path="/setting/token/manage"
+                        path="/more/token/manage"
                         element={<ManageTokenPage />}
                       />
                       <Route
@@ -306,7 +313,7 @@ ReactDOM.render(
                         element={<SettingAutoLockPage />}
                       />
                       <Route
-                        path="/setting/security-privacy"
+                        path="/more/security-privacy"
                         element={<SettingSecurityPrivacyPage />}
                       />
                       {/* <Route path="/sign" element={<SignPage />} /> */}
@@ -384,10 +391,13 @@ ReactDOM.render(
                         path="/chat/agent/:name"
                         element={<AgentChatSection />}
                       />
-                      <Route path="/more" element={<MorePage />} />
                       <Route
                         path="/setting/notifications"
                         element={<SettingNotifications />}
+                      />
+                      <Route
+                        path="/more/notifications"
+                        element={<MoreNotifications />}
                       />
                       <Route path="/setting/chat" element={<ChatSettings />} />
                       <Route

@@ -3,15 +3,14 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { formatAddress } from "@utils/format";
 import React, { useCallback } from "react";
 import { useIntl } from "react-intl";
+import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
-import styleAccount from "../../../pages/main/account.module.scss";
 import { useStore } from "../../../stores";
 import { Balances } from "../balances";
 import style from "../style.module.scss";
-import { formatAddress } from "@utils/format";
-import { useNavigate } from "react-router";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
@@ -122,7 +121,7 @@ export const WalletDetailsView = ({
             })()}
           </div>
           <div>
-            <div className={styleAccount["walletRejected"]}>
+            <div className={style["walletRejected"]}>
               {accountInfo.walletStatus === WalletStatus.Rejected && (
                 <ToolTip
                   tooltip={(() => {
@@ -150,7 +149,7 @@ export const WalletDetailsView = ({
                   }}
                 >
                   <i
-                    className={`fas fa-exclamation-triangle text-danger ${styleAccount["unsupportedKeyIcon"]}`}
+                    className={`fas fa-exclamation-triangle text-danger ${style["unsupportedKeyIcon"]}`}
                   />
                 </ToolTip>
               )}

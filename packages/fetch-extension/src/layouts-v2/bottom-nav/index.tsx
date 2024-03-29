@@ -1,4 +1,6 @@
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
+import activityIcon from "@assets/svg/wireframe/new-clock-white.svg";
+
 import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
@@ -139,6 +141,7 @@ const ActivityTab = () => {
     <Tab
       title={"Activity"}
       icon={activitygreyIcon}
+      activeIcon={activityIcon}
       path={"/activity"}
       disabled={z}
       tooltip={activityTooltip}

@@ -12,7 +12,7 @@ export const DescriptionView: FunctionComponent = observer(() => {
     <div className={styleDescriptionView["innerContainer"]}>
       <img
         className={styleDescriptionView["imgLock"]}
-        src={require("../../../public/assets/img/icons8-lock.svg")}
+        src={require("@assets/img/icons8-lock.svg")}
         alt="lock"
       />
 

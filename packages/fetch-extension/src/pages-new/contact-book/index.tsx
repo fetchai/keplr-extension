@@ -13,7 +13,6 @@ import {
 } from "reactstrap";
 import styleAddressBook from "./style.module.scss";
 import { useStore } from "../../stores";
-import { PageButton } from "../page-button";
 import { AddAddressModal } from "./add-address-modal";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -27,6 +26,7 @@ import {
 } from "@keplr-wallet/hooks";
 import { shortenAgentAddress } from "@utils/validate-agent";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { Card } from "@components-v2/card";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -250,10 +250,10 @@ export const ContactBookPage: FunctionComponent<{
             <div>
               {addressBookConfig.addressBookDatas.map((data, i) => {
                 return (
-                  <PageButton
+                  <Card
                     key={i.toString()}
-                    title={data.name}
-                    paragraph={
+                    heading={data.name}
+                    subheading={
                       data.address.indexOf(
                         chainStore.getChain(selectedChainId).bech32Config
                           .bech32PrefixAccAddr
@@ -263,11 +263,9 @@ export const ContactBookPage: FunctionComponent<{
                         ? shortenAgentAddress(data.address)
                         : data.address
                     }
-                    subParagraph={data.memo}
-                    icons={addressBookIcons(i)}
+                    rightContent={addressBookIcons(i)}
                     data-index={i}
-                    disabled={onBackButton && data.address.startsWith("agent")}
-                    onClick={(e) => handleAddressClick(e, data.address, i)}
+                    onClick={(e: any) => handleAddressClick(e, data.address, i)}
                     style={{ cursor: selectHandler ? undefined : "auto" }}
                   />
                 );
