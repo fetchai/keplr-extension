@@ -13,14 +13,6 @@ import "./styles/global.scss";
 
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
-import { NotificationPage } from "./pages/notification";
-import { IBCTransferPage } from "./pages/ibc-transfer";
-import { LockPage } from "./pages-new/lock";
-import { MainPage } from "./pages-new/main";
-import { RegisterPage } from "./pages-new/register";
-import { SendPage } from "./pages-new/send";
-import { SetKeyRingPage } from "./pages/setting/keyring";
 import { Banner } from "@components/banner";
 import { ConfirmProvider } from "@components/confirm";
 import { LoadingIndicatorProvider } from "@components/loading-indicator";
@@ -28,6 +20,14 @@ import {
   NotificationProvider,
   NotificationStoreProvider,
 } from "@components/notification";
+import { LockPage } from "./pages-new/lock";
+import { MainPage } from "./pages-new/main";
+import { RegisterPage } from "./pages-new/register";
+import { SendPage } from "./pages-new/send";
+import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
+import { IBCTransferPage } from "./pages/ibc-transfer";
+import { NotificationPage } from "./pages/notification";
+import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -37,81 +37,79 @@ import {
   StartAutoLockMonitoringMsg,
 } from "@keplr-wallet/background";
 import Modal from "react-modal";
-import { LedgerGrantPage } from "./pages/ledger";
-import { SettingPage } from "./pages/setting";
 import { AddressBookPage } from "./pages-new/more/address-book";
-import { ClearPage } from "./pages/setting/clear";
+import { CurrencyPge } from "./pages-new/more/currency";
 import {
   SettingConnectionsPage,
   SettingSecret20ViewingKeyConnectionsPage,
 } from "./pages-new/more/security-privacy/connections";
-import { CurrencyPge } from "./pages-new/more/currency";
-import { SettingLanguagePage } from "./pages/setting/language";
 import { AddTokenPage } from "./pages-new/more/token/add";
 import { ManageTokenPage } from "./pages-new/more/token/manage";
+import { LedgerGrantPage } from "./pages/ledger";
+import { SettingPage } from "./pages/setting";
+import { ClearPage } from "./pages/setting/clear";
 import { StoreProvider, useStore } from "./stores";
 
 import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
 
+import { ChatStoreProvider } from "@components/chat/store";
 import { Keplr } from "@keplr-wallet/provider";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import manifest from "./manifest.v2.json";
+import { ActivityPage } from "./pages-new/activity";
+import { ActivityDetails } from "./pages-new/activity/activity-details";
+import { AssetView } from "./pages-new/asset-view";
+import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
+import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
+import { BridgePage } from "./pages-new/bridge";
+import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
+import { MorePage } from "./pages-new/more";
+import { AppVersion } from "./pages-new/more/app-version";
+import { MoreLanguagePage } from "./pages-new/more/language";
+import { MoreNotifications } from "./pages-new/more/notification";
+import { NotificationOrganizations } from "./pages-new/more/notification/notiphy-notification/notification-organizations";
+import { NotificationTopics } from "./pages-new/more/notification/notiphy-notification/notification-topics";
+import { SettingSecurityPrivacyPage } from "./pages-new/more/security-privacy";
+import { SettingAutoLockPage } from "./pages-new/more/security-privacy/autolock";
+import { SettingPermissionsGetChainInfosPage } from "./pages-new/more/security-privacy/permissions/get-chain-infos";
+import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
+import { Portfolio } from "./pages-new/portfolio";
+import { Receive } from "./pages-new/receive";
+import { SignPageV2 } from "./pages-new/sign";
+import { AgentChatSection } from "./pages/agent-chat-section";
+import { AuthZPage } from "./pages/authz";
+import { BridgeHistoryView } from "./pages/bridge/bridge-history";
+import { ChainSuggestedPage } from "./pages/chain/suggest";
 import { ChatPage } from "./pages/chat";
 import { ChatSection } from "./pages/chat-section";
-import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
-import { BACKGROUND_PORT } from "@keplr-wallet/router";
-import { ChatStoreProvider } from "@components/chat/store";
+import { FetchnameService } from "./pages/fetch-name-service";
+import { DomainDetails } from "./pages/fetch-name-service/domain-details";
+import { AddMember } from "./pages/group-chat/add-member";
+import { GroupChatSection } from "./pages/group-chat/chat-section";
+import { CreateGroupChat } from "./pages/group-chat/create-group-chat";
+import { EditMember } from "./pages/group-chat/edit-member";
+import { ReviewGroupChat } from "./pages/group-chat/review-details";
+import { ICNSAdr36SignPage } from "./pages/icns/sign";
+import { KeystoneImportPubkeyPage } from "./pages/keystone";
+import { KeystoneSignPage } from "./pages/keystone/sign";
 import { NewChat } from "./pages/new-chat";
+import { ReviewNotification } from "./pages/notiphy-notification/review-notification";
+import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant";
+import { Proposals } from "./pages/proposals";
+import { ProposalDetail } from "./pages/proposals/proposal-detail";
+import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
+import { AddEvmChain } from "./pages/setting/addEvmChain";
+import { ChainActivePage } from "./pages/setting/chain-active";
 import { ChatSettings } from "./pages/setting/chat";
 import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
 import { ReadRecipt } from "./pages/setting/chat/readRecipt";
-import { CreateGroupChat } from "./pages/group-chat/create-group-chat";
-import { AddMember } from "./pages/group-chat/add-member";
-import { ReviewGroupChat } from "./pages/group-chat/review-details";
-import { GroupChatSection } from "./pages/group-chat/chat-section";
-import { EditMember } from "./pages/group-chat/edit-member";
-import { AgentChatSection } from "./pages/agent-chat-section";
-import { NotificationOrganizations } from "./pages-new/more/notification/notiphy-notification/notification-organizations";
-import { NotificationTopics } from "./pages-new/more/notification/notiphy-notification/notification-topics";
-import { SettingNotifications } from "./pages/setting/notification";
-import { ReviewNotification } from "./pages/notiphy-notification/review-notification";
-import { KeystoneImportPubkeyPage } from "./pages/keystone";
-import { KeystoneSignPage } from "./pages/keystone/sign";
 import { SettingEndpointsPage } from "./pages/setting/endpoints";
-import { SettingAutoLockPage } from "./pages-new/more/security-privacy/autolock";
-import { SettingSecurityPrivacyPage } from "./pages-new/more/security-privacy";
-import { ChainActivePage } from "./pages/setting/chain-active";
-import { SettingPermissionsGetChainInfosPage } from "./pages-new/more/security-privacy/permissions/get-chain-infos";
-import { AuthZPage } from "./pages/authz";
-import { ICNSAdr36SignPage } from "./pages/icns/sign";
-import { SignPageV2 } from "./pages-new/sign";
-import { ChainSuggestedPage } from "./pages/chain/suggest";
-import { GrantGlobalPermissionGetChainInfosPage } from "./pages/permission/grant";
-import { ValidatorList } from "./pages/validator-list";
+import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { Validator } from "./pages/validator";
+import { ValidatorList } from "./pages/validator-list";
 import { StakeComplete } from "./pages/validator/stake-complete";
-import { ActivityPage } from "./pages-new/activity";
-import { ActivityDetails } from "./pages-new/activity/activity-details";
-import { Proposals } from "./pages/proposals";
-import { ProposalDetail } from "./pages/proposals/proposal-detail";
-import { PropsalVoteStatus } from "./pages/proposals/proposal-vote-status";
-import { FetchnameService } from "./pages/fetch-name-service";
-import { DomainDetails } from "./pages/fetch-name-service/domain-details";
-import { BridgePage } from "./pages-new/bridge";
-import { BridgeHistoryView } from "./pages/bridge/bridge-history";
-import { AddEvmChain } from "./pages/setting/addEvmChain";
-import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
-import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
-import { Receive } from "./pages-new/receive";
-import { Portfolio } from "./pages-new/portfolio";
-import { AssetView } from "./pages-new/asset-view";
-import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
-import { MorePage } from "./pages-new/more";
-import { MoreLanguagePage } from "./pages-new/more/language";
-import { MoreNotifications } from "./pages-new/more/notification";
-import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
-import { AppVersion } from "./pages-new/more/app-version";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -244,10 +242,6 @@ ReactDOM.render(
                       <Route
                         path="/ledger-grant"
                         element={<LedgerGrantPage />}
-                      />
-                      <Route
-                        path="/setting/language"
-                        element={<SettingLanguagePage />}
                       />
                       <Route path="/more" element={<MorePage />} />
                       <Route
@@ -390,10 +384,6 @@ ReactDOM.render(
                       <Route
                         path="/chat/agent/:name"
                         element={<AgentChatSection />}
-                      />
-                      <Route
-                        path="/setting/notifications"
-                        element={<SettingNotifications />}
                       />
                       <Route
                         path="/more/notifications"

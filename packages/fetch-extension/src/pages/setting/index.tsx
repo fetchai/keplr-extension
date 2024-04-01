@@ -71,7 +71,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           paragraph={paragraphLang}
           onClick={() => {
-            navigate("/setting/language");
+            navigate("/more/language");
             analyticsStore.logEvent("language_click", {
               pageName: "Setting",
             });
@@ -87,7 +87,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           paragraph={paragraphFiat}
           onClick={() => {
-            navigate("/setting/fiat");
+            navigate("/more/currency");
             analyticsStore.logEvent("currency_click", {
               pageName: "Setting",
             });
@@ -102,7 +102,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             id: "setting.security-privacy",
           })}
           onClick={() => {
-            navigate("/setting/security-privacy");
+            navigate("/more/security-privacy");
             analyticsStore.logEvent("security_and_privacy_click", {
               pageName: "Setting",
             });
@@ -140,7 +140,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             <PageButton
               title={"Notifications"}
               onClick={() => {
-                navigate("/setting/notifications");
+                navigate("/more/notifications");
                 analyticsStore.logEvent("notifications_tab_click", {
                   pageName: "Setting",
                 });
