@@ -24,7 +24,7 @@ interface FormData {
   duration: string;
 }
 
-export const SettingAutoLockPage: FunctionComponent = () => {
+export const AutoLockPage: FunctionComponent = () => {
   const navigate = useNavigate();
   const intl = useIntl();
   const { analyticsStore } = useStore();

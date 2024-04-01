@@ -70,9 +70,9 @@ import { MoreLanguagePage } from "./pages-new/more/language";
 import { MoreNotifications } from "./pages-new/more/notification";
 import { NotificationOrganizations } from "./pages-new/more/notification/notiphy-notification/notification-organizations";
 import { NotificationTopics } from "./pages-new/more/notification/notiphy-notification/notification-topics";
-import { SettingSecurityPrivacyPage } from "./pages-new/more/security-privacy";
-import { SettingAutoLockPage } from "./pages-new/more/security-privacy/autolock";
-import { SettingPermissionsGetChainInfosPage } from "./pages-new/more/security-privacy/permissions/get-chain-infos";
+import { SecurityPrivacyPage } from "./pages-new/more/security-privacy";
+import { AutoLockPage } from "./pages-new/more/security-privacy/autolock";
+import { PermissionsGetChainInfosPage } from "./pages-new/more/security-privacy/permissions/get-chain-infos";
 import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
 import { Portfolio } from "./pages-new/portfolio";
 import { Receive } from "./pages-new/receive";
@@ -303,12 +303,12 @@ ReactDOM.render(
                         element={<SettingEndpointsPage />}
                       />
                       <Route
-                        path="/setting/autolock"
-                        element={<SettingAutoLockPage />}
+                        path="/more/security-privacy/autolock"
+                        element={<AutoLockPage />}
                       />
                       <Route
                         path="/more/security-privacy"
-                        element={<SettingSecurityPrivacyPage />}
+                        element={<SecurityPrivacyPage />}
                       />
                       {/* <Route path="/sign" element={<SignPage />} /> */}
                       <Route path="/sign" element={<SignPageV2 />} />
@@ -334,8 +334,8 @@ ReactDOM.render(
                         element={<GrantGlobalPermissionGetChainInfosPage />}
                       />
                       <Route
-                        path="/setting/permissions/get-chain-infos"
-                        element={<SettingPermissionsGetChainInfosPage />}
+                        path="/more/permissions/get-chain-infos"
+                        element={<PermissionsGetChainInfosPage />}
                       />
                       <Route
                         path="/setting/chain-active"
