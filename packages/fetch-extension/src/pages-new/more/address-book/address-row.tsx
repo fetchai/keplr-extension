@@ -55,22 +55,24 @@ export const AddressRow: React.FC<AddressRowProps> = ({
           ? Bech32Address.shortenAddress(data.address, 34)
           : data.address.startsWith("agent")
           ? shortenAgentAddress(data.address)
-          : data.address
+          : Bech32Address.shortenAddress(data.address, 34, true)
       }
-      rightContent={[
-        <i
-          key="edit"
-          className="fas fa-pen"
-          style={{ cursor: "pointer" }}
-          onClick={handleEditClick}
-        />,
-        <i
-          key="remove"
-          className="fas fa-trash"
-          style={{ cursor: "pointer" }}
-          onClick={handleDeleteClick}
-        />,
-      ]}
+      rightContent={
+        <div style={{ display: "flex", gap: "5px" }}>
+          <img
+            src={require("@assets/svg/edit-icon.svg")}
+            draggable={false}
+            style={{ cursor: "pointer" }}
+            onClick={handleEditClick}
+          />
+          <img
+            src={require("@assets/svg/trash-icon.svg")}
+            draggable={false}
+            style={{ cursor: "pointer" }}
+            onClick={handleDeleteClick}
+          />
+        </div>
+      }
       data-index={index}
       rightContentStyle={{ display: "flex", gap: "5px" }}
       onClick={handleAddressClick}
