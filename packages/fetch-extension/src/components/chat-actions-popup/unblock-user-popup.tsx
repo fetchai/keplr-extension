@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { unblockUser } from "@graphQL/messages-api";
 import style from "./style.module.scss";
+import { useStore } from "../../stores";
 
 export const UnblockUserPopup = ({
   userName,
@@ -9,12 +10,17 @@ export const UnblockUserPopup = ({
   userName: string;
   setConfirmAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { chatStore, analyticsStore } = useStore();
   const [processing, setProcessing] = useState(false);
-
+  const user = chatStore.userDetailsStore;
   const handleUnblock = async () => {
+    analyticsStore.logEvent("unblock_contact_click", {
+      action: "Unblock",
+    });
     setProcessing(true);
     try {
-      await unblockUser(userName);
+      await unblockUser(userName, user.accessToken);
+      chatStore.messagesStore.setUnblockedUser({ blockedAddress: userName });
     } catch (e) {
       console.log(e);
     } finally {

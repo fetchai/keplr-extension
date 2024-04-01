@@ -11,7 +11,7 @@ import { FormattedMessage } from "react-intl";
 
 export const IBCTransferView: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const { accountStore, chainStore, queriesStore } = useStore();
+  const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -55,10 +55,12 @@ export const IBCTransferView: FunctionComponent = observer(() => {
         disabled={
           !hasAssets || !chainStore.current.features?.includes("ibc-transfer")
         }
-        data-loading={accountInfo.isSendingMsg === "ibcTransfer"}
+        data-loading={accountInfo.txTypeInProgress === "ibcTransfer"}
         onClick={(e) => {
           e.preventDefault();
-
+          analyticsStore.logEvent("ibc_transfer_click", {
+            pageName: "More Tab",
+          });
           navigate("/ibc-transfer");
         }}
       >

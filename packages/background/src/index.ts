@@ -17,6 +17,11 @@ import * as Analytics from "./analytics/internal";
 import * as Umbral from "./umbral/internal";
 import * as Messaging from "./messaging/internal";
 import * as AddressBook from "./address-book/internal";
+import { KVStore } from "@keplr-wallet/common";
+import { ChainInfo } from "@keplr-wallet/types";
+import { CommonCrypto } from "./keyring";
+import { Notification } from "./tx";
+import { LedgerOptions } from "./ledger/options";
 
 export * from "./persistent-memory";
 export * from "./chains";
@@ -33,12 +38,6 @@ export * from "./phishing-list";
 export * from "./auto-lock-account";
 export * from "./analytics";
 export * from "./address-book";
-
-import { KVStore } from "@keplr-wallet/common";
-import { ChainInfo } from "@keplr-wallet/types";
-import { CommonCrypto } from "./keyring";
-import { Notification } from "./tx";
-import { LedgerOptions } from "./ledger/options";
 
 export function init(
   router: Router,

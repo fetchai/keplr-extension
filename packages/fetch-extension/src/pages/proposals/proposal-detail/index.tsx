@@ -7,8 +7,6 @@ import { Button } from "reactstrap";
 import { ProposalSetup, ProposalType } from "src/@types/proposal-type";
 import { VoteBlock } from "@components/proposal/vote-block";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { useProposals } from "@chatStore/proposal-slice";
 import { useStore } from "../../../stores";
 import { useNotification } from "@components/notification";
 import classNames from "classnames";
@@ -23,34 +21,35 @@ export const ProposalDetail: FunctionComponent = () => {
   const navigate = useNavigate();
   const notification = useNotification();
   const intl = useIntl();
+  const { chainStore, accountStore, analyticsStore, proposalStore } =
+    useStore();
   const { id } = useParams<{ id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
   const [votedOn, setVotedOn] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [closed, setClosed] = useState(true);
   const [isSendingTx, setIsSendingTx] = useState(false);
-  const reduxProposals: ProposalSetup = useSelector(useProposals);
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const storedProposals: ProposalSetup = proposalStore.proposals;
   const [category, setCategory] = useState(1);
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   useEffect(() => {
-    let proposalItem = reduxProposals.activeProposals.find(
+    let proposalItem = storedProposals.activeProposals.find(
       (proposal) => proposal.proposal_id === id
     );
     if (!proposalItem) {
-      proposalItem = reduxProposals.closedProposals.find(
+      proposalItem = storedProposals.closedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
     if (!proposalItem) {
-      proposalItem = reduxProposals.votedProposals.find(
+      proposalItem = storedProposals.votedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
     setIsLoading(false);
     setProposal(proposalItem);
-    const cat = reduxProposals.votedProposals.find(
+    const cat = storedProposals.votedProposals.find(
       (proposal) => proposal.proposal_id === id
     )
       ? 3
@@ -74,7 +73,10 @@ export const ProposalDetail: FunctionComponent = () => {
   const handleClick = async () => {
     const vote: any = voteArr[votedOn];
     if (!proposal) return;
-    if (vote !== "Unspecified" && accountInfo.isReadyToSendMsgs) {
+    if (vote !== "Unspecified" && accountInfo.isReadyToSendTx) {
+      analyticsStore.logEvent("vote_txn_click", {
+        action: vote,
+      });
       const tx = accountInfo.cosmos.makeGovVoteTx(proposal?.proposal_id, vote);
       setIsSendingTx(true);
       try {
@@ -97,11 +99,9 @@ export const ProposalDetail: FunctionComponent = () => {
           {},
           {
             onBroadcasted: () => {
-              analyticsStore.logEvent("Vote tx broadcasted", {
+              analyticsStore.logEvent("vote_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
-                proposalId: proposal.proposal_id,
-                proposalTitle: proposal.content.title,
               });
             },
           }
@@ -109,6 +109,11 @@ export const ProposalDetail: FunctionComponent = () => {
 
         navigate(`/proposal-vote-status/${votedOn}/${id}`, { replace: true });
       } catch (e: any) {
+        analyticsStore.logEvent("vote_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          message: e?.message ?? "",
+        });
         console.log(e);
         if (e?.message === "Request rejected") {
           notification.push({
@@ -157,6 +162,7 @@ export const ProposalDetail: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", { pageName: "Proposal Detail" });
         navigate(-1);
       }}
       showBottomMenu={false}
@@ -219,6 +225,9 @@ export const ProposalDetail: FunctionComponent = () => {
                 className={style["pLink"]}
                 onClick={() => {
                   if (chainStore.current.govUrl) {
+                    analyticsStore.logEvent(
+                      "proposal_view_in_block_explorer_click"
+                    );
                     window.open(`${chainStore.current.govUrl}${id}`, "_blank");
                   }
                 }}

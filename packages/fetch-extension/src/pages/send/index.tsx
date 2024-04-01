@@ -224,6 +224,7 @@ export const SendPage: FunctionComponent = observer(() => {
         isDetachedPage
           ? undefined
           : () => {
+              analyticsStore.logEvent("back_click", { pageName: "Send" });
               navigate(-1);
             }
       }
@@ -284,8 +285,9 @@ export const SendPage: FunctionComponent = observer(() => {
         className={style["formContainer"]}
         onSubmit={async (e) => {
           e.preventDefault();
+          analyticsStore.logEvent("send_txn_click");
 
-          if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
+          if (accountInfo.isReadyToSendTx && txStateIsValid) {
             try {
               const stdFee = sendConfigs.feeConfig.toStdFee();
 
@@ -308,7 +310,7 @@ export const SendPage: FunctionComponent = observer(() => {
                     console.log(e);
                   },
                   onBroadcasted: () => {
-                    analyticsStore.logEvent("Send token tx broadcasted", {
+                    analyticsStore.logEvent("send_txn_broadcasted", {
                       chainId: chainStore.current.chainId,
                       chainName: chainStore.current.chainName,
                       feeType: sendConfigs.feeConfig.feeType,
@@ -321,6 +323,12 @@ export const SendPage: FunctionComponent = observer(() => {
                 navigate("/", { replace: true });
               }
             } catch (e) {
+              analyticsStore.logEvent("send_txn_broadcasted_fail", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                feeType: sendConfigs.feeConfig.feeType,
+                message: e?.message ?? "",
+              });
               if (!isDetachedPage) {
                 navigate("/", { replace: true });
               }
@@ -351,6 +359,7 @@ export const SendPage: FunctionComponent = observer(() => {
               memoConfig={sendConfigs.memoConfig}
               label={intl.formatMessage({ id: "send.input.recipient" })}
               value={""}
+              pageName={"Send"}
             />
             <CoinInput
               amountConfig={sendConfigs.amountConfig}
@@ -358,6 +367,7 @@ export const SendPage: FunctionComponent = observer(() => {
               balanceText={intl.formatMessage({
                 id: "send.input-button.balance",
               })}
+              pageName={"Send"}
               disableAllBalance={(() => {
                 if (
                   // In the case of terra classic, tax is applied in proportion to the amount.
@@ -423,8 +433,8 @@ export const SendPage: FunctionComponent = observer(() => {
             type="submit"
             color="primary"
             block
-            data-loading={accountInfo.isSendingMsg === "send"}
-            disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
+            data-loading={accountInfo.txTypeInProgress === "send"}
+            disabled={!accountInfo.isReadyToSendTx || !txStateIsValid}
             style={{
               marginTop: "12px",
             }}

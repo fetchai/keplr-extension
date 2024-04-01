@@ -23,7 +23,7 @@ export const ADDITIONAL_INTL_MESSAGES: IntlMessages = {};
 // export const SUBSCRIPTION_SERVER = "ws://localhost:4000/subscription";
 // export const AUTH_SERVER = "http://localhost:5500";
 
-export const AUTH_SERVER = "https://auth-attila.sandbox-london-b.fetch-ai.com";
+export const AUTH_SERVER = "https://accounts.fetch.ai/v1";
 
 export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
 
@@ -36,8 +36,8 @@ let SUBSCRIPTION_SERVER, MESSAGING_SERVER;
 export let NOTYPHI_BASE_URL: string;
 
 if (process.env.NODE_ENV === "production") {
-  SUBSCRIPTION_SERVER = "wss://messaging.fetch-ai.network/subscription";
-  MESSAGING_SERVER = "https://messaging.fetch-ai.network/graphql";
+  SUBSCRIPTION_SERVER = "wss://messaging-server.prod.fetch-ai.com/subscription";
+  MESSAGING_SERVER = "https://messaging-server.prod.fetch-ai.com/graphql";
   NOTYPHI_BASE_URL = "https://api.notyphi.com/v1";
 } else {
   SUBSCRIPTION_SERVER =
@@ -94,72 +94,84 @@ export const AGENT_ADDRESS: { [key: string]: string } = {
 export const AGENT_COMMANDS = [
   {
     command: "/transferFET",
+    eventName: "bot_transfer_fet_click",
     label: "transferFET (Transfer FET)",
     icon: sendTokenIcon,
     enabled: true,
   },
   {
     command: "/sendAsset",
+    eventName: "bot_send_asset_click",
     label: "sendAsset (Send a native or CW20 Asset)",
     icon: sendTokenIcon,
     enabled: true,
   },
   {
     command: "/ibcTransfer",
+    eventName: "bot_ibc_transfer_click",
     label: "IBC Transfer (Transfer IBC assets cross chain)",
     icon: sendTokenIcon,
     enabled: true,
   },
   {
     command: "/autocompound",
+    eventName: "bot_auto_compound_click",
     label: "autocompound (Auto-Compound Rewards)",
     icon: autoCompoundIcon,
     enabled: true,
   },
   {
     command: "/redeemFET",
+    eventName: "bot_redeem_fet_click",
     label: "redeemFET (Redeem Stake Rewards)",
     icon: claimTokenIcon,
     enabled: true,
   },
   {
     command: "/recurringPayments",
+    eventName: "bot_recurring_payments_click",
     label: "recurringPayments (schedule payments)",
     icon: restartIcon,
     enabled: true,
   },
   {
     command: "/recurringStakes",
+    eventName: "bot_recurring_stakes_click",
     label: "recurringStakes (schedule stakes)",
     icon: restartIcon,
     enabled: true,
   },
   {
     command: "/tweet",
+    eventName: "bot_share_tweet_click",
     label: "tweet (Share your tweet)",
     icon: require("@assets/icon/agent-tweet.svg"),
     enabled: false,
   },
   {
     command: "/cancelRecurringTransfer",
+    eventName: "bot_cancel_recurring_transfer_click",
     label: "cancelRecurringTransfer (Cancel Automation)",
     icon: closeIcon,
     enabled: true,
   },
   {
     command: "/cancelRecurringStake",
+    eventName: "bot_cancel_recurring_stakes_click",
     label: "cancelRecurringStake (Cancel Automation)",
     icon: closeIcon,
     enabled: true,
   },
   {
     command: "/cancelAutocompound",
+    eventName: "bot_cancel_autocompound_click",
     label: "cancelAutocompound (Cancel Automation)",
     icon: closeIcon,
     enabled: true,
   },
   {
     command: "/cancel",
+    eventName: "bot_cancel_automation_click",
     label: "cancel (Cancel Automation)",
     icon: closeIcon,
     enabled: true,

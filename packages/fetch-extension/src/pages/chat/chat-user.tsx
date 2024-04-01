@@ -23,8 +23,8 @@ export const ChatUser: React.FC<{
   const navigate = useNavigate();
 
   const handleClick = () => {
-    analyticsStore.logEvent("Open DM click", {
-      pageName: "Chat history",
+    analyticsStore.logEvent("dm_click", {
+      pageName: "People Tab",
     });
     navigate(`/chat/${targetAddress}`);
   };
@@ -119,7 +119,7 @@ export const ChatUser: React.FC<{
       );
       decryptGrp(group);
     }
-  }, [chainId, targetAddress, group]);
+  }, [chainId, targetAddress, group, group.lastMessageContents]);
 
   return (
     <div

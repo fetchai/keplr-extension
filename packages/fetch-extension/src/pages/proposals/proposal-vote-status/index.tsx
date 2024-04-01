@@ -5,17 +5,17 @@ import { Button } from "reactstrap";
 import { ProposalSetup, ProposalType } from "src/@types/proposal-type";
 import style from "./style.module.scss";
 import classNames from "classnames";
-import { useSelector } from "react-redux";
-import { useProposals } from "@chatStore/proposal-slice";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useStore } from "../../../stores";
 export const PropsalVoteStatus: FunctionComponent = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { proposalStore, analyticsStore } = useStore();
 
   const intl = useIntl();
   const { votedOn, id } = useParams<{ votedOn?: string; id?: string }>();
   const [proposal, setProposal] = useState<ProposalType>();
-  const reduxProposals: ProposalSetup = useSelector(useProposals);
+  const storedProposals: ProposalSetup = proposalStore.proposals;
   let icon: string;
   let color: string;
   let text: string;
@@ -42,16 +42,16 @@ export const PropsalVoteStatus: FunctionComponent = () => {
       color = "#3E64C4";
   }
   useEffect(() => {
-    let proposalItem = reduxProposals.activeProposals.find(
+    let proposalItem = storedProposals.activeProposals.find(
       (proposal) => proposal.proposal_id === id
     );
     if (!proposalItem) {
-      proposalItem = reduxProposals.closedProposals.find(
+      proposalItem = storedProposals.closedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
     if (!proposalItem) {
-      proposalItem = reduxProposals.votedProposals.find(
+      proposalItem = storedProposals.votedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
     }
@@ -76,6 +76,7 @@ export const PropsalVoteStatus: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", { pageName: "Proposal Detail" });
         navigate(-1);
       }}
       showBottomMenu={false}

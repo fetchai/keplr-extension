@@ -18,14 +18,13 @@ export const proposalOptions = {
   ProposalFailed: "PROPOSAL_STATUS_FAILED",
 };
 
-const FETCHSTATION_TXN_URL =
-  "https://fetchstation.azoyalabs.com/mainnet/explorer/transactions/";
+const FETCHSTATION_TXN_URL = "https://www.mintscan.io/fetchai/tx/";
 const ETHERSCAN_TXN_URL = "https://etherscan.io/tx/";
 
 export const BridgeHistoryView: FunctionComponent = observer(() => {
   const navigate = useNavigate();
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
@@ -44,6 +43,7 @@ export const BridgeHistoryView: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={"Bridge History"}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", { pageName: "Bridge History" });
         navigate(-1);
       }}
       showBottomMenu={false}
@@ -53,7 +53,6 @@ export const BridgeHistoryView: FunctionComponent = observer(() => {
           className={style["refresh"]}
           onClick={(e) => {
             e.preventDefault();
-
             bridgeHistory.fetch();
           }}
         />

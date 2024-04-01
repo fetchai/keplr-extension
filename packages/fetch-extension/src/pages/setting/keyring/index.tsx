@@ -14,19 +14,13 @@ import { PageButton } from "../page-button";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { FormattedMessage, useIntl } from "react-intl";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
-import { store } from "@chatStore/index";
-import { resetUser } from "@chatStore/user-slice";
-import {
-  resetChatList,
-  setIsChatSubscriptionActive,
-} from "@chatStore/messages-slice";
+
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
-import { resetProposals } from "@chatStore/proposal-slice";
 
 export const SetKeyRingPage: FunctionComponent = observer(() => {
   const intl = useIntl();
 
-  const { keyRingStore, analyticsStore } = useStore();
+  const { keyRingStore, analyticsStore, chatStore, proposalStore } = useStore();
   const navigate = useNavigate();
 
   const loadingIndicator = useLoadingIndicator();
@@ -37,6 +31,9 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({ id: "setting.keyring" })}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", {
+          pageName: "Select Account",
+        });
         navigate(-1);
       }}
     >
@@ -55,8 +52,7 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
               size="sm"
               onClick={(e) => {
                 e.preventDefault();
-                analyticsStore.logEvent("Add additional account started");
-
+                analyticsStore.logEvent("add_additional_account_click");
                 browser.tabs.create({
                   url: "/popup.html#/register",
                 });
@@ -140,12 +136,14 @@ export const SetKeyRingPage: FunctionComponent = observer(() => {
                       loadingIndicator.setIsLoading("keyring", true);
                       try {
                         await keyRingStore.changeKeyRing(i);
-                        analyticsStore.logEvent("Account changed");
+                        analyticsStore.logEvent("select_account_click");
                         loadingIndicator.setIsLoading("keyring", false);
-                        store.dispatch(resetUser({}));
-                        store.dispatch(resetProposals({}));
-                        store.dispatch(resetChatList({}));
-                        store.dispatch(setIsChatSubscriptionActive(false));
+                        chatStore.userDetailsStore.resetUser();
+                        proposalStore.resetProposals();
+                        chatStore.messagesStore.resetChatList();
+                        chatStore.messagesStore.setIsChatSubscriptionActive(
+                          false
+                        );
                         messageAndGroupListenerUnsubscribe();
                         navigate("/");
                       } catch (e: any) {
@@ -170,6 +168,7 @@ const KeyRingToolsIcon: FunctionComponent<{
   index: number;
   keyStore: MultiKeyStoreInfoWithSelectedElem;
 }> = ({ index, keyStore }) => {
+  const { analyticsStore } = useStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toggleOpen = () => setIsOpen((isOpen) => !isOpen);
 
@@ -203,6 +202,11 @@ const KeyRingToolsIcon: FunctionComponent<{
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                analyticsStore.logEvent(
+                  keyStore.type === "mnemonic"
+                    ? "view_mnemonics_seed_click"
+                    : "view_private_key_click"
+                );
 
                 navigate(`/setting/export/${index}?type=${keyStore.type}`);
               }}
@@ -221,7 +225,7 @@ const KeyRingToolsIcon: FunctionComponent<{
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-
+              analyticsStore.logEvent("change_account_name_click");
               navigate(`/setting/keyring/change/name/${index}`);
             }}
           >
@@ -232,7 +236,7 @@ const KeyRingToolsIcon: FunctionComponent<{
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-
+              analyticsStore.logEvent("delete_account_click", { action: "No" });
               navigate(`/setting/clear/${index}`);
             }}
           >

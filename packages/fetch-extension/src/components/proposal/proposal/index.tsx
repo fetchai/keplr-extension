@@ -7,8 +7,6 @@ import { proposalOptions } from "../../../pages/proposals";
 import { useStore } from "../../../stores";
 import { fetchVote } from "@utils/fetch-proposals";
 import { ProposalSetup } from "src/@types/proposal-type";
-import { useSelector } from "react-redux";
-import { useProposals } from "@chatStore/proposal-slice";
 
 interface Props {
   title: string;
@@ -18,16 +16,17 @@ interface Props {
 
 export const Proposal: FunctionComponent<Props> = (props) => {
   const { title, status, id } = props;
+  const { chainStore, accountStore, proposalStore, analyticsStore } =
+    useStore();
   const navigate = useNavigate();
   let icon, color, background, name;
-  const reduxProposals: ProposalSetup = useSelector(useProposals);
+  const storedProposals: ProposalSetup = proposalStore.proposals;
 
-  const { chainStore, accountStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [alreadyVoted, setAlreadyVoted] = useState("");
   useEffect(() => {
     (async () => {
-      const proposalItem = reduxProposals.votedProposals.find(
+      const proposalItem = storedProposals.votedProposals.find(
         (proposal) => proposal.proposal_id === id
       );
       if (!proposalItem) {
@@ -71,6 +70,7 @@ export const Proposal: FunctionComponent<Props> = (props) => {
       name = "Failed";
   }
   const handleClick = () => {
+    analyticsStore.logEvent("proposal_detail_click");
     if (alreadyVoted !== "" && alreadyVoted !== "Unspecified") {
       const voteArr = [
         "VOTE_OPTION_UNSPECIFIED",

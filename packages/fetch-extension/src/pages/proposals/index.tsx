@@ -7,9 +7,6 @@ import style from "./style.module.scss";
 import { Proposal } from "@components/proposal/proposal";
 import { fetchProposals, fetchVote } from "@utils/fetch-proposals";
 import { ProposalType } from "src/@types/proposal-type";
-import { setProposalsInStore, useProposals } from "@chatStore/proposal-slice";
-import { useSelector } from "react-redux";
-import { store } from "@chatStore/index";
 import { useStore } from "../../stores";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -27,14 +24,13 @@ export const Proposals: FunctionComponent = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore, proposalStore } =
+    useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [proposals, setProposals] = useState<ProposalType[]>([]);
-  const reduxProposals = useSelector(useProposals);
+  const storedProposals = proposalStore.proposals;
   useEffect(() => {
-    analyticsStore.logEvent("Governance Proposal page");
-
-    if (reduxProposals.closedProposals.length === 0) {
+    if (storedProposals.closedProposals.length === 0) {
       setIsLoading(true);
     }
     (async () => {
@@ -76,15 +72,13 @@ export const Proposals: FunctionComponent = () => {
           }
         );
         setIsLoading(false);
+        proposalStore.setProposalsInStore({
+          activeProposals,
+          closedProposals,
+          votedProposals,
+          allProposals,
+        });
 
-        store.dispatch(
-          setProposalsInStore({
-            activeProposals,
-            closedProposals,
-            votedProposals,
-            allProposals,
-          })
-        );
         if (selectedIndex === 1) {
           setProposals(activeProposals);
           return;
@@ -108,13 +102,13 @@ export const Proposals: FunctionComponent = () => {
     let newProposal: ProposalType[];
 
     if (selectedIndex === 1) {
-      newProposal = reduxProposals.activeProposals;
+      newProposal = storedProposals.activeProposals;
     } else if (selectedIndex === 2) {
-      newProposal = reduxProposals.closedProposals;
+      newProposal = storedProposals.closedProposals;
     } else if (selectedIndex === 3) {
-      newProposal = reduxProposals.votedProposals;
+      newProposal = storedProposals.votedProposals;
     } else {
-      newProposal = reduxProposals.allProposals;
+      newProposal = storedProposals.allProposals;
     }
 
     newProposal = newProposal.filter((proposal: ProposalType) => {
@@ -146,6 +140,7 @@ export const Proposals: FunctionComponent = () => {
         id: "main.proposals.title",
       })}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", { pageName: "Proposals" });
         navigate(-1);
       }}
       showBottomMenu={false}
@@ -160,21 +155,30 @@ export const Proposals: FunctionComponent = () => {
         name={"Active"}
         id={1}
         selectedIndex={selectedIndex}
-        handleCheck={handleCheck}
+        handleCheck={(id) => {
+          handleCheck(id);
+          analyticsStore.logEvent("active_tab_click");
+        }}
         filter={true}
       />
       <GovStatusChip
         id={3}
         name={"Voted"}
         selectedIndex={selectedIndex}
-        handleCheck={handleCheck}
+        handleCheck={(id) => {
+          handleCheck(id);
+          analyticsStore.logEvent("voted_tab_click");
+        }}
         filter={true}
       />
       <GovStatusChip
         id={2}
         name={"Closed"}
         selectedIndex={selectedIndex}
-        handleCheck={handleCheck}
+        handleCheck={(id) => {
+          handleCheck(id);
+          analyticsStore.logEvent("closed_tab_click");
+        }}
         filter={true}
       />
 

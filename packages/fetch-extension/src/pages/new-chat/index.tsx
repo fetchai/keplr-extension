@@ -10,10 +10,8 @@ import jazzicon from "@metamask/jazzicon";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { NameAddress } from "@chatTypes";
-import { userDetails } from "@chatStore/user-slice";
 import { ChatLoader } from "@components/chat-loader";
 import { SwitchUser } from "@components/switch-user";
 import { HeaderLayout } from "@layouts/index";
@@ -25,16 +23,14 @@ import { fetchPublicKey } from "@utils/fetch-public-key";
 import { formatAddress } from "@utils/format";
 import { Menu } from "../main/menu";
 import style from "./style.module.scss";
-import { store } from "@chatStore/index";
-import { resetNewGroup } from "@chatStore/new-group-slice";
 import { DeactivatedChat } from "@components/chat/deactivated-chat";
 import { AGENT_ADDRESS } from "../../config.ui.var";
 import { ContactsOnlyMessage } from "@components/contacts-only-message";
 
 const NewUser = (props: { address: NameAddress }) => {
   const navigate = useNavigate();
-  const user = useSelector(userDetails);
-  const { chainStore, analyticsStore } = useStore();
+  const { chainStore, analyticsStore, chatStore } = useStore();
+  const user = chatStore.userDetailsStore;
   const { name, address } = props.address;
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,8 +62,8 @@ const NewUser = (props: { address: NameAddress }) => {
 
   const handleClick = () => {
     if (!isLoading) {
-      analyticsStore.logEvent("Open DM click", {
-        pageName: "New chat",
+      analyticsStore.logEvent("dm_click", {
+        pageName: "New Chat",
       });
       navigate(`/chat/${address}`);
     }
@@ -105,18 +101,19 @@ const NewUser = (props: { address: NameAddress }) => {
 };
 export const NewChat: FunctionComponent = observer(() => {
   const navigate = useNavigate();
-  const user = useSelector(userDetails);
-  const [inputVal, setInputVal] = useState("");
-  const [addresses, setAddresses] = useState<NameAddress[]>([]);
-  const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
-
   const {
     chainStore,
     accountStore,
     queriesStore,
     uiConfigStore,
     analyticsStore,
+    chatStore,
   } = useStore();
+  const user = chatStore.userDetailsStore;
+  const [inputVal, setInputVal] = useState("");
+  const [addresses, setAddresses] = useState<NameAddress[]>([]);
+  const [randomAddress, setRandomAddress] = useState<NameAddress | undefined>();
+
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const walletAddress = accountInfo.bech32Address;
@@ -252,7 +249,9 @@ export const NewChat: FunctionComponent = observer(() => {
             <button
               className={style["button"]}
               onClick={() => {
-                store.dispatch(resetNewGroup());
+                analyticsStore.logEvent("create_new_group_click");
+                chatStore.newGroupStore.resetNewGroup();
+                // store.dispatch(resetNewGroup());
                 navigate({
                   pathname: "/chat/group-chat/create",
                 });
@@ -264,6 +263,9 @@ export const NewChat: FunctionComponent = observer(() => {
             <button
               className={style["button"]}
               onClick={() => {
+                analyticsStore.logEvent("talk_to_an_agent_click", {
+                  pageName: "New Chat",
+                });
                 navigate({
                   pathname: "/chat/agent/" + AGENT_ADDRESS[current.chainId],
                 });
@@ -286,7 +288,9 @@ export const NewChat: FunctionComponent = observer(() => {
                 style={{ margin: "2px 0 0 12px", cursor: "pointer" }}
                 aria-hidden="true"
                 onClick={() => {
-                  analyticsStore.logEvent("Address book viewed");
+                  analyticsStore.logEvent("address_book_click", {
+                    pageName: "New Chat",
+                  });
                   navigate("/setting/address-book");
                 }}
               />

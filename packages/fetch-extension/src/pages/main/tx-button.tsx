@@ -72,11 +72,9 @@ export const TxButtonView: FunctionComponent = observer(() => {
   }, [stakable.balance]);
 
   const withdrawAllRewards = async () => {
-    if (
-      accountInfo.isReadyToSendMsgs &&
-      chainStore.current.walletUrlForStaking
-    ) {
+    if (accountInfo.isReadyToSendTx && chainStore.current.walletUrlForStaking) {
       try {
+        analyticsStore.logEvent("claim_click");
         // When the user delegated too many validators,
         // it can't be sent to withdraw rewards from all validators due to the block gas limit.
         // So, to prevent this problem, just send the msgs up to 8.
@@ -87,7 +85,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
           undefined,
           {
             onBroadcasted: () => {
-              analyticsStore.logEvent("Claim reward tx broadcasted", {
+              analyticsStore.logEvent("claim_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
               });
@@ -107,6 +105,11 @@ export const TxButtonView: FunctionComponent = observer(() => {
           transition: {
             duration: 0.25,
           },
+        });
+        analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          message: e?.message ?? "",
         });
       }
     }
@@ -135,11 +138,11 @@ export const TxButtonView: FunctionComponent = observer(() => {
         }
         color="primary"
         outline
-        data-loading={accountInfo.isSendingMsg === "send"}
+        data-loading={accountInfo.txTypeInProgress === "send"}
         onClick={(e) => {
           e.preventDefault();
-
           if (hasAssets) {
+            analyticsStore.logEvent("send_click", { pageName: "Home Tab" });
             navigate("/send");
           }
         }}
@@ -164,7 +167,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
         <Button
           className={styleTxButton["button"]}
           style={
-            !accountInfo.isReadyToSendMsgs ||
+            !accountInfo.isReadyToSendTx ||
             !isRewardExist ||
             !chainStore.current.walletUrlForStaking
               ? {
@@ -176,7 +179,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
           outline
           color="primary"
           onClick={withdrawAllRewards}
-          data-loading={accountInfo.isSendingMsg === "withdrawRewards"}
+          data-loading={accountInfo.txTypeInProgress === "withdrawRewards"}
           onMouseEnter={() => {
             setIsActiveReward(true);
           }}
@@ -215,7 +218,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
             if (!isStakableExist || !chainStore.current.walletUrlForStaking) {
               e.preventDefault();
             } else {
-              analyticsStore.logEvent("Stake button clicked", {
+              analyticsStore.logEvent("stake_click", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
               });

@@ -70,6 +70,10 @@ export interface ChainInfo {
   readonly type?: "mainnet" | "testnet";
 
   readonly status?: "alpha" | "beta" | "production";
+  readonly txExplorer?: {
+    readonly name: string;
+    readonly txUrl: string;
+  };
 }
 
 export type ChainInfoWithoutEndpoints = Omit<

@@ -4,11 +4,8 @@ import { BACKGROUND_PORT } from "@keplr-wallet/router";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { useIntl } from "react-intl";
-import { store } from "@chatStore/index";
 import { useNavigate } from "react-router";
-import { setMessagingPubKey, userDetails } from "@chatStore/user-slice";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { HeaderLayout } from "@layouts/index";
 import { PageButton } from "../../page-button";
@@ -21,13 +18,13 @@ export const ReadRecipt: FunctionComponent = observer(() => {
   const intl = useIntl();
 
   const loadingIndicator = useLoadingIndicator();
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore, chatStore } = useStore();
 
   const walletAddress = accountStore.getAccount(
     chainStore.current.chainId
   ).bech32Address;
 
-  const userState = useSelector(userDetails);
+  const userState = chatStore.userDetailsStore;
   const requester = new InExtensionMessageRequester();
   const [selectedPrivacySetting] = useState<PrivacySetting>(
     userState?.messagingPubKey.privacySetting
@@ -54,7 +51,7 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           setting
         )
       );
-      store.dispatch(setMessagingPubKey(messagingPubKey));
+      userState.setMessagingPubKey(messagingPubKey);
       setChatReceiptSetting(setting);
     } catch (e) {
       // Show error toaster
@@ -72,6 +69,7 @@ export const ReadRecipt: FunctionComponent = observer(() => {
         id: "setting.receipts",
       })}
       onBackButton={() => {
+        analyticsStore.logEvent("back_click", { pageName: "Read Receipts" });
         navigate(-1);
       }}
     >
@@ -86,8 +84,8 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(true);
-            analyticsStore.logEvent("Read Receipts Privacy setting click", {
-              readRecipt: true,
+            analyticsStore.logEvent("read_receipts_click", {
+              action: "On",
             });
           }}
           icons={useMemo(
@@ -115,8 +113,8 @@ export const ReadRecipt: FunctionComponent = observer(() => {
           onClick={(e) => {
             e.preventDefault();
             updatePrivacy(false);
-            analyticsStore.logEvent("Read Receipts Privacy setting click", {
-              readRecipt: false,
+            analyticsStore.logEvent("read_receipts_click", {
+              action: "Off",
             });
           }}
           icons={useMemo(
