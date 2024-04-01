@@ -191,7 +191,7 @@ export const AxelarBridgeEVM = observer(() => {
       alternativeTitle={"Axelar Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
-        navigate("/");
+        navigate("/more");
       }}
     >
       {isFetchingAddress && (
@@ -221,16 +221,6 @@ export const AxelarBridgeEVM = observer(() => {
           subheading={current.chainName}
           rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
         />
-        <TokenSelect
-          tokens={transferTokens}
-          depositAddress={configs.recipientConfig.rawRecipient}
-          recieverChain={recieverChain}
-          transferToken={transferToken}
-          setTransferToken={handleTokenSelect}
-          setTokenBal={setTokenBal}
-          tokenBal={tokenBal}
-        />
-        <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
         <ChainSelect
           depositAddress={configs.recipientConfig.rawRecipient}
           chains={
@@ -244,6 +234,16 @@ export const AxelarBridgeEVM = observer(() => {
           setRecieverChain={setRecieverChain}
           isChainsLoaded={isChainsLoaded}
           setRecipientAddress={setRecipientAddress}
+        />
+        <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
+        <TokenSelect
+          tokens={transferTokens}
+          depositAddress={configs.recipientConfig.rawRecipient}
+          recieverChain={recieverChain}
+          transferToken={transferToken}
+          setTransferToken={handleTokenSelect}
+          setTokenBal={setTokenBal}
+          tokenBal={tokenBal}
         />
       </div>
 

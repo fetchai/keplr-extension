@@ -155,7 +155,9 @@ export const AddTokenPage: FunctionComponent = observer(() => {
         interactionInfo.interaction
           ? undefined
           : () => {
-              analyticsStore.logEvent("back_click", { pageName: "Add Token" });
+              analyticsStore.logEvent("back_click", {
+                pageName: "Add a Token",
+              });
               navigate(-1);
             }
       }
@@ -303,7 +305,6 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             ) : undefined
           }
         />
-        {isError && <div className={style["error"]}>{isError}</div>}
         <div className={style["label"]}>
           {intl.formatMessage({
             id: "setting.token.add.name",
