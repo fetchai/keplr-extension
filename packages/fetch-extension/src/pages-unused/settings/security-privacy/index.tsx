@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { HeaderLayout } from "../../../layouts";
 import style from "../style.module.scss";
-import { PageButton } from "../page-button";
+import { PageButton } from "../../../pages/setting/page-button";
 import { useNavigate } from "react-router";
 import { useIntl } from "react-intl";
 import { useStore } from "../../../stores";
@@ -53,7 +53,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.permissions.get-chain-infos.paragraph",
           })}
           onClick={() => {
-            navigate("/setting/permissions/get-chain-infos");
+            navigate("/more/permissions/get-chain-infos");
             analyticsStore.logEvent("chain_list_access_click", {
               pageName: "Security & Privacy",
             });
@@ -68,7 +68,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.autolock",
           })}
           onClick={() => {
-            navigate("/setting/autolock");
+            navigate("/more/security-privacy/autolock");
             analyticsStore.logEvent("auto_lock_timer_click", {
               pageName: "Security & Privacy",
             });

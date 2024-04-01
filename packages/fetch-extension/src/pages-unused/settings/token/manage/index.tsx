@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { HeaderLayout } from "@layouts/index";
 import { useNavigate } from "react-router";
-import { PageButton } from "../../page-button";
+import { PageButton } from "../../../../pages/setting/page-button";
 
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
