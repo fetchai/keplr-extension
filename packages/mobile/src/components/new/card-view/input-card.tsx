@@ -92,7 +92,7 @@ export const InputCardView: React.forwardRef<
               keyboardType={
                 keyboardType ?? Platform.OS === "ios"
                   ? "ascii-capable"
-                  : "default"
+                  : "visible-password"
               }
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={

@@ -23,6 +23,7 @@ import {
   ManageAddressCardModel,
   ManageAddressOption,
 } from "components/new/addressbook-card/manage-address-card";
+import { ConfirmCardModel } from "components/new/confirm-modal";
 
 export const AddressBookScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
@@ -72,6 +73,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
   );
 
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [showConfirmModal, setConfirmModal] = useState(false);
 
   useEffect(() => {
     smartNavigation.setOptions({
@@ -216,9 +218,21 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                           break;
 
                         case ManageAddressOption.deleteAddress:
-                          deleteAddress(i);
+                          setConfirmModal(true);
+                          // deleteAddress(i);
                           setIsOpenModal(false);
                           break;
+                      }
+                    }}
+                  />
+                  <ConfirmCardModel
+                    isOpen={showConfirmModal}
+                    close={() => setConfirmModal(false)}
+                    title={"Delete address"}
+                    subtitle={"Are you sure you want to delete this address?"}
+                    select={(confirm: boolean) => {
+                      if (confirm) {
+                        addressBookConfig.removeAddressBook(i);
                       }
                     }}
                   />

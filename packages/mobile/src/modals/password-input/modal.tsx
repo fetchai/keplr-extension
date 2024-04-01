@@ -56,6 +56,7 @@ export const PasswordInputModal: FunctionComponent<{
       >
         <InputCardView
           label="Password"
+          keyboardType={"default"}
           rightIcon={
             !showPassword ? (
               <IconButton

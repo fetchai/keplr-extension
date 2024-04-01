@@ -91,6 +91,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
       </View>
       <InputCardView
         label="Password"
+        keyboardType={"default"}
         error={isInvalidPassword ? "Invalid password" : undefined}
         onChangeText={(text: string) => {
           setPassword(text);

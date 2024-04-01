@@ -242,6 +242,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                 ]) as ViewStyle
               }
               label="Password"
+              keyboardType={"default"}
               returnKeyType="done"
               secureTextEntry={true}
               value={password}

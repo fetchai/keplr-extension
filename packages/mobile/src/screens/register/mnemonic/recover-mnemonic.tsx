@@ -268,6 +268,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
               return (
                 <TextInput
                   label="Password"
+                  keyboardType={"default"}
                   returnKeyType="next"
                   secureTextEntry={true}
                   onSubmitEditing={() => {

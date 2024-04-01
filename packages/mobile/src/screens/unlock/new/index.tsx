@@ -266,6 +266,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
             </Text>
             <InputCardView
               label={"Password"}
+              keyboardType={"default"}
               rightIcon={
                 !showPassword ? (
                   <IconButton

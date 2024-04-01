@@ -312,6 +312,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
               return (
                 <InputCardView
                   label="Password"
+                  keyboardType={"default"}
                   secureTextEntry={!showPassword}
                   returnKeyType="next"
                   onSubmitEditing={() => {
