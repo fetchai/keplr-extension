@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { HeaderLayout } from "../../../../../layouts";
 import style from "../../../style.module.scss";
-import { PageButton } from "../../../page-button";
+import { PageButton } from "../../../../../pages/setting/page-button";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { useConfirm } from "@components/confirm";

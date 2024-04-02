@@ -104,7 +104,7 @@ export const ExportPage: FunctionComponent = observer(() => {
               styleProps={{
                 position: "absolute",
                 width: "333px",
-                bottom: "24%",
+                bottom: 86,
                 right: "4%",
               }}
               text={"Copy to clipboard"}

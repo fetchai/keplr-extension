@@ -6,7 +6,7 @@ import { useStore } from "../../../stores";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { Card } from "@components-v2/card";
 
-export const SettingSecurityPrivacyPage: FunctionComponent = () => {
+export const SecurityPrivacyPage: FunctionComponent = () => {
   const navigate = useNavigate();
   const { analyticsStore, keyRingStore } = useStore();
   const [accountIndex, setAccountIndex] = useState<number>(0);
@@ -80,7 +80,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.permissions.get-chain-infos.paragraph",
           })}
           onClick={() => {
-            navigate("/setting/permissions/get-chain-infos");
+            navigate("/more/permissions/get-chain-infos");
             analyticsStore.logEvent("chain_list_access_click", {
               pageName: "Security & Privacy",
             });
@@ -94,7 +94,7 @@ export const SettingSecurityPrivacyPage: FunctionComponent = () => {
             id: "setting.autolock",
           })}
           onClick={() => {
-            navigate("/setting/autolock");
+            navigate("/more/security-privacy/autolock");
             analyticsStore.logEvent("auto_lock_timer_click", {
               pageName: "Security & Privacy",
             });

@@ -164,7 +164,7 @@ export const AxelarBridgeCosmos = observer(() => {
       alternativeTitle={"Axelar Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
-        navigate("/");
+        navigate("/more");
       }}
     >
       <div>
@@ -198,17 +198,6 @@ export const AxelarBridgeCosmos = observer(() => {
           rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
         />
 
-        <TokenSelect
-          tokens={transferTokens}
-          recieverChain={recieverChain}
-          depositAddress={depositAddress}
-          setTransferToken={setTransferToken}
-          transferToken={transferToken}
-          tokenBal={tokenBal}
-          setTokenBal={setTokenBal}
-        />
-        <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
-
         <ChainSelect
           chains={
             transferChain
@@ -223,6 +212,18 @@ export const AxelarBridgeCosmos = observer(() => {
           depositAddress={depositAddress}
           setRecipientAddress={setRecipientAddress}
         />
+
+        <hr style={{ background: "rgba(255, 255, 255, 0.2)" }} />
+        <TokenSelect
+          tokens={transferTokens}
+          recieverChain={recieverChain}
+          depositAddress={depositAddress}
+          setTransferToken={setTransferToken}
+          transferToken={transferToken}
+          tokenBal={tokenBal}
+          setTokenBal={setTokenBal}
+        />
+
         <Card
           style={{
             height: "72px",

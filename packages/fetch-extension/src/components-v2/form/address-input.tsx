@@ -265,7 +265,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         >
           <ContactBookPage
             onBackButton={() => setIsAddressBookOpen(false)}
-            hideChainDropdown={true}
             selectHandler={selectAddressFromAddressBook}
             ibcChannelConfig={ibcChannelConfig}
           />

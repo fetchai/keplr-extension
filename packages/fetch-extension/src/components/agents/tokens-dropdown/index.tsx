@@ -176,7 +176,7 @@ export const TokenDropdown: FunctionComponent<{
                 onClick={(e) => {
                   e.preventDefault();
                   navigate({
-                    pathname: "/setting/token/add",
+                    pathname: "/more/token/add",
                     hash: "agent",
                   });
                 }}

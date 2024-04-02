@@ -372,7 +372,7 @@ export const EditMember: FunctionComponent = observer(() => {
     analyticsStore.logEvent("add_new_address_click", {
       pageName: "Edit Member",
     });
-    navigate("/setting/address-book", {
+    navigate("/more/address-book", {
       state: {
         openModal: true,
         addressInputValue: address,
@@ -431,7 +431,7 @@ export const EditMember: FunctionComponent = observer(() => {
         analyticsStore.logEvent("address_book_click", {
           pageName: "Edit Member",
         });
-        navigate("/setting/address-book");
+        navigate("/more/address-book");
         break;
     }
   }

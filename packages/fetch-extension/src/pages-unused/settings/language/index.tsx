@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
 import { HeaderLayout } from "@layouts/index";
-import { PageButton } from "../page-button";
+import { PageButton } from "../../../pages/setting/page-button";
 
 import style from "../style.module.scss";
 import { useLanguage } from "../../../languages";

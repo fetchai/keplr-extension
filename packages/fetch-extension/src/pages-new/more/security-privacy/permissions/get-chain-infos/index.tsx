@@ -13,7 +13,7 @@ import { useStore } from "../../../../../stores";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { Card } from "@components-v2/card";
 
-export const SettingPermissionsGetChainInfosPage: FunctionComponent = () => {
+export const PermissionsGetChainInfosPage: FunctionComponent = () => {
   const [requester] = useState(() => new InExtensionMessageRequester());
   const [origins, setOrigins] = useState<string[]>([]);
   const { analyticsStore, chainStore } = useStore();

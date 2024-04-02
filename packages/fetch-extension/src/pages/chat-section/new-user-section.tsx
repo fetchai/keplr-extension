@@ -30,7 +30,7 @@ export const NewUserSection = ({
             analyticsStore.logEvent("add_new_address_click", {
               pageName: "Chat DM",
             });
-            navigate("/setting/address-book", {
+            navigate("/more/address-book", {
               state: {
                 openModal: true,
                 addressInputValue: targetAddress,

@@ -17,7 +17,7 @@ import {
 } from "@keplr-wallet/hooks";
 
 import { HeaderLayout } from "@layouts-v2/header-layout";
-import styles from "../../more/token/manage/style.module.scss";
+import styles from "../token/manage/style.module.scss";
 import { AddAddress } from "./add-address";
 import { AddressRow } from "./address-row";
 export interface chatSectionParams {
@@ -150,60 +150,49 @@ export const AddressBookPage: FunctionComponent<{
         <div className={styleAddressBook["loader"]}>Loading ....</div>
       ) : (
         <div className={style["container"]}>
-          <div className={styleAddressBook["innerTopContainer"]}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            ></div>
-          </div>
-          <div>
-            {addressBookConfig.addressBookDatas.map((data, i) => {
-              return (
-                <AddressRow
-                  selectHandler={selectHandler}
-                  selectedChainId={selectedChainId}
-                  chainStore={chainStore}
-                  key={i}
-                  data={data}
-                  index={i}
-                  onSelect={(index) => {
-                    if (onBackButton) {
-                      onBackButton();
-                    }
-                    addressBookConfig.selectAddressAt(index);
-                  }}
-                  onEdit={(index) => {
-                    setAddAddressModalOpen(true);
-                    setAddAddressModalIndex(index);
-                  }}
-                  onDelete={async (index) => {
-                    if (
-                      await confirm.confirm({
-                        img: (
-                          <img
-                            alt=""
-                            src={require("@assets/img/trash.svg")}
-                            style={{ height: "80px" }}
-                          />
-                        ),
-                        title: intl.formatMessage({
-                          id: "setting.address-book.confirm.delete-address.title",
-                        }),
-                        paragraph: intl.formatMessage({
-                          id: "setting.address-book.confirm.delete-address.paragraph",
-                        }),
-                      })
-                    ) {
-                      await addressBookConfig.removeAddressBook(index);
-                    }
-                  }}
-                />
-              );
-            })}
-          </div>
+          {addressBookConfig.addressBookDatas.map((data, i) => {
+            return (
+              <AddressRow
+                selectHandler={selectHandler}
+                selectedChainId={selectedChainId}
+                chainStore={chainStore}
+                key={i}
+                data={data}
+                index={i}
+                onSelect={(index) => {
+                  if (onBackButton) {
+                    onBackButton();
+                  }
+                  addressBookConfig.selectAddressAt(index);
+                }}
+                onEdit={(index) => {
+                  setAddAddressModalOpen(true);
+                  setAddAddressModalIndex(index);
+                }}
+                onDelete={async (index) => {
+                  if (
+                    await confirm.confirm({
+                      img: (
+                        <img
+                          alt=""
+                          src={require("@assets/img/trash.svg")}
+                          style={{ height: "80px" }}
+                        />
+                      ),
+                      title: intl.formatMessage({
+                        id: "setting.address-book.confirm.delete-address.title",
+                      }),
+                      paragraph: intl.formatMessage({
+                        id: "setting.address-book.confirm.delete-address.paragraph",
+                      }),
+                    })
+                  ) {
+                    await addressBookConfig.removeAddressBook(index);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
       )}
     </HeaderLayout>

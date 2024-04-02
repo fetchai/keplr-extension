@@ -80,7 +80,9 @@ export const Input = forwardRef<
         {append}
       </InputGroup>
       {error ? (
-        <FormFeedback style={{ display: "block" }}>{error}</FormFeedback>
+        <FormFeedback style={{ display: "block", marginTop: 5 }}>
+          {error}
+        </FormFeedback>
       ) : text ? (
         <FormText>{text}</FormText>
       ) : null}

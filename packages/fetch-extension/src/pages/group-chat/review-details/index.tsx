@@ -191,7 +191,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
     analyticsStore.logEvent("add_new_address_click", {
       pageName: "Group Chat Review",
     });
-    navigate("/setting/address-book", {
+    navigate("/more/address-book", {
       state: {
         openModal: true,
         addressInputValue: address,
@@ -229,7 +229,7 @@ export const ReviewGroupChat: FunctionComponent = observer(() => {
         analyticsStore.logEvent("address_book_click", {
           pageName: "Group Chat Review",
         });
-        navigate("/setting/address-book");
+        navigate("/more/address-book");
         break;
     }
   }

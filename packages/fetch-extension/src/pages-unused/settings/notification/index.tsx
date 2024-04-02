@@ -3,7 +3,7 @@ import React, { FunctionComponent, useMemo } from "react";
 import { useNavigate } from "react-router";
 import style from "./style.module.scss";
 import { NotificationOption } from "@components/notification-option/notification-option";
-import { PageButton } from "../page-button";
+import { PageButton } from "../../../pages/setting/page-button";
 import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { NotificationSetup } from "@notificationTypes";
 import { useSelector } from "react-redux";

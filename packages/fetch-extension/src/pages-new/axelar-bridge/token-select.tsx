@@ -73,7 +73,11 @@ export const TokenSelect = observer(
             if (recieverChain || depositAddress) setDropdownOpen(!dropdownOpen);
           }}
           heading={"Asset"}
-          style={{ height: "72px", background: "rgba(255,255,255,0.1)" }}
+          style={{
+            height: "72px",
+            background: "rgba(255,255,255,0.1)",
+            marginBottom: "16px",
+          }}
           rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
           subheading={
             <div>
