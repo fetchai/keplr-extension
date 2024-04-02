@@ -1,4 +1,5 @@
 import { AGENT_ADDRESS } from "../config.ui.var";
+import { isToday, isYesterday, format } from "date-fns";
 
 export const formatAddress = (address: string) => {
   if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
@@ -129,4 +130,19 @@ export const parseDollarAmount = (dollarString: any) => {
     return parseFloat(match[0]);
   }
   return NaN;
+};
+export const formatTime = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  return format(date, "p");
+};
+
+export const getDate = (timestamp: number): string => {
+  const d = new Date(timestamp);
+  if (isToday(d)) {
+    return "Today";
+  }
+  if (isYesterday(d)) {
+    return "Yesterday";
+  }
+  return format(d, "dd MMMM yyyy");
 };
