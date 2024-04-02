@@ -11,9 +11,16 @@ import { ToolTip } from "@components/tooltip";
 import classNames from "classnames";
 import { GithubIcon } from "@components/icon";
 import { useStore } from "../../stores";
+import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 
 export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
-  const { chainSwitchStore, analyticsStore, chainStore } = useStore();
+  const {
+    chainSwitchStore,
+    analyticsStore,
+    chainStore,
+    chatStore,
+    proposalStore,
+  } = useStore();
 
   const [isLoadingPlaceholder, setIsLoadingPlaceholder] = useState(true);
   const navigate = useNavigate();
@@ -241,6 +248,11 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   chainSwitchStore.approve(chainId);
                   chainStore.selectChain(chainId);
                   chainStore.saveLastViewChainId();
+                  chatStore.userDetailsStore.resetUser();
+                  proposalStore.resetProposals();
+                  chatStore.messagesStore.resetChatList();
+                  chatStore.messagesStore.setIsChatSubscriptionActive(false);
+                  messageAndGroupListenerUnsubscribe();
                 }
 
                 if (

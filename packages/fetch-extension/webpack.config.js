@@ -37,7 +37,6 @@ const commonResolve = () => ({
     "@new-layouts": path.resolve(__dirname, "src/new-layouts"),
     "@components": path.resolve(__dirname, "src/components"),
     "@layouts": path.resolve(__dirname, "src/layouts"),
-    "@chatStore": path.resolve(__dirname, "src/stores/chats"),
     "@graphQL": path.resolve(__dirname, "src/graphQL"),
     "@chatTypes": path.resolve(__dirname, "src/@types/chat"),
     "@hooks": path.resolve(__dirname, "src/hooks"),

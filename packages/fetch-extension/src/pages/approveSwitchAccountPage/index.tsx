@@ -9,22 +9,16 @@ import { useInteractionInfo } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import { useStore } from "../../stores";
-import { store } from "@chatStore/index";
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
-import { resetUser } from "@chatStore/user-slice";
-import { resetProposals } from "@chatStore/proposal-slice";
-import {
-  resetChatList,
-  setIsChatSubscriptionActive,
-} from "@chatStore/messages-slice";
 
 export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
   () => {
     const {
       analyticsStore,
-      // accountStore,
+      chatStore,
       keyRingStore,
       accountSwitchStore,
+      proposalStore,
     } = useStore();
 
     const [isLoadingPlaceholder, setIsLoadingPlaceholder] = useState(true);
@@ -237,10 +231,12 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                       accountSwitchStore.approve(address);
                       await keyRingStore.changeKeyRing(index);
                       analyticsStore.logEvent("Account changed");
-                      store.dispatch(resetUser({}));
-                      store.dispatch(resetProposals({}));
-                      store.dispatch(resetChatList({}));
-                      store.dispatch(setIsChatSubscriptionActive(false));
+                      chatStore.userDetailsStore.resetUser();
+                      proposalStore.resetProposals();
+                      chatStore.messagesStore.resetChatList();
+                      chatStore.messagesStore.setIsChatSubscriptionActive(
+                        false
+                      );
                       messageAndGroupListenerUnsubscribe();
                     } catch (error) {
                       console.log(

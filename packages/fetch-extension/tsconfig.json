@@ -15,7 +15,6 @@
       "@chatTypes": ["src/@types/chat"],
       "@notificationTypes": ["src/@types/notification"],
       "@hooks/*": ["src/hooks/*"],
-      "@chatStore/*": ["src/stores/chats/*"],
       "@assets/*": ["src/public/assets/*"],
       "@utils/*": ["src/utils/*"]
     },
