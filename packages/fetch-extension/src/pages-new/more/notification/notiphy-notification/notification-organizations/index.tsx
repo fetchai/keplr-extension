@@ -1,28 +1,25 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { useLocation, useNavigate, useParams } from "react-router";
-import style from "./style.module.scss";
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { Card } from "@components-v2/card";
+import { HeaderLayout } from "@layouts-v2/header-layout";
+import { jazzicon } from "@metamask/jazzicon";
+import {
+  NotificationSetup,
+  NotyphiOrganisation,
+  NotyphiOrganisations,
+} from "@notificationTypes";
 import {
   fetchFollowedOrganisations,
   fetchOrganisations,
   followOrganisation,
   unfollowOrganisation,
 } from "@utils/fetch-notification";
-import { useStore } from "../../../../../stores";
-import {
-  NotificationSetup,
-  NotyphiOrganisation,
-  NotyphiOrganisations,
-} from "@notificationTypes";
-import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
-import { store } from "@chatStore/index";
-import { useSelector } from "react-redux";
-import { FormattedMessage } from "react-intl";
-import { HeaderLayout } from "@layouts-v2/header-layout";
-import { ButtonV2 } from "@components-v2/buttons/button";
-import { Card } from "@components-v2/card";
-import { jazzicon } from "@metamask/jazzicon";
+import { observer } from "mobx-react-lite";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
+import { FormattedMessage } from "react-intl";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { useStore } from "../../../../../stores";
+import style from "./style.module.scss";
 const pageOptions = {
   edit: "edit",
   add: "add",
@@ -36,7 +33,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   // Extracting org id from url
   const newOrg = useLocation().search.split("?")[1]?.split("&");
 
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, chatStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -45,8 +42,8 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
   const [mainOrgList, setMainOrgList] = useState<NotyphiOrganisation[]>([]);
   const [orgList, setOrgList] = useState<NotyphiOrganisation[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<NotyphiOrganisation[]>([]);
-
-  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const userState = chatStore.userDetailsStore;
+  const notificationInfo: NotificationSetup = userState.notifications;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
@@ -66,13 +63,14 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
           fetchFollowedOrganisations(accountInfo.bech32Address).then(
             (followOrganisationList: NotyphiOrganisation[]) => {
               setSelectedOrg(followOrganisationList);
-
-              /// Updating followed orgs in redux
-              store.dispatch(
-                setNotifications({
-                  organisations: followOrganisationList,
-                })
-              );
+              const followOrganisations: NotyphiOrganisations = {};
+              followOrganisationList.forEach((element) => {
+                followOrganisations[element.id] = element;
+              });
+              // Updating followed orgs
+              userState.setNotifications({
+                organisations: followOrganisations,
+              });
             }
           );
         } else {
@@ -128,11 +126,13 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
     });
 
     Promise.allSettled(allPromises).then((_) => {
-      store.dispatch(
-        setNotifications({
-          organisations: selectedOrg,
-        })
-      );
+      const selectedOrganisations: NotyphiOrganisations = {};
+      selectedOrg.forEach((element) => {
+        selectedOrganisations[element.id] = element;
+      });
+      userState.setNotifications({
+        organisations: selectedOrganisations,
+      });
 
       if (type === pageOptions.edit) {
         analyticsStore.logEvent("update_notification_preferences_click", {

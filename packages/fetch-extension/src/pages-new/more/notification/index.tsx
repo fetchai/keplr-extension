@@ -1,22 +1,20 @@
-import { store } from "@chatStore/index";
-import { notificationsDetails, setNotifications } from "@chatStore/user-slice";
 import { Card } from "@components-v2/card";
+import { NotificationOption } from "@components-v2/notification-option";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { NotificationSetup } from "@notificationTypes";
 import React, { FunctionComponent, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
-import { NotificationOption } from "@components-v2/notification-option";
 
 export const MoreNotifications: FunctionComponent = () => {
   const navigate = useNavigate();
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore, chatStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const notificationInfo: NotificationSetup =
+    chatStore.userDetailsStore.notifications;
 
   const topicInfo = JSON.parse(
     localStorage.getItem(`topics-${accountInfo.bech32Address}`) ||
@@ -39,12 +37,10 @@ export const MoreNotifications: FunctionComponent = () => {
       notificationInfo.isNotificationOn ? "false" : "true"
     );
 
-    /// Updating the notification status in redux
-    store.dispatch(
-      setNotifications({
-        isNotificationOn: !notificationInfo.isNotificationOn,
-      })
-    );
+    /// Updating the notification status
+    chatStore.userDetailsStore.setNotifications({
+      isNotificationOn: !notificationInfo.isNotificationOn,
+    });
   };
 
   const icon = useMemo(

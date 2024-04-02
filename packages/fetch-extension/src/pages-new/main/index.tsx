@@ -2,28 +2,29 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 
 import { HeaderLayout } from "@layouts-v2/header-layout";
 
-import { store } from "@chatStore/index";
-import { setAccessToken, setWalletConfig } from "@chatStore/user-slice";
+import { Dropdown } from "@components-v2/dropdown";
 import { useConfirm } from "@components/confirm";
 import { getWalletConfig } from "@graphQL/config-api";
+import { ChainList } from "@layouts-v2/header/chain-list";
 import { getJWT } from "@utils/auth";
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
+import { LineGraphView } from "../../components-v2/line-graph";
 import { AUTH_SERVER } from "../../config.ui.var";
 import { useStore } from "../../stores";
-import { WalletDetailsView } from "./wallet-details";
-import { Dropdown } from "@components-v2/dropdown";
-import { ChainList } from "@layouts-v2/header/chain-list";
-import { WalletOptions } from "./wallet-options";
 import { SetKeyRingPage } from "../keyring-dev";
-import { LineGraphView } from "../../components-v2/line-graph";
+import { WalletDetailsView } from "./wallet-details";
+import { WalletOptions } from "./wallet-options";
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   const [tokenState, setTokenState] = useState({});
   const intl = useIntl();
-  const { chainStore, accountStore, keyRingStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, keyRingStore, analyticsStore, chatStore } =
+    useStore();
+
+  const userState = chatStore.userDetailsStore;
   useEffect(() => {
     analyticsStore.logEvent("Home tab click");
     analyticsStore.setUserProperties({
@@ -59,9 +60,9 @@ export const MainPage: FunctionComponent = observer(() => {
       return;
     }
     getJWT(chainStore.current.chainId, AUTH_SERVER).then((res) => {
-      store.dispatch(setAccessToken(res));
-      getWalletConfig()
-        .then((config) => store.dispatch(setWalletConfig(config)))
+      chatStore.userDetailsStore.setAccessToken(res);
+      getWalletConfig(userState.accessToken)
+        .then((config) => chatStore.userDetailsStore.setWalletConfig(config))
         .catch((error) => {
           console.log(error);
         });

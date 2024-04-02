@@ -1,25 +1,23 @@
-import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 import activityIcon from "@assets/svg/wireframe/new-clock-white.svg";
+import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 
-import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
-import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import agentIcon from "@assets/svg/wireframe/new-robot.svg";
-import { store } from "@chatStore/index";
-import {
-  WalletConfig,
-  notificationsDetails,
-  setNotifications,
-  walletConfig,
-} from "@chatStore/user-slice";
+import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
+import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import { NotificationSetup } from "@notificationTypes";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { WalletActions } from "../../pages-new/main/wallet-actions";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-import { WalletActions } from "../../pages-new/main/wallet-actions";
+
+interface WalletConfig {
+  notiphyWhitelist: string[] | undefined;
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
 
 const bottomNav = [
   {
@@ -62,11 +60,12 @@ export const BottomNav = () => {
 
 const HomeTab = () => <Tab {...bottomNav[0]} />;
 const NotificationTab = () => {
-  const { keyRingStore, accountStore, chainStore } = useStore();
+  const { keyRingStore, accountStore, chainStore, chatStore } = useStore();
   const current = chainStore.current;
+  const userState = chatStore.userDetailsStore;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const config: WalletConfig = useSelector(walletConfig);
-  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
+  const config: WalletConfig = userState.walletConfig;
+  const notificationInfo: NotificationSetup = userState.notifications;
   const [isComingSoon, setIsComingSoon] = useState<boolean>(true);
 
   useEffect(() => {
@@ -89,13 +88,11 @@ const NotificationTab = () => {
         JSON.stringify([])
     );
 
-    store.dispatch(
-      setNotifications({
-        allNotifications: localNotifications,
-        unreadNotification: localNotifications.length > 0,
-        isNotificationOn: notificationFlag == "true",
-      })
-    );
+    userState.setNotifications({
+      allNotifications: localNotifications,
+      unreadNotification: localNotifications.length > 0,
+      isNotificationOn: notificationFlag == "true",
+    });
   }, [accountInfo.bech32Address, config.notiphyWhitelist]);
 
   return (
