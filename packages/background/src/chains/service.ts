@@ -643,11 +643,8 @@ export class ChainsService {
 
   setSelectedChain(chainId: string) {
     this.selectedChainId = chainId;
-    this.interactionService.dispatchEvent(
-      WEBPAGE_PORT,
-      "fetchwallet_networkchange",
-      {}
-    );
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "network-changed", {});
+    this.interactionService.dispatchEvent(WEBPAGE_PORT, "keystore-changed", {});
   }
 
   async getSelectedChain(): Promise<string> {

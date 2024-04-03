@@ -200,7 +200,7 @@ export class SwitchNetworkByChainIdMsg extends Message<void> {
 
 export class SetSelectedChainMsg extends Message<void> {
   public static type() {
-    return "network-changed-event";
+    return "set-selected-chain";
   }
 
   constructor(public readonly chainId: string) {

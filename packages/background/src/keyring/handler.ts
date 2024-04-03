@@ -637,9 +637,9 @@ const handleCurrentAccountMsg: (
 ) => InternalHandler<CurrentAccountMsg> = (service) => {
   return async (env, msg) => {
     const chainId = await service.chainsService.getSelectedChain();
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      chainId,
+      [chainId],
       msg.origin
     );
 
@@ -675,9 +675,9 @@ const handleSwitchAccountMsg: (
 ) => InternalHandler<SwitchAccountMsg> = (service) => {
   return async (env, msg) => {
     const chainId = await service.chainsService.getSelectedChain();
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      chainId,
+      [chainId],
       msg.origin
     );
 
@@ -717,9 +717,9 @@ const handleListAccountsMsg: (
 ) => InternalHandler<ListAccountsMsg> = (service) => {
   return async (env, msg) => {
     const chainId = await service.chainsService.getSelectedChain();
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      chainId,
+      [chainId],
       msg.origin
     );
 
@@ -757,9 +757,9 @@ const handleRequestSignAminoMsgFetchSigning: (
   service: KeyRingService
 ) => InternalHandler<RequestSignAminoMsgFetchSigning> = (service) => {
   return async (env, msg) => {
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      msg.chainId,
+      [msg.chainId],
       msg.origin
     );
 
@@ -778,9 +778,9 @@ const handleRequestSignDirectMsgFetchSigning: (
   service: KeyRingService
 ) => InternalHandler<RequestSignDirectMsgFetchSigning> = (service) => {
   return async (env, msg) => {
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      msg.chainId,
+      [msg.chainId],
       msg.origin
     );
 
@@ -825,9 +825,9 @@ const handleRequestVerifyADR36AminoSignDocFetchSigning: (
   service
 ) => {
   return async (env, msg) => {
-    await service.permissionService.checkOrGrantBasicAccessPermission(
+    await service.permissionService.checkBasicAccessPermission(
       env,
-      msg.chainId,
+      [msg.chainId],
       msg.origin
     );
 
@@ -843,12 +843,18 @@ const handleRequestVerifyADR36AminoSignDocFetchSigning: (
 const handleGetAccountMsg: (
   service: KeyRingService
 ) => InternalHandler<GetAccountMsg> = (service) => {
-  return async (_, msg) => {
+  return async (env, msg) => {
     const kvStore = new ExtensionKVStore("store_chain_config");
     const chainId = await kvStore.get<string>("extension_last_view_chain_id");
     if (!chainId) {
       throw Error("could not detect current chainId");
     }
+
+    await service.permissionService.checkBasicAccessPermission(
+      env,
+      [chainId],
+      msg.origin
+    );
 
     const keys = await service.getKeys(chainId);
 
