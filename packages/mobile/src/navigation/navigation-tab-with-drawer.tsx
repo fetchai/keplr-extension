@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useRef } from "react";
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
 import {
@@ -18,7 +18,7 @@ import { RobotIcon } from "components/new/icon/robot-icon";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
-import { View, ViewStyle } from "react-native";
+import { BackHandler, View, ViewStyle } from "react-native";
 import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
@@ -30,6 +30,7 @@ import { QuickTabOptionModel } from "components/new/quick-tab-card/quick-tab-car
 import { AgentTab } from "screens/agents";
 import { MoreNavigation } from "./more-navigation";
 import { ActivityTab } from "screens/activity";
+import Toast from "react-native-toast-message";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +41,7 @@ export const MainTabNavigation: FunctionComponent = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const [isQuickOptionEnable, setQuickOptionEnable] = React.useState(false);
+  const backClickCountRef = useRef(0);
 
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
@@ -52,6 +54,27 @@ export const MainTabNavigation: FunctionComponent = () => {
       navigation.dispatch(DrawerActions.toggleDrawer());
     }
   }, [focusedScreen.name, isDrawerOpen, navigation]);
+
+  const handleBackButton = () => {
+    if (backClickCountRef.current == 1) {
+      BackHandler.exitApp();
+    } else {
+      backClickCountRef.current++;
+      Toast.show({
+        type: "error",
+        text1: `Press back again to exit the app`,
+        visibilityTime: 3000,
+      });
+    }
+    setTimeout(() => {
+      backClickCountRef.current = 0;
+    }, 3000);
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+  }, []);
 
   enum screenNames {
     Home = "Home",

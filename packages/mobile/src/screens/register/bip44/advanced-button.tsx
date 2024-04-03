@@ -8,7 +8,6 @@ import { observer } from "mobx-react-lite";
 import { BIP44Option } from "./bip44-option";
 import { Button } from "components/button";
 import { useStyle } from "styles/index";
-import { registerModal } from "modals/base";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { InputCardView } from "components/new/card-view/input-card";
@@ -228,102 +227,95 @@ export const BIP44SelectModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   bip44Option: BIP44Option;
-}> = registerModal(
-  observer(({ bip44Option, close }) => {
-    const style = useStyle();
+}> = observer(({ isOpen, bip44Option, close }) => {
+  const style = useStyle();
 
-    const account = useZeroOrPositiveIntegerString(
-      bip44Option.account.toString()
-    );
-    const change = useZeroOrPositiveIntegerString(
-      bip44Option.change.toString()
-    );
-    const index = useZeroOrPositiveIntegerString(bip44Option.index.toString());
+  const account = useZeroOrPositiveIntegerString(
+    bip44Option.account.toString()
+  );
+  const change = useZeroOrPositiveIntegerString(bip44Option.change.toString());
+  const index = useZeroOrPositiveIntegerString(bip44Option.index.toString());
 
-    const isChangeZeroOrOne =
-      change.isValid && (change.number === 0 || change.number === 1);
+  const isChangeZeroOrOne =
+    change.isValid && (change.number === 0 || change.number === 1);
 
-    return (
-      <CardModal title="HD Derivation Path">
+  return (
+    <CardModal isOpen={isOpen} title="HD Derivation Path">
+      <Text
+        style={
+          style.flatten([
+            "body2",
+            "color-gray-200",
+            "font-medium",
+            "margin-bottom-18",
+          ]) as ViewStyle
+        }
+      >
+        HD Derivation Path
+      </Text>
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "items-center",
+            "margin-bottom-16",
+          ]) as ViewStyle
+        }
+      >
+        <Text style={style.flatten(["body2", "color-white"])}>{`m/44’/${
+          bip44Option.coinType ?? "···"
+        }’/ `}</Text>
+        <InputCardView
+          value={account.value}
+          containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+          keyboardType="number-pad"
+          onChangeText={account.setValue}
+        />
+        <Text style={style.flatten(["color-white"])}> ’/ </Text>
+        <InputCardView
+          value={account.value}
+          containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+          keyboardType="number-pad"
+          onChangeText={account.setValue}
+        />
+        <Text style={style.flatten(["color-white"])}> / </Text>
+        <InputCardView
+          value={account.value}
+          containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
+          keyboardType="number-pad"
+          onChangeText={account.setValue}
+        />
+      </View>
+      {change.isValid && !isChangeZeroOrOne ? (
         <Text
           style={
             style.flatten([
-              "body2",
-              "color-gray-200",
-              "font-medium",
-              "margin-bottom-18",
+              "text-caption2",
+              "color-red-400",
+              "margin-bottom-8",
             ]) as ViewStyle
           }
         >
-          HD Derivation Path
+          Change should be 0 or 1
         </Text>
-        <View
-          style={
-            style.flatten([
-              "flex-row",
-              "items-center",
-              "margin-bottom-16",
-            ]) as ViewStyle
-          }
-        >
-          <Text style={style.flatten(["body2", "color-white"])}>{`m/44’/${
-            bip44Option.coinType ?? "···"
-          }’/ `}</Text>
-          <InputCardView
-            value={account.value}
-            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
-            keyboardType="number-pad"
-            onChangeText={account.setValue}
-          />
-          <Text style={style.flatten(["color-white"])}> ’/ </Text>
-          <InputCardView
-            value={account.value}
-            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
-            keyboardType="number-pad"
-            onChangeText={account.setValue}
-          />
-          <Text style={style.flatten(["color-white"])}> / </Text>
-          <InputCardView
-            value={account.value}
-            containerStyle={style.flatten(["min-width-72"]) as ViewStyle}
-            keyboardType="number-pad"
-            onChangeText={account.setValue}
-          />
-        </View>
-        {change.isValid && !isChangeZeroOrOne ? (
-          <Text
-            style={
-              style.flatten([
-                "text-caption2",
-                "color-red-400",
-                "margin-bottom-8",
-              ]) as ViewStyle
-            }
-          >
-            Change should be 0 or 1
-          </Text>
-        ) : null}
-        <Button
-          text="Confirm"
-          size="large"
-          disabled={
-            !account.isValid ||
-            !change.isValid ||
-            !index.isValid ||
-            !isChangeZeroOrOne
-          }
-          onPress={() => {
-            bip44Option.setAccount(account.number);
-            bip44Option.setChange(change.number);
-            bip44Option.setIndex(index.number);
+      ) : null}
+      <Button
+        text="Confirm"
+        size="large"
+        disabled={
+          !account.isValid ||
+          !change.isValid ||
+          !index.isValid ||
+          !isChangeZeroOrOne
+        }
+        onPress={() => {
+          bip44Option.setAccount(account.number);
+          bip44Option.setChange(change.number);
+          bip44Option.setIndex(index.number);
 
-            close();
-          }}
-        />
-      </CardModal>
-    );
-  }),
-  {
-    disableSafeArea: true,
-  }
-);
+          close();
+        }}
+      />
+    </CardModal>
+  );
+});

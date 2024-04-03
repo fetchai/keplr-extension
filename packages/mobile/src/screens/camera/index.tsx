@@ -7,7 +7,6 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { Button } from "components/button";
 import { Share, StyleSheet, View, ViewStyle } from "react-native";
 import { ChainSelectorModal } from "components/chain-selector";
-import { registerModal } from "modals/base";
 import { CardModal } from "modals/card";
 import { AddressCopyable } from "components/address-copyable";
 import QRCode from "react-native-qrcode-svg";
@@ -208,67 +207,62 @@ export const AddressQRCodeModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   chainId: string;
-}> = registerModal(
-  observer(({ chainId, isOpen }) => {
-    const { accountStore } = useStore();
+}> = observer(({ chainId, isOpen }) => {
+  const { accountStore } = useStore();
 
-    const account = accountStore.getAccount(chainId);
+  const account = accountStore.getAccount(chainId);
 
-    const style = useStyle();
+  const style = useStyle();
 
-    if (!isOpen) {
-      return null;
-    }
-
-    return (
-      <CardModal title="Scan QR code">
-        <View style={style.flatten(["items-center"])}>
-          <AddressCopyable address={account.bech32Address} maxCharacters={22} />
-          <View style={style.flatten(["margin-y-32"]) as ViewStyle}>
-            {account.bech32Address ? (
-              <View
-                style={
-                  style.flatten([
-                    "padding-8",
-                    "dark:background-color-white",
-                  ]) as ViewStyle
-                }
-              >
-                <QRCode size={200} value={account.bech32Address} />
-              </View>
-            ) : (
-              <View
-                style={StyleSheet.flatten([
-                  {
-                    width: 200,
-                    height: 200,
-                  },
-                  style.flatten(["background-color-gray-400"]),
-                ])}
-              />
-            )}
-          </View>
-          <View style={style.flatten(["flex-row"])}>
-            <Button
-              containerStyle={style.flatten(["flex-1"])}
-              text="Share Address"
-              mode="light"
-              size="large"
-              loading={account.bech32Address === ""}
-              onPress={() => {
-                Share.share({
-                  message: account.bech32Address,
-                }).catch((e) => {
-                  console.log(e);
-                });
-              }}
-            />
-          </View>
-        </View>
-      </CardModal>
-    );
-  }),
-  {
-    disableSafeArea: true,
+  if (!isOpen) {
+    return null;
   }
-);
+
+  return (
+    <CardModal isOpen={isOpen} title="Scan QR code">
+      <View style={style.flatten(["items-center"])}>
+        <AddressCopyable address={account.bech32Address} maxCharacters={22} />
+        <View style={style.flatten(["margin-y-32"]) as ViewStyle}>
+          {account.bech32Address ? (
+            <View
+              style={
+                style.flatten([
+                  "padding-8",
+                  "dark:background-color-white",
+                ]) as ViewStyle
+              }
+            >
+              <QRCode size={200} value={account.bech32Address} />
+            </View>
+          ) : (
+            <View
+              style={StyleSheet.flatten([
+                {
+                  width: 200,
+                  height: 200,
+                },
+                style.flatten(["background-color-gray-400"]),
+              ])}
+            />
+          )}
+        </View>
+        <View style={style.flatten(["flex-row"])}>
+          <Button
+            containerStyle={style.flatten(["flex-1"])}
+            text="Share Address"
+            mode="light"
+            size="large"
+            loading={account.bech32Address === ""}
+            onPress={() => {
+              Share.share({
+                message: account.bech32Address,
+              }).catch((e) => {
+                console.log(e);
+              });
+            }}
+          />
+        </View>
+      </View>
+    </CardModal>
+  );
+});

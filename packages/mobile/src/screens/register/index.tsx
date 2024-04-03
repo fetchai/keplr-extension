@@ -14,7 +14,6 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { useRegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { registerModal } from "modals/base";
 import { CardModal } from "modals/card";
 import { AppleIcon, DownloadIcon, GoogleIcon } from "components/icon";
 import { HeaderAddIcon } from "components/header/icon";
@@ -235,8 +234,8 @@ export const NewWalletModal: FunctionComponent<{
   onSelectGoogle: () => void;
   onSelectApple: () => void;
   onSelectNewMnemonic: () => void;
-}> = registerModal(
-  observer(({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic }) => {
+}> = observer(
+  ({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic }) => {
     const style = useStyle();
 
     if (!isOpen) {
@@ -244,7 +243,7 @@ export const NewWalletModal: FunctionComponent<{
     }
 
     return (
-      <CardModal title="Create a new wallet">
+      <CardModal isOpen={isOpen} title="Create a new wallet">
         {Platform.OS === "ios" ? (
           <Button
             containerStyle={{
@@ -349,9 +348,6 @@ export const NewWalletModal: FunctionComponent<{
         />
       </CardModal>
     );
-  }),
-  {
-    disableSafeArea: true,
   }
 );
 
@@ -362,56 +358,26 @@ export const ImportExistingWalletModal: FunctionComponent<{
   onSelectApple: () => void;
   onImportExistingWallet: () => void;
   onImportFromFetch: () => void;
-}> = registerModal(
-  observer(
-    ({
-      isOpen,
-      onSelectGoogle,
-      onImportExistingWallet,
-      onImportFromFetch,
-      onSelectApple,
-    }) => {
-      const style = useStyle();
+}> = observer(
+  ({
+    isOpen,
+    onSelectGoogle,
+    onImportExistingWallet,
+    onImportFromFetch,
+    onSelectApple,
+  }) => {
+    const style = useStyle();
 
-      if (!isOpen) {
-        return null;
-      }
+    if (!isOpen) {
+      return null;
+    }
 
-      return (
-        <CardModal title="Import existing wallet">
-          {Platform.OS === "ios" ? (
-            <Button
-              containerStyle={{
-                marginBottom: 15,
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 1,
-                },
-                shadowOpacity: 0.2,
-                shadowRadius: 1.41,
-
-                elevation: 2,
-                backgroundColor: "#fff",
-                borderWidth: 0,
-              }}
-              text="Continue with Apple"
-              leftIcon={
-                <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
-                  <AppleIcon />
-                </View>
-              }
-              size="default"
-              mode="outline"
-              onPress={() => {
-                onSelectApple();
-              }}
-            />
-          ) : null}
-
+    return (
+      <CardModal isOpen={isOpen} title="Import existing wallet">
+        {Platform.OS === "ios" ? (
           <Button
             containerStyle={{
-              marginBottom: 20,
+              marginBottom: 15,
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -424,77 +390,102 @@ export const ImportExistingWalletModal: FunctionComponent<{
               backgroundColor: "#fff",
               borderWidth: 0,
             }}
-            text="Continue with Google"
+            text="Continue with Apple"
             leftIcon={
               <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
-                <GoogleIcon />
+                <AppleIcon />
               </View>
             }
             size="default"
             mode="outline"
             onPress={() => {
-              onSelectGoogle();
+              onSelectApple();
             }}
           />
-          <Text style={style.flatten(["text-center", "color-platinum-300"])}>
-            Powered by Web3Auth
+        ) : null}
+
+        <Button
+          containerStyle={{
+            marginBottom: 20,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+
+            elevation: 2,
+            backgroundColor: "#fff",
+            borderWidth: 0,
+          }}
+          text="Continue with Google"
+          leftIcon={
+            <View style={style.flatten(["margin-right-6"]) as ViewStyle}>
+              <GoogleIcon />
+            </View>
+          }
+          size="default"
+          mode="outline"
+          onPress={() => {
+            onSelectGoogle();
+          }}
+        />
+        <Text style={style.flatten(["text-center", "color-platinum-300"])}>
+          Powered by Web3Auth
+        </Text>
+        <View
+          style={
+            style.flatten([
+              "flex",
+              "flex-row",
+              "items-center",
+              "justify-between",
+              "margin-y-20",
+            ]) as ViewStyle
+          }
+        >
+          <View
+            style={
+              style.flatten([
+                "height-1",
+                "background-color-gray-200",
+                "flex-1",
+              ]) as ViewStyle
+            }
+          />
+          <Text
+            style={style.flatten(["margin-x-15", "font-bold"]) as ViewStyle}
+          >
+            OR
           </Text>
           <View
             style={
               style.flatten([
-                "flex",
-                "flex-row",
-                "items-center",
-                "justify-between",
-                "margin-y-20",
+                "height-1",
+                "background-color-gray-200",
+                "flex-1",
               ]) as ViewStyle
             }
-          >
-            <View
-              style={
-                style.flatten([
-                  "height-1",
-                  "background-color-gray-200",
-                  "flex-1",
-                ]) as ViewStyle
-              }
-            />
-            <Text
-              style={style.flatten(["margin-x-15", "font-bold"]) as ViewStyle}
-            >
-              OR
-            </Text>
-            <View
-              style={
-                style.flatten([
-                  "height-1",
-                  "background-color-gray-200",
-                  "flex-1",
-                ]) as ViewStyle
-              }
-            />
-          </View>
-          <Button
-            text="Import from Fetch Extension"
-            size="default"
-            mode="outline"
-            containerStyle={style.flatten(["margin-bottom-10"]) as ViewStyle}
-            onPress={() => {
-              onImportFromFetch();
-            }}
           />
-          <Button
-            text="Import existing wallet"
-            size="default"
-            onPress={() => {
-              onImportExistingWallet();
-            }}
-          />
-        </CardModal>
-      );
-    }
-  ),
-  {
-    disableSafeArea: true,
+        </View>
+        <Button
+          text="Import from Fetch Extension"
+          size="default"
+          mode="outline"
+          containerStyle={style.flatten(["margin-bottom-10"]) as ViewStyle}
+          onPress={() => {
+            onImportFromFetch();
+          }}
+        />
+        <Button
+          text="Import existing wallet"
+          size="default"
+          onPress={() => {
+            onImportExistingWallet();
+          }}
+        />
+      </CardModal>
+    );
   }
 );

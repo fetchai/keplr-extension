@@ -125,6 +125,7 @@
     "react-native-linear-gradient-text": "^1.2.8",
     "react-native-localize": "^3.0.2",
     "react-native-markdown-view": "^1.1.4",
+    "react-native-modal": "^13.0.1",
     "react-native-parallax-scroll-view": "^0.21.3",
     "react-native-qrcode-svg": "^6.2.0",
     "react-native-reanimated": "^3.3.0",

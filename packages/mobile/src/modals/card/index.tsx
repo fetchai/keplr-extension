@@ -2,10 +2,12 @@ import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import Modal from "react-native-modal";
 import { useStyle } from "styles/index";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-// CONTRACT: Use with { disableSafeArea: true, align: "bottom" } modal options.
 export const CardModal: FunctionComponent<{
+  isOpen: boolean;
   title?: string;
   close?: () => void;
   childrenContainerStyle?: ViewStyle;
@@ -13,6 +15,7 @@ export const CardModal: FunctionComponent<{
   titleStyle?: ViewStyle;
   disableGesture?: boolean;
 }> = ({
+  isOpen,
   title,
   close,
   children,
@@ -24,83 +27,104 @@ export const CardModal: FunctionComponent<{
   const style = useStyle();
 
   return (
-    <View
-      style={[
-        StyleSheet.flatten([
-          style.flatten([
-            "background-color-indigo-900",
-            "border-radius-top-left-32",
-            "border-radius-top-right-32",
-            "overflow-hidden",
-          ]),
-        ]) as ViewStyle,
-        cardStyle,
-      ]}
+    <Modal
+      testID={"modal"}
+      isVisible={isOpen}
+      style={{
+        justifyContent: "flex-end",
+        margin: 0,
+      }}
+      // customBackdrop={
+      //   <BlurBackground
+      //     borderRadius={0}
+      //     containerStyle={{ flex: 1 }}
+      //     blurIntensity={20}
+      //   />
+      // }
+      onBackButtonPress={close}
     >
-      <View style={style.flatten(["padding-x-16", "margin-y-10"]) as ViewStyle}>
+      <GestureHandlerRootView>
         <View
-          style={
-            style.flatten(["items-center", "margin-bottom-16"]) as ViewStyle
-          }
+          style={[
+            StyleSheet.flatten([
+              style.flatten([
+                "background-color-indigo-900",
+                "border-radius-top-left-32",
+                "border-radius-top-right-32",
+                "overflow-hidden",
+              ]),
+            ]) as ViewStyle,
+            cardStyle,
+          ]}
         >
-          {!disableGesture ? (
-            <View style={style.flatten(["margin-top-10"]) as ViewStyle} />
-          ) : null}
-        </View>
-
-        <View
-          style={
-            style.flatten([
-              "flex-row",
-              "items-center",
-              "justify-between",
-              "margin-x-10",
-            ]) as ViewStyle
-          }
-        >
-          {title ? (
-            <Text
-              style={[
-                style.flatten([
-                  "h4",
-                  "color-text-high",
-                  "color-white",
-                  "flex-3",
-                ]),
-                titleStyle,
-              ]}
+          <View
+            style={style.flatten(["padding-x-16", "margin-y-10"]) as ViewStyle}
+          >
+            <View
+              style={
+                style.flatten(["items-center", "margin-bottom-16"]) as ViewStyle
+              }
             >
-              {title}
-            </Text>
-          ) : null}
-          {close ? (
-            <View style={style.flatten(["flex-1", "items-end"])}>
-              <IconButton
-                icon={<XmarkIcon color={"white"} />}
-                backgroundBlur={false}
-                blurIntensity={20}
-                borderRadius={50}
-                onPress={() => close()}
-                iconStyle={
-                  style.flatten([
-                    "padding-12",
-                    "border-width-1",
-                    "border-color-gray-400",
-                  ]) as ViewStyle
-                }
-              />
+              {!disableGesture ? (
+                <View style={style.flatten(["margin-top-10"]) as ViewStyle} />
+              ) : null}
             </View>
-          ) : null}
+
+            <View
+              style={
+                style.flatten([
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                  "margin-x-10",
+                ]) as ViewStyle
+              }
+            >
+              {title ? (
+                <Text
+                  style={[
+                    style.flatten([
+                      "h4",
+                      "color-text-high",
+                      "color-white",
+                      "flex-3",
+                    ]),
+                    titleStyle,
+                  ]}
+                >
+                  {title}
+                </Text>
+              ) : null}
+              {close ? (
+                <View style={style.flatten(["flex-1", "items-end"])}>
+                  <IconButton
+                    icon={<XmarkIcon color={"white"} />}
+                    backgroundBlur={false}
+                    blurIntensity={20}
+                    borderRadius={50}
+                    onPress={() => close()}
+                    iconStyle={
+                      style.flatten([
+                        "padding-12",
+                        "border-width-1",
+                        "border-color-gray-400",
+                      ]) as ViewStyle
+                    }
+                  />
+                </View>
+              ) : null}
+            </View>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              style.flatten(["padding-x-20", "padding-y-10"]) as ViewStyle,
+              childrenContainerStyle,
+            ])}
+          >
+            {children}
+          </View>
         </View>
-      </View>
-      <View
-        style={StyleSheet.flatten([
-          style.flatten(["padding-x-20", "padding-y-10"]) as ViewStyle,
-          childrenContainerStyle,
-        ])}
-      >
-        {children}
-      </View>
-    </View>
+      </GestureHandlerRootView>
+    </Modal>
   );
 };

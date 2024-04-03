@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useState } from "react";
-import { registerModal } from "../base";
 import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { CardModal } from "../card";
@@ -19,88 +18,83 @@ export const PasswordInputModal: FunctionComponent<{
    * @param password
    */
   onEnterPassword: (password: string) => Promise<void>;
-}> = registerModal(
-  ({ close, title, onEnterPassword, isOpen }) => {
-    const style = useStyle();
+}> = ({ close, title, onEnterPassword, isOpen }) => {
+  const style = useStyle();
 
-    const [password, setPassword] = useState("");
-    const [isInvalidPassword, setIsInvalidPassword] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const submitPassword = async () => {
-      setIsLoading(true);
-      try {
-        await onEnterPassword(password);
-        setIsInvalidPassword(false);
-        setPassword("");
-        close();
-      } catch (e) {
-        console.log(e);
-        setIsInvalidPassword(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (!isOpen) {
-      return null;
+  const submitPassword = async () => {
+    setIsLoading(true);
+    try {
+      await onEnterPassword(password);
+      setIsInvalidPassword(false);
+      setPassword("");
+      close();
+    } catch (e) {
+      console.log(e);
+      setIsInvalidPassword(true);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    return (
-      <CardModal
-        title={title}
-        cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
-        titleStyle={style.flatten(["margin-x-24", "text-center"]) as ViewStyle}
-      >
-        <InputCardView
-          label="Password"
-          keyboardType={"default"}
-          rightIcon={
-            !showPassword ? (
-              <IconButton
-                icon={<EyeIcon />}
-                backgroundBlur={false}
-                onPress={() => {
-                  setShowPassword(!showPassword);
-                }}
-              />
-            ) : (
-              <IconButton
-                icon={<HideEyeIcon />}
-                backgroundBlur={false}
-                onPress={() => {
-                  setShowPassword(!showPassword);
-                }}
-              />
-            )
-          }
-          secureTextEntry={!showPassword}
-          error={isInvalidPassword ? "Invalid password" : undefined}
-          onChangeText={(text: string) => {
-            setPassword(text);
-          }}
-          value={password}
-          returnKeyType="done"
-          onSubmitEditing={submitPassword}
-        />
-        <Button
-          text="Continue"
-          size="large"
-          loading={isLoading}
-          onPress={submitPassword}
-          disabled={!password}
-          containerStyle={
-            style.flatten(["border-radius-32", "margin-y-20"]) as ViewStyle
-          }
-        />
-        <KeyboardSpacerView />
-      </CardModal>
-    );
-  },
-  {
-    disableSafeArea: true,
-    blurBackdropOnIOS: true,
+  if (!isOpen) {
+    return null;
   }
-);
+
+  return (
+    <CardModal
+      isOpen={isOpen}
+      title={title}
+      cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
+      titleStyle={style.flatten(["margin-x-24", "text-center"]) as ViewStyle}
+    >
+      <InputCardView
+        label="Password"
+        keyboardType={"default"}
+        rightIcon={
+          !showPassword ? (
+            <IconButton
+              icon={<EyeIcon />}
+              backgroundBlur={false}
+              onPress={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
+          ) : (
+            <IconButton
+              icon={<HideEyeIcon />}
+              backgroundBlur={false}
+              onPress={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
+          )
+        }
+        secureTextEntry={!showPassword}
+        error={isInvalidPassword ? "Invalid password" : undefined}
+        onChangeText={(text: string) => {
+          setPassword(text);
+        }}
+        value={password}
+        returnKeyType="done"
+        onSubmitEditing={submitPassword}
+      />
+      <Button
+        text="Continue"
+        size="large"
+        loading={isLoading}
+        onPress={submitPassword}
+        disabled={!password}
+        containerStyle={
+          style.flatten(["border-radius-32", "margin-y-20"]) as ViewStyle
+        }
+      />
+      <KeyboardSpacerView />
+    </CardModal>
+  );
+};

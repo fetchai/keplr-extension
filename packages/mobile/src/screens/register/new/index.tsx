@@ -13,7 +13,6 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { useRegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { registerModal } from "modals/base";
 import { CardModal } from "modals/card";
 import { DownloadIcon } from "components/icon";
 import { GoogleIcon } from "components/new/icon/google";
@@ -231,66 +230,61 @@ export const NewWalletModal: FunctionComponent<{
   onSelectGoogle: () => void;
   onSelectApple: () => void;
   onSelectNewMnemonic: () => void;
-}> = registerModal(
-  observer(
-    ({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic, close }) => {
-      const style = useStyle();
+}> = observer(
+  ({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic, close }) => {
+    const style = useStyle();
 
-      if (!isOpen) {
-        return null;
-      }
-
-      return (
-        <CardModal
-          title="Create a new wallet"
-          cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-          close={() => close()}
-        >
-          <TokenCardView
-            title="Continue with Google"
-            leadingIcon={<GoogleIcon width={35} height={35} />}
-            subtitle={"Powered by Web3Auth"}
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            onPress={() => {
-              onSelectGoogle();
-            }}
-          />
-          {Platform.OS === "ios" ? (
-            <TokenCardView
-              title="Continue with Apple"
-              leadingIcon={<AppleIcon width={35} height={35} />}
-              containerStyle={
-                style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-              }
-              onPress={() => {
-                onSelectApple();
-              }}
-            />
-          ) : null}
-
-          <TokenCardView
-            title="Create new seed phrase"
-            leadingIcon={
-              <BlurBackground blurIntensity={18}>
-                <KeyIcon width={35} height={35} />
-              </BlurBackground>
-            }
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            onPress={() => {
-              onSelectNewMnemonic();
-            }}
-          />
-        </CardModal>
-      );
+    if (!isOpen) {
+      return null;
     }
-  ),
-  {
-    disableSafeArea: true,
-    blurBackdropOnIOS: true,
+
+    return (
+      <CardModal
+        isOpen={isOpen}
+        title="Create a new wallet"
+        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        close={() => close()}
+      >
+        <TokenCardView
+          title="Continue with Google"
+          leadingIcon={<GoogleIcon width={35} height={35} />}
+          subtitle={"Powered by Web3Auth"}
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          onPress={() => {
+            onSelectGoogle();
+          }}
+        />
+        {Platform.OS === "ios" ? (
+          <TokenCardView
+            title="Continue with Apple"
+            leadingIcon={<AppleIcon width={35} height={35} />}
+            containerStyle={
+              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            }
+            onPress={() => {
+              onSelectApple();
+            }}
+          />
+        ) : null}
+
+        <TokenCardView
+          title="Create new seed phrase"
+          leadingIcon={
+            <BlurBackground blurIntensity={18}>
+              <KeyIcon width={35} height={35} />
+            </BlurBackground>
+          }
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          onPress={() => {
+            onSelectNewMnemonic();
+          }}
+        />
+      </CardModal>
+    );
   }
 );
 
@@ -302,81 +296,76 @@ export const ImportExistingWalletModal: FunctionComponent<{
   onImportFromFetch: () => void;
   onConnectLedger: () => void;
   onMigrateFromETH: () => void;
-}> = registerModal(
-  observer(
-    ({
-      isOpen,
-      onImportExistingWallet,
-      onImportFromFetch,
-      onConnectLedger,
-      onMigrateFromETH,
-      close,
-    }) => {
-      const style = useStyle();
+}> = observer(
+  ({
+    isOpen,
+    onImportExistingWallet,
+    onImportFromFetch,
+    onConnectLedger,
+    onMigrateFromETH,
+    close,
+  }) => {
+    const style = useStyle();
 
-      if (!isOpen) {
-        return null;
-      }
-
-      return (
-        <CardModal
-          title="Import existing wallet"
-          cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-          close={() => close()}
-        >
-          <TokenCardView
-            title="Import from Fetch extension"
-            leadingIcon={<FetchIcon />}
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            onPress={onImportFromFetch}
-          />
-          <TokenCardView
-            title="Use a seed phrase or a private key"
-            leadingIcon={
-              <BlurBackground blurIntensity={18}>
-                <KeyIcon width={35} height={35} />
-              </BlurBackground>
-            }
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            onPress={onImportExistingWallet}
-          />
-          <TokenCardView
-            title="Connect hardware wallet"
-            leadingIcon={
-              <BlurBackground blurIntensity={18}>
-                <BluetoothIcon width={35} height={35} />
-              </BlurBackground>
-            }
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            subtitle={"Requires bluetooth access to pair"}
-            onPress={onConnectLedger}
-          />
-          <TokenCardView
-            title="Migrate from ETH"
-            leadingIcon={
-              <BlurBackground blurIntensity={18}>
-                <MetaMaskIcon />
-              </BlurBackground>
-            }
-            containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
-            }
-            onPress={() => {
-              onMigrateFromETH();
-            }}
-          />
-        </CardModal>
-      );
+    if (!isOpen) {
+      return null;
     }
-  ),
-  {
-    disableSafeArea: true,
-    blurBackdropOnIOS: true,
+
+    return (
+      <CardModal
+        isOpen={isOpen}
+        title="Import existing wallet"
+        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
+        close={() => close()}
+      >
+        <TokenCardView
+          title="Import from Fetch extension"
+          leadingIcon={<FetchIcon />}
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          onPress={onImportFromFetch}
+        />
+        <TokenCardView
+          title="Use a seed phrase or a private key"
+          leadingIcon={
+            <BlurBackground blurIntensity={18}>
+              <KeyIcon width={35} height={35} />
+            </BlurBackground>
+          }
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          onPress={onImportExistingWallet}
+        />
+        <TokenCardView
+          title="Connect hardware wallet"
+          leadingIcon={
+            <BlurBackground blurIntensity={18}>
+              <BluetoothIcon width={35} height={35} />
+            </BlurBackground>
+          }
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          subtitle={"Requires bluetooth access to pair"}
+          onPress={onConnectLedger}
+        />
+        <TokenCardView
+          title="Migrate from ETH"
+          leadingIcon={
+            <BlurBackground blurIntensity={18}>
+              <MetaMaskIcon />
+            </BlurBackground>
+          }
+          containerStyle={
+            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+          }
+          onPress={() => {
+            onMigrateFromETH();
+          }}
+        />
+      </CardModal>
+    );
   }
 );
