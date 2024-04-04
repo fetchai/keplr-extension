@@ -681,34 +681,7 @@ const handleSwitchAccountMsg: (
       msg.origin
     );
 
-    const keys = await service.getKeys(chainId);
-    const chainInfo = await service.chainsService.getChainInfo(chainId);
-    const isEVM = chainInfo.features?.includes("evm");
-    let addressFound = false;
-
-    keys.forEach(async (key, i) => {
-      const bech32Address = new Bech32Address(key.address).toBech32(
-        chainInfo.bech32Config.bech32PrefixAccAddr
-      );
-
-      if (isEVM) {
-        const hexAddress = Bech32Address.fromBech32(
-          bech32Address,
-          chainInfo.bech32Config.bech32PrefixAccAddr
-        ).toHex(true);
-
-        if (hexAddress === msg.address) {
-          addressFound = true;
-          await service.switchAccountByAddress(env, msg.address, msg.origin, i);
-        }
-      } else if (bech32Address === msg.address) {
-        addressFound = true;
-        await service.switchAccountByAddress(env, msg.address, msg.origin, i);
-      }
-    });
-    if (!addressFound) {
-      throw Error("address not found");
-    }
+    await service.switchAccountByAddress(env, msg.address, msg.origin);
   };
 };
 

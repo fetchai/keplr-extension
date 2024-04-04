@@ -10,6 +10,9 @@ import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import { useStore } from "../../stores";
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
+import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
+import { ListAccountsMsg } from "@keplr-wallet/background";
+import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
 export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
   () => {
@@ -19,9 +22,11 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
       keyRingStore,
       accountSwitchStore,
       proposalStore,
+      chainStore,
     } = useStore();
 
     const [isLoadingPlaceholder, setIsLoadingPlaceholder] = useState(true);
+    const [addressIndex, setAddressIndex] = useState<number>();
     const navigate = useNavigate();
 
     const interactionInfo = useInteractionInfo(() => {
@@ -29,22 +34,53 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
     });
 
     useEffect(() => {
-      if (accountSwitchStore.waitingSuggestedAccount) {
-        // TODO: update event properties then change chainId below
-        analyticsStore.logEvent("Account switch suggested", {
-          chainId: accountSwitchStore.waitingSuggestedAccount.data.address,
-        });
-      }
-    }, [analyticsStore, accountSwitchStore.waitingSuggestedAccount]);
+      const findAndSetAddressIndex = async () => {
+        if (accountSwitchStore.waitingSuggestedAccount) {
+          // TODO: update event properties then change chainId below
+          const requester = new InExtensionMessageRequester();
+          const msg = new ListAccountsMsg();
+          const accounts = await requester.sendMessage(BACKGROUND_PORT, msg);
 
-    useEffect(() => {
-      setTimeout(() => {
-        setIsLoadingPlaceholder(false);
-      }, 1000);
-    }, []);
+          const isEvm = chainStore.current.features?.includes("evm") ?? false;
+          const addresses = accounts.map((account) => {
+            if (isEvm) {
+              return account.EVMAddress;
+            }
+
+            return account.bech32Address;
+          });
+
+          const index = addresses.findIndex((a) => {
+            return (
+              accountSwitchStore.waitingSuggestedAccount &&
+              a === accountSwitchStore.waitingSuggestedAccount.data.address
+            );
+          });
+
+          setAddressIndex(index);
+          analyticsStore.logEvent("Account switch suggested", {
+            chainId: accountSwitchStore.waitingSuggestedAccount.data.address,
+          });
+          setIsLoadingPlaceholder(false);
+        }
+      };
+
+      findAndSetAddressIndex();
+    }, [
+      keyRingStore,
+      chainStore,
+      analyticsStore,
+      accountSwitchStore,
+      accountSwitchStore.waitingSuggestedAccount,
+    ]);
+
+    // useEffect(() => {
+    //   setTimeout(() => {
+    //     setIsLoadingPlaceholder(false);
+    //   }, 1000);
+    // }, []);
 
     if (!accountSwitchStore.waitingSuggestedAccount) {
-      console.log("returning null");
       return null;
     }
 
@@ -188,6 +224,13 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     }}
                   />
                 </div>
+
+                {addressIndex === -1 && (
+                  <p>
+                    Provided addresses not found in keyring. Nothing to Approve,
+                    reject to close this window
+                  </p>
+                )}
               </div>
             }
             <div className={style["buttons"]}>
@@ -217,19 +260,20 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
               <Button
                 className={style["button"]}
                 color="primary"
-                disabled={!accountSwitchStore.waitingSuggestedAccount}
+                disabled={
+                  !accountSwitchStore.waitingSuggestedAccount ||
+                  addressIndex === -1
+                }
                 data-loading={accountSwitchStore.isLoading}
                 onClick={async (e: any) => {
                   e.preventDefault();
 
                   const address =
                     accountSwitchStore.waitingSuggestedAccount?.data.address;
-                  const index =
-                    accountSwitchStore.waitingSuggestedAccount?.data.index;
-                  if (address !== undefined && index !== undefined) {
+                  if (address !== undefined && addressIndex !== undefined) {
                     try {
                       accountSwitchStore.approve(address);
-                      await keyRingStore.changeKeyRing(index);
+                      keyRingStore.changeKeyRing(addressIndex);
                       analyticsStore.logEvent("Account changed");
                       chatStore.userDetailsStore.resetUser();
                       proposalStore.resetProposals();

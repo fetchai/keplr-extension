@@ -14,7 +14,6 @@ export class AccountSwitchStore {
     const datas = this.interactionStore.getDatas<{
       address: string;
       origin: string;
-      index: number;
     }>(SwitchAccountMsg.type());
 
     if (datas.length > 0) {

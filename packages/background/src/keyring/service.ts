@@ -1036,8 +1036,7 @@ Salt: ${salt}`;
   async switchAccountByAddress(
     env: Env,
     address: string,
-    origin: string,
-    index: number
+    origin: string
   ): Promise<void> {
     (await this.interactionService.waitApprove(
       env,
@@ -1046,7 +1045,6 @@ Salt: ${salt}`;
       {
         address,
         origin,
-        index,
       }
     )) as string;
   }
