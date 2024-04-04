@@ -23,7 +23,7 @@ import { Button } from "components/button";
 import { BlurButton } from "components/new/button/blur-button";
 import { CheckIcon } from "components/new/icon/check";
 import Toast from "react-native-toast-message";
-import { LedgerErrorView } from "./ledger-error";
+import { LedgerErrorView } from "./ledger-error-view";
 import { LedgerNanoBLESelector } from "./ledger-selector";
 
 enum BLEPermissionGrantStatus {

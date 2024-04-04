@@ -10,6 +10,7 @@ export const CardModal: FunctionComponent<{
   isOpen: boolean;
   title?: string;
   close?: () => void;
+  showCloseButton?: boolean;
   childrenContainerStyle?: ViewStyle;
   cardStyle?: ViewStyle;
   titleStyle?: ViewStyle;
@@ -18,6 +19,7 @@ export const CardModal: FunctionComponent<{
   isOpen,
   title,
   close,
+  showCloseButton = true,
   children,
   childrenContainerStyle,
   disableGesture = false,
@@ -42,6 +44,8 @@ export const CardModal: FunctionComponent<{
       //   />
       // }
       onBackButtonPress={close}
+      onBackdropPress={close}
+      animationInTiming={500}
     >
       <GestureHandlerRootView>
         <View
@@ -95,7 +99,7 @@ export const CardModal: FunctionComponent<{
                   {title}
                 </Text>
               ) : null}
-              {close ? (
+              {showCloseButton && close ? (
                 <View style={style.flatten(["flex-1", "items-end"])}>
                   <IconButton
                     icon={<XmarkIcon color={"white"} />}

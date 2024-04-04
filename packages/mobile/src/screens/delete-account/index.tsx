@@ -17,6 +17,7 @@ import { SimpleCardView } from "components/new/card-view/simple-card";
 import { canShowPrivateData } from "screens/setting/screens/view-private-data";
 import { PasswordInputModal } from "modals/password-input/modal";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { ConfirmCardModel } from "components/new/confirm-modal";
 
 export const DeleteWalletScreen: FunctionComponent = observer(() => {
   const { keyRingStore, keychainStore } = useStore();
@@ -28,6 +29,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
   const [isInvalidPassword, setIsInvalidPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [showConfirmModal, setConfirmModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,27 +42,13 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
     );
     try {
       if (index >= 0) {
-        await keyRingStore.deleteKeyRing(index, password);
-        if (keyRingStore.multiKeyStoreInfo.length === 0) {
-          await keychainStore.reset();
-
-          navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: "Unlock",
-              },
-            ],
-          });
-        }
+        await keyRingStore.showKeyRing(index, password);
+        setIsInvalidPassword(false);
+        setConfirmModal(true);
       }
-      setIsInvalidPassword(false);
-      setPassword("");
-      navigation.goBack();
     } catch (e) {
       console.log(e);
       setIsInvalidPassword(true);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -94,6 +82,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         keyboardType={"default"}
         error={isInvalidPassword ? "Invalid password" : undefined}
         onChangeText={(text: string) => {
+          setIsInvalidPassword(false);
           setPassword(text);
         }}
         value={password}
@@ -160,6 +149,44 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
               privateData,
               privateDataType: keyRingStore.keyRingType,
             });
+          }
+        }}
+      />
+      <ConfirmCardModel
+        isOpen={showConfirmModal}
+        close={() => setConfirmModal(false)}
+        title={"Delete wallet"}
+        subtitle={"Are you sure you want to delete this wallet?"}
+        select={async (confirm: boolean) => {
+          if (confirm) {
+            const index = keyRingStore.multiKeyStoreInfo.findIndex(
+              (keyStore) => keyStore.selected
+            );
+            try {
+              if (index >= 0) {
+                await keyRingStore.deleteKeyRing(index, password);
+                if (keyRingStore.multiKeyStoreInfo.length === 0) {
+                  await keychainStore.reset();
+
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: "Unlock",
+                      },
+                    ],
+                  });
+                }
+              }
+              setPassword("");
+              navigation.goBack();
+            } catch (e) {
+              console.log(e);
+            } finally {
+              setIsLoading(false);
+            }
+          } else {
+            setIsLoading(false);
           }
         }}
       />

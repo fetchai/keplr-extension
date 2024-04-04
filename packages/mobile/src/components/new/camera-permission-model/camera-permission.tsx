@@ -29,6 +29,7 @@ export const CameraPermissionModal: FunctionComponent<{
       >
         <IconWithText
           icon={icon}
+          iconStyle={{ marginRight: -45 }}
           title={title}
           subtitle={
             "We need your permission to access the camera to scan the QR code in the next step."

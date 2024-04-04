@@ -15,7 +15,6 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { HeaderRightButton } from "components/header";
 import { HeaderAddIcon } from "components/header/icon";
 import { AddressBookIcon } from "components/icon";
-import { useConfirmModal } from "providers/confirm-modal";
 import { IconButton } from "components/new/button/icon";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
@@ -27,8 +26,6 @@ import { ConfirmCardModel } from "components/new/confirm-modal";
 
 export const AddressBookScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
-
-  const confirmModal = useConfirmModal();
 
   const route = useRoute<
     RouteProp<
@@ -110,19 +107,6 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
   }, [addressBookConfig, chainId, chainStore, smartNavigation, style]);
 
   const isInTransaction = recipientConfig != null || memoConfig != null;
-
-  const deleteAddress = async (i: number) => {
-    if (
-      await confirmModal.confirm({
-        title: "Remove Address",
-        paragraph: "Are you sure you want to remove this address?",
-        yesButtonText: "Remove",
-        noButtonText: "Cancel",
-      })
-    ) {
-      addressBookConfig.removeAddressBook(i);
-    }
-  };
 
   return addressBookConfig.addressBookDatas.length > 0 ? (
     <PageWithScrollView
