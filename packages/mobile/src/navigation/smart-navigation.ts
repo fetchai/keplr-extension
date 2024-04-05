@@ -7,6 +7,7 @@ import {
   AddressBookData,
   IMemoConfig,
   IRecipientConfig,
+  IRecipientConfigWithICNS,
   RegisterConfig,
 } from "@keplr-wallet/hooks";
 import { NewMnemonicConfig } from "screens/register/mnemonic";
@@ -246,6 +247,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       };
       Camera: {
         showMyQRButton?: boolean;
+        recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
       };
       "Validator.Details": {
         validatorAddress: string;

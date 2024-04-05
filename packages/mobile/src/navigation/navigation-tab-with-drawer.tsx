@@ -23,10 +23,12 @@ import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
 import { HomeNavigation } from "navigation/home-navigation";
-import { QuickTabOptions } from "screens/home/new/quick-tab-options";
 import { DrawerContent } from "components/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { QuickTabOptionModel } from "components/new/quick-tab-card/quick-tab-card";
+import {
+  QuickTabOptionModel,
+  QuickTabOptions,
+} from "components/new/quick-tab-card/quick-tab-card";
 import { AgentTab } from "screens/agents";
 import { MoreNavigation } from "./more-navigation";
 import { ActivityTab } from "screens/activity";

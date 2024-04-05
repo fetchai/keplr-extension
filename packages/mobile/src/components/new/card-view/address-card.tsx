@@ -46,6 +46,8 @@ export const AddressInputCard: FunctionComponent<{
   placeholderText?: string;
   recipientConfig: IRecipientConfig | IRecipientConfigWithICNS;
   memoConfig?: IMemoConfig;
+  onFocus?: any;
+  onBlur?: any;
 }> = observer(
   ({
     label,
@@ -53,6 +55,8 @@ export const AddressInputCard: FunctionComponent<{
     placeholderText,
     recipientConfig,
     memoConfig,
+    onFocus,
+    onBlur,
   }) => {
     const style = useStyle();
     const smartNavigation = useSmartNavigation();
@@ -62,6 +66,7 @@ export const AddressInputCard: FunctionComponent<{
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [openCameraModel, setIsOpenCameraModel] = useState(false);
     const [modelStatus, setModelStatus] = useState(ModelStatus.First);
+    const [isFocused, setIsFocused] = useState(false);
 
     const chainId = chainStore.current.chainId;
 
@@ -136,7 +141,19 @@ export const AddressInputCard: FunctionComponent<{
           blurIntensity={16}
           containerStyle={
             [
-              style.flatten(["padding-x-18", "padding-y-8"]),
+              style.flatten(
+                ["padding-x-18", "padding-y-8"],
+                isFocused || errorText
+                  ? [
+                      // The order is important.
+                      // The border color has different priority according to state.
+                      // The more in front, the lower the priority.
+                      "border-width-1",
+                      isFocused ? "border-color-indigo" : undefined,
+                      errorText ? "border-color-red-400" : undefined,
+                    ]
+                  : []
+              ),
               backgroundContainerStyle,
             ] as ViewStyle
           }
@@ -163,6 +180,20 @@ export const AddressInputCard: FunctionComponent<{
                     text = text + recipientConfig.icnsExpectedBech32Prefix;
                   }
                   recipientConfig.setRawRecipient(text);
+                }}
+                onFocus={(e) => {
+                  setIsFocused(true);
+
+                  if (onFocus) {
+                    onFocus(e);
+                  }
+                }}
+                onBlur={(e) => {
+                  setIsFocused(false);
+
+                  if (onBlur) {
+                    onBlur(e);
+                  }
                 }}
               />
             </View>
@@ -197,6 +228,7 @@ export const AddressInputCard: FunctionComponent<{
                       } else {
                         smartNavigation.navigateSmart("Camera", {
                           showMyQRButton: false,
+                          recipientConfig: recipientConfig,
                         });
                       }
                     }

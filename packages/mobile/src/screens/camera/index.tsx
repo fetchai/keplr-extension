@@ -18,11 +18,22 @@ import {
   registerExportedAddressBooks,
   registerExportedKeyRingDatas,
 } from "utils/import-from-extension";
-import { AddressBookConfigMap, useRegisterConfig } from "@keplr-wallet/hooks";
+import {
+  AddressBookConfigMap,
+  IRecipientConfig,
+  IRecipientConfigWithICNS,
+  useRegisterConfig,
+} from "@keplr-wallet/hooks";
 import { AsyncKVStore } from "../../common";
-import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { CameraType } from "expo-camera/src/Camera.types";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { CHAIN_ID_DORADO } from "../../config";
 
 export const CameraScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -31,6 +42,7 @@ export const CameraScreen: FunctionComponent = observer(() => {
         string,
         {
           showMyQRButton?: boolean;
+          recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
         }
       >,
       string
@@ -40,6 +52,8 @@ export const CameraScreen: FunctionComponent = observer(() => {
   const showQRButton = route.params.showMyQRButton ? true : false;
 
   const { chainStore, walletConnectStore, keyRingStore } = useStore();
+
+  const navigation = useNavigation();
 
   const style = useStyle();
 
@@ -102,15 +116,30 @@ export const CameraScreen: FunctionComponent = observer(() => {
 
                 if (isBech32Address) {
                   const prefix = data.slice(0, data.indexOf("1"));
-                  const chainInfo = chainStore.chainInfosInUI.find(
-                    (chainInfo) =>
-                      chainInfo.bech32Config.bech32PrefixAccAddr === prefix
-                  );
-                  if (chainInfo) {
-                    smartNavigation.pushSmart("Send", {
-                      chainId: chainInfo.chainId,
-                      recipient: data,
-                    });
+                  let chainId: string | undefined;
+                  if (
+                    prefix.toLowerCase() === "fetch" &&
+                    chainStore.current.chainId === CHAIN_ID_DORADO
+                  ) {
+                    chainId = chainStore.current.chainId;
+                  } else {
+                    const chainInfo = chainStore.chainInfosInUI.find(
+                      (chainInfo) =>
+                        chainInfo.bech32Config.bech32PrefixAccAddr === prefix
+                    );
+                    chainId = chainInfo?.chainId;
+                  }
+
+                  if (chainId) {
+                    if (route.params.recipientConfig) {
+                      route.params.recipientConfig.setRawRecipient(data);
+                      navigation.goBack();
+                    } else {
+                      smartNavigation.pushSmart("SendNew", {
+                        chainId: chainId,
+                        recipient: data,
+                      });
+                    }
                   } else {
                     smartNavigation.navigateSmart("Home", {});
                   }
