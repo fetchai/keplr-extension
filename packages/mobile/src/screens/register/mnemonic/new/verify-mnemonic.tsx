@@ -176,7 +176,6 @@ const WordButton: FunctionComponent<{
             "padding-y-6",
             "margin-4",
             "flex-1",
-            "items-center",
             "border-radius-32",
             "border-width-1",
             "border-color-gray-300",
@@ -189,7 +188,7 @@ const WordButton: FunctionComponent<{
     >
       <Text
         style={style.flatten(
-          ["body3", "color-white"],
+          ["text-caption1", "color-white", "text-center"],
           [used && "color-platinum-400"]
         )}
       >

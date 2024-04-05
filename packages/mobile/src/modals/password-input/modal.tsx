@@ -80,11 +80,13 @@ export const PasswordInputModal: FunctionComponent<{
         secureTextEntry={!showPassword}
         error={isInvalidPassword ? "Invalid password" : undefined}
         onChangeText={(text: string) => {
-          setPassword(text);
+          setPassword(text.trim());
+          setIsInvalidPassword(false);
         }}
         value={password}
         returnKeyType="done"
         onSubmitEditing={submitPassword}
+        containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
       />
       <Button
         text="Continue"

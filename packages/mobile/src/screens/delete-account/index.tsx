@@ -83,7 +83,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         error={isInvalidPassword ? "Invalid password" : undefined}
         onChangeText={(text: string) => {
           setIsInvalidPassword(false);
-          setPassword(text);
+          setPassword(text.trim());
         }}
         value={password}
         onFocus={() => {
@@ -190,6 +190,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
           }
         }}
       />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

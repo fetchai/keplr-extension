@@ -36,16 +36,11 @@ export const CardModal: FunctionComponent<{
         justifyContent: "flex-end",
         margin: 0,
       }}
-      // customBackdrop={
-      //   <BlurBackground
-      //     borderRadius={0}
-      //     containerStyle={{ flex: 1 }}
-      //     blurIntensity={20}
-      //   />
-      // }
       onBackButtonPress={close}
       onBackdropPress={close}
+      animationType="slide"
       animationInTiming={500}
+      animationOutTiming={500}
     >
       <GestureHandlerRootView>
         <View

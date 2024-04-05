@@ -54,8 +54,16 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
       <InputCardView
         label="Nickname"
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
-        onChangeText={(text: string) => setName(text)}
+        onChangeText={(text: string) => {
+          text = text.replace(/[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/, "");
+          if (text[0] === " ") {
+            text = text.replace(/\s+/g, "");
+          }
+          text = text.replace(/ {1,}/g, " ");
+          setName(text);
+        }}
         value={name}
+        maxLength={30}
       />
       <AddressInput
         label="Address"

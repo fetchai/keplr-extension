@@ -72,7 +72,9 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
           ]) as ViewStyle
         }
       >
-        <Text style={style.flatten(["body3", "color-white"])}>{item}</Text>
+        <Text style={style.flatten(["text-caption1", "color-white"])}>
+          {item}
+        </Text>
       </BlurBackground>
     );
   };

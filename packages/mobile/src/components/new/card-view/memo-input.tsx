@@ -75,6 +75,7 @@ export const MemoInputView: FunctionComponent<{
               onChangeText={(text: string) => {
                 memoConfig.setMemo(text);
               }}
+              maxLength={100}
               onFocus={(e) => {
                 setIsFocused(true);
 

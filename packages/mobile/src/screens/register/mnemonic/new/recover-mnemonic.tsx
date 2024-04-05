@@ -223,6 +223,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     return (
       <InputCardView
         key={items.index}
+        autoCapitalize="none"
         label={selectedSeed === SeedType.PRIVATE_KEY ? "Private key" : null}
         labelStyle={style.flatten(["margin-top-0", "padding-top-0"])}
         containerStyle={[style.flatten(["margin-4", "flex-1"])] as ViewStyle}

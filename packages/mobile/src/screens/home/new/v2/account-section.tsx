@@ -213,7 +213,16 @@ export const AccountSection: FunctionComponent<{
         />
       </BlurBackground>
       <View style={style.flatten(["items-center"]) as ViewStyle}>
-        <View style={style.flatten(["flex-row", "margin-top-14"]) as ViewStyle}>
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "margin-top-14",
+              "justify-center",
+              "width-full",
+            ]) as ViewStyle
+          }
+        >
           <Text
             style={
               style.flatten(["h1", "color-white", "font-medium"]) as ViewStyle
@@ -234,7 +243,17 @@ export const AccountSection: FunctionComponent<{
           </Text>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-4"]) as ViewStyle}>
-          <Text style={style.flatten(["color-gray-300", "h7"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten([
+                "color-gray-300",
+                "body3",
+                "font-bold",
+                "width-full",
+                "text-center",
+              ]) as ViewStyle
+            }
+          >
             {totalPrice &&
               ` ${totalPrice.toString()} ${priceStore.defaultVsCurrency.toUpperCase()}`}
           </Text>

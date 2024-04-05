@@ -68,12 +68,21 @@ export const TokenCardView: FunctionComponent<{
             ) : null}
           </View>
         </View>
-        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "justify-end",
+              "flex-wrap",
+              "flex-1",
+            ]) as ViewStyle
+          }
+        >
           {trailingStart ? (
             <Text
               style={
                 style.flatten([
-                  "h6",
+                  "body2",
                   "color-white",
                   "font-extrabold",
                 ]) as ViewStyle

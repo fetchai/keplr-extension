@@ -160,7 +160,15 @@ export const Right: FunctionComponent<{
   return (
     <React.Fragment>
       {paragraph ? (
-        <Text style={style.flatten(["body3", "color-text-low"]) as ViewStyle}>
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-text-low",
+              "font-bold",
+            ]) as ViewStyle
+          }
+        >
           {paragraph}
         </Text>
       ) : null}
