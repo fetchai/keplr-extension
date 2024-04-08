@@ -126,6 +126,7 @@ export const ADR36SignDocDetailsTab: FunctionComponent<{
                 borderRadius: "8px",
                 whiteSpace: "pre-wrap",
                 wordWrap: "break-word",
+                color: "white",
               }}
             >
               {signValue}

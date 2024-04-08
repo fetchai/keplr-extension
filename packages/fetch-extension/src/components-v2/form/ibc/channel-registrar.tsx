@@ -33,6 +33,7 @@ export const IBCChannelRegistrar: FunctionComponent<{
           <FormattedMessage id="component.ibc.channel-registrar.chain-selector.label" />
         </Label>
         <button
+          type="button"
           className={style["selector"]}
           onClick={() => setIsChainDropdownOpen((value) => !value)}
         >

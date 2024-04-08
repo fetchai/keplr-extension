@@ -65,7 +65,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               marginBottom: "6px",
             }}
             leftImage={require("@assets/svg/wireframe/arrow-down.svg")}
-            heading={"Recieve"}
+            heading={"Receive"}
             onClick={() => {
               if (hasAssets) {
                 navigate("/receive");
