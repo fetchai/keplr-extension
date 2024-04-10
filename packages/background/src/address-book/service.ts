@@ -1,15 +1,21 @@
 import { AddressBookEntry } from "@fetchai/wallet-types";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { ChainsService } from "src/chains";
+import { PermissionService } from "src/permission";
 
 export class AddressBookService {
   protected addressBook: AddressBookEntry[] = [];
-  protected chainService: ChainsService;
   protected kvStore: ExtensionKVStore;
 
-  constructor(chainService: ChainsService) {
+  public chainService!: ChainsService;
+  public permissionService!: PermissionService;
+  constructor(
+    chainService: ChainsService,
+    permissionService: PermissionService
+  ) {
     this.chainService = chainService;
     this.kvStore = new ExtensionKVStore("address-book");
+    this.permissionService = permissionService;
   }
 
   public async listEntries() {

@@ -30,6 +30,12 @@ const handleListEntriesMsg: (
   service: AddressBookService
 ) => InternalHandler<ListEntriesMsg> = (service) => {
   return async (_env, _msg) => {
+    const chainId = await service.chainService.getSelectedChain();
+    await service.permissionService.checkBasicAccessPermission(
+      _env,
+      [chainId],
+      _msg.origin
+    );
     return service.listEntries();
   };
 };
@@ -38,6 +44,12 @@ const handleAddEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<AddEntryMsg> = (service) => {
   return async (_env, _msg) => {
+    const chainId = await service.chainService.getSelectedChain();
+    await service.permissionService.checkBasicAccessPermission(
+      _env,
+      [chainId],
+      _msg.origin
+    );
     return service.addEntry(_msg.entry);
   };
 };
@@ -46,6 +58,12 @@ const handleUpdateEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<UpdateEntryMsg> = (service) => {
   return async (_env, _msg) => {
+    const chainId = await service.chainService.getSelectedChain();
+    await service.permissionService.checkBasicAccessPermission(
+      _env,
+      [chainId],
+      _msg.origin
+    );
     return service.updateEntry(_msg.entry);
   };
 };
@@ -54,6 +72,12 @@ const handleDeleteEntryMsg: (
   service: AddressBookService
 ) => InternalHandler<DeleteEntryMsg> = (service) => {
   return async (_env, _msg) => {
+    const chainId = await service.chainService.getSelectedChain();
+    await service.permissionService.checkBasicAccessPermission(
+      _env,
+      [chainId],
+      _msg.origin
+    );
     return service.deleteEntry(_msg.address);
   };
 };

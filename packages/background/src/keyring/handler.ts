@@ -39,6 +39,7 @@ import {
   ListAccountsMsg,
   GetAccountMsg,
   RestoreWalletMsg,
+  GetKeyMsgFetchSigning,
 } from "./messages";
 import { KeyRingService } from "./service";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -172,6 +173,11 @@ export const getHandler: (service: KeyRingService) => Handler = (
         return handleSwitchAccountMsg(service)(env, msg as SwitchAccountMsg);
       case ListAccountsMsg:
         return handleListAccountsMsg(service)(env, msg as ListAccountsMsg);
+      case GetKeyMsgFetchSigning:
+        return handleGetKeyMsgFetchSigning(service)(
+          env,
+          msg as GetKeyMsgFetchSigning
+        );
       case RequestSignAminoMsgFetchSigning:
         return handleRequestSignAminoMsgFetchSigning(service)(
           env,
@@ -856,5 +862,43 @@ const handleGetAccountMsg: (
       }
     });
     return foundAccount;
+  };
+};
+
+const handleGetKeyMsgFetchSigning: (
+  service: KeyRingService
+) => InternalHandler<GetKeyMsgFetchSigning> = (service) => {
+  return async (env, msg) => {
+    const chainId = await service.chainsService.getSelectedChain();
+    await service.permissionService.checkBasicAccessPermission(
+      env,
+      [chainId],
+      msg.origin
+    );
+
+    const key = await service.getKey(chainId);
+
+    const chainInfo = await service.chainsService.getChainInfo(chainId);
+    const isEVM = chainInfo.features?.includes("evm");
+    const bech32Add = new Bech32Address(key.address).toBech32(
+      chainInfo.bech32Config.bech32PrefixAccAddr
+    );
+
+    const hexadd = Bech32Address.fromBech32(
+      bech32Add,
+      chainInfo.bech32Config.bech32PrefixAccAddr
+    ).toHex(true);
+
+    const acc: Account = {
+      name: service.getKeyStoreMeta("name"),
+      algo: key.algo,
+      pubKey: key.pubKey,
+      address: key.address,
+      bech32Address: isEVM ? "" : bech32Add,
+      isNanoLedger: key.isNanoLedger,
+      isKeystone: key.isKeystone,
+      EVMAddress: isEVM ? hexadd : "",
+    };
+    return acc;
   };
 };

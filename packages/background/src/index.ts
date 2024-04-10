@@ -79,8 +79,6 @@ export function init(
     }
   );
 
-  const addressBookService = new AddressBook.AddressBookService(chainsService);
-
   const tokensService = new Tokens.TokensService(storeCreator("tokens"));
 
   const persistentMemoryService =
@@ -89,6 +87,11 @@ export function init(
   const permissionService = new Permission.PermissionService(
     storeCreator("permission"),
     privilegedOrigins
+  );
+
+  const addressBookService = new AddressBook.AddressBookService(
+    chainsService,
+    permissionService
   );
 
   const backgroundTxService = new BackgroundTx.BackgroundTxService(

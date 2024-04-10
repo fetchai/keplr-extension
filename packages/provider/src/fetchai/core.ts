@@ -7,6 +7,7 @@ import {
   StdSignature,
   DirectSignResponse,
   OfflineDirectSigner,
+  EthSignType,
 } from "@keplr-wallet/types";
 
 import {
@@ -278,6 +279,29 @@ export class FetchSigning implements SigningApi {
         signature
       )
     );
+  }
+
+  async signEthereum(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array,
+    type: EthSignType
+  ): Promise<Uint8Array> {
+    let isADR36WithString: boolean;
+    [data, isADR36WithString] = this.getDataForADR36(data);
+    const signDoc = this.getADR36SignDoc(signer, data);
+
+    if (data === "") {
+      throw new Error("Signing empty data is not supported.");
+    }
+
+    const msg = new RequestSignAminoMsgFetchSigning(chainId, signer, signDoc, {
+      isADR36WithString,
+      ethSignType: type,
+    });
+    const signature = (await this.requester.sendMessage(BACKGROUND_PORT, msg))
+      .signature;
+    return Buffer.from(signature.signature, "base64");
   }
 
   async getOfflineSigner(
