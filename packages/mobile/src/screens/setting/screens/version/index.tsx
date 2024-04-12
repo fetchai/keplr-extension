@@ -17,12 +17,6 @@ export const FetchVersionScreen: FunctionComponent = () => {
   const [currentCodeVersion, setCurrentCodeVersion] = useState<
     string | undefined
   >(undefined);
-  /* const [latestCodeVersion, setLatestCodeVersion] = useState<
-    string | undefined
-  >(undefined);
-  const [pendingCodeVersion, setPendingCodeVersion] = useState<
-    string | undefined
-  >(undefined);*/
 
   useEffect(() => {
     codePush.getUpdateMetadata(codePush.UpdateState.RUNNING).then((update) => {
@@ -32,22 +26,6 @@ export const FetchVersionScreen: FunctionComponent = () => {
         setCurrentCodeVersion("");
       }
     });
-
-    /*codePush.getUpdateMetadata(codePush.UpdateState.LATEST).then((update) => {
-      if (update) {
-        setLatestCodeVersion(update.label);
-      } else {
-        setLatestCodeVersion("");
-      }
-    });
-
-    codePush.getUpdateMetadata(codePush.UpdateState.PENDING).then((update) => {
-      if (update) {
-        setPendingCodeVersion(update.label);
-      } else {
-        setPendingCodeVersion("");
-      }
-    });*/
   }, []);
 
   const parseVersion = (version: string | undefined) => {
@@ -116,16 +94,6 @@ export const FetchVersionScreen: FunctionComponent = () => {
       {codeBundleId ? (
         <SettingItem label="Code Bundle ID" paragraph={codeBundleId} />
       ) : null}
-      {/* <SettingSectionTitle title="Remote" />
-      <SettingItem
-        label="Latest Code Version"
-        paragraph={parseVersion(latestCodeVersion)}
-        topBorder={true}
-      />
-      <SettingItem
-        label="Pending Code Version"
-        paragraph={parseVersion(pendingCodeVersion)}
-      />*/}
     </PageWithScrollView>
   );
 };

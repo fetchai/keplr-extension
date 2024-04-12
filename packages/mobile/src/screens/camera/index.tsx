@@ -34,6 +34,7 @@ import {
 import { CameraType } from "expo-camera/src/Camera.types";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { CHAIN_ID_DORADO } from "../../config";
+import Toast from "react-native-toast-message";
 
 export const CameraScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -143,7 +144,7 @@ export const CameraScreen: FunctionComponent = observer(() => {
                   } else {
                     smartNavigation.navigateSmart("Home", {});
                   }
-                } else {
+                } else if (!route.params.recipientConfig) {
                   const sharedData =
                     parseQRCodeDataForImportFromExtension(data);
 
@@ -178,6 +179,12 @@ export const CameraScreen: FunctionComponent = observer(() => {
                         },
                       },
                     ],
+                  });
+                } else {
+                  navigation.goBack();
+                  Toast.show({
+                    type: "error",
+                    text1: "Please scan valid QR",
                   });
                 }
               }

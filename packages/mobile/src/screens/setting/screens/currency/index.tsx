@@ -23,7 +23,8 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
     return Object.keys(priceStore.supportedVsCurrencies).map((key) => {
       return {
         key,
-        label: key.toUpperCase(),
+        label: priceStore.supportedVsCurrencies[key]?.currency.toUpperCase(),
+        symbol: priceStore.supportedVsCurrencies[key]?.symbol,
       };
     });
   }, [priceStore.supportedVsCurrencies]);
@@ -60,7 +61,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
             }}
           >
             <Text style={style.flatten(["subtitle1", "color-white"])}>
-              {item.label}
+              {item.label} ({item.symbol})
             </Text>
             {item.key === priceStore.defaultVsCurrency ? <CheckIcon /> : null}
           </RectButton>

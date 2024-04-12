@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useRef } from "react";
 import { PageWithScrollViewInBottomTabView } from "components/page";
-import { Platform, ScrollView, ViewStyle } from "react-native";
+import { Platform, ScrollView, Text, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { useStyle } from "styles/index";
@@ -26,7 +26,21 @@ export const AgentTab: FunctionComponent = () => {
         icon={<ColumnFrame />}
         isComingSoon={true}
         titleStyle={style.flatten(["h3"]) as ViewStyle}
-      />
+      >
+        <Text
+          style={
+            style.flatten([
+              "body2",
+              "color-gray-200",
+              "padding-y-8",
+              "text-center",
+              "font-medium",
+            ]) as ViewStyle
+          }
+        >
+          {"You can use this feature in your\nbrowser extension."}
+        </Text>
+      </IconWithText>
     </PageWithScrollViewInBottomTabView>
   );
 };

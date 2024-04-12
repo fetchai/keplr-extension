@@ -32,6 +32,7 @@ import { EyeIcon } from "components/new/icon/eye";
 import { FaceDetectIcon } from "components/new/icon/face-icon";
 import { IconButton } from "components/new/button/icon";
 import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
+import Toast from "react-native-toast-message";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -168,6 +169,12 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       await keychainStore.tryUnlockWithBiometry();
     } catch (e) {
       console.log(e);
+      if (!e.message.includes("code: 13")) {
+        Toast.show({
+          type: "error",
+          text1: `${e.message.slice(e.message.indexOf("msg:") + 5)}`,
+        });
+      }
       setIsBiometricLoading(false);
     }
   }, [keychainStore]);

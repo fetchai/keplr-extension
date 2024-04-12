@@ -180,8 +180,7 @@ export const AccountSection: FunctionComponent<{
               "margin-x-16",
               "margin-top-18",
               "margin-bottom-12",
-              "padding-x-10",
-              "padding-y-10",
+              "padding-10",
               "border-width-1",
               "border-color-indigo-200",
             ]),
@@ -271,7 +270,7 @@ export const AccountSection: FunctionComponent<{
               {tokenState.type === "positive" && "+"}
               {changeInDollarsValue.toFixed(4)} {totalDenom}(
               {tokenState.type === "positive" ? "+" : "-"}
-              {parseFloat(tokenState.diff).toFixed(2)})
+              {parseFloat(tokenState.diff).toFixed(2)} %)
             </Text>
             <Text
               style={

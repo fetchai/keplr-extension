@@ -19,7 +19,8 @@ export const InboxScreen = () => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
-      contentContainerStyle={style.flatten(["margin-x-20"]) as ViewStyle}
+      contentContainerStyle={style.get("flex-grow-1")}
+      style={style.flatten(["padding-x-page", "height-full"]) as ViewStyle}
       ref={scrollViewRef}
     >
       <Text
@@ -35,17 +36,14 @@ export const InboxScreen = () => {
       <View
         style={
           style.flatten([
-            "margin-y-16",
-            "height-full",
+            "margin-y-24",
             "justify-center",
             "items-center",
           ]) as ViewStyle
         }
       >
-        <View style={style.get("flex-1")} />
         {selectedId === InboxEnum.Notification && <NotificationSection />}
         {selectedId === InboxEnum.Chat && <ChatSection />}
-        <View style={style.get("flex-2")} />
       </View>
     </PageWithScrollViewInBottomTabView>
   );
