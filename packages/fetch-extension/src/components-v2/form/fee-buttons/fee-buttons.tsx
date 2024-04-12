@@ -215,7 +215,6 @@ export const FeeButtonsInner: FunctionComponent<
     label,
     feeSelectLabels = { low: "Low", average: "Average", high: "High" },
     feeButtonState,
-    gasSimulator,
   }) => {
     useEffect(() => {
       if (feeConfig.feeCurrency && !feeConfig.fee) {
@@ -259,8 +258,6 @@ export const FeeButtonsInner: FunctionComponent<
     const highFee = feeConfig.getFeeTypePretty("high");
     const highFeePrice = priceStore.calculatePrice(highFee, fiatCurrency);
 
-    let isFeeLoading = false;
-    console.log("is fee loading : ", isFeeLoading);
     const error = feeConfig.error;
     const errorText: string | undefined = (() => {
       if (error) {
@@ -270,7 +267,6 @@ export const FeeButtonsInner: FunctionComponent<
               id: "input.fee.error.insufficient",
             });
           case NotLoadedFeeError:
-            isFeeLoading = true;
             return undefined;
           default:
             return (
@@ -280,10 +276,6 @@ export const FeeButtonsInner: FunctionComponent<
         }
       }
     })();
-
-    if (gasSimulator && gasSimulator.isSimulating) {
-      isFeeLoading = true;
-    }
 
     return (
       <FormGroup>
