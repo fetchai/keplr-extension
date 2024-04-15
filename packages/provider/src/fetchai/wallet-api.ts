@@ -12,6 +12,7 @@ import {
 import {
   AminoSignResponse,
   DirectSignResponse,
+  EthSignType,
   KeplrIntereactionOptions,
   KeplrSignOptions,
   OfflineAminoSigner,
@@ -147,6 +148,19 @@ export class InjectedFetchSigning implements SigningApi {
     return k;
   }
 
+  async signEthereum(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array,
+    type: EthSignType
+  ): Promise<Uint8Array> {
+    return await this.requestViaProxy("signEthereum", [
+      chainId,
+      signer,
+      data,
+      type,
+    ]);
+  }
   async signAmino(
     chainId: string,
     signer: string,

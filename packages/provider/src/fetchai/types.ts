@@ -22,7 +22,8 @@ export type WalletSigningMethod =
   | "verifyArbitrary"
   | "getOfflineSigner"
   | "getOfflineDirectSigner"
-  | "getOfflineAminoSigner";
+  | "getOfflineAminoSigner"
+  | "signEthereum";
 
 export type WalletMethod =
   | "status"

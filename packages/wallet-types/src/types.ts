@@ -7,6 +7,7 @@ import {
   StdSignDoc,
   DirectSignResponse,
   StdSignature,
+  EthSignType,
 } from "@keplr-wallet/types";
 import { PublicKey } from "./public-keys";
 import { NetworkConfig } from "./network-info";
@@ -244,6 +245,13 @@ export interface SigningApi {
     signDoc: StdSignDoc,
     signOptions?: KeplrSignOptions
   ): Promise<AminoSignResponse>;
+
+  signEthereum(
+    chainId: string,
+    signer: string,
+    data: string | Uint8Array,
+    type: EthSignType
+  ): Promise<Uint8Array>;
 
   signDirect(
     chainId: string,
