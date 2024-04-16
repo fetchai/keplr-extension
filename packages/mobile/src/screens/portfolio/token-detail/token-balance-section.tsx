@@ -4,7 +4,6 @@ import { Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { ArrowDownGradientIcon } from "components/new/icon/arrow-down-gradient";
 import { ArrowUpGradientIcon } from "components/new/icon/arrow-up-gradient";
-import { EarnIcon } from "components/new/icon/earn-icon";
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
 import {
@@ -133,25 +132,25 @@ export const TokenBalanceSection: FunctionComponent<{
           }
         />
       </View>
-      <Button
-        text={"Earn"}
-        textStyle={
-          style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
-        }
-        rightIcon={<EarnIcon size={15} />}
-        containerStyle={
-          style.flatten([
-            "background-color-white",
-            "border-radius-32",
-            "margin-y-12",
-          ]) as ViewStyle
-        }
-        onPress={() =>
-          navigation.navigate("Others", {
-            screen: "Staking.Dashboard",
-          })
-        }
-      />
+      {/*<Button*/}
+      {/*  text={"Earn"}*/}
+      {/*  textStyle={*/}
+      {/*    style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle*/}
+      {/*  }*/}
+      {/*  rightIcon={<EarnIcon size={15} />}*/}
+      {/*  containerStyle={*/}
+      {/*    style.flatten([*/}
+      {/*      "background-color-white",*/}
+      {/*      "border-radius-32",*/}
+      {/*      "margin-y-12",*/}
+      {/*    ]) as ViewStyle*/}
+      {/*  }*/}
+      {/*  onPress={() =>*/}
+      {/*    navigation.navigate("Others", {*/}
+      {/*      screen: "Staking.Dashboard",*/}
+      {/*    })*/}
+      {/*  }*/}
+      {/*/>*/}
     </View>
   );
 });

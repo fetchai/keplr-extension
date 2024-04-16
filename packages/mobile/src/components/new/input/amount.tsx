@@ -14,7 +14,7 @@ import { TextInput } from "components/input";
 import { useStyle } from "styles/index";
 import * as RNLocalize from "react-native-localize";
 import { ReloadIcon } from "../icon/reload-icon";
-import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { useStore } from "stores/index";
 import { parseDollarAmount } from "utils/format/format";
 import { BlurButton } from "../button/blur-button";
@@ -44,12 +44,14 @@ export const AmountInputSection: FunctionComponent<{
   };
 
   useEffect(() => {
-    const amountInNumber =
-      parseFloat(amountConfig.amount) *
-      10 ** amountConfig.sendCurrency.coinDecimals;
+    const currencyDecimals = amountConfig.sendCurrency.coinDecimals;
+
+    let dec = new Dec(amountConfig.amount ? amountConfig.amount : "0");
+    dec = dec.mul(DecUtils.getTenExponentNInPrecisionRange(currencyDecimals));
+    const amountInNumber = dec.truncate().toString();
     const inputValue = new CoinPretty(
       amountConfig.sendCurrency,
-      new Int(amountConfig.amount ? amountInNumber : 0)
+      new Int(amountInNumber)
     );
     const inputValueInUsd = convertToUsd(inputValue);
     setInputInUsd(inputValueInUsd);

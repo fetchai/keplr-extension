@@ -32,7 +32,7 @@ export const AndroidLineChart: FunctionComponent<{ data: any }> = ({
 
   const Gradient = () => (
     <Defs key={"gradient"}>
-      <LinearGradient id={"gradient"} x1={"0"} y1={"0%"} x2={"100%"} y2={"0%"}>
+      <LinearGradient id={"gradient"} x1={"0"} y1={"0%"} x2={"0%"} y2={"100%"}>
         <Stop offset={"0%"} stopColor={"#5F38FB"} />
         <Stop offset={"50%"} stopColor={"#CF447B"} />
         <Stop offset={"100%"} stopColor={"#F9774B"} />
