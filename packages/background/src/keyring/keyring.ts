@@ -1719,17 +1719,18 @@ export class KeyRing {
         }
         case "privateKey": {
           let privKey;
-          if (!this.privateKey) {
-            throw new Error(
-              "Key store type is private key and it is unlocked. But, private key is not loaded unexpectedly"
-            );
-          }
+          const privateKey = Buffer.from(
+            Buffer.from(
+              await Crypto.decrypt(this.crypto, keyStore, this.password)
+            ).toString(),
+            "hex"
+          );
           switch (keyStore.curve) {
             case KeyCurves.secp256k1:
-              privKey = new PrivKeySecp256k1(this.privateKey);
+              privKey = new PrivKeySecp256k1(privateKey);
               break;
             case KeyCurves.bls12381:
-              privKey = new SecretKeyBls12381(this.privateKey);
+              privKey = new SecretKeyBls12381(privateKey);
               break;
             default:
               throw new Error(`Unexpected key curve: "${keyStore.curve}"`);
@@ -1761,15 +1762,13 @@ export class KeyRing {
           break;
         }
         case "keystone": {
-          if (
-            !this.keystonePublicKey ||
-            this.keystonePublicKey.keys.length === 0
-          ) {
-            throw new Error("Keystone public key not set");
-          }
-          const key = this.keystonePublicKey.keys.find(
-            (e) => e.coinType === coinType
+          const cipherText = await Crypto.decrypt(
+            this.crypto,
+            keyStore,
+            this.password
           );
+          const key = JSON.parse(Buffer.from(cipherText).toString());
+
           if (!key) {
             throw new Error("CoinType is not available");
           }
@@ -1801,12 +1800,31 @@ export class KeyRing {
           break;
         }
         case "ledger": {
-          if (!this.ledgerPublicKeyCache) {
-            throw new Error("Ledger public key not set");
+          const cipherText = await Crypto.decrypt(
+            this.crypto,
+            keyStore,
+            this.password
+          );
+
+          const pubKeys: Record<string, Uint8Array> = {};
+
+          try {
+            const encodedPubkeys = JSON.parse(
+              Buffer.from(cipherText).toString()
+            );
+            Object.keys(encodedPubkeys).forEach(
+              (k) => (pubKeys[k] = Buffer.from(encodedPubkeys[k], "hex"))
+            );
+          } catch (e) {
+            // Decode as bytes (Legacy representation)
+            pubKeys[LedgerApp.Cosmos] = Buffer.from(
+              Buffer.from(cipherText).toString(),
+              "hex"
+            );
           }
 
           if (useEthereumAddress) {
-            const pubKey = this.ensureLedgerPublicKey(LedgerApp.Ethereum);
+            const pubKey = pubKeys[LedgerApp.Ethereum];
             // Generate the Ethereum address for this public key
             const address = computeAddress(pubKey);
 
@@ -1819,9 +1837,7 @@ export class KeyRing {
               isNanoLedger: true,
             });
           } else {
-            const pubKey = new PubKeySecp256k1(
-              this.ensureLedgerPublicKey(LedgerApp.Cosmos)
-            );
+            const pubKey = new PubKeySecp256k1(pubKeys[LedgerApp.Cosmos]);
 
             keys.push({
               name: keyStore.meta ? keyStore.meta["name"] : "Unnamed Account",

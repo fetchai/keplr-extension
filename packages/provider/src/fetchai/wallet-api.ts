@@ -149,17 +149,10 @@ export class InjectedFetchSigning implements SigningApi {
   }
 
   async signEthereum(
-    chainId: string,
-    signer: string,
     data: string | Uint8Array,
     type: EthSignType
   ): Promise<Uint8Array> {
-    return await this.requestViaProxy("signEthereum", [
-      chainId,
-      signer,
-      data,
-      type,
-    ]);
+    return await this.requestViaProxy("signEthereum", [data, type]);
   }
   async signAmino(
     chainId: string,

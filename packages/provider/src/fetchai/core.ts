@@ -9,7 +9,7 @@ import {
   OfflineDirectSigner,
   EthSignType,
 } from "@keplr-wallet/types";
-
+import { Bech32Address } from "@keplr-wallet/cosmos";
 import {
   EnableAccessMsg,
   StatusMsg,
@@ -253,11 +253,11 @@ export class FetchSigning implements SigningApi {
     let isADR36WithString: boolean;
     [data, isADR36WithString] = this.getDataForADR36(data);
     const signDoc = this.getADR36SignDoc(signer, data);
-
     const msg = new RequestSignAminoMsgFetchSigning(chainId, signer, signDoc, {
       isADR36WithString,
     });
-    return (await this.requester.sendMessage(BACKGROUND_PORT, msg)).signature;
+    const signData = await this.requester.sendMessage(BACKGROUND_PORT, msg);
+    return signData.signature;
   }
 
   async verifyArbitrary(
@@ -282,13 +282,28 @@ export class FetchSigning implements SigningApi {
   }
 
   async signEthereum(
-    chainId: string,
-    signer: string,
     data: string | Uint8Array,
     type: EthSignType
   ): Promise<Uint8Array> {
     let isADR36WithString: boolean;
     [data, isADR36WithString] = this.getDataForADR36(data);
+
+    const network = await this.requester.sendMessage(
+      BACKGROUND_PORT,
+      new GetNetworkMsg()
+    );
+    const chainId = network.chainId;
+    const key = await this.getCurrentKey(chainId);
+
+    let signer;
+    if (key.bech32Address) {
+      signer = key.bech32Address;
+    } else {
+      signer = new Bech32Address(key.address).toBech32(
+        network.bech32Config.bech32PrefixAccAddr
+      );
+    }
+
     const signDoc = this.getADR36SignDoc(signer, data);
 
     if (data === "") {
