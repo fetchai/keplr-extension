@@ -7,17 +7,7 @@ import React, {
 
 import styleFeeButtons from "./fee-buttons.module.scss";
 
-import {
-  Button,
-  ButtonDropdown,
-  ButtonGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  FormFeedback,
-  FormGroup,
-  Label,
-} from "reactstrap";
+import { Button, ButtonGroup, FormFeedback, FormGroup } from "reactstrap";
 
 import { observer } from "mobx-react-lite";
 import {
@@ -29,13 +19,13 @@ import {
 } from "@keplr-wallet/hooks";
 import { CoinGeckoPriceStore } from "@keplr-wallet/stores";
 import { useLanguage } from "../../../languages";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { GasInput } from "../gas-input";
 import { action, autorun, makeObservable, observable } from "mobx";
 import { GasContainer } from "../gas-form";
-import styleCoinInput from "../coin-input.module.scss";
 import { useStore } from "../../../stores";
 import { Card } from "@components-v2/card";
+import { FeeCurrencySelector } from "./fee-currency-selector";
 
 export interface FeeButtonsProps {
   feeConfig: IFeeConfig;
@@ -213,85 +203,6 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
   }
 );
 
-export const FeeCurrencySelector: FunctionComponent<{
-  feeConfig: IFeeConfig;
-}> = observer(({ feeConfig }) => {
-  const { queriesStore } = useStore();
-  const queryBalances = queriesStore
-    .get(feeConfig.chainId)
-    .queryBalances.getQueryBech32Address(feeConfig.sender);
-
-  const [randomId] = useState(() => {
-    const bytes = new Uint8Array(4);
-    crypto.getRandomValues(bytes);
-    return Buffer.from(bytes).toString("hex");
-  });
-
-  const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
-
-  const firstFeeCurrencyDenom =
-    feeConfig.feeCurrencies.length > 0
-      ? feeConfig.feeCurrencies[0].coinMinimalDenom
-      : "";
-
-  // Show the fee currencies that account has.
-  // But, always show the first fee currency to reduce the confusion to user because first fee currency has priority.
-  const selectableCurrencies = feeConfig.feeCurrencies.filter((cur) => {
-    if (
-      firstFeeCurrencyDenom &&
-      cur.coinMinimalDenom === firstFeeCurrencyDenom
-    ) {
-      return true;
-    }
-
-    const bal = queryBalances.getBalanceFromCurrency(cur);
-    return !bal.toDec().isZero();
-  });
-
-  return (
-    <FormGroup>
-      <Label
-        for={`selector-${randomId}`}
-        className="form-control-label"
-        style={{ width: "100%" }}
-      >
-        <FormattedMessage id="input.fee.selector.fee-currency" />
-      </Label>
-      <ButtonDropdown
-        id={`selector-${randomId}`}
-        className={styleCoinInput["tokenSelector"]}
-        isOpen={isOpenTokenSelector}
-        toggle={() => setIsOpenTokenSelector((value) => !value)}
-      >
-        <DropdownToggle caret>
-          {feeConfig.feeCurrency?.coinDenom || "Unknown"}
-        </DropdownToggle>
-        <DropdownMenu>
-          {selectableCurrencies.map((currency) => {
-            return (
-              <DropdownItem
-                key={currency.coinMinimalDenom}
-                active={
-                  currency.coinMinimalDenom === feeConfig.feeCurrency?.coinDenom
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  feeConfig.setAutoFeeCoinMinimalDenom(
-                    currency.coinMinimalDenom
-                  );
-                }}
-              >
-                {currency.coinDenom}
-              </DropdownItem>
-            );
-          })}
-        </DropdownMenu>
-      </ButtonDropdown>
-    </FormGroup>
-  );
-});
-
 export const FeeButtonsInner: FunctionComponent<
   Pick<
     FeeButtonsProps,
@@ -304,7 +215,6 @@ export const FeeButtonsInner: FunctionComponent<
     label,
     feeSelectLabels = { low: "Low", average: "Average", high: "High" },
     feeButtonState,
-    gasSimulator,
   }) => {
     useEffect(() => {
       if (feeConfig.feeCurrency && !feeConfig.fee) {
@@ -348,8 +258,6 @@ export const FeeButtonsInner: FunctionComponent<
     const highFee = feeConfig.getFeeTypePretty("high");
     const highFeePrice = priceStore.calculatePrice(highFee, fiatCurrency);
 
-    let isFeeLoading = false;
-    console.log("is fee loading : ", isFeeLoading);
     const error = feeConfig.error;
     const errorText: string | undefined = (() => {
       if (error) {
@@ -359,7 +267,6 @@ export const FeeButtonsInner: FunctionComponent<
               id: "input.fee.error.insufficient",
             });
           case NotLoadedFeeError:
-            isFeeLoading = true;
             return undefined;
           default:
             return (
@@ -369,10 +276,6 @@ export const FeeButtonsInner: FunctionComponent<
         }
       }
     })();
-
-    if (gasSimulator && gasSimulator.isSimulating) {
-      isFeeLoading = true;
-    }
 
     return (
       <FormGroup>

@@ -92,7 +92,7 @@ export const AssetView = observer(() => {
               justifyContent: "center",
             }}
             onClick={() => navigate("/receive")}
-            text={"Recieve"}
+            text={"Receive"}
           >
             <img
               className={style["img"]}

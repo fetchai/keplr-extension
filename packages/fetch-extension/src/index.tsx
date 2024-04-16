@@ -13,6 +13,14 @@ import "./styles/global.scss";
 
 import { HashRouter, Route, Routes } from "react-router-dom";
 
+import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
+import { NotificationPage } from "./pages/notification";
+import { IBCTransferPage } from "./pages-new/more/ibc-transfer";
+
+import { MainPage } from "./pages-new/main";
+import { RegisterPage } from "./pages-new/register";
+import { SendPage } from "./pages-new/send";
+import { SetKeyRingPage } from "./pages/setting/keyring";
 import { Banner } from "@components/banner";
 import { ConfirmProvider } from "@components/confirm";
 import { LoadingIndicatorProvider } from "@components/loading-indicator";
@@ -21,13 +29,6 @@ import {
   NotificationStoreProvider,
 } from "@components/notification";
 import { LockPage } from "./pages-new/lock";
-import { MainPage } from "./pages-new/main";
-import { RegisterPage } from "./pages-new/register";
-import { SendPage } from "./pages-new/send";
-import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
-import { IBCTransferPage } from "./pages/ibc-transfer";
-import { NotificationPage } from "./pages/notification";
-import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";

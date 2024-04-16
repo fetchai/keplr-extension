@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { Button, FormText, Label } from "reactstrap";
+import { Button, FormText } from "reactstrap";
 import { ContactBookPage } from "../../pages-new/contact-book";
 
 import styleAddressInput from "./address-input.module.scss";
@@ -172,9 +172,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
 
     return (
       <React.Fragment>
-        <Label style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
-          {label}
-        </Label>
+        <div className={styleAddressInput["label"]}>{label}</div>
         <Card
           style={{
             background: "rgba(255, 255, 255, 0.1)",

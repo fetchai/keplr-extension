@@ -261,7 +261,7 @@ export const AxelarBridgeEVM = observer(() => {
           height: "72px",
           background: "rgba(255,255,255,0.1)",
         }}
-        heading={"Recieve as"}
+        heading={"Receive as"}
         subheading={toToken && toToken.assetSymbol}
         rightContent={require("@assets/svg/wireframe/chevron-down.svg")}
       />
