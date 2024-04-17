@@ -62,39 +62,23 @@ export function init(
     }>;
   }> = {}
 ) {
-  const interactionService = new Interaction.InteractionService(
-    eventMsgRequester,
-    commonCrypto.rng
-  );
+  const interactionService = new Interaction.InteractionService(eventMsgRequester, commonCrypto.rng);
 
-  const chainsService = new Chains.ChainsService(
-    storeCreator("chains"),
-    embedChainInfos,
-    {
-      useMemoryKVStoreForSuggestChain:
-        experimentalOptions.suggestChain?.useMemoryKVStore,
-    }
-  );
+  const chainsService = new Chains.ChainsService(storeCreator("chains"), embedChainInfos, {
+    useMemoryKVStoreForSuggestChain: experimentalOptions.suggestChain?.useMemoryKVStore,
+  });
 
   const tokensService = new Tokens.TokensService(storeCreator("tokens"));
 
-  const persistentMemoryService =
-    new PersistentMemory.PersistentMemoryService();
+  const persistentMemoryService = new PersistentMemory.PersistentMemoryService();
 
-  const permissionService = new Permission.PermissionService(
-    storeCreator("permission"),
-    privilegedOrigins
-  );
+  const permissionService = new Permission.PermissionService(storeCreator("permission"), privilegedOrigins);
 
-  const backgroundTxService = new BackgroundTx.BackgroundTxService(
-    notification
-  );
+  const backgroundTxService = new BackgroundTx.BackgroundTxService(notification);
 
   const phishingListService = new PhishingList.PhishingListService({
-    blockListUrl:
-      "https://raw.githubusercontent.com/chainapsis/phishing-block-list/main/block-list.txt",
-    twitterListUrl:
-      "https://raw.githubusercontent.com/chainapsis/phishing-block-list/main/twitter-scammer-list.txt",
+    blockListUrl: "https://raw.githubusercontent.com/chainapsis/phishing-block-list/main/block-list.txt",
+    twitterListUrl: "https://raw.githubusercontent.com/chainapsis/phishing-block-list/main/twitter-scammer-list.txt",
     fetchingIntervalMs: 3 * 3600 * 1000, // 3 hours
     retryIntervalMs: 10 * 60 * 1000, // 10 mins,
     allowTimeoutMs: 10 * 60 * 1000, // 10 mins,
@@ -106,33 +90,17 @@ export function init(
     analyticsPrivilegedOrigins
   );
 
-  const keyRingService = new KeyRing.KeyRingService(
-    storeCreator("keyring"),
-    embedChainInfos,
-    commonCrypto
-  );
+  const keyRingService = new KeyRing.KeyRingService(storeCreator("keyring"), embedChainInfos, commonCrypto);
 
-  const autoLockAccountService = new AutoLocker.AutoLockAccountService(
-    storeCreator("auto-lock-account")
-  );
+  const autoLockAccountService = new AutoLocker.AutoLockAccountService(storeCreator("auto-lock-account"));
 
-  const chainUpdaterService = new Updater.ChainUpdaterService(
-    storeCreator("updator"),
-    communityChainInfoRepo
-  );
+  const chainUpdaterService = new Updater.ChainUpdaterService(storeCreator("updator"), communityChainInfoRepo);
 
-  const secretWasmService = new SecretWasm.SecretWasmService(
-    storeCreator("secretwasm")
-  );
+  const secretWasmService = new SecretWasm.SecretWasmService(storeCreator("secretwasm"));
 
-  const ledgerService = new Ledger.LedgerService(
-    storeCreator("ledger"),
-    ledgerOptions
-  );
+  const ledgerService = new Ledger.LedgerService(storeCreator("ledger"), ledgerOptions);
 
-  const keystoneService = new Keystone.KeystoneService(
-    storeCreator("keystone")
-  );
+  const keystoneService = new Keystone.KeystoneService(storeCreator("keystone"));
 
   const messagingService = new Messaging.MessagingService();
 
@@ -156,17 +124,8 @@ export function init(
       persistentMemoryService.init();
       permissionService.init(interactionService, chainsService, keyRingService);
       chainUpdaterService.init(chainsService);
-      tokensService.init(
-        interactionService,
-        permissionService,
-        chainsService,
-        keyRingService
-      );
-      chainsService.init(
-        chainUpdaterService,
-        interactionService,
-        permissionService
-      );
+      tokensService.init(interactionService, permissionService, chainsService, keyRingService);
+      chainsService.init(chainUpdaterService, interactionService, permissionService);
       ledgerService.init(interactionService);
       keystoneService.init(interactionService);
       keyRingService.init(
