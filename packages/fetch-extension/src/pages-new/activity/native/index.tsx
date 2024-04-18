@@ -84,7 +84,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
       processFilters(filter)
     );
     setFetchedData(data?.nodes);
-    if (!pageInfo || cursor != "") setPageInfo(data.pageInfo);
+    if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
     setIsLoading(false);
   }, 1000);
 
