@@ -10,7 +10,6 @@
     "build:noop": "tsc -p tsconfig.noop.json",
     "dev": "cross-env NODE_ENV=development BUILD_MANIFEST_V2=false webpack",
     "build:background": "echo 'Building build:background' && yarn workspace @keplr-wallet/background build",
-    "fs:script": "sh ./scripts/fix-fetchai-blst-js.sh && sh ./scripts/fix-fetchai-path-node-js.sh",
     "dev:analyzer": "cross-env NODE_ENV=development ANALYZER=true webpack",
     "analyzer": "cross-env NODE_ENV=production ANALYZER=true DISABLE_SPLIT_CHUNKS=true webpack",
     "analyzer:chunks": "cross-env NODE_ENV=production ANALYZER=true webpack",
