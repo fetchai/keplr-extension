@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Text, TextInput, View, ViewStyle } from "react-native";
+import { Platform, Text, TextInput, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -68,6 +68,9 @@ export const MemoInputView: FunctionComponent<{
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
                 style.flatten(["h6", "color-white", "padding-0"]) as ViewStyle
+              }
+              keyboardType={
+                Platform.OS === "ios" ? "ascii-capable" : "visible-password"
               }
               returnKeyType="done"
               placeholder={placeholderText}

@@ -50,10 +50,8 @@ export const PasswordInputModal: FunctionComponent<{
     <CardModal
       isOpen={isOpen}
       close={close}
-      showCloseButton={false}
       title={title}
       cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
-      titleStyle={style.flatten(["margin-x-24", "text-center"]) as ViewStyle}
     >
       <InputCardView
         label="Password"

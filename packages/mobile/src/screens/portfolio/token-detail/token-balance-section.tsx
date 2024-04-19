@@ -81,56 +81,57 @@ export const TokenBalanceSection: FunctionComponent<{
         style={
           style.flatten([
             "flex-row",
-            "items-center",
-            "justify-between",
-            "margin-top-16",
+            "justify-evenly",
+            "margin-y-16",
           ]) as ViewStyle
         }
       >
-        <Button
-          text={"Receive"}
-          rightIcon={<ArrowDownGradientIcon size={15} />}
-          textStyle={
-            style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
-          }
-          containerStyle={
-            style.flatten([
-              "background-color-white",
-              "border-radius-32",
-              "width-half",
-              "margin-right-6",
-            ]) as ViewStyle
-          }
-          onPress={() =>
-            navigation.navigate("Others", {
-              screen: "Receive",
-              params: { chainId: chainId },
-            })
-          }
-        />
-        <Button
-          text={"Send"}
-          rightIcon={<ArrowUpGradientIcon size={15} />}
-          textStyle={
-            style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
-          }
-          containerStyle={
-            style.flatten([
-              "background-color-white",
-              "border-radius-32",
-              "width-half",
-              "margin-left-6",
-            ]) as ViewStyle
-          }
-          onPress={() =>
-            navigation.navigate("Others", {
-              screen: "SendNew",
-              params: {
-                currency: chainStore.current.stakeCurrency.coinMinimalDenom,
-              },
-            })
-          }
-        />
+        <View style={style.flatten(["flex-1"]) as ViewStyle}>
+          <Button
+            text={"Receive"}
+            rightIcon={<ArrowDownGradientIcon size={15} />}
+            textStyle={
+              style.flatten(["color-indigo-900", "margin-right-8"]) as ViewStyle
+            }
+            containerStyle={
+              style.flatten([
+                "background-color-white",
+                "border-radius-32",
+                "margin-right-6",
+              ]) as ViewStyle
+            }
+            onPress={() =>
+              navigation.navigate("Others", {
+                screen: "Receive",
+                params: { chainId: chainId },
+              })
+            }
+          />
+        </View>
+        <View style={style.flatten(["flex-1"]) as ViewStyle}>
+          <Button
+            text={"Send"}
+            rightIcon={<ArrowUpGradientIcon size={15} />}
+            textStyle={
+              style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
+            }
+            containerStyle={
+              style.flatten([
+                "background-color-white",
+                "border-radius-32",
+                "margin-left-6",
+              ]) as ViewStyle
+            }
+            onPress={() =>
+              navigation.navigate("Others", {
+                screen: "SendNew",
+                params: {
+                  currency: chainStore.current.stakeCurrency.coinMinimalDenom,
+                },
+              })
+            }
+          />
+        </View>
       </View>
       {/*<Button*/}
       {/*  text={"Earn"}*/}
@@ -142,7 +143,7 @@ export const TokenBalanceSection: FunctionComponent<{
       {/*    style.flatten([*/}
       {/*      "background-color-white",*/}
       {/*      "border-radius-32",*/}
-      {/*      "margin-y-12",*/}
+      {/*      "margin-y-16",*/}
       {/*    ]) as ViewStyle*/}
       {/*  }*/}
       {/*  onPress={() =>*/}

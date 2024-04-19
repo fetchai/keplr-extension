@@ -151,7 +151,11 @@ export const TokenDetail: FunctionComponent = observer(() => {
               ]) as ViewStyle
             }
           >
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text
+              style={
+                style.flatten(["color-white", "text-caption1"]) as ViewStyle
+              }
+            >
               {balances.balanceInUsd}
             </Text>
           </View>
