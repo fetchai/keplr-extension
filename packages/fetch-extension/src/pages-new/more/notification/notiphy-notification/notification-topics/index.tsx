@@ -161,12 +161,10 @@ export const NotificationTopics: FunctionComponent = () => {
 
         <div className={style["topicButton"]}>
           <ButtonV2
-            text=""
+            text={type === pageOptions.add ? "Finish" : "Save"}
             onClick={handleNextPage}
             disabled={type === pageOptions.edit && disabled}
-          >
-            {type === pageOptions.add ? "Finish" : "Save"}
-          </ButtonV2>
+          />
         </div>
       </div>
     </HeaderLayout>

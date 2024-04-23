@@ -111,7 +111,6 @@ export const SendToken: React.FC<SendTokenProps> = observer(
         )}
         <ButtonV2
           text="Review transfer"
-          gradientText=""
           onClick={handleEVMSendToken}
           disabled={isTrsnxInProgress || !txStateIsValid}
         />

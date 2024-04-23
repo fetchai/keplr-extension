@@ -291,7 +291,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
     const intl = useIntl();
     const { accountStore, chainStore, priceStore } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-
+    const [loading, setLoading] = useState(false);
     const isValid =
       amountConfig.error == null &&
       feeConfig.error == null &&
@@ -318,19 +318,24 @@ export const IBCTransferPageAmount: FunctionComponent<{
             gasSimulator={gasSimulator}
           />
           <ButtonV2
-            disabled={!isValid}
+            disabled={!isValid || loading}
             data-loading={accountInfo.txTypeInProgress === "ibcTransfer"}
+            text={
+              loading ? (
+                <i className="fas fa-spinner fa-spin ml-2" />
+              ) : (
+                <FormattedMessage id="ibc.transfer.submit" />
+              )
+            }
             onClick={(e: any) => {
               e.preventDefault();
+              setLoading(true);
               onSubmit();
             }}
             styleProps={{
               marginTop: "12px",
             }}
-            text=""
-          >
-            <FormattedMessage id="ibc.transfer.submit" />
-          </ButtonV2>
+          />
         </div>
       </form>
     );

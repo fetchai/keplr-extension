@@ -255,6 +255,7 @@ export const NotificationOrganizations: FunctionComponent = observer(() => {
         <ButtonV2
           text=""
           disabled={
+            isBtnLoading ||
             selectedOrg.length === 0 ||
             Object.keys(followUnfollowObj.current).length === 0
           }

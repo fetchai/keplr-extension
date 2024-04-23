@@ -20,6 +20,7 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { PasswordInput } from "@components-v2/form";
 import { useNotification } from "@components/notification";
+
 interface FormData {
   password: string;
 }
@@ -143,9 +144,17 @@ export const ExportPage: FunctionComponent = observer(() => {
                   }),
                 })}
               />
-              <ButtonV2 text="" data-loading={loading}>
-                <FormattedMessage id="setting.export.button.confirm" />
-              </ButtonV2>
+              <ButtonV2
+                text={
+                  loading ? (
+                    <i className="fas fa-spinner fa-spin ml-2" />
+                  ) : (
+                    <FormattedMessage id="setting.export.button.confirm" />
+                  )
+                }
+                data-loading={loading}
+                disabled={loading}
+              />
             </Form>
           </React.Fragment>
         )}

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
-import { Form, FormGroup, Label } from "reactstrap";
+import { Form, FormGroup, Label, Spinner } from "reactstrap";
 import { Dropdown } from "@components-v2/dropdown";
 import style from "./style.module.scss";
 import { Input } from "../input";
@@ -88,7 +88,13 @@ export const IBCChannelRegistrar: FunctionComponent<{
         error={error}
       />
       <ButtonV2
-        text=""
+        text={
+          isLoading ? (
+            <Spinner size="sm">Adding</Spinner>
+          ) : (
+            <FormattedMessage id="component.ibc.channel-registrar.chain-selector.add.channel.button" />
+          )
+        }
         disabled={selectedChainId === "" || channelId === "" || error !== ""}
         data-loading={isLoading}
         onClick={async (e: any) => {
@@ -147,9 +153,7 @@ export const IBCChannelRegistrar: FunctionComponent<{
             closeModal();
           }
         }}
-      >
-        <FormattedMessage id="component.ibc.channel-registrar.chain-selector.add.channel.button" />
-      </ButtonV2>
+      />
     </Form>
   );
 });

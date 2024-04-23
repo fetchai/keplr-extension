@@ -5,7 +5,7 @@ export interface Props {
   onClick?: any;
   dataLoading?: any;
   gradientText?: string;
-  text: string;
+  text: string | ReactNode;
   disabled?: boolean;
   styleProps?: React.CSSProperties;
   children?: ReactNode;

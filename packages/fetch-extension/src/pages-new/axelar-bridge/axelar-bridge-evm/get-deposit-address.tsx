@@ -68,7 +68,6 @@ export const GetDepositAddress: React.FC<GetDepositAddressProps> = observer(
     return (
       <ButtonV2
         text="Get Deposit Address"
-        gradientText=""
         onClick={getDepositAddress}
         disabled={isDisabled}
       />

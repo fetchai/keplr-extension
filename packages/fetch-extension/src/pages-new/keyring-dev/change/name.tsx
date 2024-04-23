@@ -135,9 +135,17 @@ export const ChangeNamePageV2: FunctionComponent = observer(() => {
         />
 
         <div style={{ flex: 1 }} />
-        <ButtonV2 data-loading={loading} text={""}>
-          <FormattedMessage id="setting.keyring.change.name.button.save" />
-        </ButtonV2>
+        <ButtonV2
+          data-loading={loading}
+          disabled={loading}
+          text={
+            loading ? (
+              <i className="fas fa-spinner fa-spin ml-2" />
+            ) : (
+              <FormattedMessage id="setting.keyring.change.name.button.save" />
+            )
+          }
+        />
       </Form>
     </HeaderLayout>
   );

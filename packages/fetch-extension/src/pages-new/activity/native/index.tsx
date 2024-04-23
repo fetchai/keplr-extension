@@ -212,14 +212,17 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
           {renderNodes(nodes)}
           {pageInfo?.hasNextPage && (
             <ButtonV2
+              text={
+                loadingRequest ? (
+                  <i className="fas fa-spinner fa-spin ml-2" />
+                ) : (
+                  "Load more"
+                )
+              }
               disabled={!pageInfo?.hasNextPage || loadingRequest}
               onClick={handleClick}
-              text=""
               styleProps={{ width: "326px" }}
-            >
-              Load more{" "}
-              {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
-            </ButtonV2>
+            />
           )}
         </React.Fragment>
       ) : isLoading ? (
