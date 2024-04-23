@@ -3,21 +3,16 @@ import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
-import agentIcon from "@assets/svg/wireframe/new-robot.svg";
 import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
-import { NotificationSetup } from "@notificationTypes";
+import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
+import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
 import React, { useEffect, useState } from "react";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 import { WalletActions } from "../../pages-new/main/wallet-actions";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-
-interface WalletConfig {
-  notiphyWhitelist: string[] | undefined;
-  fetchbotActive: boolean;
-  requiredNative: boolean;
-}
 
 const bottomNav = [
   {
@@ -42,7 +37,7 @@ export const BottomNav = () => {
   return !isAssetsOpen ? (
     <div className={style["bottomNavContainer"]}>
       <HomeTab />
-      <NotificationTab />
+      <StakeTab />
       <button
         style={{ cursor: "pointer" }}
         className={style["toggle"]}
@@ -59,55 +54,39 @@ export const BottomNav = () => {
 };
 
 const HomeTab = () => <Tab {...bottomNav[0]} />;
-const NotificationTab = () => {
-  const { keyRingStore, accountStore, chainStore, chatStore } = useStore();
+const StakeTab = () => {
+  const { keyRingStore, chainStore } = useStore();
   const current = chainStore.current;
-  const userState = chatStore.userDetailsStore;
-  const accountInfo = accountStore.getAccount(current.chainId);
-  const config: WalletConfig = userState.walletConfig;
-  const notificationInfo: NotificationSetup = userState.notifications;
-  const [isComingSoon, setIsComingSoon] = useState<boolean>(true);
 
+  const [stakingTooltip, setStakingTooltip] = useState("");
+  const [z, setStakingDisabled] = useState(false);
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
-      setIsComingSoon(true);
-    } else {
-      setIsComingSoon(
-        config.notiphyWhitelist === undefined
-          ? true
-          : config.notiphyWhitelist.length !== 0 &&
-              config.notiphyWhitelist.indexOf(accountInfo.bech32Address) === -1
-      );
+      setStakingTooltip("Coming soon for ledger");
+      setStakingDisabled(true);
+      return;
     }
-
-    const notificationFlag =
-      localStorage.getItem(`turnNotifications-${accountInfo.bech32Address}`) ||
-      "true";
-    const localNotifications = JSON.parse(
-      localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
-        JSON.stringify([])
-    );
-
-    userState.setNotifications({
-      allNotifications: localNotifications,
-      unreadNotification: localNotifications.length > 0,
-      isNotificationOn: notificationFlag == "true",
-    });
-  }, [accountInfo.bech32Address, config.notiphyWhitelist]);
+    if (
+      current.chainId != CHAIN_ID_DORADO &&
+      current.chainId != CHAIN_ID_FETCHHUB
+    ) {
+      setStakingTooltip("Feature not available on this network");
+      setStakingDisabled(true);
+    } else {
+      setStakingTooltip("");
+      setStakingDisabled(false);
+    }
+  }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
     <React.Fragment>
-      {!isComingSoon &&
-        notificationInfo.unreadNotification &&
-        notificationInfo.isNotificationOn && (
-          <span className={style["bellDot"]} />
-        )}
       <Tab
-        title={"Agents"}
-        icon={agentIcon}
-        path={"/notification"}
-        disabled={true}
-        tooltip={"Coming Soon"}
+        title={"Stake"}
+        icon={stakeTabIcon}
+        activeIcon={selectedStakeTabIcon}
+        path={"/validators/validator"}
+        disabled={z}
+        tooltip={stakingTooltip}
       />
     </React.Fragment>
   );
