@@ -2,12 +2,13 @@ import { Card } from "@components-v2/card";
 import { NotificationOption } from "@components-v2/notification-option";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { NotificationSetup } from "@notificationTypes";
-import React, { FunctionComponent, useMemo } from "react";
+import { observer } from "mobx-react-lite";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 
-export const MoreNotifications: FunctionComponent = () => {
+export const MoreNotifications = observer(() => {
   const navigate = useNavigate();
   const { chainStore, accountStore, analyticsStore, chatStore } = useStore();
   const current = chainStore.current;
@@ -110,4 +111,4 @@ export const MoreNotifications: FunctionComponent = () => {
       )}
     </HeaderLayout>
   );
-};
+});
