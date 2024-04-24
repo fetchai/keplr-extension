@@ -280,7 +280,16 @@ export const SignPageV2: FunctionComponent = observer(() => {
                         bottom: "12px",
                         width: "94%",
                       }}
-                      disabled={approveIsDisabled}
+                      disabled={
+                        approveIsDisabled || signInteractionStore.isLoading
+                      }
+                      text={
+                        signInteractionStore.isLoading ? (
+                          <i className="fas fa-spinner fa-spin ml-2" />
+                        ) : (
+                          "Approve transaction"
+                        )
+                      }
                       data-loading={signInteractionStore.isLoading}
                       onClick={async (e: any) => {
                         e.preventDefault();
@@ -302,10 +311,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                           window.close();
                         }
                       }}
-                      text={""}
-                    >
-                      Approve transaction
-                    </ButtonV2>
+                    />
                   </React.Fragment>
                 )}
               </div>

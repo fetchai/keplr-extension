@@ -205,9 +205,17 @@ export const MigrateMetamaskPrivateKeyPage: FunctionComponent<{
             />
           </React.Fragment>
         )}
-        <ButtonV2 styleProps={{ marginBottom: "20px" }} text="">
-          <FormattedMessage id="register.create.button.next" />
-        </ButtonV2>
+        <ButtonV2
+          styleProps={{ marginBottom: "20px" }}
+          text={
+            registerConfig.isLoading ? (
+              <i className="fas fa-spinner fa-spin ml-2" />
+            ) : (
+              <FormattedMessage id="register.create.button.next" />
+            )
+          }
+          disabled={registerConfig.isLoading}
+        />
       </Form>
     </div>
   );

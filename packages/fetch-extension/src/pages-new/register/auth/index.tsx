@@ -242,9 +242,17 @@ export const AuthPage: FunctionComponent<{
             />
           </React.Fragment>
         ) : null}
-        <ButtonV2 text="" data-loading={registerConfig.isLoading}>
-          <FormattedMessage id="register.create.button.next" />
-        </ButtonV2>
+        <ButtonV2
+          text={
+            registerConfig.isLoading ? (
+              <i className="fas fa-spinner fa-spin ml-2" />
+            ) : (
+              <FormattedMessage id="register.create.button.next" />
+            )
+          }
+          disabled={registerConfig.isLoading}
+          data-loading={registerConfig.isLoading}
+        />
       </Form>
     </React.Fragment>
   );

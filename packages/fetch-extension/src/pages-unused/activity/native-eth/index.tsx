@@ -174,7 +174,7 @@ export const NativeEthTab = () => {
   const [speedUpOpen, setSpeedUpOpen] = useState<string>("");
   const notification = useNotification();
   const navigate = useNavigate();
-  const timer = useRef<NodeJS.Timer>();
+  const timer = useRef<any>();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
   const refreshTxList = async () => {

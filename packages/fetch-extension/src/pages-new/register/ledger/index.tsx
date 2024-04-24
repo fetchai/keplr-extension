@@ -34,10 +34,8 @@ export const ImportLedgerIntro: FunctionComponent<{
           registerType: "ledger",
         });
       }}
-      text={""}
-    >
-      <FormattedMessage id="register.ledger.title" />
-    </ButtonV2>
+      text={<FormattedMessage id="register.ledger.title" />}
+    />
   );
 });
 
@@ -184,9 +182,17 @@ export const ImportLedgerPage: FunctionComponent<{
           <div style={{ width: "339px" }}>
             <AdvancedBIP44Option bip44Option={bip44Option} />
           </div>
-          <ButtonV2 data-loading={registerConfig.isLoading} text={""}>
-            <FormattedMessage id="register.create.button.next" />
-          </ButtonV2>
+          <ButtonV2
+            data-loading={registerConfig.isLoading}
+            text={
+              registerConfig.isLoading ? (
+                <i className="fas fa-spinner fa-spin ml-2" />
+              ) : (
+                <FormattedMessage id="register.create.button.next" />
+              )
+            }
+            disabled={registerConfig.isLoading}
+          />
           <Button
             type="button"
             color="link"
