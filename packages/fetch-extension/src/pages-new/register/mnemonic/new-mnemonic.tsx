@@ -540,7 +540,10 @@ export const VerifyMnemonicModePage: FunctionComponent<{
         </div>
         <ButtonV2
           text=""
-          disabled={suggestedWords.join(" ") !== wordsSlice.join(" ")}
+          disabled={
+            registerConfig.isLoading ||
+            suggestedWords.join(" ") !== wordsSlice.join(" ")
+          }
           styleProps={{
             marginTop: "30px",
             marginBottom: "20px",

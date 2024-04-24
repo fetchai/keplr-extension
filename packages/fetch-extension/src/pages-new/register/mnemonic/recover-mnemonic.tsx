@@ -653,14 +653,19 @@ export const RecoverMnemonicPage: FunctionComponent<{
                 />
                 <AdvancedBIP44Option bip44Option={bip44Option} />
                 <ButtonV2
-                  text=""
+                  text={
+                    registerConfig.isLoading ? (
+                      <i className="fas fa-spinner fa-spin ml-2" />
+                    ) : (
+                      <FormattedMessage id="register.create.button.next" />
+                    )
+                  }
                   styleProps={{
                     marginBottom: "20px",
                   }}
                   data-loading={registerConfig.isLoading}
-                >
-                  <FormattedMessage id="register.create.button.next" />
-                </ButtonV2>
+                  disabled={registerConfig.isLoading}
+                />
               </div>
             </Form>
           </div>
