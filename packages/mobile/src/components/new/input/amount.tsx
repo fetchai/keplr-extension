@@ -13,11 +13,10 @@ import {
 import { TextInput } from "components/input";
 import { useStyle } from "styles/index";
 import * as RNLocalize from "react-native-localize";
-import { ReloadIcon } from "../icon/reload-icon";
 import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { useStore } from "stores/index";
 import { parseDollarAmount } from "utils/format/format";
-import { BlurButton } from "../button/blur-button";
+import { UseMaxButton } from "../button/use-max-button";
 
 export const AmountInputSection: FunctionComponent<{
   amountConfig: IAmountConfig;
@@ -210,7 +209,14 @@ export const AmountInputSection: FunctionComponent<{
         })()}
       />
       <View style={style.flatten(["flex-1"])} />
-      <View
+      <UseMaxButton
+        amountConfig={amountConfig}
+        isToggleClicked={isToggleClicked}
+        setIsToggleClicked={setIsToggleClicked}
+        setSelection={setSelection}
+        containerStyle={style.flatten(["margin-top-28"]) as ViewStyle}
+      />
+      {/* <View
         style={
           style.flatten([
             "flex-row",
@@ -286,7 +292,7 @@ export const AmountInputSection: FunctionComponent<{
             textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
           />
         </View>
-      </View>
+      </View> */}
     </React.Fragment>
   );
 });

@@ -93,3 +93,9 @@ export const shortenNumber = (value: string, decimal = 18) => {
   }
   return result;
 };
+
+export const FormatNumberWithCommas = (value: number) => {
+  return Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: value.toString().length,
+  }).format(value);
+};

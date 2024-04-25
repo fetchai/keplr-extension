@@ -2568,3 +2568,9 @@ export const AGENT_ADDRESS: { [key: string]: string } = {
   [CHAIN_ID_FETCHHUB]: FETCHHUB_AGENT,
   [CHAIN_ID_DORADO]: DORADO_AGENT,
 };
+
+export const STAKE_VALIDATOR_URL: { [key in string]: string } = {
+  [CHAIN_ID_DORADO]: "https://explore-dorado.fetch.ai/validators",
+  [CHAIN_ID_FETCHHUB]: "https://www.mintscan.io/fetchai/validators",
+};
+

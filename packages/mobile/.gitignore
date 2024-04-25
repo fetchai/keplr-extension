@@ -76,3 +76,4 @@ injected-provider.bundle.js
 *.certSigningRequest
 *.zip
 *.mobileprovision
+.env

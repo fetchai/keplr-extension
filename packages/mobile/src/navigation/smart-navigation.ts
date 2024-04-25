@@ -102,19 +102,40 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Staking.Dashboard": {
         upperScreenName: "Others",
       },
+      "NewStaking.Dashboard": {
+        upperScreenName: "Others",
+      },
       "Validator.Details": {
+        upperScreenName: "Others",
+      },
+      "NewValidator.Details": {
+        upperScreenName: "Others",
+      },
+      "SelectorValidator.Details": {
         upperScreenName: "Others",
       },
       "Validator.List": {
         upperScreenName: "Others",
       },
+      "NewValidator.List": {
+        upperScreenName: "Others",
+      },
       Delegate: {
+        upperScreenName: "Others",
+      },
+      NewDelegate: {
         upperScreenName: "Others",
       },
       Undelegate: {
         upperScreenName: "Others",
       },
+      NewUndelegate: {
+        upperScreenName: "Others",
+      },
       Redelegate: {
+        upperScreenName: "Others",
+      },
+      NewRedelegate: {
         upperScreenName: "Others",
       },
       Governance: {
@@ -202,6 +223,9 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       WebView: {
         url: string;
       };
+      "NewStaking.Dashboard": {
+        isTab?: boolean;
+      };
       "Register.Intro": {
         isBack: boolean;
       };
@@ -270,16 +294,38 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Validator.Details": {
         validatorAddress: string;
       };
+      "NewValidator.Details": {
+        validatorAddress: string;
+        prevSelectedValidator?: string;
+      };
+      "SelectorValidator.Details": {
+        prevSelectedValidator?: string;
+        validatorAddress: string;
+      };
       "Validator.List": {
         validatorSelector?: (validatorAddress: string) => void;
       };
+      "NewValidator.List": {
+        prevSelectedValidator?: string;
+        selectedValidator?: string;
+      };
       Delegate: {
+        validatorAddress: string;
+      };
+      NewDelegate: {
         validatorAddress: string;
       };
       Undelegate: {
         validatorAddress: string;
       };
+      NewUndelegate: {
+        validatorAddress: string;
+      };
       Redelegate: {
+        validatorAddress: string;
+      };
+      NewRedelegate: {
+        selectedValidatorAddress?: string;
         validatorAddress: string;
       };
       "Governance Details": {

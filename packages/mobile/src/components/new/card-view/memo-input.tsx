@@ -8,6 +8,7 @@ import { IMemoConfig } from "@keplr-wallet/hooks";
 
 export const MemoInputView: FunctionComponent<{
   label?: string;
+  labelStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   inputcontainerStyle?: ViewStyle;
   placeholderText?: string;
@@ -17,6 +18,7 @@ export const MemoInputView: FunctionComponent<{
 }> = observer(
   ({
     label,
+    labelStyle,
     containerStyle,
     inputcontainerStyle,
     placeholderText,
@@ -32,11 +34,10 @@ export const MemoInputView: FunctionComponent<{
         {label ? (
           <Text
             style={
-              style.flatten([
-                "padding-y-4",
-                "color-gray-200",
-                "margin-y-8",
-              ]) as ViewStyle
+              [
+                style.flatten(["padding-y-4", "color-white@60%", "margin-y-8"]),
+                labelStyle,
+              ] as ViewStyle
             }
           >
             {label}

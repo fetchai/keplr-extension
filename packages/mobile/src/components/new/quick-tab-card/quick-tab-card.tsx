@@ -14,7 +14,6 @@ import { useStore } from "stores/index";
 export enum QuickTabOptions {
   receive,
   send,
-  earn,
   bridge,
 }
 
@@ -125,73 +124,16 @@ export const QuickTabOptionModel: FunctionComponent<{
             </Text>
           </RectButton>
         </BlurBackground>
-        {/* <BlurBackground
-          borderRadius={12}
-          blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
-        >
-          <RectButton
-            style={
-              style.flatten([
-                "border-radius-12",
-                "flex-row",
-                "items-center",
-                "padding-18",
-                "justify-between",
-              ]) as ViewStyle
-            }
-            activeOpacity={1}
-            onPress={() => {
-              analyticsStore.logEvent("bridge_button_click",{tabName: "fund_transfer_tab"});
-            }}
-            //   underlayColor={style.flatten(["color-gray-50"]).color}
-            rippleColor={"rgba(255,255,255,0)"}
-          >
-            <View
-              style={style.flatten(["flex-row", "items-center"]) as ViewStyle}
-            >
-              <IconButton
-                backgroundBlur={false}
-                icon={<StakeIcon color="#64646D" />}
-                iconStyle={style.flatten(["padding-0"]) as ViewStyle}
-              />
-              <Text
-                style={
-                  style.flatten([
-                    "body2",
-                    "color-gray-400",
-                    "margin-left-18",
-                  ]) as ViewStyle
-                }
-              >
-                Earn
-              </Text>
-            </View>
-            <Button
-              text="COMING SOON"
-              size="small"
-              rippleColor={"rgba(255,255,255,0)"}
-              containerStyle={
-                style.flatten([
-                  "background-color-indigo",
-                  "border-radius-4",
-                  "height-24",
-                ]) as ViewStyle
-              }
-              textStyle={style.flatten([
-                "text-caption2",
-                "color-white",
-                "font-bold",
-              ])}
-            />
-          </RectButton>
-        </BlurBackground> */}
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
           containerStyle={style.flatten(["margin-bottom-4"]) as ViewStyle}
         >
           <RectButton
+            onPress={() => {
+              close();
+              onPress(QuickTabOptions.bridge);
+            }}
             style={
               style.flatten([
                 "border-radius-12",

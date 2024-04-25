@@ -176,7 +176,6 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
                       "color-white",
                     ])}
                   >
-                    {/* {Bech32Address.shortenAddress(data.address, 35)} */}
                     {data.address}
                   </Text>
                 </View>

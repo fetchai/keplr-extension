@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { PageWithScrollViewInBottomTabView } from "components/page";
 import { observer } from "mobx-react-lite";
-import { StakingCard } from "components/new/staking/staking-card";
+import { PortfolioStakingCard } from "components/new/staking/portfolio-staking-card";
 import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 
@@ -57,7 +57,9 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
         </View>
       )}
       {selectedId === AssetsSectionEnum.Stats && (
-        <StakingCard cardStyle={style.flatten(["margin-y-14"]) as ViewStyle} />
+        <PortfolioStakingCard
+          cardStyle={style.flatten(["margin-y-14"]) as ViewStyle}
+        />
       )}
     </PageWithScrollViewInBottomTabView>
   );

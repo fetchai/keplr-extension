@@ -52,6 +52,13 @@ import { RenameWalletScreen } from "screens/rename-account";
 import { DeleteWalletScreen } from "screens/delete-account";
 import { ActivityDetails } from "screens/activity/activity-details";
 import { WebViewScreen } from "screens/web/webpages/webview";
+import { NewStakingDashboardScreen } from "screens/stake/new/dashboard/dashboard";
+import { NewValidatorListScreen } from "screens/stake/validator-list/new";
+import { NewValidatorDetailsScreen } from "screens/stake/validator-details/new";
+import { NewDelegateScreen } from "screens/stake/delegate/new";
+import { NewUndelegateScreen } from "screens/stake/undelegate/new";
+import { NewRedelegateScreen } from "screens/stake/redelegate/new";
+import { SelectorValidatorDetailsScreen } from "screens/stake/validator-details/new/selector-validator-details";
 import { useStore } from "stores/index";
 
 export const OtherNavigation: FunctionComponent = () => {
@@ -157,11 +164,36 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="NewStaking.Dashboard"
+        component={NewStakingDashboardScreen}
+      />
+      <Stack.Screen
+        options={{
           ...HeaderOnGradientScreenOptionsPreset,
           title: "Validator Details",
         }}
         name="Validator.Details"
         component={ValidatorDetailsScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Validator Details",
+        }}
+        name="NewValidator.Details"
+        component={NewValidatorDetailsScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Validator Details",
+        }}
+        name="SelectorValidator.Details"
+        component={SelectorValidatorDetailsScreen}
       />
       <Stack.Screen
         options={{
@@ -173,11 +205,27 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Choose validator",
+        }}
+        name="NewValidator.List"
+        component={NewValidatorListScreen}
+      />
+      <Stack.Screen
+        options={{
           ...HeaderOnTertiaryScreenOptionsPreset,
           title: "Stake",
         }}
         name="Delegate"
         component={DelegateScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Stake",
+        }}
+        name="NewDelegate"
+        component={NewDelegateScreen}
       />
       <Stack.Screen
         options={{
@@ -189,11 +237,27 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Unstake",
+        }}
+        name="NewUndelegate"
+        component={NewUndelegateScreen}
+      />
+      <Stack.Screen
+        options={{
           ...HeaderOnTertiaryScreenOptionsPreset,
           title: "Switch Validator",
         }}
         name="Redelegate"
         component={RedelegateScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Choose Validator",
+        }}
+        name="NewRedelegate"
+        component={NewRedelegateScreen}
       />
       <Stack.Screen
         options={{

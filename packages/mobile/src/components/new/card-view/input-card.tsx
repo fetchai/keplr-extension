@@ -158,7 +158,7 @@ export const InputCardView: React.forwardRef<
             <Text
               style={StyleSheet.flatten([
                 style.flatten([
-                  "absolute",
+                  // "absolute",
                   "text-caption2",
                   "color-red-250",
                   "margin-top-2",

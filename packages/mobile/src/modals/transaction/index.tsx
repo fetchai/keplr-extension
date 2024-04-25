@@ -28,7 +28,16 @@ export const TransactionModal: FunctionComponent<{
   onHomeClick: () => void;
   txnHash: string;
   chainId: string;
-}> = ({ txnHash, chainId, isOpen, close, onHomeClick, onTryAgainClick }) => {
+  buttonText?: string;
+}> = ({
+  txnHash,
+  chainId,
+  isOpen,
+  close,
+  onHomeClick,
+  onTryAgainClick,
+  buttonText = "Go to homescreen",
+}) => {
   const { chainStore } = useStore();
 
   const [transactionState, setTransactionState] = useState<TransactionProcess>({
@@ -116,7 +125,7 @@ export const TransactionModal: FunctionComponent<{
             />
           ) : null}
           <Button
-            text="Go to homescreen"
+            text={buttonText}
             size="large"
             containerStyle={
               style.flatten(

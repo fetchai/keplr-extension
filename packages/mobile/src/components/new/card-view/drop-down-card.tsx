@@ -9,6 +9,8 @@ export const DropDownCardView: FunctionComponent<{
   mainHeading?: string;
   heading?: string;
   subHeading?: string;
+  headingrStyle?: ViewStyle;
+  mainHeadingrStyle?: ViewStyle;
   containerStyle?: ViewStyle;
   onPress?: () => void;
 }> = ({
@@ -17,6 +19,8 @@ export const DropDownCardView: FunctionComponent<{
   heading,
   subHeading,
   containerStyle,
+  headingrStyle,
+  mainHeadingrStyle,
   onPress,
 }) => {
   const style = useStyle();
@@ -26,12 +30,10 @@ export const DropDownCardView: FunctionComponent<{
       {mainHeading ? (
         <Text
           style={
-            style.flatten([
-              "text-button3",
-              "padding-4",
-              "margin-y-8",
-              "color-gray-200",
-            ]) as ViewStyle
+            [
+              style.flatten(["text-button3", "margin-y-8", "color-white@60%"]),
+              mainHeadingrStyle,
+            ] as ViewStyle
           }
         >
           {mainHeading}
@@ -55,12 +57,14 @@ export const DropDownCardView: FunctionComponent<{
         <View style={style.flatten(["flex-3"]) as ViewStyle}>
           {heading ? (
             <Text
-              style={
-                style.flatten([
+              style={[
+                  style.flatten([
                   "body2",
                   "padding-bottom-2",
                   "color-white",
-                ]) as ViewStyle
+              ]) as ViewStyle,
+                  headingrStyle,
+              ]
               }
             >
               {heading}

@@ -114,6 +114,7 @@ export const ColorPalette = {
   indigo: "#5F38FB",
   "indigo-100": "#5f38fb12",
   "indigo-200": "#fbfaff40",
+  "indigo-250": "#BFAFFD",
   "indigo-400": "#000D3D",
   "indigo-800": "#270E8D",
   "indigo-900": "#000D3D",
@@ -279,6 +280,12 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         "text-caption2": {
           fontSize: 12,
           letterSpacing: 0.3,
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
+        },
+        "text-caption3": {
+          fontSize: 11,
+          letterSpacing: 0.5,
           fontFamily: getPlatformFontFamily("400"),
           fontWeight: "400",
         },

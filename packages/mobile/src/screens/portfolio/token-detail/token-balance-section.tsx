@@ -11,6 +11,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { EarnIcon } from "components/new/icon/earn-icon";
 
 export const TokenBalanceSection: FunctionComponent<{
   totalNumber: string;
@@ -139,25 +140,26 @@ export const TokenBalanceSection: FunctionComponent<{
           />
         </View>
       </View>
-      {/*<Button*/}
-      {/*  text={"Earn"}*/}
-      {/*  textStyle={*/}
-      {/*    style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle*/}
-      {/*  }*/}
-      {/*  rightIcon={<EarnIcon size={15} />}*/}
-      {/*  containerStyle={*/}
-      {/*    style.flatten([*/}
-      {/*      "background-color-white",*/}
-      {/*      "border-radius-32",*/}
-      {/*      "margin-y-16",*/}
-      {/*    ]) as ViewStyle*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    navigation.navigate("Others", {*/}
-      {/*      screen: "Staking.Dashboard",*/}
-      {/*    })*/}
-      {/*  }*/}
-      {/*/>*/}
+      <Button
+        text={"Stake"}
+        textStyle={
+          style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
+        }
+        rightIcon={<EarnIcon size={15} />}
+        containerStyle={
+          style.flatten([
+            "background-color-white",
+            "border-radius-32",
+            "margin-bottom-16",
+          ]) as ViewStyle
+        }
+        onPress={() =>
+          navigation.navigate("Others", {
+            screen: "NewStaking.Dashboard",
+            params: { isTab: false },
+          })
+        }
+      />
     </View>
   );
 });

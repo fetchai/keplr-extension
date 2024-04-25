@@ -65,6 +65,7 @@ export const TransparentHeaderOptionsPreset = {
     elevation: 0,
     shadowOpacity: 0,
   },
+  headerTitleStyle: { color: "white" },
   headerBackground: undefined,
   headerBackTitleVisible: false,
   // eslint-disable-next-line react/display-name

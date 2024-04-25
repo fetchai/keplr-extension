@@ -33,7 +33,7 @@ import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { HomeUnselectIcon } from "components/new/icon/home-unselect";
 import { ActivityScreen } from "screens/activity";
-import { StakeSection } from "screens/stake/stake-coming-soon-section";
+import { NewStakingDashboardScreen } from "screens/stake/new/dashboard/dashboard";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -249,9 +249,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               <BorderlessButton
                 {...props}
                 activeOpacity={1}
-                rippleColor={
-                  style.get("color-rect-button-default-ripple").color
-                }
+                rippleColor={style.get("color-transparent").color}
                 style={{
                   height: "100%",
                   aspectRatio: 1.9,
@@ -278,7 +276,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="Stake" component={StakeSection} />
+        <Tab.Screen name="Stake" component={NewStakingDashboardScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
         <Tab.Screen name="ActivityTab" component={ActivityScreen} />
         <Tab.Screen name="MoreTab" component={MoreNavigation} />
@@ -304,11 +302,10 @@ export const MainTabNavigation: FunctionComponent = () => {
                 },
               });
 
-            // case QuickTabOptions.earn:
-            //   return;
-
             case QuickTabOptions.bridge:
-              return;
+              return navigation.navigate("Others", {
+                screen: "Staking.Dashboard",
+              });
           }
         }}
       />

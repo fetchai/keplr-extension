@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -34,6 +34,15 @@ import { QRCodeIcon } from "components/new/icon/qrcode-icon";
 import { NotificationIcon } from "components/new/icon/notification";
 import { CameraPermissionOffIcon } from "components/new/icon/camerapermission-off";
 import { CameraPermissionOnIcon } from "components/new/icon/camerapermission-on";
+import LinearGradient from "react-native-linear-gradient";
+import { SimpleCardView } from "components/new/card-view/simple-card";
+import { ChevronRightIcon } from "components/new/icon/chevron-right";
+import { Dec } from "@keplr-wallet/unit";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from "react-native-toast-message";
+import { TransactionModal } from "modals/transaction";
+import { StakeIcon } from "components/new/icon/stake-icon";
+import { ClaimRewardsModal } from "components/new/claim-reward-model";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -49,6 +58,11 @@ export const AccountSection: FunctionComponent<{
   const [openCameraModel, setIsOpenCameraModel] = useState(false);
   const [modelStatus, setModelStatus] = useState(ModelStatus.First);
 
+  const [txnHash, setTxnHash] = useState<string>("");
+  const [openModal, setOpenModal] = useState(false);
+  const [showClaimModel, setClaimModel] = useState(false);
+  const [loadingClaimButtom, setloadingClaimButtom] = useState(false);
+
   const {
     chainStore,
     accountStore,
@@ -58,6 +72,10 @@ export const AccountSection: FunctionComponent<{
     analyticsStore,
   } = useStore();
   const chainInfo = chainStore.getChain(chainStore.current.chainId);
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -98,6 +116,58 @@ export const AccountSection: FunctionComponent<{
     tokenState.type === "positive"
       ? (parseFloat(totalNumber) * tokenState.diff) / 100
       : -(parseFloat(totalNumber) * tokenState.diff) / 100;
+
+  async function onSubmit() {
+    const validatorAddresses =
+      rewards.getDescendingPendingRewardValidatorAddresses(8);
+    const tx =
+      account.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
+    setloadingClaimButtom(true);
+
+    try {
+      let gas =
+        account.cosmos.msgOpts.withdrawRewards.gas * validatorAddresses.length;
+
+      // Gas adjustment is 1.5
+      // Since there is currently no convenient way to adjust the gas adjustment on the UI,
+      // Use high gas adjustment to prevent failure.
+      try {
+        gas = (await tx.simulate()).gasUsed * 1.5;
+      } catch (e) {
+        // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
+        // Therefore, the failure is expected. If the simulation fails, simply use the default value.
+        console.log(e);
+      }
+      setloadingClaimButtom(false);
+      setClaimModel(false);
+      await tx.send(
+        { amount: [], gas: gas.toString() },
+        "",
+        {},
+        {
+          onBroadcasted: (txHash) => {
+            setTxnHash(Buffer.from(txHash).toString("hex"));
+            setOpenModal(true);
+          },
+        }
+      );
+    } catch (e) {
+      if (
+        e?.message === "Request rejected" ||
+        e?.message === "Transaction rejected"
+      ) {
+        Toast.show({
+          type: "error",
+          text1: "Transaction rejected",
+        });
+        return;
+      }
+      console.log(e);
+      smartNavigation.navigateSmart("Home", {});
+    } finally {
+      setloadingClaimButtom(false);
+    }
+  }
 
   return (
     <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
@@ -213,6 +283,44 @@ export const AccountSection: FunctionComponent<{
           onPress={() => setIsOpenModal(true)}
         />
       </BlurBackground>
+      {!(
+        !networkIsConnected ||
+        !account.isReadyToSendTx ||
+        stakableReward.toDec().equals(new Dec(0)) ||
+        stakable.toDec().lte(new Dec(0)) ||
+        rewards.pendingRewardValidatorAddresses.length === 0
+      ) ? (
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setClaimModel(true)}
+        >
+          <LinearGradient
+            colors={["#F9774B", "#CF447B"]}
+            start={{ y: 0.0, x: 0.5 }}
+            end={{ y: 1.0, x: 0.0 }}
+            style={
+              [
+                style.flatten(["border-radius-12", "margin-bottom-8"]),
+                { padding: 1 },
+              ] as ViewStyle
+            }
+          >
+            <SimpleCardView
+              backgroundBlur={false}
+              heading={"You’ve claimable staking rewards"}
+              leadingIconComponent={<StakeIcon size={14} />}
+              trailingIconComponent={<ChevronRightIcon />}
+              cardStyle={
+                [
+                  style.flatten(["background-color-indigo-900"]),
+                  { borderRadius: 11 },
+                ] as ViewStyle
+              }
+              headingStyle={style.flatten(["body3"]) as ViewStyle}
+            />
+          </LinearGradient>
+        </TouchableOpacity>
+      ) : null}
       <View style={style.flatten(["items-center"]) as ViewStyle}>
         <View
           style={
@@ -417,6 +525,28 @@ export const AccountSection: FunctionComponent<{
             }
           }
         }}
+      />
+      <TransactionModal
+        isOpen={openModal}
+        close={() => {
+          setOpenModal(false);
+        }}
+        txnHash={txnHash}
+        chainId={chainStore.current.chainId}
+        buttonText="Go to stakescreen"
+        onHomeClick={() => navigation.navigate("Stake", {})}
+        onTryAgainClick={onSubmit}
+      />
+      <ClaimRewardsModal
+        isOpen={showClaimModel}
+        close={() => setClaimModel(false)}
+        earnedAmount={stakableReward
+          .maxDecimals(10)
+          .trim(true)
+          .shrink(true)
+          .toString()}
+        onPress={onSubmit}
+        buttonLoading={loadingClaimButtom}
       />
     </View>
   );

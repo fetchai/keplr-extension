@@ -8,21 +8,29 @@ export type HeadingMode = "normal" | "gradient";
 
 export const SimpleCardView: FunctionComponent<{
   trailingIconComponent?: ReactElement | (() => ReactElement);
+  leadingIconComponent?: ReactElement | (() => ReactElement);
   mainHeading?: string;
   heading: string;
   headingStyle?: ViewStyle;
   headingMode?: HeadingMode;
   subHeading?: string;
   cardStyle?: ViewStyle;
+  leadingIcon?: ViewStyle;
+  trailingIcon?: ViewStyle;
   text?: string;
+  backgroundBlur?: boolean;
 }> = ({
   trailingIconComponent,
+  leadingIconComponent,
   mainHeading,
   heading,
   headingStyle,
   headingMode = "normal",
+  backgroundBlur = true,
   subHeading,
   cardStyle,
+  leadingIcon,
+  trailingIcon,
 }) => {
   const style = useStyle();
 
@@ -45,6 +53,7 @@ export const SimpleCardView: FunctionComponent<{
       <BlurBackground
         borderRadius={12}
         blurIntensity={16}
+        backgroundBlur={backgroundBlur}
         containerStyle={
           [
             style.flatten([
@@ -57,6 +66,18 @@ export const SimpleCardView: FunctionComponent<{
           ] as ViewStyle
         }
       >
+        {leadingIconComponent ? (
+          <View
+            style={
+              [
+                style.flatten(["items-start", "margin-right-12"]),
+                leadingIcon,
+              ] as ViewStyle
+            }
+          >
+            {leadingIconComponent}
+          </View>
+        ) : null}
         <View style={style.flatten(["flex-8"]) as ViewStyle}>
           {headingMode === "normal" ? (
             <Text
@@ -100,7 +121,14 @@ export const SimpleCardView: FunctionComponent<{
           ) : null}
         </View>
         {trailingIconComponent ? (
-          <View style={[style.flatten(["flex-1", "items-end"])] as ViewStyle}>
+          <View
+            style={
+              [
+                style.flatten(["flex-1", "items-end"]),
+                trailingIcon,
+              ] as ViewStyle
+            }
+          >
             {trailingIconComponent}
           </View>
         ) : null}
