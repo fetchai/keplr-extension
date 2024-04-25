@@ -1,17 +1,18 @@
-import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
+import React, { FunctionComponent, useState } from "react";
 import { useNavigate } from "react-router";
 
-import style from "./style.module.scss";
-import { Alert } from "reactstrap";
+import { ButtonV2 } from "@components-v2/buttons/button";
 import {
   AddressInput,
   CoinInput,
-  FeeButtons,
-  MemoInput,
   DestinationChainSelector,
+  FeeButtons,
   IBCChannelRegistrar,
+  MemoInput,
 } from "@components-v2/form";
+import { useNotification } from "@components/notification";
+import { ExtensionKVStore } from "@keplr-wallet/common";
 import {
   IAmountConfig,
   IFeeConfig,
@@ -23,12 +24,11 @@ import {
   useGasSimulator,
   useIBCTransferConfig,
 } from "@keplr-wallet/hooks";
-import { useStore } from "../../../stores";
-import { useNotification } from "@components/notification";
-import { FormattedMessage, useIntl } from "react-intl";
-import { ExtensionKVStore } from "@keplr-wallet/common";
 import { HeaderLayout } from "@layouts-v2/header-layout";
-import { ButtonV2 } from "@components-v2/buttons/button";
+import { FormattedMessage, useIntl } from "react-intl";
+import { Alert } from "reactstrap";
+import { useStore } from "../../../stores";
+import style from "./style.module.scss";
 
 export const IBCTransferPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
