@@ -111,7 +111,7 @@ export const SendPhase1: FunctionComponent<{
           mainHeading="Asset"
           heading={sendConfigs.amountConfig.sendCurrency.coinDenom}
           subHeading={`Available: ${availableBalance}`}
-          trailingIcon={<ChevronDownIcon />}
+          trailingIcon={<ChevronDownIcon size={12} />}
           onPress={() => setOpenAssetModel(true)}
         />
         <DropDownCardView
@@ -120,7 +120,7 @@ export const SendPhase1: FunctionComponent<{
           }
           mainHeading="Send from"
           heading={account.name}
-          trailingIcon={<ChevronDownIcon />}
+          trailingIcon={<ChevronDownIcon size={12} />}
           onPress={() => setChangeWalletModal(true)}
         />
       </View>

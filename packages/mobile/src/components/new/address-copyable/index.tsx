@@ -26,24 +26,11 @@ export const AddressCopyable: FunctionComponent<{
         await Clipboard.setStringAsync(address);
         setTimer(2000);
       }}
-      rippleColor={
-        style.flatten([
-          "color-white-transparent-100",
-          "dark:color-platinum-300",
-        ]).color
-      }
-      underlayColor={
-        style.flatten(["color-gray-300", "dark:color-platinum-200"]).color
-      }
+      rippleColor={style.flatten(["color-white-transparent-100"]).color}
+      underlayColor={style.flatten(["color-gray-300"]).color}
       activeOpacity={0.2}
     >
-      <Text
-        style={style.flatten([
-          "h6",
-          "color-gray-200",
-          "dark:color-platinum-200",
-        ])}
-      >
+      <Text style={style.flatten(["h7", "color-gray-200"])}>
         {Bech32Address.shortenAddress(address, maxCharacters)}
       </Text>
       <View style={style.flatten(["margin-left-4", "width-20"]) as ViewStyle}>
@@ -67,17 +54,11 @@ export const AddressCopyable: FunctionComponent<{
                   colorFilters={[
                     {
                       keypath: "Shape Layer 2",
-                      color: style.flatten([
-                        "color-gray-200",
-                        "dark:color-platinum-200",
-                      ]).color,
+                      color: style.flatten(["color-gray-200"]).color,
                     },
                     {
                       keypath: "Shape Layer 1",
-                      color: style.flatten([
-                        "color-gray-300",
-                        "dark:color-platinum-200",
-                      ]).color,
+                      color: style.flatten(["color-gray-300"]).color,
                     },
                     {
                       keypath: "Layer 1 Outlines",
@@ -93,7 +74,7 @@ export const AddressCopyable: FunctionComponent<{
             </View>
           </View>
         ) : (
-          <CopyIcon size={18} />
+          <CopyIcon size={15} />
         )}
       </View>
     </RectButton>

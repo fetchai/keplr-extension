@@ -48,11 +48,13 @@ export const ColorPalette = {
   "green-400": "#2DD98F",
   "green-500": "#22AC71",
   "green-600": "#136844",
+  "vibrant-green-500": "#2DE376",
   staking: "#11cdef",
 
   "red-50": "#FFF7F8",
   "red-100": "#FFD8E0",
   "red-200": "#FC91A6",
+  "red-250": "#F36B6B",
   "red-300": "#FD5778",
   "red-400": "#F5365C",
   "red-500": "#BF2342",
@@ -95,6 +97,7 @@ export const ColorPalette = {
   "gray-500": "#37373E",
   "gray-600": "#1E1E24",
   "gray-700": "#09090A",
+  "new-gray-700": "#556578",
 
   black: "#000000",
 

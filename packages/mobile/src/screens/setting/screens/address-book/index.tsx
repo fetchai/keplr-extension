@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "components/page";
 import { useStyle } from "styles/index";
-import { Text, View, ViewStyle } from "react-native";
+import { Image, Text, View, ViewStyle } from "react-native";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import {
   IMemoConfig,
@@ -14,7 +14,6 @@ import { useStore } from "stores/index";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { HeaderRightButton } from "components/header";
 import { HeaderAddIcon } from "components/header/icon";
-import { AddressBookIcon } from "components/icon";
 import { IconButton } from "components/new/button/icon";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
@@ -236,21 +235,23 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["flex-1"])} />
       <View style={style.flatten(["justify-center", "items-center"])}>
         <View style={style.flatten(["margin-bottom-21"]) as ViewStyle}>
-          <AddressBookIcon
-            color={
-              style.flatten(["color-gray-200", "dark:color-platinum-300"]).color
-            }
-            height={56}
+          <Image
+            style={{ width: 240, height: 60 }}
+            source={require("assets/image/emptystate-addressbook.png")}
+            fadeDuration={0}
+            resizeMode="contain"
           />
         </View>
         <Text
           style={style.flatten([
-            "subtitle2",
+            "h3",
+            "font-medium",
             "color-gray-100",
             "dark:color-platinum-300",
+            "text-center",
           ])}
         >
-          Address book is empty
+          {"You haven’t saved any\naddresses yet"}
         </Text>
       </View>
       <View style={style.flatten(["margin-top-68", "flex-1"]) as ViewStyle} />

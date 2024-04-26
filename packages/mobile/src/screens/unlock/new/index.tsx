@@ -33,6 +33,7 @@ import { FaceDetectIcon } from "components/new/icon/face-icon";
 import { IconButton } from "components/new/button/icon";
 import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
 import Toast from "react-native-toast-message";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 let splashScreenHided = false;
 async function hideSplashScreen() {
@@ -123,6 +124,8 @@ export const UnlockScreen: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const navigation = useNavigation();
+
+  const safeAreaInsets = useSafeAreaInsets();
 
   const navigateToHomeOnce = useRef(false);
   const navigateToHome = useCallback(async () => {
@@ -233,18 +236,21 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       <ScreenBackground backgroundMode="image" backgroundBlur={true} />
       <View
         style={
-          style.flatten(["flex", "flex-1", "justify-between"]) as ViewStyle
+          [
+            style.flatten(["flex", "flex-1", "justify-between"]),
+            {
+              paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+            },
+          ] as ViewStyle
         }
       >
         <KeyboardAwareScrollView
           contentContainerStyle={style.flatten(["flex-grow-1"]) as ViewStyle}
         >
-          <View style={style.get("flex-1")} />
           <View style={style.flatten(["items-center"]) as ViewStyle}>
             <Image
               source={require("assets/logo/logo.png")}
               style={{
-                height: 80,
                 aspectRatio: 2.977,
               }}
               resizeMode="contain"
@@ -253,7 +259,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
           </View>
           <View
             style={
-              style.flatten(["margin-x-page", "margin-top-28"]) as ViewStyle
+              style.flatten(["margin-x-page", "margin-top-34"]) as ViewStyle
             }
           >
             <Text style={style.flatten(["h2", "font-medium", "color-white"])}>

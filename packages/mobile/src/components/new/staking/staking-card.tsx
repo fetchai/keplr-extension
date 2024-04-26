@@ -90,9 +90,10 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   const pieData = [
     {
       color: "#F9774B",
-      value: stakablePercentage,
-      focused: Math.round(stakablePercentage) > 0,
+      value: rewardsPercentage,
+      focused: Math.round(rewardsPercentage) > 0,
     },
+
     {
       color: "#5F38FB",
       value: stakedPercentage,
@@ -101,11 +102,11 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     },
     {
       color: "#CFC3FE",
-      value: rewardsPercentage,
+      value: stakablePercentage,
       focused:
         Math.round(stakablePercentage) == 0 &&
         Math.round(stakedPercentage) == 0 &&
-        Math.round(rewardsPercentage) > 0,
+        Math.round(stakablePercentage) > 0,
     },
   ];
 
@@ -130,9 +131,13 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     return (
       <View style={style.flatten(["flex-3"])}>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-          {renderLine("#F9774B")}
+          {renderLine("#CFC3FE")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text style={style.flatten(["color-gray-200", "h7"]) as ViewStyle}>
+            <Text
+              style={
+                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
+              }
+            >
               Available
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
@@ -146,7 +151,11 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
           {renderLine("#5F38FB")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text style={style.flatten(["color-gray-200", "h7"]) as ViewStyle}>
+            <Text
+              style={
+                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
+              }
+            >
               Staked
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
@@ -159,10 +168,14 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           </View>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-          {renderLine("#CFC3FE")}
+          {renderLine("#F9774B")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text style={style.flatten(["color-gray-200", "h7"]) as ViewStyle}>
-              Staking rewards
+            <Text
+              style={
+                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
+              }
+            >
+              Claimable rewards
             </Text>
             <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
               {`${parseFloat(rewardsBal).toFixed(2)} ${

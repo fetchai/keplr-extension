@@ -334,7 +334,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                 style.flatten([
                   "absolute",
                   "text-caption1",
-                  "color-red-400",
+                  "color-red-250",
                   "margin-top-2",
                   "margin-left-4",
                 ]) as ViewStyle,

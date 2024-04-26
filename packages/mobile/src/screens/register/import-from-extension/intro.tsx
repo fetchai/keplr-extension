@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { PageWithView } from "components/page";
-import { Image, Linking, Platform, Text, View, ViewStyle } from "react-native";
+import { Linking, Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
@@ -12,6 +12,8 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { Camera, PermissionStatus } from "expo-camera";
 import { CameraPermissionModal } from "components/new/camera-permission-model/camera-permission";
 import { observer } from "mobx-react-lite";
+import { CameraPermissionOffIcon } from "components/new/icon/camerapermission-off";
+import { CameraPermissionOnIcon } from "components/new/icon/camerapermission-on";
 
 export enum ModelStatus {
   First = "first",
@@ -126,15 +128,9 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = observer(
           }
           icon={
             modelStatus == ModelStatus.First ? (
-              <Image
-                source={require("assets/image/icon/camera_permission.png")}
-                fadeDuration={0}
-              />
+              <CameraPermissionOffIcon />
             ) : (
-              <Image
-                source={require("assets/image/icon/camera_permission_disabled.png")}
-                fadeDuration={0}
-              />
+              <CameraPermissionOnIcon />
             )
           }
           buttonText={

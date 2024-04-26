@@ -26,7 +26,7 @@ export const SettingViewPrivateDataItem: FunctionComponent = observer(() => {
         onPress={() => {
           setIsOpenModal(true);
         }}
-        style={style.flatten(["height-80", "padding-x-20"]) as ViewStyle}
+        style={style.flatten(["height-72", "padding-x-20"]) as ViewStyle}
       />
       <PasswordInputModal
         isOpen={isOpenModal}

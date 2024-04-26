@@ -83,7 +83,7 @@ export const CardModal: FunctionComponent<{
                 <Text
                   style={[
                     style.flatten([
-                      "h4",
+                      "h5",
                       "color-text-high",
                       "color-white",
                       "flex-3",
@@ -104,9 +104,9 @@ export const CardModal: FunctionComponent<{
                     onPress={() => close()}
                     iconStyle={
                       style.flatten([
-                        "padding-12",
+                        "padding-8",
                         "border-width-1",
-                        "border-color-gray-400",
+                        "border-color-white-400",
                       ]) as ViewStyle
                     }
                   />

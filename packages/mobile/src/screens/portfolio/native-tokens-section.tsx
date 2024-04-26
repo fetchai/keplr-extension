@@ -75,7 +75,7 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
       }
       leadingIcon={
         <TokenSymbolUsingChainInfo
-          size={50}
+          size={44}
           chainInfo={chainStore.current}
           currency={stakable.currency}
         />

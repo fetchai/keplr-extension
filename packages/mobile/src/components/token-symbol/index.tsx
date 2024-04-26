@@ -34,7 +34,7 @@ export const TokenSymbol: FunctionComponent<{
               color="white"
             />
           }
-          iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          iconStyle={style.flatten(["padding-10"]) as ViewStyle}
         />
       )}
     </React.Fragment>

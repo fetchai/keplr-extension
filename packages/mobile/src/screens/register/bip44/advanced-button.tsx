@@ -209,7 +209,7 @@ export const BIP44AdvancedButton: FunctionComponent<{
               style={
                 style.flatten([
                   "text-caption2",
-                  "color-red-400",
+                  "color-red-250",
                   "margin-bottom-8",
                 ]) as ViewStyle
               }
@@ -291,7 +291,7 @@ export const BIP44SelectModal: FunctionComponent<{
           style={
             style.flatten([
               "text-caption2",
-              "color-red-400",
+              "color-red-250",
               "margin-bottom-8",
             ]) as ViewStyle
           }

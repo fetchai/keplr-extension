@@ -42,7 +42,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
             style={
               style.flatten(
                 [
-                  "height-64",
+                  "height-56",
                   "padding-x-20",
                   "flex-row",
                   "items-center",
@@ -60,7 +60,9 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
               navigation.goBack();
             }}
           >
-            <Text style={style.flatten(["subtitle1", "color-white"])}>
+            <Text
+              style={style.flatten(["body3", "color-white", "font-medium"])}
+            >
               {item.label} ({item.symbol})
             </Text>
             {item.key === priceStore.defaultVsCurrency ? <CheckIcon /> : null}

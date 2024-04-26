@@ -13,8 +13,7 @@ import {
   useDrawerStatus,
 } from "@react-navigation/drawer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { HomeIcon } from "components/new/icon/file-icon";
-import { RobotIcon } from "components/new/icon/robot-icon";
+import { HomeSelectIcon } from "components/new/icon/file-icon";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
@@ -29,10 +28,12 @@ import {
   QuickTabOptionModel,
   QuickTabOptions,
 } from "components/new/quick-tab-card/quick-tab-card";
-import { AgentTab } from "screens/agents";
 import { MoreNavigation } from "./more-navigation";
 import { ActivityTab } from "screens/activity";
 import Toast from "react-native-toast-message";
+import { StakeIcon } from "components/new/icon/stake-icon";
+import { StakingDashboardScreen } from "screens/stake";
+import { HomeUnselectIcon } from "components/new/icon/home-unselect";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -80,19 +81,11 @@ export const MainTabNavigation: FunctionComponent = () => {
 
   enum screenNames {
     Home = "Home",
-    Agents = "Agents",
+    Stake = "Stake",
     Inbox = "Inbox",
     Activity = "Activity",
     More = "More",
   }
-
-  const screenIcons = {
-    Home: <HomeIcon color="white" />,
-    Agents: <RobotIcon size={18} color="white" />,
-    Inbox: <UpDownArrowIcon />,
-    Activity: <ClockIcon color="white" />,
-    More: <MoreIcon color="white" />,
-  };
 
   return (
     <React.Fragment>
@@ -105,10 +98,15 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "HomeTab":
                 return (
                   <IconButton
-                    icon={screenIcons[screenNames.Home]}
+                    icon={focused ? <HomeSelectIcon /> : <HomeUnselectIcon />}
                     bottomText={screenNames.Home}
                     backgroundBlur={focused}
                     borderRadius={32}
+                    bottomTextStyle={
+                      style.flatten([
+                        focused ? "color-white" : "color-white-400",
+                      ]) as ViewStyle
+                    }
                     iconStyle={
                       style.flatten([
                         "padding-y-8",
@@ -119,11 +117,11 @@ export const MainTabNavigation: FunctionComponent = () => {
                     containerStyle={style.flatten(["items-center"])}
                   />
                 );
-              case "AgentsTab":
+              case "Stake":
                 return (
                   <IconButton
-                    icon={screenIcons[screenNames.Agents]}
-                    bottomText={screenNames.Agents}
+                    icon={<StakeIcon color={focused ? "white" : "#64646D"} />}
+                    bottomText={screenNames.Stake}
                     borderRadius={32}
                     backgroundBlur={focused}
                     iconStyle={
@@ -131,6 +129,11 @@ export const MainTabNavigation: FunctionComponent = () => {
                         "padding-y-8",
                         "padding-x-24",
                         "margin-bottom-6",
+                      ]) as ViewStyle
+                    }
+                    bottomTextStyle={
+                      style.flatten([
+                        focused ? "color-white" : "color-white-400",
                       ]) as ViewStyle
                     }
                     containerStyle={style.flatten(["items-center"])}
@@ -139,7 +142,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "InboxTab":
                 return (
                   <IconButton
-                    icon={screenIcons[screenNames.Inbox]}
+                    icon={<UpDownArrowIcon />}
                     borderRadius={64}
                     backgroundBlur={false}
                     onPress={() => setQuickOptionEnable(true)}
@@ -149,12 +152,17 @@ export const MainTabNavigation: FunctionComponent = () => {
                         "background-color-white",
                       ]) as ViewStyle
                     }
+                    bottomTextStyle={
+                      style.flatten([
+                        focused ? "color-white" : "color-white-400",
+                      ]) as ViewStyle
+                    }
                   />
                 );
               case "ActivityTab":
                 return (
                   <IconButton
-                    icon={screenIcons[screenNames.Activity]}
+                    icon={<ClockIcon color={focused ? "white" : "#64646D"} />}
                     bottomText={screenNames.Activity}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -165,13 +173,18 @@ export const MainTabNavigation: FunctionComponent = () => {
                         "margin-bottom-6",
                       ]) as ViewStyle
                     }
+                    bottomTextStyle={
+                      style.flatten([
+                        focused ? "color-white" : "color-white-400",
+                      ]) as ViewStyle
+                    }
                     containerStyle={style.flatten(["items-center"])}
                   />
                 );
               case "MoreTab":
                 return (
                   <IconButton
-                    icon={screenIcons[screenNames.More]}
+                    icon={<MoreIcon color={focused ? "white" : "#64646D"} />}
                     bottomText={screenNames.More}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -180,6 +193,11 @@ export const MainTabNavigation: FunctionComponent = () => {
                         "padding-y-8",
                         "padding-x-24",
                         "margin-bottom-6",
+                      ]) as ViewStyle
+                    }
+                    bottomTextStyle={
+                      style.flatten([
+                        focused ? "color-white" : "color-white-400",
                       ]) as ViewStyle
                     }
                     containerStyle={style.flatten(["items-center"])}
@@ -230,7 +248,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="AgentsTab" component={AgentTab} />
+        <Tab.Screen name="Stake" component={StakingDashboardScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
         <Tab.Screen name="ActivityTab" component={ActivityTab} />
         <Tab.Screen name="MoreTab" component={MoreNavigation} />
@@ -256,8 +274,8 @@ export const MainTabNavigation: FunctionComponent = () => {
                 },
               });
 
-            case QuickTabOptions.earn:
-              return;
+            // case QuickTabOptions.earn:
+            //   return;
 
             case QuickTabOptions.bridge:
               return;

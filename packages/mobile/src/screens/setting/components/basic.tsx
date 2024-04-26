@@ -98,17 +98,15 @@ export const SettingItem: FunctionComponent<{
   return (
     <BlurBackground
       borderRadius={12}
-      blurIntensity={20}
+      blurIntensity={16}
       backgroundBlur={backgroundBlur}
-      containerStyle={
-        [style.flatten(["margin-y-4"]), containerStyle] as ViewStyle
-      }
+      containerStyle={[{ marginVertical: 3 }, containerStyle] as ViewStyle}
     >
       {onPress ? (
         <RectButton
           style={StyleSheet.flatten([
             style.flatten([
-              "height-62",
+              "height-56",
               "padding-x-16",
               "flex-row",
               "items-center",
@@ -126,7 +124,7 @@ export const SettingItem: FunctionComponent<{
         <View
           style={StyleSheet.flatten([
             style.flatten([
-              "height-62",
+              "height-56",
               "padding-x-20",
               "flex-row",
               "items-center",
@@ -142,7 +140,7 @@ export const SettingItem: FunctionComponent<{
           style={StyleSheet.flatten([
             style.flatten([
               "height-1",
-              "background-color-gray-400",
+              "background-color-white-400",
             ]) as ViewStyle,
             borderColor ? { backgroundColor: borderColor } : {},
           ])}

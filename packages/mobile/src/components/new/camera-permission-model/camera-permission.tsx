@@ -40,7 +40,7 @@ export const CameraPermissionModal: FunctionComponent<{
           containerStyle={
             style.flatten(["border-radius-32", "margin-top-18"]) as ViewStyle
           }
-          textStyle={style.flatten(["h7"]) as ViewStyle}
+          textStyle={style.flatten(["body3"]) as ViewStyle}
           size="large"
           text={buttonText}
           onPress={onPress}

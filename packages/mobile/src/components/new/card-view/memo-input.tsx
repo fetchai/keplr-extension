@@ -67,7 +67,12 @@ export const MemoInputView: FunctionComponent<{
             <TextInput
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
-                style.flatten(["h6", "color-white", "padding-0"]) as ViewStyle
+                style.flatten([
+                  "body3",
+                  "font-medium",
+                  "color-white",
+                  "padding-0",
+                ]) as ViewStyle
               }
               keyboardType={
                 Platform.OS === "ios" ? "ascii-capable" : "visible-password"

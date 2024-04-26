@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { PageWithView } from "components/page";
 import { useStyle } from "styles/index";
-import { Image, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -10,6 +10,7 @@ import { useStore } from "stores/index";
 import { Toggle } from "components/toggle";
 import delay from "delay";
 import { LinearGradientText } from "components/svg/linear-gradient-text";
+import { RocketIcon } from "components/new/icon/rocket";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
   const { keychainStore, keyRingStore } = useStore();
@@ -50,12 +51,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
     >
       <View style={style.get("flex-8")} />
       <View style={style.flatten(["items-center"])}>
-        <Image
-          style={{ width: 340, height: 180, marginRight: -60 }}
-          source={require("assets/image/all-set.png")}
-          fadeDuration={0}
-          resizeMode="contain"
-        />
+        <RocketIcon />
 
         <LinearGradientText
           text="You’re all set!"

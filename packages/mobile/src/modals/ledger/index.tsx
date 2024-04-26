@@ -343,7 +343,7 @@ export const LedgerGranterModal: FunctionComponent<{
                     ["margin-y-6", "padding-x-12"],
                     [
                       paired
-                        ? "background-color-green-500"
+                        ? "background-color-vibrant-green-500"
                         : "background-color-indigo-800",
                     ]
                   ) as ViewStyle

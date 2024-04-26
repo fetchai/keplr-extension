@@ -32,7 +32,7 @@ export const TokenGraphSection: FunctionComponent<{
             style={
               style.flatten(
                 ["color-orange-400", "text-caption2"],
-                [tokenState.type === "positive" && "color-green-500"]
+                [tokenState.type === "positive" && "color-vibrant-green-500"]
               ) as ViewStyle
             }
           >

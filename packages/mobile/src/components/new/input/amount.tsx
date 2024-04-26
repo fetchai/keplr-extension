@@ -95,7 +95,7 @@ export const AmountInputSection: FunctionComponent<{
         style={
           style.flatten(
             ["h2", "height-58", "text-center", "flex-0", "width-full"],
-            [errorText ? "color-red-400" : "color-white"]
+            [errorText ? "color-red-250" : "color-white"]
           ) as ViewStyle
         }
         inputContainerStyle={
@@ -124,7 +124,9 @@ export const AmountInputSection: FunctionComponent<{
               ]) as ViewStyle
             }
           >
-            {isToggleClicked ? "USD" : amountConfig.sendCurrency.coinDenom}
+            {isToggleClicked
+              ? priceStore.defaultVsCurrency.toUpperCase()
+              : amountConfig.sendCurrency.coinDenom}
           </Text>
         }
         placeholderTextColor={errorText ? "red" : "white"}
@@ -176,7 +178,7 @@ export const AmountInputSection: FunctionComponent<{
             {isToggleClicked
               ? `${amountConfig.amount} ${amountConfig.sendCurrency.coinDenom}`
               : inputInUsd
-              ? `${inputInUsd} USD`
+              ? `${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()}`
               : ""}
           </Text>
         }
@@ -213,12 +215,16 @@ export const AmountInputSection: FunctionComponent<{
       >
         <View style={style.flatten(["flex-1"]) as ViewStyle}>
           <BlurButton
-            text="Change to USD"
+            text={`Change to ${
+              isToggleClicked
+                ? amountConfig.sendCurrency.coinDenom
+                : priceStore.defaultVsCurrency.toUpperCase()
+            }`}
             backgroundBlur={false}
             leftIcon={
-              <View style={style.flatten(["margin-right-8"]) as ViewStyle}>
+              <View style={style.flatten(["margin-right-2"]) as ViewStyle}>
                 <ReloadIcon
-                  size={21}
+                  size={20}
                   color={
                     amountConfig.sendCurrency["coinGeckoId"]
                       ? "white"

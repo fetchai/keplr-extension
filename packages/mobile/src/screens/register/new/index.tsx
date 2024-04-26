@@ -105,14 +105,14 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
           <Image
             source={require("assets/logo/logo.png")}
             style={{
-              height: 80,
+              // height: 80,
               aspectRatio: 2.977,
             }}
             resizeMode="contain"
             fadeDuration={0}
           />
         </View>
-        <View style={{ display: "flex", gap: 12 }}>
+        <View style={{ display: "flex", gap: 12, marginTop: 30 }}>
           <View style={style.flatten(["padding-x-2"]) as ViewStyle}>
             <Text
               style={
@@ -247,10 +247,13 @@ export const NewWalletModal: FunctionComponent<{
       >
         <TokenCardView
           title="Continue with Google"
-          leadingIcon={<GoogleIcon width={35} height={35} />}
+          leadingIcon={<GoogleIcon width={30} height={30} />}
           subtitle={"Powered by Web3Auth"}
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           onPress={() => {
             onSelectGoogle();
@@ -259,9 +262,12 @@ export const NewWalletModal: FunctionComponent<{
         {Platform.OS === "ios" ? (
           <TokenCardView
             title="Continue with Apple"
-            leadingIcon={<AppleIcon width={35} height={35} />}
+            leadingIcon={<AppleIcon width={30} height={30} />}
             containerStyle={
-              style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+              style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+            }
+            titleStyle={
+              style.flatten(["text-caption1", "font-medium"]) as ViewStyle
             }
             onPress={() => {
               onSelectApple();
@@ -273,11 +279,14 @@ export const NewWalletModal: FunctionComponent<{
           title="Create new seed phrase"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <KeyIcon width={35} height={35} />
+              <KeyIcon width={30} height={30} />
             </BlurBackground>
           }
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           onPress={() => {
             onSelectNewMnemonic();
@@ -320,9 +329,12 @@ export const ImportExistingWalletModal: FunctionComponent<{
       >
         <TokenCardView
           title="Import from Fetch extension"
-          leadingIcon={<FetchIcon />}
+          leadingIcon={<FetchIcon size={30} />}
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           onPress={onImportFromFetch}
         />
@@ -330,11 +342,14 @@ export const ImportExistingWalletModal: FunctionComponent<{
           title="Use a seed phrase or a private key"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <KeyIcon width={35} height={35} />
+              <KeyIcon width={30} height={30} />
             </BlurBackground>
           }
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           onPress={onImportExistingWallet}
         />
@@ -342,11 +357,14 @@ export const ImportExistingWalletModal: FunctionComponent<{
           title="Connect hardware wallet"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <BluetoothIcon width={35} height={35} />
+              <BluetoothIcon width={30} height={30} />
             </BlurBackground>
           }
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           subtitle={"Requires bluetooth access to pair"}
           onPress={onConnectLedger}
@@ -355,11 +373,14 @@ export const ImportExistingWalletModal: FunctionComponent<{
           title="Migrate from ETH"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <MetaMaskIcon />
+              <MetaMaskIcon size={30} />
             </BlurBackground>
           }
           containerStyle={
-            style.flatten(["margin-bottom-8", "height-84"]) as ViewStyle
+            style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
+          }
+          titleStyle={
+            style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
           onPress={() => {
             onMigrateFromETH();

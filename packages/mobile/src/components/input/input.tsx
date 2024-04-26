@@ -97,7 +97,7 @@ export const TextInput = React.forwardRef<
               isFocused ? "border-color-gray-200" : undefined,
               isFocused ? "dark:border-color-platinum-100" : undefined,
               error ? "border-color-red-200" : undefined,
-              error ? "dark:border-color-red-400" : undefined,
+              error ? "dark:border-color-red-250" : undefined,
               !(props.editable ?? true) && "background-color-gray-50",
               !(props.editable ?? true) && "dark:background-color-platinum-500",
             ]
@@ -193,7 +193,7 @@ export const TextInput = React.forwardRef<
               style.flatten([
                 "absolute",
                 "text-caption2",
-                "color-red-400",
+                "color-red-250",
                 "margin-top-2",
                 "margin-left-4",
               ]) as ViewStyle,

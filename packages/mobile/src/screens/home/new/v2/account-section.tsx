@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Image, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -20,8 +20,6 @@ import {
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
 import { useLoadingScreen } from "providers/loading-screen";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
-import { BarCodeIcon } from "components/new/icon/bar-code";
-import { InboxIcon } from "components/new/icon/inbox-icon";
 import { separateNumericAndDenom, titleCase } from "utils/format/format";
 import { BlurButton } from "components/new/button/blur-button";
 import { ThreeDotIcon } from "components/new/icon/three-dot";
@@ -32,6 +30,10 @@ import {
   ModelStatus,
   handleOpenSettings,
 } from "screens/register/import-from-extension/intro";
+import { QRCodeIcon } from "components/new/icon/qrcode-icon";
+import { NotificationIcon } from "components/new/icon/notification";
+import { CameraPermissionOffIcon } from "components/new/icon/camerapermission-off";
+import { CameraPermissionOnIcon } from "components/new/icon/camerapermission-on";
 
 export const AccountSection: FunctionComponent<{
   containtStyle?: ViewStyle;
@@ -98,33 +100,25 @@ export const AccountSection: FunctionComponent<{
       : -(parseFloat(totalNumber) * tokenState.diff) / 100;
 
   return (
-    <React.Fragment>
-      <View
-        style={
-          style.flatten([
-            "flex-row",
-            "justify-between",
-            "margin-x-16",
-          ]) as ViewStyle
-        }
-      >
+    <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
+      <View style={style.flatten(["flex-row", "justify-between"]) as ViewStyle}>
         <SelectAccountButton
           backgroundBlur={false}
           containerStyle={
             style.flatten([
               "padding-x-12",
               "border-width-1",
-              "border-color-gray-300",
+              "border-color-white-400",
             ]) as ViewStyle
           }
           text={titleCase(chainStore.current.chainName)}
-          icon={<ChevronDownIcon />}
+          icon={<ChevronDownIcon size={12} />}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />
         <View style={style.flatten(["flex-row"])}>
           <IconButton
             borderRadius={32}
-            icon={<BarCodeIcon size={18} />}
+            icon={<QRCodeIcon />}
             backgroundBlur={false}
             onPress={() => {
               if (permission?.status == PermissionStatus.UNDETERMINED) {
@@ -143,7 +137,7 @@ export const AccountSection: FunctionComponent<{
             iconStyle={
               style.flatten([
                 "border-width-1",
-                "border-color-gray-300",
+                "border-color-white-400",
                 "padding-x-18",
                 "padding-y-8",
                 "justify-center",
@@ -153,13 +147,13 @@ export const AccountSection: FunctionComponent<{
           />
           <IconButton
             borderRadius={32}
-            icon={<InboxIcon size={18} />}
+            icon={<NotificationIcon />}
             backgroundBlur={false}
             onPress={() => smartNavigation.navigateSmart("Inbox", {})}
             iconStyle={
               style.flatten([
                 "border-width-1",
-                "border-color-gray-300",
+                "border-color-white-400",
                 "padding-x-18",
                 "padding-y-8",
                 "justify-center",
@@ -177,10 +171,10 @@ export const AccountSection: FunctionComponent<{
               "flex-row",
               "justify-between",
               "items-center",
-              "margin-x-16",
-              "margin-top-18",
+              "margin-top-24",
               "margin-bottom-12",
-              "padding-10",
+              "padding-x-8",
+              "padding-y-6",
               "border-width-1",
               "border-color-indigo-200",
             ]),
@@ -189,7 +183,7 @@ export const AccountSection: FunctionComponent<{
         }
       >
         <View
-          style={style.flatten(["margin-x-10", "margin-bottom-6"]) as ViewStyle}
+          style={style.flatten(["margin-x-10", "margin-bottom-2"]) as ViewStyle}
         >
           <Text
             style={
@@ -235,6 +229,7 @@ export const AccountSection: FunctionComponent<{
                 "h1",
                 "color-gray-400",
                 "margin-left-8",
+                "font-medium",
               ]) as ViewStyle
             }
           >
@@ -263,7 +258,7 @@ export const AccountSection: FunctionComponent<{
               style={
                 style.flatten(
                   ["color-orange-400", "text-caption2"],
-                  [tokenState.type === "positive" && "color-green-500"]
+                  [tokenState.type === "positive" && "color-vibrant-green-500"]
                 ) as ViewStyle
               }
             >
@@ -291,11 +286,12 @@ export const AccountSection: FunctionComponent<{
             style.flatten([
               "padding-x-12",
               "border-width-1",
-              "border-color-gray-300",
+              "border-color-white-400",
               "margin-top-20",
               "border-radius-32",
             ]) as ViewStyle
           }
+          textStyle={style.flatten(["h7"]) as ViewStyle}
           text={"View portfolio"}
           onPress={() => navigation.navigate("Portfolio")}
         />
@@ -352,15 +348,9 @@ export const AccountSection: FunctionComponent<{
         }
         icon={
           modelStatus == ModelStatus.First ? (
-            <Image
-              source={require("assets/image/icon/camera_permission.png")}
-              fadeDuration={0}
-            />
+            <CameraPermissionOffIcon />
           ) : (
-            <Image
-              source={require("assets/image/icon/camera_permission_disabled.png")}
-              fadeDuration={0}
-            />
+            <CameraPermissionOnIcon />
           )
         }
         buttonText={
@@ -392,6 +382,6 @@ export const AccountSection: FunctionComponent<{
           }
         }}
       />
-    </React.Fragment>
+    </View>
   );
 });

@@ -38,8 +38,7 @@ export const SelectAccountButton: FunctionComponent<{
           style={[
             style.flatten([
               "color-white",
-              "padding-left-4",
-              "padding-right-6",
+              "padding-x-4",
               "padding-y-6",
               "h6",
             ]) as ViewStyle,

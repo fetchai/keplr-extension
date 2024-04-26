@@ -18,10 +18,7 @@ import {
   EditAddressBookScreen,
 } from "screens/setting/screens/address-book";
 import { PageScrollPositionProvider } from "providers/page-scroll-position";
-import {
-  BlurHeaderOptionsPreset,
-  HeaderOnSecondaryScreenOptionsPreset,
-} from "components/header";
+import { BlurHeaderOptionsPreset } from "components/header";
 import { FocusedScreenProvider } from "providers/focused-screen";
 
 //import Bugsnag from "@bugsnag/react-native";
@@ -85,8 +82,8 @@ export const ChainListStackScreen: FunctionComponent = () => {
     >
       <Stack.Screen
         options={{
-          ...HeaderOnSecondaryScreenOptionsPreset,
-          title: "Chain List",
+          ...BlurHeaderOptionsPreset,
+          title: "Manage networks",
         }}
         name="Setting.ChainList"
         component={SettingChainListScreen}

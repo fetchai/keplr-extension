@@ -157,16 +157,17 @@ export const SendPhase2: FunctionComponent<{
           style.flatten([
             "flex-row",
             "border-width-1",
-            "border-color-gray-400",
+            "border-color-white-400@60%",
             "border-radius-12",
-            "padding-x-20",
-            "padding-y-12",
+            "padding-x-14",
+            "padding-y-10",
+            "items-center",
           ]) as ViewStyle
         }
       >
         <View style={style.flatten(["flex-3", "justify-center"]) as ViewStyle}>
           {usdValue() ? (
-            <Text style={style.flatten(["color-white", "h6"]) as ViewStyle}>
+            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
               {usdValue()} {`${priceStore.defaultVsCurrency.toUpperCase()}`}
             </Text>
           ) : null}
@@ -174,9 +175,8 @@ export const SendPhase2: FunctionComponent<{
             style={
               style.flatten([
                 "color-gray-300",
-                "text-caption1",
+                "text-caption2",
                 "font-bold",
-                "margin-top-2",
               ]) as ViewStyle
             }
           >
@@ -191,12 +191,10 @@ export const SendPhase2: FunctionComponent<{
           containerStyle={
             style.flatten([
               "border-width-1",
-              "border-color-gray-300",
+              "border-color-gray-300@80%",
             ]) as ViewStyle
           }
-          textStyle={
-            style.flatten(["padding-x-18", "padding-y-2"]) as ViewStyle
-          }
+          textStyle={style.flatten(["padding-x-14", "h7"]) as ViewStyle}
           onPress={() => setIsNext(false)}
         />
       </View>

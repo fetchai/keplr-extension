@@ -8,6 +8,7 @@ import { useStore } from "stores/index";
 import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { observer } from "mobx-react-lite";
 import { KeyRingStore } from "@keplr-wallet/stores";
+import { BlurBackground } from "../blur-background/blur-background";
 
 export const ChangeWalletCardModel: FunctionComponent<{
   isOpen: boolean;
@@ -42,58 +43,67 @@ export const ChangeWalletCardModel: FunctionComponent<{
       >
         {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {
           return (
-            <RectButton
+            <BlurBackground
               key={i.toString()}
-              onPress={async () => {
-                if (!keyStore?.selected) {
-                  close();
-                  analyticsStore.logEvent("Account changed");
-                  await onChangeAccount(keyStore);
-                }
-              }}
-              activeOpacity={0.5}
-              style={
-                style.flatten(
-                  [
-                    "flex-row",
-                    "items-center",
-                    "padding-18",
-                    "margin-y-8",
-                    "border-radius-12",
-                  ],
-                  [keyStore.selected && "background-color-indigo"]
-                ) as ViewStyle
-              }
-              underlayColor={style.flatten(["color-gray-50"]).color}
+              borderRadius={12}
+              blurIntensity={15}
+              containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
             >
-              <View style={style.flatten(["flex-3"]) as ViewStyle}>
-                <Text
-                  style={
-                    style.flatten([
-                      keyStore?.selected ? "h6" : "body2",
-                      "color-white",
-                    ]) as ViewStyle
+              <RectButton
+                onPress={async () => {
+                  if (!keyStore?.selected) {
+                    close();
+                    analyticsStore.logEvent("Account changed");
+                    await onChangeAccount(keyStore);
                   }
-                >
-                  {keyStore.meta?.["name"] || "Fetch Account"}
-                </Text>
-                {keyStore.selected ? (
+                }}
+                activeOpacity={0.5}
+                style={
+                  style.flatten(
+                    [
+                      "flex-row",
+                      "items-center",
+                      "padding-x-18",
+                      "padding-y-12",
+
+                      "border-radius-12",
+                    ],
+                    [keyStore.selected && "background-color-indigo"]
+                  ) as ViewStyle
+                }
+                underlayColor={style.flatten(["color-gray-50"]).color}
+              >
+                <View style={style.flatten(["flex-5"]) as ViewStyle}>
                   <Text
                     style={
                       style.flatten([
-                        "text-caption1",
+                        keyStore?.selected ? "h7" : "body3",
                         "color-white",
                       ]) as ViewStyle
                     }
                   >
-                    {accountInfo.bech32Address}
+                    {keyStore.meta?.["name"] || "Fetch Account"}
                   </Text>
-                ) : null}
-              </View>
-              <View style={style.flatten(["flex-1", "items-end"]) as ViewStyle}>
-                {keyStore.selected ? <CheckIcon /> : null}
-              </View>
-            </RectButton>
+                  {keyStore.selected ? (
+                    <Text
+                      style={
+                        style.flatten([
+                          "text-caption2",
+                          "color-white",
+                        ]) as ViewStyle
+                      }
+                    >
+                      {accountInfo.bech32Address}
+                    </Text>
+                  ) : null}
+                </View>
+                <View
+                  style={style.flatten(["flex-1", "items-end"]) as ViewStyle}
+                >
+                  {keyStore.selected ? <CheckIcon /> : null}
+                </View>
+              </RectButton>
+            </BlurBackground>
           );
         })}
       </ScrollView>

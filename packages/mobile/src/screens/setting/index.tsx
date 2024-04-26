@@ -44,9 +44,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       }}
     >
       <Text
-        style={
-          style.flatten(["h1", "color-white", "margin-bottom-20"]) as ViewStyle
-        }
+        style={style.flatten(["h1", "color-white", "margin-y-20"]) as ViewStyle}
       >
         More
       </Text>

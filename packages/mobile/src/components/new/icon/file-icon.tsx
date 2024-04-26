@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import Svg, { Path } from "react-native-svg";
 
-export const HomeIcon: FunctionComponent<{
+export const HomeSelectIcon: FunctionComponent<{
   size?: number;
   color?: string;
 }> = ({ size = 17, color = "white" }) => {

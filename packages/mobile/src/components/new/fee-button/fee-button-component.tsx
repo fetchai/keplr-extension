@@ -161,20 +161,25 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
         <RectButton
           style={
             style.flatten(
-              ["flex-row", "items-center", "justify-between", "padding-16"],
+              ["flex-row", "items-center", "justify-between", "padding-12"],
               [selected && "background-color-indigo", "border-radius-12"]
             ) as ViewStyle
           }
           onPress={onPress}
         >
           <View style={style.flatten(["flex-row"])}>
-            <Text style={style.flatten(["h6", "color-white"])}>{label}</Text>
+            <Text
+              style={style.flatten(["body3", "font-medium", "color-white"])}
+            >
+              {label}
+            </Text>
             {price ? (
               <Text
                 style={
                   style.flatten([
                     "padding-top-2",
-                    "h7",
+                    "text-caption1",
+                    "font-medium",
                     "color-gray-300",
                     "dark:color-platinum-400",
                     "margin-left-6",
@@ -204,7 +209,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
     return (
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-bottom-28"]) as ViewStyle,
+          style.flatten(["padding-bottom-12"]) as ViewStyle,
           containerStyle,
         ])}
       >
@@ -282,7 +287,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                 style.flatten([
                   "absolute",
                   "text-caption1",
-                  "color-red-400",
+                  "color-red-250",
                   "margin-top-2",
                   "margin-left-4",
                 ]) as ViewStyle,

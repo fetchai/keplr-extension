@@ -6,6 +6,7 @@ import { IconButton } from "components/new/button/icon";
 
 export const TokenCardView: FunctionComponent<{
   containerStyle?: ViewStyle;
+  titleStyle?: ViewStyle;
   leadingIcon?: ReactElement;
   title: string;
   subtitle?: string;
@@ -20,6 +21,7 @@ export const TokenCardView: FunctionComponent<{
   trailingStart,
   trailingEnd,
   containerStyle,
+  titleStyle,
 }) => {
   const style = useStyle();
 
@@ -32,7 +34,8 @@ export const TokenCardView: FunctionComponent<{
           [
             style.flatten([
               "flex-row",
-              "padding-18",
+              "padding-x-18",
+              "padding-y-12",
               "justify-between",
               "items-center",
             ]),
@@ -47,12 +50,15 @@ export const TokenCardView: FunctionComponent<{
           <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
             <Text
               style={
-                style.flatten([
-                  "h6",
-                  "padding-4",
-                  "color-white",
-                  "font-medium",
-                ]) as ViewStyle
+                [
+                  style.flatten([
+                    "h7",
+                    "padding-2",
+                    "color-white",
+                    "font-medium",
+                  ]),
+                  titleStyle,
+                ] as ViewStyle
               }
             >
               {title}
@@ -60,7 +66,11 @@ export const TokenCardView: FunctionComponent<{
             {subtitle ? (
               <Text
                 style={
-                  style.flatten(["padding-4", "color-gray-200"]) as ViewStyle
+                  style.flatten([
+                    "text-caption1",
+                    "padding-2",
+                    "color-gray-200",
+                  ]) as ViewStyle
                 }
               >
                 {subtitle}
@@ -81,11 +91,7 @@ export const TokenCardView: FunctionComponent<{
           {trailingStart ? (
             <Text
               style={
-                style.flatten([
-                  "body2",
-                  "color-white",
-                  "font-extrabold",
-                ]) as ViewStyle
+                style.flatten(["h7", "color-white", "font-medium"]) as ViewStyle
               }
             >
               {trailingStart}
@@ -95,10 +101,10 @@ export const TokenCardView: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "h6",
+                  "h7",
                   "color-gray-300",
-                  "font-extrabold",
-                  "margin-left-8",
+                  "font-medium",
+                  "margin-left-4",
                 ]) as ViewStyle
               }
             >

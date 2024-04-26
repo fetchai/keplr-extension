@@ -41,7 +41,7 @@ export const WalletCardModel: FunctionComponent<{
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
         >
           <RectButton
             onPress={() => {
@@ -69,7 +69,7 @@ export const WalletCardModel: FunctionComponent<{
               <Text
                 style={
                   style.flatten([
-                    "body2",
+                    "body3",
                     "color-white",
                     "margin-left-18",
                   ]) as ViewStyle
@@ -83,7 +83,7 @@ export const WalletCardModel: FunctionComponent<{
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
         >
           <RectButton
             onPress={() => {
@@ -110,7 +110,7 @@ export const WalletCardModel: FunctionComponent<{
               <Text
                 style={
                   style.flatten([
-                    "body2",
+                    "body3",
                     "color-white",
                     "margin-left-18",
                   ]) as ViewStyle
@@ -124,7 +124,7 @@ export const WalletCardModel: FunctionComponent<{
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
         >
           <RectButton
             onPress={() => {
@@ -151,7 +151,7 @@ export const WalletCardModel: FunctionComponent<{
               <Text
                 style={
                   style.flatten([
-                    "body2",
+                    "body3",
                     "color-white",
                     "margin-left-18",
                   ]) as ViewStyle
@@ -165,7 +165,7 @@ export const WalletCardModel: FunctionComponent<{
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
         >
           <RectButton
             onPress={() => {
@@ -192,7 +192,7 @@ export const WalletCardModel: FunctionComponent<{
               <Text
                 style={
                   style.flatten([
-                    "body2",
+                    "body3",
                     "color-white",
                     "margin-left-18",
                     "color-orange-400",

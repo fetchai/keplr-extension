@@ -51,7 +51,7 @@ export function getPlatformFontWeight(
   switch (fontWeight) {
     case "100":
       return {
-        fontFamily: "sans-serif-thin",
+        fontFamily: "lexend-thin",
         fontWeight: "100",
       };
     case "200":
@@ -59,12 +59,12 @@ export function getPlatformFontWeight(
     // 200 should be 300
     case "300":
       return {
-        fontFamily: "sans-serif-light",
+        fontFamily: "lexend-light",
         fontWeight: "300",
       };
     case "400":
       return {
-        fontFamily: "sans-serif",
+        fontFamily: "lexend",
         fontWeight: "400",
       };
     case "600":
@@ -72,7 +72,7 @@ export function getPlatformFontWeight(
     // 600 should be 500
     case "500":
       return {
-        fontFamily: "sans-serif-medium",
+        fontFamily: "lexend-medium",
         fontWeight: "500",
       };
     case "800":
@@ -80,12 +80,12 @@ export function getPlatformFontWeight(
     // 800 should be 700
     case "700":
       return {
-        fontFamily: "sans-serif",
+        fontFamily: "lexend",
         fontWeight: "700",
       };
     case "900":
       return {
-        fontFamily: "sans-serif-black",
+        fontFamily: "lexend-black",
         fontWeight: "900",
       };
   }

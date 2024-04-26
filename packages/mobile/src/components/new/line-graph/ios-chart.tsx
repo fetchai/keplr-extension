@@ -26,9 +26,9 @@ export const IOSLineChart: FunctionComponent<{
       areaGradientComponent={() => {
         return (
           <LinearGradient id="Gradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={"#5F38FB"} stopOpacity={"0.3"} />
+            <Stop offset="0" stopColor={"#F9774B"} stopOpacity={"0.3"} />
             <Stop offset="0.5" stopColor={"#CF447B"} stopOpacity={"0.1"} />
-            <Stop offset="1" stopColor={"#F9774B"} stopOpacity={"0"} />
+            <Stop offset="1" stopColor={"#5F38FB"} stopOpacity={"0"} />
           </LinearGradient>
         );
       }}
@@ -63,9 +63,9 @@ export const IOSLineChart: FunctionComponent<{
       lineGradientComponent={() => {
         return (
           <LinearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={"#5F38FB"} />
+            <Stop offset="0" stopColor={"#F9774B"} />
             <Stop offset="0.5" stopColor={"#CF447B"} />
-            <Stop offset="1" stopColor={"#F9774B"} />
+            <Stop offset="1" stopColor={"#5F38FB"} />
           </LinearGradient>
         );
       }}

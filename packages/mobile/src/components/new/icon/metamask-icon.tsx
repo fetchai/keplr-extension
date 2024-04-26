@@ -4,9 +4,18 @@ import Svg, { Path, Rect } from "react-native-svg";
 export const MetaMaskIcon: FunctionComponent<{
   size?: number;
   color?: string;
-}> = () => {
+}> = ({ size = 32 }) => {
   return (
-    <Svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <Svg
+      width={size}
+      height={size}
+      style={{
+        width: size,
+        height: size,
+      }}
+      viewBox="0 0 32 32"
+      fill="none"
+    >
       <Rect width="32" height="32" rx="16" fill="white" fillOpacity="0.1" />
       <Path
         d="M22.4847 9.00586L16.8633 13.181L17.9028 10.7177L22.4847 9.00586Z"

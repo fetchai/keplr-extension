@@ -44,8 +44,8 @@ export const DropDownCardView: FunctionComponent<{
           [
             style.flatten([
               "flex-row",
-              "padding-x-18",
-              "padding-y-8",
+              "padding-x-16",
+              "padding-y-10",
               "items-center",
             ]),
             containerStyle,
@@ -58,7 +58,7 @@ export const DropDownCardView: FunctionComponent<{
               style={
                 style.flatten([
                   "h6",
-                  "padding-4",
+                  "padding-2",
                   "color-white",
                   "font-medium",
                 ]) as ViewStyle
@@ -72,7 +72,7 @@ export const DropDownCardView: FunctionComponent<{
               style={
                 style.flatten([
                   "text-caption1",
-                  "padding-4",
+                  "padding-2",
                   "color-gray-200",
                 ]) as ViewStyle
               }

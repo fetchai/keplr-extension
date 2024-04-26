@@ -20,7 +20,12 @@ export const TabPanel: FunctionComponent<{
         disable={selected}
         text={item.id}
         borderRadius={32}
-        textStyle={style.flatten(["body3"]) as ViewStyle}
+        textStyle={
+          style.flatten(
+            ["body3"],
+            [selected ? "color-white" : "color-gray-300"]
+          ) as ViewStyle
+        }
         containerStyle={
           [
             style.flatten(["justify-center"]),

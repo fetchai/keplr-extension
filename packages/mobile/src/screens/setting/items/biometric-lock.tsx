@@ -70,7 +70,7 @@ export const SettingBiometricLockItem: FunctionComponent = observer(() => {
             }}
           />
         }
-        style={style.flatten(["height-80", "padding-x-20"]) as ViewStyle}
+        style={style.flatten(["height-72", "padding-x-20"]) as ViewStyle}
       />
     </React.Fragment>
   );

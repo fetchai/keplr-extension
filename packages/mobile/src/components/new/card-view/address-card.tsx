@@ -1,12 +1,5 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -35,6 +28,8 @@ import {
   handleOpenSettings,
   ModelStatus,
 } from "screens/register/import-from-extension/intro";
+import { CameraPermissionOffIcon } from "../icon/camerapermission-off";
+import { CameraPermissionOnIcon } from "../icon/camerapermission-on";
 
 function numOfCharacter(str: string, c: string): number {
   return str.split(c).length - 1;
@@ -142,7 +137,7 @@ export const AddressInputCard: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-x-18", "padding-y-8"],
+                ["padding-x-14", "padding-y-2"],
                 isFocused || errorText
                   ? [
                       // The order is important.
@@ -150,7 +145,7 @@ export const AddressInputCard: FunctionComponent<{
                       // The more in front, the lower the priority.
                       "border-width-1",
                       isFocused ? "border-color-indigo" : undefined,
-                      errorText ? "border-color-red-400" : undefined,
+                      errorText ? "border-color-red-250" : undefined,
                     ]
                   : []
               ),
@@ -162,7 +157,13 @@ export const AddressInputCard: FunctionComponent<{
             <View style={style.flatten(["flex-3"]) as ViewStyle}>
               <TextInput
                 placeholderTextColor={style.flatten(["color-gray-200"]).color}
-                style={style.flatten(["h6", "color-white"]) as ViewStyle}
+                style={
+                  style.flatten([
+                    "body3",
+                    "font-medium",
+                    "color-white",
+                  ]) as ViewStyle
+                }
                 returnKeyType="done"
                 placeholder={placeholderText}
                 value={recipientConfig.rawRecipient}
@@ -254,7 +255,7 @@ export const AddressInputCard: FunctionComponent<{
           <View>
             <Text
               style={StyleSheet.flatten([
-                style.flatten(["text-caption2", "color-red-400"]) as ViewStyle,
+                style.flatten(["text-caption2", "color-red-250"]) as ViewStyle,
               ])}
             >
               {errorText}
@@ -283,14 +284,11 @@ export const AddressInputCard: FunctionComponent<{
               : "Camera permission is disabled"
           }
           icon={
-            <Image
-              source={
-                modelStatus == ModelStatus.First
-                  ? require("assets/image/icon/camera_permission.png")
-                  : require("assets/image/icon/camera_permission_disabled.png")
-              }
-              fadeDuration={0}
-            />
+            modelStatus == ModelStatus.First ? (
+              <CameraPermissionOffIcon />
+            ) : (
+              <CameraPermissionOnIcon />
+            )
           }
           buttonText={
             modelStatus == ModelStatus.First

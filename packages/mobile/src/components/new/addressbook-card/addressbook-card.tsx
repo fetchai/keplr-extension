@@ -2,16 +2,15 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
-import { IconButton } from "components/new/button/icon";
 import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { AddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { AddressBookIcon, PlusIcon } from "components/icon";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "../empty";
 import { useStore } from "stores/index";
+import { Button } from "components/button";
 
 export const AddressBookCardModel: FunctionComponent<{
   hideCurrentAddress?: boolean;
@@ -66,11 +65,11 @@ export const AddressBookCardModel: FunctionComponent<{
           close();
         }}
       >
-        <BlurBackground borderRadius={12} blurIntensity={20}>
+        <BlurBackground borderRadius={12} blurIntensity={15}>
           <TextInput
             placeholder="Search"
             placeholderTextColor={"white"}
-            style={style.flatten(["h6"])}
+            style={style.flatten(["h7"])}
             inputContainerStyle={
               style.flatten([
                 "border-width-0",
@@ -84,50 +83,6 @@ export const AddressBookCardModel: FunctionComponent<{
             containerStyle={style.flatten(["padding-0"]) as ViewStyle}
             inputRight={<SearchIcon />}
           />
-        </BlurBackground>
-        <BlurBackground
-          borderRadius={12}
-          blurIntensity={15}
-          containerStyle={style.flatten(["margin-top-24"]) as ViewStyle}
-        >
-          <RectButton
-            style={style.flatten(["border-radius-12"]) as ViewStyle}
-            activeOpacity={0.5}
-            underlayColor={style.flatten(["color-gray-50"]).color}
-            onPress={() => {
-              if (addAddressBook) {
-                addAddressBook(true);
-              }
-              close();
-            }}
-          >
-            <View
-              style={
-                style.flatten([
-                  "flex-row",
-                  "items-center",
-                  "padding-18",
-                ]) as ViewStyle
-              }
-            >
-              <IconButton
-                backgroundBlur={false}
-                icon={<PlusIcon color={"white"} size={13} />}
-                iconStyle={style.flatten(["padding-0"]) as ViewStyle}
-              />
-              <Text
-                style={
-                  style.flatten([
-                    "body2",
-                    "color-white",
-                    "margin-left-18",
-                  ]) as ViewStyle
-                }
-              >
-                Add new address book
-              </Text>
-            </View>
-          </RectButton>
         </BlurBackground>
         {filterAddressBook.length > 0 ? (
           <View style={style.flatten(["margin-y-24"]) as ViewStyle}>
@@ -143,7 +98,7 @@ export const AddressBookCardModel: FunctionComponent<{
                   activeOpacity={0.5}
                   style={
                     style.flatten([
-                      "padding-16",
+                      "padding-12",
                       "border-radius-12",
                     ]) as ViewStyle
                   }
@@ -152,7 +107,7 @@ export const AddressBookCardModel: FunctionComponent<{
                   <Text
                     style={
                       style.flatten([
-                        "body2",
+                        "body3",
                         "color-white",
                         "padding-bottom-10",
                       ]) as ViewStyle
@@ -160,7 +115,14 @@ export const AddressBookCardModel: FunctionComponent<{
                   >
                     {data.name}
                   </Text>
-                  <Text style={style.flatten(["color-white"]) as ViewStyle}>
+                  <Text
+                    style={
+                      style.flatten([
+                        "color-white",
+                        "text-caption2",
+                      ]) as ViewStyle
+                    }
+                  >
                     {data.address}
                   </Text>
                 </RectButton>
@@ -168,18 +130,38 @@ export const AddressBookCardModel: FunctionComponent<{
             })}
           </View>
         ) : addressBookConfig.addressBookDatas.length == 0 ? (
-          <EmptyView
-            text="Address book is empty"
-            icon={
-              <AddressBookIcon
-                color={style.flatten(["color-platinum-100"]).color}
-                height={56}
-              />
-            }
-            containerStyle={
-              style.flatten(["relative", "height-214"]) as ViewStyle
-            }
-          />
+          <React.Fragment>
+            <Text
+              style={
+                style.flatten([
+                  "text-caption1",
+                  "text-center",
+                  "color-white",
+                  "margin-y-20",
+                ]) as ViewStyle
+              }
+            >
+              You haven’t saved any addresses yet
+            </Text>
+            <Button
+              containerStyle={
+                style.flatten([
+                  "border-radius-32",
+                  "border-color-white@40%",
+                  "margin-bottom-10",
+                ]) as ViewStyle
+              }
+              mode="outline"
+              textStyle={style.flatten(["color-white"])}
+              text="Add an address"
+              onPress={() => {
+                if (addAddressBook) {
+                  addAddressBook(true);
+                }
+                close();
+              }}
+            />
+          </React.Fragment>
         ) : (
           <EmptyView
             containerStyle={

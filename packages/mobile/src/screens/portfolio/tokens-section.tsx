@@ -125,7 +125,7 @@ export const TokensSection: FunctionComponent = observer(() => {
               }
               leadingIcon={
                 <TokenSymbol
-                  size={36}
+                  size={32}
                   image={
                     token.currency.coinImageUrl
                       ? token.currency.coinImageUrl

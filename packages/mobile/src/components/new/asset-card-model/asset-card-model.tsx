@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
-import { View, ViewStyle, Platform } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { observer } from "mobx-react-lite";
@@ -78,7 +78,7 @@ export const AssetCardModel: FunctionComponent<{
         [
           style.flatten(["height-full", "border-radius-0"]) as ViewStyle,
           {
-            paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+            // paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
             // height: filterCurrencies.length === 0 ? "100%" : undefined,
           },
         ] as ViewStyle

@@ -6,7 +6,7 @@ import { useStyle } from "styles/index";
 import { InputCardView } from "components/new/card-view/input-card";
 import { Button } from "components/button";
 import { KeyboardSpacerView } from "components/keyboard";
-import { Image, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import {
   NavigationProp,
   ParamListBase,
@@ -18,6 +18,7 @@ import { canShowPrivateData } from "screens/setting/screens/view-private-data";
 import { PasswordInputModal } from "modals/password-input/modal";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { ConfirmCardModel } from "components/new/confirm-modal";
+import { DeleteWalletIcon } from "components/new/icon/delete-wallet";
 
 export const DeleteWalletScreen: FunctionComponent = observer(() => {
   const { keyRingStore, keychainStore } = useStore();
@@ -59,19 +60,12 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page", "padding-y-page"]) as ViewStyle}
     >
-      <View
-        style={style.flatten(["margin-x-30", "margin-top-20"]) as ViewStyle}
-      >
+      <View style={style.flatten(["margin-x-30"]) as ViewStyle}>
         <IconWithText
-          icon={
-            <Image
-              source={require("assets/image/icon/ic_delete.png")}
-              fadeDuration={0}
-            />
-          }
+          icon={<DeleteWalletIcon />}
           title={"Delete wallet"}
           subtitle={
-            "You will no longer have access to your wallet on Fetch Wallet"
+            "You will no longer have access to\nyour wallet on Fetch Wallet"
           }
           titleStyle={style.flatten(["h2", "font-medium"]) as ViewStyle}
           subtitleStyle={style.flatten(["subtitle3"]) as ViewStyle}
@@ -95,7 +89,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         returnKeyType="done"
         secureTextEntry={true}
         onSubmitEditing={submitPassword}
-        containerStyle={style.flatten(["margin-y-20"]) as ViewStyle}
+        containerStyle={style.flatten(["margin-bottom-12"]) as ViewStyle}
       />
       <View style={style.get("flex-1")} />
       {showPrivateData && !isFocused ? (
@@ -104,7 +98,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
             heading="Make sure you’ve backed up your mnemonic seed before proceeding."
             cardStyle={
               style.flatten([
-                "background-color-coral-red@25%",
+                "background-color-coral-red@30%",
                 "margin-y-6",
               ]) as ViewStyle
             }
@@ -190,7 +184,6 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

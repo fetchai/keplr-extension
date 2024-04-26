@@ -7,7 +7,6 @@ import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ArrowUpIcon } from "../icon/arrow-up";
 import { ArrowDownIcon } from "../icon/arrow-down";
-import { StakeIcon } from "../icon/stake-icon";
 import { NewBridgeIcon } from "../icon/new-bridge-icon";
 import { Button } from "components/button";
 
@@ -121,7 +120,7 @@ export const QuickTabOptionModel: FunctionComponent<{
             </View>
           </RectButton>
         </BlurBackground>
-        <BlurBackground
+        {/* <BlurBackground
           borderRadius={12}
           blurIntensity={15}
           containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
@@ -178,7 +177,7 @@ export const QuickTabOptionModel: FunctionComponent<{
               ])}
             />
           </RectButton>
-        </BlurBackground>
+        </BlurBackground> */}
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}

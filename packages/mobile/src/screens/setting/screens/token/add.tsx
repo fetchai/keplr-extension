@@ -33,7 +33,7 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+      {/* <View style={style.flatten(["height-page-pad"]) as ViewStyle} /> */}
       <TokenAddressInput
         label="Contract Address"
         recipientConfig={recipientConfig}
@@ -42,28 +42,25 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
       />
       <InputCardView
         label="Name"
-        placeholder="-"
         editable={false}
         value={queryTokenInfo.tokenInfo?.name ?? ""}
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
       />
       <InputCardView
         label="Symbol"
-        placeholder="-"
         editable={false}
         value={queryTokenInfo.tokenInfo?.symbol ?? ""}
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
       />
       <InputCardView
         label="Decimals"
-        placeholder="-"
         editable={false}
         value={queryTokenInfo.tokenInfo?.decimals.toString() ?? ""}
         containerStyle={style.flatten(["margin-y-2"]) as ViewStyle}
       />
       <View style={style.get("flex-1")} />
       <Button
-        text="Submit"
+        text="Save"
         size="large"
         containerStyle={
           style.flatten(["border-radius-32", "margin-top-20"]) as ViewStyle
