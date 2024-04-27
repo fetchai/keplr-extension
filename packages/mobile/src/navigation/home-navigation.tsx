@@ -3,8 +3,6 @@ import { TransitionPresets } from "@react-navigation/stack";
 import { TransparentHeaderOptionsPreset } from "components/header";
 import { NewHomeScreen } from "screens/home/new";
 import { PortfolioScreen } from "screens/portfolio";
-import { WebpageScreenScreenOptionsPreset } from "screens/web/components/webpage-screen";
-import { FetchhubScreen } from "screens/web/webpages";
 import { Stack } from "./navigation";
 import { InboxScreen } from "screens/inbox";
 
@@ -33,14 +31,6 @@ export const HomeNavigation: FunctionComponent = () => {
         }}
         name="Portfolio"
         component={PortfolioScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...WebpageScreenScreenOptionsPreset,
-          headerMode: "screen",
-        }}
-        name="Fetchhub"
-        component={FetchhubScreen}
       />
       <Stack.Screen
         options={{

@@ -9,7 +9,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-import { SelectAccountButton } from "components/new/select-account/select-account-button";
+import { ChipButton } from "components/new/chip";
 import { BlurButton } from "components/new/button/blur-button";
 import { Button } from "components/button";
 import { AddressCopyable } from "components/new/address-copyable";
@@ -184,7 +184,7 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
               >
-                <SelectAccountButton
+                <ChipButton
                   containerStyle={style.flatten(["padding-x-12"]) as ViewStyle}
                   text={chainStore.current.chainName}
                   icon={<ChevronDownIcon />}

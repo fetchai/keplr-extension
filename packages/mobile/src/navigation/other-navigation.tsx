@@ -50,6 +50,8 @@ import { FetchVersionScreen } from "screens/setting/screens/version";
 import { CurrencyScreen } from "screens/setting/screens/currency";
 import { RenameWalletScreen } from "screens/rename-account";
 import { DeleteWalletScreen } from "screens/delete-account";
+import { ActivityDetails } from "screens/activity/activity-details";
+import { WebViewScreen } from "screens/web/webpages/webview";
 
 export const OtherNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -305,6 +307,34 @@ export const OtherNavigation: FunctionComponent = () => {
         }}
         name="DeleteWallet"
         component={DeleteWalletScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="ActivityDetails"
+        component={ActivityDetails}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          // Only show the back button.
+          title: "",
+        }}
+        name="Activity"
+        component={ActivityDetails}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          ...HeaderOnTertiaryScreenOptionsPreset,
+          title: "",
+          // Only show the back button.
+        }}
+        name="WebView"
+        component={WebViewScreen}
       />
     </Stack.Navigator>
   );

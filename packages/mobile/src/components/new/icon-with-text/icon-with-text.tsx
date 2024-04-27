@@ -10,6 +10,7 @@ export const IconWithText: FunctionComponent<{
   iconStyle?: ViewStyle;
   titleStyle?: ViewStyle;
   subtitleStyle?: ViewStyle;
+  containerStyle?: ViewStyle;
   isComingSoon?: boolean;
 }> = ({
   icon,
@@ -18,13 +19,14 @@ export const IconWithText: FunctionComponent<{
   iconStyle,
   titleStyle,
   subtitleStyle,
+  containerStyle,
   isComingSoon = false,
   children,
 }) => {
   const style = useStyle();
 
   return (
-    <View style={style.flatten(["flex-column"]) as ViewStyle}>
+    <View style={[style.flatten(["flex-column"]), containerStyle] as ViewStyle}>
       <View style={style.flatten(["items-center"]) as ViewStyle}>
         {icon && <View style={iconStyle}>{icon}</View>}
         {isComingSoon && (

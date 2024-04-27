@@ -1,46 +1,85 @@
-import React, { FunctionComponent, useRef } from "react";
-import { PageWithScrollViewInBottomTabView } from "components/page";
+import React, { ReactElement, useState } from "react";
+import { PageWithViewInBottomTabView } from "components/page";
 import { Platform, ScrollView, Text, ViewStyle } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { useStyle } from "styles/index";
-import { ColumnFrame } from "components/new/icon/column-frame";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ChipButton } from "components/new/chip";
+import { FilterIcon } from "components/new/icon/filter-icon";
 
-export const ActivityTab: FunctionComponent = () => {
-  const scrollViewRef = useRef<ScrollView | null>(null);
-  const safeAreaInsets = useSafeAreaInsets();
+import { ChatSection } from "screens/inbox/chat-section";
+import { ActivityNativeTab } from "screens/activity/activity-transaction";
+export interface FilterItem {
+  icon: ReactElement;
+  isSelected: boolean;
+  title: string;
+  value: string;
+}
+
+enum ActivityEnum {
+  Transactions = "Transactions",
+  GovProposals = "Gov Proposals",
+}
+
+export const ActivityScreen = () => {
   const style = useStyle();
+  const [selectedId, _setSelectedId] = useState(ActivityEnum.Transactions);
+  const safeAreaInsets = useSafeAreaInsets();
+  const [latestBlock, _setLatestBlock] = useState<string>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
   return (
-    <PageWithScrollViewInBottomTabView
+    <PageWithViewInBottomTabView
       backgroundMode={"image"}
-      contentContainerStyle={{
+      style={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
-        height: "100%",
-        justifyContent: "center",
       }}
-      ref={scrollViewRef}
     >
-      <IconWithText
-        title={"Activity"}
-        subtitle={"This feature will be available\nin the next releases"}
-        icon={<ColumnFrame />}
-        isComingSoon={true}
-        titleStyle={style.flatten(["h3"]) as ViewStyle}
-      >
-        <Text
-          style={
+      <View style={style.flatten(["items-end", "margin-x-6"]) as ViewStyle}>
+        <ChipButton
+          text="Filter"
+          icon={<FilterIcon />}
+          containerStyle={
             style.flatten([
-              "body2",
-              "color-gray-200",
-              "padding-y-8",
-              "text-center",
-              "font-medium",
+              "border-width-1",
+              "border-color-gray-300",
+              "width-90",
             ]) as ViewStyle
           }
-        >
-          {"You can use this feature in your\nbrowser extension."}
-        </Text>
-      </IconWithText>
-    </PageWithScrollViewInBottomTabView>
+          backgroundBlur={false}
+          onPress={() => setIsOpenModal(true)}
+        />
+      </View>
+      <Text
+        style={
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-x-18",
+            "margin-y-16",
+          ]) as ViewStyle
+        }
+      >
+        Activity
+      </Text>
+      {/*<TabBarView*/}
+      {/*  listItem={ActivityEnum}*/}
+      {/*  selected={selectedId}*/}
+      {/*  setSelected={setSelectedId}*/}
+      {/*  containerStyle={style.flatten(["margin-x-20"]) as ViewStyle}*/}
+      {/*/>*/}
+      <ScrollView indicatorStyle={"white"}>
+        <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
+          {selectedId === ActivityEnum.Transactions && (
+            <ActivityNativeTab
+              latestBlock={latestBlock}
+              isOpenModal={isOpenModal}
+              setIsOpenModal={setIsOpenModal}
+            />
+          )}
+          {selectedId === ActivityEnum.GovProposals && <ChatSection />}
+        </View>
+      </ScrollView>
+    </PageWithViewInBottomTabView>
   );
 };

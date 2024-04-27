@@ -3,7 +3,7 @@ import { Text, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-import { SelectAccountButton } from "components/new/select-account/select-account-button";
+import { ChipButton } from "components/new/chip";
 import { AddressCopyable } from "components/new/address-copyable";
 import {
   DrawerActions,
@@ -102,7 +102,7 @@ export const AccountSection: FunctionComponent<{
   return (
     <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
       <View style={style.flatten(["flex-row", "justify-between"]) as ViewStyle}>
-        <SelectAccountButton
+        <ChipButton
           backgroundBlur={false}
           containerStyle={
             style.flatten([

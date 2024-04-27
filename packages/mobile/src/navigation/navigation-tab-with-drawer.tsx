@@ -29,11 +29,11 @@ import {
   QuickTabOptions,
 } from "components/new/quick-tab-card/quick-tab-card";
 import { MoreNavigation } from "./more-navigation";
-import { ActivityTab } from "screens/activity";
 import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { StakingDashboardScreen } from "screens/stake";
 import { HomeUnselectIcon } from "components/new/icon/home-unselect";
+import { ActivityScreen } from "screens/activity";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -250,7 +250,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
         <Tab.Screen name="Stake" component={StakingDashboardScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
-        <Tab.Screen name="ActivityTab" component={ActivityTab} />
+        <Tab.Screen name="ActivityTab" component={ActivityScreen} />
         <Tab.Screen name="MoreTab" component={MoreNavigation} />
       </Tab.Navigator>
       <QuickTabOptionModel

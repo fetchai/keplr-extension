@@ -3,7 +3,7 @@ import { View, Text, ViewStyle, TouchableOpacity } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
-export const SelectAccountButton: FunctionComponent<{
+export const ChipButton: FunctionComponent<{
   containerStyle?: ViewStyle;
   textStyle?: ViewStyle;
   backgroundBlur?: boolean;

@@ -178,8 +178,8 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Web.Junoswap": {
         upperScreenName: "Web",
       },
-      Fetchhub: {
-        upperScreenName: "HomeTab",
+      WebView: {
+        upperScreenName: "Others",
       },
       RenameWallet: {
         upperScreenName: "Others",
@@ -188,6 +188,10 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Others",
       },
     }).withParams<{
+      WebView: {
+        title: string;
+        url: string;
+      };
       "Register.NewMnemonic": {
         registerConfig: RegisterConfig;
       };
