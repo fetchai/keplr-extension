@@ -9,7 +9,7 @@ export const ChevronDownIcon: FunctionComponent<{
     <Svg
       width={size}
       height={size}
-      viewBox="0 0 12 7"
+      viewBox="0 0 12 4"
       style={{
         width: size,
         height: size,

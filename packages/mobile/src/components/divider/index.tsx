@@ -13,7 +13,7 @@ export const Divider: FunctionComponent<{
           style.flatten([
             "height-half",
             "width-1",
-            "background-color-gray-300",
+            "background-color-white@20%",
           ]),
           containerStyle,
         ] as ViewStyle

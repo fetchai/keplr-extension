@@ -23,8 +23,8 @@ export const ScreenBackground: FunctionComponent<{
         position: "absolute",
         left: 0,
         right: 0,
-        top: -200,
-        bottom: -200,
+        top: -225,
+        bottom: -100,
       }}
     >
       {backgroundMode === "gradient" ? (
@@ -37,8 +37,8 @@ export const ScreenBackground: FunctionComponent<{
         />
       ) : backgroundMode === "image" ? (
         <ImageBackground
-          source={require("assets/bg2.png")}
-          resizeMode="cover"
+          source={require("assets/bg.png")}
+          resizeMode="contain"
           style={style.flatten([
             "flex-1",
             "justify-center",

@@ -100,14 +100,16 @@ export const SettingItem: FunctionComponent<{
       borderRadius={12}
       blurIntensity={16}
       backgroundBlur={backgroundBlur}
-      containerStyle={[{ marginVertical: 3 }, containerStyle] as ViewStyle}
+      containerStyle={
+        [style.flatten(["margin-y-2"]), containerStyle] as ViewStyle
+      }
     >
       {onPress ? (
         <RectButton
           style={StyleSheet.flatten([
             style.flatten([
-              "height-56",
-              "padding-x-16",
+              "padding-x-12",
+              "padding-y-18",
               "flex-row",
               "items-center",
             ]) as ViewStyle,
@@ -140,7 +142,7 @@ export const SettingItem: FunctionComponent<{
           style={StyleSheet.flatten([
             style.flatten([
               "height-1",
-              "background-color-white-400",
+              "background-color-white@20%",
             ]) as ViewStyle,
             borderColor ? { backgroundColor: borderColor } : {},
           ])}
@@ -158,15 +160,7 @@ export const Right: FunctionComponent<{
   return (
     <React.Fragment>
       {paragraph ? (
-        <Text
-          style={
-            style.flatten([
-              "text-caption1",
-              "color-text-low",
-              "font-bold",
-            ]) as ViewStyle
-          }
-        >
+        <Text style={style.flatten(["body3", "color-text-low"]) as ViewStyle}>
           {paragraph}
         </Text>
       ) : null}

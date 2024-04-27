@@ -1,11 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
 import { SettingItem } from "screens/setting/components";
-import { Toggle } from "components/toggle";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import delay from "delay";
 import { PasswordInputModal } from "modals/password-input/modal";
-import { ViewStyle } from "react-native";
+import { Platform, Switch, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { FingerPrintIconWithoutCircle } from "components/new/icon/finger-print";
 
@@ -50,11 +49,23 @@ export const SettingBiometricLockItem: FunctionComponent = observer(() => {
       />
       <SettingItem
         label="Use biometric authentication"
-        left={<FingerPrintIconWithoutCircle size={18} />}
+        left={<FingerPrintIconWithoutCircle size={16} />}
         right={
-          <Toggle
-            on={keychainStore.isBiometryOn}
-            onChange={async (value) => {
+          <Switch
+            trackColor={{
+              false: "#767577",
+              true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
+            }}
+            thumbColor={keychainStore.isBiometryOn ? "#5F38FB" : "#D0BCFF66"}
+            style={[
+              {
+                borderRadius: 16,
+                borderWidth: 1,
+                // transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
+              },
+              style.flatten(["border-color-pink-light@40%"]),
+            ]}
+            onValueChange={async (value) => {
               if (value) {
                 setIsOpenModal(true);
                 setIsTurnOffBiometryFallback(false);
@@ -68,9 +79,10 @@ export const SettingBiometricLockItem: FunctionComponent = observer(() => {
                 }
               }
             }}
+            value={keychainStore.isBiometryOn}
           />
         }
-        style={style.flatten(["height-72", "padding-x-20"]) as ViewStyle}
+        style={style.flatten(["height-72", "padding-18"]) as ViewStyle}
       />
     </React.Fragment>
   );

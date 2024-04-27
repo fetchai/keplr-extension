@@ -15,7 +15,7 @@ import { PageWithScrollView } from "components/page";
 import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { HeaderBackButtonIcon } from "components/header/icon";
-import { useSmartNavigation } from "navigation/smart-navigation";
+import { State, useSmartNavigation } from "navigation/smart-navigation";
 import { IconButton } from "components/new/button/icon";
 
 export const NewSendScreen: FunctionComponent = observer(() => {
@@ -31,15 +31,25 @@ export const NewSendScreen: FunctionComponent = observer(() => {
           chainId?: string;
           currency?: string;
           recipient?: string;
+          state: State;
         }
       >,
-      string
+      any
     >
   >();
 
   const chainId = route.params.chainId
     ? route.params.chainId
     : chainStore.current.chainId;
+  const state = route.params?.state ?? {
+    isNext: false,
+    configs: {
+      amount: undefined,
+      recipient: undefined,
+      memo: undefined,
+      denom: undefined,
+    },
+  };
 
   const account = accountStore.getAccount(chainId);
 
@@ -56,6 +66,26 @@ export const NewSendScreen: FunctionComponent = observer(() => {
       allowHexAddressOnEthermint: true,
     }
   );
+
+  useEffect(() => {
+    if (state.isNext) {
+      setIsNext(state.isNext);
+    }
+    if (state.configs.recipient) {
+      sendConfigs.recipientConfig.setRawRecipient(state.configs.recipient);
+    }
+    if (state.configs.amount) {
+      sendConfigs.amountConfig.setAmount(state.configs.amount);
+    }
+    if (state.configs.memo) {
+      sendConfigs.memoConfig.setMemo(state.configs.memo);
+    }
+  }, [
+    state.isNext,
+    state.configs.amount,
+    state.configs.recipient,
+    state.configs.memo,
+  ]);
 
   useEffect(() => {
     smartNavigation.setOptions({
@@ -79,8 +109,6 @@ export const NewSendScreen: FunctionComponent = observer(() => {
               "padding-y-6",
               "justify-center",
               "items-center",
-              "margin-y-10",
-              "margin-left-10",
             ]) as ViewStyle
           }
         />

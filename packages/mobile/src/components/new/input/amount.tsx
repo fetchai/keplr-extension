@@ -94,7 +94,7 @@ export const AmountInputSection: FunctionComponent<{
       <TextInput
         style={
           style.flatten(
-            ["h2", "height-58", "text-center", "flex-0", "width-full"],
+            ["h2", "font-medium", "height-58", "flex-0"],
             [errorText ? "color-red-250" : "color-white"]
           ) as ViewStyle
         }
@@ -121,6 +121,7 @@ export const AmountInputSection: FunctionComponent<{
                 "h2",
                 "color-gray-300",
                 "margin-left-8",
+                "font-normal",
               ]) as ViewStyle
             }
           >
@@ -158,7 +159,7 @@ export const AmountInputSection: FunctionComponent<{
           <Text
             style={
               [
-                style.flatten(["h6", "color-gray-100", "text-center"]),
+                style.flatten(["body3", "color-gray-100", "text-center"]),
               ] as ViewStyle
             }
           >
@@ -169,8 +170,8 @@ export const AmountInputSection: FunctionComponent<{
           <Text
             style={
               style.flatten([
-                "text-caption1",
-                "color-gray-100",
+                "body3",
+                "color-white@60%",
                 "text-center",
               ]) as ViewStyle
             }
@@ -184,7 +185,12 @@ export const AmountInputSection: FunctionComponent<{
         }
         error={errorText}
         errorLabelStyle={
-          style.flatten(["width-full", "text-center"]) as ViewStyle
+          style.flatten([
+            "body3",
+            "width-full",
+            "text-center",
+            "margin-top-8",
+          ]) as ViewStyle
         }
         keyboardType={(() => {
           if (Platform.OS === "ios") {

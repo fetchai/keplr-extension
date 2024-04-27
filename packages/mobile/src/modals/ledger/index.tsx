@@ -215,25 +215,21 @@ export const LedgerGranterModal: FunctionComponent<{
   const decideLedgerImage = (bluetoothMode: BluetoothMode) => {
     switch (bluetoothMode) {
       case BluetoothMode.Ledger:
-        return require(`assets/image/ledger/ledger.png`);
+        return require("assets/image/ledger/ledger.png");
 
       case BluetoothMode.Device:
-        return require(`assets/image/ledger/device-ledger.png`);
+        return require("assets/image/ledger/device-ledger.png");
 
       case BluetoothMode.Connecting:
-        return require(`assets/image/ledger/connecting-ledger.png`);
+        return require("assets/image/ledger/connecting-ledger.png");
 
       case BluetoothMode.Pairing:
-        return require(`assets/image/ledger/pairing-ledger.png`);
+        return require("assets/image/ledger/pairing-ledger.png");
 
       case BluetoothMode.Paired:
-        return require(`assets/image/ledger/paired-ledger.png`);
+        return require("assets/image/ledger/paired-ledger.png");
     }
   };
-
-  if (!isOpen) {
-    return null;
-  }
 
   return (
     <CardModal
@@ -289,7 +285,7 @@ export const LedgerGranterModal: FunctionComponent<{
                   style={
                     [
                       style.flatten(["height-44"]),
-                      { marginLeft: 37 },
+                      { marginLeft: Platform.OS === "android" ? 37 : 24.5 },
                     ] as ViewStyle
                   }
                 />

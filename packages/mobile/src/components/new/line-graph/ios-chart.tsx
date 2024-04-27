@@ -6,7 +6,8 @@ import { useStyle } from "styles/index";
 
 export const IOSLineChart: FunctionComponent<{
   data: any;
-}> = ({ data }) => {
+  height?: number;
+}> = ({ data, height }) => {
   const style = useStyle();
 
   const maxValue = Number(
@@ -23,11 +24,12 @@ export const IOSLineChart: FunctionComponent<{
     <LineChart
       // chart variable
       areaChart={true}
+      height={height}
       areaGradientComponent={() => {
         return (
           <LinearGradient id="Gradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={"#F9774B"} stopOpacity={"0.3"} />
-            <Stop offset="0.5" stopColor={"#CF447B"} stopOpacity={"0.1"} />
+            <Stop offset="0" stopColor={"#F9774B"} stopOpacity={"0.4"} />
+            <Stop offset="0.5" stopColor={"#CF447B"} stopOpacity={"0.2"} />
             <Stop offset="1" stopColor={"#5F38FB"} stopOpacity={"0"} />
           </LinearGradient>
         );
@@ -89,7 +91,8 @@ export const IOSLineChart: FunctionComponent<{
                 style={
                   style.flatten([
                     "color-white",
-                    "h7",
+                    "text-caption2",
+                    "font-medium",
                     "margin-bottom-4",
                     "text-center",
                   ]) as ViewStyle
@@ -100,7 +103,12 @@ export const IOSLineChart: FunctionComponent<{
 
               <Text
                 style={
-                  style.flatten(["text-center", "color-gray-200"]) as ViewStyle
+                  style.flatten([
+                    "text-center",
+                    "color-gray-200",
+                    "text-caption2",
+                    "font-medium",
+                  ]) as ViewStyle
                 }
               >
                 {items[0].date}

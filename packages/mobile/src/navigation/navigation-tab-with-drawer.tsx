@@ -31,9 +31,9 @@ import {
 import { MoreNavigation } from "./more-navigation";
 import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
-import { StakingDashboardScreen } from "screens/stake";
 import { HomeUnselectIcon } from "components/new/icon/home-unselect";
 import { ActivityScreen } from "screens/activity";
+import { StakeSection } from "screens/stake/stake-coming-soon-section";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -76,8 +76,20 @@ export const MainTabNavigation: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-  }, []);
+    switch (focusedScreen.name) {
+      case "Home":
+      case "Stake":
+      case "InboxTab":
+      case "ActivityTab":
+      case "Setting":
+        BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+        break;
+
+      default:
+        BackHandler.removeEventListener("hardwareBackPress", () => false);
+        break;
+    }
+  }, [focusedScreen.name]);
 
   enum screenNames {
     Home = "Home",
@@ -104,7 +116,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     borderRadius={32}
                     bottomTextStyle={
                       style.flatten([
-                        focused ? "color-white" : "color-white-400",
+                        focused ? "color-white" : "color-white@60%",
                       ]) as ViewStyle
                     }
                     iconStyle={
@@ -120,7 +132,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "Stake":
                 return (
                   <IconButton
-                    icon={<StakeIcon color={focused ? "white" : "#64646D"} />}
+                    icon={<StakeIcon color={focused ? "white" : "#FFFFFF90"} />}
                     bottomText={screenNames.Stake}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -133,7 +145,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     }
                     bottomTextStyle={
                       style.flatten([
-                        focused ? "color-white" : "color-white-400",
+                        focused ? "color-white" : "color-white@60%",
                       ]) as ViewStyle
                     }
                     containerStyle={style.flatten(["items-center"])}
@@ -154,7 +166,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     }
                     bottomTextStyle={
                       style.flatten([
-                        focused ? "color-white" : "color-white-400",
+                        focused ? "color-white" : "color-white@60%",
                       ]) as ViewStyle
                     }
                   />
@@ -162,7 +174,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "ActivityTab":
                 return (
                   <IconButton
-                    icon={<ClockIcon color={focused ? "white" : "#64646D"} />}
+                    icon={<ClockIcon color={focused ? "white" : "#FFFFFF90"} />}
                     bottomText={screenNames.Activity}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -175,7 +187,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     }
                     bottomTextStyle={
                       style.flatten([
-                        focused ? "color-white" : "color-white-400",
+                        focused ? "color-white" : "color-white@60%",
                       ]) as ViewStyle
                     }
                     containerStyle={style.flatten(["items-center"])}
@@ -184,7 +196,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "MoreTab":
                 return (
                   <IconButton
-                    icon={<MoreIcon color={focused ? "white" : "#64646D"} />}
+                    icon={<MoreIcon color={focused ? "white" : "#FFFFFF90"} />}
                     bottomText={screenNames.More}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -197,7 +209,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     }
                     bottomTextStyle={
                       style.flatten([
-                        focused ? "color-white" : "color-white-400",
+                        focused ? "color-white" : "color-white@60%",
                       ]) as ViewStyle
                     }
                     containerStyle={style.flatten(["items-center"])}
@@ -248,7 +260,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="Stake" component={StakingDashboardScreen} />
+        <Tab.Screen name="Stake" component={StakeSection} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
         <Tab.Screen name="ActivityTab" component={ActivityScreen} />
         <Tab.Screen name="MoreTab" component={MoreNavigation} />

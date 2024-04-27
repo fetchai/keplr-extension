@@ -70,16 +70,19 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           borderRadius={32}
           backgroundBlur={true}
           containerStyle={
-            style.flatten(
-              ["padding-3", "width-160", "justify-center"],
-              [
-                feeButtonState.isGasInputOpen && "border-width-1",
-                "border-radius-64",
-                "border-color-indigo",
-              ]
-            ) as ViewStyle
+            [
+              style.flatten(
+                ["justify-center"],
+                [
+                  feeButtonState.isGasInputOpen && "border-width-1",
+                  "border-radius-64",
+                  "border-color-indigo",
+                ]
+              ),
+              { width: 150 },
+            ] as ViewStyle
           }
-          textStyle={style.flatten(["text-caption1"]) as ViewStyle}
+          textStyle={style.flatten(["text-caption2"]) as ViewStyle}
           onPress={() =>
             feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen)
           }
@@ -161,29 +164,27 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
         <RectButton
           style={
             style.flatten(
-              ["flex-row", "items-center", "justify-between", "padding-12"],
+              [
+                "flex-row",
+                "items-center",
+                "justify-between",
+                "padding-x-16",
+                "padding-y-18",
+              ],
               [selected && "background-color-indigo", "border-radius-12"]
             ) as ViewStyle
           }
           onPress={onPress}
         >
           <View style={style.flatten(["flex-row"])}>
-            <Text
-              style={style.flatten(["body3", "font-medium", "color-white"])}
-            >
-              {label}
-            </Text>
+            <Text style={style.flatten(["body3", "color-white"])}>{label}</Text>
             {price ? (
               <Text
                 style={
-                  style.flatten([
-                    "padding-top-2",
-                    "text-caption1",
-                    "font-medium",
-                    "color-gray-300",
-                    "dark:color-platinum-400",
-                    "margin-left-6",
-                  ]) as ViewStyle
+                  style.flatten(
+                    ["padding-top-2", "text-caption2", "margin-left-6"],
+                    [selected ? "color-white" : "color-white@60%"]
+                  ) as ViewStyle
                 }
               >
                 {price.toString()}
@@ -194,9 +195,8 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             style={
               style.flatten([
                 "text-center",
-                "padding-top-2",
-                "text-caption1",
-                "color-platinum-100",
+                "text-caption2",
+                "color-white@60%",
               ]) as ViewStyle
             }
           >
@@ -209,7 +209,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
     return (
       <View
         style={StyleSheet.flatten([
-          style.flatten(["padding-bottom-12"]) as ViewStyle,
+          style.flatten(["padding-y-12"]) as ViewStyle,
           containerStyle,
         ])}
       >
@@ -219,7 +219,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
               (style.flatten([
                 "h6",
                 "color-platinum-100",
-                "margin-bottom-18",
+                "margin-bottom-12",
               ]) as ViewStyle),
           ])}
         >
@@ -236,7 +236,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             }
           )}
           <View
-            style={style.flatten(["width-1", "margin-top-10"]) as ViewStyle}
+            style={style.flatten(["width-1", "margin-top-2"]) as ViewStyle}
           />
           {renderButton(
             "Average",
@@ -248,7 +248,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             }
           )}
           <View
-            style={style.flatten(["width-1", "margin-top-10"]) as ViewStyle}
+            style={style.flatten(["width-1", "margin-top-2"]) as ViewStyle}
           />
           {renderButton(
             "High",

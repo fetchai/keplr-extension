@@ -22,11 +22,18 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
-      contentContainerStyle={style.flatten(["margin-x-20"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
       ref={scrollViewRef}
     >
       <Text
-        style={style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle}
+        style={
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-y-10",
+            "font-normal",
+          ]) as ViewStyle
+        }
       >
         Portfolio
       </Text>

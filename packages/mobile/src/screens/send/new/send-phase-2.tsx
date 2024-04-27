@@ -157,7 +157,7 @@ export const SendPhase2: FunctionComponent<{
           style.flatten([
             "flex-row",
             "border-width-1",
-            "border-color-white-400@60%",
+            "border-color-white@20%",
             "border-radius-12",
             "padding-x-14",
             "padding-y-10",
@@ -167,21 +167,18 @@ export const SendPhase2: FunctionComponent<{
       >
         <View style={style.flatten(["flex-3", "justify-center"]) as ViewStyle}>
           {usdValue() ? (
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text style={style.flatten(["color-white", "body3"]) as ViewStyle}>
               {usdValue()} {`${priceStore.defaultVsCurrency.toUpperCase()}`}
             </Text>
           ) : null}
           <Text
             style={
-              style.flatten([
-                "color-gray-300",
-                "text-caption2",
-                "font-bold",
-              ]) as ViewStyle
+              style.flatten(["color-white@60%", "text-caption2"]) as ViewStyle
             }
           >
-            {parseFloat(sendConfigs.amountConfig.amount).toFixed(6).toString()}{" "}
-            {sendConfigs.amountConfig.sendCurrency.coinDenom}
+            {`${parseFloat(sendConfigs.amountConfig.amount)
+              .toFixed(6)
+              .toString()} ${sendConfigs.amountConfig.sendCurrency.coinDenom}`}
           </Text>
         </View>
         <BlurButton
@@ -191,10 +188,10 @@ export const SendPhase2: FunctionComponent<{
           containerStyle={
             style.flatten([
               "border-width-1",
-              "border-color-gray-300@80%",
+              "border-color-white@40%",
             ]) as ViewStyle
           }
-          textStyle={style.flatten(["padding-x-14", "h7"]) as ViewStyle}
+          textStyle={style.flatten(["padding-x-14", "body3"]) as ViewStyle}
           onPress={() => setIsNext(false)}
         />
       </View>
@@ -234,6 +231,7 @@ export const SendPhase2: FunctionComponent<{
             ]
           ) as ViewStyle
         }
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         rippleColor="black@50%"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "send"}

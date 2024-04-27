@@ -1,9 +1,15 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { Text, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
-import { Toggle } from "components/toggle";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -11,11 +17,13 @@ import { PageWithScrollView } from "components/page";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "components/new/empty";
+import { titleCase } from "utils/format/format";
 
 export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
   const style = useStyle();
 
+  const [isEnabled, setIsEnabled] = useState(true);
   const [search, setSearch] = useState("");
   const [filterChainInfos, setFilterChainInfos] = useState(
     chainStore.chainInfosWithUIConfig
@@ -46,16 +54,56 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
       }
       style={style.flatten(["padding-x-page", "padding-y-page"]) as ViewStyle}
     >
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "items-center",
+            "justify-between",
+            "margin-bottom-24",
+            "display-none",
+          ]) as ViewStyle
+        }
+      >
+        <Text
+          style={StyleSheet.flatten([
+            style.flatten([
+              "body3",
+              "color-platinum-100",
+              "margin-right-18",
+            ]) as ViewStyle,
+          ])}
+        >
+          Show testnets
+        </Text>
+        <Switch
+          trackColor={{
+            false: "#767577",
+            true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
+          }}
+          thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF66"}
+          style={[
+            {
+              borderRadius: 16,
+              borderWidth: 1,
+              // transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
+            },
+            style.flatten(["border-color-pink-light@40%"]),
+          ]}
+          onValueChange={() => setIsEnabled((previousState) => !previousState)}
+          value={isEnabled}
+        />
+      </View>
       {filterChainInfos.length === 0 ? <EmptyView /> : null}
       <BlurBackground
         borderRadius={12}
         blurIntensity={20}
-        containerStyle={style.flatten(["margin-y-20"]) as ViewStyle}
+        containerStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
       >
         <TextInput
           placeholder="Search"
           placeholderTextColor={"white"}
-          style={style.flatten(["h6"])}
+          style={style.flatten(["body3"]) as ViewStyle}
           inputContainerStyle={
             style.flatten([
               "border-width-0",
@@ -100,7 +148,7 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
           />
         );
       })}
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+      <View style={style.flatten(["height-page-double-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });
@@ -125,7 +173,7 @@ export const SettingChainListScreenElement: FunctionComponent<{
       containerStyle={
         style.flatten([
           "flex-row",
-          "height-58",
+          "height-62",
           "items-center",
           "margin-y-2",
           "padding-x-12",
@@ -136,8 +184,8 @@ export const SettingChainListScreenElement: FunctionComponent<{
         backgroundBlur={true}
         containerStyle={
           style.flatten([
-            "width-36",
-            "height-36",
+            "width-32",
+            "height-32",
             "border-radius-64",
             "items-center",
             "justify-center",
@@ -148,8 +196,8 @@ export const SettingChainListScreenElement: FunctionComponent<{
         {chainSymbolImageUrl ? (
           <FastImage
             style={{
-              width: 24,
-              height: 24,
+              width: 22,
+              height: 22,
             }}
             resizeMode={FastImage.resizeMode.contain}
             source={{
@@ -161,15 +209,28 @@ export const SettingChainListScreenElement: FunctionComponent<{
         )}
       </BlurBackground>
       <View style={style.flatten(["justify-center"]) as ViewStyle}>
-        <Text style={style.flatten(["h6", "color-white"])}>{chainName}</Text>
+        <Text style={style.flatten(["subtitle3", "color-white"])}>
+          {titleCase(chainName)}
+        </Text>
       </View>
       <View style={style.get("flex-1")} />
       <View>
-        <Toggle
-          on={!disabled}
-          onChange={() => {
-            chainStore.toggleChainInfoInUI(chainId);
+        <Switch
+          trackColor={{
+            false: "#767577",
+            true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
           }}
+          thumbColor={!disabled ? "#5F38FB" : "#D0BCFF66"}
+          style={[
+            {
+              borderRadius: 16,
+              borderWidth: 1,
+              // transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
+            },
+            style.flatten(["border-color-pink-light@40%"]),
+          ]}
+          onValueChange={() => chainStore.toggleChainInfoInUI(chainId)}
+          value={!disabled}
         />
       </View>
     </BlurBackground>

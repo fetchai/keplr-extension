@@ -69,7 +69,7 @@ export const AddressBookCardModel: FunctionComponent<{
           <TextInput
             placeholder="Search"
             placeholderTextColor={"white"}
-            style={style.flatten(["h7"])}
+            style={style.flatten(["body3"])}
             inputContainerStyle={
               style.flatten([
                 "border-width-0",
@@ -134,10 +134,10 @@ export const AddressBookCardModel: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "text-caption1",
+                  "body3",
                   "text-center",
                   "color-white",
-                  "margin-y-20",
+                  "margin-y-24",
                 ]) as ViewStyle
               }
             >
@@ -148,11 +148,10 @@ export const AddressBookCardModel: FunctionComponent<{
                 style.flatten([
                   "border-radius-32",
                   "border-color-white@40%",
-                  "margin-bottom-10",
                 ]) as ViewStyle
               }
               mode="outline"
-              textStyle={style.flatten(["color-white"])}
+              textStyle={style.flatten(["color-white", "body2", "font-normal"])}
               text="Add an address"
               onPress={() => {
                 if (addAddressBook) {
@@ -161,6 +160,7 @@ export const AddressBookCardModel: FunctionComponent<{
                 close();
               }}
             />
+            <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
           </React.Fragment>
         ) : (
           <EmptyView

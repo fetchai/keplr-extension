@@ -67,8 +67,8 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
           subtitle={
             "You will no longer have access to\nyour wallet on Fetch Wallet"
           }
-          titleStyle={style.flatten(["h2", "font-medium"]) as ViewStyle}
-          subtitleStyle={style.flatten(["subtitle3"]) as ViewStyle}
+          titleStyle={style.flatten(["h3", "font-normal"]) as ViewStyle}
+          subtitleStyle={style.flatten(["body3"]) as ViewStyle}
         />
       </View>
       <InputCardView
@@ -96,6 +96,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         <React.Fragment>
           <SimpleCardView
             heading="Make sure you’ve backed up your mnemonic seed before proceeding."
+            headingStyle={style.flatten(["body3"])}
             cardStyle={
               style.flatten([
                 "background-color-coral-red@30%",
@@ -108,12 +109,12 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
             size="large"
             mode="outline"
             onPress={() => setIsOpenModal(true)}
-            textStyle={style.flatten(["color-white"])}
+            textStyle={style.flatten(["color-white", "body2", "font-normal"])}
             containerStyle={
               style.flatten([
                 "border-radius-32",
                 "margin-y-12",
-                "border-color-gray-400",
+                "border-color-white@20%",
               ]) as ViewStyle
             }
           />
@@ -126,6 +127,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         onPress={submitPassword}
         disabled={!password}
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
       />
       <KeyboardSpacerView />
       <PasswordInputModal

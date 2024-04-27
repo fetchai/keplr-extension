@@ -124,7 +124,16 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
             };
           })}
         />
-        <BIP44AdvancedButton bip44Option={bip44Option} />
+        <BIP44AdvancedButton
+          bip44Option={bip44Option}
+          backgroundBlur={false}
+          containerStyle={
+            style.flatten([
+              "border-width-1",
+              "border-color-white@40%",
+            ]) as ViewStyle
+          }
+        />
       </View>
       <View style={style.flatten(["flex-1"])} />
       <View>
@@ -178,9 +187,9 @@ const WordButton: FunctionComponent<{
             "flex-1",
             "border-radius-32",
             "border-width-1",
-            "border-color-gray-300",
+            "border-color-white@40%",
           ],
-          [used && "border-color-platinum-400"]
+          [used && "border-color-white@20%"]
         ) as ViewStyle
       }
       onPress={onPress}
@@ -188,8 +197,8 @@ const WordButton: FunctionComponent<{
     >
       <Text
         style={style.flatten(
-          ["text-caption1", "color-white", "text-center"],
-          [used && "color-platinum-400"]
+          ["text-caption2", "color-white", "text-center"],
+          [used && "color-white@20%"]
         )}
       >
         {word}

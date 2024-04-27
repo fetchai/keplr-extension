@@ -40,18 +40,16 @@ export const SettingScreen: FunctionComponent = observer(() => {
       backgroundMode="image"
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       contentContainerStyle={{
-        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
       }}
     >
-      <Text
-        style={style.flatten(["h1", "color-white", "margin-y-20"]) as ViewStyle}
-      >
+      <Text style={style.flatten(["h1", "color-white"]) as ViewStyle}>
         More
       </Text>
       <SettingSectionTitle title="Account" />
       <SettingItem
         label="Currency"
-        left={<CurrencyIcon size={18} />}
+        left={<CurrencyIcon size={16} />}
         right={<Right paragraph={priceStore.defaultVsCurrency.toUpperCase()} />}
         onPress={() => {
           smartNavigation.navigateSmart("Setting.Currency", {});
@@ -60,7 +58,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       {showManageTokenButton ? (
         <SettingItem
           label="Manage tokens"
-          left={<CoinsIcon />}
+          left={<CoinsIcon size={16} />}
           right={
             <Right
               paragraph={tokensStore
@@ -74,7 +72,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
         />
       ) : null}
       <SettingItem
-        left={<ATIcon />}
+        left={<ATIcon size={16} />}
         label="Address book"
         onPress={() => {
           smartNavigation.navigateSmart("AddressBook", {});
@@ -85,7 +83,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       keychainStore.isBiometryOn ? (
         <SettingItem
           label="Security & privacy"
-          left={<ShieldIcon />}
+          left={<ShieldIcon size={16} />}
           onPress={() => {
             smartNavigation.navigateSmart("SecurityAndPrivacy", {});
           }}
@@ -94,7 +92,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingSectionTitle title="Others" />
       <SettingItem
         label="Fetch Wallet version"
-        left={<BranchIcon />}
+        left={<BranchIcon size={16} />}
         onPress={() => {
           smartNavigation.navigateSmart("Setting.Version", {});
         }}

@@ -65,6 +65,7 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
         containerStyle={
           style.flatten(["border-radius-32", "margin-top-20"]) as ViewStyle
         }
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         disabled={!queryTokenInfo.tokenInfo || queryTokenInfo.error != null}
         loading={!queryTokenInfo.tokenInfo && loading}
         onPress={async () => {

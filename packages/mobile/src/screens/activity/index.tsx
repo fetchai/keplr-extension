@@ -32,13 +32,15 @@ export const ActivityScreen = () => {
     <PageWithViewInBottomTabView
       backgroundMode={"image"}
       style={{
-        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
+        flexGrow: 1,
       }}
     >
-      <View style={style.flatten(["items-end", "margin-x-6"]) as ViewStyle}>
+      <View style={style.flatten(["items-end", "margin-x-page"]) as ViewStyle}>
         <ChipButton
           text="Filter"
           icon={<FilterIcon />}
+          iconStyle={style.get("padding-top-2") as ViewStyle}
           containerStyle={
             style.flatten([
               "border-width-1",
@@ -68,17 +70,26 @@ export const ActivityScreen = () => {
       {/*  setSelected={setSelectedId}*/}
       {/*  containerStyle={style.flatten(["margin-x-20"]) as ViewStyle}*/}
       {/*/>*/}
-      <ScrollView indicatorStyle={"white"}>
-        <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
-          {selectedId === ActivityEnum.Transactions && (
+      <ScrollView
+        indicatorStyle={"white"}
+        contentContainerStyle={
+          style.flatten(["margin-y-16", "flex-grow-1"]) as ViewStyle
+        }
+      >
+        {selectedId === ActivityEnum.Transactions && (
+          <View
+            style={
+              style.flatten(["height-full", "justify-center"]) as ViewStyle
+            }
+          >
             <ActivityNativeTab
               latestBlock={latestBlock}
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
             />
-          )}
-          {selectedId === ActivityEnum.GovProposals && <ChatSection />}
-        </View>
+          </View>
+        )}
+        {selectedId === ActivityEnum.GovProposals && <ChatSection />}
       </ScrollView>
     </PageWithViewInBottomTabView>
   );

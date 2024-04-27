@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import axios from "axios";
 import { formatTimestamp } from "utils/format-time-stamp/parse-timestamp-to-date";
-import { Platform, View, ViewStyle } from "react-native";
+import { Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { AndroidLineChart } from "./android-chart";
 import { IOSLineChart } from "./ios-chart";
@@ -39,12 +39,14 @@ export const LineGraph: FunctionComponent<{
   duration: string;
   setTokenState: any;
   tokenState?: any;
-}> = ({ tokenName, duration, setTokenState }) => {
+  height?: number;
+}> = ({ tokenName, duration, setTokenState, height }) => {
   const style = useStyle();
   const { priceStore } = useStore();
   const [durationData, setDuration] = useState<DurationData>({});
   const [chartsData, setChartData] = useState<ChartData[]>([]);
 
+  let fetValue;
   const cacheKey = useMemo(
     () => `${tokenName}_${duration}`,
     [tokenName, duration]
@@ -159,14 +161,36 @@ export const LineGraph: FunctionComponent<{
     }
   }, [cacheKey]);
 
+  if (chartsData.length !== 0) {
+    fetValue = Number(
+      Math.max(...chartsData.map((v: { value: any }) => v.value))
+    );
+  } else {
+    fetValue = 0;
+  }
+
   return (
     <View
-      style={[style.flatten(["margin-top-32", "overflow-hidden"])] as ViewStyle}
+      style={[style.flatten(["margin-top-24", "overflow-hidden"])] as ViewStyle}
     >
+      <Text
+        style={
+          style.flatten([
+            "text-caption2",
+            "text-center",
+            "color-white",
+          ]) as ViewStyle
+        }
+      >
+        {`FET/USD `}
+        <Text
+          style={style.flatten(["color-white@60%"]) as ViewStyle}
+        >{`$${fetValue.toFixed(2)}`}</Text>
+      </Text>
       {Platform.OS == "ios" ? (
-        <IOSLineChart data={chartsData} />
+        <IOSLineChart data={chartsData} height={height} />
       ) : (
-        <AndroidLineChart data={chartsData} />
+        <AndroidLineChart data={chartsData} height={height} />
       )}
     </View>
   );

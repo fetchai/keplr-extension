@@ -33,7 +33,9 @@ export const HeaderRightButton: FunctionComponent<{
     <View style={StyleSheet.flatten([style.flatten(["absolute"]), propStyle])}>
       <TouchableOpacity
         onPress={onPress}
-        style={StyleSheet.flatten([style.flatten(["padding-10"])]) as ViewStyle}
+        style={
+          StyleSheet.flatten([style.flatten(["padding-right-20"])]) as ViewStyle
+        }
       >
         {children}
       </TouchableOpacity>
@@ -62,20 +64,18 @@ export const HeaderLeftBackBlurButton: FunctionComponent<
     <React.Fragment>
       {props.canGoBack ? (
         <IconButton
-          icon={<HeaderBackButtonIcon color="white" size={21} />}
+          icon={<HeaderBackButtonIcon color="white" size={20} />}
           backgroundBlur={false}
           onPress={props.onPress}
           iconStyle={
             style.flatten([
               "width-54",
               "border-width-1",
-              "border-color-gray-300",
-              "padding-x-14",
+              "border-color-white@20%",
+              "padding-x-12",
               "padding-y-6",
               "justify-center",
               "items-center",
-              "margin-y-10",
-              "margin-left-10",
             ]) as ViewStyle
           }
         />

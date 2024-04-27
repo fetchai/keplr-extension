@@ -165,7 +165,13 @@ export const SignModal: FunctionComponent<{
           <View key={i.toString()}>
             <Msg title={title}>
               {scrollViewHorizontal ? (
-                <ScrollView showsHorizontalScrollIndicator={false}>
+                <ScrollView
+                  showsHorizontalScrollIndicator={false}
+                  indicatorStyle={"white"}
+                  nestedScrollEnabled={true}
+                  scrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                >
                   <Text style={style.flatten(["body3", "color-text-low"])}>
                     {content}
                   </Text>
@@ -243,85 +249,84 @@ export const SignModal: FunctionComponent<{
         selected={selectedId}
         setSelected={setSelectedId}
       />
-      <AnimatedKeyboardAwareScrollView
-        style={style.flatten(["max-height-600"]) as ViewStyle}
-        showsVerticalScrollIndicator={false}
-        extraScrollHeight={30}
-      >
-        {wcSession ? (
-          <WCAppLogoAndName
-            containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
-            peerMeta={wcSession.peerMeta}
-          />
-        ) : null}
-        {selectedId === TransactionTabEnum.Details ? (
-          <React.Fragment>
-            <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
-              <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
-                <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
-                  {`${msgs.length.toString()} `}
-                </Text>
-                <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
-                  {msgs.length > 1 ? "Messages" : "Message"}
-                </Text>
-              </Text>
-              <BlurBackground
-                borderRadius={12}
-                blurIntensity={16}
-                containerStyle={
-                  [
-                    style.flatten(["border-radius-8", "overflow-hidden"]),
-                  ] as ViewStyle
-                }
-              >
-                <ScrollView
-                  style={style.flatten(["max-height-180"]) as ViewStyle}
-                  persistentScrollbar={true}
-                  indicatorStyle={"white"}
-                >
-                  {renderedMsgs}
-                </ScrollView>
-              </BlurBackground>
-            </View>
-            <MemoInputView label="Memo" memoConfig={memoConfig} />
-            <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-            <FeeInSign
-              feeConfig={feeConfig}
-              gasConfig={gasConfig}
-              signOptions={signInteractionStore.waitingData?.data.signOptions}
-              isInternal={isInternal}
-            />
-          </React.Fragment>
-        ) : (
-          <DataTab signDocHelper={signDocHelper} ethSignType={ethSignType} />
-        )}
-
-        <Button
-          text="Approve transaction"
-          size="large"
-          containerStyle={
-            style.flatten(["border-radius-64", "margin-top-20"]) as ViewStyle
-          }
-          disabled={
-            signDocWapper == null ||
-            signDocHelper.signDocWrapper == null ||
-            memoConfig.error != null ||
-            feeConfig.error != null
-          }
-          loading={signInteractionStore.isLoading}
-          onPress={async () => {
-            try {
-              if (signDocHelper.signDocWrapper) {
-                signInteractionStore.approveAndWaitEnd(
-                  signDocHelper.signDocWrapper
-                );
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          }}
+      {wcSession ? (
+        <WCAppLogoAndName
+          containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
+          peerMeta={wcSession.peerMeta}
         />
-      </AnimatedKeyboardAwareScrollView>
+      ) : null}
+      {selectedId === TransactionTabEnum.Details ? (
+        <React.Fragment>
+          <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
+            <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
+              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+                {`${msgs.length.toString()} `}
+              </Text>
+              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+                {msgs.length > 1 ? "Messages" : "Message"}
+              </Text>
+            </Text>
+            <BlurBackground
+              borderRadius={12}
+              blurIntensity={16}
+              containerStyle={
+                [
+                  style.flatten(["border-radius-8", "overflow-hidden"]),
+                ] as ViewStyle
+              }
+            >
+              <ScrollView
+                indicatorStyle={"white"}
+                nestedScrollEnabled={true}
+                scrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                style={[
+                  style.flatten(["max-height-180"]) as ViewStyle,
+                  { overflow: "scroll" },
+                ]}
+              >
+                {renderedMsgs}
+              </ScrollView>
+            </BlurBackground>
+          </View>
+          <MemoInputView label="Memo" memoConfig={memoConfig} />
+          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+          <FeeInSign
+            feeConfig={feeConfig}
+            gasConfig={gasConfig}
+            signOptions={signInteractionStore.waitingData?.data.signOptions}
+            isInternal={isInternal}
+          />
+        </React.Fragment>
+      ) : (
+        <DataTab signDocHelper={signDocHelper} ethSignType={ethSignType} />
+      )}
+
+      <Button
+        text="Approve transaction"
+        size="large"
+        containerStyle={
+          style.flatten(["border-radius-64", "margin-top-20"]) as ViewStyle
+        }
+        disabled={
+          signDocWapper == null ||
+          signDocHelper.signDocWrapper == null ||
+          memoConfig.error != null ||
+          feeConfig.error != null
+        }
+        loading={signInteractionStore.isLoading}
+        onPress={async () => {
+          try {
+            if (signDocHelper.signDocWrapper) {
+              signInteractionStore.approveAndWaitEnd(
+                signDocHelper.signDocWrapper
+              );
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+      />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </CardModal>
   );

@@ -49,7 +49,12 @@ export const IconWithText: FunctionComponent<{
           <Text
             style={
               [
-                style.flatten(["h5", "items-center", "color-white"]),
+                style.flatten([
+                  "h5",
+                  "items-center",
+                  "color-white",
+                  "text-center",
+                ]),
                 titleStyle,
               ] as ViewStyle
             }

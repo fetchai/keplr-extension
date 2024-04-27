@@ -58,12 +58,7 @@ export const BlurButton: FunctionComponent<{
       ) : null}
       <Text
         style={[
-          style.flatten([
-            "color-white",
-            "font-bold",
-            "margin-y-6",
-            "h6",
-          ]) as ViewStyle,
+          style.flatten(["color-white", "margin-y-6", "h6"]) as ViewStyle,
           textStyle,
         ]}
       >

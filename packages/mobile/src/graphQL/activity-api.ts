@@ -19,17 +19,22 @@ export const fetchTransactions = async (
   const activityClient =
     chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
 
-  const { data, errors } = await activityClient.query({
-    query: gql(transactions),
-    fetchPolicy: "no-cache",
-    variables,
-  });
+  try {
+    const { data, errors } = await activityClient.query({
+      query: gql(transactions),
+      fetchPolicy: "no-cache",
+      variables,
+    });
 
-  if (errors) {
-    console.log("errors", errors);
+    if (errors) {
+      console.log("errors", errors);
+      return null;
+    }
+    return data.account?.nativeBalanceChanges || null;
+  } catch (e) {
+    console.log("Activity GQL", e);
     return null;
   }
-  return data.account?.nativeBalanceChanges || null;
 };
 
 export const fetchGovProposalTransactions = async (

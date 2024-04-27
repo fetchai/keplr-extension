@@ -1,6 +1,9 @@
-import React, { FunctionComponent } from "react";
-import { WebpageScreen } from "../components/webpage-screen";
+import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import WebView from "react-native-webview";
+import { PageWithView } from "components/page";
+import { ActivityIndicator } from "react-native";
+import { useStyle } from "styles/index";
 
 export const WebViewScreen: FunctionComponent = () => {
   const route = useRoute<
@@ -8,7 +11,6 @@ export const WebViewScreen: FunctionComponent = () => {
       Record<
         string,
         {
-          title: string;
           url: string;
         }
       >,
@@ -16,10 +18,35 @@ export const WebViewScreen: FunctionComponent = () => {
     >
   >();
 
-  const title = route.params.title;
   const url = route.params.url;
+  const style = useStyle();
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   return (
-    <WebpageScreen name={title} source={{ uri: url }} originWhitelist={[url]} />
+    <PageWithView backgroundMode={"image"}>
+      <WebView
+        source={{ uri: url }}
+        onLoadEnd={(syntheticEvent) => {
+          // update component to be aware of loading status
+          const { nativeEvent } = syntheticEvent;
+          if (!nativeEvent.loading) {
+            setLoading(false);
+          }
+        }}
+      />
+      {isLoading && (
+        <ActivityIndicator
+          size="large"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+          color={style.get("color-indigo-900").color}
+        />
+      )}
+    </PageWithView>
   );
 };

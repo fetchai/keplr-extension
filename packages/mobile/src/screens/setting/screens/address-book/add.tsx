@@ -81,6 +81,7 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
         text="Save"
         size="large"
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         disabled={
           !name || recipientConfig.error != null || memoConfig.error != null
         }

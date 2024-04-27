@@ -9,9 +9,11 @@ import { PageWithScrollViewInBottomTabView } from "components/page";
 import {
   AppState,
   AppStateStatus,
+  Dimensions,
   Platform,
   RefreshControl,
   ScrollView,
+  View,
 } from "react-native";
 import { useStore } from "stores/index";
 import { observer } from "mobx-react-lite";
@@ -21,9 +23,12 @@ import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePrevious } from "hooks/use-previous";
 import { LineGraphView } from "components/new/line-graph";
+import { useStyle } from "styles/index";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
+  const style = useStyle();
+  const windowHeight = Dimensions.get("window").height;
 
   const [refreshing, setRefreshing] = React.useState(false);
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
@@ -133,16 +138,21 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
           onRefresh={onRefresh}
         />
       }
-      contentContainerStyle={{
-        paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
-      }}
+      contentContainerStyle={[
+        style.get("flex-grow-1"),
+        {
+          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
+        },
+      ]}
       ref={scrollViewRef}
     >
       <BIP44Selectable />
       <AccountSection tokenState={tokenState} />
+      <View style={style.flatten(["flex-2"])} />
       <LineGraphView
         setTokenState={setTokenState}
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
+        height={windowHeight / 4}
       />
     </PageWithScrollViewInBottomTabView>
   );

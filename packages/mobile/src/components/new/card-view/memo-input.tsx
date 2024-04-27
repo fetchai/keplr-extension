@@ -69,7 +69,6 @@ export const MemoInputView: FunctionComponent<{
               style={
                 style.flatten([
                   "body3",
-                  "font-medium",
                   "color-white",
                   "padding-0",
                 ]) as ViewStyle

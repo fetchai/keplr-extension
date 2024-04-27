@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { useStyle } from "styles/index";
@@ -12,6 +11,7 @@ import {
   AppStateStatus,
   Linking,
   PermissionsAndroid,
+  PermissionStatus,
   Platform,
   Text,
   View,
@@ -49,7 +49,7 @@ enum BLEPermissionGrantStatus {
   Granted = "granted",
 }
 
-export const NewLedgerScreen: FunctionComponent = observer(() => {
+export const NewLedgerScreen: FunctionComponent = () => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -84,7 +84,7 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [isBLEAvailable, setIsBLEAvailable] = useState(false);
-  const [showBLEAlert, setBLEAlert] = useState(false);
+  const [showBLEAlert, setBLEAlert] = useState(true);
   const [retryLocation, setRetryLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | undefined>();
   const [location, setLocation] = useState<
@@ -95,9 +95,43 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
     if (Platform.OS === "android" && location == undefined) {
       PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
-      ).then((result) => fetchCurrentLocation(result));
+      ).then((result) => {
+        if (result) {
+          fetchCurrentLocation();
+        } else {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS["ACCESS_FINE_LOCATION"]
+          ).then((result: PermissionStatus) => {
+            if (result === "never_ask_again") {
+              showLocationSettingAlert();
+            } else if (result === "granted") {
+              fetchCurrentLocation();
+            }
+          });
+        }
+      });
     }
   }, [retryLocation]);
+
+  function showLocationSettingAlert() {
+    Alert.alert(
+      "Location Permission",
+      "This app requires location permission to connect to Ledger devices.",
+      [
+        {
+          text: "Settings",
+          onPress: () => {
+            Linking.openSettings();
+          },
+        },
+        {
+          text: "Close",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  }
 
   useEffect(() => {
     (async () => {
@@ -117,9 +151,9 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
 
       if (newState === State.PoweredOn) {
         setIsBLEAvailable(true);
-        setBLEAlert(false);
-      } else if (newState === State.PoweredOff && !showBLEAlert) {
         setBLEAlert(true);
+      } else if (newState === State.PoweredOff && showBLEAlert) {
+        setBLEAlert(false);
         let title = "Bluetooth Device Connection";
         let message =
           "Bluetooth Low Energy permission is required to connect to Ledger devices.";
@@ -214,15 +248,13 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
     }
   };
 
-  const fetchCurrentLocation = (isPermissionGranted: boolean) => {
-    if (isPermissionGranted) {
-      Location.getCurrentPositionAsync({
-        accuracy: LocationAccuracy.Highest,
-      }).then((location) => {
-        setLocation(location);
-        setLocationError(undefined);
-      });
-    }
+  const fetchCurrentLocation = () => {
+    Location.getCurrentPositionAsync({
+      accuracy: LocationAccuracy.Highest,
+    }).then((location) => {
+      setLocation(location);
+      setLocationError(undefined);
+    });
   };
 
   const submit = handleSubmit(async () => {
@@ -537,4 +569,4 @@ export const NewLedgerScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
-});
+};

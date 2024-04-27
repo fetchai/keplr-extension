@@ -192,7 +192,11 @@ export const AccountCard: FunctionComponent<{
                     text="Buy"
                     size="large"
                     disabled={!networkIsConnected}
-                    onPress={() => smartNavigation.pushSmart("Fetchhub", {})}
+                    onPress={() =>
+                      smartNavigation.pushSmart("WebView", {
+                        url: "https://fetch.ai/get-fet",
+                      })
+                    }
                   />
                 </View>
               ) : null}

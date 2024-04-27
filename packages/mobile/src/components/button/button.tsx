@@ -8,7 +8,7 @@ import Svg, {
 } from "react-native-svg";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
-import { LoadingSpinner } from "components/spinner";
+import LottieView from "lottie-react-native";
 
 export const Button: FunctionComponent<{
   color?: "primary" | "danger" | "gradient";
@@ -38,7 +38,6 @@ export const Button: FunctionComponent<{
   rightIcon,
   loading = false,
   disabled = false,
-  loaderColor,
   onPress,
   containerStyle,
   style: buttonStyle,
@@ -57,7 +56,7 @@ export const Button: FunctionComponent<{
           if (color === "primary") {
             return [
               "background-color-transparent",
-              "border-color-platinum-400",
+              "border-color-white@20%",
               "border-width-1",
             ];
           } else {
@@ -103,7 +102,7 @@ export const Button: FunctionComponent<{
       case "fill":
         if (disabled) {
           if (color === "primary") {
-            return ["color-platinum-400"];
+            return ["color-white@20%"];
           } else {
             return [`color-${baseColor}-200`];
           }
@@ -372,15 +371,11 @@ export const Button: FunctionComponent<{
               "items-center",
             ])}
           >
-            <LoadingSpinner
-              color={
-                // TODO: Color for loading spinner in button is not yet determined.
-                style.flatten(
-                  [...(textColorDefinition as any)],
-                  loaderColor && [`color-${loaderColor}`]
-                ).color
-              }
-              size={20}
+            <LottieView
+              source={require("assets/lottie/loading.json")}
+              autoPlay
+              loop
+              style={style.flatten(["width-24", "height-24"]) as ViewStyle}
             />
           </View>
         ) : null}

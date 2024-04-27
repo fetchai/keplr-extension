@@ -22,14 +22,18 @@ export const TabPanel: FunctionComponent<{
         borderRadius={32}
         textStyle={
           style.flatten(
-            ["body3"],
-            [selected ? "color-white" : "color-gray-300"]
+            ["text-caption1"],
+            [selected ? "color-white" : "color-white@60%"]
           ) as ViewStyle
         }
         containerStyle={
           [
             style.flatten(["justify-center"]),
-            { width: (Dimensions.get("window").width - 41) / 6 },
+            {
+              width:
+                (Dimensions.get("window").width - (40 + tabs.length)) /
+                tabs.length,
+            },
           ] as ViewStyle
         }
         onPress={() => {
@@ -56,7 +60,7 @@ export const TabPanel: FunctionComponent<{
   };
 
   return (
-    <View style={style.flatten(["margin-x-16", "margin-y-20"]) as ViewStyle}>
+    <View style={style.flatten(["margin-x-20", "margin-y-20"]) as ViewStyle}>
       <FlatList
         data={tabs}
         renderItem={renderItem}

@@ -68,11 +68,11 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
             "items-center",
             "border-radius-64",
             "border-width-1",
-            "border-color-gray-300",
+            "border-color-white@40%",
           ]) as ViewStyle
         }
       >
-        <Text style={style.flatten(["text-caption1", "color-white"])}>
+        <Text style={style.flatten(["text-caption2", "color-white"])}>
           {item}
         </Text>
       </BlurBackground>
@@ -124,7 +124,7 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
             mode="outline"
             containerStyle={
               style.flatten(
-                ["border-radius-32", "margin-top-38", "border-color-gray-300"],
+                ["border-radius-32", "margin-top-38", "border-color-white@40%"],
                 [isTimedOut && "border-color-green-400"]
               ) as ViewStyle
             }

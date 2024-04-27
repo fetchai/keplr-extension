@@ -13,6 +13,17 @@ import {
 import { NewMnemonicConfig } from "screens/register/mnemonic";
 import { BIP44HDPath, ExportKeyRingData } from "@keplr-wallet/background";
 
+interface Configs {
+  amount: string;
+  denom: string;
+  recipient?: any;
+  memo?: string;
+}
+
+export interface State {
+  isNext: boolean;
+  configs: Configs;
+}
 const { SmartNavigatorProvider, useSmartNavigation } =
   createSmartNavigatorProvider(
     new SmartNavigator({
@@ -189,8 +200,10 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       },
     }).withParams<{
       WebView: {
-        title: string;
         url: string;
+      };
+      "Register.Intro": {
+        isBack: boolean;
       };
       "Register.NewMnemonic": {
         registerConfig: RegisterConfig;
@@ -244,6 +257,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         chainId?: string;
         currency?: string;
         recipient?: string;
+        state?: State;
       };
       NativeTokens: {
         tokenString: string;

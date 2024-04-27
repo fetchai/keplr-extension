@@ -101,14 +101,21 @@ export const AccountSection: FunctionComponent<{
 
   return (
     <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
-      <View style={style.flatten(["flex-row", "justify-between"]) as ViewStyle}>
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "justify-between",
+            "items-center",
+          ]) as ViewStyle
+        }
+      >
         <ChipButton
           backgroundBlur={false}
           containerStyle={
             style.flatten([
-              "padding-x-12",
               "border-width-1",
-              "border-color-white-400",
+              "border-color-white@20%",
             ]) as ViewStyle
           }
           text={titleCase(chainStore.current.chainName)}
@@ -118,7 +125,7 @@ export const AccountSection: FunctionComponent<{
         <View style={style.flatten(["flex-row"])}>
           <IconButton
             borderRadius={32}
-            icon={<QRCodeIcon />}
+            icon={<QRCodeIcon size={15} />}
             backgroundBlur={false}
             onPress={() => {
               if (permission?.status == PermissionStatus.UNDETERMINED) {
@@ -137,9 +144,9 @@ export const AccountSection: FunctionComponent<{
             iconStyle={
               style.flatten([
                 "border-width-1",
-                "border-color-white-400",
-                "padding-x-18",
-                "padding-y-8",
+                "border-color-white@20%",
+                "padding-x-12",
+                "padding-y-6",
                 "justify-center",
                 "margin-right-12",
               ]) as ViewStyle
@@ -147,15 +154,15 @@ export const AccountSection: FunctionComponent<{
           />
           <IconButton
             borderRadius={32}
-            icon={<NotificationIcon />}
+            icon={<NotificationIcon size={15} />}
             backgroundBlur={false}
             onPress={() => smartNavigation.navigateSmart("Inbox", {})}
             iconStyle={
               style.flatten([
                 "border-width-1",
-                "border-color-white-400",
-                "padding-x-18",
-                "padding-y-8",
+                "border-color-white@20%",
+                "padding-x-12",
+                "padding-y-6",
                 "justify-center",
               ]) as ViewStyle
             }
@@ -173,8 +180,8 @@ export const AccountSection: FunctionComponent<{
               "items-center",
               "margin-top-24",
               "margin-bottom-12",
-              "padding-x-8",
-              "padding-y-6",
+              "padding-x-16",
+              "padding-y-12",
               "border-width-1",
               "border-color-indigo-200",
             ]),
@@ -182,25 +189,15 @@ export const AccountSection: FunctionComponent<{
           ] as ViewStyle
         }
       >
-        <View
-          style={style.flatten(["margin-x-10", "margin-bottom-2"]) as ViewStyle}
-        >
-          <Text
-            style={
-              style.flatten([
-                "h6",
-                "color-white",
-                "margin-right-6",
-              ]) as ViewStyle
-            }
-          >
+        <View>
+          <Text style={style.flatten(["body3", "color-white"]) as ViewStyle}>
             {account.name}
           </Text>
           <AddressCopyable address={account.bech32Address} maxCharacters={16} />
         </View>
         <IconButton
           backgroundBlur={false}
-          icon={<ThreeDotIcon />}
+          icon={<ThreeDotIcon size={15} />}
           iconStyle={style.flatten(["padding-12"]) as ViewStyle}
           onPress={() => setIsOpenModal(true)}
         />
@@ -218,7 +215,7 @@ export const AccountSection: FunctionComponent<{
         >
           <Text
             style={
-              style.flatten(["h1", "color-white", "font-medium"]) as ViewStyle
+              style.flatten(["h1", "color-white", "font-normal"]) as ViewStyle
             }
           >
             {totalNumber}
@@ -227,9 +224,9 @@ export const AccountSection: FunctionComponent<{
             style={
               style.flatten([
                 "h1",
-                "color-gray-400",
+                "color-new-gray-700",
                 "margin-left-8",
-                "font-medium",
+                "font-normal",
               ]) as ViewStyle
             }
           >
@@ -240,9 +237,8 @@ export const AccountSection: FunctionComponent<{
           <Text
             style={
               style.flatten([
-                "color-gray-300",
-                "body3",
-                "font-bold",
+                "color-white@60%",
+                "body2",
                 "width-full",
                 "text-center",
               ]) as ViewStyle
@@ -253,11 +249,20 @@ export const AccountSection: FunctionComponent<{
           </Text>
         </View>
         {tokenState ? (
-          <View style={style.flatten(["flex-row"]) as ViewStyle}>
+          <View
+            style={
+              style.flatten([
+                "flex-row",
+                "items-center",
+                "justify-center",
+                "width-full",
+              ]) as ViewStyle
+            }
+          >
             <Text
               style={
                 style.flatten(
-                  ["color-orange-400", "text-caption2"],
+                  ["color-orange-400", "body3"],
                   [tokenState.type === "positive" && "color-vibrant-green-500"]
                 ) as ViewStyle
               }
@@ -270,9 +275,9 @@ export const AccountSection: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "color-gray-300",
-                  "h7",
-                  "margin-left-8",
+                  "color-white@60%",
+                  "body3",
+                  "margin-left-4",
                 ]) as ViewStyle
               }
             >
@@ -286,12 +291,12 @@ export const AccountSection: FunctionComponent<{
             style.flatten([
               "padding-x-12",
               "border-width-1",
-              "border-color-white-400",
+              "border-color-white@20%",
               "margin-top-20",
               "border-radius-32",
             ]) as ViewStyle
           }
-          textStyle={style.flatten(["h7"]) as ViewStyle}
+          textStyle={style.flatten(["body3"]) as ViewStyle}
           text={"View portfolio"}
           onPress={() => navigation.navigate("Portfolio")}
         />
@@ -299,6 +304,7 @@ export const AccountSection: FunctionComponent<{
       <WalletCardModel
         isOpen={isOpenModal}
         title="Manage Wallet"
+        accountName={account.name}
         close={() => setIsOpenModal(false)}
         onSelectWallet={(option: ManageWalletOption) => {
           switch (option) {

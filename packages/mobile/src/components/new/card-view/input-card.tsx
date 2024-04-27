@@ -55,7 +55,12 @@ export const InputCardView: React.forwardRef<
         <Text
           style={
             [
-              style.flatten(["padding-y-4", "color-gray-200", "margin-y-8"]),
+              style.flatten([
+                "padding-y-4",
+                "color-white@60%",
+                "margin-y-8",
+                "body3",
+              ]),
               labelStyle,
             ] as ViewStyle
           }
@@ -97,7 +102,12 @@ export const InputCardView: React.forwardRef<
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
                 [
-                  style.flatten(["body3", "color-white", "padding-0"]),
+                  style.flatten([
+                    "body3",
+                    "color-white",
+                    "padding-0",
+                    "justify-center",
+                  ]),
                   inputStyle,
                 ] as ViewStyle
               }
@@ -163,7 +173,6 @@ export const InputCardView: React.forwardRef<
                   "text-caption2",
                   "color-red-250",
                   "margin-top-2",
-                  "margin-left-4",
                 ]) as ViewStyle,
                 errorLabelStyle,
               ])}

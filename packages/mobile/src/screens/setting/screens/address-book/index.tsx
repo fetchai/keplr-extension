@@ -22,6 +22,7 @@ import {
   ManageAddressOption,
 } from "components/new/addressbook-card/manage-address-card";
 import { ConfirmCardModel } from "components/new/confirm-modal";
+import { Button } from "components/button";
 
 export const AddressBookScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
@@ -84,19 +85,17 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
           }}
         >
           <IconButton
-            icon={<HeaderAddIcon size={20} color="white" />}
+            icon={<HeaderAddIcon size={19} color="white" />}
             backgroundBlur={false}
             iconStyle={
               style.flatten([
                 "width-54",
                 "border-width-1",
-                "border-color-gray-300",
-                "padding-x-14",
+                "border-color-white@20%",
+                "padding-x-12",
                 "padding-y-6",
                 "justify-center",
                 "items-center",
-                "margin-y-10",
-                "margin-left-10",
               ]) as ViewStyle
             }
           />
@@ -230,6 +229,7 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.flatten(["flex-grow-1"])}
+      style={style.flatten(["padding-x-page"]) as ViewStyle}
       scrollEnabled={false}
     >
       <View style={style.flatten(["flex-1"])} />
@@ -255,6 +255,19 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
         </Text>
       </View>
       <View style={style.flatten(["margin-top-68", "flex-1"]) as ViewStyle} />
+      <Button
+        text="Add an address"
+        size="large"
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
+        onPress={() => {
+          smartNavigation.navigateSmart("AddAddressBook", {
+            chainId,
+            addressBookConfig,
+          });
+        }}
+      />
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

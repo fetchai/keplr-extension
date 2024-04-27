@@ -9,11 +9,13 @@ export const ChipButton: FunctionComponent<{
   backgroundBlur?: boolean;
   blurIntensity?: number;
   text: string;
+  iconStyle?: ViewStyle;
   icon?: ReactElement | ((color: string) => ReactElement);
   onPress?: () => void;
 }> = ({
   text,
   icon,
+  iconStyle,
   containerStyle,
   textStyle,
   blurIntensity,
@@ -29,25 +31,28 @@ export const ChipButton: FunctionComponent<{
         backgroundBlur={backgroundBlur}
         containerStyle={
           [
-            style.flatten(["flex-row", "items-center", "justify-center"]),
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "justify-center",
+              "padding-x-12",
+              "padding-y-6",
+            ]),
             containerStyle,
           ] as ViewStyle
         }
       >
         <Text
           style={[
-            style.flatten([
-              "color-white",
-              "padding-x-4",
-              "padding-y-6",
-              "h6",
-            ]) as ViewStyle,
+            style.flatten(["color-white", "body3"]) as ViewStyle,
             textStyle,
           ]}
         >
           {text}
         </Text>
-        <View style={style.flatten(["padding-top-4"]) as ViewStyle}>
+        <View
+          style={[style.flatten(["margin-left-6"]), iconStyle] as ViewStyle}
+        >
           {icon}
         </View>
       </BlurBackground>

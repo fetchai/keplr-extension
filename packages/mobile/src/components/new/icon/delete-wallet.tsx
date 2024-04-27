@@ -11,7 +11,7 @@ import Svg, {
 
 export const DeleteWalletIcon: FunctionComponent = (props) => {
   return (
-    <Svg width={130} height={140} viewBox="0 0 130 140" fill="none" {...props}>
+    <Svg width={125} height={130} viewBox="0 0 130 140" fill="none" {...props}>
       <Path
         d="M87.736 44.04H39.534a6.255 6.255 0 00-6.255 6.256v38.87c0 3.454 2.8 6.255 6.255 6.255h48.202c3.454 0 6.254-2.8 6.254-6.255v-38.87c0-3.455-2.8-6.255-6.254-6.255z"
         fill="#30239C"

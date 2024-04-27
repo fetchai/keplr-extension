@@ -46,7 +46,7 @@ export const GasInput: FunctionComponent<{
               false: "#767577",
               true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
             }}
-            thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF"}
+            thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF66"}
             style={[
               {
                 borderRadius: 16,

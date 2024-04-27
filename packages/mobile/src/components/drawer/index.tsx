@@ -11,14 +11,7 @@ import {
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
-import {
-  Platform,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -74,7 +67,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
           ]),
         ])}
         contentContainerStyle={{
-          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+          paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
           height: filterChainInfos.length === 0 ? "100%" : undefined,
         }}
         {...rest}
@@ -95,7 +88,9 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               ]) as ViewStyle
             }
           >
-            <Text style={style.flatten(["h5", "color-white"]) as ViewStyle}>
+            <Text
+              style={style.flatten(["subtitle2", "color-white"]) as ViewStyle}
+            >
               Change Network
             </Text>
             <View style={style.get("flex-1")} />
@@ -127,52 +122,11 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               />
             </View>
           </View>
-          <View
-            style={
-              style.flatten([
-                "flex-row",
-                "items-center",
-                "justify-between",
-                "margin-y-20",
-              ]) as ViewStyle
-            }
-          >
-            <Text
-              style={StyleSheet.flatten([
-                style.flatten([
-                  "h6",
-                  "color-platinum-100",
-                  "margin-right-18",
-                ]) as ViewStyle,
-              ])}
-            >
-              Show testnets
-            </Text>
-            <Switch
-              trackColor={{
-                false: "#767577",
-                true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
-              }}
-              thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF"}
-              style={[
-                {
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
-                },
-                style.flatten(["border-color-pink-light@90%"]),
-              ]}
-              onValueChange={() =>
-                setIsEnabled((previousState) => !previousState)
-              }
-              value={isEnabled}
-            />
-          </View>
           <BlurBackground borderRadius={12} blurIntensity={20}>
             <TextInput
               placeholder="Search"
               placeholderTextColor={"white"}
-              style={style.flatten(["h6"])}
+              style={style.flatten(["body3"])}
               inputContainerStyle={
                 style.flatten([
                   "border-width-0",
@@ -193,7 +147,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               style.flatten([
                 "border-radius-32",
                 "border-color-white@40%",
-                "margin-y-20",
+                "margin-y-24",
               ]) as ViewStyle
             }
             mode="outline"
@@ -228,7 +182,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                     style.flatten(
                       [
                         "flex-row",
-                        "height-58",
+                        "height-62",
                         "items-center",
                         "padding-x-12",
                         "justify-between",
@@ -254,8 +208,8 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                       backgroundBlur={true}
                       containerStyle={
                         style.flatten([
-                          "width-36",
-                          "height-36",
+                          "width-32",
+                          "height-32",
                           "border-radius-64",
                           "items-center",
                           "justify-center",
@@ -266,8 +220,8 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                       {chainInfo.raw.chainSymbolImageUrl ? (
                         <FastImage
                           style={{
-                            width: 24,
-                            height: 24,
+                            width: 22,
+                            height: 22,
                           }}
                           resizeMode={FastImage.resizeMode.contain}
                           source={{
@@ -282,7 +236,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                         />
                       )}
                     </BlurBackground>
-                    <Text style={style.flatten(["h6", "color-white"])}>
+                    <Text style={style.flatten(["subtitle3", "color-white"])}>
                       {titleCase(chainInfo.chainName)}
                     </Text>
                   </View>
@@ -292,6 +246,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
             );
           })}
         </View>
+        <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </DrawerContentScrollView>
     );
   }

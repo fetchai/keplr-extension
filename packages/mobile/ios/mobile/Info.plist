@@ -91,5 +91,17 @@
 	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lexend-Black.ttf</string>
+		<string>Lexend-Bold.ttf</string>
+		<string>Lexend-ExtraBold.ttf</string>
+		<string>Lexend-ExtraLight.ttf</string>
+		<string>Lexend-Light.ttf</string>
+		<string>Lexend-Medium.ttf</string>
+		<string>Lexend-Regular.ttf</string>
+		<string>Lexend-SemiBold.ttf</string>
+		<string>Lexend-Thin.ttf</string>
+	</array>
 </dict>
 </plist>

@@ -242,18 +242,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       contentContainerStyle={style.get("flex-grow-1")}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
-      <Text
-        style={
-          style.flatten([
-            "h1",
-            "color-white",
-            "margin-y-10",
-            "font-medium",
-          ]) as ViewStyle
-        }
-      >
-        Import your wallet
-      </Text>
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
 
       <TabBarView
         listItem={SeedType}

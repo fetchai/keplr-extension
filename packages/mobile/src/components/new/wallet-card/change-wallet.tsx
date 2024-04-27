@@ -9,6 +9,7 @@ import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
 import { observer } from "mobx-react-lite";
 import { KeyRingStore } from "@keplr-wallet/stores";
 import { BlurBackground } from "../blur-background/blur-background";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export const ChangeWalletCardModel: FunctionComponent<{
   isOpen: boolean;
@@ -93,7 +94,10 @@ export const ChangeWalletCardModel: FunctionComponent<{
                         ]) as ViewStyle
                       }
                     >
-                      {accountInfo.bech32Address}
+                      {Bech32Address.shortenAddress(
+                        accountInfo.bech32Address,
+                        32
+                      )}
                     </Text>
                   ) : null}
                 </View>

@@ -237,19 +237,17 @@ export const OtherNavigation: FunctionComponent = () => {
               }}
             >
               <IconButton
-                icon={<HeaderAddIcon size={20} color="white" />}
+                icon={<HeaderAddIcon size={19} color="white" />}
                 backgroundBlur={false}
                 iconStyle={
                   style.flatten([
                     "width-54",
                     "border-width-1",
-                    "border-color-gray-300",
-                    "padding-x-14",
+                    "border-color-white@20%",
+                    "padding-x-12",
                     "padding-y-6",
                     "justify-center",
                     "items-center",
-                    "margin-y-10",
-                    "margin-left-10",
                   ]) as ViewStyle
                 }
               />
@@ -328,8 +326,7 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          headerShown: false,
-          ...HeaderOnTertiaryScreenOptionsPreset,
+          ...TransparentHeaderOptionsPreset,
           title: "",
           // Only show the back button.
         }}

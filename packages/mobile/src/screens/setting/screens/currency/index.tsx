@@ -4,7 +4,7 @@ import { PageWithScrollView } from "components/page";
 import { useStyle } from "styles/index";
 
 import { useStore } from "stores/index";
-import { Text, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { RectButton } from "components/rect-button";
 import { CheckIcon } from "components/new/icon/check";
 import {
@@ -32,8 +32,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView
       backgroundMode="image"
-      style={style.flatten(["padding-x-page", "margin-top-16"]) as ViewStyle}
-      scrollEnabled={false}
+      style={style.flatten(["padding-x-page", "padding-y-page"]) as ViewStyle}
     >
       {currencyItems.map((item) => {
         return (
@@ -41,13 +40,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
             key={item.key}
             style={
               style.flatten(
-                [
-                  "height-56",
-                  "padding-x-20",
-                  "flex-row",
-                  "items-center",
-                  "justify-between",
-                ],
+                ["padding-18", "flex-row", "items-center", "justify-between"],
                 [
                   item.key === priceStore.defaultVsCurrency &&
                     "background-color-indigo",
@@ -60,15 +53,14 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
               navigation.goBack();
             }}
           >
-            <Text
-              style={style.flatten(["body3", "color-white", "font-medium"])}
-            >
+            <Text style={style.flatten(["body3", "color-white"])}>
               {item.label} ({item.symbol})
             </Text>
             {item.key === priceStore.defaultVsCurrency ? <CheckIcon /> : null}
           </RectButton>
         );
       })}
+      <View style={style.flatten(["height-page-double-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

@@ -211,6 +211,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
         navigation.dispatch(
           StackActions.replace("Register", {
             screen: "Register.Intro",
+            params: { isBack: false },
           })
         );
         await delay(1000);
@@ -239,7 +240,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
           [
             style.flatten(["flex", "flex-1", "justify-between"]),
             {
-              paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+              paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
             },
           ] as ViewStyle
         }

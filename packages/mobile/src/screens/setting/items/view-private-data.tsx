@@ -22,11 +22,11 @@ export const SettingViewPrivateDataItem: FunctionComponent = observer(() => {
     <React.Fragment>
       <SettingItem
         label={getPrivateDataTitle(keyRingStore.keyRingType)}
-        left={<KeyIcon />}
+        left={<KeyIcon size={16} />}
         onPress={() => {
           setIsOpenModal(true);
         }}
-        style={style.flatten(["height-72", "padding-x-20"]) as ViewStyle}
+        style={style.flatten(["height-72", "padding-18"]) as ViewStyle}
       />
       <PasswordInputModal
         isOpen={isOpenModal}

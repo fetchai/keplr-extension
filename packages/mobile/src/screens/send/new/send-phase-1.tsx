@@ -128,6 +128,7 @@ export const SendPhase1: FunctionComponent<{
         text="Next"
         size="large"
         containerStyle={style.flatten(["border-radius-64"]) as ViewStyle}
+        textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         rippleColor="black@50%"
         disabled={
           sendConfigs.amountConfig.amount === "" ||

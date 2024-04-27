@@ -29,7 +29,10 @@ export const TabBarView: FunctionComponent<{
         backgroundBlur={false}
         text={item}
         textStyle={
-          style.flatten(["body3"], [select && "color-indigo-900"]) as ViewStyle
+          style.flatten(
+            ["text-caption1"],
+            [select && "color-indigo-900"]
+          ) as ViewStyle
         }
         containerStyle={
           [
@@ -62,7 +65,7 @@ export const TabBarView: FunctionComponent<{
         {!select && !prevSelect ? (
           <CardDivider
             vertical={true}
-            style={style.flatten(["height-12", "margin-y-10"]) as ViewStyle}
+            style={style.flatten(["height-12", "margin-top-10"]) as ViewStyle}
           />
         ) : null}
       </View>

@@ -12,6 +12,9 @@ import { separateNumericAndDenom } from "utils/format/format";
 import { getTokenIcon } from "utils/get-token-icon";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
+import { ActivityNativeTab } from "screens/activity/activity-transaction";
+import { ChipButton } from "components/new/chip";
+import { FilterIcon } from "components/new/icon/filter-icon";
 
 export const TokenDetail: FunctionComponent = observer(() => {
   const size = 56;
@@ -65,6 +68,8 @@ export const TokenDetail: FunctionComponent = observer(() => {
     separateNumericAndDenom(
       total.shrink(true).trim(true).maxDecimals(6).toString()
     );
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [latestBlock, _setLatestBlock] = useState<string>();
 
   useEffect(() => {
     if (tokenInfo?.coinGeckoId) {
@@ -81,9 +86,11 @@ export const TokenDetail: FunctionComponent = observer(() => {
   return (
     <PageWithScrollView
       backgroundMode="image"
-      contentContainerStyle={style.get("flex-grow-1")}
+      contentContainerStyle={style.flatten(["flex-grow-1"])}
+      nestedScrollEnabled={false}
+      style={{ overflow: "scroll" }}
     >
-      <View style={style.flatten(["margin-x-20"]) as ViewStyle}>
+      <View style={style.flatten(["margin-x-page"]) as ViewStyle}>
         <View style={style.flatten(["items-center"])}>
           {tokenIcon ? (
             <View
@@ -173,6 +180,43 @@ export const TokenDetail: FunctionComponent = observer(() => {
         totalDenom={balances.totalDenom}
         totalPrice={balances.balanceInUsd}
       />
+      {tokenInfo.coinGeckoId && (
+        <React.Fragment>
+          <View
+            style={
+              style.flatten([
+                "flex-row",
+                "justify-between",
+                "items-center",
+                "margin-page",
+              ]) as ViewStyle
+            }
+          >
+            <Text style={style.flatten(["body1", "color-white"]) as ViewStyle}>
+              Activity
+            </Text>
+            <ChipButton
+              text="Filter"
+              icon={<FilterIcon />}
+              iconStyle={style.get("padding-top-2") as ViewStyle}
+              containerStyle={
+                style.flatten([
+                  "border-width-1",
+                  "border-color-gray-300",
+                  "width-90",
+                ]) as ViewStyle
+              }
+              backgroundBlur={false}
+              onPress={() => setIsOpenModal(true)}
+            />
+          </View>
+          <ActivityNativeTab
+            latestBlock={latestBlock}
+            isOpenModal={isOpenModal}
+            setIsOpenModal={setIsOpenModal}
+          />
+        </React.Fragment>
+      )}
     </PageWithScrollView>
   );
 });

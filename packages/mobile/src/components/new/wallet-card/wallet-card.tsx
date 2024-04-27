@@ -21,8 +21,9 @@ export const WalletCardModel: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   title: string;
+  accountName: string;
   onSelectWallet: (option: ManageWalletOption) => void;
-}> = ({ close, title, isOpen, onSelectWallet }) => {
+}> = ({ close, title, isOpen, onSelectWallet, accountName }) => {
   const style = useStyle();
 
   if (!isOpen) {
@@ -104,7 +105,7 @@ export const WalletCardModel: FunctionComponent<{
             >
               <IconButton
                 backgroundBlur={false}
-                icon={<LayerGroupIcon size={17} />}
+                icon={<LayerGroupIcon size={16} />}
                 iconStyle={style.flatten(["padding-0"]) as ViewStyle}
               />
               <Text
@@ -145,7 +146,7 @@ export const WalletCardModel: FunctionComponent<{
             >
               <IconButton
                 backgroundBlur={false}
-                icon={<EditIcon size={18} />}
+                icon={<EditIcon size={16} />}
                 iconStyle={style.flatten(["padding-0"]) as ViewStyle}
               />
               <Text
@@ -186,20 +187,20 @@ export const WalletCardModel: FunctionComponent<{
             >
               <IconButton
                 backgroundBlur={false}
-                icon={<DeleteIcon size={17} />}
+                icon={<DeleteIcon size={16} />}
                 iconStyle={style.flatten(["padding-0"]) as ViewStyle}
               />
               <Text
                 style={
                   style.flatten([
-                    "body3",
+                    "body2",
                     "color-white",
                     "margin-left-18",
                     "color-orange-400",
                   ]) as ViewStyle
                 }
               >
-                Delete wallet
+                {`Delete ${accountName}`}
               </Text>
             </View>
           </RectButton>

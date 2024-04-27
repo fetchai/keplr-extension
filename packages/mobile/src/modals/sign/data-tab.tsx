@@ -45,12 +45,18 @@ export const DataTab: FunctionComponent<{
       }
     >
       <ScrollView
-        style={style.flatten(["max-height-400"]) as ViewStyle}
+        indicatorStyle={"white"}
+        nestedScrollEnabled={true}
+        scrollEnabled={true}
+        style={[
+          style.flatten(["max-height-400"]) as ViewStyle,
+          { overflow: "scroll" },
+        ]}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
         <Text
-          style={style.flatten(["color-gray-200", "padding-8"]) as ViewStyle}
+          style={style.flatten(["color-gray-200", "padding-12"]) as ViewStyle}
         >
           {content}
         </Text>

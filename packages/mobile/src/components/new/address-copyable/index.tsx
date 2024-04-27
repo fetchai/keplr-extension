@@ -30,7 +30,7 @@ export const AddressCopyable: FunctionComponent<{
       underlayColor={style.flatten(["color-gray-300"]).color}
       activeOpacity={0.2}
     >
-      <Text style={style.flatten(["h7", "color-gray-200"])}>
+      <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
         {Bech32Address.shortenAddress(address, maxCharacters)}
       </Text>
       <View style={style.flatten(["margin-left-4", "width-20"]) as ViewStyle}>

@@ -45,7 +45,9 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
 
 export const BIP44AdvancedButton: FunctionComponent<{
   bip44Option: BIP44Option;
-}> = observer(({ bip44Option }) => {
+  backgroundBlur?: boolean;
+  containerStyle?: ViewStyle;
+}> = observer(({ bip44Option, backgroundBlur = true, containerStyle }) => {
   const style = useStyle();
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,18 +68,22 @@ export const BIP44AdvancedButton: FunctionComponent<{
         text="Advanced Settings"
         blurIntensity={30}
         borderRadius={32}
-        backgroundBlur={true}
+        backgroundBlur={backgroundBlur}
         containerStyle={
-          style.flatten(
-            ["padding-3", "width-160", "justify-center", "margin-y-18"],
-            [
-              selected && "border-width-1",
-              "border-radius-64",
-              "border-color-indigo",
-            ]
-          ) as ViewStyle
+          [
+            style.flatten(
+              ["justify-center", "margin-y-18"],
+              [
+                selected && "border-width-1",
+                "border-radius-64",
+                selected && "border-color-indigo",
+              ]
+            ),
+            { width: 150 },
+            containerStyle,
+          ] as ViewStyle
         }
-        textStyle={style.flatten(["text-caption1"]) as ViewStyle}
+        textStyle={style.flatten(["text-caption2"]) as ViewStyle}
         onPress={() => setIsSelected(!selected)}
       />
       {selected ? (

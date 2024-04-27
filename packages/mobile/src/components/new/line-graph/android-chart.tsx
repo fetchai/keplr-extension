@@ -14,9 +14,10 @@ import {
 } from "react-native-svg";
 import { PanResponder, Dimensions, View } from "react-native";
 
-export const AndroidLineChart: FunctionComponent<{ data: any }> = ({
-  data,
-}) => {
+export const AndroidLineChart: FunctionComponent<{
+  data: any;
+  height?: number;
+}> = ({ data, height }) => {
   const valueList = data.map((d: { value: any }) => d.value);
   const dateList = data.map((d: { date: any }) => d.date);
 
@@ -162,10 +163,11 @@ export const AndroidLineChart: FunctionComponent<{ data: any }> = ({
     <Path key="line" d={line} strokeWidth={apx(1)} fill="none" />
   );
 
+  const dynamicHeight = height && height >= 200 ? height : 200;
   return (
     <View {...panResponder.current.panHandlers}>
       <LineChart
-        style={{ height: 200 }}
+        style={{ height: dynamicHeight }}
         data={valueList}
         contentInset={{ top: 20, bottom: 20 }}
         animation={true}

@@ -1,10 +1,11 @@
 import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
 import React, { FunctionComponent } from "react";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Dimensions, StyleSheet, Text, View, ViewStyle } from "react-native";
 import Modal from "react-native-modal";
 import { useStyle } from "styles/index";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const CardModal: FunctionComponent<{
   isOpen: boolean;
@@ -27,6 +28,7 @@ export const CardModal: FunctionComponent<{
   titleStyle,
 }) => {
   const style = useStyle();
+  const windowHeight = Dimensions.get("window").height;
 
   return (
     <Modal
@@ -41,6 +43,7 @@ export const CardModal: FunctionComponent<{
       animationType="slide"
       animationInTiming={500}
       animationOutTiming={500}
+      backdropColor={style.get("color-indigo-backdrop").color}
     >
       <GestureHandlerRootView>
         <View
@@ -54,10 +57,13 @@ export const CardModal: FunctionComponent<{
               ]),
             ]) as ViewStyle,
             cardStyle,
+            {
+              maxHeight: windowHeight - 24,
+            },
           ]}
         >
           <View
-            style={style.flatten(["padding-x-16", "margin-y-10"]) as ViewStyle}
+            style={style.flatten(["padding-x-10", "margin-y-12"]) as ViewStyle}
           >
             <View
               style={
@@ -81,15 +87,17 @@ export const CardModal: FunctionComponent<{
             >
               {title ? (
                 <Text
-                  style={[
-                    style.flatten([
-                      "h5",
-                      "color-text-high",
-                      "color-white",
-                      "flex-3",
-                    ]),
-                    titleStyle,
-                  ]}
+                  style={
+                    [
+                      style.flatten([
+                        "subtitle2",
+                        "color-text-high",
+                        "color-white",
+                        "flex-3",
+                      ]),
+                      titleStyle,
+                    ] as ViewStyle
+                  }
                 >
                   {title}
                 </Text>
@@ -114,14 +122,15 @@ export const CardModal: FunctionComponent<{
               ) : null}
             </View>
           </View>
-          <View
+          <KeyboardAwareScrollView
             style={StyleSheet.flatten([
-              style.flatten(["padding-x-20", "padding-y-10"]) as ViewStyle,
+              style.flatten(["padding-x-20", "padding-top-12"]) as ViewStyle,
               childrenContainerStyle,
             ])}
           >
             {children}
-          </View>
+            <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+          </KeyboardAwareScrollView>
         </View>
       </GestureHandlerRootView>
     </Modal>

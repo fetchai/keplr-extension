@@ -35,10 +35,10 @@ const getBlurredHeaderScreenOptionsPreset = (
       return <BlurredHeader {...props} backgroundMode={backgroundMode} />;
     },
     headerLeftContainerStyle: {
-      marginLeft: 10,
+      paddingLeft: 20,
     },
     headerRightContainerStyle: {
-      marginRight: 10,
+      paddingRight: 20,
     },
     // eslint-disable-next-line react/display-name
     headerLeft: (props: any) => <HeaderLeftBackButton {...props} />,
@@ -72,10 +72,10 @@ export const TransparentHeaderOptionsPreset = {
     return <TransparentHeader {...props} />;
   },
   headerLeftContainerStyle: {
-    marginLeft: 10,
+    paddingLeft: 20,
   },
   headerRightContainerStyle: {
-    marginRight: 10,
+    paddingRight: 20,
   },
   // eslint-disable-next-line react/display-name
   headerLeft: (props: any) => <HeaderLeftBackBlurButton {...props} />,
@@ -97,10 +97,10 @@ export const BlurHeaderOptionsPreset = {
     return <BlurHeader {...props} />;
   },
   headerLeftContainerStyle: {
-    marginLeft: 10,
+    paddingLeft: 20,
   },
   headerRightContainerStyle: {
-    marginRight: 10,
+    paddingRight: 20,
   },
   // eslint-disable-next-line react/display-name
   headerLeft: (props: any) => <HeaderLeftBackBlurButton {...props} />,

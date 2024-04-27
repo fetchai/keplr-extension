@@ -1,5 +1,12 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -124,7 +131,8 @@ export const AddressInputCard: FunctionComponent<{
               style.flatten([
                 "padding-y-4",
                 "margin-y-8",
-                "color-gray-200",
+                "color-white@60%",
+                "body3",
               ]) as ViewStyle
             }
           >
@@ -154,20 +162,25 @@ export const AddressInputCard: FunctionComponent<{
           }
         >
           <View style={style.flatten(["flex-row"])}>
-            <View style={style.flatten(["flex-3"]) as ViewStyle}>
+            <View
+              style={style.flatten(["flex-3", "justify-center"]) as ViewStyle}
+            >
               <TextInput
-                placeholderTextColor={style.flatten(["color-gray-200"]).color}
+                placeholderTextColor={style.flatten(["color-white@60%"]).color}
                 style={
                   style.flatten([
                     "body3",
-                    "font-medium",
                     "color-white",
+                    "padding-0",
                   ]) as ViewStyle
+                }
+                keyboardType={
+                  Platform.OS === "ios" ? "ascii-capable" : "visible-password"
                 }
                 returnKeyType="done"
                 placeholder={placeholderText}
                 value={recipientConfig.rawRecipient}
-                multiline={true}
+                multiline
                 onChangeText={(text) => {
                   if (
                     // If icns is possible and users enters ".", complete bech32 prefix automatically.
@@ -207,17 +220,14 @@ export const AddressInputCard: FunctionComponent<{
                 ]) as ViewStyle
               }
             >
-              <View style={style.flatten(["flex-row"])}>
+              <View style={style.flatten(["flex-row", "items-center"])}>
                 <Divider
                   containerStyle={
-                    style.flatten([
-                      "margin-right-16",
-                      "margin-top-10",
-                    ]) as ViewStyle
+                    style.flatten(["margin-right-16", "height-16"]) as ViewStyle
                   }
                 />
                 <IconButton
-                  icon={<QRCodeIcon />}
+                  icon={<QRCodeIcon size={16} />}
                   backgroundBlur={false}
                   onPress={() => {
                     if (permission?.status == PermissionStatus.UNDETERMINED) {
@@ -237,12 +247,12 @@ export const AddressInputCard: FunctionComponent<{
                   iconStyle={
                     style.flatten([
                       "padding-y-12",
-                      "padding-right-16",
+                      "margin-right-16",
                     ]) as ViewStyle
                   }
                 />
                 <IconButton
-                  icon={<ATIcon />}
+                  icon={<ATIcon size={16} />}
                   backgroundBlur={false}
                   onPress={() => setIsOpenModal(true)}
                   iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}

@@ -10,6 +10,7 @@ export const SimpleCardView: FunctionComponent<{
   trailingIconComponent?: ReactElement | (() => ReactElement);
   mainHeading?: string;
   heading: string;
+  headingStyle?: ViewStyle;
   headingMode?: HeadingMode;
   subHeading?: string;
   cardStyle?: ViewStyle;
@@ -18,6 +19,7 @@ export const SimpleCardView: FunctionComponent<{
   trailingIconComponent,
   mainHeading,
   heading,
+  headingStyle,
   headingMode = "normal",
   subHeading,
   cardStyle,
@@ -59,12 +61,15 @@ export const SimpleCardView: FunctionComponent<{
           {headingMode === "normal" ? (
             <Text
               style={
-                style.flatten([
-                  "h6",
-                  "padding-4",
-                  "color-white",
-                  "font-normal",
-                ]) as ViewStyle
+                [
+                  style.flatten([
+                    "h6",
+                    "padding-4",
+                    "color-white",
+                    "font-normal",
+                  ]),
+                  headingStyle,
+                ] as ViewStyle
               }
             >
               {heading}
@@ -75,7 +80,9 @@ export const SimpleCardView: FunctionComponent<{
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
               text={heading}
-              textStyle={style.flatten(["h7", "padding-4"]) as ViewStyle}
+              textStyle={
+                [style.flatten(["h7", "padding-4"]), headingStyle] as ViewStyle
+              }
             />
           )}
           {subHeading ? (

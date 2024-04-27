@@ -45,6 +45,7 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
             );
           })
         : null}
+      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });

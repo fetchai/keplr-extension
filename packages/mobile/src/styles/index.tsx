@@ -1,7 +1,7 @@
 import { createStyleProvider } from "./builder";
 import { EnumTextTransform, EnumTextDecorationLine } from "./builder/types";
 import { PixelRatio, Platform, StatusBarStyle } from "react-native";
-import { getPlatformFontWeight } from "./builder/utils";
+import { getPlatformFontFamily } from "./builder/utils";
 import { BlurViewProps } from "@react-native-community/blur";
 
 function handleImageHighRes(image: any, highResImage: any): any {
@@ -116,6 +116,7 @@ export const ColorPalette = {
   "indigo-400": "#000D3D",
   "indigo-800": "#270E8D",
   "indigo-900": "#000D3D",
+  "indigo-backdrop": "#270e8dcc",
 
   "orange-400": "#fa8f6b",
 };
@@ -169,123 +170,123 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
       custom: {
         h1: {
           fontSize: 32,
-          lineHeight: 40,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("700"),
+          fontFamily: getPlatformFontFamily("700"),
+          fontWeight: "700",
         },
         h2: {
           fontSize: 28,
-          lineHeight: 36,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("700"),
+          fontFamily: getPlatformFontFamily("700"),
+          fontWeight: "700",
         },
         h3: {
           fontSize: 24,
-          lineHeight: 32,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("700"),
+          fontFamily: getPlatformFontFamily("700"),
+          fontWeight: "700",
         },
         h4: {
           fontSize: 20,
-          lineHeight: 28,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         h5: {
           fontSize: 18,
-          lineHeight: 24,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         h6: {
           fontSize: 16,
-          lineHeight: 22,
           letterSpacing: 0.2,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         h7: {
           fontSize: 14,
-          lineHeight: 20,
           letterSpacing: 0.2,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         subtitle1: {
           fontSize: 18,
-          lineHeight: 24,
-          ...getPlatformFontWeight("500"),
+          fontFamily: getPlatformFontFamily("500"),
+          fontWeight: "500",
         },
         subtitle2: {
           fontSize: 16,
-          lineHeight: 22,
-          ...getPlatformFontWeight("500"),
+          fontFamily: getPlatformFontFamily("500"),
+          fontWeight: "500",
         },
         subtitle3: {
           fontSize: 14,
-          lineHeight: 21,
           letterSpacing: 0.1,
-          ...getPlatformFontWeight("500"),
+          fontFamily: getPlatformFontFamily("500"),
+          fontWeight: "500",
         },
         body1: {
           fontSize: 18,
-          lineHeight: 26,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         body2: {
           fontSize: 16,
-          lineHeight: 22,
           letterSpacing: 0.1,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         body3: {
           fontSize: 14,
-          lineHeight: 20,
           letterSpacing: 0.1,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         "text-button0": {
           fontSize: 20,
-          lineHeight: 25,
           letterSpacing: 0.2,
           textTransform: "capitalize" as EnumTextTransform,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         "text-button1": {
           fontSize: 18,
-          lineHeight: 20,
           letterSpacing: 0.2,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         "text-button2": {
           fontSize: 16,
-          lineHeight: 19,
           letterSpacing: 0.2,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         "text-button3": {
           fontSize: 14,
-          lineHeight: 18,
           letterSpacing: 0.2,
           textTransform: "capitalize" as EnumTextTransform,
-          ...getPlatformFontWeight("600"),
+          fontFamily: getPlatformFontFamily("600"),
+          fontWeight: "600",
         },
         "text-caption1": {
           fontSize: 13,
-          lineHeight: 18,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         "text-caption2": {
           fontSize: 12,
-          lineHeight: 18,
           letterSpacing: 0.3,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         "text-overline": {
           fontSize: 11,
-          lineHeight: 16,
           letterSpacing: 0.5,
           textTransform: "uppercase" as EnumTextTransform,
-          ...getPlatformFontWeight("400"),
+          fontFamily: getPlatformFontFamily("400"),
+          fontWeight: "400",
         },
         "text-underline": {
           textDecorationLine: "underline" as EnumTextDecorationLine,
@@ -296,17 +297,17 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
         "body2-in-text-input": Platform.select({
           ios: {
             fontSize: 16,
-            lineHeight: 19,
             letterSpacing: 0.25,
             paddingTop: 1.5,
             paddingBottom: 1.5,
-            ...getPlatformFontWeight("400"),
+            fontFamily: getPlatformFontFamily("400"),
+            fontWeight: "400",
           },
           android: {
             fontSize: 20,
-            lineHeight: 22,
             letterSpacing: 0.25,
-            ...getPlatformFontWeight("400"),
+            fontFamily: getPlatformFontFamily("400"),
+            fontWeight: "400",
           },
         }),
         "background-gradient": {
@@ -562,6 +563,7 @@ export const { StyleProvider, useStyle, useStyleThemeController } =
 
         "card-gap": 12,
         "page-pad": 20,
+        "page-double-pad": 40,
       },
       paddingSizes: {
         "0": 0,

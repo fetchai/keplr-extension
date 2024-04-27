@@ -8,12 +8,12 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
 import { separateNumericAndDenom } from "utils/format/format";
-import { Button } from "components/button";
 import { Dec } from "@keplr-wallet/unit";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
+import { GradientButton } from "components/new/button/gradient-button";
 
 export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   cardStyle,
@@ -134,17 +134,19 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           {renderLine("#CFC3FE")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={
-                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
-              }
+              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
             >
               Available
             </Text>
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text
+              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
+            >
               {`${parseFloat(stakableBal).toFixed(2)} ${
                 stakable.currency.coinDenom
               }`}{" "}
-              ({stakablePercentage.toFixed(2)}%)
+              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
+                {`(${Math.round(stakablePercentage)}%)`}
+              </Text>
             </Text>
           </View>
         </View>
@@ -152,18 +154,19 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           {renderLine("#5F38FB")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={
-                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
-              }
+              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
             >
               Staked
             </Text>
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text
+              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
+            >
               {`${parseFloat(stakedBal).toFixed(2)} ${
                 stakable.currency.coinDenom
               }`}{" "}
-              ({stakedPercentage.toFixed(2)}
-              %)
+              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
+                {`(${Math.round(stakedPercentage)}%)`}
+              </Text>
             </Text>
           </View>
         </View>
@@ -171,17 +174,19 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           {renderLine("#F9774B")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={
-                style.flatten(["color-gray-200", "text-caption1"]) as ViewStyle
-              }
+              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
             >
               Claimable rewards
             </Text>
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text
+              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
+            >
               {`${parseFloat(rewardsBal).toFixed(2)} ${
                 stakable.currency.coinDenom
               }`}{" "}
-              ({rewardsPercentage.toFixed(2)}%)
+              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
+                {`(${Math.round(rewardsPercentage)}%)`}
+              </Text>
             </Text>
           </View>
         </View>
@@ -254,20 +259,24 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
     >
       <Text
         style={
-          style.flatten(["color-white", "h6", "margin-bottom-20"]) as ViewStyle
+          style.flatten([
+            "color-white",
+            "subtitle3",
+            "margin-bottom-20",
+          ]) as ViewStyle
         }
       >
         STAKING
       </Text>
       <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
         {renderLegendComponent()}
-        <View style={style.flatten(["flex-3"])}>
+        <View style={style.flatten(["flex-2", "margin-right-18"])}>
           <PieChart
             data={pieData}
             donut
             sectionAutoFocus
-            radius={65}
-            innerRadius={40}
+            radius={62}
+            innerRadius={38}
             innerCircleColor={"#232B5D"}
             focusOnPress={true}
           />
@@ -280,17 +289,13 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
         stakable.toDec().lte(new Dec(0)) ||
         rewards.pendingRewardValidatorAddresses.length === 0
       ) ? (
-        <Button
-          text="Claim staking rewards"
+        <GradientButton
+          text="Claim rewards"
           size="default"
-          color="gradient"
           containerStyle={
-            style.flatten([
-              "background-color-white",
-              "border-radius-64",
-              "margin-top-20",
-            ]) as ViewStyle
+            style.flatten(["border-radius-64", "margin-top-20"]) as ViewStyle
           }
+          textStyle={style.flatten(["body3"]) as ViewStyle}
           rippleColor="black@50%"
           onPress={onSubmit}
           loading={

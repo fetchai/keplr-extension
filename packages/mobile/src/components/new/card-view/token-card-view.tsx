@@ -38,6 +38,7 @@ export const TokenCardView: FunctionComponent<{
               "padding-y-12",
               "justify-between",
               "items-center",
+              "height-74",
             ]),
             containerStyle,
           ] as ViewStyle
@@ -51,12 +52,7 @@ export const TokenCardView: FunctionComponent<{
             <Text
               style={
                 [
-                  style.flatten([
-                    "h7",
-                    "padding-2",
-                    "color-white",
-                    "font-medium",
-                  ]),
+                  style.flatten(["body3", "padding-2", "color-white"]),
                   titleStyle,
                 ] as ViewStyle
               }
@@ -67,9 +63,9 @@ export const TokenCardView: FunctionComponent<{
               <Text
                 style={
                   style.flatten([
-                    "text-caption1",
+                    "body3",
                     "padding-2",
-                    "color-gray-200",
+                    "color-white@60%",
                   ]) as ViewStyle
                 }
               >
@@ -91,7 +87,11 @@ export const TokenCardView: FunctionComponent<{
           {trailingStart ? (
             <Text
               style={
-                style.flatten(["h7", "color-white", "font-medium"]) as ViewStyle
+                style.flatten([
+                  "body3",
+                  "color-white",
+                  "font-medium",
+                ]) as ViewStyle
               }
             >
               {trailingStart}
@@ -101,7 +101,7 @@ export const TokenCardView: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "h7",
+                  "body3",
                   "color-gray-300",
                   "font-medium",
                   "margin-left-4",

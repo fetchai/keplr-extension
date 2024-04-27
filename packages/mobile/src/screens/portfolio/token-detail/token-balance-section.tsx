@@ -23,7 +23,7 @@ export const TokenBalanceSection: FunctionComponent<{
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
-    <View style={style.flatten(["flex-column", "margin-x-20"]) as ViewStyle}>
+    <View style={style.flatten(["flex-column", "margin-x-page"]) as ViewStyle}>
       <Text
         style={style.flatten(["color-gray-200", "text-caption2"]) as ViewStyle}
       >
@@ -113,7 +113,7 @@ export const TokenBalanceSection: FunctionComponent<{
             text={"Send"}
             rightIcon={<ArrowUpGradientIcon size={15} />}
             textStyle={
-              style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle
+              style.flatten(["color-indigo-900", "margin-right-8"]) as ViewStyle
             }
             containerStyle={
               style.flatten([

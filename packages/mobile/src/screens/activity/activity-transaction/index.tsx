@@ -4,7 +4,13 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { View, Text, Button, ViewStyle } from "react-native";
+import {
+  View,
+  Text,
+  ViewStyle,
+  ActivityIndicator,
+  FlatList,
+} from "react-native";
 import { fetchTransactions } from "../../../graphQL/activity-api";
 import moment from "moment";
 import { useStore } from "stores/index";
@@ -13,7 +19,8 @@ import { CardDivider } from "components/card";
 import { FilterItem } from "screens/activity";
 import { activityFilterOptions, ActivityFilterView } from "./activity-filter";
 import { ActivityRow } from "./activity-row";
-import { NoActivityView } from "./no-activity-view";
+import { observer } from "mobx-react-lite";
+import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
 
 const processFilters = (filters: string[]) => {
   let result: any[] = [];
@@ -36,7 +43,7 @@ export const ActivityNativeTab: FunctionComponent<{
   latestBlock: any;
   isOpenModal: boolean;
   setIsOpenModal: any;
-}> = ({ latestBlock, isOpenModal, setIsOpenModal }) => {
+}> = observer(({ latestBlock, isOpenModal, setIsOpenModal }) => {
   const style = useStyle();
   const { chainStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -68,7 +75,7 @@ export const ActivityNativeTab: FunctionComponent<{
       processFilters(filter)
     );
     setFetchedData(data?.nodes);
-    if (!pageInfo || cursor != "") setPageInfo(data.pageInfo);
+    if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
     setIsLoading(false);
   }, 1000);
 
@@ -79,6 +86,16 @@ export const ActivityNativeTab: FunctionComponent<{
   useEffect(() => {
     fetchNodes("");
   }, [latestBlock, filters]);
+
+  useEffect(() => {
+    /// Execute bloc after 1.5 sec
+    setTimeout(() => {
+      setIsLoading(true);
+      setPageInfo(undefined);
+      setNodes({});
+      fetchNodes("");
+    }, 1500);
+  }, [chainStore.current.chainId]);
 
   useEffect(() => {
     if (fetchedData) {
@@ -92,98 +109,97 @@ export const ActivityNativeTab: FunctionComponent<{
     }
   }, [fetchedData]);
 
-  const handleClick = () => {
-    setLoadingRequest(true);
-    fetchNodes(pageInfo.endCursor);
-  };
-
   const handleFilterChange = (selectedFilters: FilterItem[]) => {
+    setIsLoading(true);
     setPageInfo(undefined);
     setNodes({});
     setFilters(selectedFilters);
     setIsOpenModal(false);
   };
 
-  const renderNodes = (
-    nodes: { [s: string]: unknown } | ArrayLike<unknown>
-  ) => {
-    const renderedNodes: JSX.Element[] = [];
-    Object.values(nodes).forEach(async (node: any, index) => {
-      const currentDate = moment(node.block.timestamp)
-        .utc()
-        .format("MMMM DD, hh:mm A");
-      const previousNode: any =
-        index > 0 ? Object.values(nodes)[index - 1] : null;
-      const previousDate = previousNode
-        ? moment(previousNode.block.timestamp).utc().format("ddd, DD MMM YYYY")
-        : null;
-      const shouldDisplayDate = currentDate !== previousDate;
-
-      renderedNodes.push(
-        <React.Fragment key={index}>
-          {!shouldDisplayDate && (
-            <View style={style.flatten(["height-1"]) as ViewStyle} />
-          )}
-          {shouldDisplayDate && (
-            <Text
-              style={
-                style.flatten([
-                  "color-gray-300",
-                  "margin-left-16",
-                  "h7",
-                  "margin-bottom-12",
-                ]) as ViewStyle
-              }
-            >
-              {currentDate}
-            </Text>
-          )}
-          <ActivityRow setDate={setDate} node={node} />
-          <View style={style.flatten(["margin-top-10"]) as ViewStyle}>
-            <CardDivider
-              style={style.flatten(["margin-bottom-18"]) as ViewStyle}
-            />
-          </View>
-        </React.Fragment>
-      );
-    });
-    return renderedNodes;
+  const handleLoadMore = () => {
+    if (!loadingRequest) {
+      setLoadingRequest(true);
+      fetchNodes(pageInfo?.endCursor);
+    }
   };
+
+  const renderFooter = () => {
+    //it will show indicator at the bottom of the list when data is loading otherwise it returns null
+    if (!pageInfo?.hasNextPage) return null;
+    return (
+      <ActivityIndicator size="large" color={style.get("color-white").color} />
+    );
+  };
+
+  const renderList = (nodes: { [s: string]: unknown } | ArrayLike<unknown>) => {
+    return (
+      <FlatList
+        data={Object.values(nodes)}
+        scrollEnabled={false}
+        renderItem={({ item, index }: { item: any; index: number }) => {
+          const currentDate = moment(item.block.timestamp)
+            .utc()
+            .format("MMMM DD, hh:mm A");
+          const previousNode: any =
+            index > 0 ? Object.values(nodes)[index - 1] : null;
+          const previousDate = previousNode
+            ? moment(previousNode.block.timestamp)
+                .utc()
+                .format("ddd, DD MMM YYYY")
+            : null;
+          const shouldDisplayDate = currentDate !== previousDate;
+
+          return (
+            <React.Fragment key={index}>
+              {!shouldDisplayDate && (
+                <View style={style.flatten(["height-1"]) as ViewStyle} />
+              )}
+              {shouldDisplayDate && (
+                <Text
+                  style={
+                    style.flatten([
+                      "color-gray-300",
+                      "margin-left-16",
+                      "h7",
+                      "margin-bottom-12",
+                    ]) as ViewStyle
+                  }
+                >
+                  {currentDate}
+                </Text>
+              )}
+              <ActivityRow setDate={setDate} node={item} />
+              <View style={style.flatten(["margin-top-10"]) as ViewStyle}>
+                <CardDivider
+                  style={style.flatten(["margin-bottom-18"]) as ViewStyle}
+                />
+              </View>
+            </React.Fragment>
+          );
+        }}
+        keyExtractor={(_item, index) => index.toString()}
+        ListFooterComponent={() => renderFooter()}
+        onEndReachedThreshold={0.4}
+        onEndReached={() => handleLoadMore()}
+      />
+    );
+  };
+
+  const data = Object.values(nodes).filter((node: any) =>
+    processFilters(filter).includes(node.transaction.messages.nodes[0].typeUrl)
+  );
 
   return (
     <React.Fragment>
-      {Object.values(nodes).filter((node: any) =>
-        processFilters(filter).includes(
-          node.transaction.messages.nodes[0].typeUrl
-        )
-      ).length > 0 ? (
-        <React.Fragment>
-          {renderNodes(nodes)}
-          {pageInfo?.hasNextPage && (
-            <Button
-              disabled={!pageInfo?.hasNextPage || loadingRequest}
-              onPress={handleClick}
-              title="Load"
-            >
-              Load more{""}
-              {loadingRequest && (
-                <Text style={style.flatten(["text-center"]) as ViewStyle}>
-                  load
-                </Text>
-              )}
-            </Button>
-          )}
-        </React.Fragment>
-      ) : isLoading ? (
-        <Text
-          style={
-            style.flatten(["color-white", "text-center", "h7"]) as ViewStyle
-          }
-        >
-          Loading Activities...
-        </Text>
+      {data.length > 0 && renderList(nodes)}
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={style.get("color-white").color}
+        />
       ) : (
-        <NoActivityView />
+        data.length == 0 && <NoActivityView />
       )}
       <ActivityFilterView
         isOpen={isOpenModal}
@@ -193,4 +209,4 @@ export const ActivityNativeTab: FunctionComponent<{
       />
     </React.Fragment>
   );
-};
+});
