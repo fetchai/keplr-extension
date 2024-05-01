@@ -84,11 +84,6 @@
 	<false/>
 	<key>XSAppIconAssets</key>
 	<string>Images.xcassets/AppIcon.appiconset</string>
-	<key>bugsnag</key>
-	<dict>
-		<key>apiKey</key>
-		<string>f07be1dce2391227e818fbe3e4235bf4</string>
-	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIAppFonts</key>
