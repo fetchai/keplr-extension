@@ -128,7 +128,13 @@ export const ActivityNativeTab: FunctionComponent<{
     //it will show indicator at the bottom of the list when data is loading otherwise it returns null
     if (!pageInfo?.hasNextPage) return null;
     return (
-      <ActivityIndicator size="large" color={style.get("color-white").color} />
+      <React.Fragment>
+        <ActivityIndicator
+          size="large"
+          color={style.get("color-white").color}
+        />
+        <View style={style.get("height-page-pad") as ViewStyle} />
+      </React.Fragment>
     );
   };
 
@@ -138,15 +144,14 @@ export const ActivityNativeTab: FunctionComponent<{
         data={Object.values(nodes)}
         scrollEnabled={false}
         renderItem={({ item, index }: { item: any; index: number }) => {
+          const isLastPos = index == Object.values(nodes).length - 1;
           const currentDate = moment(item.block.timestamp)
             .utc()
-            .format("MMMM DD, hh:mm A");
+            .format("MMMM DD, YYYY");
           const previousNode: any =
             index > 0 ? Object.values(nodes)[index - 1] : null;
           const previousDate = previousNode
-            ? moment(previousNode.block.timestamp)
-                .utc()
-                .format("ddd, DD MMM YYYY")
+            ? moment(previousNode.block.timestamp).utc().format("MMMM DD, YYYY")
             : null;
           const shouldDisplayDate = currentDate !== previousDate;
 
@@ -170,15 +175,16 @@ export const ActivityNativeTab: FunctionComponent<{
                 </Text>
               )}
               <ActivityRow setDate={setDate} node={item} />
-              <View style={style.flatten(["margin-top-10"]) as ViewStyle}>
-                <CardDivider
-                  style={style.flatten(["margin-bottom-18"]) as ViewStyle}
-                />
-              </View>
+              {isLastPos && (
+                <View style={style.get("height-page-pad") as ViewStyle} />
+              )}
             </React.Fragment>
           );
         }}
         keyExtractor={(_item, index) => index.toString()}
+        ItemSeparatorComponent={() => (
+          <CardDivider style={style.flatten(["margin-y-16"]) as ViewStyle} />
+        )}
         ListFooterComponent={() => renderFooter()}
         onEndReachedThreshold={0.4}
         onEndReached={() => handleLoadMore()}
@@ -193,7 +199,7 @@ export const ActivityNativeTab: FunctionComponent<{
   return (
     <React.Fragment>
       {data.length > 0 && renderList(nodes)}
-      {isLoading ? (
+      {data.length == 0 && isLoading ? (
         <ActivityIndicator
           size="large"
           color={style.get("color-white").color}

@@ -49,47 +49,43 @@ export const MainTabNavigation: FunctionComponent = () => {
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
   const insets = useSafeAreaInsets();
-
   useEffect(() => {
     // When the focused screen is not "Home" screen and the drawer is open,
     // try to close the drawer forcely.
     if (focusedScreen.name !== "Home" && isDrawerOpen) {
       navigation.dispatch(DrawerActions.toggleDrawer());
     }
+    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
+    };
   }, [focusedScreen.name, isDrawerOpen, navigation]);
 
   const handleBackButton = () => {
-    if (backClickCountRef.current == 1) {
-      BackHandler.exitApp();
-    } else {
-      backClickCountRef.current++;
-      Toast.show({
-        type: "error",
-        text1: `Press back again to exit the app`,
-        visibilityTime: 3000,
-      });
+    if (
+      focusedScreen.name === "Home" ||
+      focusedScreen.name === "Stake" ||
+      focusedScreen.name === "ActivityTab" ||
+      focusedScreen.name === "Setting"
+    ) {
+      if (backClickCountRef.current == 1) {
+        BackHandler.exitApp();
+      } else {
+        backClickCountRef.current++;
+        Toast.show({
+          type: "error",
+          text1: `Press back again to exit the app`,
+          visibilityTime: 3000,
+        });
+      }
+      setTimeout(() => {
+        backClickCountRef.current = 0;
+      }, 3000);
+      return true;
     }
-    setTimeout(() => {
-      backClickCountRef.current = 0;
-    }, 3000);
-    return true;
+
+    return false;
   };
-
-  useEffect(() => {
-    switch (focusedScreen.name) {
-      case "Home":
-      case "Stake":
-      case "InboxTab":
-      case "ActivityTab":
-      case "Setting":
-        BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-        break;
-
-      default:
-        BackHandler.removeEventListener("hardwareBackPress", () => false);
-        break;
-    }
-  }, [focusedScreen.name]);
 
   enum screenNames {
     Home = "Home",
