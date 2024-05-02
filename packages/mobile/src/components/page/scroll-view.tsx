@@ -9,7 +9,7 @@ import {
   ViewStyle,
   Platform,
 } from "react-native";
-import { useStyle } from "../../styles";
+import { useStyle } from "styles/index";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { usePageRegisterScrollYValue, useSetFocusedScreen } from "./utils";
 import { BackgroundMode, ScreenBackground } from "./background";
@@ -28,6 +28,7 @@ export const PageWithScrollView = forwardRef<
       containerStyle?: ViewStyle;
 
       backgroundMode: BackgroundMode;
+      backgroundBlur?: boolean;
     }
   >
 >((props, ref) => {
@@ -43,7 +44,7 @@ export const PageWithScrollView = forwardRef<
     disableSafeArea,
     containerStyle,
     backgroundMode,
-    indicatorStyle,
+    backgroundBlur,
     ...restProps
   } = props;
 
@@ -51,7 +52,10 @@ export const PageWithScrollView = forwardRef<
 
   return (
     <React.Fragment>
-      <ScreenBackground backgroundMode={backgroundMode} />
+      <ScreenBackground
+        backgroundMode={backgroundMode}
+        backgroundBlur={backgroundBlur}
+      />
       <ContainerElement
         style={StyleSheet.flatten([
           style.flatten(
@@ -97,9 +101,7 @@ export const PageWithScrollView = forwardRef<
             ],
             { useNativeDriver: true, listener: onScroll }
           )}
-          indicatorStyle={
-            indicatorStyle ?? style.theme === "dark" ? "white" : "black"
-          }
+          showsVerticalScrollIndicator={false}
           {...restProps}
         />
         <View

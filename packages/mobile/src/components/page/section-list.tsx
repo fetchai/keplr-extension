@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import { useStyle } from "../../styles";
+import { useStyle } from "styles/index";
 import { KeyboardAwareSectionList } from "react-native-keyboard-aware-scroll-view";
 import { usePageRegisterScrollYValue, useSetFocusedScreen } from "./utils";
 import { BackgroundMode, ScreenBackground } from "./background";
