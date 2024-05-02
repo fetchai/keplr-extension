@@ -9,7 +9,9 @@ import styles from "./style.module.scss";
 import { NoActivity } from "../no-activity";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import moment from "moment";
-
+import { UnsupportedNetwork } from "../unsupported-network";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
+import { ErrorActivity } from "../error-activity";
 const options = [
   { value: "/cosmos.bank.v1beta1.MsgSend", label: "Funds transfers" },
   {
@@ -75,16 +77,22 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     options.map((option) => option.value)
   );
 
+  const [isError, setIsError] = useState(false);
+
   const fetchNodes = debounce(async (cursor: any) => {
     setIsLoading(true);
-    const data = await fetchTransactions(
-      current.chainId,
-      cursor,
-      accountInfo.bech32Address,
-      processFilters(filter)
-    );
-    setFetchedData(data?.nodes);
-    if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
+    try {
+      const data = await fetchTransactions(
+        current.chainId,
+        cursor,
+        accountInfo.bech32Address,
+        processFilters(filter)
+      );
+      setFetchedData(data?.nodes);
+      if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
+    } catch (error) {
+      setIsError(true);
+    }
     setIsLoading(false);
   }, 1000);
 
@@ -203,32 +211,39 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
         />
       </div>
 
-      {Object.values(nodes).filter((node: any) =>
-        processFilters(filter).includes(
-          node.transaction.messages.nodes[0].typeUrl
+      {current.chainId === CHAIN_ID_FETCHHUB ||
+      current.chainId === CHAIN_ID_DORADO ? (
+        isError ? (
+          <ErrorActivity />
+        ) : Object.values(nodes).filter((node: any) =>
+            processFilters(filter).includes(
+              node.transaction.messages.nodes[0].typeUrl
+            )
+          ).length > 0 ? (
+          <React.Fragment>
+            {renderNodes(nodes)}
+            {pageInfo?.hasNextPage && (
+              <ButtonV2
+                text={
+                  loadingRequest ? (
+                    <i className="fas fa-spinner fa-spin ml-2" />
+                  ) : (
+                    "Load more"
+                  )
+                }
+                disabled={!pageInfo?.hasNextPage || loadingRequest}
+                onClick={handleClick}
+                styleProps={{ width: "326px" }}
+              />
+            )}
+          </React.Fragment>
+        ) : isLoading ? (
+          <div className={style["activityMessage"]}>Loading Activities...</div>
+        ) : (
+          <NoActivity />
         )
-      ).length > 0 ? (
-        <React.Fragment>
-          {renderNodes(nodes)}
-          {pageInfo?.hasNextPage && (
-            <ButtonV2
-              text={
-                loadingRequest ? (
-                  <i className="fas fa-spinner fa-spin ml-2" />
-                ) : (
-                  "Load more"
-                )
-              }
-              disabled={!pageInfo?.hasNextPage || loadingRequest}
-              onClick={handleClick}
-              styleProps={{ width: "326px" }}
-            />
-          )}
-        </React.Fragment>
-      ) : isLoading ? (
-        <div className={style["activityMessage"]}>Loading Activities...</div>
       ) : (
-        <NoActivity />
+        <UnsupportedNetwork chainID={current.chainName} />
       )}
     </React.Fragment>
   );
