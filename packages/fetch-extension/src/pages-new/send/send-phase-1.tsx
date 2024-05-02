@@ -28,6 +28,7 @@ export const SendPhase1: React.FC<SendPhase1Props> = observer(
       setIsNext(false);
       setFromPhase1(true);
     }, []);
+
     return (
       <div>
         <CoinInput

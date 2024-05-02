@@ -21,7 +21,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useLanguage } from "../../languages";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
-import { parseDollarAmount } from "@utils/format";
+import { parseDollarAmount, parseExponential } from "@utils/format";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -122,6 +122,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       setIsToggleClicked(!isToggleClicked);
     };
     console.log(inputInUsd, isToggleClicked);
+
     return (
       <React.Fragment>
         <FormGroup className={styleCoinInput["input-size"]}>
@@ -142,7 +143,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 value={
                   isToggleClicked === true
                     ? parseDollarAmount(inputInUsd)
-                    : amountConfig.amount
+                    : parseExponential(amountConfig.amount, amountConfig.sendCurrency.coinDecimals)
                 }
                 onChange={(e: any) => {
                   e.preventDefault();
