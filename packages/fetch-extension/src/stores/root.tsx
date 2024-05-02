@@ -40,6 +40,8 @@ import {
   GeneralPermissionStore,
   FNSQueries,
   EthereumAccount,
+  ChatStore,
+  ProposalStore,
 } from "@keplr-wallet/stores";
 import {
   KeplrETCQueries,
@@ -52,6 +54,7 @@ import {
   ContentScriptGuards,
   ExtensionRouter,
   InExtensionMessageRequester,
+  InteractionAddon,
 } from "@keplr-wallet/router-extension";
 import { APP_PORT } from "@keplr-wallet/router";
 import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
@@ -64,10 +67,11 @@ import { ExtensionAnalyticsClient } from "../analytics";
 
 export class RootStore {
   public readonly uiConfigStore: UIConfigStore;
-
   public readonly chainStore: ChainStore;
   public readonly keyRingStore: KeyRingStore;
   public readonly ibcChannelStore: IBCChannelStore;
+  public readonly chatStore: ChatStore;
+  public readonly proposalStore: ProposalStore;
 
   protected readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
@@ -131,6 +135,8 @@ export class RootStore {
   >;
 
   constructor() {
+    this.chatStore = new ChatStore();
+    this.proposalStore = new ProposalStore();
     this.uiConfigStore = new UIConfigStore(
       new ExtensionKVStore("store_ui_config"),
       ICNSInfo,
@@ -139,6 +145,11 @@ export class RootStore {
 
     const router = new ExtensionRouter(ContentScriptEnv.produceEnv);
     router.addGuard(ContentScriptGuards.checkMessageIsInternal);
+
+    // Initialize the interaction addon service.
+    const interactionAddonService =
+      new InteractionAddon.InteractionAddonService();
+    InteractionAddon.init(router, interactionAddonService);
 
     // Order is important.
     this.interactionStore = new InteractionStore(

@@ -1,4 +1,5 @@
 import { AGENT_ADDRESS } from "../config.ui.var";
+import { isToday, isYesterday, format } from "date-fns";
 
 export const formatAddress = (address: string) => {
   if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
@@ -29,15 +30,27 @@ export const formatTokenName = (name: string) => {
   return name;
 };
 
-export const shortenNumber = (value: string) => {
-  const number = parseFloat(value) / 10 ** 18;
+export const shortenNumber = (value: string, decimal = 18) => {
+  const number = Math.abs(parseFloat(value)) / 10 ** decimal;
   let result = "";
   if (number >= 1000000) {
-    result = (number / 1000000).toFixed(1) + "M";
+    result = (number / 1000000).toFixed(2) + " M";
   } else if (number >= 1000) {
-    result = (number / 1000).toFixed(1) + "K";
+    result = (number / 1000).toFixed(2) + " K";
+  } else if (number >= 1) {
+    result = number.toFixed(2) + " ";
+  } else if (number >= 10 ** -3) {
+    result = (number * 1000).toFixed(2) + " m";
+  } else if (number >= 10 ** -6) {
+    result = (number * 10 ** 6).toFixed(2) + " u";
+  } else if (number >= 10 ** -9) {
+    result = (number * 10 ** 9).toFixed(2) + " n";
+  } else if (number >= 10 ** -12) {
+    result = (number * 10 ** 9).toFixed(3) + " n";
+  } else if (number >= 10 ** -18) {
+    result = (number * 10 ** 18).toFixed(0) + " a";
   } else {
-    result = number.toFixed(0);
+    result = number.toFixed(2) + " ";
   }
 
   return result;
@@ -45,6 +58,10 @@ export const shortenNumber = (value: string) => {
 
 export const formatActivityHash = (address: string) => {
   if (address?.length > 12) return address.substring(0, 10) + "...";
+  else return address;
+};
+export const formatString = (address: string) => {
+  if (address?.length > 30) return address.substring(0, 30) + "...";
   else return address;
 };
 
@@ -113,4 +130,19 @@ export const parseDollarAmount = (dollarString: any) => {
     return parseFloat(match[0]);
   }
   return NaN;
+};
+export const formatTime = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  return format(date, "p");
+};
+
+export const getDate = (timestamp: number): string => {
+  const d = new Date(timestamp);
+  if (isToday(d)) {
+    return "Today";
+  }
+  if (isYesterday(d)) {
+    return "Yesterday";
+  }
+  return format(d, "dd MMMM yyyy");
 };

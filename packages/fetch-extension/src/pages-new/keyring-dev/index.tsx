@@ -3,19 +3,12 @@ import React, { FunctionComponent } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 
-import { store } from "@chatStore/index";
-import {
-  resetChatList,
-  setIsChatSubscriptionActive,
-} from "@chatStore/messages-slice";
-import { resetProposals } from "@chatStore/proposal-slice";
-import { resetUser } from "@chatStore/user-slice";
 import { useLoadingIndicator } from "@components/loading-indicator";
 import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 // import { MultiKeyStoreInfoWithSelectedElem } from "@keplr-wallet/background";
+import { Card } from "@components-v2/card";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
-import { Card } from "@components-v2/card";
 import { useNavigate } from "react-router";
 
 interface SetKeyRingProps {
@@ -25,8 +18,15 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
   ({ navigateTo }) => {
     const intl = useIntl();
     const navigate = useNavigate();
-    const { keyRingStore, analyticsStore, accountStore, chainStore } =
-      useStore();
+    const {
+      chainStore,
+      accountStore,
+      keyRingStore,
+      analyticsStore,
+      chatStore,
+      proposalStore,
+    } = useStore();
+
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const loadingIndicator = useLoadingIndicator();
     return (
@@ -103,10 +103,12 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
                         await keyRingStore.changeKeyRing(i);
                         analyticsStore.logEvent("Account changed");
                         loadingIndicator.setIsLoading("keyring", false);
-                        store.dispatch(resetUser({}));
-                        store.dispatch(resetProposals({}));
-                        store.dispatch(resetChatList({}));
-                        store.dispatch(setIsChatSubscriptionActive(false));
+                        chatStore.userDetailsStore.resetUser();
+                        proposalStore.resetProposals();
+                        chatStore.messagesStore.resetChatList();
+                        chatStore.messagesStore.setIsChatSubscriptionActive(
+                          false
+                        );
                         messageAndGroupListenerUnsubscribe();
                         navigate(navigateTo);
                       } catch (e: any) {

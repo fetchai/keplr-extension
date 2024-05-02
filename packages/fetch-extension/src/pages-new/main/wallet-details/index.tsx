@@ -3,15 +3,14 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { formatAddress } from "@utils/format";
 import React, { useCallback } from "react";
 import { useIntl } from "react-intl";
+import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
-import styleAccount from "../../../pages/main/account.module.scss";
 import { useStore } from "../../../stores";
 import { Balances } from "../balances";
 import style from "../style.module.scss";
-import { formatAddress } from "@utils/format";
-import { useNavigate } from "react-router";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
@@ -94,7 +93,13 @@ export const WalletDetailsView = ({
         </Button>
       </div>
       <div className={style["wallet-detail-card"]}>
-        <div>
+        <div
+          style={
+            accountInfo.walletStatus === WalletStatus.Rejected
+              ? { display: "flex", gap: "10px", alignItems: "center" }
+              : {}
+          }
+        >
           <div className={style["wallet-address"]}>
             {(() => {
               if (accountInfo.walletStatus === WalletStatus.Loaded) {
@@ -116,37 +121,39 @@ export const WalletDetailsView = ({
             })()}
           </div>
           <div>
-            {accountInfo.walletStatus === WalletStatus.Rejected && (
-              <ToolTip
-                tooltip={(() => {
-                  if (
-                    accountInfo.rejectionReason &&
-                    accountInfo.rejectionReason instanceof KeplrError &&
-                    accountInfo.rejectionReason.module === "keyring" &&
-                    accountInfo.rejectionReason.code === 152
-                  ) {
-                    // Return unsupported device message
-                    return "Ledger is not supported for this chain";
-                  }
+            <div className={style["walletRejected"]}>
+              {accountInfo.walletStatus === WalletStatus.Rejected && (
+                <ToolTip
+                  tooltip={(() => {
+                    if (
+                      accountInfo.rejectionReason &&
+                      accountInfo.rejectionReason instanceof KeplrError &&
+                      accountInfo.rejectionReason.module === "keyring" &&
+                      accountInfo.rejectionReason.code === 152
+                    ) {
+                      // Return unsupported device message
+                      return "Ledger is not supported for this chain";
+                    }
 
-                  let result = "Failed to load account by unknown reason";
-                  if (accountInfo.rejectionReason) {
-                    result += `: ${accountInfo.rejectionReason.toString()}`;
-                  }
+                    let result = "Failed to load account by unknown reason";
+                    if (accountInfo.rejectionReason) {
+                      result += `: ${accountInfo.rejectionReason.toString()}`;
+                    }
 
-                  return result;
-                })()}
-                theme="dark"
-                trigger="hover"
-                options={{
-                  placement: "top",
-                }}
-              >
-                <i
-                  className={`fas fa-exclamation-triangle text-danger ${styleAccount["unsupportedKeyIcon"]}`}
-                />
-              </ToolTip>
-            )}
+                    return result;
+                  })()}
+                  theme="dark"
+                  trigger="hover"
+                  options={{
+                    placement: "top",
+                  }}
+                >
+                  <i
+                    className={`fas fa-exclamation-triangle text-danger ${style["unsupportedKeyIcon"]}`}
+                  />
+                </ToolTip>
+              )}
+            </div>
             {accountInfo.walletStatus !== WalletStatus.Rejected && !isEvm && (
               <div>
                 <div

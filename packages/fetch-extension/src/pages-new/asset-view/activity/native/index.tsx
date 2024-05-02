@@ -134,10 +134,14 @@ export const NativeTab = () => {
             <ButtonV2
               disabled={!pageInfo?.hasNextPage || loadingRequest}
               onClick={handleClick}
-              text={"Load more"}
-            >
-              {loadingRequest && <i className="fas fa-spinner fa-spin ml-2" />}
-            </ButtonV2>
+              text={
+                loadingRequest ? (
+                  <i className="fas fa-spinner fa-spin ml-2" />
+                ) : (
+                  "Load more"
+                )
+              }
+            />
           )}
         </React.Fragment>
       ) : isLoading && filter.length > 0 ? (

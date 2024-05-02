@@ -6,21 +6,24 @@ import style from "./style.module.scss";
 import { useLanguage } from "../../languages";
 import { useIntl } from "react-intl";
 import { observer } from "mobx-react-lite";
-import { userChatActive, userDetails } from "@chatStore/user-slice";
-import { WalletConfig, walletConfig } from "@chatStore/user-slice";
-import { useSelector } from "react-redux";
 import { useStore } from "../../stores";
 
+interface WalletConfig {
+  notiphyWhitelist: string[] | undefined;
+  fetchbotActive: boolean;
+  requiredNative: boolean;
+}
 export const SettingPage: FunctionComponent = observer(() => {
   const language = useLanguage();
   const navigate = useNavigate();
   const intl = useIntl();
 
-  const { accountStore, chainStore, keyRingStore, analyticsStore } = useStore();
+  const { accountStore, chainStore, keyRingStore, chatStore, analyticsStore } =
+    useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-  const config: WalletConfig = useSelector(walletConfig);
-  const userState = useSelector(userDetails);
+  const config: WalletConfig = chatStore.userDetailsStore.walletConfig;
+  const userState = chatStore.userDetailsStore;
   const paragraphLang = language.automatic
     ? intl.formatMessage(
         {
@@ -46,8 +49,8 @@ export const SettingPage: FunctionComponent = observer(() => {
           fiat: language.fiatCurrency.toUpperCase(),
         }
       );
-  const user = useSelector(userDetails);
-  const requiredNative = useSelector(userChatActive);
+  const user = chatStore.userDetailsStore;
+  const requiredNative = userState.walletConfig.requiredNative;
   const isChatActive = !requiredNative || user.hasFET;
 
   /// const isDeveloperMode = uiConfigStore.isDeveloper;
@@ -71,7 +74,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           paragraph={paragraphLang}
           onClick={() => {
-            navigate("/setting/language");
+            navigate("/more/language");
             analyticsStore.logEvent("language_click", {
               pageName: "Setting",
             });
@@ -87,7 +90,7 @@ export const SettingPage: FunctionComponent = observer(() => {
           })}
           paragraph={paragraphFiat}
           onClick={() => {
-            navigate("/setting/fiat");
+            navigate("/more/currency");
             analyticsStore.logEvent("currency_click", {
               pageName: "Setting",
             });
@@ -102,7 +105,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             id: "setting.security-privacy",
           })}
           onClick={() => {
-            navigate("/setting/security-privacy");
+            navigate("/more/security-privacy");
             analyticsStore.logEvent("security_and_privacy_click", {
               pageName: "Setting",
             });
@@ -112,8 +115,8 @@ export const SettingPage: FunctionComponent = observer(() => {
             []
           )}
         />
-        {(userState.messagingPubKey?.publicKey?.length ||
-          userState.messagingPubKey?.privacySetting?.length) && (
+        {(userState.messagingPubKey?.publicKey ||
+          userState.messagingPubKey?.privacySetting) && (
           <PageButton
             style={{
               cursor: isChatActive ? "pointer" : "not-allowed",
@@ -140,7 +143,7 @@ export const SettingPage: FunctionComponent = observer(() => {
             <PageButton
               title={"Notifications"}
               onClick={() => {
-                navigate("/setting/notifications");
+                navigate("/more/notifications");
                 analyticsStore.logEvent("notifications_tab_click", {
                   pageName: "Setting",
                 });
@@ -182,30 +185,6 @@ export const SettingPage: FunctionComponent = observer(() => {
             []
           )}
         />
-        {/*<PageButton
-          title={intl.formatMessage({
-            id: "setting.developer-mode",
-          })}
-          onClick={() => {
-            uiConfigStore.setDeveloperMode(!isDeveloperMode);
-          }}
-          icons={[
-            <label
-              key="toggle"
-              className="custom-toggle"
-              style={{ marginBottom: 0 }}
-            >
-              <input
-                type="checkbox"
-                checked={isDeveloperMode}
-                onChange={() => {
-                  uiConfigStore.setDeveloperMode(isDeveloperMode);
-                }}
-              />
-              <span className="custom-toggle-slider rounded-circle" />
-            </label>,
-          ]}
-        /> */}
         <PageButton
           title={intl.formatMessage({
             id: "setting.endpoints",

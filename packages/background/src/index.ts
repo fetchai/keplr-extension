@@ -12,9 +12,8 @@ import * as Tokens from "./tokens/internal";
 import * as Interaction from "./interaction/internal";
 import * as Permission from "./permission/internal";
 import * as PhishingList from "./phishing-list/internal";
-// import * as AutoLocker from "./auto-lock-account/internal";
+import * as AutoLocker from "./auto-lock-account/internal";
 import * as Analytics from "./analytics/internal";
-// import * as Umbral from "./umbral/internal";
 import * as Messaging from "./messaging/internal";
 import { KVStore } from "@keplr-wallet/common";
 import { ChainInfo } from "@keplr-wallet/types";
@@ -113,9 +112,9 @@ export function init(
     commonCrypto
   );
 
-  //  const autoLockAccountService = new AutoLocker.AutoLockAccountService(
-  //    storeCreator("auto-lock-account")
-  //  );
+  const autoLockAccountService = new AutoLocker.AutoLockAccountService(
+    storeCreator("auto-lock-account")
+  );
 
   const chainUpdaterService = new Updater.ChainUpdaterService(
     storeCreator("updator"),
@@ -135,8 +134,6 @@ export function init(
     storeCreator("keystone")
   );
 
-  // const umbralService = new Umbral.UmbralService(chainsService);
-
   const messagingService = new Messaging.MessagingService();
 
   Interaction.init(router, interactionService);
@@ -145,15 +142,13 @@ export function init(
   Chains.init(router, chainsService);
   BackgroundTx.init(router, backgroundTxService);
   PhishingList.init(router, phishingListService);
-  // AutoLocker.init(router, autoLockAccountService);
+  AutoLocker.init(router, autoLockAccountService);
   Analytics.init(router, analyticsService);
   KeyRing.init(router, keyRingService);
   SecretWasm.init(router, secretWasmService);
   Updater.init(router, chainUpdaterService);
   Tokens.init(router, tokensService);
   Ledger.init(router, ledgerService);
-
-  // Umbral.init(router, umbralService);
   Messaging.init(router, messagingService);
 
   return {
@@ -186,10 +181,9 @@ export function init(
       backgroundTxService.init(chainsService, permissionService);
       phishingListService.init();
       // No need to wait because user can't interact with app right after launch.
-      // await autoLockAccountService.init(keyRingService);
+      await autoLockAccountService.init(keyRingService);
       // No need to wait because user can't interact with app right after launch.
       await analyticsService.init();
-      // await umbralService.init(keyRingService, permissionService);
       await messagingService.init(keyRingService);
     },
   };

@@ -12,7 +12,6 @@ export const Portfolio = () => {
   const { chainStore } = useStore();
   const tabs = [
     { id: "Tokens", component: <TokensView /> },
-    { id: "NFTs", disabled: true },
     {
       id: "Stats",
       disabled:

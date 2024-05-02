@@ -1,14 +1,3 @@
-<svg width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_b_279_2746)">
-<rect x="0.75" width="42" height="42" rx="21" fill="white" fill-opacity="0.2"/>
-<path d="M21.1875 27.7812L15.9375 22.2812C15.6562 21.9688 15.6562 21.5 15.9688 21.2188C16.2812 20.9375 16.75 20.9375 17.0312 21.25L21 25.4062V14.75C21 14.3438 21.3125 14 21.75 14C22.1562 14 22.5 14.3438 22.5 14.75V25.4062L26.4375 21.25C26.7188 20.9375 27.2188 20.9375 27.5 21.2188C27.8125 21.5 27.8125 21.9688 27.5312 22.2812L22.2812 27.7812C22.125 27.9375 21.9375 28 21.75 28C21.5312 28 21.3438 27.9375 21.1875 27.7812Z" fill="white"/>
-</g>
-<defs>
-<filter id="filter0_b_279_2746" x="-19.25" y="-20" width="82" height="82" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feGaussianBlur in="BackgroundImageFix" stdDeviation="10"/>
-<feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_279_2746"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_279_2746" result="shape"/>
-</filter>
-</defs>
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.4375 13.7812L1.1875 8.28125C0.90625 7.96875 0.90625 7.5 1.21875 7.21875C1.53125 6.9375 2 6.9375 2.28125 7.25L6.25 11.4062V0.75C6.25 0.34375 6.5625 0 7 0C7.40625 0 7.75 0.34375 7.75 0.75V11.4062L11.6875 7.25C11.9688 6.9375 12.4688 6.9375 12.75 7.21875C13.0625 7.5 13.0625 7.96875 12.7812 8.28125L7.53125 13.7812C7.375 13.9375 7.1875 14 7 14C6.78125 14 6.59375 13.9375 6.4375 13.7812Z" fill="white"/>
 </svg>

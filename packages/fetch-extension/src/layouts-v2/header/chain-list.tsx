@@ -1,31 +1,30 @@
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { Card } from "@components-v2/card";
+import { SearchBar } from "@components-v2/search-bar";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
+import { useConfirm } from "@components/confirm";
+import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
+import { formatAddress } from "@utils/format";
 import classnames from "classnames";
 import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import { store } from "@chatStore/index";
-import {
-  resetChatList,
-  setIsChatSubscriptionActive,
-} from "@chatStore/messages-slice";
-import { resetUser } from "@chatStore/user-slice";
-import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
-import { resetProposals } from "@chatStore/proposal-slice";
-import { Card } from "@components-v2/card";
-import { ButtonV2 } from "@components-v2/buttons/button";
-import { useConfirm } from "@components/confirm";
-import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
-import { formatAddress } from "@utils/format";
-import { SearchBar } from "@components-v2/search-bar";
 
 interface ChainListProps {
   showAddress?: boolean;
 }
 export const ChainList: FunctionComponent<ChainListProps> = observer(
   ({ showAddress }) => {
-    const { chainStore, analyticsStore, accountStore } = useStore();
+    const {
+      chatStore,
+      proposalStore,
+      chainStore,
+      analyticsStore,
+      accountStore,
+    } = useStore();
     const [cosmosSearchTerm, setCosmosSearchTerm] = useState("");
     const [evmSearchTerm, setEvmSearchTerm] = useState("");
     const [clickedChain, setClickedChain] = useState(
@@ -55,6 +54,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
               valuesArray={mainChainList}
+              itemsStyleProp={{ overflow: "auto", height: "360px" }}
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}
@@ -83,10 +83,10 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                     }
                     chainStore.selectChain(chainInfo.chainId);
                     chainStore.saveLastViewChainId();
-                    store.dispatch(resetUser({}));
-                    store.dispatch(resetProposals({}));
-                    store.dispatch(resetChatList({}));
-                    store.dispatch(setIsChatSubscriptionActive(false));
+                    chatStore.userDetailsStore.resetUser();
+                    proposalStore.resetProposals();
+                    chatStore.messagesStore.resetChatList();
+                    chatStore.messagesStore.setIsChatSubscriptionActive(false);
                     messageAndGroupListenerUnsubscribe();
 
                     if (Object.values(properties).length > 0) {
@@ -151,11 +151,10 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                   }
                   chainStore.selectChain(chainInfo.chainId);
                   chainStore.saveLastViewChainId();
-                  store.dispatch(resetUser({}));
-                  store.dispatch(resetProposals({}));
-
-                  store.dispatch(resetChatList({}));
-                  store.dispatch(setIsChatSubscriptionActive(false));
+                  chatStore.userDetailsStore.resetUser();
+                  proposalStore.resetProposals();
+                  chatStore.messagesStore.resetChatList();
+                  chatStore.messagesStore.setIsChatSubscriptionActive(false);
                   messageAndGroupListenerUnsubscribe();
                   // navigate("/");
                   if (Object.values(properties).length > 0) {
@@ -225,10 +224,10 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                     }
                     chainStore.selectChain(chainInfo.chainId);
                     chainStore.saveLastViewChainId();
-                    store.dispatch(resetUser({}));
-                    store.dispatch(resetProposals({}));
-                    store.dispatch(resetChatList({}));
-                    store.dispatch(setIsChatSubscriptionActive(false));
+                    chatStore.userDetailsStore.resetUser();
+                    proposalStore.resetProposals();
+                    chatStore.messagesStore.resetChatList();
+                    chatStore.messagesStore.setIsChatSubscriptionActive(false);
                     messageAndGroupListenerUnsubscribe();
 
                     if (Object.values(properties).length > 0) {
@@ -248,6 +247,14 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
             />
             <div style={{ position: "absolute", bottom: "5px", width: "94%" }}>
               <ButtonV2
+                styleProps={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "338px",
+                  top: "150px",
+                  position: "absolute",
+                }}
                 onClick={(e: any) => {
                   e.preventDefault();
                   navigate("/setting/addEvmChain");

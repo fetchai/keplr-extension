@@ -48,7 +48,6 @@ export const ChainSelect = observer(
           style={{
             height: "72px",
             background: "rgba(255,255,255,0.1)",
-            marginBottom: "16px",
           }}
           onClick={() => !depositAddress && setDropdownOpen(true)}
         />

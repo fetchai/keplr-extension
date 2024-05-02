@@ -1,23 +1,18 @@
+import activityIcon from "@assets/svg/wireframe/new-clock-white.svg";
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
-import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
+
 import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
+import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
-import agentIcon from "@assets/svg/wireframe/new-robot.svg";
-import { store } from "@chatStore/index";
-import {
-  WalletConfig,
-  notificationsDetails,
-  setNotifications,
-  walletConfig,
-} from "@chatStore/user-slice";
-import { NotificationSetup } from "@notificationTypes";
+import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
+import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { WalletActions } from "../../pages-new/main/wallet-actions";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Tab } from "./tab";
-import { WalletActions } from "../../pages-new/main/wallet-actions";
 
 const bottomNav = [
   {
@@ -42,7 +37,7 @@ export const BottomNav = () => {
   return !isAssetsOpen ? (
     <div className={style["bottomNavContainer"]}>
       <HomeTab />
-      <NotificationTab />
+      <StakeTab />
       <button
         style={{ cursor: "pointer" }}
         className={style["toggle"]}
@@ -54,81 +49,44 @@ export const BottomNav = () => {
       <MoreTab />
     </div>
   ) : (
-    <div style={{ position: "absolute", top: "405px", right: "10px" }}>
-      <div className={style["overlay"]} />
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <button
-          className={style["toggle"]}
-          onClick={() => setIsAssetsOpen(!isAssetsOpen)}
-        >
-          <WalletActions />
-          <img
-            style={{
-              height: "43px",
-              width: "42px",
-              marginBottom: "21px",
-              cursor: "pointer",
-            }}
-            src={require("@assets/svg/wireframe/btn-close.svg")}
-            alt=""
-          />
-        </button>
-      </div>
-    </div>
+    <WalletActions isOpen={isAssetsOpen} setIsOpen={setIsAssetsOpen} />
   );
 };
 
 const HomeTab = () => <Tab {...bottomNav[0]} />;
-const NotificationTab = () => {
-  const { keyRingStore, accountStore, chainStore } = useStore();
+const StakeTab = () => {
+  const { keyRingStore, chainStore } = useStore();
   const current = chainStore.current;
-  const accountInfo = accountStore.getAccount(current.chainId);
-  const config: WalletConfig = useSelector(walletConfig);
-  const notificationInfo: NotificationSetup = useSelector(notificationsDetails);
-  const [isComingSoon, setIsComingSoon] = useState<boolean>(true);
 
+  const [stakingTooltip, setStakingTooltip] = useState("");
+  const [z, setStakingDisabled] = useState(false);
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
-      setIsComingSoon(true);
-    } else {
-      setIsComingSoon(
-        config.notiphyWhitelist === undefined
-          ? true
-          : config.notiphyWhitelist.length !== 0 &&
-              config.notiphyWhitelist.indexOf(accountInfo.bech32Address) === -1
-      );
+      setStakingTooltip("Coming soon for ledger");
+      setStakingDisabled(true);
+      return;
     }
-
-    const notificationFlag =
-      localStorage.getItem(`turnNotifications-${accountInfo.bech32Address}`) ||
-      "true";
-    const localNotifications = JSON.parse(
-      localStorage.getItem(`notifications-${accountInfo.bech32Address}`) ||
-        JSON.stringify([])
-    );
-
-    store.dispatch(
-      setNotifications({
-        allNotifications: localNotifications,
-        unreadNotification: localNotifications.length > 0,
-        isNotificationOn: notificationFlag == "true",
-      })
-    );
-  }, [accountInfo.bech32Address, config.notiphyWhitelist]);
+    if (
+      current.chainId != CHAIN_ID_DORADO &&
+      current.chainId != CHAIN_ID_FETCHHUB
+    ) {
+      setStakingTooltip("Feature not available on this network");
+      setStakingDisabled(true);
+    } else {
+      setStakingTooltip("");
+      setStakingDisabled(false);
+    }
+  }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
     <React.Fragment>
-      {!isComingSoon &&
-        notificationInfo.unreadNotification &&
-        notificationInfo.isNotificationOn && (
-          <span className={style["bellDot"]} />
-        )}
       <Tab
-        title={"Agents"}
-        icon={agentIcon}
-        path={"/notification"}
-        disabled={true}
-        tooltip={"Coming Soon"}
+        title={"Stake"}
+        icon={stakeTabIcon}
+        activeIcon={selectedStakeTabIcon}
+        path={"/validators/validator"}
+        disabled={z}
+        tooltip={stakingTooltip}
       />
     </React.Fragment>
   );
@@ -159,6 +117,7 @@ const ActivityTab = () => {
     <Tab
       title={"Activity"}
       icon={activitygreyIcon}
+      activeIcon={activityIcon}
       path={"/activity"}
       disabled={z}
       tooltip={activityTooltip}

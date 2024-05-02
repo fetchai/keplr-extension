@@ -14,7 +14,7 @@ import {
   IAmountConfig,
   BridgeAmountError,
 } from "@keplr-wallet/hooks";
-import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { useIntl } from "react-intl";
 import { useStore } from "../../stores";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -39,20 +39,8 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
     const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
 
-    const { priceStore, queriesStore } = useStore();
-    const queryBalances = queriesStore
-      .get(amountConfig.chainId)
-      .queryBalances.getQueryBech32Address(amountConfig.sender);
+    const { priceStore } = useStore();
 
-    const queryBalance = queryBalances.balances.find(
-      (bal) =>
-        amountConfig.sendCurrency.coinMinimalDenom ===
-        bal.currency.coinMinimalDenom
-    );
-    const balance = queryBalance
-      ? queryBalance.balance
-      : new CoinPretty(amountConfig.sendCurrency, new Int(0));
-    console.log(balance);
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
     const convertToUsd = (currency: any) => {
@@ -62,12 +50,14 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     };
 
     useEffect(() => {
-      const amountInNumber =
-        parseFloat(amountConfig.amount) *
-        10 ** amountConfig.sendCurrency.coinDecimals;
+      const currencyDecimals = amountConfig.sendCurrency.coinDecimals;
+
+      let dec = new Dec(amountConfig.amount ? amountConfig.amount : "0");
+      dec = dec.mul(DecUtils.getTenExponentNInPrecisionRange(currencyDecimals));
+      const amountInNumber = dec.truncate().toString();
       const inputValue = new CoinPretty(
         amountConfig.sendCurrency,
-        new Int(amountConfig.amount ? amountInNumber : 0)
+        new Int(amountInNumber)
       );
       const inputValueInUsd = convertToUsd(inputValue);
       setInputInUsd(inputValueInUsd);
@@ -184,6 +174,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
               onClick={isClicked}
+              disabled
             >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
               Change to USD
