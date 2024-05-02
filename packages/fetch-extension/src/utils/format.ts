@@ -133,7 +133,11 @@ export const parseDollarAmount = (dollarString: any) => {
 };
 
 export const parseExponential = (amount: string, decimal: number): string => {
-  return parseFloat(amount).toFixed(decimal);
+  if (amount.includes("e")) {
+    return parseFloat(amount).toFixed(decimal);
+  } else {
+    return amount;
+  }
 };
 
 export const formatTime = (timestamp: number): string => {
