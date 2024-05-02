@@ -86,6 +86,11 @@
   padding: 0px;
   box-shadow: none;
 }
+
+.chat-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .wallet-detail-card {
   font-size: 14px;
   padding: 12px 18px;

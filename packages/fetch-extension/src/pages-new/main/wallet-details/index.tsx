@@ -4,13 +4,14 @@ import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { formatAddress } from "@utils/format";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import { Button } from "reactstrap";
+import { Button, UncontrolledTooltip } from "reactstrap";
 import { useStore } from "../../../stores";
 import { Balances } from "../balances";
 import style from "../style.module.scss";
+import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
 
 export const WalletDetailsView = ({
   setIsSelectNetOpen,
@@ -21,10 +22,53 @@ export const WalletDetailsView = ({
   setIsSelectWalletOpen?: any;
   tokenState: any;
 }) => {
-  const { accountStore, chainStore, queriesStore, uiConfigStore } = useStore();
+  const {
+    keyRingStore,
+    chatStore,
+    accountStore,
+    chainStore,
+    queriesStore,
+    uiConfigStore,
+  } = useStore();
+  const userState = chatStore.userDetailsStore;
+
+  const { hasFET, enabledChainIds } = userState;
+  const config: WalletConfig = userState.walletConfig;
+  const current = chainStore.current;
+  const [chatTooltip, setChatTooltip] = useState("");
+  const [chatDisabled, setChatDisabled] = useState(false);
+
+  useEffect(() => {
+    if (keyRingStore.keyRingType === "ledger") {
+      setChatTooltip("Coming soon for ledger");
+      setChatDisabled(true);
+      return;
+    }
+
+    if (config.requiredNative && !hasFET) {
+      setChatTooltip("You need to have FET balance to use this feature");
+      setChatDisabled(true);
+      return;
+    } else {
+      setChatTooltip("");
+      setChatDisabled(false);
+    }
+
+    if (!enabledChainIds.includes(current.chainId)) {
+      setChatTooltip("Feature not available on this network");
+      setChatDisabled(true);
+      return;
+    }
+  }, [
+    hasFET,
+    enabledChainIds,
+    config.requiredNative,
+    keyRingStore.keyRingType,
+    current.chainId,
+  ]);
   const navigate = useNavigate();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-  const current = chainStore.current;
+
   const icnsPrimaryName = (() => {
     if (
       uiConfigStore.icnsInfo &&
@@ -84,12 +128,18 @@ export const WalletDetailsView = ({
           <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
         </button>
         <Button
+          disabled={chatDisabled}
           onClick={() => {
             navigate("/chat");
           }}
           className={style["chat-button"]}
         >
           <img src={require("@assets/svg/wireframe/chatIcon.svg")} alt="" />
+          {chatDisabled && (
+            <UncontrolledTooltip placement="top" target={"img"}>
+              {chatTooltip}
+            </UncontrolledTooltip>
+          )}
         </Button>
       </div>
       <div className={style["wallet-detail-card"]}>
