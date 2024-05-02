@@ -131,6 +131,11 @@ export const parseDollarAmount = (dollarString: any) => {
   }
   return NaN;
 };
+
+export const parseExponential = (amount: string, decimal: number): string => {
+  return parseFloat(amount).toFixed(decimal);
+};
+
 export const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
   return format(date, "p");
