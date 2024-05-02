@@ -1,3 +1,4 @@
+/* eslint-disable react/no-deprecated */
 // Shim ------------
 
 import { ErrorBoundary } from "./error-boundary";

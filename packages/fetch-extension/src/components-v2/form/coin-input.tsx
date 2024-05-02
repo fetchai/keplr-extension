@@ -143,7 +143,10 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 value={
                   isToggleClicked === true
                     ? parseDollarAmount(inputInUsd)
-                    : parseExponential(amountConfig.amount, amountConfig.sendCurrency.coinDecimals)
+                    : parseExponential(
+                        amountConfig.amount,
+                        amountConfig.sendCurrency.coinDecimals
+                      )
                 }
                 onChange={(e: any) => {
                   e.preventDefault();
