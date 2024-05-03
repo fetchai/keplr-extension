@@ -401,15 +401,15 @@ export class ExtensionCoreFetchWallet implements FetchBrowserWallet {
   readonly version: string;
   readonly wallet: WalletApi;
 
-  constructor(keplr: Keplr, version: string, requester: MessageRequester) {
+  constructor(keplr: Keplr, version: string, _requester: MessageRequester) {
     this.keplr = keplr;
     this.version = version;
     this.wallet = new FetchWalletApi(
-      new FetchNetworks(requester),
-      new FetchAccount(requester),
-      new FetchSigning(requester),
-      new FetchAddressBook(requester),
-      requester
+      new FetchNetworks(_requester),
+      new FetchAccount(_requester),
+      new FetchSigning(_requester),
+      new FetchAddressBook(_requester),
+      _requester
     );
   }
 }

@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@cosmjs/launchpad": "^0.27.1",
-    "@fetchai/umbral-types": "^0.1.1",
     "@keplr-wallet/types": "0.12.12",
     "long": "^4.0.0"
   }

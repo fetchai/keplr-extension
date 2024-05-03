@@ -31,12 +31,15 @@ const envDefaults = {
   PROD_AUTH_CLIENT_ID: process.env["PROD_AUTH_CLIENT_ID"] || "",
 };
 const commonResolve = () => ({
-  extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss", ".svg", ".wasm"],
+  extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss", ".svg"],
   alias: {
     "@new-components": path.resolve(__dirname, "src/new-components"),
     "@new-layouts": path.resolve(__dirname, "src/new-layouts"),
     "@components": path.resolve(__dirname, "src/components"),
+    "@components-v2": path.resolve(__dirname, "src/components-v2"),
     "@layouts": path.resolve(__dirname, "src/layouts"),
+    "@layouts-v2": path.resolve(__dirname, "src/layouts-v2"),
+    "@chatStore": path.resolve(__dirname, "src/stores/chats"),
     "@graphQL": path.resolve(__dirname, "src/graphQL"),
     "@chatTypes": path.resolve(__dirname, "src/@types/chat"),
     "@hooks": path.resolve(__dirname, "src/hooks"),
@@ -105,10 +108,6 @@ const fileRule = {
   generator: {
     filename: "assets/[name][ext]",
   },
-};
-const wasmRule = {
-  test: /\.wasm$/,
-  type: "webassembly/async", // or 'webassembly/sync' for sync modules
 };
 
 const extensionConfig = () => {
@@ -203,6 +202,7 @@ const extensionConfig = () => {
         fs: false,
         assert: require.resolve("assert"),
         url: require.resolve("url"),
+        _stream_transform: false,
       },
     },
     module: {
@@ -210,7 +210,6 @@ const extensionConfig = () => {
         sassRule,
         tsRule,
         fileRule,
-        wasmRule,
         {
           test: /\.m?js/,
           resolve: {
@@ -288,9 +287,6 @@ const extensionConfig = () => {
         analyzerMode: isEnvAnalyzer ? "server" : "disabled",
       }),
     ],
-    experiments: {
-      asyncWebAssembly: true,
-    },
   };
 };
 

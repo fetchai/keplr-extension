@@ -16,7 +16,7 @@ import {
 } from "./types";
 
 async function dispatchRequest(
-  fetchApi: FetchBrowserWallet,
+  _fetchApi: FetchBrowserWallet,
   request: ProxyRequest
 ): Promise<any> {
   const methodArray = request.method.split(".");
@@ -25,7 +25,7 @@ async function dispatchRequest(
   if (request.method !== undefined) {
     if (api === "wallet") {
       if (methodArray[1] === "signing") {
-        return await fetchApi.wallet.signing[
+        return await _fetchApi.wallet.signing[
           methodArray[methodArray.length - 1] as WalletSigningMethod
         ](
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -33,7 +33,7 @@ async function dispatchRequest(
           ...JSONUint8Array.unwrap(request.args)
         );
       } else if (methodArray[1] === "networks") {
-        return await fetchApi.wallet.networks[
+        return await _fetchApi.wallet.networks[
           methodArray[methodArray.length - 1] as NetworksApiMethod
         ](
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -41,7 +41,7 @@ async function dispatchRequest(
           ...JSONUint8Array.unwrap(request.args)
         );
       } else if (methodArray[1] === "accounts") {
-        return await fetchApi.wallet.accounts[
+        return await _fetchApi.wallet.accounts[
           methodArray[methodArray.length - 1] as AccountsApiMethod
         ](
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -49,7 +49,7 @@ async function dispatchRequest(
           ...JSONUint8Array.unwrap(request.args)
         );
       } else if (methodArray[1] === "addressBook") {
-        return await fetchApi.wallet.addressBook[
+        return await _fetchApi.wallet.addressBook[
           methodArray[methodArray.length - 1] as AddressBookApiMethods
         ](
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -58,7 +58,7 @@ async function dispatchRequest(
         );
       } else {
         const method = methodArray[methodArray.length - 1] as WalletMethod;
-        return await fetchApi.wallet[method](
+        return await _fetchApi.wallet[method](
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           ...JSONUint8Array.unwrap(request.args)
