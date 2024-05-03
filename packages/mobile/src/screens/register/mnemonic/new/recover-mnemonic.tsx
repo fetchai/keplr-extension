@@ -195,6 +195,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     const isPasted = content.trim().includes(clipboardContent.current.trim());
     if (isPasted) {
       handlePaste(content);
+      handlePaste(content);
     } else {
       seedWords[index] = content.trim();
       setSeedWords([...seedWords]);
@@ -293,33 +294,34 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
           setIsSelected={setIsSelectedDerivationPath}
           clearButtonDisable={emptyList.length === 0}
           onPressClearButton={() =>
-            setSeedWords(new Array<string>(12).fill(""))
+            setSeedWords(new Array<string>(seedWords.length).fill(""))
           }
         />
         <BIP44AdvancedButton
           bip44Option={bip44Option}
           selected={selectedDerivationPath}
         />
-
-        <Button
-          text="Paste all from clipboard"
-          size="large"
-          mode="outline"
-          textStyle={style.flatten(["color-white", "body3", "font-normal"])}
-          containerStyle={
-            style.flatten([
-              "border-radius-32",
-              "margin-y-12",
-              "border-color-white@40%",
-            ]) as ViewStyle
-          }
-          onPress={async () => {
-            const text = await Clipboard.getStringAsync();
-            if (text) {
-              handlePaste(text);
+        {emptyList.length !== seedWords.length ? (
+          <Button
+            text="Paste all from clipboard"
+            size="large"
+            mode="outline"
+            textStyle={style.flatten(["color-white", "body3", "font-normal"])}
+            containerStyle={
+              style.flatten([
+                "border-radius-32",
+                "margin-y-12",
+                "border-color-white@40%",
+              ]) as ViewStyle
             }
-          }}
-        />
+            onPress={async () => {
+              const text = await Clipboard.getStringAsync();
+              if (text) {
+                handlePaste(text);
+              }
+            }}
+          />
+        ) : null}
       </View>
       <View style={style.flatten(["flex-1"])} />
       <Button
