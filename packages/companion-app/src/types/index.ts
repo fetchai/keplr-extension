@@ -18,3 +18,11 @@ export interface Attachment {
   original: string;
   thumbnail: string;
 }
+
+export type ChainInfo = {
+  chainId: string;
+  chainName: string;
+  rpc: string;
+  rest: string;
+  decimals: number;
+};
