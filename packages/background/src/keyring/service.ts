@@ -1050,20 +1050,10 @@ Salt: ${salt}`;
   }
 
   async getKeys(chainId: string): Promise<(Key & { name: string })[]> {
-    const ethereumKeyFeatures =
-      await this.chainsService.getChainEthereumKeyFeatures(chainId);
-
     const isEvm =
       (await this.chainsService.getChainInfo(chainId)).features?.includes(
         "evm"
       ) ?? false;
-
-    if (ethereumKeyFeatures.address || ethereumKeyFeatures.signing) {
-      // Check the comment on the method itself.
-      if (!isEvm) {
-        this.keyRing.throwErrorIfEthermintWithLedgerButNotSupported(chainId);
-      }
-    }
 
     return await this.keyRing.getKeys(chainId, isEvm);
   }

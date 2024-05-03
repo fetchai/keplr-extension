@@ -1661,7 +1661,7 @@ export class KeyRing {
 
     for (const keyStore of this.multiKeyStore) {
       // const type = keyStore.type ?? "mnemonic";
-      const defaultCoinType = 60;
+      const defaultCoinType = useEthereumAddress ? 60 : 118;
       const coinType = keyStore.coinTypeForChain
         ? keyStore.coinTypeForChain[ChainIdHelper.parse(chainId).identifier] ??
           defaultCoinType
