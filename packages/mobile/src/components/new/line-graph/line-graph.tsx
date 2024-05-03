@@ -42,7 +42,7 @@ export const LineGraph: FunctionComponent<{
   height?: number;
 }> = ({ tokenName, duration, setTokenState, height }) => {
   const style = useStyle();
-  const { priceStore } = useStore();
+  const { priceStore, chainStore } = useStore();
   const [durationData, setDuration] = useState<DurationData>({});
   const [chartsData, setChartData] = useState<ChartData[]>([]);
 
@@ -162,9 +162,7 @@ export const LineGraph: FunctionComponent<{
   }, [cacheKey]);
 
   if (chartsData.length !== 0) {
-    fetValue = Number(
-      Math.max(...chartsData.map((v: { value: any }) => v.value))
-    );
+    fetValue = Number(chartsData.slice(-1)[0].value);
   } else {
     fetValue = 0;
   }
@@ -182,7 +180,7 @@ export const LineGraph: FunctionComponent<{
           ]) as ViewStyle
         }
       >
-        {`FET/USD `}
+        {`${chainStore.current.currencies[0].coinDenom}/USD `}
         <Text
           style={style.flatten(["color-white@60%"]) as ViewStyle}
         >{`$${fetValue.toFixed(2)}`}</Text>

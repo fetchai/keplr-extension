@@ -11,7 +11,6 @@ import { useStyle } from "styles/index";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { InputCardView } from "components/new/card-view/input-card";
-import { BlurButton } from "components/new/button/blur-button";
 
 const useZeroOrPositiveIntegerString = (initialValue: string) => {
   const [value, setValue] = useState(initialValue);
@@ -45,13 +44,12 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
 
 export const BIP44AdvancedButton: FunctionComponent<{
   bip44Option: BIP44Option;
-  backgroundBlur?: boolean;
   containerStyle?: ViewStyle;
-}> = observer(({ bip44Option, backgroundBlur = true, containerStyle }) => {
+  selected: boolean;
+}> = observer(({ bip44Option, selected }) => {
   const style = useStyle();
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setIsSelected] = useState(false);
 
   // const account = useZeroOrPositiveIntegerString(
   //   bip44Option.account.toString()
@@ -64,28 +62,6 @@ export const BIP44AdvancedButton: FunctionComponent<{
 
   return (
     <React.Fragment>
-      <BlurButton
-        text="Advanced Settings"
-        blurIntensity={30}
-        borderRadius={32}
-        backgroundBlur={backgroundBlur}
-        containerStyle={
-          [
-            style.flatten(
-              ["justify-center", "margin-y-18"],
-              [
-                selected && "border-width-1",
-                "border-radius-64",
-                selected && "border-color-indigo",
-              ]
-            ),
-            { width: 150 },
-            containerStyle,
-          ] as ViewStyle
-        }
-        textStyle={style.flatten(["text-caption2"]) as ViewStyle}
-        onPress={() => setIsSelected(!selected)}
-      />
       {selected ? (
         <React.Fragment>
           <Text

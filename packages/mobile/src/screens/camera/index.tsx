@@ -12,19 +12,11 @@ import { AddressCopyable } from "components/address-copyable";
 import QRCode from "react-native-qrcode-svg";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FullScreenCameraView } from "components/camera";
+
 import {
-  importFromExtension,
-  parseQRCodeDataForImportFromExtension,
-  registerExportedAddressBooks,
-  registerExportedKeyRingDatas,
-} from "utils/import-from-extension";
-import {
-  AddressBookConfigMap,
   IRecipientConfig,
   IRecipientConfigWithICNS,
-  useRegisterConfig,
 } from "@keplr-wallet/hooks";
-import { AsyncKVStore } from "../../common";
 import {
   RouteProp,
   useFocusEffect,
@@ -52,7 +44,7 @@ export const CameraScreen: FunctionComponent = observer(() => {
 
   const showQRButton = route.params.showMyQRButton ? true : false;
 
-  const { chainStore, walletConnectStore, keyRingStore } = useStore();
+  const { chainStore, walletConnectStore } = useStore();
 
   const navigation = useNavigation();
 
@@ -79,12 +71,6 @@ export const CameraScreen: FunctionComponent = observer(() => {
     useState(false);
   const [showingAddressQRCodeChainId, setShowingAddressQRCodeChainId] =
     useState(chainStore.current.chainId);
-
-  const registerConfig = useRegisterConfig(keyRingStore, []);
-
-  const [addressBookConfigMap] = useState(
-    () => new AddressBookConfigMap(new AsyncKVStore("address_book"), chainStore)
-  );
 
   return (
     <PageWithView disableSafeArea={true} backgroundMode={null}>
@@ -144,42 +130,6 @@ export const CameraScreen: FunctionComponent = observer(() => {
                   } else {
                     smartNavigation.navigateSmart("Home", {});
                   }
-                } else if (!route.params.recipientConfig) {
-                  const sharedData =
-                    parseQRCodeDataForImportFromExtension(data);
-
-                  const improted = await importFromExtension(
-                    sharedData,
-                    chainStore.chainInfosInUI.map(
-                      (chainInfo) => chainInfo.chainId
-                    )
-                  );
-
-                  // In this case, there are other accounts definitely.
-                  // So, there is no need to consider the password.
-                  await registerExportedKeyRingDatas(
-                    keyRingStore,
-                    registerConfig,
-                    improted.KeyRingDatas,
-                    ""
-                  );
-
-                  await registerExportedAddressBooks(
-                    addressBookConfigMap,
-                    improted.addressBooks
-                  );
-
-                  smartNavigation.reset({
-                    index: 0,
-                    routes: [
-                      {
-                        name: "Register",
-                        params: {
-                          screen: "Register.End",
-                        },
-                      },
-                    ],
-                  });
                 } else {
                   navigation.goBack();
                   Toast.show({

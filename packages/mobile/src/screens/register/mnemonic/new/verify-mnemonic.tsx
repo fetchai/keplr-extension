@@ -11,6 +11,7 @@ import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { RectButton } from "components/rect-button";
 import { BIP44AdvancedButton, useBIP44Option } from "screens/register/bip44";
+import { BipButtons } from "screens/register/bip-button";
 
 export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -42,6 +43,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
     }[]
   >([]);
   const [wordSet, setWordSet] = useState<(string | undefined)[]>([]);
+  const [selectedDerivationPath, setIsSelectedDerivationPath] = useState(false);
 
   useEffect(() => {
     const words = newMnemonicConfig.mnemonic.split(" ");
@@ -103,6 +105,8 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
     );
   };
 
+  const undefinedFilterList = wordSet.filter((v) => v !== undefined);
+
   return (
     <PageWithScrollView
       backgroundMode="image"
@@ -124,15 +128,35 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
             };
           })}
         />
+        <BipButtons
+          selected={selectedDerivationPath}
+          setIsSelected={setIsSelectedDerivationPath}
+          clearButtonDisable={undefinedFilterList.length === 0}
+          onPressClearButton={() => {
+            const words = newMnemonicConfig.mnemonic.split(" ");
+            const randomSortedWords = words.slice().sort(() => {
+              return Math.random() > 0.5 ? 1 : -1;
+            });
+
+            const candidateWords = randomSortedWords.slice();
+            setCandidateWords(
+              candidateWords.map((word) => {
+                return {
+                  word,
+                  usedIndex: -1,
+                };
+              })
+            );
+            setWordSet(
+              words.map((_) => {
+                return undefined;
+              })
+            );
+          }}
+        />
         <BIP44AdvancedButton
           bip44Option={bip44Option}
-          backgroundBlur={false}
-          containerStyle={
-            style.flatten([
-              "border-width-1",
-              "border-color-white@40%",
-            ]) as ViewStyle
-          }
+          selected={selectedDerivationPath}
         />
       </View>
       <View style={style.flatten(["flex-1"])} />

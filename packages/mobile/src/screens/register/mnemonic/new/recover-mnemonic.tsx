@@ -12,6 +12,7 @@ import * as Clipboard from "expo-clipboard";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { isPrivateKey, validatePrivateKey } from "utils/format/format";
+import { BipButtons } from "screens/register/bip-button";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bip39 = require("bip39");
@@ -46,6 +47,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   const [seedWords, setSeedWords] = useState<string[]>(
     new Array<string>(12).fill("")
   );
+  const [selectedDerivationPath, setIsSelectedDerivationPath] = useState(false);
 
   const [seedWordsError, setSeedWordsError] = useState<string | undefined>(
     undefined
@@ -99,7 +101,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     }
   };
 
-  const handlePaste = (index: number, value: string) => {
+  const handlePaste = (value: string, index = 0) => {
     const words = value
       .trim()
       .split(" ")
@@ -192,7 +194,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   const handleOnChangeText = async (content: string, index: number) => {
     const isPasted = content.trim().includes(clipboardContent.current.trim());
     if (isPasted) {
-      handlePaste(index, content);
+      handlePaste(content);
     } else {
       seedWords[index] = content.trim();
       setSeedWords([...seedWords]);
@@ -236,6 +238,8 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     );
   };
 
+  const emptyList = seedWords.filter((v) => v !== "");
+
   return (
     <PageWithScrollView
       backgroundMode="image"
@@ -272,13 +276,50 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
             }
           >
             <Text
-              style={style.flatten(["color-red-400", "body2", "text-center"])}
+              style={
+                style.flatten([
+                  "color-red-400",
+                  "body2",
+                  "text-center",
+                ]) as ViewStyle
+              }
             >
               {seedWordErrorCheck()}
             </Text>
           </View>
         ) : null}
-        <BIP44AdvancedButton bip44Option={bip44Option} />
+        <BipButtons
+          selected={selectedDerivationPath}
+          setIsSelected={setIsSelectedDerivationPath}
+          clearButtonDisable={emptyList.length === 0}
+          onPressClearButton={() =>
+            setSeedWords(new Array<string>(12).fill(""))
+          }
+        />
+        <BIP44AdvancedButton
+          bip44Option={bip44Option}
+          selected={selectedDerivationPath}
+        />
+
+        <Button
+          text="Paste all from clipboard"
+          size="large"
+          mode="outline"
+          textStyle={style.flatten(["color-white", "body3", "font-normal"])}
+          containerStyle={
+            style.flatten([
+              "border-radius-32",
+              "margin-y-12",
+              "border-color-white@40%",
+            ]) as ViewStyle
+          }
+          onPress={async () => {
+            const text = await Clipboard.getStringAsync();
+            if (text) {
+              handlePaste(text);
+            }
+          }}
+        />
       </View>
       <View style={style.flatten(["flex-1"])} />
       <Button

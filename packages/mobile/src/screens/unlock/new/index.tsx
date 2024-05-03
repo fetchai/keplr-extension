@@ -234,7 +234,11 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   return (
     <React.Fragment>
-      <ScreenBackground backgroundMode="image" backgroundBlur={true} />
+      <ScreenBackground
+        backgroundMode="image"
+        backgroundBlur={true}
+        isTransparentHeader={true}
+      />
       <View
         style={
           [

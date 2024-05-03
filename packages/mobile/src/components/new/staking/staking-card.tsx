@@ -27,7 +27,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -134,7 +134,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           {renderLine("#CFC3FE")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
+              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
             >
               Available
             </Text>
@@ -145,16 +145,23 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
                 stakable.currency.coinDenom
               }`}{" "}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${Math.round(stakablePercentage)}%)`}
+                {`(${stakablePercentage.toFixed(2)}%)`}
               </Text>
             </Text>
+            {priceStore.calculatePrice(stakable)?.toString() ? (
+              <Text
+                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              >
+                {priceStore.calculatePrice(stakable)?.toString()}
+              </Text>
+            ) : null}
           </View>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
           {renderLine("#5F38FB")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
+              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
             >
               Staked
             </Text>
@@ -165,16 +172,23 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
                 stakable.currency.coinDenom
               }`}{" "}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${Math.round(stakedPercentage)}%)`}
+                {`(${stakedPercentage.toFixed(2)}%)`}
               </Text>
             </Text>
+            {priceStore.calculatePrice(stakedSum)?.toString() ? (
+              <Text
+                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              >
+                {priceStore.calculatePrice(stakedSum)?.toString()}
+              </Text>
+            ) : null}
           </View>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
           {renderLine("#F9774B")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-gray-200", "body3"]) as ViewStyle}
+              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
             >
               Claimable rewards
             </Text>
@@ -185,9 +199,16 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
                 stakable.currency.coinDenom
               }`}{" "}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${Math.round(rewardsPercentage)}%)`}
+                {`(${rewardsPercentage.toFixed(2)}%)`}
               </Text>
             </Text>
+            {priceStore.calculatePrice(stakableReward)?.toString() ? (
+              <Text
+                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              >
+                {priceStore.calculatePrice(stakableReward)?.toString()}
+              </Text>
+            ) : null}
           </View>
         </View>
       </View>
@@ -270,7 +291,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
       </Text>
       <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
         {renderLegendComponent()}
-        <View style={style.flatten(["flex-2", "margin-right-18"])}>
+        <View style={style.flatten(["flex-2", "margin-right-18"]) as ViewStyle}>
           <PieChart
             data={pieData}
             donut

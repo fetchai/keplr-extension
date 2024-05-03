@@ -46,6 +46,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
   return (
     <PageWithView
       backgroundMode="image"
+      isTransparentHeader={true}
       backgroundBlur={true}
       style={style.flatten(["padding-x-20"]) as ViewStyle}
     >

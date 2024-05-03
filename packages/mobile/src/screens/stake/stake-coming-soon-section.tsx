@@ -12,6 +12,7 @@ export const StakeSection: FunctionComponent = () => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
+      isTransparentHeader={true}
       contentContainerStyle={style.flatten(["flex-grow-1", "justify-center"])}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       ref={scrollViewRef}

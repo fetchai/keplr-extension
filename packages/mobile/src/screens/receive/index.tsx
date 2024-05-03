@@ -17,6 +17,7 @@ import { SimpleCardView } from "components/new/card-view/simple-card";
 import LottieView from "lottie-react-native";
 import { useSimpleTimer } from "hooks/use-simple-timer";
 import { CopyIcon } from "components/new/icon/copy-icon";
+import { titleCase } from "utils/format/format";
 
 export const ReceiveScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -177,7 +178,9 @@ export const ReceiveScreen: FunctionComponent = observer(() => {
         />
       </TouchableOpacity>
       <SimpleCardView
-        heading="Deposits must be using the Dorado Network. Do not send token from other networks to this address or they may be lost."
+        heading={`Deposits must be using the ${titleCase(
+          chainStore.current.chainName
+        )} Network. Do not send token from other networks to this address or they may be lost.`}
         cardStyle={
           style.flatten([
             "background-color-coral-red@25%",

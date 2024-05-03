@@ -33,7 +33,29 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
         />
       ) : null}
       <SafeAreaView style={style.flatten(["absolute-fill", "items-center"])}>
-        <View style={style.flatten(["flex-row"])}>
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "margin-top-10",
+              "margin-x-16",
+              "items-center",
+            ]) as ViewStyle
+          }
+        >
+          <View style={style.get("flex-1")} />
+          <Text
+            style={
+              style.flatten([
+                "justify-center",
+                "color-white",
+                "subtitle2",
+                "margin-left-32",
+              ]) as ViewStyle
+            }
+          >
+            Scan QR Code
+          </Text>
           <View style={style.get("flex-1")} />
           {navigation.canGoBack() ? (
             <TouchableOpacity
@@ -42,15 +64,18 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
               }}
             >
               <IconButton
-                icon={<XmarkIcon color={"white"} size={18} />}
+                icon={<XmarkIcon color={"white"} />}
                 backgroundBlur={false}
+                blurIntensity={20}
                 borderRadius={50}
                 iconStyle={
                   style.flatten([
-                    "padding-12",
-                    "background-color-indigo-900",
-                    "margin-top-10",
-                    "margin-right-16",
+                    "width-32",
+                    "height-32",
+                    "items-center",
+                    "justify-center",
+                    "border-width-1",
+                    "border-color-white@20%",
                   ]) as ViewStyle
                 }
               />

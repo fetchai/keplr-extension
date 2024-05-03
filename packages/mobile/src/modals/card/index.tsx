@@ -109,12 +109,14 @@ export const CardModal: FunctionComponent<{
                     backgroundBlur={false}
                     blurIntensity={20}
                     borderRadius={50}
-                    onPress={() => close()}
                     iconStyle={
                       style.flatten([
-                        "padding-8",
+                        "width-32",
+                        "height-32",
+                        "items-center",
+                        "justify-center",
                         "border-width-1",
-                        "border-color-white-400",
+                        "border-color-white@20%",
                       ]) as ViewStyle
                     }
                   />

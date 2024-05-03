@@ -96,7 +96,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         <React.Fragment>
           <SimpleCardView
             heading="Make sure you’ve backed up your mnemonic seed before proceeding."
-            headingStyle={style.flatten(["body3"])}
+            headingStyle={style.flatten(["body3"]) as ViewStyle}
             cardStyle={
               style.flatten([
                 "background-color-coral-red@30%",

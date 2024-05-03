@@ -10,10 +10,8 @@ export const SettingSectionTitle: FunctionComponent<{
   const style = useStyle();
 
   return (
-    <View style={style.flatten(["padding-y-16"]) as ViewStyle}>
-      <Text style={style.flatten(["text-caption1", "color-text-low"])}>
-        {title}
-      </Text>
+    <View style={style.flatten(["padding-y-12"]) as ViewStyle}>
+      <Text style={style.flatten(["body3", "color-text-low"])}>{title}</Text>
     </View>
   );
 };

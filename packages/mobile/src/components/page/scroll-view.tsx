@@ -28,6 +28,7 @@ export const PageWithScrollView = forwardRef<
       containerStyle?: ViewStyle;
 
       backgroundMode: BackgroundMode;
+      isTransparentHeader?: boolean;
       backgroundBlur?: boolean;
     }
   >
@@ -45,6 +46,7 @@ export const PageWithScrollView = forwardRef<
     containerStyle,
     backgroundMode,
     backgroundBlur,
+    isTransparentHeader,
     ...restProps
   } = props;
 
@@ -55,6 +57,7 @@ export const PageWithScrollView = forwardRef<
       <ScreenBackground
         backgroundMode={backgroundMode}
         backgroundBlur={backgroundBlur}
+        isTransparentHeader={isTransparentHeader}
       />
       <ContainerElement
         style={StyleSheet.flatten([

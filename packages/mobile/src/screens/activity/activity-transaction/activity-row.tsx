@@ -10,6 +10,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { FetchAiIcon } from "components/new/icon/fetchai-icon";
 
 export const ActivityRow: FunctionComponent<{
   node: any;
@@ -54,18 +55,43 @@ export const ActivityRow: FunctionComponent<{
           ]) as ViewStyle
         }
       >
-        <IconButton
-          icon={getActivityIcon(details.verb)}
-          backgroundBlur={true}
-          iconStyle={
+        <View
+          style={
             style.flatten([
               "width-32",
               "height-32",
               "items-center",
               "justify-center",
+              "border-radius-64",
+              "background-color-indigo-900",
+              "absolute",
             ]) as ViewStyle
           }
-        />
+        >
+          <FetchAiIcon size={14} />
+        </View>
+        <View
+          style={
+            style.flatten([
+              "border-radius-64",
+              "background-color-indigo-900",
+              "margin-left-16",
+            ]) as ViewStyle
+          }
+        >
+          <IconButton
+            icon={getActivityIcon(details.verb)}
+            backgroundBlur={true}
+            iconStyle={
+              style.flatten([
+                "width-32",
+                "height-32",
+                "items-center",
+                "justify-center",
+              ]) as ViewStyle
+            }
+          />
+        </View>
       </View>
       <View style={style.flatten(["flex-1"]) as ViewStyle}>
         <Text

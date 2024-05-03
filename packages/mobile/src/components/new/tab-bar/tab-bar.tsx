@@ -27,6 +27,7 @@ export const TabBarView: FunctionComponent<{
     return (
       <BlurButton
         backgroundBlur={false}
+        borderRadius={10}
         text={item}
         textStyle={
           style.flatten(
@@ -42,7 +43,8 @@ export const TabBarView: FunctionComponent<{
             ),
             {
               width:
-                (Dimensions.get("window").width - 41) /
+                (Dimensions.get("window").width -
+                  (43 + Object.values(listItem).length)) /
                 Object.values(listItem).length,
             },
           ] as ViewStyle
@@ -76,7 +78,10 @@ export const TabBarView: FunctionComponent<{
     <BlurBackground
       borderRadius={12}
       containerStyle={
-        [style.flatten(["margin-y-10"]), containerStyle] as ViewStyle
+        [
+          style.flatten(["margin-y-10", "padding-2"]),
+          containerStyle,
+        ] as ViewStyle
       }
     >
       <FlatList

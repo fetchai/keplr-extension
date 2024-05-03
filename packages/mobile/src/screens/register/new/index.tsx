@@ -125,6 +125,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
   return (
     <PageWithView
       backgroundMode="image"
+      isTransparentHeader={true}
       style={[
         style.flatten(["padding-x-page"]) as ViewStyle,
         {

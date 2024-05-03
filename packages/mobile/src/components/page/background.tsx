@@ -14,7 +14,8 @@ export type BackgroundMode =
 export const ScreenBackground: FunctionComponent<{
   backgroundMode: BackgroundMode;
   backgroundBlur?: boolean;
-}> = ({ backgroundMode, backgroundBlur }) => {
+  isTransparentHeader?: boolean;
+}> = ({ backgroundMode, backgroundBlur, isTransparentHeader = false }) => {
   const style = useStyle();
 
   return backgroundMode ? (
@@ -23,8 +24,8 @@ export const ScreenBackground: FunctionComponent<{
         position: "absolute",
         left: 0,
         right: 0,
-        top: -225,
-        bottom: -100,
+        top: isTransparentHeader ? -200 : -225,
+        bottom: isTransparentHeader ? -200 : -100,
       }}
     >
       {backgroundMode === "gradient" ? (

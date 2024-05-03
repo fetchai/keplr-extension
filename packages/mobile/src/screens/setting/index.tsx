@@ -38,12 +38,22 @@ export const SettingScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode="image"
+      isTransparentHeader={true}
       style={style.flatten(["padding-x-page"]) as ViewStyle}
       contentContainerStyle={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
       }}
     >
-      <Text style={style.flatten(["h1", "color-white"]) as ViewStyle}>
+      <Text
+        style={
+          style.flatten([
+            "h1",
+            "font-normal",
+            "color-white",
+            "margin-y-16",
+          ]) as ViewStyle
+        }
+      >
         More
       </Text>
       <SettingSectionTitle title="Account" />

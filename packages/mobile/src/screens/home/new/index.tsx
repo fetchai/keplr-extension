@@ -131,6 +131,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   return (
     <PageWithScrollViewInBottomTabView
       backgroundMode={"image"}
+      isTransparentHeader={true}
       refreshControl={
         <RefreshControl
           tintColor={"white"}

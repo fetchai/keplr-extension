@@ -48,8 +48,6 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = observer(
     const [openCameraModel, setIsOpenCameraModel] = useState(false);
     const [modelStatus, setModelStatus] = useState(ModelStatus.First);
 
-    console.log("Click: Camera", openCameraModel);
-
     return (
       <PageWithView backgroundMode="image">
         <View

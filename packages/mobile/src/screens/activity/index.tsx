@@ -31,6 +31,7 @@ export const ActivityScreen = () => {
   return (
     <PageWithViewInBottomTabView
       backgroundMode={"image"}
+      isTransparentHeader={true}
       style={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
         flexGrow: 1,
