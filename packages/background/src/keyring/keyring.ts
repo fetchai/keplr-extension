@@ -1681,9 +1681,6 @@ export class KeyRing {
             case KeyCurves.secp256k1:
               privKey = new PrivKeySecp256k1(_privKey);
               break;
-            case KeyCurves.bls12381:
-              privKey = new SecretKeyBls12381(_privKey);
-              break;
             default:
               throw new Error(`Unexpected key curve: "${keyStore.curve}"`);
           }
@@ -1723,9 +1720,6 @@ export class KeyRing {
           switch (keyStore.curve) {
             case KeyCurves.secp256k1:
               privKey = new PrivKeySecp256k1(privateKey);
-              break;
-            case KeyCurves.bls12381:
-              privKey = new SecretKeyBls12381(privateKey);
               break;
             default:
               throw new Error(`Unexpected key curve: "${keyStore.curve}"`);
