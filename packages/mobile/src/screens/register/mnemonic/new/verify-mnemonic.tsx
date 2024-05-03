@@ -114,7 +114,14 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <Text
-        style={style.flatten(["h1", "color-white", "margin-y-18"]) as ViewStyle}
+        style={
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-y-18",
+            "font-normal",
+          ]) as ViewStyle
+        }
       >
         Verify your recovery phrase
       </Text>
@@ -176,6 +183,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
           size="large"
           loading={isCreating}
           disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
+          textStyle={style.flatten(["body2"])}
           onPress={async () => {
             setIsCreating(true);
             smartNavigation.navigateSmart("Register.CreateAccount", {

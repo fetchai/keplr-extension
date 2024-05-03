@@ -33,7 +33,13 @@ export const IconWithText: FunctionComponent<{
           <Button
             text="COMING SOON"
             size="small"
-            textStyle={style.flatten(["h7", "color-white"]) as ViewStyle}
+            textStyle={
+              style.flatten([
+                "text-caption2",
+                "color-white",
+                "font-medium",
+              ]) as ViewStyle
+            }
             containerStyle={
               style.flatten([
                 "background-color-indigo",
@@ -67,7 +73,7 @@ export const IconWithText: FunctionComponent<{
             style={
               [
                 style.flatten([
-                  "body2",
+                  "body3",
                   "color-gray-200",
                   "padding-y-8",
                   "text-center",

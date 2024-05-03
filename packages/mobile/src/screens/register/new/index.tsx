@@ -176,7 +176,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                 style={
                   style.flatten([
                     "h1",
-                    "font-medium",
+                    "font-normal",
                     "color-white",
                     "padding-top-10",
                   ]) as ViewStyle
@@ -193,7 +193,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               <Text
                 style={
                   style.flatten([
-                    "h6",
+                    "body1",
                     "color-gray-100",
                     "padding-y-24",
                   ]) as ViewStyle

@@ -109,7 +109,7 @@ export const ActivityFilterView: FunctionComponent<{
       <Button
         text={selectAllButtonText}
         size="small"
-        textStyle={style.flatten(["color-white", "font-bold"]) as ViewStyle}
+        textStyle={style.flatten(["color-white", "body3"]) as ViewStyle}
         containerStyle={
           style.flatten([
             "border-radius-64",
@@ -194,6 +194,7 @@ export const ActivityFilterView: FunctionComponent<{
         text="Save changes"
         size="large"
         containerStyle={style.flatten(["border-radius-64"]) as ViewStyle}
+        textStyle={style.flatten(["body2"]) as ViewStyle}
         rippleColor="black@50%"
         disabled={filters == selectedFilter}
         onPress={() => handleFilterChange(selectedFilter)}

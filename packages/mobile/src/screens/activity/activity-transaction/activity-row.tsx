@@ -97,7 +97,7 @@ export const ActivityRow: FunctionComponent<{
         <Text
           style={
             style.flatten([
-              "h7",
+              "body3",
               "padding-4",
               "color-white",
               "font-medium",
@@ -109,9 +109,9 @@ export const ActivityRow: FunctionComponent<{
         <Text
           style={
             style.flatten([
-              "h7",
+              "body3",
               "padding-2",
-              "color-gray-300",
+              "color-white@60%",
               "font-medium",
             ]) as ViewStyle
           }
@@ -132,8 +132,11 @@ export const ActivityRow: FunctionComponent<{
         <Text
           style={
             style.flatten([
-              "h7",
-              details.verb == "Received" ? "color-green-400" : "color-white",
+              "body3",
+              "font-medium",
+              details.verb == "Received"
+                ? "color-vibrant-green-500"
+                : "color-white@60%",
             ]) as ViewStyle
           }
         >
@@ -142,8 +145,9 @@ export const ActivityRow: FunctionComponent<{
         <Text
           style={
             style.flatten([
-              "h7",
-              "color-gray-300",
+              "body3",
+              "font-medium",
+              "color-white@60%",
               "margin-left-4",
             ]) as ViewStyle
           }

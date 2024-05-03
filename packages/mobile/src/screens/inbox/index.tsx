@@ -26,7 +26,14 @@ export const InboxScreen = () => {
       ref={scrollViewRef}
     >
       <Text
-        style={style.flatten(["h1", "color-white", "margin-y-10"]) as ViewStyle}
+        style={
+          style.flatten([
+            "h1",
+            "color-white",
+            "margin-y-10",
+            "font-normal",
+          ]) as ViewStyle
+        }
       >
         Inbox
       </Text>

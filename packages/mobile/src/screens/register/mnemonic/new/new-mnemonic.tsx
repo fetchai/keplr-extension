@@ -71,7 +71,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
           style={
             style.flatten([
               "color-gray-200",
-              "h6",
+              "body2",
               "margin-bottom-8",
             ]) as ViewStyle
           }
@@ -91,6 +91,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
         <SimpleCardView
           heading={words.join(" ")}
           headingMode={"gradient"}
+          headingStyle={style.flatten(["body3"])}
           cardStyle={
             style.flatten(["margin-y-10", "margin-bottom-24"]) as ViewStyle
           }
@@ -187,7 +188,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
           style={
             style.flatten([
               "color-gray-100",
-              "h6",
+              "body2",
               "font-normal",
               "margin-left-12",
             ]) as ViewStyle
@@ -231,7 +232,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
           style={
             style.flatten([
               "color-gray-100",
-              "h6",
+              "body2",
               "font-normal",
               "margin-left-12",
             ]) as ViewStyle
@@ -248,6 +249,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
         size="large"
         rippleColor="black@10%"
         disabled={!isSelected || !toggleCheckBox}
+        textStyle={style.flatten(["body2"])}
         onPress={() => {
           smartNavigation.navigateSmart("Register.VerifyMnemonic", {
             registerConfig,

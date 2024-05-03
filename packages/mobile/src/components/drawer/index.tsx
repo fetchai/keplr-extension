@@ -151,7 +151,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               ]) as ViewStyle
             }
             mode="outline"
-            textStyle={style.flatten(["color-white"])}
+            textStyle={style.flatten(["color-white", "body3"])}
             text="Manage networks"
             onPress={() => {
               navigation.dispatch(

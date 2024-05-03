@@ -12,7 +12,7 @@ export const ChatSection: FunctionComponent = () => {
       subtitle={"This feature will be available\nin the next releases"}
       icon={<ColumnFrame />}
       isComingSoon={true}
-      titleStyle={style.flatten(["h3"]) as ViewStyle}
+      titleStyle={style.flatten(["h3", "font-normal"]) as ViewStyle}
     >
       <Text
         style={

@@ -60,6 +60,7 @@ export const ActivityScreen = () => {
             "color-white",
             "margin-x-18",
             "margin-y-16",
+            "font-normal",
           ]) as ViewStyle
         }
       >

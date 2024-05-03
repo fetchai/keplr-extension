@@ -166,7 +166,7 @@ export const ActivityNativeTab: FunctionComponent<{
                     style.flatten([
                       "color-gray-300",
                       "margin-left-16",
-                      "h7",
+                      "body3",
                       "margin-bottom-12",
                     ]) as ViewStyle
                   }

@@ -119,6 +119,7 @@ export const CardModal: FunctionComponent<{
                         "border-color-white@20%",
                       ]) as ViewStyle
                     }
+                    onPress={() => close()}
                   />
                 </View>
               ) : null}
