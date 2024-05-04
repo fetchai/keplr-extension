@@ -30,7 +30,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const style = useStyle();
   const windowHeight = Dimensions.get("window").height;
 
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
 
   const [tokenState, setTokenState] = useState({
@@ -106,7 +106,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const onRefresh = React.useCallback(async () => {
     // Because the components share the states related to the queries,
     // fetching new query responses here would make query responses on all other components also refresh.
-
+    setRefreshing(true);
     await Promise.all([
       priceStore.waitFreshResponse(),
       ...queries.queryBalances
@@ -137,6 +137,9 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
           tintColor={"white"}
           refreshing={refreshing}
           onRefresh={onRefresh}
+          progressViewOffset={
+            Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48
+          }
         />
       }
       contentContainerStyle={[

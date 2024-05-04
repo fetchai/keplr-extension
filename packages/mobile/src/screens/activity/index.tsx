@@ -1,6 +1,12 @@
 import React, { ReactElement, useState } from "react";
 import { PageWithViewInBottomTabView } from "components/page";
-import { Platform, ScrollView, Text, ViewStyle } from "react-native";
+import {
+  Platform,
+  RefreshControl,
+  ScrollView,
+  Text,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,6 +33,7 @@ export const ActivityScreen = () => {
   const safeAreaInsets = useSafeAreaInsets();
   const [latestBlock, _setLatestBlock] = useState<string>();
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   return (
     <PageWithViewInBottomTabView
@@ -77,6 +84,13 @@ export const ActivityScreen = () => {
         contentContainerStyle={
           style.flatten(["margin-y-16", "flex-grow-1"]) as ViewStyle
         }
+        refreshControl={
+          <RefreshControl
+            tintColor={"white"}
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+          />
+        }
       >
         {selectedId === ActivityEnum.Transactions && (
           <View
@@ -88,6 +102,8 @@ export const ActivityScreen = () => {
               latestBlock={latestBlock}
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
+              refreshing={refreshing}
+              onRefresh={() => setRefreshing(false)}
             />
           </View>
         )}
