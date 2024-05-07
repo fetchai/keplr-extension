@@ -83,11 +83,7 @@ export const TransactionModal: FunctionComponent<{
 
   return (
     <React.Fragment>
-      <CardModal
-        isOpen={isOpen}
-        disableGesture={true}
-        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
-      >
+      <CardModal isOpen={isOpen} disableGesture={true}>
         <IconWithText
           icon={
             <LottieView

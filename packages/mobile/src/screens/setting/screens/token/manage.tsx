@@ -2,18 +2,25 @@ import React, { FunctionComponent, useState } from "react";
 import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { Text, View, ViewStyle } from "react-native";
+import { Image, Text, View, ViewStyle } from "react-native";
 import { CoinPretty } from "@keplr-wallet/unit";
 import { useStyle } from "styles/index";
 import { TrashCanIcon } from "components/icon";
 import { Currency } from "@keplr-wallet/types";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ConfirmCardModel } from "components/new/confirm-modal";
+import { Button } from "components/button";
 
 export const SettingManageTokensScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
+
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const style = useStyle();
 
@@ -32,19 +39,57 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       <View style={style.flatten(["height-card-gap"]) as ViewStyle} />
-      {tokensOf.tokens.length > 0
-        ? tokensOf.tokens.map((token) => {
-            const balance = queryBalances.getBalanceFromCurrency(token);
+      {tokensOf.tokens.length > 0 ? (
+        tokensOf.tokens.map((token) => {
+          const balance = queryBalances.getBalanceFromCurrency(token);
 
-            return (
-              <ManageTokenItem
-                key={token.coinMinimalDenom}
-                chainInfo={chainStore.current}
-                balance={balance}
+          return (
+            <ManageTokenItem
+              key={token.coinMinimalDenom}
+              chainInfo={chainStore.current}
+              balance={balance}
+            />
+          );
+        })
+      ) : (
+        <React.Fragment>
+          <View style={style.flatten(["flex-1"])} />
+          <View style={style.flatten(["justify-center", "items-center"])}>
+            <View style={style.flatten(["margin-bottom-21"]) as ViewStyle}>
+              <Image
+                style={{ width: 240, height: 60 }}
+                source={require("assets/image/emptystate-addressbook.png")}
+                fadeDuration={0}
+                resizeMode="contain"
               />
-            );
-          })
-        : null}
+            </View>
+            <Text
+              style={style.flatten([
+                "h3",
+                "font-medium",
+                "color-gray-100",
+                "dark:color-platinum-300",
+                "text-center",
+              ])}
+            >
+              {"You haven’t saved any\ntokens yet"}
+            </Text>
+          </View>
+          <View
+            style={style.flatten(["margin-top-68", "flex-1"]) as ViewStyle}
+          />
+          <Button
+            text="Add an address"
+            size="large"
+            containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+            textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
+            onPress={() => {
+              navigation.navigate("Setting.AddToken");
+            }}
+          />
+          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+        </React.Fragment>
+      )}
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );

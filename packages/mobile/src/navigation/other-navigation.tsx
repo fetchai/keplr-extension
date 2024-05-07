@@ -44,7 +44,7 @@ import { Stack } from "./navigation";
 import { TokenDetail } from "screens/portfolio/token-detail";
 import { IconButton } from "components/new/button/icon";
 import { ViewStyle } from "react-native";
-import { SecurityAndPrivacyScreen } from "screens/setting/screens/Security-and-privacy";
+import { SecurityAndPrivacyScreen } from "screens/setting/screens/security-and-privacy";
 import { ViewPrivateDataScreen } from "screens/setting/screens/view-private-data";
 import { FetchVersionScreen } from "screens/setting/screens/version";
 import { CurrencyScreen } from "screens/setting/screens/currency";

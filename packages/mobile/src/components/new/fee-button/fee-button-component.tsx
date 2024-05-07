@@ -281,7 +281,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
           </View>
         ) : null}
         {!isFeeLoading && errorText ? (
-          <View>
+          <View style={style.flatten(["margin-bottom-12"])}>
             <Text
               style={StyleSheet.flatten([
                 style.flatten([

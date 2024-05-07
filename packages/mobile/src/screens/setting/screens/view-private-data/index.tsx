@@ -111,7 +111,7 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
                 style.flatten([
                   "h6",
                   "margin-bottom-30",
-                  "color-text-high",
+                  "color-white",
                 ]) as ViewStyle
               }
             >

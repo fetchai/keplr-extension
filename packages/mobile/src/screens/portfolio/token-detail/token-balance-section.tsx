@@ -18,7 +18,7 @@ export const TokenBalanceSection: FunctionComponent<{
   totalPrice: string;
 }> = observer(({ totalNumber, totalDenom, totalPrice }) => {
   const style = useStyle();
-  const { chainStore } = useStore();
+  const { chainStore, priceStore } = useStore();
   const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -67,11 +67,11 @@ export const TokenBalanceSection: FunctionComponent<{
               style.flatten([
                 "color-gray-300",
                 "h5",
-                "margin-left-8",
+                "margin-left-6",
               ]) as ViewStyle
             }
           >
-            {"USD"}
+            {priceStore.defaultVsCurrency.toUpperCase()}
           </Text>
         </View>
       ) : null}

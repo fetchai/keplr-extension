@@ -45,7 +45,7 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
 export const BIP44AdvancedButton: FunctionComponent<{
   bip44Option: BIP44Option;
   containerStyle?: ViewStyle;
-  selected: boolean;
+  selected?: boolean;
 }> = observer(({ bip44Option, selected }) => {
   const style = useStyle();
 
