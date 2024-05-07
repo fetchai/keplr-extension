@@ -51,7 +51,7 @@ export const InputCardView: React.forwardRef<
 
   return (
     <View style={containerStyle}>
-      {label ? (
+      {label && (
         <Text
           style={
             [
@@ -67,7 +67,7 @@ export const InputCardView: React.forwardRef<
         >
           {label}
         </Text>
-      ) : null}
+      )}
       <BlurBackground
         borderRadius={12}
         blurIntensity={16}
@@ -130,7 +130,7 @@ export const InputCardView: React.forwardRef<
               ref={ref}
             />
           </View>
-          {rightIcon ? (
+          {rightIcon && (
             <View
               style={
                 style.flatten(["items-end", "justify-center"]) as ViewStyle
@@ -138,11 +138,12 @@ export const InputCardView: React.forwardRef<
             >
               {rightIcon}
             </View>
-          ) : null}
+          )}
         </View>
       </BlurBackground>
-      {paragraph && !error ? (
-        typeof paragraph === "string" ? (
+      {paragraph &&
+        !error &&
+        (typeof paragraph === "string" ? (
           <View>
             <Text
               style={StyleSheet.flatten([
@@ -161,27 +162,24 @@ export const InputCardView: React.forwardRef<
           </View>
         ) : (
           paragraph
-        )
-      ) : null}
-      {errorMassageShow ? (
-        error ? (
-          <View>
-            <Text
-              style={StyleSheet.flatten([
-                style.flatten([
-                  "absolute",
-                  "text-caption2",
-                  "color-red-250",
-                  "margin-top-2",
-                ]) as ViewStyle,
-                errorLabelStyle,
-              ])}
-            >
-              {error}
-            </Text>
-          </View>
-        ) : null
-      ) : null}
+        ))}
+      {errorMassageShow && error && (
+        <View>
+          <Text
+            style={StyleSheet.flatten([
+              style.flatten([
+                "absolute",
+                "text-caption2",
+                "color-red-250",
+                "margin-top-2",
+              ]) as ViewStyle,
+              errorLabelStyle,
+            ])}
+          >
+            {error}
+          </Text>
+        </View>
+      )}
     </View>
   );
 });
