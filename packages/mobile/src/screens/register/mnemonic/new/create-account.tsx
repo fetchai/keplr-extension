@@ -210,7 +210,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
         name="name"
         defaultValue=""
       />
-      {mode === "create" ? (
+      {mode === "create" && (
         <React.Fragment>
           <Controller
             control={control}
@@ -367,7 +367,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
             )}
           </View>
         </React.Fragment>
-      ) : null}
+      )}
 
       <View style={style.flatten(["flex-1"])} />
       <Button

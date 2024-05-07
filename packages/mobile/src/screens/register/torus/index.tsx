@@ -47,7 +47,6 @@ const web3auth = new Web3Auth(WebBrowser, SecureStore, {
 interface FormData {
   name: string;
   password: string;
-  confirmPassword: string;
 }
 
 // CONTRACT: Only supported on IOS
@@ -145,15 +144,10 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
       : "Sign in with Google";
 
   const registerConfig: RegisterConfig = route.params.registerConfig;
-  const [mode] = useState(registerConfig.mode);
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
 
-  // Below uses the hook conditionally.
-  // This is a silly way, but `route.params.type` never changed in the logic.
-  const { privateKey, email } = useWeb3AuthSignIn(
-    route.params.type === "apple" ? LOGIN_PROVIDER.APPLE : LOGIN_PROVIDER.GOOGLE
-  );
+  const [showPassword, setShowPassword] = useState(false);
+  const [mode] = useState(registerConfig.mode);
+  const [isCreating, setIsCreating] = useState(false);
   const {
     control,
     handleSubmit,
@@ -162,7 +156,11 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const [isCreating, setIsCreating] = useState(false);
+  // Below uses the hook conditionally.
+  // This is a silly way, but `route.params.type` never changed in the logic.
+  const { privateKey, email } = useWeb3AuthSignIn(
+    route.params.type === "apple" ? LOGIN_PROVIDER.APPLE : LOGIN_PROVIDER.GOOGLE
+  );
 
   const submit = handleSubmit(async () => {
     if (!privateKey || !email) {
@@ -231,7 +229,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
     >
       <Text
         style={
@@ -253,7 +251,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         rules={{
           required: "Name is required",
           validate: (value: string) => {
-            if (value.length < 3) {
+            if (value.trim().length < 3) {
               return "Name at least 3 characters";
             }
           },
@@ -261,7 +259,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         render={({ field: { onChange, onBlur, value, ref } }) => {
           return (
             <InputCardView
-              label="Wallet nickname"
+              label="Account name"
               containerStyle={
                 style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
               }
@@ -275,16 +273,21 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 }
               }}
               error={errors.name?.message}
-              errorMassageShow={false}
               onBlur={() => {
                 onBlur();
                 onChange(value.trim());
               }}
-              onChangeText={(text: string) =>
-                onChange(
-                  text.replace(/[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/, "")
-                )
-              }
+              onChangeText={(text: string) => {
+                text = text.replace(
+                  /[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/,
+                  ""
+                );
+                if (text[0] === " ") {
+                  text = text.replace(/\s+/g, "");
+                }
+                text = text.replace(/ {1,}/g, " ");
+                onChange(text);
+              }}
               value={value}
               maxLength={30}
               refs={ref}
@@ -294,7 +297,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         name="name"
         defaultValue=""
       />
-      {mode === "create" ? (
+      {mode === "create" && (
         <React.Fragment>
           <Controller
             control={control}
@@ -307,8 +310,6 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
               },
             }}
             render={({ field: { onChange, onBlur, value, ref } }) => {
-              setPassword(value);
-
               return (
                 <InputCardView
                   label="Password"
@@ -350,12 +351,12 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
             defaultValue=""
           />
           <View style={style.flatten(["margin-y-18"]) as ViewStyle}>
-            {password ? (
+            {getValues("password") ? (
               <React.Fragment>
                 <PasswordValidateView
                   text="At least 8 characters"
                   icon={
-                    checkPasswordValidity(password).includes(
+                    checkPasswordValidity(getValues("password")).includes(
                       "At least 8 characters"
                     ) ? (
                       <XmarkIcon size={6} color="black" />
@@ -367,7 +368,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(password).includes(
+                        checkPasswordValidity(getValues("password")).includes(
                           "At least 8 characters"
                         )
                           ? "background-color-red-400"
@@ -379,7 +380,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 special character"
                   icon={
-                    checkPasswordValidity(password).includes(
+                    checkPasswordValidity(getValues("password")).includes(
                       "special character"
                     ) ? (
                       <XmarkIcon size={6} color="black" />
@@ -391,7 +392,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(password).includes(
+                        checkPasswordValidity(getValues("password")).includes(
                           "special character"
                         )
                           ? "background-color-red-400"
@@ -403,7 +404,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 lowercase character"
                   icon={
-                    checkPasswordValidity(password).includes("lowercase") ? (
+                    checkPasswordValidity(getValues("password")).includes(
+                      "lowercase"
+                    ) ? (
                       <XmarkIcon size={6} color="black" />
                     ) : (
                       <CheckIcon size={6} color="black" />
@@ -413,7 +416,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(password).includes("lowercase")
+                        checkPasswordValidity(getValues("password")).includes(
+                          "lowercase"
+                        )
                           ? "background-color-red-400"
                           : "background-color-green-400",
                       ]
@@ -423,7 +428,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 uppercase character"
                   icon={
-                    checkPasswordValidity(password).includes("uppercase") ? (
+                    checkPasswordValidity(getValues("password")).includes(
+                      "uppercase"
+                    ) ? (
                       <XmarkIcon size={6} color="black" />
                     ) : (
                       <CheckIcon size={6} color="black" />
@@ -433,7 +440,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(password).includes("uppercase")
+                        checkPasswordValidity(getValues("password")).includes(
+                          "uppercase"
+                        )
                           ? "background-color-red-400"
                           : "background-color-green-400",
                       ]
@@ -451,18 +460,26 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
             )}
           </View>
         </React.Fragment>
-      ) : null}
+      )}
       <View style={style.flatten(["flex-1"])} />
       <Button
-        text="Next"
+        containerStyle={
+          style.flatten([
+            "margin-y-18",
+            "background-color-white",
+            "border-radius-32",
+          ]) as ViewStyle
+        }
+        textStyle={{
+          color: "#0B1742",
+        }}
+        text="Continue"
         size="large"
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         loading={isCreating}
         onPress={submit}
         disabled={!privateKey || !email}
       />
-      {/* Mock element for bottom padding */}
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
 });
