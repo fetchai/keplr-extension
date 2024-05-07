@@ -355,9 +355,7 @@ export const NewLedgerScreen: FunctionComponent = () => {
           return (
             <InputCardView
               label="Account name"
-              containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
-              }
+              containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -411,6 +409,7 @@ export const NewLedgerScreen: FunctionComponent = () => {
                 <InputCardView
                   label="Password"
                   keyboardType={"default"}
+                  containerStyle={style.flatten(["margin-top-8"]) as ViewStyle}
                   secureTextEntry={!showPassword}
                   returnKeyType="next"
                   onSubmitEditing={() => {
