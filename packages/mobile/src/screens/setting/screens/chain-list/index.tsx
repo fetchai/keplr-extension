@@ -23,7 +23,15 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
   const style = useStyle();
 
-  const [isEnabled, setIsEnabled] = useState(true);
+  const isTestnetEnabled = () => {
+    const testnetList = chainStore.chainInfosWithUIConfig.filter(
+      (item) => item.chainInfo.isTestnet
+    );
+    const testnetDisabledList = testnetList.filter((item) => !item.disabled);
+    return testnetList.length === testnetDisabledList.length;
+  };
+
+  const [isEnabled, setIsEnabled] = useState(isTestnetEnabled);
   const [search, setSearch] = useState("");
   const [filterChainInfos, setFilterChainInfos] = useState(
     chainStore.chainInfosWithUIConfig
@@ -61,7 +69,6 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
             "items-center",
             "justify-between",
             "margin-bottom-24",
-            "display-none",
           ]) as ViewStyle
         }
       >
@@ -90,7 +97,17 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
             },
             style.flatten(["border-color-pink-light@40%"]),
           ]}
-          onValueChange={() => setIsEnabled((previousState) => !previousState)}
+          onValueChange={(isToggleOn) => {
+            chainStore.toggleMultipleChainInfoInUI(
+              filterChainInfos
+                .filter((chainInfoUI) => {
+                  return chainInfoUI.chainInfo.isTestnet;
+                })
+                .map((chainInfoUI) => chainInfoUI.chainInfo.chainId),
+              isToggleOn
+            );
+            setIsEnabled(isToggleOn);
+          }}
           value={isEnabled}
         />
       </View>
