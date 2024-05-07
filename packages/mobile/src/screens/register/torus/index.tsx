@@ -148,6 +148,8 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
   const [showPassword, setShowPassword] = useState(false);
   const [mode] = useState(registerConfig.mode);
   const [isCreating, setIsCreating] = useState(false);
+  const [password, setPassword] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -260,9 +262,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
           return (
             <InputCardView
               label="Account name"
-              containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
-              }
+              containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -310,15 +310,16 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
               },
             }}
             render={({ field: { onChange, onBlur, value, ref } }) => {
+              setPassword(value);
+
               return (
                 <InputCardView
                   label="Password"
+                  containerStyle={style.flatten(["margin-top-8"]) as ViewStyle}
                   keyboardType={"default"}
                   secureTextEntry={!showPassword}
                   returnKeyType="next"
-                  onSubmitEditing={() => {
-                    submit();
-                  }}
+                  onSubmitEditing={submit}
                   error={errors.password?.message}
                   errorMassageShow={false}
                   onBlur={onBlur}
@@ -351,12 +352,12 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
             defaultValue=""
           />
           <View style={style.flatten(["margin-y-18"]) as ViewStyle}>
-            {getValues("password") ? (
+            {password ? (
               <React.Fragment>
                 <PasswordValidateView
                   text="At least 8 characters"
                   icon={
-                    checkPasswordValidity(getValues("password")).includes(
+                    checkPasswordValidity(password).includes(
                       "At least 8 characters"
                     ) ? (
                       <XmarkIcon size={6} color="black" />
@@ -368,7 +369,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(getValues("password")).includes(
+                        checkPasswordValidity(password).includes(
                           "At least 8 characters"
                         )
                           ? "background-color-red-400"
@@ -380,7 +381,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 special character"
                   icon={
-                    checkPasswordValidity(getValues("password")).includes(
+                    checkPasswordValidity(password).includes(
                       "special character"
                     ) ? (
                       <XmarkIcon size={6} color="black" />
@@ -392,7 +393,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(getValues("password")).includes(
+                        checkPasswordValidity(password).includes(
                           "special character"
                         )
                           ? "background-color-red-400"
@@ -404,9 +405,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 lowercase character"
                   icon={
-                    checkPasswordValidity(getValues("password")).includes(
-                      "lowercase"
-                    ) ? (
+                    checkPasswordValidity(password).includes("lowercase") ? (
                       <XmarkIcon size={6} color="black" />
                     ) : (
                       <CheckIcon size={6} color="black" />
@@ -416,9 +415,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(getValues("password")).includes(
-                          "lowercase"
-                        )
+                        checkPasswordValidity(password).includes("lowercase")
                           ? "background-color-red-400"
                           : "background-color-green-400",
                       ]
@@ -428,9 +425,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                 <PasswordValidateView
                   text="Minumum 1 uppercase character"
                   icon={
-                    checkPasswordValidity(getValues("password")).includes(
-                      "uppercase"
-                    ) ? (
+                    checkPasswordValidity(password).includes("uppercase") ? (
                       <XmarkIcon size={6} color="black" />
                     ) : (
                       <CheckIcon size={6} color="black" />
@@ -440,9 +435,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                     style.flatten(
                       ["padding-4"],
                       [
-                        checkPasswordValidity(getValues("password")).includes(
-                          "uppercase"
-                        )
+                        checkPasswordValidity(password).includes("uppercase")
                           ? "background-color-red-400"
                           : "background-color-green-400",
                       ]
@@ -475,7 +468,6 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         }}
         text="Continue"
         size="large"
-        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         loading={isCreating}
         onPress={submit}
         disabled={!privateKey || !email}

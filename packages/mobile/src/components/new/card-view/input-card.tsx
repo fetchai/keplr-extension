@@ -55,12 +55,7 @@ export const InputCardView: React.forwardRef<
         <Text
           style={
             [
-              style.flatten([
-                "padding-y-4",
-                "color-white@60%",
-                "margin-y-8",
-                "body3",
-              ]),
+              style.flatten(["color-white@60%", "margin-y-12", "body3"]),
               labelStyle,
             ] as ViewStyle
           }
@@ -74,7 +69,7 @@ export const InputCardView: React.forwardRef<
         containerStyle={
           [
             style.flatten(
-              ["padding-y-12", "padding-x-18"],
+              ["padding-y-12", "padding-x-18", "flex-row"],
               isFocused || error
                 ? [
                     // The order is important.
@@ -91,94 +86,86 @@ export const InputCardView: React.forwardRef<
           ] as ViewStyle
         }
       >
-        <View style={style.flatten(["flex-row"]) as ViewStyle}>
-          <View style={style.flatten(["flex-3"]) as ViewStyle}>
-            <TextInput
-              keyboardType={
-                keyboardType ?? Platform.OS === "ios"
-                  ? "ascii-capable"
-                  : "visible-password"
-              }
-              placeholderTextColor={style.flatten(["color-gray-200"]).color}
-              style={
-                [
-                  style.flatten([
-                    "body3",
-                    "color-white",
-                    "padding-0",
-                    "justify-center",
-                  ]),
-                  inputStyle,
-                ] as ViewStyle
-              }
-              returnKeyType="done"
-              onFocus={(e) => {
-                setIsFocused(true);
+        <View style={style.flatten(["flex-3"]) as ViewStyle}>
+          <TextInput
+            keyboardType={
+              keyboardType ?? Platform.OS === "ios"
+                ? "ascii-capable"
+                : "visible-password"
+            }
+            placeholderTextColor={style.flatten(["color-gray-200"]).color}
+            style={
+              [
+                style.flatten([
+                  "body3",
+                  "color-white",
+                  "padding-0",
+                  "justify-center",
+                ]),
+                inputStyle,
+              ] as ViewStyle
+            }
+            returnKeyType="done"
+            onFocus={(e) => {
+              setIsFocused(true);
 
-                if (onFocus) {
-                  onFocus(e);
-                }
-              }}
-              onBlur={(e) => {
-                setIsFocused(false);
-
-                if (onBlur) {
-                  onBlur(e);
-                }
-              }}
-              {...restProps}
-              ref={ref}
-            />
-          </View>
-          {rightIcon && (
-            <View
-              style={
-                style.flatten(["items-end", "justify-center"]) as ViewStyle
+              if (onFocus) {
+                onFocus(e);
               }
-            >
-              {rightIcon}
-            </View>
-          )}
+            }}
+            onBlur={(e) => {
+              setIsFocused(false);
+
+              if (onBlur) {
+                onBlur(e);
+              }
+            }}
+            {...restProps}
+            ref={ref}
+          />
         </View>
+        {rightIcon && (
+          <View
+            style={style.flatten(["items-end", "justify-center"]) as ViewStyle}
+          >
+            {rightIcon}
+          </View>
+        )}
       </BlurBackground>
       {paragraph &&
         !error &&
         (typeof paragraph === "string" ? (
-          <View>
-            <Text
-              style={StyleSheet.flatten([
-                style.flatten([
-                  "absolute",
-                  "text-caption2",
-                  "color-gray-300",
-                  "margin-top-2",
-                  "margin-left-4",
-                ]) as ViewStyle,
-                errorLabelStyle,
-              ])}
-            >
-              {paragraph}
-            </Text>
-          </View>
-        ) : (
-          paragraph
-        ))}
-      {errorMassageShow && error && (
-        <View>
           <Text
             style={StyleSheet.flatten([
               style.flatten([
                 "absolute",
                 "text-caption2",
-                "color-red-250",
+                "color-gray-300",
                 "margin-top-2",
+                "margin-left-4",
               ]) as ViewStyle,
               errorLabelStyle,
             ])}
           >
-            {error}
+            {paragraph}
           </Text>
-        </View>
+        ) : (
+          paragraph
+        ))}
+      {errorMassageShow && error && (
+        <Text
+          style={StyleSheet.flatten([
+            style.flatten([
+              "absolute",
+              "text-caption2",
+              "color-red-250",
+              "margin-top-2",
+            ]) as ViewStyle,
+            errorLabelStyle,
+          ])}
+        >
+          {error}
+        </Text>
       )}
     </View>
   );

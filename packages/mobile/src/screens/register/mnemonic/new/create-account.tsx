@@ -173,9 +173,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
           return (
             <InputCardView
               label="Account name"
-              containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
-              }
+              containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
               returnKeyType={mode === "add" ? "done" : "next"}
               onSubmitEditing={() => {
                 if (mode === "add") {
@@ -230,6 +228,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
                   label="Password"
                   keyboardType={"default"}
                   secureTextEntry={!showPassword}
+                  containerStyle={style.flatten(["margin-top-8"]) as ViewStyle}
                   returnKeyType="next"
                   onSubmitEditing={() => {
                     submit();

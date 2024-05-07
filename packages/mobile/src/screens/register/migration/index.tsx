@@ -103,9 +103,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
           return (
             <InputCardView
               label="Ethereum Address"
-              containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
-              }
+              containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
               error={errors.ethAddress?.message}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -132,9 +130,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
           return (
             <InputCardView
               label="Private Key"
-              containerStyle={
-                style.flatten(["margin-bottom-4", "margin-top-18"]) as ViewStyle
-              }
+              containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
               error={errors.ethPrivateKey?.message}
               onBlur={onBlur}
               onChangeText={onChange}
