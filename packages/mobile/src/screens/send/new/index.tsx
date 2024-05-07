@@ -38,6 +38,8 @@ export const NewSendScreen: FunctionComponent = observer(() => {
     >
   >();
 
+  console.log("hey", process.env["PROD_AMPLITUDE_API_KEY"]);
+
   const chainId = route.params.chainId
     ? route.params.chainId
     : chainStore.current.chainId;

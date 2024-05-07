@@ -91,7 +91,9 @@ export const SendPhase1: FunctionComponent<{
 
   const sendConfigError = sendConfigs.amountConfig.error;
   const txStateIsValid = sendConfigError == null;
-  const Usd = inputInUsd ? `(${inputInUsd} USD)` : "";
+  const Usd = inputInUsd
+    ? `(${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()})`
+    : "";
 
   const availableBalance = `${balance
     .shrink(true)

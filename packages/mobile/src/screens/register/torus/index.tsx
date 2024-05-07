@@ -456,6 +456,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
       <Button
         text="Next"
         size="large"
+        containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         loading={isCreating}
         onPress={submit}
         disabled={!privateKey || !email}

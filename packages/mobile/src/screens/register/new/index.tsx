@@ -302,7 +302,6 @@ export const NewWalletModal: FunctionComponent<{
       <CardModal
         isOpen={isOpen}
         title="Create a new wallet"
-        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         close={() => close()}
       >
         <TokenCardView
@@ -384,7 +383,6 @@ export const ImportExistingWalletModal: FunctionComponent<{
       <CardModal
         isOpen={isOpen}
         title="Import existing wallet"
-        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         close={() => close()}
       >
         <TokenCardView

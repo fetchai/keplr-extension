@@ -47,12 +47,7 @@ export const PasswordInputModal: FunctionComponent<{
   }
 
   return (
-    <CardModal
-      isOpen={isOpen}
-      close={close}
-      title={title}
-      cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
-    >
+    <CardModal isOpen={isOpen} close={close} title={title}>
       <InputCardView
         label="Password"
         keyboardType={"default"}
@@ -84,7 +79,6 @@ export const PasswordInputModal: FunctionComponent<{
         value={password}
         returnKeyType="done"
         onSubmitEditing={submitPassword}
-        containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
       />
       <Button
         text="Continue"
@@ -93,7 +87,7 @@ export const PasswordInputModal: FunctionComponent<{
         onPress={submitPassword}
         disabled={!password}
         containerStyle={
-          style.flatten(["border-radius-32", "margin-y-20"]) as ViewStyle
+          style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle
         }
       />
       <KeyboardSpacerView />
