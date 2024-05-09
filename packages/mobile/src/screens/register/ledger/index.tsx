@@ -258,6 +258,7 @@ export const NewLedgerScreen: FunctionComponent = () => {
   };
 
   const submit = handleSubmit(async () => {
+    setShowPassword(false);
     if (Platform.OS === "android" && location == undefined) {
       setLocationError("Location services are disabled");
       return;

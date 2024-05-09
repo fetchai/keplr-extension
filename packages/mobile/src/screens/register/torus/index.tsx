@@ -165,6 +165,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
   );
 
   const submit = handleSubmit(async () => {
+    setShowPassword(false);
     if (!privateKey || !email) {
       return;
     }

@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import {
@@ -23,19 +28,23 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
   const style = useStyle();
 
-  const isTestnetEnabled = () => {
+  const isTestnetEnabled = useCallback(() => {
     const testnetList = chainStore.chainInfosWithUIConfig.filter(
       (item) => item.chainInfo.isTestnet
     );
     const testnetDisabledList = testnetList.filter((item) => !item.disabled);
     return testnetList.length === testnetDisabledList.length;
-  };
+  }, [chainStore.chainInfosWithUIConfig]);
 
   const [isEnabled, setIsEnabled] = useState(isTestnetEnabled);
   const [search, setSearch] = useState("");
   const [filterChainInfos, setFilterChainInfos] = useState(
     chainStore.chainInfosWithUIConfig
   );
+
+  useEffect(() => {
+    setIsEnabled(isTestnetEnabled);
+  }, [isTestnetEnabled]);
 
   useEffect(() => {
     const searchTrim = search.trim();
