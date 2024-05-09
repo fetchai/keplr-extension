@@ -132,9 +132,8 @@ export const InputCardView: React.forwardRef<
           </View>
         )}
       </BlurBackground>
-      {paragraph &&
-        !error &&
-        (typeof paragraph === "string" ? (
+      {paragraph && !error ? (
+        typeof paragraph === "string" ? (
           <Text
             style={StyleSheet.flatten([
               style.flatten([
@@ -151,22 +150,27 @@ export const InputCardView: React.forwardRef<
           </Text>
         ) : (
           paragraph
-        ))}
-      {errorMassageShow && error && (
-        <Text
-          style={StyleSheet.flatten([
-            style.flatten([
-              "absolute",
-              "text-caption2",
-              "color-red-250",
-              "margin-top-2",
-            ]) as ViewStyle,
-            errorLabelStyle,
-          ])}
-        >
-          {error}
-        </Text>
-      )}
+        )
+      ) : null}
+      {errorMassageShow ? (
+        error ? (
+          <View>
+            <Text
+              style={StyleSheet.flatten([
+                style.flatten([
+                  "absolute",
+                  "text-caption2",
+                  "color-red-250",
+                  "margin-top-2",
+                ]) as ViewStyle,
+                errorLabelStyle,
+              ])}
+            >
+              {error}
+            </Text>
+          </View>
+        ) : null
+      ) : null}
     </View>
   );
 });

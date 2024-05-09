@@ -76,6 +76,7 @@ const useWeb3AuthSignIn = (
         mfaLevel: "default",
         curve: "secp256k1",
       });
+
       console.log(`Logged in ${web3auth.privKey}`);
       if (web3auth.privKey) {
         setEmail(web3auth.userInfo()?.email);
@@ -92,9 +93,17 @@ const useWeb3AuthSignIn = (
   useEffect(() => {
     const init = async () => {
       await web3auth.init();
+
       if (web3auth?.privKey) {
-        setEmail(web3auth.userInfo()?.email);
-        setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
+        const userInfo = web3auth?.userInfo();
+        const typeOfLogin = userInfo?.typeOfLogin;
+
+        if (type == typeOfLogin) {
+          setEmail(userInfo?.email);
+          setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
+        } else {
+          await login();
+        }
       } else {
         await login();
       }
