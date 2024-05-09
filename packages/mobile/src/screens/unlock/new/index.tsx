@@ -184,6 +184,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
 
   const tryUnlock = async () => {
     try {
+      setShowPassword(false);
       setIsLoading(true);
       // Decryption needs slightly huge computation.
       // Because javascript is synchronous language, the loadnig state change would not delivered to the UI thread
