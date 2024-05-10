@@ -29,7 +29,9 @@ export const Card: React.FC<CardProps> = ({
   rightContentOnClick,
 }) => {
   const containerStyle: React.CSSProperties = {
-    backgroundColor: isActive ? "var(--Indigo---Fetch, #5F38FB)" : "",
+    backgroundColor: isActive
+      ? "var(--Indigo---Fetch, #5F38FB)"
+      : "rgba(255,255,255,0.1)",
     cursor: onClick || rightContentOnClick ? "pointer" : "default",
     ...style,
   };
