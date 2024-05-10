@@ -547,6 +547,9 @@ export const VerifyMnemonicModePage: FunctionComponent<{
           styleProps={{
             marginTop: "30px",
             marginBottom: "20px",
+            height: "56px",
+            borderRadius: "100px",
+            background: "transparent",
           }}
           onClick={async (e: any) => {
             e.preventDefault();

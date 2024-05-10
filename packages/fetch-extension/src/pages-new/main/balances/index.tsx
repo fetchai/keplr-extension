@@ -5,7 +5,6 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { useLanguage } from "../../../languages";
 import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
-// import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
 import { separateNumericAndDenom } from "@utils/format";
 

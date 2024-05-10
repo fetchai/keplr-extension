@@ -271,7 +271,7 @@ html[data-register-page="true"] #app .container {
 }
 .button:hover {
   color: white;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.15);
   border: 1px solid var(--Indigo-Indigo-400, #7655fc);
 }
 .button:focus {
@@ -293,14 +293,14 @@ html[data-register-page="true"] #app .container {
 .btn2:hover {
   color: white;
   background: transparent !important;
-  border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+  border: 1px solid white;
 }
 .btn2:disabled {
   color: white;
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.4;
   background: transparent !important;
-  border: 1px solid var(--Indigo-Indigo-400, #7655fc);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .introIcon {
@@ -349,21 +349,25 @@ html[data-register-page="true"] #app .container {
 }
 .card {
   display: flex;
-  padding: 12px;
+  padding: 18px;
   background: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  border-radius: 15px;
+  border-radius: 12px;
   align-items: flex-start;
   gap: 14px;
   color: rgba(255, 255, 255, 0.9);
   max-width: 390px;
 }
 .cardTitle {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
 }
 .cardText {
-  width: 280px;
-  font-size: 16px;
+  width: 252px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
 }
 .mainpageContainer {
   display: flex;
