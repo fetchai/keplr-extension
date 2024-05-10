@@ -1,7 +1,6 @@
 .container {
   display: flex;
   flex-direction: column;
-
   height: 100%;
 }
 .input {
@@ -11,6 +10,7 @@
 .input:focus {
   background: rgba(255, 255, 255, 0.2);
   color: white !important;
+  border: 1px solid #7655fc;
 }
 .label {
   color: rgba(255, 255, 255, 0.6);

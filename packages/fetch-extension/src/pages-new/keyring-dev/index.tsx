@@ -10,6 +10,7 @@ import { Card } from "@components-v2/card";
 import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
+import { formatAddress } from "@utils/format";
 
 interface SetKeyRingProps {
   navigateTo?: any;
@@ -91,7 +92,11 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
                   ? require("@assets/svg/wireframe/check.svg")
                   : ""
               }
-              subheading={keyStore.selected ? accountInfo.bech32Address : ""}
+              subheading={
+                keyStore.selected
+                  ? formatAddress(accountInfo.bech32Address)
+                  : ""
+              }
               isActive={keyStore.selected}
               onClick={
                 keyStore.selected

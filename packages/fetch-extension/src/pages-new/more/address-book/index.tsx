@@ -20,6 +20,8 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import styles from "../token/manage/style.module.scss";
 import { AddAddress } from "./add-address";
 import { AddressRow } from "./address-row";
+import { NoAddress } from "./no-adress";
+import { ButtonV2 } from "@components-v2/buttons/button";
 export interface chatSectionParams {
   openModal: boolean;
   addressInputValue: string;
@@ -99,6 +101,7 @@ export const AddressBookPage: FunctionComponent<{
       smallTitle={true}
       showChainName={false}
       canChangeChainInfo={false}
+      showBottomMenu={false}
       alternativeTitle={intl.formatMessage({
         id: "main.menu.address-book",
       })}
@@ -150,49 +153,61 @@ export const AddressBookPage: FunctionComponent<{
         <div className={styleAddressBook["loader"]}>Loading ....</div>
       ) : (
         <div className={style["container"]}>
-          {addressBookConfig.addressBookDatas.map((data, i) => {
-            return (
-              <AddressRow
-                selectHandler={selectHandler}
-                selectedChainId={selectedChainId}
-                chainStore={chainStore}
-                key={i}
-                data={data}
-                index={i}
-                onSelect={(index) => {
-                  if (onBackButton) {
-                    onBackButton();
-                  }
-                  addressBookConfig.selectAddressAt(index);
-                }}
-                onEdit={(index) => {
-                  setAddAddressModalOpen(true);
-                  setAddAddressModalIndex(index);
-                }}
-                onDelete={async (index) => {
-                  if (
-                    await confirm.confirm({
-                      img: (
-                        <img
-                          alt=""
-                          src={require("@assets/img/trash.svg")}
-                          style={{ height: "80px" }}
-                        />
-                      ),
-                      title: intl.formatMessage({
-                        id: "setting.address-book.confirm.delete-address.title",
-                      }),
-                      paragraph: intl.formatMessage({
-                        id: "setting.address-book.confirm.delete-address.paragraph",
-                      }),
-                    })
-                  ) {
-                    await addressBookConfig.removeAddressBook(index);
-                  }
-                }}
-              />
-            );
-          })}
+          {addressBookConfig.addAddressBook.length > 0 ? (
+            addressBookConfig.addressBookDatas.map((data, i) => {
+              return (
+                <AddressRow
+                  selectHandler={selectHandler}
+                  selectedChainId={selectedChainId}
+                  chainStore={chainStore}
+                  key={i}
+                  data={data}
+                  index={i}
+                  onSelect={(index) => {
+                    if (onBackButton) {
+                      onBackButton();
+                    }
+                    addressBookConfig.selectAddressAt(index);
+                  }}
+                  onEdit={(index) => {
+                    setAddAddressModalOpen(true);
+                    setAddAddressModalIndex(index);
+                  }}
+                  onDelete={async (index) => {
+                    if (
+                      await confirm.confirm({
+                        img: (
+                          <img
+                            alt=""
+                            src={require("@assets/img/trash.svg")}
+                            style={{ height: "80px" }}
+                          />
+                        ),
+                        title: intl.formatMessage({
+                          id: "setting.address-book.confirm.delete-address.title",
+                        }),
+                        paragraph: intl.formatMessage({
+                          id: "setting.address-book.confirm.delete-address.paragraph",
+                        }),
+                      })
+                    ) {
+                      await addressBookConfig.removeAddressBook(index);
+                    }
+                  }}
+                />
+              );
+            })
+          ) : (
+            <NoAddress />
+          )}
+
+          <ButtonV2
+            styleProps={{
+              height: "56px",
+            }}
+            text="Add an address"
+            onClick={() => setAddAddressModalOpen(true)}
+          />
         </div>
       )}
     </HeaderLayout>
