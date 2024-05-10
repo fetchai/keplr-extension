@@ -118,8 +118,8 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             0, // Change this to 0
             chartArea.bottom
           );
-          gradient.addColorStop(0, "#5F38FB"); // Start color
-          gradient.addColorStop(1, "#F9774B"); // End color
+          gradient.addColorStop(0, "#F9774B"); // Start color
+          gradient.addColorStop(1, "#5F38FB"); // End color
 
           return gradient;
         },

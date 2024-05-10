@@ -127,7 +127,7 @@ export const WalletDetailsView = ({
           {formatAddress(current.chainName)}
           <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
         </button>
-        <Button
+        <button
           disabled={chatDisabled}
           onClick={() => {
             navigate("/chat");
@@ -140,7 +140,7 @@ export const WalletDetailsView = ({
               {chatTooltip}
             </UncontrolledTooltip>
           )}
-        </Button>
+        </button>
       </div>
       <div className={style["wallet-detail-card"]}>
         <div
@@ -212,7 +212,9 @@ export const WalletDetailsView = ({
                     alignItems: "center",
                     gap: "6px",
                     opacity: "0.6",
+                    cursor: "pointer",
                   }}
+                  onClick={() => copyAddress(accountInfo.bech32Address)}
                 >
                   <Address maxCharacters={16} lineBreakBeforePrefix={false}>
                     {accountInfo.walletStatus === WalletStatus.Loaded &&
@@ -222,7 +224,6 @@ export const WalletDetailsView = ({
                   </Address>
                   <img
                     style={{ cursor: "pointer" }}
-                    onClick={() => copyAddress(accountInfo.bech32Address)}
                     src={require("@assets/svg/wireframe/copy.svg")}
                     alt=""
                   />
