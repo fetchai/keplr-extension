@@ -86,6 +86,14 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
         {options.map((option: any) => (
           <label key={option.value} className={styles["dropdownItem"]}>
             <Card
+              leftImage={option.icon}
+              leftImageStyle={{
+                backgroundColor: "transparent",
+                height: "18px",
+                width: "18px",
+                borderRadius: 0,
+                padding: "1px",
+              }}
               style={
                 selectedFilter.includes(option.value)
                   ? {
@@ -117,6 +125,9 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
         ))}
       </div>
       <ButtonV2
+        styleProps={{
+          minHeight: "56px",
+        }}
         disabled={isSaveChangesButtonDisabled}
         onClick={handleSaveChanges}
         text="Save Changes"
