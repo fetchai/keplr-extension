@@ -16,7 +16,7 @@ import {
 } from "../advanced-bip44";
 import style from "../style.module.scss";
 import style2 from "./recover-mnemonic.module.scss";
-import { Button, ButtonGroup, Form, Label } from "reactstrap";
+import { Button, Form, Label } from "reactstrap";
 import { Input, PasswordInput } from "@components-v2/form";
 import { BackButton } from "../index";
 import { NewMnemonicConfig, NumWords, useNewMnemonicConfig } from "./hook";
@@ -26,6 +26,7 @@ import { useNotification } from "@components/notification";
 import { AuthIntro } from "../auth";
 import { Card } from "@components-v2/card";
 import keyIcon from "@assets/svg/wireframe/key-icon.png";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 
 export const TypeNewMnemonic = "new-mnemonic";
 
@@ -174,8 +175,22 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
           confirmPassword: "",
         },
       });
+
+      const tabs = [{ id: "12 words" }, { id: "24 words" }];
       const [checkBox1Checked, setCheckBox1Checked] = useState(false);
       const [checkBox2Checked, setCheckBox2Checked] = useState(false);
+
+      const [activeTab, setActiveTab] = useState(tabs[0].id)
+
+      useEffect(() => {
+        const handleTabChange = (activeTab: string) => {
+          if (activeTab === "12 words")
+            newMnemonicConfig.setNumWords(NumWords.WORDS12);
+          else newMnemonicConfig.setNumWords(NumWords.WORDS24);
+        };
+
+        handleTabChange(activeTab)
+      }, [activeTab]);
 
       const handleCopyClicked = useCallback(async () => {
         await navigator.clipboard.writeText(newMnemonicConfig.mnemonic);
@@ -190,6 +205,8 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
           },
         });
       }, []);
+
+      
       return (
         <div>
           {!isMainPage && !continueClicked ? (
@@ -199,7 +216,11 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   registerConfig.clear();
                 }}
               />
-              <div>
+              <div
+                style={{
+                  marginTop: "24px",
+                }}
+              >
                 <div style={{ color: "white", fontSize: "32px" }}>
                   Save your recovery
                 </div>
@@ -208,7 +229,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   style={{
                     color: "rgba(255,255,255,0.8)",
                     fontSize: "16px",
-                    marginBottom: "5px",
+                    marginTop: "12px",
                   }}
                 >
                   These words below will let you recover your wallet if you lose
@@ -217,32 +238,16 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   with anyone!
                 </div>
               </div>
-              <div className={style["title"]} style={{ display: "flex" }}>
-                <div style={{ float: "right" }}>
-                  <ButtonGroup size="sm" style={{ marginBottom: "4px" }}>
-                    <Button
-                      type="button"
-                      color="primary"
-                      outline={newMnemonicConfig.numWords !== NumWords.WORDS12}
-                      onClick={() => {
-                        newMnemonicConfig.setNumWords(NumWords.WORDS12);
-                      }}
-                    >
-                      <FormattedMessage id="register.create.toggle.word12" />
-                    </Button>
-                    <Button
-                      type="button"
-                      color="primary"
-                      outline={newMnemonicConfig.numWords !== NumWords.WORDS24}
-                      onClick={() => {
-                        newMnemonicConfig.setNumWords(NumWords.WORDS24);
-                      }}
-                    >
-                      <FormattedMessage id="register.create.toggle.word24" />
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </div>
+
+              <TabsPanel
+                tabs={tabs}
+                setActiveTab={setActiveTab}
+                styleProps={{
+                  width: "164px",
+                  height: "36px",
+                }}
+              />
+
               <div className={style["newMnemonicContainer"]}>
                 <div className={style["newMnemonic"]}>
                   {newMnemonicConfig.mnemonic}
@@ -275,7 +280,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
               </label>
               <AdvancedBIP44Option bip44Option={bip44Option} />
               <ButtonV2
-                styleProps={{ marginBottom: "20px" }}
+                styleProps={{ marginBottom: "20px", height: "56px" }}
                 disabled={!checkBox1Checked || !checkBox2Checked}
                 onClick={() => setContinueClicked(true)}
                 text=""
