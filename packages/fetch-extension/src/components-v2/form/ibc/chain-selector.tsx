@@ -26,7 +26,11 @@ export const DestinationChainSelector: FunctionComponent<{
 
   return (
     <React.Fragment>
-      <FormGroup>
+      <FormGroup
+        style={{
+          marginBottom: "16px",
+        }}
+      >
         <div className={style["label"]}>
           <FormattedMessage id="component.ibc.channel-registrar.chain-selector.label" />
         </div>

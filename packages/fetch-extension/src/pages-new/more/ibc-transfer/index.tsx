@@ -106,6 +106,7 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
         isIBCRegisterPageOpen ? "Add IBC Chain" : "IBC Transfer"
       }
       canChangeChainInfo={false}
+      showBottomMenu={false}
       onBackButton={() => {
         isIBCRegisterPageOpen
           ? setIsIBCRegisterPageOpen(false)
@@ -244,6 +245,11 @@ export const IBCTransferPageChannel: FunctionComponent<{
                 value={""}
                 // pageName={"IBC Transfer"}
               />
+              <div
+                style={{
+                  marginBottom: "12px",
+                }}
+              />
               <MemoInput
                 label={intl.formatMessage({
                   id: "send.input.memo",
@@ -263,6 +269,9 @@ export const IBCTransferPageChannel: FunctionComponent<{
                 </div>
               </Alert>
               <ButtonV2
+                styleProps={{
+                  height: "56px",
+                }}
                 text=""
                 disabled={!isValid}
                 onClick={(e: any) => {
