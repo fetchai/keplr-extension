@@ -153,7 +153,7 @@
   "setting.token.add.name": "Name",
   "setting.token.add.symbol": "Symbol",
   "setting.token.add.decimals": "Decimals",
-  "setting.token.add.button.submit": "Submit",
+  "setting.token.add.button.submit": "Save",
   "setting.token.add.secret20.checkbox.import-viewing-key": "(Advanced) Import my own viewing key",
   "setting.token.add.secret20.checkbox.use-suggested-viewing-key": "Use webpage suggested viewing key",
   "setting.token.add.secret20.viewing-key": "Viewing Key",

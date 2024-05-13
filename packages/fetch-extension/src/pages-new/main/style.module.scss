@@ -15,6 +15,7 @@
     width: 12px;
   }
 }
+
 .wallet-name,
 .address {
   display: flex;
@@ -79,18 +80,31 @@
   align-items: center;
   justify-content: end;
 }
-.chat-button,
-.chat-button:hover {
+.chat-button {
   border: 0px;
   background: transparent !important;
   padding: 0px;
   box-shadow: none;
 }
 
+.chat-button:hover {
+  padding: 0px;
+  img {
+    border-radius: 100px;
+    border: 1px solid white;
+    scale: 0.99;
+  }
+}
+
 .chat-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  img {
+    border: 0px !important;
+    scale: 1 !important;
+  }
 }
+
 .wallet-detail-card {
   font-size: 14px;
   padding: 12px 18px;

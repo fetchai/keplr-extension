@@ -7,6 +7,11 @@
   background: rgba(255, 255, 255, 0.1) !important;
   color: white !important;
 }
+
+.input:read-only {
+  border: 0px !important;
+}
+
 .input:focus {
   background: rgba(255, 255, 255, 0.2);
   color: white !important;
