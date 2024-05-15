@@ -12,9 +12,10 @@ import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChipButton } from "components/new/chip";
 import { FilterIcon } from "components/new/icon/filter-icon";
-
 import { ChatSection } from "screens/inbox/chat-section";
 import { ActivityNativeTab } from "screens/activity/activity-transaction";
+import { useStore } from "stores/index";
+
 export interface FilterItem {
   icon: ReactElement;
   isSelected: boolean;
@@ -34,6 +35,7 @@ export const ActivityScreen = () => {
   const [latestBlock, _setLatestBlock] = useState<string>();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const { analyticsStore } = useStore();
 
   return (
     <PageWithViewInBottomTabView
@@ -57,7 +59,13 @@ export const ActivityScreen = () => {
             ]) as ViewStyle
           }
           backgroundBlur={false}
-          onPress={() => setIsOpenModal(true)}
+          onPress={() => {
+            setIsOpenModal(true);
+            analyticsStore.logEvent("filter_click", {
+              tabName: "Transactions",
+              pageName: "Activity",
+            });
+          }}
         />
       </View>
       <Text

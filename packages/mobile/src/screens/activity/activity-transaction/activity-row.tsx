@@ -17,7 +17,7 @@ export const ActivityRow: FunctionComponent<{
   setDate: any;
 }> = ({ node, setDate }) => {
   const style = useStyle();
-  const { chainStore } = useStore();
+  const { chainStore, analyticsStore } = useStore();
   const [isAmountDeducted, setIsAmountDeducted] = useState(false);
 
   useEffect(() => {
@@ -37,14 +37,18 @@ export const ActivityRow: FunctionComponent<{
   return (
     <TouchableOpacity
       style={style.flatten(["flex-row", "items-center"]) as ViewStyle}
-      onPress={() =>
+      onPress={() => {
         navigation.navigate("Others", {
           screen: "ActivityDetails",
           params: {
             details: details,
           },
-        })
-      }
+        });
+        analyticsStore.logEvent("activity_transactions_click", {
+          tabName: "Transactions",
+          pageName: "Activity",
+        });
+      }}
     >
       <View
         style={

@@ -13,10 +13,6 @@ export const ConfirmCardModel: FunctionComponent<{
 }> = ({ close, title, isOpen, select, subtitle }) => {
   const style = useStyle();
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
     <CardModal
       isOpen={isOpen}

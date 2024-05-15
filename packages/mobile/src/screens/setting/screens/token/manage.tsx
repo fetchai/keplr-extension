@@ -18,7 +18,13 @@ import { ConfirmCardModel } from "components/new/confirm-modal";
 import { Button } from "components/button";
 
 export const SettingManageTokensScreen: FunctionComponent = observer(() => {
-  const { chainStore, queriesStore, accountStore, tokensStore } = useStore();
+  const {
+    chainStore,
+    queriesStore,
+    accountStore,
+    tokensStore,
+    analyticsStore,
+  } = useStore();
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -79,12 +85,15 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
             style={style.flatten(["margin-top-68", "flex-1"]) as ViewStyle}
           />
           <Button
-            text="Add an address"
+            text="Add token"
             size="large"
             containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
             textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
             onPress={() => {
               navigation.navigate("Setting.AddToken");
+              analyticsStore.logEvent("add_token_icon_click", {
+                pageName: "Manage Tokens",
+              });
             }}
           />
           <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
@@ -103,7 +112,7 @@ export const ManageTokenItem: FunctionComponent<{
   };
   balance: CoinPretty;
 }> = observer(({ containerStyle, balance }) => {
-  const { chainStore, tokensStore } = useStore();
+  const { chainStore, tokensStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
@@ -171,6 +180,9 @@ export const ManageTokenItem: FunctionComponent<{
             title={"Delete token"}
             subtitle={"Are you sure you want to delete this token?"}
             select={async (confirm: boolean) => {
+              analyticsStore.logEvent("token_delete_click", {
+                action: confirm ? "Yes" : "No",
+              });
               if (confirm) {
                 await tokensOf.removeToken(balance.currency);
               }

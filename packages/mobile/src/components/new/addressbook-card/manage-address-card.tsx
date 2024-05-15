@@ -7,6 +7,7 @@ import { EditIcon } from "../icon/edit";
 import { DeleteIcon } from "../icon/color-delete";
 import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
+import { useStore } from "stores/index";
 
 export enum ManageAddressOption {
   renameAddress,
@@ -20,6 +21,7 @@ export const ManageAddressCardModel: FunctionComponent<{
   onSelectWallet: (option: ManageAddressOption) => void;
 }> = ({ close, title, isOpen, onSelectWallet }) => {
   const style = useStyle();
+  const { analyticsStore } = useStore();
 
   if (!isOpen) {
     return null;
@@ -101,6 +103,9 @@ export const ManageAddressCardModel: FunctionComponent<{
                 backgroundBlur={false}
                 icon={<DeleteIcon size={17} />}
                 iconStyle={style.flatten(["padding-0"]) as ViewStyle}
+                onPress={() =>
+                  analyticsStore.logEvent("delete_address_icon_click")
+                }
               />
               <Text
                 style={

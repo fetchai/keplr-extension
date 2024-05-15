@@ -73,25 +73,35 @@ export class RootStore {
   public readonly analyticsStore: AnalyticsStore<
     {
       chainId?: string;
+      chainIds?: string[];
+      chainIdentifier?: string;
+      chainIdentifiers?: string[];
       chainName?: string;
       toChainId?: string;
       toChainName?: string;
-      registerType?: "seed" | "google" | "apple" | "ledger" | "qr";
+      registerType?: "seed" | "google" | "apple" | "ledger" | "keystone" | "qr";
       feeType?: FeeType | undefined;
-      isIbc?: boolean;
+      rpc?: string;
+      rest?: string;
+      pageName?: string;
+      tabName?: string;
+      isClaimAll?: boolean;
+      selectedPrivacySetting?: string;
+      readReceipt?: boolean;
+      message?: string;
+      action?: string;
+      accountType?: string;
       validatorName?: string;
       toValidatorName?: string;
-      proposalId?: string;
-      proposalTitle?: string;
     },
     {
-      registerType?: "seed" | "google" | "ledger" | "qr" | "apple";
-      accountType?: "mnemonic" | "privateKey" | "ledger";
+      registerType?: "seed" | "google" | "apple" | "ledger" | "keystone" | "qr";
+      accountType?: "mnemonic" | "privateKey" | "ledger" | "keystone";
       currency?: string;
       language?: string;
+      totalAccounts?: number;
     }
   >;
-
   constructor() {
     const router = new RNRouterUI(RNEnv.produceEnv);
 

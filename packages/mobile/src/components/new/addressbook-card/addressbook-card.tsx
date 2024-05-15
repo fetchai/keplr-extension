@@ -30,7 +30,7 @@ export const AddressBookCardModel: FunctionComponent<{
   }) => {
     const style = useStyle();
     const [search, setSearch] = useState("");
-    const { chainStore, accountStore } = useStore();
+    const { chainStore, accountStore, analyticsStore } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
 
     const [filterAddressBook, setFilterAddressBook] = useState(
@@ -156,6 +156,9 @@ export const AddressBookCardModel: FunctionComponent<{
               onPress={() => {
                 if (addAddressBook) {
                   addAddressBook(true);
+                  analyticsStore.logEvent("add_an_address_click", {
+                    pageName: "Send",
+                  });
                 }
                 close();
               }}

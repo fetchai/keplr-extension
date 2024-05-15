@@ -15,7 +15,7 @@ import {
 } from "@react-navigation/native";
 
 export const RenameWalletScreen: FunctionComponent = observer(() => {
-  const { keyRingStore, accountStore, chainStore } = useStore();
+  const { keyRingStore, accountStore, chainStore, analyticsStore } = useStore();
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 

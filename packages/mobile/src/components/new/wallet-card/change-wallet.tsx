@@ -132,8 +132,11 @@ export const ChangeWalletCardModel: FunctionComponent<{
               onPress={async () => {
                 if (!keyStore?.selected) {
                   close();
-                  analyticsStore.logEvent("Account changed");
+
                   await onChangeAccount(keyStore);
+                  analyticsStore.logEvent("select_account_click", {
+                    pageName: "Home",
+                  });
                 }
               }}
               activeOpacity={0.5}

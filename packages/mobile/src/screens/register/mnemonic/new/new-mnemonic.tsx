@@ -21,6 +21,7 @@ import { useSimpleTimer } from "hooks/use-simple-timer";
 import LottieView from "lottie-react-native";
 import { useNewMnemonicConfig } from "../hook";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { useStore } from "stores/index";
 
 export const NewMnemonicScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -42,7 +43,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
   const words = newMnemonicConfig.mnemonic.split(" ");
 
   const smartNavigation = useSmartNavigation();
-
+  const { analyticsStore } = useStore();
   const style = useStyle();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [isSelected, setSelection] = useState(false);
@@ -255,6 +256,7 @@ export const NewMnemonicScreen: FunctionComponent = observer(() => {
             registerConfig,
             newMnemonicConfig,
           });
+          analyticsStore.logEvent("continue_click", { pageName: "Register" });
         }}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

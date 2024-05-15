@@ -52,10 +52,11 @@ import { RenameWalletScreen } from "screens/rename-account";
 import { DeleteWalletScreen } from "screens/delete-account";
 import { ActivityDetails } from "screens/activity/activity-details";
 import { WebViewScreen } from "screens/web/webpages/webview";
+import { useStore } from "stores/index";
 
 export const OtherNavigation: FunctionComponent = () => {
   const style = useStyle();
-
+  const { analyticsStore } = useStore();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   return (
@@ -234,6 +235,9 @@ export const OtherNavigation: FunctionComponent = () => {
             <HeaderRightButton
               onPress={() => {
                 navigation.navigate("Setting.AddToken");
+                analyticsStore.logEvent("add_token_icon_click", {
+                  pageName: "More",
+                });
               }}
             >
               <IconButton

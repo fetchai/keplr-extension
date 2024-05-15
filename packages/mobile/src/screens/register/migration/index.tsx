@@ -11,6 +11,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { parseEthPrivateKey } from "@fetchai/eth-migration";
 import { isPrivateKey } from "utils/format/format";
+import { useStore } from "stores/index";
 
 interface FormData {
   ethAddress: string;
@@ -35,6 +36,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
+  const { analyticsStore } = useStore();
 
   const {
     control,
@@ -165,6 +167,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
         rippleColor="black@10%"
         onPress={() => {
           submit();
+          analyticsStore.logEvent("next_click", { pageName: "Register" });
         }}
       />
     </PageWithScrollView>

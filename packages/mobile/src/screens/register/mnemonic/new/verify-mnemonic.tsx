@@ -11,6 +11,7 @@ import { RegisterConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { RectButton } from "components/rect-button";
 import { BIP44AdvancedButton, useBIP44Option } from "screens/register/bip44";
+import { useStore } from "stores/index";
 import { BipButtons } from "screens/register/bip-button";
 
 export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
@@ -30,7 +31,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
-
+  const { analyticsStore } = useStore();
   const registerConfig = route.params.registerConfig;
   const newMnemonicConfig = route.params.newMnemonicConfig;
 
@@ -186,6 +187,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
           textStyle={style.flatten(["body2"])}
           onPress={async () => {
             setIsCreating(true);
+            analyticsStore.logEvent("continue_click", { pageName: "More" });
             smartNavigation.navigateSmart("Register.CreateAccount", {
               registerConfig: registerConfig,
               mnemonic: encodeURIComponent(
@@ -195,6 +197,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
             });
           }}
         />
+        {/*naive supreme token farm hand panic ketchup wisdom little choice valid home*/}
         <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </View>
       {/* Mock element for bottom padding */}

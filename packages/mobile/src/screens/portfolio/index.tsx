@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useRef, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { PageWithScrollViewInBottomTabView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { StakingCard } from "components/new/staking/staking-card";
@@ -8,6 +8,7 @@ import { useStyle } from "styles/index";
 import { NativeTokensSection } from "screens/portfolio/native-tokens-section";
 import { TokensSection } from "screens/portfolio/tokens-section";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
+import { useStore } from "stores/index";
 
 enum AssetsSectionEnum {
   Tokens = "Tokens",
@@ -18,6 +19,13 @@ export const PortfolioScreen: FunctionComponent = observer(() => {
   const style = useStyle();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [selectedId, setSelectedId] = useState(AssetsSectionEnum.Tokens);
+  const { analyticsStore } = useStore();
+
+  useEffect(() => {
+    analyticsStore.logEvent(`${selectedId.toLowerCase()}_tab_click`, {
+      pageName: "Portfolio",
+    });
+  }, [analyticsStore, selectedId]);
 
   return (
     <PageWithScrollViewInBottomTabView

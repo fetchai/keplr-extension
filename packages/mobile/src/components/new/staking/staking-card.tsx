@@ -27,7 +27,7 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } = useStore();
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -318,7 +318,12 @@ export const StakingCard: FunctionComponent<{ cardStyle?: ViewStyle }> = ({
           }
           textStyle={style.flatten(["body3"]) as ViewStyle}
           rippleColor="black@50%"
-          onPress={onSubmit}
+          onPress={() => {
+            onSubmit();
+            analyticsStore.logEvent("claim_staking_rewards_click", {
+              pageName: "Portfolio",
+            });
+          }}
           loading={
             isSendingTx || accountInfo.txTypeInProgress === "withdrawRewards"
           }

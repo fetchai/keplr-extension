@@ -22,7 +22,6 @@ import { LoadingSpinner } from "components/spinner";
 import { RectButton } from "components/rect-button";
 import { observer } from "mobx-react-lite";
 import { BlurButton } from "../button/blur-button";
-
 export interface FeeButtonsProps {
   labelStyle?: TextStyle;
   containerStyle?: ViewProps;
@@ -34,6 +33,7 @@ export interface FeeButtonsProps {
 
   feeConfig: IFeeConfig;
   gasConfig: IGasConfig;
+  pageName?: string;
 }
 
 class FeeButtonState {
@@ -59,6 +59,7 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
     // This may be not the good way to handle the states across the components.
     // But, rather than using the context API with boilerplate code, just use the mobx state to simplify the logic.
     const [feeButtonState] = useState(() => new FeeButtonState());
+    const { analyticsStore } = useStore();
     const style = useStyle();
 
     return (
@@ -83,9 +84,13 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
             ] as ViewStyle
           }
           textStyle={style.flatten(["text-caption2"]) as ViewStyle}
-          onPress={() =>
-            feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen)
-          }
+          onPress={() => {
+            feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen);
+            if (props.pageName)
+              analyticsStore.logEvent("fee_advance_click", {
+                pageName: props.pageName,
+              });
+          }}
         />
         {feeButtonState.isGasInputOpen || !props.feeConfig.feeCurrency ? (
           <GasInput label={props.gasLabel} gasConfig={props.gasConfig} />
@@ -107,13 +112,25 @@ export const getFeeErrorText = (error: Error): string | undefined => {
 };
 
 export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
-  ({ labelStyle, containerStyle, errorLabelStyle, label, feeConfig }) => {
-    const { priceStore, chainStore } = useStore();
+  ({
+    labelStyle,
+    containerStyle,
+    errorLabelStyle,
+    label,
+    feeConfig,
+    pageName,
+  }) => {
+    const { priceStore, chainStore, analyticsStore } = useStore();
     const style = useStyle();
 
     useEffect(() => {
       if (feeConfig.feeCurrency && !feeConfig.fee) {
         feeConfig.setFeeType("average");
+        if (pageName)
+          analyticsStore.logEvent("fee_type_select", {
+            pageName,
+            feeType: "average",
+          });
       }
     }, [feeConfig]);
 
@@ -233,6 +250,11 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             feeConfig.feeType === "low",
             () => {
               feeConfig.setFeeType("low");
+              if (pageName)
+                analyticsStore.logEvent("fee_type_select", {
+                  pageName,
+                  feeType: "low",
+                });
             }
           )}
           <View
@@ -245,6 +267,11 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             feeConfig.feeType === "average",
             () => {
               feeConfig.setFeeType("average");
+              if (pageName)
+                analyticsStore.logEvent("fee_type_select", {
+                  pageName,
+                  feeType: "average",
+                });
             }
           )}
           <View
@@ -257,6 +284,11 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
             feeConfig.feeType === "high",
             () => {
               feeConfig.setFeeType("high");
+              if (pageName)
+                analyticsStore.logEvent("fee_type_select", {
+                  pageName,
+                  feeType: "high",
+                });
             }
           )}
         </View>

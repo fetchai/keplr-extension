@@ -14,7 +14,7 @@ import {
 } from "@react-navigation/native";
 
 export const CurrencyScreen: FunctionComponent = observer(() => {
-  const { priceStore } = useStore();
+  const { priceStore, analyticsStore } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -50,6 +50,9 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
             }
             onPress={() => {
               priceStore.setDefaultVsCurrency(item.key);
+              analyticsStore.logEvent("currency_change_click", {
+                pageName: "More",
+              });
               navigation.goBack();
             }}
           >

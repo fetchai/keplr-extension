@@ -32,7 +32,7 @@ export type DrawerContentProps =
 
 export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
   (props) => {
-    const { chainStore } = useStore();
+    const { chainStore, analyticsStore } = useStore();
     const navigation = useNavigation();
 
     const safeAreaInsets = useSafeAreaInsets();
@@ -159,6 +159,9 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                   screen: "Setting.ChainList",
                 })
               );
+              analyticsStore.logEvent("manage_networks_click", {
+                pageName: "Home",
+              });
             }}
           />
           {filterChainInfos.map((chainInfo) => {

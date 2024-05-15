@@ -35,8 +35,14 @@ export const SendPhase1: FunctionComponent<{
   const [openAssetModel, setOpenAssetModel] = React.useState(false);
   const [changeWalletModal, setChangeWalletModal] = React.useState(false);
   const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
-  const { chainStore, accountStore, queriesStore, keyRingStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    keyRingStore,
+    priceStore,
+    analyticsStore,
+  } = useStore();
   const loadingScreen = useLoadingScreen();
 
   const route = useRoute<
@@ -114,7 +120,12 @@ export const SendPhase1: FunctionComponent<{
           heading={sendConfigs.amountConfig.sendCurrency.coinDenom}
           subHeading={`Available: ${availableBalance}`}
           trailingIcon={<ChevronDownIcon size={12} />}
-          onPress={() => setOpenAssetModel(true)}
+          onPress={() => {
+            setOpenAssetModel(true);
+            analyticsStore.logEvent("select_token_click", {
+              pageName: "Send",
+            });
+          }}
         />
         <DropDownCardView
           containerStyle={
@@ -123,7 +134,12 @@ export const SendPhase1: FunctionComponent<{
           mainHeading="Send from"
           heading={account.name}
           trailingIcon={<ChevronDownIcon size={12} />}
-          onPress={() => setChangeWalletModal(true)}
+          onPress={() => {
+            setChangeWalletModal(true);
+            analyticsStore.logEvent("send_from_click", {
+              pageName: "Send",
+            });
+          }}
         />
       </View>
       <Button
@@ -137,7 +153,10 @@ export const SendPhase1: FunctionComponent<{
           sendConfigs.amountConfig.amount == "0" ||
           !txStateIsValid
         }
-        onPress={() => setIsNext(true)}
+        onPress={() => {
+          setIsNext(true);
+          analyticsStore.logEvent("next_click", { pageName: "Send" });
+        }}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <AssetCardModel
@@ -157,6 +176,9 @@ export const SendPhase1: FunctionComponent<{
             loadingScreen.setIsLoading(true);
             await keyRingStore.changeKeyRing(index);
             loadingScreen.setIsLoading(false);
+            analyticsStore.logEvent("select_wallet_click", {
+              pageName: "Send",
+            });
           }
         }}
       />

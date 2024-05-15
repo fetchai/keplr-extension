@@ -15,8 +15,14 @@ import { CurrencyIcon } from "components/new/icon/currency";
 import { BranchIcon } from "components/new/icon/branch-icon";
 
 export const SettingScreen: FunctionComponent = observer(() => {
-  const { chainStore, keychainStore, keyRingStore, tokensStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    keychainStore,
+    keyRingStore,
+    tokensStore,
+    priceStore,
+    analyticsStore,
+  } = useStore();
 
   const style = useStyle();
 
@@ -63,6 +69,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
         right={<Right paragraph={priceStore.defaultVsCurrency.toUpperCase()} />}
         onPress={() => {
           smartNavigation.navigateSmart("Setting.Currency", {});
+          analyticsStore.logEvent("currency_click", {
+            pageName: "More",
+          });
         }}
       />
       {showManageTokenButton ? (
@@ -78,6 +87,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
           }
           onPress={() => {
             smartNavigation.navigateSmart("Setting.ManageTokens", {});
+            analyticsStore.logEvent("manage_tokens_click", {
+              pageName: "More",
+            });
           }}
         />
       ) : null}
@@ -86,6 +98,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
         label="Address book"
         onPress={() => {
           smartNavigation.navigateSmart("AddressBook", {});
+          analyticsStore.logEvent("address_book_click", {
+            pageName: "More",
+          });
         }}
       />
       {showPrivateData ||
@@ -96,6 +111,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
           left={<ShieldIcon size={16} />}
           onPress={() => {
             smartNavigation.navigateSmart("SecurityAndPrivacy", {});
+            analyticsStore.logEvent("security_and_privacy_click", {
+              pageName: "More",
+            });
           }}
         />
       ) : null}

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "../card";
-import { Animated, ScrollView, Text, View, ViewStyle } from "react-native";
+import { ScrollView, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
 import {
@@ -21,16 +21,12 @@ import { renderAminoMessage } from "./amino";
 import { renderDirectMessage } from "./direct";
 import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { unescapeHTML } from "@keplr-wallet/common";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUnmount } from "hooks/use-unmount";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { FeeInSign } from "modals/sign/fee";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { DataTab } from "./data-tab";
-const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
-  KeyboardAwareScrollView
-);
 
 enum TransactionTabEnum {
   Details = "Details",

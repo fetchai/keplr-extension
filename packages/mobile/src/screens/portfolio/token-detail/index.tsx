@@ -42,7 +42,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -207,7 +207,12 @@ export const TokenDetail: FunctionComponent = observer(() => {
                 ]) as ViewStyle
               }
               backgroundBlur={false}
-              onPress={() => setIsOpenModal(true)}
+              onPress={() => {
+                setIsOpenModal(true);
+                analyticsStore.logEvent("filter_click", {
+                  pageName: "Token Detail",
+                });
+              }}
             />
           </View>
           <ActivityNativeTab

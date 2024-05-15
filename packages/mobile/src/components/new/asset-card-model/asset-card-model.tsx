@@ -22,7 +22,7 @@ export const AssetCardModel: FunctionComponent<{
   const safeAreaInsets = useSafeAreaInsets();
   const style = useStyle();
 
-  const { queriesStore, priceStore } = useStore();
+  const { queriesStore, priceStore, analyticsStore } = useStore();
   const [search, setSearch] = useState("");
   const queryBalances = queriesStore
     .get(amountConfig.chainId)
@@ -145,6 +145,9 @@ export const AssetCardModel: FunctionComponent<{
                 ) as ViewStyle
               }
               onPress={() => {
+                analyticsStore.logEvent("select_asset_click", {
+                  pageName: "Send",
+                });
                 amountConfig.setSendCurrency(currency);
                 setSearch("");
                 close();

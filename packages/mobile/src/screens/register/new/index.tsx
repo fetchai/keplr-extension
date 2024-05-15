@@ -36,21 +36,16 @@ import {
 } from "@react-navigation/native";
 
 const SelectWalletOptionCard: FunctionComponent<{
-  setIsModalOpen: (val: boolean) => void;
   img: any;
   title: string;
   desc: string;
-}> = ({ setIsModalOpen, img, title, desc }) => {
+  onPress?: () => void;
+}> = ({ img, title, desc, onPress }) => {
   const style = useStyle();
 
   return (
     <React.Fragment>
-      <TouchableOpacity
-        onPress={() => {
-          setIsModalOpen(true);
-        }}
-        activeOpacity={1}
-      >
+      <TouchableOpacity onPress={onPress} activeOpacity={1}>
         <BlurBackground
           blurIntensity={12}
           borderRadius={16}
@@ -96,7 +91,7 @@ const SelectWalletOptionCard: FunctionComponent<{
 };
 
 export const RegisterIntroScreen: FunctionComponent = observer(() => {
-  const { keyRingStore } = useStore();
+  const { keyRingStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
@@ -203,16 +198,29 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               </Text>
             </View>
             <SelectWalletOptionCard
-              setIsModalOpen={setIsModalOpen}
               img={<HeaderAddIcon color="white" size={17} />}
               title="Create a new wallet"
               desc="Create a wallet to store, send, receive and invest in thousands of crypto assets"
+              onPress={() => {
+                setIsModalOpen(true);
+                analyticsStore.logEvent("create_a_new_wallet_click", {
+                  pageName: "Register",
+                  registerType: "seed",
+                  accountType: "mnemonic",
+                });
+              }}
             />
             <SelectWalletOptionCard
-              setIsModalOpen={setImportWalletModalOpen}
               img={<DownloadIcon color="white" size={16} />}
               title="Import a wallet"
               desc="Access your existing wallet using a recovery phrase / private key"
+              onPress={() => {
+                setImportWalletModalOpen(true);
+                analyticsStore.logEvent("import_a_wallet_click", {
+                  pageName: "Register",
+                  registerType: "seed",
+                });
+              }}
             />
             <NewWalletModal
               isOpen={isModalOpen}
@@ -223,9 +231,17 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                   registerConfig,
                   type: "google",
                 });
+                analyticsStore.logEvent("continue_with_google_click", {
+                  registerType: "google",
+                  pageName: "Register",
+                });
               }}
               onSelectApple={() => {
                 setIsModalOpen(false);
+                analyticsStore.logEvent("continue_with_apple_click", {
+                  registerType: "apple",
+                  pageName: "Register",
+                });
                 smartNavigation.navigateSmart("Register.TorusSignIn", {
                   registerConfig,
                   type: "apple",
@@ -236,28 +252,35 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                 smartNavigation.navigateSmart("Register.NewMnemonic", {
                   registerConfig,
                 });
+                analyticsStore.logEvent("create_new_seed_phrase_click", {
+                  registerType: "seed",
+                  pageName: "Register",
+                  accountType: "mnemonic",
+                });
               }}
             />
             <ImportExistingWalletModal
               isOpen={isImportWalletModalOpen}
               close={() => setImportWalletModalOpen(false)}
-              onSelectGoogle={() => {
-                setImportWalletModalOpen(false);
-                smartNavigation.navigateSmart("Register.TorusSignIn", {
-                  registerConfig,
-                  type: "google",
-                });
-              }}
               onImportExistingWallet={() => {
                 setImportWalletModalOpen(false);
                 smartNavigation.navigateSmart("Register.RecoverMnemonic", {
                   registerConfig,
                 });
+                analyticsStore.logEvent(
+                  "use_a_seed_phrase_or_a_private_key_click",
+                  { pageName: "Register", registerType: "seed" }
+                );
               }}
               onMigrateFromETH={() => {
                 setImportWalletModalOpen(false);
                 smartNavigation.navigateSmart("Register.MigrateETH", {
                   registerConfig,
+                });
+                analyticsStore.logEvent("migrate_from_eth_click", {
+                  registerType: "seed",
+                  pageName: "Register",
+                  accountType: "mnemonic",
                 });
               }}
               onImportFromFetch={() => {
@@ -268,11 +291,20 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
                     registerConfig,
                   }
                 );
+                analyticsStore.logEvent("import_from_fetch_extension_click", {
+                  registerType: "qr",
+                  pageName: "Register",
+                });
               }}
               onConnectLedger={() => {
                 setImportWalletModalOpen(false);
                 smartNavigation.navigateSmart("Register.NewLedger", {
                   registerConfig,
+                });
+                analyticsStore.logEvent("connect_hardware_wallet_click", {
+                  registerType: "ledger",
+                  accountType: "ledger",
+                  pageName: "Register",
                 });
               }}
             />
@@ -293,10 +325,6 @@ export const NewWalletModal: FunctionComponent<{
 }> = observer(
   ({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic, close }) => {
     const style = useStyle();
-
-    if (!isOpen) {
-      return null;
-    }
 
     return (
       <CardModal
@@ -359,7 +387,6 @@ export const NewWalletModal: FunctionComponent<{
 export const ImportExistingWalletModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
-  onSelectGoogle: () => void;
   onImportExistingWallet: () => void;
   onImportFromFetch: () => void;
   onConnectLedger: () => void;
@@ -374,10 +401,6 @@ export const ImportExistingWalletModal: FunctionComponent<{
     close,
   }) => {
     const style = useStyle();
-
-    if (!isOpen) {
-      return null;
-    }
 
     return (
       <CardModal
@@ -440,9 +463,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
           titleStyle={
             style.flatten(["text-caption1", "font-medium"]) as ViewStyle
           }
-          onPress={() => {
-            onMigrateFromETH();
-          }}
+          onPress={onMigrateFromETH}
         />
       </CardModal>
     );

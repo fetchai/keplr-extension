@@ -16,6 +16,7 @@ import { AddressBookIcon } from "components/icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { InputCardView } from "components/new/card-view/input-card";
+import { useStore } from "stores/index";
 
 function numOfCharacter(str: string, c: string): number {
   return str.split(c).length - 1;
@@ -53,7 +54,7 @@ export const AddressInput: FunctionComponent<
     disableAddressBook,
   }) => {
     const smartNavigation = useSmartNavigation();
-
+    const { analyticsStore } = useStore();
     const style = useStyle();
 
     const error = recipientConfig.error;
@@ -158,6 +159,9 @@ export const AddressInput: FunctionComponent<
                   smartNavigation.navigateSmart("AddressBook", {
                     recipientConfig,
                     memoConfig,
+                  });
+                  analyticsStore.logEvent("address_book_click", {
+                    pageName: "More",
                   });
                 }}
               >

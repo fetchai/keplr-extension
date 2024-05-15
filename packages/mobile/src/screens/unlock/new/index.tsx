@@ -119,7 +119,13 @@ const useAutoBiomtric = (
  * @constructor
  */
 export const UnlockScreen: FunctionComponent = observer(() => {
-  const { keyRingStore, keychainStore, accountStore, chainStore } = useStore();
+  const {
+    keyRingStore,
+    keychainStore,
+    accountStore,
+    chainStore,
+    analyticsStore,
+  } = useStore();
 
   const style = useStyle();
 
@@ -130,6 +136,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
   const navigateToHomeOnce = useRef(false);
   const navigateToHome = useCallback(async () => {
     if (!navigateToHomeOnce.current) {
+      analyticsStore.logEvent("sign_in_click");
       // Wait the account of selected chain is loaded.
       await waitAccountLoad(accountStore, chainStore.current.chainId);
       navigation.dispatch(StackActions.replace("MainTabDrawer"));

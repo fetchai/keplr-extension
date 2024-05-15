@@ -45,7 +45,6 @@ export const AccountSection: FunctionComponent<{
   const style = useStyle();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [changeWalletModal, setChangeWalletModal] = useState(false);
-
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [openCameraModel, setIsOpenCameraModel] = useState(false);
   const [modelStatus, setModelStatus] = useState(ModelStatus.First);
@@ -58,6 +57,7 @@ export const AccountSection: FunctionComponent<{
     keyRingStore,
     analyticsStore,
   } = useStore();
+  const chainInfo = chainStore.getChain(chainStore.current.chainId);
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -120,7 +120,15 @@ export const AccountSection: FunctionComponent<{
           }
           text={titleCase(chainStore.current.chainName)}
           icon={<ChevronDownIcon size={12} />}
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          onPress={() => {
+            navigation.dispatch(DrawerActions.toggleDrawer());
+            analyticsStore.logEvent("chain_change_click", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              toChainId: chainInfo.chainId,
+              toChainName: chainInfo.chainName,
+            });
+          }}
         />
         <View style={style.flatten(["flex-row"])}>
           <IconButton
@@ -137,6 +145,9 @@ export const AccountSection: FunctionComponent<{
                 } else {
                   smartNavigation.navigateSmart("Camera", {
                     showMyQRButton: false,
+                  });
+                  analyticsStore.logEvent("qr_code_click", {
+                    pageName: "Home",
                   });
                 }
               }
@@ -298,7 +309,12 @@ export const AccountSection: FunctionComponent<{
           }
           textStyle={style.flatten(["body3"]) as ViewStyle}
           text={"View portfolio"}
-          onPress={() => navigation.navigate("Portfolio")}
+          onPress={() => {
+            navigation.navigate("Portfolio");
+            analyticsStore.logEvent("view_portfolio_click", {
+              pageName: "Home",
+            });
+          }}
         />
       </View>
       <WalletCardModel
@@ -309,23 +325,34 @@ export const AccountSection: FunctionComponent<{
         onSelectWallet={(option: ManageWalletOption) => {
           switch (option) {
             case ManageWalletOption.addNewWallet:
-              analyticsStore.logEvent("Add additional account started");
+              analyticsStore.logEvent("add_new_wallet_click", {
+                pageName: "Home",
+              });
               navigation.navigate("Register", {
                 screen: "Register.Intro",
               });
               break;
 
             case ManageWalletOption.changeWallet:
+              analyticsStore.logEvent("change_wallet_click", {
+                pageName: "Home",
+              });
               setChangeWalletModal(true);
               setIsOpenModal(false);
               break;
 
             case ManageWalletOption.renameWallet:
+              analyticsStore.logEvent("rename_wallet_click", {
+                pageName: "Home",
+              });
               smartNavigation.navigateSmart("RenameWallet", {});
               setIsOpenModal(false);
               break;
 
             case ManageWalletOption.deleteWallet:
+              analyticsStore.logEvent("delete_wallet_click", {
+                pageName: "Home",
+              });
               smartNavigation.navigateSmart("DeleteWallet", {});
               setIsOpenModal(false);
               break;
@@ -343,6 +370,9 @@ export const AccountSection: FunctionComponent<{
             loadingScreen.setIsLoading(true);
             await keyRingStore.changeKeyRing(index);
             loadingScreen.setIsLoading(false);
+            analyticsStore.logEvent("change_account_name_click", {
+              pageName: "Home",
+            });
           }
         }}
       />

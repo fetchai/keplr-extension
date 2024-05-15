@@ -2502,10 +2502,12 @@ export const EmbedChainInfos: ChainInfo[] = [
 ];
 
 /// Todo add keys before release
-const PROD_AMPLITUDE_API_KEY = process.env["PROD_AMPLITUDE_API_KEY"];
-const DEV_AMPLITUDE_API_KEY = process.env["DEV_AMPLITUDE_API_KEY"];
-const PROD_AUTH_CLIENT_ID = process.env["PROD_AUTH_CLIENT_ID"];
-const DEV_AUTH_CLIENT_ID = process.env["DEV_AUTH_CLIENT_ID"];
+const PROD_AMPLITUDE_API_KEY = "8ffb806f9895cdaad44b7064c32de22d";
+const DEV_AMPLITUDE_API_KEY = "5b216672b6a6837d421731d5ba7b7e08";
+const PROD_AUTH_CLIENT_ID =
+  "BLmLGgKz8JrJ4_wvxPfXqkUA5wRGtRmRlzU5tqdRAfjh4et2m0cl3U_uBvRD0mdikvuWk7lBpDD7hgJDnyldgPg";
+const DEV_AUTH_CLIENT_ID =
+  "BAh-2tkRIasP3vSnrB8iBOoHd1mrqidsxVDWt5owtaxTFeNnUjePWv4t8YfE3K0i6DGM2qMGYd_prY18TPrm340";
 export const AmplitudeApiKey =
   process.env["NODE_ENV"] === "production"
     ? PROD_AMPLITUDE_API_KEY
@@ -2552,13 +2554,17 @@ export const GRAPHQL_URL = {
 let FETCHHUB_AGENT, DORADO_AGENT;
 
 if (process.env["NODE_ENV"] === "production") {
-  FETCHHUB_AGENT = process.env["PROD_FETCHHUB_AGENT"];
-  DORADO_AGENT = process.env["PROD_DORADO_AGENT"];
+  FETCHHUB_AGENT =
+    "agent1qvmfez9k6fycllzqc6p7telhwyzzj709n32sc5x2q0ss62ehqc3e52qgna7";
+  DORADO_AGENT =
+    "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf";
 } else {
-  FETCHHUB_AGENT = process.env["DEV_FETCHHUB_AGENT"];
-  DORADO_AGENT = process.env["DEV_DORADO_AGENT"];
+  FETCHHUB_AGENT =
+    "agent1qv5rmumv0xe0fqlmm3k4lxu4mhmz9aluy07tgp5lmzr2z0mccttcyjksf7r";
+  DORADO_AGENT =
+    "agent1qtvyuq8gkywtymym00n83llwcj6dscwfaz9dgdhm2dw0e9tqmkzq7tesse9";
 }
 export const AGENT_ADDRESS: { [key: string]: string } = {
-  [CHAIN_ID_FETCHHUB]: FETCHHUB_AGENT ?? "",
-  [CHAIN_ID_DORADO]: DORADO_AGENT ?? "",
+  [CHAIN_ID_FETCHHUB]: FETCHHUB_AGENT,
+  [CHAIN_ID_DORADO]: DORADO_AGENT,
 };

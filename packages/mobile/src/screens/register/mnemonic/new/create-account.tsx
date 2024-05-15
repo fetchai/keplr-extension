@@ -384,7 +384,10 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
         text="Confirm"
         size="large"
         loading={isCreating}
-        onPress={submit}
+        onPress={() => {
+          submit();
+          analyticsStore.logEvent("confirm_click", { pageName: "Register" });
+        }}
       />
     </PageWithScrollView>
   );

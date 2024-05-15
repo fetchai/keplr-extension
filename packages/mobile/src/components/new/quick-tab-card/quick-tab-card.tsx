@@ -9,6 +9,7 @@ import { ArrowUpIcon } from "../icon/arrow-up";
 import { ArrowDownIcon } from "../icon/arrow-down";
 import { NewBridgeIcon } from "../icon/new-bridge-icon";
 import { Button } from "components/button";
+import { useStore } from "stores/index";
 
 export enum QuickTabOptions {
   receive,
@@ -23,6 +24,7 @@ export const QuickTabOptionModel: FunctionComponent<{
   onPress: (event: QuickTabOptions) => void;
 }> = ({ close, isOpen, onPress }) => {
   const style = useStyle();
+  const { analyticsStore } = useStore();
 
   if (!isOpen) {
     return null;
@@ -45,6 +47,10 @@ export const QuickTabOptionModel: FunctionComponent<{
             onPress={() => {
               close();
               onPress(QuickTabOptions.send);
+              analyticsStore.logEvent("send_click", {
+                tabName: "fund_transfer_tab",
+                pageName: "Home",
+              });
             }}
             style={
               style.flatten([
@@ -85,6 +91,9 @@ export const QuickTabOptionModel: FunctionComponent<{
             onPress={() => {
               close();
               onPress(QuickTabOptions.receive);
+              analyticsStore.logEvent("receive_click", {
+                tabName: "fund_transfer_tab",
+              });
             }}
             style={
               style.flatten([
@@ -132,6 +141,9 @@ export const QuickTabOptionModel: FunctionComponent<{
               ]) as ViewStyle
             }
             activeOpacity={1}
+            onPress={() => {
+              analyticsStore.logEvent("bridge_button_click",{tabName: "fund_transfer_tab"});
+            }}
             //   underlayColor={style.flatten(["color-gray-50"]).color}
             rippleColor={"rgba(255,255,255,0)"}
           >

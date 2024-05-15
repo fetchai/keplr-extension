@@ -18,7 +18,7 @@ export const TokenBalanceSection: FunctionComponent<{
   totalPrice: string;
 }> = observer(({ totalNumber, totalDenom, totalPrice }) => {
   const style = useStyle();
-  const { chainStore, priceStore } = useStore();
+  const { chainStore, priceStore, analyticsStore } = useStore();
   const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -100,12 +100,15 @@ export const TokenBalanceSection: FunctionComponent<{
                 "margin-right-6",
               ]) as ViewStyle
             }
-            onPress={() =>
+            onPress={() => {
+              analyticsStore.logEvent("receive_click", {
+                pageName: "Token Detail",
+              });
               navigation.navigate("Others", {
                 screen: "Receive",
                 params: { chainId: chainId },
-              })
-            }
+              });
+            }}
           />
         </View>
         <View style={style.flatten(["flex-1"]) as ViewStyle}>
@@ -122,14 +125,17 @@ export const TokenBalanceSection: FunctionComponent<{
                 "margin-left-6",
               ]) as ViewStyle
             }
-            onPress={() =>
+            onPress={() => {
+              analyticsStore.logEvent("send_click", {
+                pageName: "Token Detail",
+              });
               navigation.navigate("Others", {
                 screen: "SendNew",
                 params: {
                   currency: chainStore.current.stakeCurrency.coinMinimalDenom,
                 },
-              })
-            }
+              });
+            }}
           />
         </View>
       </View>

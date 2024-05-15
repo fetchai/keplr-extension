@@ -126,7 +126,7 @@ export const SendScreen: FunctionComponent = observer(() => {
                 },
                 {
                   onBroadcasted: (txHash) => {
-                    analyticsStore.logEvent("Send token tx broadcasted", {
+                    analyticsStore.logEvent("send_txn_broadcasted", {
                       chainId: chainStore.current.chainId,
                       chainName: chainStore.current.chainName,
                       feeType: sendConfigs.feeConfig.feeType,
@@ -141,6 +141,11 @@ export const SendScreen: FunctionComponent = observer(() => {
               if (e?.message === "Request rejected") {
                 return;
               }
+              analyticsStore.logEvent("send_txn_broadcasted_fail_click", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                feeType: sendConfigs.feeConfig.feeType,
+              });
               console.log(e);
               smartNavigation.navigateSmart("Home", {});
             }

@@ -44,11 +44,9 @@ const useZeroOrPositiveIntegerString = (initialValue: string) => {
 
 export const BIP44AdvancedButton: FunctionComponent<{
   bip44Option: BIP44Option;
-  containerStyle?: ViewStyle;
   selected?: boolean;
 }> = observer(({ bip44Option, selected }) => {
   const style = useStyle();
-
   // const [isModalOpen, setIsModalOpen] = useState(false);
 
   // const account = useZeroOrPositiveIntegerString(
@@ -211,7 +209,6 @@ export const BIP44SelectModal: FunctionComponent<{
   bip44Option: BIP44Option;
 }> = observer(({ isOpen, bip44Option, close }) => {
   const style = useStyle();
-
   const account = useZeroOrPositiveIntegerString(
     bip44Option.account.toString()
   );
@@ -294,7 +291,6 @@ export const BIP44SelectModal: FunctionComponent<{
           bip44Option.setAccount(account.number);
           bip44Option.setChange(change.number);
           bip44Option.setIndex(index.number);
-
           close();
         }}
       />

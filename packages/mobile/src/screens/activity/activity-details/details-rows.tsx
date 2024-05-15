@@ -15,6 +15,7 @@ import { ArrowUpIcon } from "components/new/icon/arrow-up";
 import { AppCurrency } from "@keplr-wallet/types";
 import Toast from "react-native-toast-message";
 import { clearDecimals } from "modals/sign/messages";
+import { useStore } from "stores/index";
 
 interface ItemData {
   title: string;
@@ -29,7 +30,7 @@ interface ButtonData {
 
 export const DetailRows = ({ details }: { details: any }) => {
   const style = useStyle();
-
+  const { analyticsStore } = useStore();
   const fees = JSON.parse(details.fees);
   const mintScanURL = `https://www.mintscan.io/fetchai/tx/${details.hash}/`;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -47,6 +48,9 @@ export const DetailRows = ({ details }: { details: any }) => {
     // smartNavigation.navigateSmart("Delegate", {
     //   validatorAddress,
     // });
+    analyticsStore.logEvent("stake_click", {
+      pageName: "Activity Detail",
+    });
     Toast.show({
       type: "error",
       text1: "Coming soon",
@@ -55,6 +59,9 @@ export const DetailRows = ({ details }: { details: any }) => {
   };
 
   const handleClicked = () => {
+    analyticsStore.logEvent("send_click", {
+      pageName: "Activity Detail",
+    });
     navigation.navigate("Others", {
       screen: "SendNew",
       params: {
@@ -84,6 +91,9 @@ export const DetailRows = ({ details }: { details: any }) => {
       params: {
         url: mintScanURL,
       },
+    });
+    analyticsStore.logEvent("view_on_mintscan_click", {
+      pageName: "Activity Detail",
     });
   };
 

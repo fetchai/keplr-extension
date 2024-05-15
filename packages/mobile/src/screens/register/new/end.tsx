@@ -13,7 +13,7 @@ import { LinearGradientText } from "components/svg/linear-gradient-text";
 import { RocketIcon } from "components/new/icon/rocket";
 
 export const RegisterEndScreen: FunctionComponent = observer(() => {
-  const { keychainStore, keyRingStore } = useStore();
+  const { keychainStore, keyRingStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
@@ -125,7 +125,9 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
                 keyRingStore.multiKeyStoreInfo.length - 1
               );
             }
-
+            analyticsStore.logEvent("start_using_your_wallet_click", {
+              pageName: "Register",
+            });
             smartNavigation.reset({
               index: 0,
               routes: [

@@ -565,7 +565,10 @@ export const NewLedgerScreen: FunctionComponent = () => {
         text="Continue"
         size="large"
         loading={isCreating}
-        onPress={submit}
+        onPress={() => {
+          submit();
+          analyticsStore.logEvent("continue_click", { pageName: "Register" });
+        }}
         disabled={!isBLEAvailable}
       />
       {

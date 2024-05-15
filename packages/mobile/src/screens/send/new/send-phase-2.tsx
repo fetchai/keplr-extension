@@ -35,7 +35,7 @@ export const SendPhase2: FunctionComponent<{
   sendConfigs: SendConfigs;
   setIsNext: any;
 }> = observer(({ sendConfigs, setIsNext }) => {
-  const { chainStore, accountStore, priceStore } = useStore();
+  const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
 
   const [txnHash, setTxnHash] = useState<string>("");
   const [openModal, setOpenModal] = useState(false);
@@ -105,10 +105,11 @@ export const SendPhase2: FunctionComponent<{
       });
       return;
     }
+
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
         const stdFee = sendConfigs.feeConfig.toStdFee();
-
+        analyticsStore.logEvent("send_txn_click", { pageName: "Send" });
         const tx = account.makeSendTokenTx(
           sendConfigs.amountConfig.amount,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -127,6 +128,11 @@ export const SendPhase2: FunctionComponent<{
             onBroadcasted: (txHash) => {
               setTxnHash(Buffer.from(txHash).toString("hex"));
               setOpenModal(true);
+              analyticsStore.logEvent("send_txn_broadcasted", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                feeType: sendConfigs.feeConfig.feeType,
+              });
             },
           }
         );
@@ -143,6 +149,12 @@ export const SendPhase2: FunctionComponent<{
         }
         console.log(e);
         smartNavigation.navigateSmart("Home", {});
+        analyticsStore.logEvent("send_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          feeType: sendConfigs.feeConfig.feeType,
+          message: e?.message ?? "",
+        });
       }
     }
   }
@@ -205,6 +217,7 @@ export const SendPhase2: FunctionComponent<{
           placeholderText="Wallet address"
           recipientConfig={sendConfigs.recipientConfig}
           memoConfig={sendConfigs.memoConfig}
+          pageName="Send"
         />
         <MemoInputView
           label="Memo"
@@ -217,6 +230,7 @@ export const SendPhase2: FunctionComponent<{
         gasLabel="gas"
         feeConfig={sendConfigs.feeConfig}
         gasConfig={sendConfigs.gasConfig}
+        pageName="Send"
       />
       <View style={style.flatten(["flex-1"])} />
       <Button

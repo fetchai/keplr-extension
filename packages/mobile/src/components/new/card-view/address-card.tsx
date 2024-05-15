@@ -50,6 +50,7 @@ export const AddressInputCard: FunctionComponent<{
   memoConfig?: IMemoConfig;
   onFocus?: any;
   onBlur?: any;
+  pageName: string;
 }> = observer(
   ({
     label,
@@ -59,6 +60,7 @@ export const AddressInputCard: FunctionComponent<{
     memoConfig,
     onFocus,
     onBlur,
+    pageName,
   }) => {
     const style = useStyle();
     const smartNavigation = useSmartNavigation();
@@ -237,6 +239,9 @@ export const AddressInputCard: FunctionComponent<{
                         setModelStatus(ModelStatus.Second);
                         setIsOpenCameraModel(true);
                       } else {
+                        analyticsStore.logEvent("recipient_address_click", {
+                          pageName,
+                        });
                         smartNavigation.navigateSmart("Camera", {
                           showMyQRButton: false,
                           recipientConfig: recipientConfig,
@@ -254,7 +259,12 @@ export const AddressInputCard: FunctionComponent<{
                 <IconButton
                   icon={<ATIcon size={16} />}
                   backgroundBlur={false}
-                  onPress={() => setIsOpenModal(true)}
+                  onPress={() => {
+                    analyticsStore.logEvent("recipient_address_click", {
+                      pageName,
+                    });
+                    setIsOpenModal(true);
+                  }}
                   iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
                 />
               </View>
@@ -279,7 +289,9 @@ export const AddressInputCard: FunctionComponent<{
           addressBookConfig={addressBookConfig}
           addAddressBook={(add) => {
             if (add) {
-              analyticsStore.logEvent("Add additional account started");
+              analyticsStore.logEvent("add_new_address_click", {
+                pageName,
+              });
               smartNavigation.navigateSmart("AddAddressBook", {
                 chainId,
                 addressBookConfig,

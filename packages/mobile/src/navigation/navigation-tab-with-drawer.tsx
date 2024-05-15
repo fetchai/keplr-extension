@@ -39,7 +39,7 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 export const MainTabNavigation: FunctionComponent = () => {
   const style = useStyle();
-  const { chainStore } = useStore();
+  const { chainStore, analyticsStore } = useStore();
   const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -55,6 +55,25 @@ export const MainTabNavigation: FunctionComponent = () => {
     if (focusedScreen.name !== "Home" && isDrawerOpen) {
       navigation.dispatch(DrawerActions.toggleDrawer());
     }
+
+    switch (focusedScreen.name) {
+      case "Home":
+        analyticsStore.logEvent("home_tab_click");
+        break;
+
+      case "Stake":
+        analyticsStore.logEvent("stake_tab_click");
+        break;
+
+      case "ActivityTab":
+        analyticsStore.logEvent("activity_tab_click");
+        break;
+
+      case "Setting":
+        analyticsStore.logEvent("more_tab_click");
+        break;
+    }
+
     BackHandler.addEventListener("hardwareBackPress", handleBackButton);
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
@@ -153,7 +172,10 @@ export const MainTabNavigation: FunctionComponent = () => {
                     icon={<UpDownArrowIcon />}
                     borderRadius={64}
                     backgroundBlur={false}
-                    onPress={() => setQuickOptionEnable(true)}
+                    onPress={() => {
+                      setQuickOptionEnable(true);
+                      analyticsStore.logEvent("fund_transfer_tab_click");
+                    }}
                     iconStyle={
                       style.flatten([
                         "padding-16",

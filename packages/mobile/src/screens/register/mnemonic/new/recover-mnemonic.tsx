@@ -13,6 +13,7 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { isPrivateKey, validatePrivateKey } from "utils/format/format";
 import { BipButtons } from "screens/register/bip-button";
+import { useStore } from "stores/index";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bip39 = require("bip39");
@@ -37,7 +38,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   >();
 
   const style = useStyle();
-
+  const { analyticsStore } = useStore();
   const smartNavigation = useSmartNavigation();
 
   const registerConfig: RegisterConfig = route.params.registerConfig;
@@ -338,6 +339,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
               const encodeSeedWords = encodeURIComponent(
                 JSON.stringify(seedWords.join(" ").trim())
               );
+              analyticsStore.logEvent("next_click", { pageName: "Register" });
               smartNavigation.navigateSmart("Register.CreateAccount", {
                 registerConfig: registerConfig,
                 mnemonic: encodeSeedWords,

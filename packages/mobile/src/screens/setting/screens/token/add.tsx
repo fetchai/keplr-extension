@@ -11,7 +11,7 @@ import { InputCardView } from "components/new/card-view/input-card";
 import { TokenAddressInput } from "components/new/input/token-address";
 
 export const SettingAddTokenScreen: FunctionComponent = observer(() => {
-  const { chainStore, queriesStore, tokensStore } = useStore();
+  const { chainStore, queriesStore, tokensStore, analyticsStore } = useStore();
   const [loading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -79,6 +79,9 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
               coinDecimals: queryTokenInfo.tokenInfo.decimals,
             });
 
+            analyticsStore.logEvent("save_click", {
+              pageName: "More",
+            });
             if (navigation.canGoBack()) {
               navigation.goBack();
             }

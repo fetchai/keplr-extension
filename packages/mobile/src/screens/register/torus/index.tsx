@@ -479,7 +479,10 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         text="Continue"
         size="large"
         loading={isCreating}
-        onPress={submit}
+        onPress={() => {
+          submit();
+          analyticsStore.logEvent("next_click", { pageName: title });
+        }}
         disabled={!privateKey || !email}
       />
     </PageWithScrollView>

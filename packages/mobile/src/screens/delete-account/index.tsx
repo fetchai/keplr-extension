@@ -21,7 +21,7 @@ import { ConfirmCardModel } from "components/new/confirm-modal";
 import { DeleteWalletIcon } from "components/new/icon/delete-wallet";
 
 export const DeleteWalletScreen: FunctionComponent = observer(() => {
-  const { keyRingStore, keychainStore } = useStore();
+  const { keyRingStore, keychainStore, analyticsStore } = useStore();
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
@@ -108,7 +108,12 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
             text="Back up mnemonic seed"
             size="large"
             mode="outline"
-            onPress={() => setIsOpenModal(true)}
+            onPress={() => {
+              setIsOpenModal(true);
+              analyticsStore.logEvent("back_up_mnemonic_seed_click", {
+                pageName: "Home",
+              });
+            }}
             textStyle={style.flatten(["color-white", "body2", "font-normal"])}
             containerStyle={
               style.flatten([
@@ -124,7 +129,12 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
         text="Confirm"
         size="large"
         loading={isLoading}
-        onPress={submitPassword}
+        onPress={() => {
+          submitPassword();
+          analyticsStore.logEvent("confirm_click", {
+            pageName: "Home",
+          });
+        }}
         disabled={!password}
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
@@ -173,11 +183,17 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
                     ],
                   });
                 }
+                analyticsStore.logEvent("delete_account_click", {
+                  action: "Remove",
+                });
               }
               setPassword("");
               navigation.goBack();
             } catch (e) {
               console.log(e);
+              analyticsStore.logEvent("delete_account_click", {
+                action: "Cancel",
+              });
             } finally {
               setIsLoading(false);
             }

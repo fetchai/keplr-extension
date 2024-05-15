@@ -8,6 +8,7 @@ import { InputCardView } from "components/new/card-view/input-card";
 import { IconButton } from "components/new/button/icon";
 import { EyeIcon } from "components/new/icon/eye";
 import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
+import { useStore } from "stores/index";
 
 export const PasswordInputModal: FunctionComponent<{
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const PasswordInputModal: FunctionComponent<{
   onEnterPassword: (password: string) => Promise<void>;
 }> = ({ close, title, onEnterPassword, isOpen }) => {
   const style = useStyle();
+  const { analyticsStore } = useStore();
 
   const [password, setPassword] = useState("");
   const [isInvalidPassword, setIsInvalidPassword] = useState(false);
@@ -84,7 +86,12 @@ export const PasswordInputModal: FunctionComponent<{
         text="Continue"
         size="large"
         loading={isLoading}
-        onPress={submitPassword}
+        onPress={() => {
+          submitPassword();
+          analyticsStore.logEvent("continue_click", {
+            pageName: "More",
+          });
+        }}
         disabled={!password}
         containerStyle={
           style.flatten(["border-radius-32", "margin-top-24"]) as ViewStyle

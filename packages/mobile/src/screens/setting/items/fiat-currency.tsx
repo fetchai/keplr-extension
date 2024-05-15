@@ -7,7 +7,7 @@ import { RightArrow, SettingItem } from "screens/setting/components";
 export const SettingFiatCurrencyItem: FunctionComponent<{
   topBorder?: boolean;
 }> = observer(({ topBorder }) => {
-  const { priceStore } = useStore();
+  const { priceStore, analyticsStore } = useStore();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -38,6 +38,9 @@ export const SettingFiatCurrencyItem: FunctionComponent<{
         }
         onPress={() => {
           setIsOpenModal(true);
+          analyticsStore.logEvent("currency_select_click", {
+            pageName: "More",
+          });
         }}
       />
     </React.Fragment>
