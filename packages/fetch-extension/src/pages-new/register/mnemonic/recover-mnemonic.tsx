@@ -591,7 +591,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
                   for="name"
                   style={{
                     color: "rgba(255,255,255,0.6)",
-                    fontWeight: 550,
+                    fontWeight: 400,
                     fontSize: "15px",
                   }}
                 >
@@ -677,10 +677,12 @@ export const RecoverMnemonicPage: FunctionComponent<{
         </React.Fragment>
       )}
       {selectedCard == AccountSetupType.CONNECT_HARDWARE && (
-        <ImportLedgerPage
-          registerConfig={registerConfig}
-          setSelectedCard={setSelectedCard}
-        />
+        <div style={{ height: "720px" }}>
+          <ImportLedgerPage
+            registerConfig={registerConfig}
+            setSelectedCard={setSelectedCard}
+          />
+        </div>
       )}
       {selectedCard == AccountSetupType.MIGRATE_ETH && (
         <MigrateEthereumAddressPage

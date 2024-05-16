@@ -250,7 +250,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                 tabs={tabs}
                 setActiveTab={setActiveTab}
                 styleProps={{
-                  width: "164px",
+                  width: "165px",
                   height: "36px",
                 }}
               />
@@ -328,7 +328,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   for="name"
                   style={{
                     color: "rgba(255,255,255,0.6)",
-                    fontWeight: 550,
+                    fontWeight: 400,
                     fontSize: "15px",
                   }}
                 >
@@ -395,7 +395,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                 <ButtonV2
                   disabled={!!errors.password?.message}
                   text={""}
-                  styleProps={{ marginBottom: "20px" }}
+                  styleProps={{ marginBottom: "20px", height: "56px" }}
                 >
                   <FormattedMessage id="register.create.button.next" />
                 </ButtonV2>
