@@ -40,7 +40,8 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
           style={{
             background: "rgba(255,255,255,0.1)",
             marginBottom: "8px",
-            height: "69px",
+            height: "78px",
+            padding: "18px",
           }}
           leftImageStyle={{ background: "transparent" }}
           leftImage={require("@assets/svg/wireframe/key.svg")}
@@ -53,7 +54,12 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
           }}
         />
         <Card
-          style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
+          style={{
+            background: "rgba(255,255,255,0.1)",
+            marginBottom: "8px",
+            height: "78px",
+            padding: "18px",
+          }}
           leftImageStyle={{ background: "transparent" }}
           leftImage={require("@assets/svg/wireframe/wallet-access-permission.svg")}
           heading={intl.formatMessage({
@@ -62,6 +68,9 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
           subheading={intl.formatMessage({
             id: "setting.connections.paragraph",
           })}
+          subheadingStyle={{
+            color: "rgba(255,255,255,0.6)",
+          }}
           onClick={() => {
             navigate("/more/security-privacy/connections");
             analyticsStore.logEvent("wallet_access_permissions_click", {
@@ -71,7 +80,12 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
         />
         <Card
           leftImage={require("@assets/svg/wireframe/chain-list-access.svg")}
-          style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
+          style={{
+            background: "rgba(255,255,255,0.1)",
+            marginBottom: "8px",
+            height: "78px",
+            padding: "18px",
+          }}
           leftImageStyle={{ background: "transparent" }}
           heading={intl.formatMessage({
             id: "setting.permissions.get-chain-infos",
@@ -79,6 +93,9 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
           subheading={intl.formatMessage({
             id: "setting.permissions.get-chain-infos.paragraph",
           })}
+          subheadingStyle={{
+            color: "rgba(255,255,255,0.6)",
+          }}
           onClick={() => {
             navigate("/more/permissions/get-chain-infos");
             analyticsStore.logEvent("chain_list_access_click", {
@@ -88,7 +105,11 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
         />
         <Card
           leftImage={require("@assets/svg/wireframe/auto-lock-timer.svg")}
-          style={{ background: "rgba(255,255,255,0.1)", height: "69px" }}
+          style={{
+            background: "rgba(255,255,255,0.1)",
+            height: "78px",
+            padding: "18px",
+          }}
           leftImageStyle={{ background: "transparent" }}
           heading={intl.formatMessage({
             id: "setting.autolock",

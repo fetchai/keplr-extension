@@ -7,7 +7,7 @@ import { Card } from "@components-v2/card";
 import { useNavigate } from "react-router";
 
 export const MorePage: FunctionComponent = () => {
-  const { chainStore, analyticsStore } = useStore();
+  const { chainStore, analyticsStore, keyRingStore } = useStore();
   const navigate = useNavigate();
   const isAxlViewVisible = CHAINS.some((chain) => {
     return chain.chainId?.toString() === chainStore.current.chainId;
@@ -134,6 +134,22 @@ export const MorePage: FunctionComponent = () => {
         heading={"Fetch Wallet version"}
         onClick={() => navigate("/app-version")}
       /> */}
+
+      <Card
+        leftImageStyle={{
+          background: "transparent",
+          height: "16px",
+          width: "24px",
+        }}
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
+        leftImage={require("@assets/svg/wireframe/sign-out.svg")}
+        heading={"Sign out"}
+        onClick={() => {
+          keyRingStore.lock();
+          analyticsStore.logEvent("sign_out_click");
+          navigate("/");
+        }}
+      />
     </HeaderLayout>
   );
 };

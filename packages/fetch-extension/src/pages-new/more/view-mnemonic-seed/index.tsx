@@ -80,6 +80,7 @@ export const ExportPage: FunctionComponent = observer(() => {
       smallTitle={true}
       showTopMenu={true}
       showChainName={false}
+      showBottomMenu={false}
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
         id:
@@ -105,8 +106,9 @@ export const ExportPage: FunctionComponent = observer(() => {
               styleProps={{
                 position: "absolute",
                 width: "333px",
-                bottom: 86,
+                bottom: 25,
                 right: "4%",
+                height: "56px",
               }}
               text={"Copy to clipboard"}
               onClick={() => copyMnemonic(keyRing)}
@@ -152,6 +154,9 @@ export const ExportPage: FunctionComponent = observer(() => {
                     <FormattedMessage id="setting.export.button.confirm" />
                   )
                 }
+                styleProps={{
+                  height: "56px",
+                }}
                 data-loading={loading}
                 disabled={loading}
               />
