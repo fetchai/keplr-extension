@@ -100,7 +100,11 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
                       width: "333px",
                       background: "var(--Indigo---Fetch, #5F38FB)",
                     }
-                  : { width: "333px", background: "rgba(255,255,255,0.1)" }
+                  : {
+                      width: "333px",
+                      background: "rgba(255,255,255,0.1)",
+                      cursor: "pointer",
+                    }
               }
               rightContent={
                 <React.Fragment>

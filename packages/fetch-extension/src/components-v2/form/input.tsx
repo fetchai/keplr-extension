@@ -65,7 +65,13 @@ export const Input = forwardRef<
       }}
     >
       {label ? (
-        <Label for={inputId} className="form-control-label">
+        <Label
+          for={inputId}
+          className="form-control-label"
+          style={{
+            fontWeight: 400,
+          }}
+        >
           {label}
         </Label>
       ) : null}

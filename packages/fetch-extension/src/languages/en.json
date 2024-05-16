@@ -85,7 +85,7 @@
   "setting.address-book.button.add": "Add New",
   "setting.address-book.add-address.title": "Add an Address",
   "setting.address-book.edit-address.title": "Edit Address",
-  "setting.address-book.name": "Name",
+  "setting.address-book.name": "Nickname",
   "setting.address-book.address": "Address",
   "setting.address-book.address.error.invalid": "Invalid address",
   "setting.address-book.memo": "Default Memo (Optional)",
