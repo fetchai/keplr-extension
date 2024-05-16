@@ -115,7 +115,9 @@ export const WalletDetailsView = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: "24px",
+          fontWeight: 400,
         }}
       >
         <button
@@ -134,7 +136,7 @@ export const WalletDetailsView = ({
           }}
           className={style["chat-button"]}
         >
-          <img src={require("@assets/svg/wireframe/chatIcon.svg")} alt="" />
+          <img src={require("@assets/svg/wireframe/chat-alt.svg")} alt="" />
           {chatDisabled && (
             <UncontrolledTooltip placement="top" target={"img"}>
               {chatTooltip}
@@ -213,6 +215,7 @@ export const WalletDetailsView = ({
                     gap: "6px",
                     opacity: "0.6",
                     cursor: "pointer",
+                    fontWeight: 400,
                   }}
                   onClick={() => copyAddress(accountInfo.bech32Address)}
                 >

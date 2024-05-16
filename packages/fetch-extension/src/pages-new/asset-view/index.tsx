@@ -57,7 +57,7 @@ export const AssetView = observer(() => {
         )}
         <div className={style["name"]}>{tokenInfo?.coinDenom}</div>
         <div className={style["price-in-usd"]}>
-          {/* {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"} */}
+          {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"}
         </div>
       </div>
       {tokenInfo?.coinGeckoId && (
@@ -75,7 +75,9 @@ export const AssetView = observer(() => {
               {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
             </div>
             <div className={style["inUsd"]}>
-              {balances?.balanceInUsd ? `${balances?.balanceInUsd}` : "0"}{" "}
+              {balances?.balanceInUsd
+                ? `${balances?.balanceInUsd} USD`
+                : "0 USD"}{" "}
             </div>
           </div>
         </div>
@@ -129,7 +131,7 @@ export const AssetView = observer(() => {
               marginBottom: "48px",
             }}
             onClick={() => navigate("/validators/validator")}
-            text={"Earn"}
+            text={"Stake"}
           >
             <img
               className={style["img"]}

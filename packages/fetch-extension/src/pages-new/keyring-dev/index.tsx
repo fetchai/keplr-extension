@@ -97,6 +97,9 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
                   ? formatAddress(accountInfo.bech32Address)
                   : ""
               }
+              style={{
+                padding: keyStore.selected ? "18px 18px" : "18px 16px",
+              }}
               isActive={keyStore.selected}
               onClick={
                 keyStore.selected

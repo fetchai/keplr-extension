@@ -153,7 +153,7 @@ export const AddressBookPage: FunctionComponent<{
         <div className={styleAddressBook["loader"]}>Loading ....</div>
       ) : (
         <div className={style["container"]}>
-          {addressBookConfig.addAddressBook.length > 0 ? (
+          {addressBookConfig.addressBookDatas.length > 0 ? (
             addressBookConfig.addressBookDatas.map((data, i) => {
               return (
                 <AddressRow
