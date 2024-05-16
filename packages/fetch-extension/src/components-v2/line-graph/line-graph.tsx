@@ -39,6 +39,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     const fetchPrices = async () => {
+      setLoading(true);
       try {
         let newPrices: any[] = [];
         if (cachedPrices) {
@@ -137,11 +138,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             <div>{error}</div>
           ) : (
             <div>
-              Loading...
-              <i
-                className="fas fa-spinner fa-spin ml-2"
-                style={{ color: "white" }}
-              />
+              <div className={style["loadingText"]}>Updating the chart</div>
             </div>
           )}
         </div>
