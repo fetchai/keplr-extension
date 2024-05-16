@@ -56,6 +56,8 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
             opacity: "0.8",
             fontWeight: "400",
             background: "rgba(255, 255, 255, 0.1)",
+            padding: "12px 18px",
+            marginBottom: "24px",
           }}
           subheadingStyle={{ fontSize: "14px" }}
         />

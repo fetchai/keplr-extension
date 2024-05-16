@@ -44,7 +44,9 @@ export const DestinationChainSelector: FunctionComponent<{
             chainStore.getChain(ibcChannelConfig.channel.counterpartyChainId)
               .chainName
           ) : (
-            <FormattedMessage id="component.ibc.channel-registrar.chain-selector.placeholder" />
+            <div style={{ color: "rgba(255,255,255,0.6)" }}>
+              <FormattedMessage id="component.ibc.channel-registrar.chain-selector.placeholder" />
+            </div>
           )}
           <img src={require("@assets/svg/wireframe/chevron-down.svg")} alt="" />
         </button>
