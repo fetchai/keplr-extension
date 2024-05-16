@@ -19,7 +19,12 @@ import style2 from "./recover-mnemonic.module.scss";
 import { Button, Form, Label } from "reactstrap";
 import { Input, PasswordInput } from "@components-v2/form";
 import { BackButton } from "../index";
-import { NewMnemonicConfig, NumWords, useNewMnemonicConfig } from "./hook";
+import {
+  NewMnemonicConfig,
+  NewMnemonicStep,
+  NumWords,
+  useNewMnemonicConfig,
+} from "./hook";
 import { useStore } from "../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
@@ -176,20 +181,23 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
         },
       });
 
-      const tabs = [{ id: "12 words" }, { id: "24 words" }];
+      const tabs = [
+        { id: NewMnemonicStep.WORDS12 },
+        { id: NewMnemonicStep.WORDS24 },
+      ];
       const [checkBox1Checked, setCheckBox1Checked] = useState(false);
       const [checkBox2Checked, setCheckBox2Checked] = useState(false);
 
-      const [activeTab, setActiveTab] = useState(tabs[0].id)
+      const [activeTab, setActiveTab] = useState(tabs[0].id);
 
       useEffect(() => {
         const handleTabChange = (activeTab: string) => {
-          if (activeTab === "12 words")
+          if (activeTab === NewMnemonicStep.WORDS12)
             newMnemonicConfig.setNumWords(NumWords.WORDS12);
           else newMnemonicConfig.setNumWords(NumWords.WORDS24);
         };
 
-        handleTabChange(activeTab)
+        handleTabChange(activeTab);
       }, [activeTab]);
 
       const handleCopyClicked = useCallback(async () => {
@@ -206,7 +214,6 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
         });
       }, []);
 
-      
       return (
         <div>
           {!isMainPage && !continueClicked ? (

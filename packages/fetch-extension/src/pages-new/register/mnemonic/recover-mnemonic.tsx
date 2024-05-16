@@ -20,9 +20,15 @@ import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { Card } from "@components-v2/card";
 import { ImportLedgerPage } from "../ledger";
 import { MigrateEthereumAddressPage } from "../migration";
+import { NewMnemonicStep } from "./hook";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bip39 = require("bip39");
+
+const enum AccountSetupType {
+  MIGRATE_ETH = "migrate-eth",
+  CONNECT_HARDWARE = "connect-hardware",
+}
 
 export function isPrivateKey(str: string): boolean {
   if (str.startsWith("0x")) {
@@ -149,7 +155,7 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
             }}
             onClick={(e: any) => {
               e.preventDefault();
-              setSelectedCard("connect-hardware");
+              setSelectedCard(AccountSetupType.CONNECT_HARDWARE);
               registerConfig.setType(TypeRecoverMnemonic);
               analyticsStore.logEvent("Import account started", {
                 registerType: "seed",
@@ -176,7 +182,7 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
             }}
             onClick={(e: any) => {
               e.preventDefault();
-              setSelectedCard("migrate-eth");
+              setSelectedCard(AccountSetupType.MIGRATE_ETH);
               registerConfig.setType(TypeRecoverMnemonic);
               analyticsStore.logEvent("Import account started", {
                 registerType: "seed",
@@ -343,17 +349,21 @@ export const RecoverMnemonicPage: FunctionComponent<{
       return undefined;
     }
   };
-  const tabs = [{ id: "12 words" }, { id: "24 words" }, { id: "Private key" }];
+  const tabs = [
+    { id: NewMnemonicStep.WORDS12 },
+    { id: NewMnemonicStep.WORDS24 },
+    { id: NewMnemonicStep.PRIVATEKEY },
+  ];
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const [selectedCard, setSelectedCard] = useState("main");
 
   useEffect(() => {
     const handleTabChange = (activeTab: any) => {
-      if (activeTab === "12 words") {
+      if (activeTab === NewMnemonicStep.WORDS12) {
         setSeedType(SeedType.WORDS12);
-      } else if (activeTab === "24 words") {
+      } else if (activeTab === NewMnemonicStep.WORDS24) {
         setSeedType(SeedType.WORDS24);
-      } else if (activeTab === "Private key") {
+      } else if (activeTab === NewMnemonicStep.PRIVATEKEY) {
         setSeedType(SeedType.PRIVATE_KEY);
       }
     };
@@ -444,7 +454,7 @@ export const RecoverMnemonicPage: FunctionComponent<{
             >
               <div
                 style={{
-                  ...(activeTab === "12 words"
+                  ...(activeTab === NewMnemonicStep.WORDS12
                     ? { gridTemplateColumns: "1fr 1fr 1fr" }
                     : {}),
                   ...(seedType === SeedType.PRIVATE_KEY
@@ -666,13 +676,13 @@ export const RecoverMnemonicPage: FunctionComponent<{
           </div>
         </React.Fragment>
       )}
-      {selectedCard == "connect-hardware" && (
+      {selectedCard == AccountSetupType.CONNECT_HARDWARE && (
         <ImportLedgerPage
           registerConfig={registerConfig}
           setSelectedCard={setSelectedCard}
         />
       )}
-      {selectedCard == "migrate-eth" && (
+      {selectedCard == AccountSetupType.MIGRATE_ETH && (
         <MigrateEthereumAddressPage
           registerConfig={registerConfig}
           setSelectedCard={setSelectedCard}
