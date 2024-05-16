@@ -21,6 +21,7 @@ import {
   default as style,
   default as styleAddressBook,
 } from "./style.module.scss";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -185,28 +186,59 @@ export const ContactBookPage: FunctionComponent<{
       ) : (
         <div className={style["container"]}>
           <div>
-            {addressBookConfig.addressBookDatas.map((data, i) => {
-              return (
-                <Card
-                  key={i.toString()}
-                  heading={data.name}
-                  subheading={
-                    data.address.indexOf(
-                      chainStore.getChain(selectedChainId).bech32Config
-                        .bech32PrefixAccAddr
-                    ) === 0
-                      ? Bech32Address.shortenAddress(data.address, 34)
-                      : data.address.startsWith("agent")
-                      ? shortenAgentAddress(data.address)
-                      : Bech32Address.shortenAddress(data.address, 34, true)
-                  }
-                  rightContent={addressBookIcons(i)}
-                  data-index={i}
-                  onClick={(e: any) => handleAddressClick(e, data.address, i)}
-                  style={{ cursor: selectHandler ? undefined : "auto" }}
+            {addressBookConfig.addressBookDatas.length > 0 ? (
+              addressBookConfig.addressBookDatas.map((data, i) => {
+                return (
+                  <Card
+                    key={i.toString()}
+                    heading={data.name}
+                    subheading={
+                      data.address.indexOf(
+                        chainStore.getChain(selectedChainId).bech32Config
+                          .bech32PrefixAccAddr
+                      ) === 0
+                        ? Bech32Address.shortenAddress(data.address, 34)
+                        : data.address.startsWith("agent")
+                        ? shortenAgentAddress(data.address)
+                        : Bech32Address.shortenAddress(data.address, 34, true)
+                    }
+                    rightContent={addressBookIcons(i)}
+                    data-index={i}
+                    onClick={(e: any) => handleAddressClick(e, data.address, i)}
+                    style={{ cursor: selectHandler ? undefined : "auto" }}
+                  />
+                );
+              })
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    marginBottom: "24px",
+                    opacity: 0.8,
+                  }}
+                >
+                  You haven’t saved any addresses yet
+                </div>
+                <ButtonV2
+                  styleProps={{
+                    height: "56px",
+                    background: "transparent",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    color: "white",
+                    marginTop: "0px",
+                  }}
+                  text={"Add an address"}
+                  onClick={() => setAddAddressModalOpen(true)}
                 />
-              );
-            })}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -198,16 +198,25 @@ export const AddressBookPage: FunctionComponent<{
               );
             })
           ) : (
-            <NoAddress />
-          )}
+            <div>
+              <NoAddress />
 
-          <ButtonV2
-            styleProps={{
-              height: "56px",
-            }}
-            text="Add an address"
-            onClick={() => setAddAddressModalOpen(true)}
-          />
+              <ButtonV2
+                styleProps={{
+                  height: "56px",
+                }}
+                text="Add an address"
+                onClick={(e: any) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  analyticsStore.logEvent("add_new_address_click", {
+                    pageName: "Drawer",
+                  });
+                  setAddAddressModalOpen(true);
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
     </HeaderLayout>
