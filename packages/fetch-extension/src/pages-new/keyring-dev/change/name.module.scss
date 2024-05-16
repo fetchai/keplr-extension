@@ -6,6 +6,7 @@
 .input {
   background: rgba(255, 255, 255, 0.1) !important;
   color: white !important;
+  margin-bottom: 16px;
 }
 
 .input:read-only {
@@ -19,5 +20,9 @@
 }
 .label {
   color: rgba(255, 255, 255, 0.6);
+  font-family: Lexend;
   font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
 }
