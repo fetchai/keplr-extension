@@ -49,7 +49,6 @@ import { AddTokenPage } from "./pages-new/more/token/add";
 import { ManageTokenPage } from "./pages-new/more/token/manage";
 import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
-import { ClearPage } from "./pages/setting/clear";
 import { StoreProvider, useStore } from "./stores";
 
 import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
@@ -115,6 +114,7 @@ import { StakeComplete } from "./pages/validator/stake-complete";
 import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
 import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
 import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
+import { DeleteWallet } from "./pages-new/keyring-dev/delete";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -289,7 +289,7 @@ ReactDOM.render(
                       />
                       <Route
                         path="/setting/clear/:index"
-                        element={<ClearPage />}
+                        element={<DeleteWallet />}
                       />
                       <Route
                         path="/setting/keyring/change/name/:index"
