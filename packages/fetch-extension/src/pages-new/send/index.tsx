@@ -224,6 +224,7 @@ export const SendPage: FunctionComponent = observer(() => {
       smallTitle={true}
       alternativeTitle="Send"
       canChangeChainInfo={false}
+      showBottomMenu={false}
       onBackButton={
         isDetachedPage
           ? undefined
