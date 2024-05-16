@@ -61,8 +61,7 @@ import manifest from "./manifest.v2.json";
 import { ActivityPage } from "./pages-new/activity";
 import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { AssetView } from "./pages-new/asset-view";
-import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
-import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
+
 import { BridgePage } from "./pages-new/bridge";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 import { MorePage } from "./pages-new/more";
@@ -115,6 +114,8 @@ import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
 import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
 import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
 import { DeleteWallet } from "./pages-new/keyring-dev/delete";
+import { AxelarBridgeEVM } from "./pages-unused/axelar-bridge/axelar-bridge-evm";
+import { AxelarBridgeCosmos } from "./pages-unused/axelar-bridge/axelar-bridge-cosmos";
 
 window.keplr = new Keplr(
   manifest.version,
