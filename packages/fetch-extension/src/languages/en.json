@@ -314,7 +314,7 @@
   "send.button.speedup": "Speed up",
   "send.button.cancel": "Cancel",
   "ibc.transfer.next": "Next",
-  "ibc.transfer.submit": "Submit",
+  "ibc.transfer.submit": "Review transaction",
 
   "fee.input.gas": "Gas",
   "fee.input.memo": "Memo (Optional)",

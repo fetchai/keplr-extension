@@ -27,9 +27,24 @@ export const IBCChannelRegistrar: FunctionComponent<{
   const [error, setError] = useState("");
 
   return (
-    <Form>
-      <FormGroup>
-        <Label for="chain-dropdown" className="form-control-label">
+    <Form
+      style={{
+        position: "relative",
+        height: "100%",
+      }}
+    >
+      <FormGroup
+        style={{
+          marginBottom: "16px",
+        }}
+      >
+        <Label
+          for="chain-dropdown"
+          style={{
+            fontWeight: 400,
+          }}
+          className="form-control-label"
+        >
           <FormattedMessage id="component.ibc.channel-registrar.chain-selector.label" />
         </Label>
         <button
@@ -49,6 +64,8 @@ export const IBCChannelRegistrar: FunctionComponent<{
           isOpen={isChainDropdownOpen}
           setIsOpen={setIsChainDropdownOpen}
           closeClicked={() => setIsChainDropdownOpen(!isChainDropdownOpen)}
+          showTopNav={true}
+          styleProp={{ top: "0" }}
         >
           {chainStore.chainInfos.map((chainInfo) => {
             if (chainStore.current.chainId !== chainInfo.chainId) {
@@ -95,6 +112,11 @@ export const IBCChannelRegistrar: FunctionComponent<{
             <FormattedMessage id="component.ibc.channel-registrar.chain-selector.add.channel.button" />
           )
         }
+        styleProps={{
+          height: "56px",
+          position: "relative",
+          bottom: "5px",
+        }}
         disabled={selectedChainId === "" || channelId === "" || error !== ""}
         data-loading={isLoading}
         onClick={async (e: any) => {
