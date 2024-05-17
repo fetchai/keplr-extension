@@ -287,6 +287,9 @@ export const SendPage: FunctionComponent = observer(() => {
     >
       <form
         className={style["formContainer"]}
+        style={{
+          height: "100%",
+        }}
         onSubmit={async (e) => {
           e.preventDefault();
 
