@@ -550,6 +550,7 @@ export const VerifyMnemonicModePage: FunctionComponent<{
             ))}
           </div>
         </div>
+
         <ButtonV2
           text=""
           disabled={
@@ -561,7 +562,11 @@ export const VerifyMnemonicModePage: FunctionComponent<{
             marginBottom: "20px",
             height: "56px",
             borderRadius: "100px",
-            background: "transparent",
+            background:
+              registerConfig.isLoading ||
+              suggestedWords.join(" ") !== wordsSlice.join(" ")
+                ? "transparent"
+                : "white",
           }}
           onClick={async (e: any) => {
             e.preventDefault();
