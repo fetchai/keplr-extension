@@ -169,6 +169,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinMinimalDenom: "eth",
       coinDecimals: 18,
     },
+    type: "testnet",
     bip44: {
       coinType: 60,
     },
@@ -323,6 +324,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         ? "https://wallet.keplr.app/chains/osmosis"
         : "http://localhost:8080/chains/osmosis",
     bip44: { coinType: 118 },
+    type: "testnet",
     bech32Config: Bech32Address.defaultBech32Config("osmo"),
     currencies: [
       {
@@ -2642,6 +2644,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       bech32PrefixConsPub: "axelarvalconspub",
     },
     bip44: { coinType: 118 },
+    type: "testnet",
     currencies: [
       { coinDenom: "AXL", coinMinimalDenom: "uaxl", coinDecimals: 6 },
     ],
@@ -2669,6 +2672,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinType: 118,
     },
     bech32Config: Bech32Address.defaultBech32Config("fetch"),
+    type: "testnet",
     currencies: [
       {
         coinDenom: "TESTFET",

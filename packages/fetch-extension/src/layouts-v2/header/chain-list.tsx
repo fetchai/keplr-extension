@@ -7,12 +7,15 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { formatAddress } from "@utils/format";
 import classnames from "classnames";
 import { observer } from "mobx-react-lite";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { getFilteredChainValues } from "@utils/filters";
+import { NotificationOption } from "@components-v2/notification-option";
+import { ChainInfoInner } from "@keplr-wallet/stores";
+import { ChainInfoWithCoreTypes } from "@keplr-wallet/background/src/chains";
 
 interface ChainListProps {
   showAddress?: boolean;
@@ -35,6 +38,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
     const intl = useIntl();
     const navigate = useNavigate();
     const confirm = useConfirm();
+
     const mainChainList = chainStore.chainInfosInUI.filter(
       (chainInfo) => !chainInfo.beta && !chainInfo.features?.includes("evm")
     );
@@ -46,15 +50,66 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
     const betaChainList = chainStore.chainInfosInUI.filter(
       (chainInfo) => chainInfo.beta
     );
+
+    const [showMainTestNet, setShowMainTestNet] = useState(false);
+    const [showEvmTestNet, setShowEvmTestNet] = useState(false);
+
+    const [cosmosTestList, setCosmosTestList] =
+      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(mainChainList);
+
+    const [evmTestList, setEvmTestList] =
+      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(evmChainList);
+
+    const [cosmosList, setCosmosList] =
+      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(mainChainList);
+    const [evmList, setEvmList] =
+      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(evmChainList);
+
+    useEffect(() => {
+      setCosmosTestList(
+        mainChainList.filter((chainInfo) => chainInfo.raw.type === "testnet")
+      );
+
+      setEvmTestList(
+        evmChainList.filter((chainInfo) => chainInfo.raw.type === "testnet")
+      );
+    }, []);
+
+    useEffect(() => {
+      if (showMainTestNet) {
+        setCosmosList(cosmosTestList);
+      } else {
+        setCosmosList(mainChainList);
+      }
+    }, [showMainTestNet]);
+
+    useEffect(() => {
+      if (showEvmTestNet) {
+        setEvmList(evmTestList);
+      } else {
+        setEvmList(evmChainList);
+      }
+    }, [showEvmTestNet]);
+
     const tabs = [
       {
         id: "Cosmos",
         component: (
           <div>
+            <NotificationOption
+              name="Show testnet"
+              isChecked={showMainTestNet}
+              handleOnChange={() => setShowMainTestNet((prev) => !prev)}
+              cardStyles={{
+                background: "transparent",
+                padding: "0px",
+                marginBottom: "24px",
+              }}
+            />
             <SearchBar
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
-              valuesArray={mainChainList}
+              valuesArray={cosmosList}
               itemsStyleProp={{ overflow: "auto", height: "360px" }}
               filterFunction={getFilteredChainValues}
               renderResult={(chainInfo, index) => (
@@ -194,10 +249,20 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
         id: "EVM",
         component: (
           <div>
+            <NotificationOption
+              name="Show testnet"
+              isChecked={showEvmTestNet}
+              handleOnChange={() => setShowEvmTestNet((prev) => !prev)}
+              cardStyles={{
+                background: "transparent",
+                padding: "0px",
+                marginBottom: "24px",
+              }}
+            />
             <SearchBar
               searchTerm={evmSearchTerm}
               onSearchTermChange={setEvmSearchTerm}
-              valuesArray={evmChainList}
+              valuesArray={evmList}
               filterFunction={getFilteredChainValues}
               renderResult={(chainInfo, index) => (
                 <Card
