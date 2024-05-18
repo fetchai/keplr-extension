@@ -23,6 +23,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { SlideDownAnimation } from "components/new/animations/slide-down";
 
 interface ClaimData {
   reward: string;
@@ -242,7 +243,11 @@ export const MyRewardCard: FunctionComponent<{
           </View>
         </TouchableOpacity>
       ) : null}
-      {showRewars && <DelegateReward />}
+      {showRewars && (
+        <SlideDownAnimation>
+          <DelegateReward />
+        </SlideDownAnimation>
+      )}
 
       <TransactionModal
         isOpen={showTransectionModal}

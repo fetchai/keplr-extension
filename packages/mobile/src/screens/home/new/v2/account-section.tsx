@@ -114,8 +114,8 @@ export const AccountSection: FunctionComponent<{
 
   const changeInDollarsValue =
     tokenState.type === "positive"
-      ? (parseFloat(totalNumber) * tokenState.diff) / 100
-      : -(parseFloat(totalNumber) * tokenState.diff) / 100;
+      ? (parseFloat(totalNumber.replace(/,/g, "")) * tokenState.diff) / 100
+      : -(parseFloat(totalNumber.replace(/,/g, "")) * tokenState.diff) / 100;
 
   async function onSubmit() {
     const validatorAddresses =
