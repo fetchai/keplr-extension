@@ -62,7 +62,6 @@ import { ActivityPage } from "./pages-new/activity";
 import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { AssetView } from "./pages-new/asset-view";
 
-import { BridgePage } from "./pages-new/bridge";
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 import { MorePage } from "./pages-new/more";
 import { AppVersion } from "./pages-new/more/app-version";
@@ -116,6 +115,7 @@ import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountP
 import { DeleteWallet } from "./pages-new/keyring-dev/delete";
 import { AxelarBridgeEVM } from "./pages-unused/axelar-bridge/axelar-bridge-evm";
 import { AxelarBridgeCosmos } from "./pages-unused/axelar-bridge/axelar-bridge-cosmos";
+import { BridgePage } from "./pages/bridge";
 
 window.keplr = new Keplr(
   manifest.version,

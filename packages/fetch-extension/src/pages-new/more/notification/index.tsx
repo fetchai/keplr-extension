@@ -61,10 +61,6 @@ export const MoreNotifications = observer(() => {
           name="Receive Notifications"
           isChecked={notificationInfo.isNotificationOn}
           handleOnChange={handleOnChange}
-          inActiveBackground={"rgba(255,255,255,0.1)"}
-          cardStyles={{
-            height: "60px",
-          }}
         />
         {!notificationInfo.isNotificationOn && (
           <p className={style["notificationOffMsg"]}>
