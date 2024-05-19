@@ -112,6 +112,25 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               valuesArray={cosmosList}
               itemsStyleProp={{ overflow: "auto", height: "360px" }}
               filterFunction={getFilteredChainValues}
+              midElement={
+                <div>
+                  <ButtonV2
+                    styleProps={{
+                      height: "48px",
+                      marginTop: "0px",
+                      background: "transparent",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.4)",
+                      fontSize: "14px",
+                    }}
+                    onClick={(e: any) => {
+                      e.preventDefault();
+                      navigate("/manage-networks");
+                    }}
+                    text={"Manage networks"}
+                  />
+                </div>
+              }
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}
@@ -264,6 +283,25 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               onSearchTermChange={setEvmSearchTerm}
               valuesArray={evmList}
               filterFunction={getFilteredChainValues}
+              midElement={
+                <div>
+                  <ButtonV2
+                    styleProps={{
+                      height: "48px",
+                      marginTop: "0px",
+                      background: "transparent",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.4)",
+                      fontSize: "14px",
+                    }}
+                    onClick={(e: any) => {
+                      e.preventDefault();
+                      navigate("/manage-networks");
+                    }}
+                    text={"Manage networks"}
+                  />
+                </div>
+              }
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}
