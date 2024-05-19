@@ -29,15 +29,10 @@ export const IBCChannelRegistrar: FunctionComponent<{
   return (
     <Form
       style={{
-        position: "relative",
         height: "100%",
       }}
     >
-      <FormGroup
-        style={{
-          marginBottom: "16px",
-        }}
-      >
+      <FormGroup>
         <Label
           for="chain-dropdown"
           style={{
@@ -65,7 +60,7 @@ export const IBCChannelRegistrar: FunctionComponent<{
           setIsOpen={setIsChainDropdownOpen}
           closeClicked={() => setIsChainDropdownOpen(!isChainDropdownOpen)}
           showTopNav={true}
-          styleProp={{ top: "0" }}
+          styleProp={{ top: "80px" }}
         >
           {chainStore.chainInfos.map((chainInfo) => {
             if (chainStore.current.chainId !== chainInfo.chainId) {
@@ -114,8 +109,6 @@ export const IBCChannelRegistrar: FunctionComponent<{
         }
         styleProps={{
           height: "56px",
-          position: "relative",
-          bottom: "5px",
         }}
         disabled={selectedChainId === "" || channelId === "" || error !== ""}
         data-loading={isLoading}

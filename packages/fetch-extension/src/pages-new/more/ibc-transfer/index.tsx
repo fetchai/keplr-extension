@@ -238,7 +238,7 @@ export const IBCTransferPageChannel: FunctionComponent<{
               }
             />
           ) : (
-            <div style={{ position: "relative", height: "100%" }}>
+            <div style={{ height: "100%" }}>
               <DestinationChainSelector
                 ibcChannelConfig={channelConfig}
                 setIsIBCRegisterPageOpen={setIsIBCRegisterPageOpen}
@@ -276,8 +276,6 @@ export const IBCTransferPageChannel: FunctionComponent<{
               <ButtonV2
                 styleProps={{
                   height: "56px",
-                  position: "absolute",
-                  bottom: "5px",
                 }}
                 text=""
                 disabled={!isValid}
