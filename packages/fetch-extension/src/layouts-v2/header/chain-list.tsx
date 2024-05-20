@@ -105,23 +105,21 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               itemsStyleProp={{ overflow: "auto", height: "360px" }}
               filterFunction={getFilteredChainValues}
               midElement={
-                <div>
-                  <ButtonV2
-                    styleProps={{
-                      height: "48px",
-                      marginTop: "0px",
-                      background: "transparent",
-                      color: "white",
-                      border: "1px solid rgba(255,255,255,0.4)",
-                      fontSize: "14px",
-                    }}
-                    onClick={(e: any) => {
-                      e.preventDefault();
-                      navigate("/manage-networks");
-                    }}
-                    text={"Manage networks"}
-                  />
-                </div>
+                <ButtonV2
+                  styleProps={{
+                    height: "48px",
+                    marginTop: "0px",
+                    background: "transparent",
+                    color: "white",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    fontSize: "14px",
+                  }}
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    navigate("/manage-networks");
+                  }}
+                  text={"Manage networks"}
+                />
               }
               renderResult={(chainInfo, index) => (
                 <Card
@@ -276,23 +274,21 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               valuesArray={evmList}
               filterFunction={getFilteredChainValues}
               midElement={
-                <div>
-                  <ButtonV2
-                    styleProps={{
-                      height: "48px",
-                      marginTop: "0px",
-                      background: "transparent",
-                      color: "white",
-                      border: "1px solid rgba(255,255,255,0.4)",
-                      fontSize: "14px",
-                    }}
-                    onClick={(e: any) => {
-                      e.preventDefault();
-                      navigate("/manage-networks");
-                    }}
-                    text={"Manage networks"}
-                  />
-                </div>
+                <ButtonV2
+                  styleProps={{
+                    height: "48px",
+                    marginTop: "0px",
+                    background: "transparent",
+                    color: "white",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    fontSize: "14px",
+                  }}
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    navigate("/manage-networks");
+                  }}
+                  text={"Manage networks"}
+                />
               }
               renderResult={(chainInfo, index) => (
                 <Card

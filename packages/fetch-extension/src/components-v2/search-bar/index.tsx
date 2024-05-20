@@ -63,7 +63,7 @@ export const SearchBar: React.FC<Props> = ({
           marginBottom: "24px",
         }}
       >
-        {midElement && midElement}
+        {midElement && <div>{midElement}</div>}
       </div>
 
       {suggestedValues.length > 0 && (

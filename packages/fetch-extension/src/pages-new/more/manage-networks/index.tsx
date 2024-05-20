@@ -1,13 +1,14 @@
+import { Card } from "@components-v2/card";
+import { SearchBar } from "@components-v2/search-bar";
+import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { HeaderLayout } from "@layouts-v2/header-layout";
+import { observer } from "mobx-react-lite";
 import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import style from "./style.module.scss";
-import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
-import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
-import { Card } from "@components-v2/card";
-import { SearchBar } from "@components-v2/search-bar";
+import style from "./style.module.scss";
+import { ToggleSwitchButton } from "@components-v2/buttons/toggle-switch-button";
 
 export const ManageNetworks: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -49,18 +50,12 @@ export const ManageNetworks: FunctionComponent = observer(() => {
                 }
                 heading={chainInfo.chainName}
                 rightContent={
-                  <div>
-                    <label className={style["switch"]}>
-                      <input
-                        type="checkbox"
-                        checked={!disabledChainList.includes(chainInfo)}
-                        onChange={() => {
-                          chainStore.toggleChainInfoInUI(chainInfo.chainId);
-                        }}
-                      />
-                      <span className={style["slider"]} />
-                    </label>
-                  </div>
+                  <ToggleSwitchButton
+                    checked={!disabledChainList.includes(chainInfo)}
+                    onChange={() => {
+                      chainStore.toggleChainInfoInUI(chainInfo.chainId);
+                    }}
+                  />
                 }
               />
             )}
@@ -86,18 +81,12 @@ export const ManageNetworks: FunctionComponent = observer(() => {
                 }
                 heading={chainInfo.chainName}
                 rightContent={
-                  <div>
-                    <label className={style["switch"]}>
-                      <input
-                        type="checkbox"
-                        checked={!disabledChainList.includes(chainInfo)}
-                        onChange={() => {
-                          chainStore.toggleChainInfoInUI(chainInfo.chainId);
-                        }}
-                      />
-                      <span className={style["slider"]} />
-                    </label>
-                  </div>
+                  <ToggleSwitchButton
+                    checked={!disabledChainList.includes(chainInfo)}
+                    onChange={() => {
+                      chainStore.toggleChainInfoInUI(chainInfo.chainId);
+                    }}
+                  />
                 }
               />
             )}
