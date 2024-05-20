@@ -212,7 +212,17 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
     if (chainInfoUI) {
       this.chainInfoInUIConfig.disabledChains =
-        chainInfoUI.disabledChains ?? [];
+        chainInfoUI?.disabledChains?.length > 0
+          ? chainInfoUI.disabledChains
+          : this.chainInfos
+              .filter((chainInfo) => chainInfo.hideInUI)
+              .map(
+                (element) => ChainIdHelper.parse(element.chainId).identifier
+              );
+    } else {
+      this.chainInfoInUIConfig.disabledChains = this.chainInfos
+        .filter((chainInfo) => chainInfo.hideInUI)
+        .map((element) => ChainIdHelper.parse(element.chainId).identifier);
     }
   }
 

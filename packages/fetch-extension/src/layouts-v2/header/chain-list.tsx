@@ -54,11 +54,13 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
     const [showMainTestNet, setShowMainTestNet] = useState(false);
     const [showEvmTestNet, setShowEvmTestNet] = useState(false);
 
-    const [cosmosTestList, setCosmosTestList] =
-      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(mainChainList);
+    const cosmosMainList = mainChainList.filter(
+      (chainInfo) => chainInfo.raw.type !== "testnet"
+    );
 
-    const [evmTestList, setEvmTestList] =
-      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(evmChainList);
+    const evmMainList = evmChainList.filter(
+      (chainInfo) => chainInfo.raw.type !== "testnet"
+    );
 
     const [cosmosList, setCosmosList] =
       useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(mainChainList);
@@ -66,28 +68,18 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
       useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(evmChainList);
 
     useEffect(() => {
-      setCosmosTestList(
-        mainChainList.filter((chainInfo) => chainInfo.raw.type === "testnet")
-      );
-
-      setEvmTestList(
-        evmChainList.filter((chainInfo) => chainInfo.raw.type === "testnet")
-      );
-    }, []);
-
-    useEffect(() => {
       if (showMainTestNet) {
-        setCosmosList(cosmosTestList);
-      } else {
         setCosmosList(mainChainList);
+      } else {
+        setCosmosList(cosmosMainList);
       }
     }, [showMainTestNet]);
 
     useEffect(() => {
       if (showEvmTestNet) {
-        setEvmList(evmTestList);
-      } else {
         setEvmList(evmChainList);
+      } else {
+        setEvmList(evmMainList);
       }
     }, [showEvmTestNet]);
 
