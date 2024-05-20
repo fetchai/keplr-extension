@@ -125,7 +125,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 <Card
                   key={index}
                   leftImage={
-                    chainInfo.chainName
+                    chainInfo.raw.chainSymbolImageUrl !== undefined
+                      ? chainInfo.raw.chainSymbolImageUrl
+                      : chainInfo.chainName
                       ? chainInfo.chainName[0].toUpperCase()
                       : ""
                   }
@@ -178,7 +180,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               <Card
                 key={chainInfo.chainId}
                 leftImage={
-                  chainInfo.chainName
+                  chainInfo.raw.chainSymbolImageUrl !== undefined
+                    ? chainInfo.raw.chainSymbolImageUrl
+                    : chainInfo.chainName
                     ? chainInfo.chainName[0].toUpperCase()
                     : ""
                 }
@@ -294,7 +298,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 <Card
                   key={index}
                   leftImage={
-                    chainInfo.chainName
+                    chainInfo.raw.chainSymbolImageUrl !== undefined
+                      ? chainInfo.raw.chainSymbolImageUrl
+                      : chainInfo.chainName
                       ? chainInfo.chainName[0].toUpperCase()
                       : ""
                   }
@@ -339,24 +345,6 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 />
               )}
             />
-            <div style={{ position: "absolute", bottom: "5px", width: "94%" }}>
-              <ButtonV2
-                styleProps={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "338px",
-                  top: "150px",
-                  position: "absolute",
-                }}
-                onClick={(e: any) => {
-                  e.preventDefault();
-                  navigate("/setting/addEvmChain");
-                }}
-                gradientText={""}
-                text={"Add custom EVM network"}
-              />
-            </div>
           </div>
         ),
       },

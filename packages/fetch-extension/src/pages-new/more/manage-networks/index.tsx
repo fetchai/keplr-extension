@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { ToggleSwitchButton } from "@components-v2/buttons/toggle-switch-button";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const ManageNetworks: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -44,7 +45,9 @@ export const ManageNetworks: FunctionComponent = observer(() => {
               <Card
                 key={index}
                 leftImage={
-                  chainInfo.chainName
+                  chainInfo.raw.chainSymbolImageUrl !== undefined
+                    ? chainInfo.raw.chainSymbolImageUrl
+                    : chainInfo.chainName
                     ? chainInfo.chainName[0].toUpperCase()
                     : ""
                 }
@@ -75,7 +78,9 @@ export const ManageNetworks: FunctionComponent = observer(() => {
               <Card
                 key={index}
                 leftImage={
-                  chainInfo.chainName
+                  chainInfo.raw.chainSymbolImageUrl !== undefined
+                    ? chainInfo.raw.chainSymbolImageUrl
+                    : chainInfo.chainName
                     ? chainInfo.chainName[0].toUpperCase()
                     : ""
                 }
@@ -91,6 +96,27 @@ export const ManageNetworks: FunctionComponent = observer(() => {
               />
             )}
           />
+          <div style={{ width: "100%" }}>
+            <ButtonV2
+              styleProps={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
+                border: "1px solid rgba(255,255,255,0.4)",
+                color: "white",
+                height: "48px",
+                fontSize: "14px",
+                fontWeight: 400,
+              }}
+              onClick={(e: any) => {
+                e.preventDefault();
+                navigate("/setting/addEvmChain");
+              }}
+              gradientText={""}
+              text={"Add custom EVM network"}
+            />
+          </div>
         </div>
       ),
     },
