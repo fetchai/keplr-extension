@@ -14,7 +14,14 @@ export const MorePage: FunctionComponent = () => {
   });
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
   return (
-    <HeaderLayout showChainName={true} canChangeChainInfo={true}>
+    <HeaderLayout
+      innerStyle={{
+        marginTop: "0px",
+        marginBottom: "0px",
+      }}
+      showChainName={true}
+      canChangeChainInfo={true}
+    >
       <div className={style["title"]}>More</div>
       <div className={style["subTitle"]}>Account</div>
       <Card
@@ -71,7 +78,7 @@ export const MorePage: FunctionComponent = () => {
       <Card
         leftImageStyle={{ background: "transparent", height: "16px" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
-        leftImage={require("@assets/svg/wireframe/ibc-transfer.svg")}
+        leftImage={require("@assets/svg/wireframe/ibc-transfer-v2.svg")}
         heading={"IBC Transfer"}
         onClick={(e: any) => {
           e.preventDefault();

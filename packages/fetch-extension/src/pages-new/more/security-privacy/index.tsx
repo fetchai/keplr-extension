@@ -23,6 +23,7 @@ export const SecurityPrivacyPage: FunctionComponent = () => {
     <HeaderLayout
       showTopMenu={true}
       smallTitle={true}
+      showBottomMenu={false}
       showChainName={false}
       canChangeChainInfo={false}
       alternativeTitle={intl.formatMessage({
