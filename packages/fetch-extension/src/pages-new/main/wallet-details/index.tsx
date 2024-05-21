@@ -213,7 +213,6 @@ export const WalletDetailsView = ({
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
-                    opacity: "0.6",
                     cursor: "pointer",
                     fontWeight: 400,
                   }}
