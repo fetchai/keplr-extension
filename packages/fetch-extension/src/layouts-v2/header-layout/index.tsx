@@ -28,12 +28,16 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
     },
   };
 
+  const headerStyle = {
+    paddingTop: props.showTopMenu ? "64px" : "0px",
+  };
+
   return (
     <MenuProvider value={menuContext}>
       <div className={style["container"]} style={props.style}>
         {props.showTopMenu && <Header {...props} isMenuOpen={isMenuOpen} />}
         <div
-          style={props.innerStyle}
+          style={{ ...headerStyle, ...props.innerStyle }}
           className={
             props.showBottomMenu
               ? style["innerContainerWithMask"]
