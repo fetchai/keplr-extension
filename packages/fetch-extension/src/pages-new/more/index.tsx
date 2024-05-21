@@ -21,6 +21,7 @@ export const MorePage: FunctionComponent = () => {
       }}
       showChainName={true}
       canChangeChainInfo={true}
+      showBottomMenu={true}
     >
       <div className={style["title"]}>More</div>
       <div className={style["subTitle"]}>Account</div>
@@ -155,6 +156,11 @@ export const MorePage: FunctionComponent = () => {
           keyRingStore.lock();
           analyticsStore.logEvent("sign_out_click");
           navigate("/");
+        }}
+      />
+      <div
+        style={{
+          marginBottom: "20px",
         }}
       />
     </HeaderLayout>

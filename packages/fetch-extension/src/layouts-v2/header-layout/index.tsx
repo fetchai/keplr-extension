@@ -32,7 +32,14 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
     <MenuProvider value={menuContext}>
       <div className={style["container"]} style={props.style}>
         {props.showTopMenu && <Header {...props} isMenuOpen={isMenuOpen} />}
-        <div style={props.innerStyle} className={style["innerContainer"]}>
+        <div
+          style={props.innerStyle}
+          className={
+            props.showBottomMenu
+              ? style["innerContainerWithMask"]
+              : style["innerContainer"]
+          }
+        >
           {children}
         </div>
         {(props.showBottomMenu ?? true) && <BottomNav />}
