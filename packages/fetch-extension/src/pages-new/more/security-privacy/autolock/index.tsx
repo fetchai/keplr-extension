@@ -71,9 +71,6 @@ export const AutoLockPage: FunctionComponent = () => {
       canChangeChainInfo={false}
       smallTitle={true}
       showBottomMenu={false}
-      alternativeTitle={intl.formatMessage({
-        id: "setting.autolock",
-      })}
       onBackButton={() => {
         analyticsStore.logEvent("back_click", {
           pageName: "Autolock Timer",
