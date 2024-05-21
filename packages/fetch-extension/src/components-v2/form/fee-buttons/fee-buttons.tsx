@@ -300,7 +300,6 @@ export const FeeButtonsInner: FunctionComponent<
             style={{
               padding: "18px 16px",
               height: "48px",
-              background: "transparent",
             }}
             heading={
               <div>
@@ -353,7 +352,6 @@ export const FeeButtonsInner: FunctionComponent<
             style={{
               padding: "18px 16px",
               height: "48px",
-              background: "transparent",
             }}
             rightContent={
               <div

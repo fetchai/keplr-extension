@@ -220,10 +220,12 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           gasSimulator={gasSimulator}
         />
         <ButtonV2
-          text="Review transfer"
+          text="Review transaction"
           gradientText=""
           styleProps={{
             height: "56px",
+            position: "sticky",
+            bottom: "5px",
           }}
           onClick={async (e: any) => {
             e.preventDefault();
