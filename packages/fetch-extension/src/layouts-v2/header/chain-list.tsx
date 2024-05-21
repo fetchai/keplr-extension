@@ -55,6 +55,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               searchTerm={cosmosSearchTerm}
               valuesArray={mainChainList}
               itemsStyleProp={{ overflow: "auto", height: "360px" }}
+              type="chain"
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}
@@ -196,6 +197,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               searchTerm={evmSearchTerm}
               onSearchTermChange={setEvmSearchTerm}
               valuesArray={evmChainList}
+              type="chain"
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}

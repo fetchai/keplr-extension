@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import style from "./style.module.scss";
 import { Card } from "@components-v2/card";
+import { _DeepReadonlyArray } from "utility-types/dist/mapped-types";
+import { AddressBookData } from "@keplr-wallet/hooks";
 
 interface Props {
   searchTerm: string;
-  valuesArray: any[];
+  valuesArray: any[] | _DeepReadonlyArray<AddressBookData>;
   renderResult: (value: any, index: number) => React.ReactNode;
   onSearchTermChange: (term: string) => void;
   itemsStyleProp?: any;
+  type: "chain" | "address";
 }
 
 export const SearchBar: React.FC<Props> = ({
@@ -16,8 +19,11 @@ export const SearchBar: React.FC<Props> = ({
   renderResult,
   onSearchTermChange,
   itemsStyleProp,
+  type,
 }) => {
-  const [suggestedValues, setSuggestedValues] = useState<any[]>([]);
+  const [suggestedValues, setSuggestedValues] = useState<
+    any[] | _DeepReadonlyArray<AddressBookData>
+  >([]);
 
   useEffect(() => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -25,11 +31,17 @@ export const SearchBar: React.FC<Props> = ({
     if (searchTermLower === "") {
       setSuggestedValues(valuesArray);
     } else {
-      const filteredValues = valuesArray.filter((value) =>
-        value._chainInfo.chainName.toLowerCase().includes(searchTermLower)
-      );
-
-      setSuggestedValues(filteredValues);
+      if (type === "chain") {
+        const filteredValues = valuesArray.filter((value) =>
+          value._chainInfo.chainName.toLowerCase().includes(searchTermLower)
+        );
+        setSuggestedValues(filteredValues);
+      } else {
+        const filteredValues = valuesArray.filter((value) =>
+          value.name.toLowerCase().includes(searchTermLower)
+        );
+        setSuggestedValues(filteredValues);
+      }
     }
   }, [searchTerm, valuesArray]);
 
