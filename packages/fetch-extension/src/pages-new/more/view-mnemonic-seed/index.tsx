@@ -40,6 +40,7 @@ export const ExportPage: FunctionComponent = observer(() => {
 
   const [loading, setLoading] = useState(false);
   const [keyRing, setKeyRing] = useState("");
+  const [displayKeyRing, setDisplayKeyRing] = useState<string[]>([]);
 
   const {
     register,
@@ -57,6 +58,12 @@ export const ExportPage: FunctionComponent = observer(() => {
       throw new Error("Invalid index");
     }
   }, [index]);
+
+  useEffect(() => {
+    if (keyRing) {
+      setDisplayKeyRing(keyRing.split(" "));
+    }
+  }, [keyRing]);
 
   const copyMnemonic = useCallback(
     async (address: string) => {
@@ -101,13 +108,27 @@ export const ExportPage: FunctionComponent = observer(() => {
               [style["altHex"]]: type !== "mnemonic",
             })}
           >
-            {keyRing}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+              }}
+            >
+              {displayKeyRing.map((key) => (
+                <div
+                  style={{
+                    fontSize: "26px",
+                  }}
+                  key={key}
+                >
+                  {key}
+                </div>
+              ))}
+            </div>
             <ButtonV2
               styleProps={{
-                position: "absolute",
                 width: "333px",
-                bottom: 25,
-                right: "4%",
                 height: "56px",
               }}
               text={"Copy to clipboard"}
