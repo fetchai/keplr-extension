@@ -7,7 +7,7 @@ export const DeleteDescription = () => {
     <div className={style["innerContainer"]}>
       <img
         className={style["imgLock"]}
-        src={require("@assets/svg/wireframe/delete-hero2.svg")}
+        src={require("@assets/png/ic_deletewallet.png")}
         alt="lock"
       />
       <div className={style["heading"]}>Delete Wallet</div>
