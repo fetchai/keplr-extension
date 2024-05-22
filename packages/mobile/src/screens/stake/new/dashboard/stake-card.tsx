@@ -9,9 +9,7 @@ import { useStore } from "stores/index";
 import { separateNumericAndDenom } from "utils/format/format";
 import { observer } from "mobx-react-lite";
 
-export const StakeCard: FunctionComponent<{
-  cardStyle?: ViewStyle;
-}> = observer(({ cardStyle }) => {
+export const StakeCard: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
@@ -51,23 +49,17 @@ export const StakeCard: FunctionComponent<{
 
   const stakableReward = rewards.stakableReward;
   const stakedSum = delegated.add(unbonding);
-  const stakableBal = stakable
-    .shrink(true)
-    .maxDecimals(5)
-    .trim(true)
-    .toString();
-  const stakedBal = stakedSum.shrink(true).maxDecimals(5).trim(true).toString();
-  const rewardsBal = stakableReward
-    .shrink(true)
-    .maxDecimals(5)
-    .trim(true)
-    .toString();
+  const stakableBal = stakable.shrink(true).trim(true).toString();
+  const stakedBal = stakedSum.shrink(true).trim(true).toString();
+  const rewardsBal = stakableReward.shrink(true).trim(true).toString();
 
-  const { numericPart: stakableBalNumber } =
+  const { numericPart: stakableBalNumber, denomPart: stakableDenom } =
     separateNumericAndDenom(stakableBal);
+  const { numericPart: stakedBalNumber, denomPart: stakedDenom } =
+    separateNumericAndDenom(stakedBal);
+  const { numericPart: rewardsBalNumber, denomPart: rewardDenom } =
+    separateNumericAndDenom(rewardsBal);
 
-  const { numericPart: stakedBalNumber } = separateNumericAndDenom(stakedBal);
-  const { numericPart: rewardsBalNumber } = separateNumericAndDenom(rewardsBal);
   const total =
     parseFloat(stakableBalNumber) +
     parseFloat(stakedBalNumber) +
@@ -133,11 +125,9 @@ export const StakeCard: FunctionComponent<{
             <Text
               style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
             >
-              {`${parseFloat(stakableBal).toFixed(2)} ${
-                stakable.currency.coinDenom
-              }`}{" "}
+              {`${parseFloat(stakableBalNumber).toFixed(2)} ${stakableDenom}`}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${stakablePercentage.toFixed(2)}%)`}
+                {`  (${stakablePercentage.toFixed(2)}%)`}
               </Text>
             </Text>
             {priceStore.calculatePrice(stakable)?.toString() ? (
@@ -160,11 +150,9 @@ export const StakeCard: FunctionComponent<{
             <Text
               style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
             >
-              {`${parseFloat(stakedBal).toFixed(2)} ${
-                stakable.currency.coinDenom
-              }`}{" "}
+              {`${parseFloat(stakedBalNumber).toFixed(2)} ${stakedDenom}`}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${stakedPercentage.toFixed(2)}%)`}
+                {`  (${stakedPercentage.toFixed(2)}%)`}
               </Text>
             </Text>
             {priceStore.calculatePrice(stakedSum)?.toString() ? (
@@ -187,11 +175,9 @@ export const StakeCard: FunctionComponent<{
             <Text
               style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
             >
-              {`${parseFloat(rewardsBal).toFixed(2)} ${
-                stakable.currency.coinDenom
-              }`}{" "}
+              {`${parseFloat(rewardsBalNumber).toFixed(2)} ${rewardDenom}`}
               <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`(${rewardsPercentage.toFixed(2)}%)`}
+                {`  (${rewardsPercentage.toFixed(2)}%)`}
               </Text>
             </Text>
             {priceStore.calculatePrice(stakableReward)?.toString() ? (
@@ -208,20 +194,18 @@ export const StakeCard: FunctionComponent<{
   };
 
   return (
-    <View style={[style.flatten(["border-radius-16"]), cardStyle] as ViewStyle}>
-      <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
-        {renderLegendComponent()}
-        <View style={style.flatten(["flex-2", "margin-right-18"]) as ViewStyle}>
-          <PieChart
-            data={pieData}
-            donut
-            sectionAutoFocus
-            radius={65}
-            innerRadius={40}
-            innerCircleColor={"#232B5D"}
-            focusOnPress={true}
-          />
-        </View>
+    <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+      {renderLegendComponent()}
+      <View style={style.flatten(["flex-2", "margin-right-18"]) as ViewStyle}>
+        <PieChart
+          data={pieData}
+          donut
+          sectionAutoFocus
+          radius={62}
+          innerRadius={38}
+          innerCircleColor={"#232B5D"}
+          focusOnPress={true}
+        />
       </View>
     </View>
   );

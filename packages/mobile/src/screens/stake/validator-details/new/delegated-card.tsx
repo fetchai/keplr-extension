@@ -10,7 +10,6 @@ import { GradientButton } from "components/new/button/gradient-button";
 import Toast from "react-native-toast-message";
 import { useNetInfo } from "@react-native-community/netinfo";
 import LinearGradient from "react-native-linear-gradient";
-import { FormatNumberWithCommas } from "utils/format/format";
 import { Dec } from "@keplr-wallet/unit";
 import { TransactionModal } from "modals/transaction";
 import { ClaimRewardsModal } from "components/new/claim-reward-model";
@@ -145,16 +144,14 @@ export const DelegatedCard: FunctionComponent<{
             <Text
               style={style.flatten(["color-white", "subtitle3"]) as ViewStyle}
             >
-              {`${FormatNumberWithCommas(
-                Number(
-                  staked
-                    .trim(true)
-                    .shrink(true)
-                    .maxDecimals(10)
-                    .toString()
-                    .split(" ")[0]
-                )
-              )} ${staked.trim(true).shrink(true).toString().split(" ")[1]}`}
+              {`${
+                staked
+                  .trim(true)
+                  .shrink(true)
+                  .maxDecimals(10)
+                  .toString()
+                  .split(" ")[0]
+              } ${staked.trim(true).shrink(true).toString().split(" ")[1]}`}
             </Text>
           </View>
           <View
@@ -174,16 +171,14 @@ export const DelegatedCard: FunctionComponent<{
             <Text
               style={style.flatten(["color-white", "subtitle3"]) as ViewStyle}
             >
-              {`${FormatNumberWithCommas(
-                Number(
-                  stakableReward
-                    .trim(true)
-                    .shrink(true)
-                    .maxDecimals(10)
-                    .toString()
-                    .split(" ")[0]
-                )
-              )} ${
+              {`${
+                stakableReward
+                  .trim(true)
+                  .shrink(true)
+                  .maxDecimals(10)
+                  .toString()
+                  .split(" ")[0]
+              } ${
                 stakableReward.trim(true).shrink(true).toString().split(" ")[1]
               }`}
             </Text>

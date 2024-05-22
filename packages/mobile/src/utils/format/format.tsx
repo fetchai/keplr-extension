@@ -2,7 +2,9 @@ import { Buffer } from "buffer/";
 import { AGENT_ADDRESS } from "../../config";
 
 export const separateNumericAndDenom = (value: any) => {
-  const [numericPart, denomPart] = value ? value.split(" ") : ["", ""];
+  const data = value ? value.split(" ") : ["", ""];
+  const numericPart = data[0].replace(/,/g, "");
+  const denomPart = data[1];
   return { numericPart, denomPart };
 };
 

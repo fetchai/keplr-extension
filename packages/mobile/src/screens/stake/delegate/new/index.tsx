@@ -23,7 +23,6 @@ import { MemoInputView } from "components/new/card-view/memo-input";
 import { UseMaxButton } from "components/new/button/use-max-button";
 import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
-import { FormatNumberWithCommas } from "utils/format/format";
 import { TransactionModal } from "modals/transaction";
 
 interface ItemData {
@@ -153,12 +152,9 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
   const data: ItemData[] = [
     {
       title: "Voting power",
-      value:
-        votingPower && votingPower !== "NaN"
-          ? `${FormatNumberWithCommas(Number(votingPower.split(" ")[0]))} ${
-              votingPower.split(" ")[1]
-            }`
-          : "NA",
+      value: votingPower
+        ? `${votingPower.split(" ")[0]} ${votingPower.split(" ")[1]}`
+        : "NA",
     },
     {
       title: "Commission",

@@ -115,8 +115,8 @@ export const AccountSection: FunctionComponent<{
 
   const changeInDollarsValue =
     tokenState.type === "positive"
-      ? (parseFloat(totalNumber.replace(/,/g, "")) * tokenState.diff) / 100
-      : -(parseFloat(totalNumber.replace(/,/g, "")) * tokenState.diff) / 100;
+      ? (parseFloat(totalNumber) * tokenState.diff) / 100
+      : -(parseFloat(totalNumber) * tokenState.diff) / 100;
 
   async function onSubmit() {
     const validatorAddresses =
@@ -334,7 +334,7 @@ export const AccountSection: FunctionComponent<{
           }
         >
           <AnimatedNumber
-            numberForAnimated={parseFloat(totalNumber.replace(/,/g, ""))}
+            numberForAnimated={parseFloat(totalNumber)}
             includeComma={true}
             decimalAmount={2}
             gap={0}

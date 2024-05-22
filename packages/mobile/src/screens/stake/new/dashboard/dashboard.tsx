@@ -96,15 +96,11 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
   return (
     <PageWithScrollView
       backgroundMode="image"
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
       contentContainerStyle={[
         style.get("flex-grow-1"),
         {
-          paddingTop: isTab
-            ? Platform.OS === "ios"
-              ? safeAreaInsets.top + 10
-              : 48
-            : 0,
+          paddingTop: isTab ? (Platform.OS === "ios" ? 0 : 48) : 0,
         },
       ]}
       refreshControl={
@@ -112,9 +108,7 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
           tintColor={"white"}
           refreshing={refreshing}
           onRefresh={onRefresh}
-          progressViewOffset={
-            isTab ? (Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48) : 0
-          }
+          progressViewOffset={isTab ? (Platform.OS === "ios" ? 0 : 48) : 0}
         />
       }
       ref={scrollViewRef}

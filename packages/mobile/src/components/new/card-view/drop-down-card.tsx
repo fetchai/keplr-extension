@@ -58,14 +58,13 @@ export const DropDownCardView: FunctionComponent<{
           {heading ? (
             <Text
               style={[
-                  style.flatten([
+                style.flatten([
                   "body2",
                   "padding-bottom-2",
                   "color-white",
-              ]) as ViewStyle,
-                  headingrStyle,
-              ]
-              }
+                ]) as ViewStyle,
+                headingrStyle,
+              ]}
             >
               {heading}
             </Text>
