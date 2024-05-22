@@ -113,6 +113,7 @@ export const ExportPage: FunctionComponent = observer(() => {
                 display: "flex",
                 flexDirection: "column",
                 gap: "6px",
+                marginBottom: "30px",
               }}
             >
               {displayKeyRing.map((key) => (
@@ -128,6 +129,9 @@ export const ExportPage: FunctionComponent = observer(() => {
             </div>
             <ButtonV2
               styleProps={{
+                position: "fixed",
+                bottom: "12px",
+                right: "4%",
                 width: "333px",
                 height: "56px",
               }}
