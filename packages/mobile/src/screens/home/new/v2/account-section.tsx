@@ -43,11 +43,12 @@ import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { ClaimRewardsModal } from "components/new/claim-reward-model";
+import { AnimatedNumber } from "components/new/animations/animated-number";
 
 export const AccountSection: FunctionComponent<{
-  containtStyle?: ViewStyle;
+  containerStyle?: ViewStyle;
   tokenState: any;
-}> = observer(({ containtStyle, tokenState }) => {
+}> = observer(({ containerStyle, tokenState }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
@@ -266,7 +267,7 @@ export const AccountSection: FunctionComponent<{
               "border-width-1",
               "border-color-indigo-200",
             ]),
-            containtStyle,
+            containerStyle,
           ] as ViewStyle
         }
       >
@@ -332,13 +333,19 @@ export const AccountSection: FunctionComponent<{
             ]) as ViewStyle
           }
         >
-          <Text
-            style={
-              style.flatten(["h1", "color-white", "font-normal"]) as ViewStyle
-            }
-          >
-            {totalNumber}
-          </Text>
+          <AnimatedNumber
+            numberForAnimated={parseFloat(totalNumber.replace(/,/g, ""))}
+            includeComma={true}
+            decimalAmount={2}
+            gap={0}
+            colorValue={"white"}
+            fontSizeValue={32}
+            hookName={"withTiming"}
+            withTimingProps={{
+              durationValue: 1000,
+              easingValue: "linear",
+            }}
+          />
           <Text
             style={
               style.flatten([

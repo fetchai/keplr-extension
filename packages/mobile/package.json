@@ -130,7 +130,7 @@
     "react-native-modal": "^13.0.1",
     "react-native-parallax-scroll-view": "^0.21.3",
     "react-native-qrcode-svg": "^6.2.0",
-    "react-native-reanimated": "^3.3.0",
+    "react-native-reanimated": "3.5.4",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.18.2",
     "react-native-scrypt": "^1.2.1",
