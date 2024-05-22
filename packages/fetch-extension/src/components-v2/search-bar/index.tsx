@@ -10,7 +10,7 @@ interface Props {
   renderResult: (value: any, index: number) => React.ReactNode;
   onSearchTermChange: (term: string) => void;
   itemsStyleProp?: any;
-  type: "chain" | "address";
+  filterFunction: any;
 }
 
 export const SearchBar: React.FC<Props> = ({
@@ -19,7 +19,7 @@ export const SearchBar: React.FC<Props> = ({
   renderResult,
   onSearchTermChange,
   itemsStyleProp,
-  type,
+  filterFunction,
 }) => {
   const [suggestedValues, setSuggestedValues] = useState<
     any[] | _DeepReadonlyArray<AddressBookData>
@@ -31,17 +31,8 @@ export const SearchBar: React.FC<Props> = ({
     if (searchTermLower === "") {
       setSuggestedValues(valuesArray);
     } else {
-      if (type === "chain") {
-        const filteredValues = valuesArray.filter((value) =>
-          value._chainInfo.chainName.toLowerCase().includes(searchTermLower)
-        );
-        setSuggestedValues(filteredValues);
-      } else {
-        const filteredValues = valuesArray.filter((value) =>
-          value.name.toLowerCase().includes(searchTermLower)
-        );
-        setSuggestedValues(filteredValues);
-      }
+      const filteredValues = filterFunction(valuesArray, searchTermLower);
+      setSuggestedValues(filteredValues);
     }
   }, [searchTerm, valuesArray]);
 

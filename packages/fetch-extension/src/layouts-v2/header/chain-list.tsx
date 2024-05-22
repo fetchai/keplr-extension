@@ -12,6 +12,7 @@ import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
+import { getFilteredChainValues } from "@utils/filters";
 
 interface ChainListProps {
   showAddress?: boolean;
@@ -55,7 +56,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               searchTerm={cosmosSearchTerm}
               valuesArray={mainChainList}
               itemsStyleProp={{ overflow: "auto", height: "360px" }}
-              type="chain"
+              filterFunction={getFilteredChainValues}
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}
@@ -197,7 +198,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               searchTerm={evmSearchTerm}
               onSearchTermChange={setEvmSearchTerm}
               valuesArray={evmChainList}
-              type="chain"
+              filterFunction={getFilteredChainValues}
               renderResult={(chainInfo, index) => (
                 <Card
                   key={index}

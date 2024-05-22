@@ -23,6 +23,7 @@ import {
 } from "./style.module.scss";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { SearchBar } from "@components-v2/search-bar";
+import { getFilteredAddressValues } from "@utils/filters";
 
 export interface chatSectionParams {
   openModal: boolean;
@@ -192,7 +193,7 @@ export const ContactBookPage: FunctionComponent<{
             valuesArray={addressBookConfig.addressBookDatas}
             searchTerm={searchTerm}
             onSearchTermChange={setSearchTerm}
-            type="address"
+            filterFunction={getFilteredAddressValues}
             renderResult={(data, i) => (
               <Card
                 key={i.toString()}
