@@ -10,6 +10,7 @@ import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { ToggleSwitchButton } from "@components-v2/buttons/toggle-switch-button";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { getFilteredChainValues } from "@utils/filters";
 
 export const ManageNetworks: FunctionComponent = observer(() => {
   const intl = useIntl();
@@ -40,6 +41,7 @@ export const ManageNetworks: FunctionComponent = observer(() => {
             onSearchTermChange={setCosmosSearchTerm}
             searchTerm={cosmosSearchTerm}
             valuesArray={mainChainList}
+            filterFunction={getFilteredChainValues}
             itemsStyleProp={{ overflow: "auto", height: "360px" }}
             renderResult={(chainInfo, index) => (
               <Card
@@ -74,6 +76,7 @@ export const ManageNetworks: FunctionComponent = observer(() => {
             searchTerm={evmSearchTerm}
             onSearchTermChange={setEvmSearchTerm}
             valuesArray={evmChainList}
+            filterFunction={getFilteredChainValues}
             renderResult={(chainInfo, index) => (
               <Card
                 key={index}
