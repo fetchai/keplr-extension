@@ -1,5 +1,6 @@
-import { fetchTransactions } from "@graphQL/activity-api";
 import React, { useEffect, useState } from "react";
+import { fetchTransactions } from "@graphQL/activity-api";
+import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
@@ -64,75 +65,102 @@ function debounce(func: any, timeout = 500) {
   return (...args: any) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      func(args);
+      func(...args);
     }, timeout);
   };
 }
 
-export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
-  const { chainStore, accountStore, analyticsStore } = useStore();
+export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
+  const { chainStore, accountStore, analyticsStore, activityStore } =
+    useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const [isOpen, setIsOpen] = useState(false);
   const [_date, setDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingRequest, setLoadingRequest] = useState(true);
-  const [fetchedData, setFetchedData] = useState<any>();
-  const [nodes, setNodes] = useState<any>({});
+  const [loadingRequest, setLoadingRequest] = useState(false);
   const [isSelectAll, setIsSelectAll] = useState(true);
   const [isSaveChangesButtonDisabled, setIsSaveChangesButtonDisabled] =
     useState(true);
-  const [pageInfo, setPageInfo] = useState<any>();
   const [filter, setFilter] = useState<string[]>(
     options.map((option) => option.value)
   );
 
+  const [pageRender, setPageRender] = useState(true);
+
   const [isError, setIsError] = useState(false);
 
-  const fetchNodes = debounce(async (cursor: any) => {
-    setIsLoading(true);
-    try {
-      const data = await fetchTransactions(
-        current.chainId,
-        cursor,
-        accountInfo.bech32Address,
-        processFilters(filter)
-      );
-      setFetchedData(data?.nodes);
-      if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
-    } catch (error) {
-      setIsError(true);
-    }
-    setIsLoading(false);
-  }, 1000);
+  const accountOrChainChanged =
+    activityStore.getAddress !== accountInfo.bech32Address ||
+    activityStore.getChainId !== current.chainId;
 
-  useEffect(() => {
-    fetchNodes("");
-  }, [filter, latestBlock]);
+  const fetchNodes = debounce(
+    async (after: any, before: any, append: boolean) => {
+      setIsLoading(true);
+      try {
+        const data = await fetchTransactions(
+          current.chainId,
+          accountInfo.bech32Address,
+          filter,
+          after,
+          before
+        );
 
-  useEffect(() => {
-    if (fetchedData) {
-      const nodeMap: any = {};
-      fetchedData.map((node: any) => {
-        nodeMap[node.id] = node;
-      });
-      setNodes({ ...nodes, ...nodeMap });
-      setIsLoading(false);
+        const nodeMap: any = {};
+
+        data?.nodes.map((node: any) => {
+          nodeMap[node.id] = node;
+        });
+
+        activityStore.updateNodes({ ...nodeMap }, append);
+
+        if (!activityStore.getPageInfo || after != "" || before != "")
+          activityStore.setPageInfo(data?.pageInfo);
+      } catch (error) {
+        setIsError(true);
+      }
+
       setLoadingRequest(false);
+      setIsLoading(false);
+    },
+    1000
+  );
+
+  useEffect(() => {
+    if (accountOrChainChanged || !activityStore.getPageInfo) {
+      fetchNodes("", "", false);
+    } else {
+      fetchNodes("", activityStore.getPageInfo.startCursor, true);
     }
-  }, [fetchedData]);
+  }, [latestBlock]);
+
+  useEffect(() => {
+    if (pageRender) {
+      setPageRender(false);
+    } else {
+      fetchNodes("", "", false);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    if (accountOrChainChanged) {
+      activityStore.updateNodes({});
+      activityStore.setPageInfo(undefined);
+      activityStore.setAddress(accountInfo.bech32Address);
+      activityStore.setChainId(current.chainId);
+    }
+  }, []);
 
   const handleClick = () => {
     analyticsStore.logEvent("activity_transactions_click", {
       pageName: "Transaction Tab",
     });
     setLoadingRequest(true);
-    fetchNodes(pageInfo.endCursor);
+    fetchNodes(activityStore.getPageInfo.endCursor, "", true);
   };
 
   const handleFilterChange = (selectedFilter: string[]) => {
-    setPageInfo(undefined);
-    setNodes({});
+    activityStore.setPageInfo(undefined);
     setFilter(selectedFilter);
     analyticsStore.logEvent("activity_filter_click", {
       pageName: "Transaction Tab",
@@ -197,6 +225,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     });
     return renderedNodes;
   };
+
   return (
     <React.Fragment>
       <FilterDropdown
@@ -225,14 +254,15 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
       current.chainId === CHAIN_ID_DORADO ? (
         isError ? (
           <ErrorActivity />
-        ) : Object.values(nodes).filter((node: any) =>
+        ) : Object.keys(activityStore.getNodes).length > 0 &&
+          Object.values(activityStore.getNodes).filter((node: any) =>
             processFilters(filter).includes(
               node.transaction.messages.nodes[0].typeUrl
             )
           ).length > 0 ? (
           <React.Fragment>
-            {renderNodes(nodes)}
-            {pageInfo?.hasNextPage && (
+            {renderNodes(activityStore.getNodes)}
+            {activityStore.getPageInfo?.hasNextPage && (
               <ButtonV2
                 text={
                   loadingRequest ? (
@@ -241,7 +271,10 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
                     "Load more"
                   )
                 }
-                disabled={!pageInfo?.hasNextPage || loadingRequest}
+                disabled={
+                  !activityStore.getPageInfo?.hasNextPage ||
+                  loadingRequest === true
+                }
                 onClick={handleClick}
                 styleProps={{ width: "326px" }}
               />
@@ -257,4 +290,4 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
       )}
     </React.Fragment>
   );
-};
+});

@@ -72,8 +72,8 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     const data = await fetchTransactions(
       current.chainId,
       cursor,
-      accountInfo.bech32Address,
-      processFilters(filter)
+      processFilters(filter),
+      accountInfo.bech32Address
     );
     setFetchedData(data?.nodes);
     if (!pageInfo || cursor != "") setPageInfo(data.pageInfo);
