@@ -7,16 +7,13 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { formatAddress } from "@utils/format";
 import classnames from "classnames";
 import { observer } from "mobx-react-lite";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
 import style from "./chain-list.module.scss";
 import { getFilteredChainValues } from "@utils/filters";
 import { NotificationOption } from "@components-v2/notification-option";
-import { ChainInfoInner } from "@keplr-wallet/stores";
-import { ChainInfoWithCoreTypes } from "@keplr-wallet/background/src/chains";
-
 interface ChainListProps {
   showAddress?: boolean;
 }
@@ -51,9 +48,6 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
       (chainInfo) => chainInfo.beta
     );
 
-    const [showMainTestNet, setShowMainTestNet] = useState(false);
-    const [showEvmTestNet, setShowEvmTestNet] = useState(false);
-
     const cosmosMainList = mainChainList.filter(
       (chainInfo) => chainInfo.raw.type !== "testnet"
     );
@@ -62,26 +56,8 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
       (chainInfo) => chainInfo.raw.type !== "testnet"
     );
 
-    const [cosmosList, setCosmosList] =
-      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(mainChainList);
-    const [evmList, setEvmList] =
-      useState<ChainInfoInner<ChainInfoWithCoreTypes>[]>(evmChainList);
-
-    useEffect(() => {
-      if (showMainTestNet) {
-        setCosmosList(mainChainList);
-      } else {
-        setCosmosList(cosmosMainList);
-      }
-    }, [showMainTestNet]);
-
-    useEffect(() => {
-      if (showEvmTestNet) {
-        setEvmList(evmChainList);
-      } else {
-        setEvmList(evmMainList);
-      }
-    }, [showEvmTestNet]);
+    const cosmosList = chainStore.showTestnet ? mainChainList : cosmosMainList;
+    const evmList = chainStore.showTestnet ? evmChainList : evmMainList;
 
     const tabs = [
       {
@@ -90,14 +66,17 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
           <div>
             <NotificationOption
               name="Show testnet"
-              isChecked={showMainTestNet}
-              handleOnChange={() => setShowMainTestNet((prev) => !prev)}
+              isChecked={chainStore.showTestnet}
+              handleOnChange={() =>
+                chainStore.toggleShowTestnet(!chainStore.showTestnet)
+              }
               cardStyles={{
                 background: "transparent",
                 padding: "0px",
                 marginBottom: "24px",
               }}
             />
+
             <SearchBar
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
@@ -264,8 +243,10 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
           <div>
             <NotificationOption
               name="Show testnet"
-              isChecked={showEvmTestNet}
-              handleOnChange={() => setShowEvmTestNet((prev) => !prev)}
+              isChecked={chainStore.showTestnet}
+              handleOnChange={() =>
+                chainStore.toggleShowTestnet(!chainStore.showTestnet)
+              }
               cardStyles={{
                 background: "transparent",
                 padding: "0px",

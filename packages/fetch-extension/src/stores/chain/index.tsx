@@ -37,6 +37,9 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     disabledChains: string[];
   };
 
+  @observable
+  protected _showTestnet: boolean = false;
+
   constructor(
     protected readonly kvStore: KVStore,
     embedChainInfos: ChainInfo[],
@@ -154,6 +157,10 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     return this._selectedChainId;
   }
 
+  get showTestnet(): boolean {
+    return this._showTestnet;
+  }
+
   @action
   selectChain(chainId: string) {
     if (this._isInitializing) {
@@ -162,6 +169,12 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     this._selectedChainId = chainId;
     const msg = new SetSelectedChainMsg(this._selectedChainId);
     this.requester.sendMessage(BACKGROUND_PORT, msg);
+  }
+
+  @action
+  toggleShowTestnet(value: boolean) {
+    this._showTestnet = value;
+    this.saveLastViewShowTestnet();
   }
 
   @computed
@@ -178,6 +191,14 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     yield this.kvStore.set<string>(
       "extension_last_view_chain_id",
       this._selectedChainId
+    );
+  }
+
+  @flow
+  *saveLastViewShowTestnet() {
+    yield this.kvStore.set<boolean>(
+      "extension_last_view_show_testnet",
+      this._showTestnet
     );
   }
 
@@ -202,6 +223,14 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     if (this.deferChainIdSelect) {
       this.selectChain(this.deferChainIdSelect);
       this.deferChainIdSelect = "";
+    }
+
+    const lastViewShowTestnet = yield* toGenerator(
+      this.kvStore.get<boolean>("extension_last_view_show_testnet")
+    );
+
+    if (lastViewShowTestnet) {
+      this.toggleShowTestnet(lastViewShowTestnet);
     }
 
     const chainInfoUI = yield* toGenerator(
