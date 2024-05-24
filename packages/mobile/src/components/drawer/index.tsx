@@ -72,7 +72,11 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
         }}
         {...rest}
       >
-        {filterChainInfos.length === 0 ? <EmptyView /> : null}
+        {filterChainInfos.length === 0 ? (
+          <EmptyView
+          // containerStyle={style.flatten(["margin-top-58"]) as ViewStyle}
+          />
+        ) : null}
 
         <View
           style={{

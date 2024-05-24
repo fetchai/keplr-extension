@@ -1,6 +1,5 @@
 import { CardModal } from "modals/card";
 import React, { FunctionComponent } from "react";
-import { useStyle } from "styles/index";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { ErrorNetworkIcon } from "components/new/icon/error-network";
 
@@ -8,15 +7,13 @@ export const NetworkErrorModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
 }> = ({ isOpen, close }) => {
-  const style = useStyle();
-
   if (!isOpen) {
     return null;
   }
 
   return (
     <React.Fragment>
-      <CardModal isOpen={isOpen} disableGesture={true} close={close}>
+      <CardModal isOpen={isOpen} close={close}>
         <IconWithText
           icon={<ErrorNetworkIcon />}
           title={"Network error"}

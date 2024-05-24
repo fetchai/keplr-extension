@@ -1,13 +1,12 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
-import { View, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { observer } from "mobx-react-lite";
 import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { IAmountConfig } from "@keplr-wallet/hooks";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStore } from "stores/index";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { TokenCardView } from "../card-view/token-card-view";
@@ -19,7 +18,6 @@ export const AssetCardModel: FunctionComponent<{
   title: string;
   amountConfig: IAmountConfig;
 }> = observer(({ close, title, isOpen, amountConfig }) => {
-  const safeAreaInsets = useSafeAreaInsets();
   const style = useStyle();
 
   const { queriesStore, priceStore, analyticsStore } = useStore();
@@ -76,7 +74,11 @@ export const AssetCardModel: FunctionComponent<{
       }}
       cardStyle={
         [
-          style.flatten(["height-full", "border-radius-0"]) as ViewStyle,
+          style.flatten([
+            "min-height-full",
+            "border-radius-0",
+            "max-height-full",
+          ]) as ViewStyle,
           {
             // paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
             // height: filterCurrencies.length === 0 ? "100%" : undefined,
@@ -87,20 +89,16 @@ export const AssetCardModel: FunctionComponent<{
         height: filterCurrencies.length === 0 ? "100%" : undefined,
       }}
     >
-      {filterCurrencies.length === 0 ? (
-        <EmptyView
-          containerStyle={style.flatten(["margin-left-20"]) as ViewStyle}
-        />
-      ) : null}
+      {filterCurrencies.length === 0 ? <EmptyView /> : null}
       <BlurBackground
         borderRadius={12}
         blurIntensity={20}
-        containerStyle={style.flatten(["margin-y-10"]) as ViewStyle}
+        containerStyle={style.flatten(["margin-bottom-20"]) as ViewStyle}
       >
         <TextInput
           placeholder="Search"
           placeholderTextColor={"white"}
-          style={style.flatten(["h6"])}
+          style={style.flatten(["body3"]) as ViewStyle}
           inputContainerStyle={
             style.flatten([
               "border-width-0",
@@ -115,47 +113,45 @@ export const AssetCardModel: FunctionComponent<{
           inputRight={<SearchIcon />}
         />
       </BlurBackground>
-      <View style={style.flatten(["margin-y-24"]) as ViewStyle}>
-        {filterCurrencies.map((currency) => {
-          const currencyBalance =
-            balancesMap.get(currency.coinMinimalDenom) ||
-            new CoinPretty(currency, new Int(0));
-          return (
-            <TokenCardView
-              key={currency.coinMinimalDenom}
-              title={currency.coinDenom}
-              subtitle={`${currencyBalance
-                .shrink(true)
-                .maxDecimals(6)
-                .toString()}`}
-              trailingStart={
-                convertToUsd(currencyBalance)
-                  ? `${convertToUsd(currencyBalance)}`
-                  : ""
-              }
-              trailingEnd={convertToUsd(currencyBalance) ? "USD" : ""}
-              containerStyle={
-                style.flatten(
-                  ["margin-y-4"],
-                  [
-                    currency.coinMinimalDenom ===
-                      amountConfig.sendCurrency.coinMinimalDenom &&
-                      "background-color-indigo",
-                  ]
-                ) as ViewStyle
-              }
-              onPress={() => {
-                analyticsStore.logEvent("select_asset_click", {
-                  pageName: "Send",
-                });
-                amountConfig.setSendCurrency(currency);
-                setSearch("");
-                close();
-              }}
-            />
-          );
-        })}
-      </View>
+      {filterCurrencies.map((currency) => {
+        const currencyBalance =
+          balancesMap.get(currency.coinMinimalDenom) ||
+          new CoinPretty(currency, new Int(0));
+        return (
+          <TokenCardView
+            key={currency.coinMinimalDenom}
+            title={currency.coinDenom}
+            subtitle={`${currencyBalance
+              .shrink(true)
+              .maxDecimals(6)
+              .toString()}`}
+            trailingStart={
+              convertToUsd(currencyBalance)
+                ? `${convertToUsd(currencyBalance)}`
+                : ""
+            }
+            trailingEnd={convertToUsd(currencyBalance) ? "USD" : ""}
+            containerStyle={
+              style.flatten(
+                ["margin-y-4"],
+                [
+                  currency.coinMinimalDenom ===
+                    amountConfig.sendCurrency.coinMinimalDenom &&
+                    "background-color-indigo",
+                ]
+              ) as ViewStyle
+            }
+            onPress={() => {
+              analyticsStore.logEvent("select_asset_click", {
+                pageName: "Send",
+              });
+              amountConfig.setSendCurrency(currency);
+              setSearch("");
+              close();
+            }}
+          />
+        );
+      })}
     </CardModal>
   );
 });

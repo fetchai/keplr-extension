@@ -91,60 +91,61 @@ export const TransactionModal: FunctionComponent<{
   }
 
   return (
-    <React.Fragment>
-      <CardModal isOpen={isOpen} disableGesture={true}>
-        <IconWithText
-          icon={
-            <LottieView
-              source={transactionState.img}
-              autoPlay
-              loop
-              style={
-                style.flatten(["width-90", "margin-bottom-16"]) as ViewStyle
-              }
-            />
-          }
-          title={transactionState.title}
-          subtitle={transactionState.subTitle}
-        >
-          {transactionState.status === TransactionStatus.Failed ? (
-            <Button
-              text="Try again"
-              size="large"
-              containerStyle={
-                style.flatten([
-                  "border-radius-64",
-                  "margin-top-16",
-                ]) as ViewStyle
-              }
-              rippleColor="black@50%"
-              onPress={() => {
-                close();
-                onTryAgainClick();
-              }}
-            />
-          ) : null}
+    <CardModal isOpen={isOpen} disableGesture={true}>
+      <IconWithText
+        icon={
+          <LottieView
+            source={transactionState.img}
+            autoPlay
+            loop
+            style={style.flatten(["width-90", "margin-bottom-16"]) as ViewStyle}
+          />
+        }
+        title={transactionState.title}
+        subtitle={transactionState.subTitle}
+      >
+        {transactionState.status === TransactionStatus.Failed ? (
           <Button
-            text={buttonText}
+            text="Try again"
+            mode="outline"
             size="large"
             containerStyle={
-              style.flatten(
-                ["border-radius-64"],
-                [
-                  transactionState.status === TransactionStatus.Failed
-                    ? "margin-top-8"
-                    : "margin-top-16",
-                ]
-              ) as ViewStyle
+              style.flatten([
+                "border-radius-64",
+                "border-color-white@40%",
+                "margin-top-18",
+              ]) as ViewStyle
             }
+            textStyle={style.flatten(["color-white", "body2"]) as ViewStyle}
             rippleColor="black@50%"
             onPress={() => {
               close();
-              onHomeClick();
+              onTryAgainClick();
             }}
           />
-        </IconWithText>
-      </CardModal>
-    </React.Fragment>
+        ) : null}
+        <Button
+          text={buttonText}
+          mode="outline"
+          size="large"
+          containerStyle={
+            style.flatten(
+              ["border-radius-64", "border-color-white@40%"],
+              [
+                transactionState.status === TransactionStatus.Failed
+                  ? "margin-top-12"
+                  : "margin-top-18",
+              ]
+            ) as ViewStyle
+          }
+          textStyle={style.flatten(["color-white", "body2"]) as ViewStyle}
+          rippleColor="black@50%"
+          onPress={() => {
+            close();
+            onHomeClick();
+          }}
+        />
+      </IconWithText>
+    </CardModal>
   );
 };

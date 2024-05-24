@@ -112,16 +112,16 @@ export const DelegatedCard: FunctionComponent<{
           [
             style.flatten(["border-radius-12", "flex-row"]),
             containerStyle,
-            { padding: 3 },
+            { padding: 2.5 },
           ] as ViewStyle
         }
       >
         <BlurBackground
-          borderRadius={8}
+          borderRadius={10}
           blurIntensity={16}
           containerStyle={
             style.flatten([
-              "padding-18",
+              "padding-14",
               "flex-1",
               "background-color-indigo-900",
             ]) as ViewStyle
@@ -206,7 +206,7 @@ export const DelegatedCard: FunctionComponent<{
             containerStyle={
               style.flatten([
                 "border-radius-32",
-                "margin-y-12",
+                "margin-top-12",
                 "border-color-white@40%",
               ]) as ViewStyle
             }
@@ -225,7 +225,12 @@ export const DelegatedCard: FunctionComponent<{
             <GradientButton
               text="Claim rewards"
               size="small"
-              containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
+              containerStyle={
+                style.flatten([
+                  "border-radius-32",
+                  "margin-top-12",
+                ]) as ViewStyle
+              }
               textStyle={style.flatten(["body3"]) as ViewStyle}
               onPress={() => setClaimModel(true)}
             />

@@ -149,52 +149,7 @@ export const NewValidatorListScreen: FunctionComponent = observer(() => {
         renderSectionHeader={() => {
           return (
             <React.Fragment>
-              <TouchableOpacity
-                style={
-                  style.flatten([
-                    "flex-row",
-                    "border-width-1",
-                    "border-color-white@40%",
-                    "border-radius-64",
-                    "padding-x-12",
-                    "padding-y-6",
-                    "items-center",
-                    "margin-top-16",
-                  ]) as ViewStyle
-                }
-                onPress={() => {
-                  setIsSortModalOpen(true);
-                }}
-              >
-                <View
-                  style={style.flatten(["flex-3", "flex-row"]) as ViewStyle}
-                >
-                  <Text
-                    style={
-                      [
-                        style.flatten(["body3", "color-white@60%"]),
-                        { lineHeight: 17 },
-                      ] as ViewStyle
-                    }
-                  >
-                    Sort by
-                  </Text>
-                  <Text
-                    style={
-                      [
-                        style.flatten(["body3", "color-white", "margin-x-8"]),
-                        { lineHeight: 17 },
-                      ] as ViewStyle
-                    }
-                  >
-                    {sort}
-                  </Text>
-                </View>
-                <View style={style.flatten(["justify-end"]) as ViewStyle}>
-                  <SortIcon />
-                </View>
-              </TouchableOpacity>
-              <View style={style.flatten(["padding-y-16"]) as ViewStyle}>
+              <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
                 <BlurBackground borderRadius={12} blurIntensity={20}>
                   <TextInput
                     placeholder="Search"
@@ -228,6 +183,55 @@ export const NewValidatorListScreen: FunctionComponent = observer(() => {
                   />
                 ) : null}
               </View>
+              <TouchableOpacity
+                style={
+                  style.flatten([
+                    "flex-row",
+                    "border-width-1",
+                    "border-color-white@40%",
+                    "border-radius-64",
+                    "padding-x-12",
+                    "padding-y-6",
+                    "items-center",
+                    "margin-y-16",
+                  ]) as ViewStyle
+                }
+                onPress={() => {
+                  setIsSortModalOpen(true);
+                }}
+              >
+                <View
+                  style={style.flatten(["flex-3", "flex-row"]) as ViewStyle}
+                >
+                  <Text
+                    style={
+                      [
+                        style.flatten(["body3", "color-white@60%"]),
+                        { lineHeight: 17 },
+                      ] as ViewStyle
+                    }
+                  >
+                    Sort by
+                  </Text>
+                  <Text
+                    style={
+                      [
+                        style.flatten([
+                          "body3",
+                          "color-white",
+                          "margin-left-8",
+                        ]),
+                        { lineHeight: 17 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {sort}
+                  </Text>
+                </View>
+                <View style={style.flatten(["justify-end"]) as ViewStyle}>
+                  <SortIcon />
+                </View>
+              </TouchableOpacity>
             </React.Fragment>
           );
         }}

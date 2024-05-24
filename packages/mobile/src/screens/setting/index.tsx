@@ -49,6 +49,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       contentContainerStyle={{
         paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
       }}
+      containerStyle={style.flatten(["overflow-scroll"]) as ViewStyle}
     >
       <Text
         style={

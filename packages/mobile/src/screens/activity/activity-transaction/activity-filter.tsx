@@ -99,13 +99,7 @@ export const ActivityFilterView: FunctionComponent<{
   const selectAllButtonText = allSelected ? "Unselect all" : "Select all";
 
   return (
-    <CardModal
-      isOpen={isOpen}
-      title="Filter"
-      cardStyle={style.flatten(["padding-bottom-10"]) as ViewStyle}
-      disableGesture={true}
-      close={close}
-    >
+    <CardModal isOpen={isOpen} title="Filter" close={close}>
       <Button
         text={selectAllButtonText}
         size="small"
@@ -120,7 +114,11 @@ export const ActivityFilterView: FunctionComponent<{
         }
         onPress={handleClicks}
       />
-      <View style={style.flatten(["margin-y-12"]) as ViewStyle}>
+      <View
+        style={
+          style.flatten(["margin-top-24", "margin-bottom-18"]) as ViewStyle
+        }
+      >
         {activityFilterOptions.map((item: FilterItem, index: number) => (
           <BlurBackground
             key={index}

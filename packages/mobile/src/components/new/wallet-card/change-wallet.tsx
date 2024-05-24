@@ -114,12 +114,7 @@ export const ChangeWalletCardModel: FunctionComponent<{
   };
 
   return (
-    <CardModal
-      isOpen={isOpen}
-      title={title}
-      disableGesture={true}
-      close={() => close()}
-    >
+    <CardModal isOpen={isOpen} title={title} close={() => close()}>
       {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {
         return (
           <BlurBackground

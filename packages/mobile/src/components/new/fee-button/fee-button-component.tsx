@@ -69,21 +69,21 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           text="Advanced Settings"
           blurIntensity={30}
           borderRadius={32}
-          backgroundBlur={true}
+          backgroundBlur={false}
           containerStyle={
             [
               style.flatten(
-                ["justify-center"],
+                ["justify-center", "border-width-1", "border-radius-64"],
                 [
-                  feeButtonState.isGasInputOpen && "border-width-1",
-                  "border-radius-64",
-                  "border-color-indigo",
+                  feeButtonState.isGasInputOpen
+                    ? "border-color-indigo"
+                    : "border-color-white@40%",
                 ]
               ),
               { width: 150 },
             ] as ViewStyle
           }
-          textStyle={style.flatten(["text-caption2"]) as ViewStyle}
+          textStyle={style.flatten(["body3"]) as ViewStyle}
           onPress={() => {
             feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen);
             if (props.pageName)

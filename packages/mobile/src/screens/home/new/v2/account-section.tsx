@@ -330,6 +330,7 @@ export const AccountSection: FunctionComponent<{
               "margin-top-14",
               "justify-center",
               "width-full",
+              "items-center",
             ]) as ViewStyle
           }
         >
@@ -348,12 +349,15 @@ export const AccountSection: FunctionComponent<{
           />
           <Text
             style={
-              style.flatten([
-                "h1",
-                "color-new-gray-700",
-                "margin-left-8",
-                "font-normal",
-              ]) as ViewStyle
+              [
+                style.flatten([
+                  "h1",
+                  "color-new-gray-700",
+                  "margin-left-8",
+                  "font-normal",
+                ]),
+                { lineHeight: 35 },
+              ] as ViewStyle
             }
           >
             {totalDenom}

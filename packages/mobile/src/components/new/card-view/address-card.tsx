@@ -147,7 +147,7 @@ export const AddressInputCard: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-x-14", "padding-y-2"],
+                ["padding-x-18", "padding-y-6"],
                 isFocused || errorText
                   ? [
                       // The order is important.

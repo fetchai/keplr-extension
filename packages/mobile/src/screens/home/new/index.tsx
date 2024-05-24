@@ -14,6 +14,7 @@ import {
   RefreshControl,
   ScrollView,
   View,
+  ViewStyle,
 } from "react-native";
 import { useStore } from "stores/index";
 import { observer } from "mobx-react-lite";
@@ -148,6 +149,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
           paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
         },
       ]}
+      containerStyle={style.flatten(["overflow-scroll"]) as ViewStyle}
       ref={scrollViewRef}
     >
       <BIP44Selectable />

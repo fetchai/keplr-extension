@@ -24,7 +24,6 @@ export const ClaimRewardsModal: FunctionComponent<{
       <CardModal
         isOpen={isOpen}
         disableGesture={true}
-        cardStyle={style.flatten(["padding-bottom-32"]) as ViewStyle}
         close={close}
         showCloseButton={false}
       >

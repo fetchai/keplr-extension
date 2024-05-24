@@ -52,6 +52,9 @@ export const PasswordInputModal: FunctionComponent<{
     <CardModal isOpen={isOpen} close={close} title={title}>
       <InputCardView
         label="Password"
+        labelStyle={
+          style.flatten(["margin-y-0", "margin-bottom-12"]) as ViewStyle
+        }
         keyboardType={"default"}
         rightIcon={
           !showPassword ? (

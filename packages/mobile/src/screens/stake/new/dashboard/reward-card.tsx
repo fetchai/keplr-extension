@@ -225,20 +225,19 @@ export const MyRewardCard: FunctionComponent<{
         >
           <Text
             style={
-              style.flatten(["color-indigo-250", "text-caption2"]) as ViewStyle
+              [
+                style.flatten(["color-indigo-250", "text-caption2"]),
+                { lineHeight: 15 },
+              ] as ViewStyle
             }
           >
             {!showRewars ? "View rewards" : "Hide rewards"}
           </Text>
-          <View
-            style={
-              style.flatten(["margin-top-4", "margin-left-4"]) as ViewStyle
-            }
-          >
+          <View style={style.flatten(["margin-left-6"]) as ViewStyle}>
             {!showRewars ? (
-              <ChevronDownIcon color="#BFAFFD" size={10} />
+              <ChevronDownIcon color="#BFAFFD" size={12} />
             ) : (
-              <ChevronUpIcon color="#BFAFFD" size={10} />
+              <ChevronUpIcon color="#BFAFFD" size={12} />
             )}
           </View>
         </TouchableOpacity>

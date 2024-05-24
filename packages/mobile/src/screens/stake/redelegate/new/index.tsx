@@ -54,14 +54,6 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
   const queries = queriesStore.get(chainStore.current.chainId);
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
-  const [selection, setSelection] = useState<
-    | {
-        start: number;
-      }
-    | undefined
-  >({
-    start: 0,
-  });
 
   const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
   const [showTransectionModal, setTransectionModal] = useState(false);
@@ -272,7 +264,6 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
-        setSelection={setSelection}
       />
       <MemoInputView
         label="Memo"

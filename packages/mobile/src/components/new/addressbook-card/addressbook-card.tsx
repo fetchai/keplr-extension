@@ -85,7 +85,7 @@ export const AddressBookCardModel: FunctionComponent<{
           />
         </BlurBackground>
         {filterAddressBook.length > 0 ? (
-          <View style={style.flatten(["margin-y-24"]) as ViewStyle}>
+          <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
             {filterAddressBook.map((data, i) => {
               return (
                 <RectButton
@@ -163,7 +163,6 @@ export const AddressBookCardModel: FunctionComponent<{
                 close();
               }}
             />
-            <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
           </React.Fragment>
         ) : (
           <EmptyView

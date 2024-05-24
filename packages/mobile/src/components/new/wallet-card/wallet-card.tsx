@@ -31,12 +31,7 @@ export const WalletCardModel: FunctionComponent<{
   }
 
   return (
-    <CardModal
-      title={title}
-      isOpen={isOpen}
-      disableGesture={true}
-      close={() => close()}
-    >
+    <CardModal title={title} isOpen={isOpen} close={() => close()}>
       <BlurBackground
         borderRadius={12}
         blurIntensity={15}

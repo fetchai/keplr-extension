@@ -31,15 +31,14 @@ export const ManageAddressCardModel: FunctionComponent<{
     <CardModal
       isOpen={isOpen}
       title={title}
-      cardStyle={style.flatten(["padding-bottom-12"]) as ViewStyle}
       disableGesture={true}
       close={() => close()}
     >
-      <View style={style.flatten(["margin-y-12"]) as ViewStyle}>
+      <View style={style.flatten([]) as ViewStyle}>
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
         >
           <RectButton
             onPress={() => {
@@ -80,7 +79,7 @@ export const ManageAddressCardModel: FunctionComponent<{
         <BlurBackground
           borderRadius={12}
           blurIntensity={15}
-          containerStyle={style.flatten(["margin-bottom-8"]) as ViewStyle}
+          containerStyle={style.flatten([]) as ViewStyle}
         >
           <RectButton
             onPress={() => {

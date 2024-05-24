@@ -56,7 +56,7 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
       title="Confirm transaction"
       close={() => close()}
     >
-      <View style={style.flatten(["items-center", "margin-y-16"]) as ViewStyle}>
+      <View style={style.flatten(["items-center"]) as ViewStyle}>
         <Image
           source={navigateImg.img}
           style={{
@@ -100,7 +100,7 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
             "subtitle3",
             "color-white",
             "text-center",
-            "margin-y-28",
+            "margin-top-24",
           ]) as ViewStyle
         }
       >

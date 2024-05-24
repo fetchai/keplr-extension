@@ -126,18 +126,14 @@ export const SelectorModal: FunctionComponent<{
               style={
                 style.flatten(
                   [
-                    "height-58",
+                    "height-50",
                     "padding-x-24",
                     "flex-row",
                     "items-center",
                     "justify-between",
                     "border-radius-12",
                   ],
-                  [
-                    item.key === selectedKey && "background-color-indigo",
-                    item.key === selectedKey &&
-                      "dark:background-color-platinum-500",
-                  ]
+                  [item.key === selectedKey && "background-color-indigo"]
                 ) as ViewStyle
               }
               onPress={() => {

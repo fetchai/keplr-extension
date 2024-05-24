@@ -240,11 +240,14 @@ export const LedgerGranterModal: FunctionComponent<{
       {isFinding ? (
         <View
           style={
-            style.flatten([
-              "justify-center",
-              "items-center",
-              "margin-y-14",
-            ]) as ViewStyle
+            [
+              style.flatten([
+                "justify-center",
+                "items-center",
+                "margin-bottom-24",
+              ]),
+              { height: 52 },
+            ] as ViewStyle
           }
         >
           <Image
@@ -301,7 +304,7 @@ export const LedgerGranterModal: FunctionComponent<{
         <React.Fragment>
           {!errorOnListen && bluetoothMode == BluetoothMode.Ledger ? (
             <Text
-              style={style.flatten(["subtitle3", "color-white", "text-center"])}
+              style={style.flatten(["body3", "color-white", "text-center"])}
             >
               To unlock your ledger device,
             </Text>
@@ -310,10 +313,10 @@ export const LedgerGranterModal: FunctionComponent<{
             <Text
               style={
                 style.flatten([
-                  "subtitle3",
+                  "body3",
                   "color-white",
                   "text-center",
-                  "margin-y-10",
+                  "margin-bottom-24",
                 ]) as ViewStyle
               }
             >
@@ -330,13 +333,13 @@ export const LedgerGranterModal: FunctionComponent<{
                 leftIconStyle={style.flatten(["margin-right-8"]) as ViewStyle}
                 textStyle={
                   style.flatten(
-                    ["text-caption1"],
+                    ["text-caption2"],
                     [paired && "color-black"]
                   ) as ViewStyle
                 }
                 containerStyle={
                   style.flatten(
-                    ["margin-y-6", "padding-x-12"],
+                    ["padding-x-12"],
                     [
                       paired
                         ? "background-color-vibrant-green-500"
@@ -357,12 +360,12 @@ export const LedgerGranterModal: FunctionComponent<{
               mode="outline"
               containerStyle={
                 style.flatten([
-                  "margin-y-20",
-                  "border-color-platinum-300",
+                  "margin-top-24",
+                  "border-color-white@40%",
                   "border-radius-32",
                 ]) as ViewStyle
               }
-              textStyle={style.flatten(["color-white", "body2"])}
+              textStyle={style.flatten(["color-white", "body3"]) as ViewStyle}
               onPress={() =>
                 Toast.show({
                   type: "error",
@@ -371,7 +374,7 @@ export const LedgerGranterModal: FunctionComponent<{
               }
             />
           ) : null}
-
+          {console.log("hey", devices)}
           {devices.map((device) => {
             return (
               <LedgerNanoBLESelector
