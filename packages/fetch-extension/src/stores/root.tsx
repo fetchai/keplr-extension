@@ -44,6 +44,7 @@ import {
   EthereumAccount,
   ChatStore,
   ProposalStore,
+  ActivityStore,
 } from "@keplr-wallet/stores";
 import {
   KeplrETCQueries,
@@ -74,6 +75,7 @@ export class RootStore {
   public readonly ibcChannelStore: IBCChannelStore;
   public readonly chatStore: ChatStore;
   public readonly proposalStore: ProposalStore;
+  public readonly activityStore: ActivityStore;
 
   protected readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
@@ -403,6 +405,8 @@ export class RootStore {
         uri: CoinGeckoGetPrice,
       }
     );
+
+    this.activityStore = new ActivityStore();
 
     this.tokensStore = new TokensStore(
       window,
