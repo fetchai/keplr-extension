@@ -1,8 +1,9 @@
-export const transactions = `query TransactionsFromAddress($after: Cursor, $address: String!, $filter: [String!]) {
+export const transactions = `query TransactionsFromAddress($after: Cursor, $before: Cursor, $address: String!, $filter: [String!]) {
   account(
    
     id: $address) {
     nativeBalanceChanges( after: $after
+      before: $before
       first: 30
       filter: {
         transaction: {

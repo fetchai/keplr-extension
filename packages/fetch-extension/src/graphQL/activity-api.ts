@@ -6,12 +6,14 @@ import axios from "axios";
 
 export const fetchTransactions = async (
   chainId: string,
-  after: string,
   address: string,
-  filter: string[]
+  filter: string[],
+  after: string,
+  before?: string
 ) => {
   const variables: any = {
     after,
+    before,
     address,
     filter,
   };
