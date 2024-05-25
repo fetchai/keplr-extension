@@ -14,9 +14,35 @@ export class ActivityStore {
   @observable
   protected chainId: string = "";
 
-  updateNodes(nodes: any, append?: boolean) {
-    const newNodes = append ? { ...this.nodes, ...nodes } : { ...nodes };
+  filterNewNodes(nodes: any, nodeMap: any) {
+    Object.values(nodes).map((node: any) => {
+      nodeMap[node.id] = node;
+    });
+  }
+
+  filterSavedNodes(nodeMap: any) {
+    Object.values(this.nodes).map((node: any) => {
+      if (nodeMap[node.id] === undefined) {
+        nodeMap[node.id] = node;
+      }
+    });
+  }
+
+  updateNodes(nodes: any, append?: boolean, isLoadMore?: boolean) {
+    const nodeMap: any = {};
+    if (isLoadMore === true) {
+      this.filterSavedNodes(nodeMap);
+      this.filterNewNodes(nodes, nodeMap);
+    } else {
+      this.filterNewNodes(nodes, nodeMap);
+      if (append) {
+        this.filterSavedNodes(nodeMap);
+      }
+    }
+
+    const newNodes = Object.values(nodeMap);
     this.setNodes(newNodes);
+
     this.saveNodes();
   }
 
@@ -35,6 +61,11 @@ export class ActivityStore {
     yield this.kvStore.set<any>("extension_activity_chain_id", this.chainId);
   }
 
+  @flow
+  *savePageInfo() {
+    yield this.kvStore.set<any>("extension_activity_page_info", this.pageInfo);
+  }
+
   getNode(id: any) {
     return this.nodes[id];
   }
@@ -50,7 +81,7 @@ export class ActivityStore {
     const savedNodes = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_nodes")
     );
-    this.nodes = savedNodes;
+    if (savedNodes !== undefined) this.nodes = savedNodes;
 
     const savedAddress = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_address")
@@ -61,6 +92,12 @@ export class ActivityStore {
       this.kvStore.get<any>("extension_activity_chain_id")
     );
     this.chainId = savedChainId;
+
+    const pageInfo = yield* toGenerator(
+      this.kvStore.get<any>("extension_activity_page_info")
+    );
+
+    this.pageInfo = pageInfo;
   }
 
   @action
@@ -83,6 +120,7 @@ export class ActivityStore {
   @action
   setPageInfo(pageInfo: any) {
     this.pageInfo = pageInfo;
+    this.savePageInfo();
   }
 
   @action

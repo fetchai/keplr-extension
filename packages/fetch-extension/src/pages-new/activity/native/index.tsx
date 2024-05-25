@@ -95,7 +95,13 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     activityStore.getChainId !== current.chainId;
 
   const fetchNodes = debounce(
-    async (after: any, before: any, append: boolean) => {
+    async (
+      after: any,
+      before: any,
+      append: boolean,
+      isFilter: boolean,
+      isLoadMore: boolean
+    ) => {
       setIsLoading(true);
       try {
         const data = await fetchTransactions(
@@ -108,14 +114,18 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
 
         const nodeMap: any = {};
 
-        data?.nodes.map((node: any) => {
+        Object.values(data?.nodes).map((node: any) => {
           nodeMap[node.id] = node;
         });
 
-        activityStore.updateNodes({ ...nodeMap }, append);
+        activityStore.updateNodes({ ...nodeMap }, append, isLoadMore);
 
         if (!activityStore.getPageInfo || Object.keys(nodeMap).length > 0)
           activityStore.setPageInfo(data?.pageInfo);
+
+        if (isFilter) {
+          activityStore.setPageInfo(undefined);
+        }
       } catch (error) {
         setIsError(true);
       }
@@ -128,9 +138,9 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
 
   useEffect(() => {
     if (accountOrChainChanged || !activityStore.getPageInfo) {
-      fetchNodes("", "", false);
+      fetchNodes("", "", false, false, false);
     } else {
-      fetchNodes("", activityStore.getPageInfo.startCursor, true);
+      fetchNodes("", activityStore.getPageInfo.startCursor, true, false, false);
     }
   }, [latestBlock]);
 
@@ -138,7 +148,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     if (pageRender) {
       setPageRender(false);
     } else {
-      fetchNodes("", "", false);
+      fetchNodes("", "", false, true, false);
     }
   }, [filter]);
 
@@ -156,7 +166,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
       pageName: "Transaction Tab",
     });
     setLoadingRequest(true);
-    fetchNodes(activityStore.getPageInfo.endCursor, "", true);
+    fetchNodes(activityStore.getPageInfo.endCursor, "", true, false, true);
   };
 
   const handleFilterChange = (selectedFilter: string[]) => {
