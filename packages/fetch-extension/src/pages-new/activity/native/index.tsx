@@ -114,7 +114,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
 
         activityStore.updateNodes({ ...nodeMap }, append);
 
-        if (!activityStore.getPageInfo || after != "" || before != "")
+        if (!activityStore.getPageInfo || Object.keys(nodeMap).length > 0)
           activityStore.setPageInfo(data?.pageInfo);
       } catch (error) {
         setIsError(true);

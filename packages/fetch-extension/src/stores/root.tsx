@@ -406,7 +406,9 @@ export class RootStore {
       }
     );
 
-    this.activityStore = new ActivityStore();
+    this.activityStore = new ActivityStore(
+      new ExtensionKVStore("store_activity_config")
+    );
 
     this.tokensStore = new TokensStore(
       window,
