@@ -69,7 +69,7 @@ export const InputCardView: React.forwardRef<
         containerStyle={
           [
             style.flatten(
-              ["padding-y-12", "padding-x-18", "flex-row"],
+              ["padding-x-18", "flex-row"],
               isFocused || error
                 ? [
                     // The order is important.
@@ -83,17 +83,17 @@ export const InputCardView: React.forwardRef<
                 : []
             ),
             inputContainerStyle,
+            { paddingVertical: 9 },
           ] as ViewStyle
         }
       >
         <View style={style.flatten(["flex-3"]) as ViewStyle}>
           <TextInput
             keyboardType={
-              keyboardType ?? Platform.OS === "ios"
-                ? "ascii-capable"
-                : "visible-password"
+              keyboardType ??
+              (Platform.OS === "ios" ? "ascii-capable" : "visible-password")
             }
-            placeholderTextColor={style.flatten(["color-gray-200"]).color}
+            placeholderTextColor={style.flatten(["color-white@60%"]).color}
             style={
               [
                 style.flatten([

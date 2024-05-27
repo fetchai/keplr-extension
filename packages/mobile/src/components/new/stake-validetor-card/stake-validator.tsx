@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-import { IconButton } from "components/new/button/icon";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { titleCase } from "utils/format/format";
@@ -105,11 +104,9 @@ export const StakeValidatorCardView: FunctionComponent<{
               </Text>
             </View>
           </View>
-          <IconButton
-            backgroundBlur={false}
-            icon={trailingIcon}
-            containerStyle={style.flatten(["flex-1", "items-end"]) as ViewStyle}
-          />
+          <View style={style.flatten(["flex-1", "items-end"]) as ViewStyle}>
+            {trailingIcon}
+          </View>
         </View>
         <View
           style={

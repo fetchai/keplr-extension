@@ -327,10 +327,7 @@ export const AccountSection: FunctionComponent<{
             start={{ y: 0.0, x: 0.5 }}
             end={{ y: 1.0, x: 0.0 }}
             style={
-              [
-                style.flatten(["border-radius-12", "margin-bottom-8"]),
-                { padding: 1 },
-              ] as ViewStyle
+              [style.flatten(["border-radius-12"]), { padding: 1 }] as ViewStyle
             }
           >
             <SimpleCardView
@@ -354,7 +351,7 @@ export const AccountSection: FunctionComponent<{
           style={
             style.flatten([
               "flex-row",
-              "margin-top-14",
+              "margin-top-32",
               "justify-center",
               "width-full",
               "items-center",
@@ -390,7 +387,7 @@ export const AccountSection: FunctionComponent<{
             {totalDenom}
           </Text>
         </View>
-        <View style={style.flatten(["flex-row", "margin-y-4"]) as ViewStyle}>
+        <View style={style.flatten(["flex-row", "margin-y-6"]) as ViewStyle}>
           <Text
             style={
               style.flatten([
@@ -449,7 +446,7 @@ export const AccountSection: FunctionComponent<{
               "padding-x-12",
               "border-width-1",
               "border-color-white@20%",
-              "margin-top-20",
+              "margin-top-24",
               "border-radius-32",
             ]) as ViewStyle
           }

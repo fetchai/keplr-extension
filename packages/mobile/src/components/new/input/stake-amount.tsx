@@ -125,14 +125,14 @@ export const StakeAmountInput: FunctionComponent<{
           >
             <CardDivider
               vertical={true}
-              style={style.flatten(["height-12"]) as ViewStyle}
+              style={style.flatten(["height-12", "margin-top-4"]) as ViewStyle}
             />
             <Text
               style={
                 style.flatten([
-                  "color-gray-200",
+                  "body3",
+                  "color-white@60%",
                   "margin-left-8",
-                  "font-medium",
                 ]) as ViewStyle
               }
             >

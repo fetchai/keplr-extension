@@ -24,6 +24,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { SlideDownAnimation } from "components/new/animations/slide-down";
+import { AnimatedNumber } from "components/new/animations/animated-number";
 
 interface ClaimData {
   reward: string;
@@ -171,22 +172,33 @@ export const MyRewardCard: FunctionComponent<{
             Staking rewards
           </Text>
           <View style={style.flatten(["flex-row"])}>
-            <Text style={style.flatten(["body2", "color-white"]) as ViewStyle}>
-              {pendingStakableRewardUSD
-                ? pendingStakableRewardUSD
-                    .shrink(true)
-                    .maxDecimals(6)
-                    .trim(true)
-                    .toString()
-                : totalNumber}
-            </Text>
+            <AnimatedNumber
+              numberForAnimated={
+                pendingStakableRewardUSD
+                  ? pendingStakableRewardUSD
+                      .shrink(true)
+                      .maxDecimals(6)
+                      .trim(true)
+                      .toString()
+                  : totalNumber
+              }
+              includeComma={true}
+              decimalAmount={2}
+              gap={0}
+              colorValue={"white"}
+              fontSizeValue={16}
+              hookName={"withTiming"}
+              withTimingProps={{
+                durationValue: 1000,
+                easingValue: "linear",
+              }}
+            />
             <Text
               style={
-                style.flatten([
-                  "body2",
-                  "padding-left-4",
-                  "color-gray-300",
-                ]) as ViewStyle
+                [
+                  style.flatten(["body2", "padding-left-4", "color-gray-300"]),
+                  { lineHeight: 18 },
+                ] as ViewStyle
               }
             >
               {pendingStakableRewardUSD
@@ -475,7 +487,7 @@ const DelegateReward: FunctionComponent = observer(() => {
                     ]) as ViewStyle
                   }
                 >
-                  {val.description.moniker}
+                  {val.description.moniker?.trim()}
                 </Text>
                 <Text
                   style={
@@ -502,12 +514,9 @@ const DelegateReward: FunctionComponent = observer(() => {
                 }
                 textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
                 onPress={() => {
-                  analyticsStore.logEvent(
-                    `${val.description.moniker}_claim_click`,
-                    {
-                      pageName: "Stake",
-                    }
-                  );
+                  analyticsStore.logEvent("claim_staking_reward_click", {
+                    pageName: "Stake",
+                  });
                   setClaimData({
                     reward: rewards
                       .maxDecimals(10)
@@ -529,12 +538,7 @@ const DelegateReward: FunctionComponent = observer(() => {
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
         earnedAmount={claimData.reward}
-        onPress={() => {
-          analyticsStore.logEvent("claim_click", {
-            pageName: "Stake",
-          });
-          handleClaim(claimData.validatorAddress);
-        }}
+        onPress={() => handleClaim(claimData.validatorAddress)}
         buttonLoading={isSendingTx == claimData.validatorAddress}
       />
       <TransactionModal

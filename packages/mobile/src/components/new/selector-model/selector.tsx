@@ -31,48 +31,13 @@ export const SelectorModal: FunctionComponent<{
     if (selected) {
       return (
         <View
-          style={
-            style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-white",
-              "dark:background-color-blue-300",
-              "items-center",
-              "justify-center",
-            ]) as ViewStyle
-          }
+          style={style.flatten(["items-center", "justify-center"]) as ViewStyle}
         >
-          {/* <View
-                style={
-                  style.flatten([
-                    "width-12",
-                    "height-12",
-                    "border-radius-32",
-                    "background-color-indigo-800",
-                  ]) as ViewStyle
-                }
-              /> */}
-          <CheckIcon color="#270E8D" />
+          <CheckIcon />
         </View>
       );
     } else {
-      return (
-        <View
-          style={
-            style.flatten([
-              "width-24",
-              "height-24",
-              "border-radius-32",
-              "background-color-indigo-900",
-              "dark:background-color-platinum-600",
-              "border-width-1",
-              "border-color-white@60%",
-              "dark:border-color-platinum-300",
-            ]) as ViewStyle
-          }
-        />
-      );
+      return null;
     }
   };
 
@@ -126,8 +91,8 @@ export const SelectorModal: FunctionComponent<{
               style={
                 style.flatten(
                   [
-                    "height-50",
-                    "padding-x-24",
+                    "padding-x-18",
+                    "padding-y-16",
                     "flex-row",
                     "items-center",
                     "justify-between",
@@ -144,9 +109,9 @@ export const SelectorModal: FunctionComponent<{
               }}
             >
               <Text
-                style={style.flatten(["subtitle2", "color-white"]) as ViewStyle}
+                style={style.flatten(["body3", "color-white"]) as ViewStyle}
               >
-                {item.label}
+                {item.label.trim()}
               </Text>
               {renderBall(item.key === selectedKey)}
             </RectButton>

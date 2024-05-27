@@ -91,7 +91,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
     >
       <Text style={style.flatten(["color-white", "h2"]) as ViewStyle}>
         Migrate from ETH

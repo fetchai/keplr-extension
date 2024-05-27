@@ -6,7 +6,7 @@ import { useStyle } from "styles/index";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { Controller, useForm } from "react-hook-form";
 import { PageWithScrollView } from "components/page";
-import { Text, View, ViewStyle } from "react-native";
+import { Platform, Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import Web3Auth, {
   LOGIN_PROVIDER,
@@ -147,10 +147,12 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
 
   const smartNavigation = useSmartNavigation();
 
+  const isPad = Platform?.constants?.systemName === "iPadOS";
+
   const title =
     route.params.type === "apple"
-      ? "Sign in with Apple"
-      : "Sign in with Google";
+      ? `Sign in with ${isPad ? "\n" : ""}Apple`
+      : `Sign in with ${isPad ? "\n" : ""}Google`;
 
   const registerConfig: RegisterConfig = route.params.registerConfig;
 
@@ -206,8 +208,8 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
       });
     } catch (e) {
       console.log(e);
-      setIsCreating(false);
     } finally {
+      setIsCreating(false);
       await logoutWeb3Auth();
     }
   });

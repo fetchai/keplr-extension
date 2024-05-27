@@ -160,7 +160,7 @@ export const NewValidatorListScreen: FunctionComponent = observer(() => {
                       style.flatten([
                         "border-width-0",
                         "padding-x-18",
-                        "padding-y-12",
+                        "padding-y-10",
                       ]) as ViewStyle
                     }
                     onChangeText={(text) => {

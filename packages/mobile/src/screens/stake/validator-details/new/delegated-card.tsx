@@ -252,7 +252,7 @@ export const DelegatedCard: FunctionComponent<{
               textStyle={style.flatten(["body3"]) as ViewStyle}
               onPress={() => {
                 setClaimModel(true);
-                analyticsStore.logEvent("claim_click", {
+                analyticsStore.logEvent("claim_staking_reward_click", {
                   pageName: "Validator Details",
                 });
               }}

@@ -103,6 +103,8 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
       } catch (e) {
         console.log(e);
         smartNavigation.goBack();
+      } finally {
+        setIsCreating(false);
       }
     });
 

@@ -112,7 +112,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
     >
       <Text
         style={
@@ -195,6 +195,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
               ),
               bip44HDPath: bip44Option.bip44HDPath,
             });
+            setIsCreating(false);
           }}
         />
         {/*naive supreme token farm hand panic ketchup wisdom little choice valid home*/}

@@ -25,8 +25,9 @@ import {
 } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PageWithScrollView } from "components/page";
+import { observer } from "mobx-react-lite";
 
-export const NewStakingDashboardScreen: FunctionComponent = () => {
+export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -244,4 +245,4 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
       <View style={{ height: isTab ? 100 + safeAreaInsets.bottom : 0 }} />
     </PageWithScrollView>
   );
-};
+});

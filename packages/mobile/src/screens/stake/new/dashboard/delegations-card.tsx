@@ -135,7 +135,7 @@ export const DelegationsCard: FunctionComponent<{
                       ]) as ViewStyle
                     }
                   >
-                    {val.description.moniker}
+                    {val.description.moniker.trim()}
                   </Text>
                   <Text
                     style={

@@ -170,7 +170,7 @@ export const PortfolioStakingCard: FunctionComponent<{
           rippleColor="black@50%"
           onPress={() => {
             setClaimModel(true);
-            analyticsStore.logEvent("claim_click", {
+            analyticsStore.logEvent("claim_all_staking_reward_click", {
               pageName: "Portfolio",
             });
           }}

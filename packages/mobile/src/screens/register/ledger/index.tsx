@@ -292,6 +292,7 @@ export const NewLedgerScreen: FunctionComponent = () => {
       ledgerInitStore.abortAll();
       // Definitely, the error can be thrown when the ledger connection failed
       console.log(e);
+    } finally {
       setIsCreating(false);
     }
   });
@@ -325,7 +326,7 @@ export const NewLedgerScreen: FunctionComponent = () => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
     >
       <Text
         style={

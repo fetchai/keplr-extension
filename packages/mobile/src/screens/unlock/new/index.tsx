@@ -203,6 +203,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
       console.log(e);
       setIsLoading(false);
       setIsFailed(true);
+      setPassword("");
     }
   };
 

@@ -13,7 +13,6 @@ import {
   useDrawerStatus,
 } from "@react-navigation/drawer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { HomeSelectIcon } from "components/new/icon/file-icon";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
@@ -31,9 +30,9 @@ import {
 import { MoreNavigation } from "./more-navigation";
 import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
-import { HomeUnselectIcon } from "components/new/icon/home-unselect";
 import { ActivityScreen } from "screens/activity";
 import { NewStakingDashboardScreen } from "screens/stake/new/dashboard/dashboard";
+import { HomeIcon } from "components/new/icon/home-icon";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -125,7 +124,7 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "HomeTab":
                 return (
                   <IconButton
-                    icon={focused ? <HomeSelectIcon /> : <HomeUnselectIcon />}
+                    icon={<HomeIcon isSelected={focused} />}
                     bottomText={screenNames.Home}
                     backgroundBlur={focused}
                     borderRadius={32}
@@ -147,7 +146,13 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "Stake":
                 return (
                   <IconButton
-                    icon={<StakeIcon color={focused ? "white" : "#FFFFFF90"} />}
+                    icon={
+                      focused ? (
+                        <StakeIcon isSelected={true} />
+                      ) : (
+                        <StakeIcon color={"#FFFFFF90"} />
+                      )
+                    }
                     bottomText={screenNames.Stake}
                     borderRadius={32}
                     backgroundBlur={focused}
@@ -192,7 +197,13 @@ export const MainTabNavigation: FunctionComponent = () => {
               case "ActivityTab":
                 return (
                   <IconButton
-                    icon={<ClockIcon color={focused ? "white" : "#FFFFFF90"} />}
+                    icon={
+                      focused ? (
+                        <ClockIcon isSelected={true} />
+                      ) : (
+                        <ClockIcon color={"#FFFFFF90"} />
+                      )
+                    }
                     bottomText={screenNames.Activity}
                     borderRadius={32}
                     backgroundBlur={focused}

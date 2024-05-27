@@ -244,6 +244,9 @@ export const SignModal: FunctionComponent<{
         listItem={TransactionTabEnum}
         selected={selectedId}
         setSelected={setSelectedId}
+        containerStyle={
+          style.flatten(["margin-y-0", "margin-bottom-10"]) as ViewStyle
+        }
       />
       {wcSession ? (
         <WCAppLogoAndName
@@ -323,7 +326,6 @@ export const SignModal: FunctionComponent<{
           }
         }}
       />
-      <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </CardModal>
   );
 });

@@ -80,7 +80,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
             style={
               style.flatten([
                 "items-center",
-                "height-50",
+                "height-32",
                 "flex-row",
               ]) as ViewStyle
             }
@@ -119,7 +119,11 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               />
             </View>
           </View>
-          <BlurBackground borderRadius={12} blurIntensity={20}>
+          <BlurBackground
+            borderRadius={12}
+            blurIntensity={20}
+            containerStyle={style.flatten(["margin-top-24"]) as ViewStyle}
+          >
             <TextInput
               placeholder="Search"
               placeholderTextColor={"white"}

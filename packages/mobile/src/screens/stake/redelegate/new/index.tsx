@@ -187,7 +187,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
             "border-radius-12",
             "padding-12",
             "justify-between",
-            "padding-y-16",
+            "margin-y-16",
           ]) as ViewStyle
         }
       >
@@ -227,13 +227,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
       </View>
 
       <DropDownCardView
-        containerStyle={
-          style.flatten([
-            "margin-bottom-card-gap",
-            "padding-x-18",
-            "padding-y-12",
-          ]) as ViewStyle
-        }
+        containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
         mainHeadingrStyle={style.flatten(["body3"]) as ViewStyle}
         headingrStyle={style.flatten(["body3", "color-white@60%"]) as ViewStyle}
         mainHeading="To"
@@ -254,7 +248,8 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           style.flatten([
             "body3",
             "color-white@60%",
-            "padding-y-0",
+            "margin-y-0",
+            "margin-bottom-8",
           ]) as ViewStyle
         }
         amountConfig={sendConfigs.amountConfig}

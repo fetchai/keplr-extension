@@ -112,6 +112,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
         },
       ],
     });
+    setIsCreating(false);
   });
 
   const checkPasswordValidity = (value: string) => {
@@ -143,7 +144,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
     <PageWithScrollView
       backgroundMode="image"
       contentContainerStyle={style.get("flex-grow-1")}
-      style={style.flatten(["padding-x-page"]) as ViewStyle}
+      style={style.flatten(["padding-x-page", "overflow-scroll"]) as ViewStyle}
     >
       <Text
         style={
