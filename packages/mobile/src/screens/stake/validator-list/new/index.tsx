@@ -170,68 +170,63 @@ export const NewValidatorListScreen: FunctionComponent = observer(() => {
                     inputRight={<SearchIcon size={12} />}
                   />
                 </BlurBackground>
-                {data.length === 0 ? (
-                  <EmptyView
-                    text="No results found"
-                    containerStyle={
-                      style.flatten([
-                        "relative",
-                        "height-half",
-                        "margin-top-68",
-                      ]) as ViewStyle
-                    }
-                  />
-                ) : null}
               </View>
-              <TouchableOpacity
-                style={
-                  style.flatten([
-                    "flex-row",
-                    "border-width-1",
-                    "border-color-white@40%",
-                    "border-radius-64",
-                    "padding-x-12",
-                    "padding-y-6",
-                    "items-center",
-                    "margin-y-16",
-                  ]) as ViewStyle
-                }
-                onPress={() => {
-                  setIsSortModalOpen(true);
-                }}
-              >
-                <View
-                  style={style.flatten(["flex-3", "flex-row"]) as ViewStyle}
+              {data.length === 0 ? (
+                <EmptyView
+                  text="No results found"
+                  containerStyle={style.flatten(["margin-y-16"]) as ViewStyle}
+                />
+              ) : (
+                <TouchableOpacity
+                  style={
+                    style.flatten([
+                      "flex-row",
+                      "border-width-1",
+                      "border-color-white@40%",
+                      "border-radius-64",
+                      "padding-x-12",
+                      "padding-y-6",
+                      "items-center",
+                      "margin-y-16",
+                    ]) as ViewStyle
+                  }
+                  onPress={() => {
+                    setIsSortModalOpen(true);
+                  }}
                 >
-                  <Text
-                    style={
-                      [
-                        style.flatten(["body3", "color-white@60%"]),
-                        { lineHeight: 17 },
-                      ] as ViewStyle
-                    }
+                  <View
+                    style={style.flatten(["flex-3", "flex-row"]) as ViewStyle}
                   >
-                    Sort by
-                  </Text>
-                  <Text
-                    style={
-                      [
-                        style.flatten([
-                          "body3",
-                          "color-white",
-                          "margin-left-8",
-                        ]),
-                        { lineHeight: 17 },
-                      ] as ViewStyle
-                    }
-                  >
-                    {sort}
-                  </Text>
-                </View>
-                <View style={style.flatten(["justify-end"]) as ViewStyle}>
-                  <SortIcon />
-                </View>
-              </TouchableOpacity>
+                    <Text
+                      style={
+                        [
+                          style.flatten(["body3", "color-white@60%"]),
+                          { lineHeight: 17 },
+                        ] as ViewStyle
+                      }
+                    >
+                      Sort by
+                    </Text>
+                    <Text
+                      style={
+                        [
+                          style.flatten([
+                            "body3",
+                            "color-white",
+                            "margin-left-8",
+                          ]),
+                          { lineHeight: 17 },
+                        ] as ViewStyle
+                      }
+                    >
+                      {sort}
+                    </Text>
+                  </View>
+                  <View style={style.flatten(["justify-end"]) as ViewStyle}>
+                    <SortIcon />
+                  </View>
+                </TouchableOpacity>
+              )}
             </React.Fragment>
           );
         }}
@@ -247,7 +242,7 @@ const ValidatorItem: FunctionComponent<{
   index: number;
 }> = observer(
   ({ validatorAddress, prevSelectedValidator, selectedValidator }) => {
-    const { chainStore, queriesStore } = useStore();
+    const { chainStore, queriesStore, analyticsStore } = useStore();
 
     const queries = queriesStore.get(chainStore.current.chainId);
 
@@ -311,6 +306,9 @@ const ValidatorItem: FunctionComponent<{
                 validatorAddress: validatorAddress,
               });
             } else {
+              analyticsStore.logEvent("stake_validator_click", {
+                pageName: "Validator Detail",
+              });
               smartNavigation.navigateSmart("NewValidator.Details", {
                 validatorAddress,
               });

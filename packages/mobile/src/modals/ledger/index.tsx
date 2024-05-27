@@ -374,7 +374,6 @@ export const LedgerGranterModal: FunctionComponent<{
               }
             />
           ) : null}
-          {console.log("hey", devices)}
           {devices.map((device) => {
             return (
               <LedgerNanoBLESelector

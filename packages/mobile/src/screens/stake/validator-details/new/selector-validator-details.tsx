@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import { View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { useStore } from "stores/index";
 
 export const SelectorValidatorDetailsScreen: FunctionComponent = observer(
   () => {
@@ -26,7 +27,7 @@ export const SelectorValidatorDetailsScreen: FunctionComponent = observer(
     >();
 
     const smartNavigation = useSmartNavigation();
-
+    const { analyticsStore } = useStore();
     const prevSelectValidator = route.params.prevSelectedValidator;
     const validatorAddress = route.params.validatorAddress;
 
@@ -49,6 +50,9 @@ export const SelectorValidatorDetailsScreen: FunctionComponent = observer(
           containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
           text="Choose this validator"
           onPress={() => {
+            analyticsStore.logEvent("choose_validator_click", {
+              pageName: "Validator Detail",
+            });
             smartNavigation.navigateSmart("NewRedelegate", {
               validatorAddress: prevSelectValidator,
               selectedValidatorAddress: validatorAddress,

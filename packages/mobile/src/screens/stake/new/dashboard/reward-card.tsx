@@ -35,7 +35,8 @@ export const MyRewardCard: FunctionComponent<{
 }> = observer(({ containerStyle }) => {
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
+    useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -91,6 +92,9 @@ export const MyRewardCard: FunctionComponent<{
     setIsSendingTx(true);
 
     try {
+      analyticsStore.logEvent("claim_click", {
+        pageName: "Stake",
+      });
       let gas =
         account.cosmos.msgOpts.withdrawRewards.gas * validatorAddresses.length;
 
@@ -111,6 +115,11 @@ export const MyRewardCard: FunctionComponent<{
         {},
         {
           onBroadcasted: (txHash) => {
+            analyticsStore.logEvent("claim_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              pageName: "Stake",
+            });
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setTransectionModal(true);
           },
@@ -121,6 +130,11 @@ export const MyRewardCard: FunctionComponent<{
         return;
       }
       console.log(e);
+      analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+        pageName: "Stake",
+      });
       smartNavigation.navigateSmart("Home", {});
     } finally {
       setIsSendingTx(false);
@@ -199,7 +213,12 @@ export const MyRewardCard: FunctionComponent<{
             }
             buttonStyle={style.flatten(["padding-x-4"]) as ViewStyle}
             textStyle={style.flatten(["body3"]) as ViewStyle}
-            onPress={() => setClaimModel(true)}
+            onPress={() => {
+              analyticsStore.logEvent("claim_all_staking_reward_click", {
+                pageName: "Stake",
+              });
+              setClaimModel(true);
+            }}
             disabled={
               !account.isReadyToSendTx ||
               pendingStakableReward.toDec().equals(new Dec(0)) ||
@@ -279,7 +298,7 @@ export const MyRewardCard: FunctionComponent<{
 const DelegateReward: FunctionComponent = observer(() => {
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
 
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -349,6 +368,9 @@ const DelegateReward: FunctionComponent = observer(() => {
     setIsSendingTx(operatorAddress);
 
     try {
+      analyticsStore.logEvent("claim_click", {
+        pageName: "Stake",
+      });
       let gas =
         account.cosmos.msgOpts.withdrawRewards.gas * operatorAddress.length;
 
@@ -369,6 +391,11 @@ const DelegateReward: FunctionComponent = observer(() => {
         {},
         {
           onBroadcasted: (txHash) => {
+            analyticsStore.logEvent("claim_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              pageName: "Stake",
+            });
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setTransectionModal(true);
           },
@@ -379,6 +406,11 @@ const DelegateReward: FunctionComponent = observer(() => {
         return;
       }
       console.log(e);
+      analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+        pageName: "Stake",
+      });
       smartNavigation.navigateSmart("Home", {});
     } finally {
       setIsSendingTx("");
@@ -470,6 +502,12 @@ const DelegateReward: FunctionComponent = observer(() => {
                 }
                 textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
                 onPress={() => {
+                  analyticsStore.logEvent(
+                    `${val.description.moniker}_claim_click`,
+                    {
+                      pageName: "Stake",
+                    }
+                  );
                   setClaimData({
                     reward: rewards
                       .maxDecimals(10)
@@ -491,7 +529,12 @@ const DelegateReward: FunctionComponent = observer(() => {
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
         earnedAmount={claimData.reward}
-        onPress={() => handleClaim(claimData.validatorAddress)}
+        onPress={() => {
+          analyticsStore.logEvent("claim_click", {
+            pageName: "Stake",
+          });
+          handleClaim(claimData.validatorAddress);
+        }}
         buttonLoading={isSendingTx == claimData.validatorAddress}
       />
       <TransactionModal

@@ -41,7 +41,8 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
 
   const isTab = route.params?.isTab ?? true;
 
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
+    useStore();
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -136,6 +137,11 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
             rippleColor="black@50%"
             textStyle={style.flatten(["body3"]) as ViewStyle}
             onPress={() => {
+              analyticsStore.logEvent("stake_click", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                pageName: "Stake",
+              });
               navigation.navigate("Others", {
                 screen: "NewValidator.List",
                 params: {},
@@ -222,6 +228,11 @@ export const NewStakingDashboardScreen: FunctionComponent = () => {
             textStyle={style.flatten(["h6"]) as ViewStyle}
             text={"Start staking"}
             onPress={() => {
+              analyticsStore.logEvent("stake_click", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                pageName: "Stake",
+              });
               navigation.navigate("Others", {
                 screen: "NewValidator.List",
                 params: {},

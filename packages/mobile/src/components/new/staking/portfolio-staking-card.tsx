@@ -74,6 +74,9 @@ export const PortfolioStakingCard: FunctionComponent<{
     setIsSendingTx(true);
 
     try {
+      analyticsStore.logEvent("claim_click", {
+        pageName: "Portfolio",
+      });
       let gas =
         accountInfo.cosmos.msgOpts.withdrawRewards.gas *
         validatorAddresses.length;
@@ -95,6 +98,11 @@ export const PortfolioStakingCard: FunctionComponent<{
         {},
         {
           onBroadcasted: (txHash) => {
+            analyticsStore.logEvent("claim_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              pageName: "Portfolio",
+            });
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setOpenModal(true);
           },
@@ -112,6 +120,11 @@ export const PortfolioStakingCard: FunctionComponent<{
         return;
       }
       console.log(e);
+      analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+        pageName: "Portfolio",
+      });
       smartNavigation.navigateSmart("Home", {});
     } finally {
       setIsSendingTx(false);
@@ -157,7 +170,7 @@ export const PortfolioStakingCard: FunctionComponent<{
           rippleColor="black@50%"
           onPress={() => {
             setClaimModel(true);
-            analyticsStore.logEvent("claim_staking_rewards_click", {
+            analyticsStore.logEvent("claim_click", {
               pageName: "Portfolio",
             });
           }}

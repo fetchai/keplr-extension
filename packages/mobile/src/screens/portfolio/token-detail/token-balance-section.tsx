@@ -153,12 +153,17 @@ export const TokenBalanceSection: FunctionComponent<{
             "margin-bottom-16",
           ]) as ViewStyle
         }
-        onPress={() =>
+        onPress={() => {
+          analyticsStore.logEvent("stake_click", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Portfolio",
+          });
           navigation.navigate("Others", {
             screen: "NewStaking.Dashboard",
             params: { isTab: false },
-          })
-        }
+          });
+        }}
       />
     </View>
   );

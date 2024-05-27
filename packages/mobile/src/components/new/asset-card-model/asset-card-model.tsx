@@ -59,10 +59,6 @@ export const AssetCardModel: FunctionComponent<{
     ])
   );
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
     <CardModal
       isOpen={isOpen}
@@ -89,7 +85,6 @@ export const AssetCardModel: FunctionComponent<{
         height: filterCurrencies.length === 0 ? "100%" : undefined,
       }}
     >
-      {filterCurrencies.length === 0 ? <EmptyView /> : null}
       <BlurBackground
         borderRadius={12}
         blurIntensity={20}
@@ -113,45 +108,49 @@ export const AssetCardModel: FunctionComponent<{
           inputRight={<SearchIcon />}
         />
       </BlurBackground>
-      {filterCurrencies.map((currency) => {
-        const currencyBalance =
-          balancesMap.get(currency.coinMinimalDenom) ||
-          new CoinPretty(currency, new Int(0));
-        return (
-          <TokenCardView
-            key={currency.coinMinimalDenom}
-            title={currency.coinDenom}
-            subtitle={`${currencyBalance
-              .shrink(true)
-              .maxDecimals(6)
-              .toString()}`}
-            trailingStart={
-              convertToUsd(currencyBalance)
-                ? `${convertToUsd(currencyBalance)}`
-                : ""
-            }
-            trailingEnd={convertToUsd(currencyBalance) ? "USD" : ""}
-            containerStyle={
-              style.flatten(
-                ["margin-y-4"],
-                [
-                  currency.coinMinimalDenom ===
-                    amountConfig.sendCurrency.coinMinimalDenom &&
-                    "background-color-indigo",
-                ]
-              ) as ViewStyle
-            }
-            onPress={() => {
-              analyticsStore.logEvent("select_asset_click", {
-                pageName: "Send",
-              });
-              amountConfig.setSendCurrency(currency);
-              setSearch("");
-              close();
-            }}
-          />
-        );
-      })}
+      {filterCurrencies.length === 0 ? (
+        <EmptyView />
+      ) : (
+        filterCurrencies.map((currency) => {
+          const currencyBalance =
+            balancesMap.get(currency.coinMinimalDenom) ||
+            new CoinPretty(currency, new Int(0));
+          return (
+            <TokenCardView
+              key={currency.coinMinimalDenom}
+              title={currency.coinDenom}
+              subtitle={`${currencyBalance
+                .shrink(true)
+                .maxDecimals(6)
+                .toString()}`}
+              trailingStart={
+                convertToUsd(currencyBalance)
+                  ? `${convertToUsd(currencyBalance)}`
+                  : ""
+              }
+              trailingEnd={convertToUsd(currencyBalance) ? "USD" : ""}
+              containerStyle={
+                style.flatten(
+                  ["margin-y-4"],
+                  [
+                    currency.coinMinimalDenom ===
+                      amountConfig.sendCurrency.coinMinimalDenom &&
+                      "background-color-indigo",
+                  ]
+                ) as ViewStyle
+              }
+              onPress={() => {
+                analyticsStore.logEvent("select_asset_click", {
+                  pageName: "Send",
+                });
+                amountConfig.setSendCurrency(currency);
+                setSearch("");
+                close();
+              }}
+            />
+          );
+        })
+      )}
     </CardModal>
   );
 });

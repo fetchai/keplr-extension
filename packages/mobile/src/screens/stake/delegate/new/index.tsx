@@ -161,6 +161,7 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
   const stakeAmount = async () => {
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
+        analyticsStore.logEvent("stake_txn_click", { pageName: "Stake" });
         await account.cosmos.sendDelegateMsg(
           sendConfigs.amountConfig.amount,
           sendConfigs.recipientConfig.recipient,
@@ -172,7 +173,7 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
           },
           {
             onBroadcasted: (txHash) => {
-              analyticsStore.logEvent("Delegate tx broadcasted", {
+              analyticsStore.logEvent("stake_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
                 validatorName: validator?.description.moniker,
@@ -188,6 +189,12 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
           return;
         }
         console.log(e);
+        analyticsStore.logEvent("stake_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          feeType: sendConfigs.feeConfig.feeType,
+          message: e?.message ?? "",
+        });
         smartNavigation.navigateSmart("Home", {});
       }
     }

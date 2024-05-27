@@ -39,6 +39,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     time: "TODAY",
     type: "positive",
   });
+  const [graphHeight, setGraphHeight] = useState(4.2);
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
@@ -153,12 +154,12 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       ref={scrollViewRef}
     >
       <BIP44Selectable />
-      <AccountSection tokenState={tokenState} />
+      <AccountSection tokenState={tokenState} setGraphHeight={setGraphHeight} />
       <View style={style.flatten(["flex-2"])} />
       <LineGraphView
         setTokenState={setTokenState}
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
-        height={windowHeight / 4}
+        height={windowHeight / graphHeight}
       />
     </PageWithScrollViewInBottomTabView>
   );

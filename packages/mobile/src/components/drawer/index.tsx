@@ -44,7 +44,6 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
     const [filterChainInfos, setFilterChainInfos] = useState(
       chainStore.chainInfosInUI
     );
-    const [isEnabled, setIsEnabled] = useState(true);
 
     useEffect(() => {
       const searchTrim = search.trim();
@@ -72,12 +71,6 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
         }}
         {...rest}
       >
-        {filterChainInfos.length === 0 ? (
-          <EmptyView
-          // containerStyle={style.flatten(["margin-top-58"]) as ViewStyle}
-          />
-        ) : null}
-
         <View
           style={{
             marginBottom: safeAreaInsets.bottom,
@@ -168,90 +161,96 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               });
             }}
           />
-          {filterChainInfos.map((chainInfo) => {
-            const selected = chainStore.current.chainId === chainInfo.chainId;
+          {filterChainInfos.length === 0 ? (
+            <EmptyView />
+          ) : (
+            filterChainInfos.map((chainInfo) => {
+              const selected = chainStore.current.chainId === chainInfo.chainId;
 
-            return (
-              <BlurBackground
-                key={chainInfo.chainId}
-                borderRadius={12}
-                blurIntensity={15}
-                containerStyle={style.flatten(["margin-y-2"]) as ViewStyle}
-              >
-                <RectButton
-                  onPress={() => {
-                    setSearch("");
-                    chainStore.selectChain(chainInfo.chainId);
-                    chainStore.saveLastViewChainId();
-                    navigation.dispatch(DrawerActions.closeDrawer());
-                  }}
-                  style={
-                    style.flatten(
-                      [
-                        "flex-row",
-                        "height-62",
-                        "items-center",
-                        "padding-x-12",
-                        "justify-between",
-                      ],
-                      [
-                        selected && "background-color-indigo",
-                        "border-radius-12",
-                      ]
-                    ) as ViewStyle
-                  }
-                  activeOpacity={0.5}
-                  underlayColor={
-                    style.flatten(["color-gray-50", "dark:color-platinum-500"])
-                      .color
-                  }
+              return (
+                <BlurBackground
+                  key={chainInfo.chainId}
+                  borderRadius={12}
+                  blurIntensity={15}
+                  containerStyle={style.flatten(["margin-y-2"]) as ViewStyle}
                 >
-                  <View
+                  <RectButton
+                    onPress={() => {
+                      setSearch("");
+                      chainStore.selectChain(chainInfo.chainId);
+                      chainStore.saveLastViewChainId();
+                      navigation.dispatch(DrawerActions.closeDrawer());
+                    }}
                     style={
-                      style.flatten(["flex-row", "items-center"]) as ViewStyle
+                      style.flatten(
+                        [
+                          "flex-row",
+                          "height-62",
+                          "items-center",
+                          "padding-x-12",
+                          "justify-between",
+                        ],
+                        [
+                          selected && "background-color-indigo",
+                          "border-radius-12",
+                        ]
+                      ) as ViewStyle
+                    }
+                    activeOpacity={0.5}
+                    underlayColor={
+                      style.flatten([
+                        "color-gray-50",
+                        "dark:color-platinum-500",
+                      ]).color
                     }
                   >
-                    <BlurBackground
-                      backgroundBlur={true}
-                      containerStyle={
-                        style.flatten([
-                          "width-32",
-                          "height-32",
-                          "border-radius-64",
-                          "items-center",
-                          "justify-center",
-                          "margin-right-12",
-                        ]) as ViewStyle
+                    <View
+                      style={
+                        style.flatten(["flex-row", "items-center"]) as ViewStyle
                       }
                     >
-                      {chainInfo.raw.chainSymbolImageUrl ? (
-                        <FastImage
-                          style={{
-                            width: 22,
-                            height: 22,
-                          }}
-                          resizeMode={FastImage.resizeMode.contain}
-                          source={{
-                            uri: chainInfo.raw.chainSymbolImageUrl,
-                          }}
-                        />
-                      ) : (
-                        <VectorCharacter
-                          char={chainInfo.chainName[0]}
-                          color="white"
-                          height={12}
-                        />
-                      )}
-                    </BlurBackground>
-                    <Text style={style.flatten(["subtitle3", "color-white"])}>
-                      {titleCase(chainInfo.chainName)}
-                    </Text>
-                  </View>
-                  <View>{selected ? <CheckIcon /> : null}</View>
-                </RectButton>
-              </BlurBackground>
-            );
-          })}
+                      <BlurBackground
+                        backgroundBlur={true}
+                        containerStyle={
+                          style.flatten([
+                            "width-32",
+                            "height-32",
+                            "border-radius-64",
+                            "items-center",
+                            "justify-center",
+                            "margin-right-12",
+                          ]) as ViewStyle
+                        }
+                      >
+                        {chainInfo.raw.chainSymbolImageUrl ? (
+                          <FastImage
+                            style={{
+                              width: 22,
+                              height: 22,
+                            }}
+                            resizeMode={FastImage.resizeMode.contain}
+                            source={{
+                              uri: chainInfo.raw.chainSymbolImageUrl,
+                            }}
+                          />
+                        ) : (
+                          <VectorCharacter
+                            char={chainInfo.chainName[0]}
+                            color="white"
+                            height={12}
+                          />
+                        )}
+                      </BlurBackground>
+                      <Text style={style.flatten(["subtitle3", "color-white"])}>
+                        {titleCase(chainInfo.chainName)}
+                      </Text>
+                    </View>
+                    <View>{selected ? <CheckIcon /> : null}</View>
+                  </RectButton>
+                </BlurBackground>
+              );
+            })
+          )}
         </View>
         <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </DrawerContentScrollView>

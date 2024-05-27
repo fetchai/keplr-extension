@@ -16,7 +16,8 @@ import {
 export const DelegationsCard: FunctionComponent<{
   containerStyle?: ViewStyle;
 }> = observer(({ containerStyle }) => {
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
+    useStore();
 
   const style = useStyle();
 
@@ -100,6 +101,9 @@ export const DelegationsCard: FunctionComponent<{
               ] as ViewStyle
             }
             onPress={() => {
+              analyticsStore.logEvent("stake_validator_click", {
+                pageName: "Stake",
+              });
               navigation.navigate("Others", {
                 screen: "NewValidator.Details",
                 params: {

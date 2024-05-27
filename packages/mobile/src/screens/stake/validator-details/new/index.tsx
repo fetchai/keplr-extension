@@ -32,7 +32,7 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
   const validatorAddress = route.params.validatorAddress;
   const validatorSelector = route.params.prevSelectedValidator;
 
-  const { chainStore, queriesStore, accountStore } = useStore();
+  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -86,6 +86,9 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
               }
               textStyle={style.flatten(["body2", "color-white"]) as ViewStyle}
               onPress={() => {
+                analyticsStore.logEvent("redelegate_click", {
+                  pageName: "Validator Detail",
+                });
                 smartNavigation.navigateSmart("NewRedelegate", {
                   validatorAddress,
                 });
@@ -99,6 +102,9 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
               textStyle={style.flatten(["body2"]) as ViewStyle}
               text="Stake more"
               onPress={() => {
+                analyticsStore.logEvent("stake_more_click", {
+                  pageName: "Validator Detail",
+                });
                 smartNavigation.navigateSmart("NewDelegate", {
                   validatorAddress,
                 });
@@ -121,6 +127,9 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
               text="Choose this validator"
               textStyle={style.flatten(["body2"]) as ViewStyle}
               onPress={() => {
+                analyticsStore.logEvent("choose_validator_click", {
+                  pageName: "Validator Detail",
+                });
                 smartNavigation.navigateSmart("NewRedelegate", {
                   validatorAddress: validatorSelector,
                   selectedValidatorAddress: validatorAddress,
@@ -133,6 +142,9 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
               text="Stake with this validator"
               textStyle={style.flatten(["body2"]) as ViewStyle}
               onPress={() => {
+                analyticsStore.logEvent("stake_with_validator_click", {
+                  pageName: "Validator Detail",
+                });
                 smartNavigation.navigateSmart("NewDelegate", {
                   validatorAddress,
                 });

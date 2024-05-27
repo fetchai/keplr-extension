@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
@@ -37,18 +37,19 @@ import { CameraPermissionOnIcon } from "components/new/icon/camerapermission-on"
 import LinearGradient from "react-native-linear-gradient";
 import { SimpleCardView } from "components/new/card-view/simple-card";
 import { ChevronRightIcon } from "components/new/icon/chevron-right";
-import { Dec } from "@keplr-wallet/unit";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { ClaimRewardsModal } from "components/new/claim-reward-model";
 import { AnimatedNumber } from "components/new/animations/animated-number";
+import { Dec } from "@keplr-wallet/unit";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
   tokenState: any;
-}> = observer(({ containerStyle, tokenState }) => {
+  setGraphHeight: any;
+}> = observer(({ containerStyle, tokenState, setGraphHeight }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
@@ -126,6 +127,9 @@ export const AccountSection: FunctionComponent<{
     setloadingClaimButtom(true);
 
     try {
+      analyticsStore.logEvent("claim_click", {
+        pageName: "Home",
+      });
       let gas =
         account.cosmos.msgOpts.withdrawRewards.gas * validatorAddresses.length;
 
@@ -147,6 +151,11 @@ export const AccountSection: FunctionComponent<{
         {},
         {
           onBroadcasted: (txHash) => {
+            analyticsStore.logEvent("claim_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              pageName: "Home",
+            });
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setOpenModal(true);
           },
@@ -164,11 +173,30 @@ export const AccountSection: FunctionComponent<{
         return;
       }
       console.log(e);
+      analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+        pageName: "Home",
+      });
       smartNavigation.navigateSmart("Home", {});
     } finally {
       setloadingClaimButtom(false);
     }
   }
+
+  function isShowClaimOption(): boolean {
+    return !(
+      !networkIsConnected ||
+      !account.isReadyToSendTx ||
+      stakableReward.toDec().equals(new Dec(0)) ||
+      stakable.toDec().lte(new Dec(0)) ||
+      rewards.pendingRewardValidatorAddresses.length === 0
+    );
+  }
+
+  useEffect(() => {
+    setGraphHeight(isShowClaimOption() ? 4.5 : 4.2);
+  }, [isShowClaimOption]);
 
   return (
     <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
@@ -284,16 +312,15 @@ export const AccountSection: FunctionComponent<{
           onPress={() => setIsOpenModal(true)}
         />
       </BlurBackground>
-      {!(
-        !networkIsConnected ||
-        !account.isReadyToSendTx ||
-        stakableReward.toDec().equals(new Dec(0)) ||
-        stakable.toDec().lte(new Dec(0)) ||
-        rewards.pendingRewardValidatorAddresses.length === 0
-      ) ? (
+      {isShowClaimOption() ? (
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => setClaimModel(true)}
+          onPress={() => {
+            analyticsStore.logEvent("claim_all_staking_reward_click", {
+              pageName: "Home",
+            });
+            setClaimModel(true);
+          }}
         >
           <LinearGradient
             colors={["#F9774B", "#CF447B"]}

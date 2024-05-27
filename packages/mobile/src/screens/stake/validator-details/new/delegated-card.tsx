@@ -24,7 +24,7 @@ export const DelegatedCard: FunctionComponent<{
 
   validatorAddress: string;
 }> = observer(({ containerStyle, validatorAddress }) => {
-  const { chainStore, queriesStore, accountStore } = useStore();
+  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
 
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [showTransectionModal, setTransectionModal] = useState(false);
@@ -66,6 +66,9 @@ export const DelegatedCard: FunctionComponent<{
     setIsSendingTx(true);
 
     try {
+      analyticsStore.logEvent("claim_click", {
+        pageName: "Validator Details",
+      });
       let gas =
         account.cosmos.msgOpts.withdrawRewards.gas * validatorAddress.length;
 
@@ -86,12 +89,22 @@ export const DelegatedCard: FunctionComponent<{
         {},
         {
           onBroadcasted: (txHash) => {
+            analyticsStore.logEvent("claim_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+              pageName: "Validator Details",
+            });
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setTransectionModal(true);
           },
         }
       );
     } catch (e) {
+      analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+        pageName: "Validator Details",
+      });
       if (e?.message === "Request rejected") {
         return;
       }
@@ -212,6 +225,11 @@ export const DelegatedCard: FunctionComponent<{
             }
             textStyle={style.flatten(["body3", "color-gray-200"]) as ViewStyle}
             onPress={() => {
+              analyticsStore.logEvent("unstake_click", {
+                chainId: chainStore.current.chainId,
+                chainName: chainStore.current.chainName,
+                pageName: "Validator Detail",
+              });
               smartNavigation.navigateSmart("NewUndelegate", {
                 validatorAddress,
               });
@@ -232,7 +250,12 @@ export const DelegatedCard: FunctionComponent<{
                 ]) as ViewStyle
               }
               textStyle={style.flatten(["body3"]) as ViewStyle}
-              onPress={() => setClaimModel(true)}
+              onPress={() => {
+                setClaimModel(true);
+                analyticsStore.logEvent("claim_click", {
+                  pageName: "Validator Details",
+                });
+              }}
             />
           ) : null}
         </BlurBackground>

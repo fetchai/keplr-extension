@@ -120,7 +120,6 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
           value={isEnabled}
         />
       </View>
-      {filterChainInfos.length === 0 ? <EmptyView /> : null}
       <BlurBackground
         borderRadius={12}
         blurIntensity={20}
@@ -161,19 +160,25 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
         })}
         scrollEnabled={false}
       /> */}
-      {filterChainInfos.map((chainInfoUI, index) => {
-        return (
-          <SettingChainListScreenElement
-            key={chainInfoUI.chainInfo.chainId}
-            isFirst={index === 0}
-            isLast={index === chainStore.chainInfosWithUIConfig.length - 1}
-            chainId={chainInfoUI.chainInfo.chainId}
-            chainName={chainInfoUI.chainInfo.chainName}
-            chainSymbolImageUrl={chainInfoUI.chainInfo.raw.chainSymbolImageUrl}
-            disabled={chainInfoUI.disabled}
-          />
-        );
-      })}
+      {filterChainInfos.length === 0 ? (
+        <EmptyView />
+      ) : (
+        filterChainInfos.map((chainInfoUI, index) => {
+          return (
+            <SettingChainListScreenElement
+              key={chainInfoUI.chainInfo.chainId}
+              isFirst={index === 0}
+              isLast={index === chainStore.chainInfosWithUIConfig.length - 1}
+              chainId={chainInfoUI.chainInfo.chainId}
+              chainName={chainInfoUI.chainInfo.chainName}
+              chainSymbolImageUrl={
+                chainInfoUI.chainInfo.raw.chainSymbolImageUrl
+              }
+              disabled={chainInfoUI.disabled}
+            />
+          );
+        })
+      )}
       <View style={style.flatten(["height-page-double-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );

@@ -112,6 +112,9 @@ export const NewUndelegateScreen: FunctionComponent = observer(() => {
   const unstakeBalance = async () => {
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
+        analyticsStore.logEvent("unstake_txn_click", {
+          pageName: "Stake Validator",
+        });
         await account.cosmos.sendUndelegateMsg(
           sendConfigs.amountConfig.amount,
           sendConfigs.recipientConfig.recipient,
@@ -123,7 +126,7 @@ export const NewUndelegateScreen: FunctionComponent = observer(() => {
           },
           {
             onBroadcasted: (txHash) => {
-              analyticsStore.logEvent("Undelegate tx broadcasted", {
+              analyticsStore.logEvent("unstake_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
                 validatorName: validator?.description.moniker,
@@ -139,6 +142,12 @@ export const NewUndelegateScreen: FunctionComponent = observer(() => {
           return;
         }
         console.log(e);
+        analyticsStore.logEvent("unstake_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          feeType: sendConfigs.feeConfig.feeType,
+          message: e?.message ?? "",
+        });
         smartNavigation.navigateSmart("Home", {});
       }
     }

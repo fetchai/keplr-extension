@@ -128,6 +128,9 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
   const redelegateAmount = async () => {
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
+        analyticsStore.logEvent("redelegate_txn_click", {
+          pageName: "Stake Validator",
+        });
         await account.cosmos.sendBeginRedelegateMsg(
           sendConfigs.amountConfig.amount,
           sendConfigs.srcValidatorAddress,
@@ -140,7 +143,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           },
           {
             onBroadcasted: (txHash) => {
-              analyticsStore.logEvent("Redelgate tx broadcasted", {
+              analyticsStore.logEvent("redelegate_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
                 validatorName: srcValidator?.description.moniker,
@@ -157,6 +160,12 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           return;
         }
         console.log(e);
+        analyticsStore.logEvent("redelegate_txn_broadcasted_fail", {
+          chainId: chainStore.current.chainId,
+          chainName: chainStore.current.chainName,
+          feeType: sendConfigs.feeConfig.feeType,
+          message: e?.message ?? "",
+        });
         smartNavigation.navigateSmart("Home", {});
       }
     }

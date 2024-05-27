@@ -13,7 +13,6 @@ import { Button } from "components/button";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { ArrowUpIcon } from "components/new/icon/arrow-up";
 import { AppCurrency } from "@keplr-wallet/types";
-import Toast from "react-native-toast-message";
 import { clearDecimals } from "modals/sign/messages";
 import { useStore } from "stores/index";
 
@@ -30,7 +29,7 @@ interface ButtonData {
 
 export const DetailRows = ({ details }: { details: any }) => {
   const style = useStyle();
-  const { analyticsStore } = useStore();
+  const { chainStore, analyticsStore } = useStore();
   const fees = JSON.parse(details.fees);
   const mintScanURL = `https://www.mintscan.io/fetchai/tx/${details.hash}/`;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -44,17 +43,16 @@ export const DetailRows = ({ details }: { details: any }) => {
   };
 
   const handleValidatorClicked = () => {
-    // const validatorAddress = details.validatorAddress;
-    // smartNavigation.navigateSmart("Delegate", {
-    //   validatorAddress,
-    // });
     analyticsStore.logEvent("stake_click", {
+      chainId: chainStore.current.chainId,
+      chainName: chainStore.current.chainName,
       pageName: "Activity Detail",
     });
-    Toast.show({
-      type: "error",
-      text1: "Coming soon",
-      visibilityTime: 3000,
+    navigation.navigate("Others", {
+      screen: "NewValidator.Details",
+      params: {
+        validatorAddress: details.validatorAddress,
+      },
     });
   };
 
