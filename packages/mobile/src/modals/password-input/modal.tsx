@@ -39,6 +39,7 @@ export const PasswordInputModal: FunctionComponent<{
     } catch (e) {
       console.log(e);
       setIsInvalidPassword(true);
+      setPassword("");
     } finally {
       setIsLoading(false);
     }

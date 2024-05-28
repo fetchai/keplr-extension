@@ -196,7 +196,6 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
     const isPasted = content.trim().includes(clipboardContent.current.trim());
     if (isPasted) {
       handlePaste(content);
-      handlePaste(content);
     } else {
       seedWords[index] = content.trim();
       setSeedWords([...seedWords]);

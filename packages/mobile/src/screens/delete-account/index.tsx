@@ -50,6 +50,7 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
     } catch (e) {
       console.log(e);
       setIsInvalidPassword(true);
+      setPassword("");
       setIsLoading(false);
     }
   };
