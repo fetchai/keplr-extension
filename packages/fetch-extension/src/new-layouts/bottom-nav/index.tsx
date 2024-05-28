@@ -162,8 +162,8 @@ const ActivityTab = () => {
       setActivityDisabled(true);
       return;
     }
-    if (![CHAIN_ID_FETCHHUB].includes(current.chainId)) {
-      setActivityTooltip("Feature not available on this network");
+    if (true && ![CHAIN_ID_FETCHHUB].includes(current.chainId)) {
+      setActivityTooltip("Coming Soon");
       setActivityDisabled(true);
     } else {
       setActivityTooltip("");
