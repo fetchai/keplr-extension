@@ -14,6 +14,9 @@ export class ActivityStore {
   @observable
   protected chainId: string = "";
 
+  @observable
+  protected pendingTransactions: any = {};
+
   filterNewNodes(nodes: any, nodeMap: any) {
     Object.values(nodes).map((node: any) => {
       nodeMap[node.id] = node;
@@ -28,19 +31,29 @@ export class ActivityStore {
     });
   }
 
-  updateNodes(nodes: any, append?: boolean, isLoadMore?: boolean) {
-    const nodeMap: any = {};
-    if (isLoadMore === true) {
-      this.filterSavedNodes(nodeMap);
-      this.filterNewNodes(nodes, nodeMap);
-    } else {
-      this.filterNewNodes(nodes, nodeMap);
-      if (append) {
-        this.filterSavedNodes(nodeMap);
+  sortByTimeStamps(nodeMap: any) {
+    const sortedNodes = Object.values(nodeMap).sort((a: any, b: any) => {
+      if (a.block.timestamp < b.block.timestamp) {
+        return 1;
+      } else if (a.block.timestamp > b.block.timestamp) {
+        return -1;
+      } else {
+        return 0;
       }
+    });
+
+    return sortedNodes;
+  }
+
+  updateNodes(nodes: any, append?: boolean) {
+    const nodeMap: any = {};
+
+    this.filterNewNodes(nodes, nodeMap);
+    if (append) {
+      this.filterSavedNodes(nodeMap);
     }
 
-    const newNodes = Object.values(nodeMap);
+    const newNodes = this.sortByTimeStamps(nodeMap);
     this.setNodes(newNodes);
 
     this.saveNodes();
@@ -64,6 +77,14 @@ export class ActivityStore {
   @flow
   *savePageInfo() {
     yield this.kvStore.set<any>("extension_activity_page_info", this.pageInfo);
+  }
+
+  @flow
+  *savePendingTransactions() {
+    yield this.kvStore.set<any>(
+      "extension_activity_page_pending_transactions",
+      this.pendingTransactions
+    );
   }
 
   getNode(id: any) {
@@ -149,5 +170,9 @@ export class ActivityStore {
 
   get getAddress() {
     return this.address;
+  }
+
+  get getPendingTransactions() {
+    return this.pendingTransactions;
   }
 }

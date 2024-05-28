@@ -255,12 +255,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         state: { trnsxStatus: "failed", isNext: true },
                       });
                     },
-                    onBroadcasted: () => {
+                    onBroadcasted: (txHash: Uint8Array) => {
                       analyticsStore.logEvent("Send token tx broadcasted", {
                         chainId: chainStore.current.chainId,
                         chainName: chainStore.current.chainName,
                         feeType: sendConfigs.feeConfig.feeType,
                       });
+                      console.log(txHash.toLocaleString());
                       navigate("/send", {
                         replace: true,
                         state: { trnsxStatus: "pending", isNext: true },
