@@ -133,9 +133,32 @@ export const Stats = () => {
           undefined,
           {
             onBroadcasted: () => {
+              notification.push({
+                type: "primary",
+                placement: "top-center",
+                duration: 2,
+                content: `Transaction broadcasted`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
+              });
+
               analyticsStore.logEvent("Claim reward tx broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
+              });
+            },
+            onFulfill: () => {
+              notification.push({
+                type: "success",
+                placement: "top-center",
+                duration: 5,
+                content: `Transaction Completed`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
               });
             },
           }
