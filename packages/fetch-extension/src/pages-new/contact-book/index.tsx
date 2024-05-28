@@ -29,10 +29,12 @@ export interface chatSectionParams {
   openModal: boolean;
   addressInputValue: string;
 }
+
 export const defaultParamValues: chatSectionParams = {
   openModal: false,
   addressInputValue: "",
 };
+
 export const ContactBookPage: FunctionComponent<{
   onBackButton?: () => void;
   selectHandler?: AddressBookSelectHandler;
