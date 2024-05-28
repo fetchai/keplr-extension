@@ -171,8 +171,8 @@ const ActivityTab = () => {
       setActivityDisabled(true);
       return;
     }
-    if (![CHAIN_ID_FETCHHUB].includes(current.chainId) && !isEvm) {
-      setActivityTooltip("Feature not available on this network");
+    if (true || (![CHAIN_ID_FETCHHUB].includes(current.chainId) && !isEvm)) {
+      setActivityTooltip("Feature currently unavailable");
       setActivityDisabled(true);
     } else {
       setActivityTooltip("");
