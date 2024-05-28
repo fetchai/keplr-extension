@@ -172,7 +172,7 @@ const ActivityTab = () => {
       return;
     }
     if (true || (![CHAIN_ID_FETCHHUB].includes(current.chainId) && !isEvm)) {
-      setActivityTooltip("Feature currently unavailable");
+      setActivityTooltip("Coming Soon");
       setActivityDisabled(true);
     } else {
       setActivityTooltip("");
