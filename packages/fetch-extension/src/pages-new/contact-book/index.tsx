@@ -196,6 +196,7 @@ export const ContactBookPage: FunctionComponent<{
             searchTerm={searchTerm}
             onSearchTermChange={setSearchTerm}
             filterFunction={getFilteredAddressValues}
+            disabled={addressBookConfig.addressBookDatas.length === 0}
             renderResult={(data, i) => (
               <Card
                 key={i.toString()}
@@ -221,19 +222,14 @@ export const ContactBookPage: FunctionComponent<{
             {addressBookConfig.addressBookDatas.length === 0 && (
               <div
                 style={{
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  opacity: 0.8,
                   textAlign: "center",
                   color: "white",
                 }}
               >
-                <div
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 400,
-                    opacity: 0.8,
-                  }}
-                >
-                  You haven’t saved any addresses yet
-                </div>
+                You haven’t saved any addresses yet
               </div>
             )}
           </div>
