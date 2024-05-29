@@ -231,7 +231,11 @@ export const Transfer: FunctionComponent<{
           type="submit"
           color="primary"
           block
-          disabled={errorText != null || !amountConfig.amount}
+          disabled={
+            errorText != null ||
+            !amountConfig.amount ||
+            account.txTypeInProgress === "redelegate"
+          }
           style={{ alignItems: "end", marginTop: "10px" }}
           onClick={stakeClicked}
         >
@@ -244,6 +248,9 @@ export const Transfer: FunctionComponent<{
             }}
           />
           Redelegate
+          {account.txTypeInProgress === "redelegate" && (
+            <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+          )}
         </Button>
       </FormGroup>
     </React.Fragment>

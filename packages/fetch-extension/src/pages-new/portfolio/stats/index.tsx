@@ -237,8 +237,16 @@ export const Stats = () => {
           color: "white",
         }}
         text="Claim rewards"
-        disabled={rewardsBal === "0.000000000000000000 FET"}
-      />
+        disabled={
+          rewardsBal === "0.000000000000000000 FET" ||
+          accountInfo.txTypeInProgress === "withdrawRewards"
+        }
+      >
+        {(accountInfo.txTypeInProgress === "withdrawRewards" ||
+          _isWithdrawingRewards) && (
+          <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+        )}
+      </ButtonV2>
     </div>
   );
 };

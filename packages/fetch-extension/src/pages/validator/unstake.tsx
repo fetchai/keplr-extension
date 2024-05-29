@@ -171,7 +171,11 @@ export const Unstake: FunctionComponent<{
           type="submit"
           color="primary"
           block
-          disabled={errorText != null || !amountConfig.amount}
+          disabled={
+            errorText != null ||
+            !amountConfig.amount ||
+            account.txTypeInProgress === "undelegate"
+          }
           style={{ alignItems: "end", marginTop: "10px" }}
           onClick={stakeClicked}
         >
@@ -184,6 +188,9 @@ export const Unstake: FunctionComponent<{
             }}
           />
           Unstake
+          {account.txTypeInProgress === "undelegate" && (
+            <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+          )}
         </Button>
       </FormGroup>
     </React.Fragment>

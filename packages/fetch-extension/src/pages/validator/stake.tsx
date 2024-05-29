@@ -173,7 +173,11 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
             type="submit"
             color="primary"
             block
-            disabled={errorText != null || !amountConfig.amount}
+            disabled={
+              errorText != null ||
+              !amountConfig.amount ||
+              account.txTypeInProgress === "delegate"
+            }
             style={{ alignItems: "end", marginTop: "10px" }}
             onClick={stakeClicked}
           >
@@ -186,6 +190,9 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
               }}
             />
             Stake
+            {account.txTypeInProgress === "delegate" && (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            )}
           </Button>
         </FormGroup>
       </React.Fragment>
