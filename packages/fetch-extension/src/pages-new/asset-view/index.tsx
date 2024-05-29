@@ -153,6 +153,7 @@ export const AssetView = observer(() => {
               alignItems: "center",
               gap: "4px",
               justifyContent: "center",
+              opacity: sendDisabled ? 0.5 : 1,
             }}
             onClick={!sendDisabled ? () => navigate("/send") : () => {}}
             text={"Send"}

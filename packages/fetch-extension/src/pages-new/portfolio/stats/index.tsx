@@ -239,7 +239,8 @@ export const Stats = () => {
         text="Claim rewards"
         disabled={
           rewardsBal === "0.000000000000000000 FET" ||
-          accountInfo.txTypeInProgress === "withdrawRewards"
+          accountInfo.txTypeInProgress === "withdrawRewards" ||
+          _isWithdrawingRewards
         }
       >
         {(accountInfo.txTypeInProgress === "withdrawRewards" ||

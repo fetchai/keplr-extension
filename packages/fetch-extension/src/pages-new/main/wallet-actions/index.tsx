@@ -49,6 +49,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               background: "rgba(255,255,255,0.1)",
               height: "60px",
               marginBottom: "6px",
+              opacity: accountInfo.txTypeInProgress === "send" ? 0.5 : 1,
             }}
             disabled={accountInfo.txTypeInProgress === "send"}
             leftImage={require("@assets/svg/wireframe/arrow-up.svg")}
