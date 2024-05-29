@@ -307,7 +307,11 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           }}
           data-loading={accountInfo.isSendingMsg === "send"}
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
-        />
+        >
+          {accountInfo.txTypeInProgress === "send" && (
+            <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+          )}
+        </ButtonV2>
         {trnsxStatus !== undefined && <TransxStatus status={trnsxStatus} />}
       </div>
     );

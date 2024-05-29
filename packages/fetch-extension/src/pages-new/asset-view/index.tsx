@@ -8,8 +8,11 @@ import { getTokenIcon } from "@utils/get-token-icon";
 import { Activity } from "./activity";
 import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
+import { useStore } from "../../stores";
 
 export const AssetView = observer(() => {
+  const { chainStore, accountStore } = useStore();
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const location = useLocation();
   const [tokenInfo, setTokenInfo] = useState<any>();
   const [tokenIcon, setTokenIcon] = useState<string>("");
@@ -61,6 +64,8 @@ export const AssetView = observer(() => {
         ? (parseFloat(totalNumber) * assetValues.diff) / 100
         : -(parseFloat(totalNumber) * assetValues.diff) / 100;
   }
+
+  const sendDisabled = accountInfo.txTypeInProgress === "send";
 
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
@@ -143,20 +148,24 @@ export const AssetView = observer(() => {
           </ButtonV2>
           <ButtonV2
             styleProps={{
-              cursor: "pointer",
+              cursor: sendDisabled ? "not-allowed" : "pointer",
               display: "flex",
               alignItems: "center",
               gap: "4px",
               justifyContent: "center",
             }}
-            onClick={() => navigate("/send")}
+            onClick={!sendDisabled ? () => navigate("/send") : () => {}}
             text={"Send"}
           >
-            <img
-              className={style["img"]}
-              src={require("@assets/svg/wireframe/arrow-up-gradient.svg")}
-              alt=""
-            />
+            {sendDisabled ? (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            ) : (
+              <img
+                className={style["img"]}
+                src={require("@assets/svg/wireframe/arrow-up-gradient.svg")}
+                alt=""
+              />
+            )}
           </ButtonV2>
         </div>
         {tokenInfo?.coinDenom === "FET" && (

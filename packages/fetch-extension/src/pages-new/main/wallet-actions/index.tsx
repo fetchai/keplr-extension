@@ -50,7 +50,13 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               height: "60px",
               marginBottom: "6px",
             }}
+            disabled={accountInfo.txTypeInProgress === "send"}
             leftImage={require("@assets/svg/wireframe/arrow-up.svg")}
+            rightContent={
+              accountInfo.txTypeInProgress === "send" && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )
+            }
             heading={"Send"}
             onClick={() => navigate("/send")}
           />
