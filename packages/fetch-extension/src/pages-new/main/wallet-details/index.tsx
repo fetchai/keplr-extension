@@ -13,10 +13,7 @@ import { Balances } from "../balances";
 import style from "../style.module.scss";
 import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
 import { observer } from "mobx-react-lite";
-
-interface txTypes {
-  [key: string]: string;
-}
+import { txType } from "./constants";
 
 export const WalletDetailsView = observer(
   ({
@@ -74,19 +71,6 @@ export const WalletDetailsView = observer(
     ]);
     const navigate = useNavigate();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-
-    const txType: txTypes = {
-      ibcTransfer: "IBC Transfer",
-      send: "Send Transaction",
-      withdrawRewards: "Rewards withdrawl",
-      delegate: "Delegation",
-      undelegate: "Undelegation",
-      redelegate: "Redelegation",
-      govVote: "Government Vote",
-      nativeBridgeSend: "Bridging",
-      approval: "Approve txn",
-      createSecret20ViewingKey: "Secret key creation",
-    };
 
     const icnsPrimaryName = (() => {
       if (

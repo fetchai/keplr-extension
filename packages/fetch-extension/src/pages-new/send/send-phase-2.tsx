@@ -12,7 +12,6 @@ import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
 import { useLocation } from "react-router";
-import { useNotification } from "@components/notification";
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;
@@ -46,8 +45,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
       return inUsd;
     };
     const intl = useIntl();
-
-    const notification = useNotification();
 
     useEffect(() => {
       if (isFromPhase1 !== undefined) setFromPhase1(isFromPhase1);
@@ -259,17 +256,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                       });
                     },
                     onBroadcasted: () => {
-                      notification.push({
-                        type: "primary",
-                        placement: "top-center",
-                        duration: 2,
-                        content: `Transaction broadcasted`,
-                        canDelete: true,
-                        transition: {
-                          duration: 0.25,
-                        },
-                      });
-
                       analyticsStore.logEvent("Send token tx broadcasted", {
                         chainId: chainStore.current.chainId,
                         chainName: chainStore.current.chainName,
@@ -280,21 +266,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         state: { trnsxStatus: "pending", isNext: true },
                       });
                     },
-                    onFulfill: (tx: any) => {
-                      const istxnSuccess = tx.code ? false : true;
-                      notification.push({
-                        type: istxnSuccess ? "success" : "danger",
-                        placement: "top-center",
-                        duration: 5,
-                        content: istxnSuccess
-                          ? `Transaction Completed`
-                          : `Transaction Failed: ${tx.log}`,
-                        canDelete: true,
-                        transition: {
-                          duration: 0.25,
-                        },
-                      });
-
+                    onFulfill: () => {
                       navigate("/send", {
                         replace: true,
                         state: { trnsxStatus: "success", isNext: true },
