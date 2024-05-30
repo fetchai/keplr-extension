@@ -122,6 +122,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
               : ` ${total
                   .shrink(true)
                   .trim(true)
+                  .hideDenom(true)
                   .maxDecimals(6)
                   .toString()} USD`}
           </div>
