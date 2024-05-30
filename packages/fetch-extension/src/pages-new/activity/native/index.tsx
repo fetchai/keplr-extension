@@ -95,7 +95,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     activityStore.getChainId !== current.chainId;
 
   const fetchNodes = debounce(
-    async (after: any, before: any, append: boolean, isFilter?: boolean) => {
+    async (after: any, before: any, isFilter?: boolean) => {
       setIsLoading(true);
       try {
         const data = await fetchTransactions(
@@ -112,7 +112,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
           nodeMap[node.id] = node;
         });
 
-        activityStore.updateNodes({ ...nodeMap }, append);
+        activityStore.updateNodes({ ...nodeMap });
 
         console.log({ nodeMap });
 
@@ -134,9 +134,9 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
 
   useEffect(() => {
     if (accountOrChainChanged || !activityStore.getPageInfo) {
-      fetchNodes("", "", false);
+      fetchNodes("", "");
     } else {
-      fetchNodes("", activityStore.getPageInfo.startCursor, true);
+      fetchNodes("", activityStore.getPageInfo.startCursor);
     }
   }, [latestBlock]);
 
@@ -144,7 +144,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     if (pageRender) {
       setPageRender(false);
     } else {
-      fetchNodes("", "", false, true);
+      fetchNodes("", "", true);
     }
   }, [filter]);
 
@@ -152,7 +152,6 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
 
   useEffect(() => {
     if (accountOrChainChanged) {
-      activityStore.clearPendingTxn();
       activityStore.updateNodes({});
       activityStore.setPageInfo({});
       activityStore.setAddress(accountInfo.bech32Address);
@@ -165,7 +164,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
       pageName: "Transaction Tab",
     });
     setLoadingRequest(true);
-    fetchNodes(activityStore.getPageInfo.endCursor, "", true);
+    fetchNodes(activityStore.getPageInfo.endCursor, "");
   };
 
   const handleFilterChange = (selectedFilter: string[]) => {

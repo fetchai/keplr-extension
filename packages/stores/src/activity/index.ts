@@ -14,31 +14,19 @@ export class ActivityStore {
   @observable
   protected chainId: string = "";
 
-  @observable
-  protected pendingTransactions: any = {};
+  // updates or adds new nodes to the list
+  updateNodes(nodes: any) {
+    const oldNodes = Object.freeze(this.nodes);
+    const updatedNodes = { ...oldNodes, ...nodes };
+    this.setNodes(updatedNodes);
 
-  filterNewNodes(nodes: any, nodeMap: any) {
-    const alreadyVisited: any = {};
-    Object.values(nodes).map((node: any) => {
-      if (nodeMap[node.id] !== undefined) {
-        alreadyVisited[node.id] = 1;
-      }
-      nodeMap[node.id] = node;
-    });
-    if (Object.keys(alreadyVisited).length > 0)
-      this.removePendingTransactions(alreadyVisited);
+    console.log({ saved: this.nodes });
+
+    this.saveNodes();
   }
 
-  filterSavedNodes(nodes: any, nodeMap: any) {
-    Object.values(nodes).map((node: any) => {
-      if (nodeMap[node.id] === undefined) {
-        nodeMap[node.id] = node;
-      }
-    });
-  }
-
-  sortByTimeStamps(nodeMap: any) {
-    const sortedNodes = Object.values(nodeMap).sort((a: any, b: any) => {
+  getSortedNodesByTimeStamps() {
+    const sortedNodes = Object.values(this.nodes).sort((a: any, b: any) => {
       if (a.block.timestamp < b.block.timestamp) {
         return 1;
       } else if (a.block.timestamp > b.block.timestamp) {
@@ -51,25 +39,9 @@ export class ActivityStore {
     return sortedNodes;
   }
 
-  updateNodes(nodes: any, append?: boolean) {
-    const nodeMap: any = {};
-
-    this.filterNewNodes(this.pendingTransactions, nodeMap);
-    this.filterNewNodes(nodes, nodeMap);
-    if (append) {
-      this.filterSavedNodes(this.nodes, nodeMap);
-    }
-
-    const newNodes = this.sortByTimeStamps(nodeMap);
-    this.setNodes(newNodes);
-    console.log({ pending: this.pendingTransactions, saved: this.nodes });
-
-    this.saveNodes();
-  }
-
   @flow
   *saveNodes() {
-    yield this.kvStore.set<any>("extension_activity_nodes", this.nodes);
+    yield this.kvStore.set<any>(`extension_activity_nodes-${this.address}-${this.chainId}`, this.nodes);
   }
 
   @flow
@@ -87,14 +59,6 @@ export class ActivityStore {
     yield this.kvStore.set<any>("extension_activity_page_info", this.pageInfo);
   }
 
-  @flow
-  *savePendingTransactions() {
-    yield this.kvStore.set<any>(
-      "extension_activity_page_pending_transactions",
-      this.pendingTransactions
-    );
-  }
-
   getNode(id: any) {
     return this.nodes[id];
   }
@@ -107,17 +71,6 @@ export class ActivityStore {
 
   @flow
   *init() {
-    const savedNodes = yield* toGenerator(
-      this.kvStore.get<any>("extension_activity_nodes")
-    );
-    if (savedNodes !== undefined) this.nodes = savedNodes;
-
-    const savedPendingTxn = yield* toGenerator(
-      this.kvStore.get<any>("extension_activity_page_pending_transactions")
-    );
-
-    if (savedPendingTxn !== undefined)
-      this.pendingTransactions = savedPendingTxn;
 
     const savedAddress = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_address")
@@ -133,42 +86,16 @@ export class ActivityStore {
       this.kvStore.get<any>("extension_activity_page_info")
     );
     this.pageInfo = savedPageInfo;
-  }
 
-  @action
-  clearPendingTxn() {
-    this.pendingTransactions = {};
+    const savedNodes = yield* toGenerator(
+      this.kvStore.get<any>(`extension_activity_nodes-${this.address}-${this.chainId}`)
+    );
+    if (savedNodes !== undefined) this.nodes = savedNodes;
   }
 
   @action
   addNode(node: any) {
-    const nodeMap: any = {};
-
-    Object.values(this.pendingTransactions).map((item: any) => {
-      nodeMap[item.id] = item;
-    });
-
-    nodeMap[node.id] = node;
-
-    this.setPendingTransactions(nodeMap);
-    this.updateNodes({}, true);
-
-    this.savePendingTransactions();
-  }
-
-  @action
-  removePendingTransactions(alreadyVisited: any) {
-    const nodeMap: any = {};
-
-    Object.values(this.pendingTransactions).map((item: any) => {
-      if (alreadyVisited[item.id] === undefined) {
-        nodeMap[item.id] = item;
-      }
-    });
-
-    this.setPendingTransactions(nodeMap);
-    this.updateNodes({}, true);
-    this.savePendingTransactions();
+  this.updateNodes({ [node.id]: node });
   }
 
   @action
@@ -199,12 +126,6 @@ export class ActivityStore {
     this.saveChainId();
   }
 
-  @action
-  setPendingTransactions(nodes: any) {
-    this.pendingTransactions = nodes;
-    this.savePendingTransactions();
-  }
-
   get getNodes() {
     return this.nodes;
   }
@@ -221,7 +142,7 @@ export class ActivityStore {
     return this.address;
   }
 
-  get getPendingTransactions() {
-    return this.pendingTransactions;
+  get sortedNodes() {
+    return this.getSortedNodesByTimeStamps();
   }
 }
