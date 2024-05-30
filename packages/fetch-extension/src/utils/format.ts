@@ -155,3 +155,8 @@ export const getDate = (timestamp: number): string => {
   }
   return format(d, "dd MMMM yyyy");
 };
+
+export const formatPendingTxn = (amount: any) => {
+  const curr = Number(amount) * 10 ** 18;
+  return `-${curr}`;
+};
