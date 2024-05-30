@@ -53,6 +53,11 @@ export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
                   Confirmed{" ● "}
                   {moment(details.timestamp).format("hh:mm A")}
                 </div>
+              ) : node.transaction.status === "Pending" ? (
+                <div>
+                  Pending{" ● "}
+                  {moment(details.timestamp).format("hh:mm A")}
+                </div>
               ) : (
                 <div>Error</div>
               )}

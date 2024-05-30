@@ -95,7 +95,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     activityStore.getChainId !== current.chainId;
 
   const fetchNodes = debounce(
-    async (after: any, before: any, append: boolean) => {
+    async (after: any, before: any, append: boolean, isFilter?: boolean) => {
       setIsLoading(true);
       try {
         const data = await fetchTransactions(
@@ -111,11 +111,17 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
         data?.nodes.map((node: any) => {
           nodeMap[node.id] = node;
         });
-        console.log({ nodeMap });
+
         activityStore.updateNodes({ ...nodeMap }, append);
+
+        console.log({ nodeMap });
 
         if (!activityStore.getPageInfo || Object.keys(nodeMap).length > 0)
           activityStore.setPageInfo(data?.pageInfo);
+
+        if (isFilter) {
+          activityStore.setPageInfo({});
+        }
       } catch (error) {
         setIsError(true);
       }
@@ -138,14 +144,17 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     if (pageRender) {
       setPageRender(false);
     } else {
-      fetchNodes("", "", false);
+      fetchNodes("", "", false, true);
     }
   }, [filter]);
 
+  console.log({ info: activityStore.getPageInfo });
+
   useEffect(() => {
     if (accountOrChainChanged) {
+      activityStore.clearPendingTxn();
       activityStore.updateNodes({});
-      activityStore.setPageInfo(undefined);
+      activityStore.setPageInfo({});
       activityStore.setAddress(accountInfo.bech32Address);
       activityStore.setChainId(current.chainId);
     }
@@ -160,7 +169,7 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
   };
 
   const handleFilterChange = (selectedFilter: string[]) => {
-    activityStore.setPageInfo(undefined);
+    activityStore.setPageInfo({});
     setFilter(selectedFilter);
     analyticsStore.logEvent("activity_filter_click", {
       pageName: "Transaction Tab",

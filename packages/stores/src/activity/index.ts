@@ -18,13 +18,19 @@ export class ActivityStore {
   protected pendingTransactions: any = {};
 
   filterNewNodes(nodes: any, nodeMap: any) {
+    const alreadyVisited: any = {};
     Object.values(nodes).map((node: any) => {
+      if (nodeMap[node.id] !== undefined) {
+        alreadyVisited[node.id] = 1;
+      }
       nodeMap[node.id] = node;
     });
+    if (Object.keys(alreadyVisited).length > 0)
+      this.removePendingTransactions(alreadyVisited);
   }
 
-  filterSavedNodes(nodeMap: any) {
-    Object.values(this.nodes).map((node: any) => {
+  filterSavedNodes(nodes: any, nodeMap: any) {
+    Object.values(nodes).map((node: any) => {
       if (nodeMap[node.id] === undefined) {
         nodeMap[node.id] = node;
       }
@@ -48,13 +54,15 @@ export class ActivityStore {
   updateNodes(nodes: any, append?: boolean) {
     const nodeMap: any = {};
 
+    this.filterNewNodes(this.pendingTransactions, nodeMap);
     this.filterNewNodes(nodes, nodeMap);
     if (append) {
-      this.filterSavedNodes(nodeMap);
+      this.filterSavedNodes(this.nodes, nodeMap);
     }
 
     const newNodes = this.sortByTimeStamps(nodeMap);
     this.setNodes(newNodes);
+    console.log({ pending: this.pendingTransactions, saved: this.nodes });
 
     this.saveNodes();
   }
@@ -104,6 +112,13 @@ export class ActivityStore {
     );
     if (savedNodes !== undefined) this.nodes = savedNodes;
 
+    const savedPendingTxn = yield* toGenerator(
+      this.kvStore.get<any>("extension_activity_page_pending_transactions")
+    );
+
+    if (savedPendingTxn !== undefined)
+      this.pendingTransactions = savedPendingTxn;
+
     const savedAddress = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_address")
     );
@@ -114,18 +129,46 @@ export class ActivityStore {
     );
     this.chainId = savedChainId;
 
-    const pageInfo = yield* toGenerator(
+    const savedPageInfo = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_page_info")
     );
+    this.pageInfo = savedPageInfo;
+  }
 
-    this.pageInfo = pageInfo;
+  @action
+  clearPendingTxn() {
+    this.pendingTransactions = {};
   }
 
   @action
   addNode(node: any) {
-    const newNode = this.getNodes;
-    newNode[node.id] = node;
-    this.updateNodes(newNode, true);
+    const nodeMap: any = {};
+
+    Object.values(this.pendingTransactions).map((item: any) => {
+      nodeMap[item.id] = item;
+    });
+
+    nodeMap[node.id] = node;
+
+    this.setPendingTransactions(nodeMap);
+    this.updateNodes({}, true);
+
+    this.savePendingTransactions();
+  }
+
+  @action
+  removePendingTransactions(alreadyVisited: any) {
+    const nodeMap: any = {};
+
+    Object.values(this.pendingTransactions).map((item: any) => {
+      if (alreadyVisited[item.id] === undefined) {
+        nodeMap[item.id] = item;
+      }
+    });
+
+    this.setPendingTransactions(nodeMap);
+    this.updateNodes({}, true);
+    this.savePendingTransactions();
   }
 
   @action
@@ -154,6 +197,12 @@ export class ActivityStore {
   setChainId(chainId: string) {
     this.chainId = chainId;
     this.saveChainId();
+  }
+
+  @action
+  setPendingTransactions(nodes: any) {
+    this.pendingTransactions = nodes;
+    this.savePendingTransactions();
   }
 
   get getNodes() {

@@ -22,6 +22,33 @@ interface SendPhase2Props {
   setFromPhase1: any;
 }
 
+interface Node {
+  balanceOffset: string;
+  block: {
+    timestamp: string;
+    __typename: string;
+  };
+  id: string;
+  transaction: {
+    fees: string;
+    gasUsed: string;
+    id: string;
+    memo: string;
+    messages: {
+      nodes: [
+        {
+          json: string;
+          typeUrl: string;
+          __typename: string;
+        }
+      ];
+    };
+    signerAddress: string;
+    status: string;
+    timeoutHeight: "0";
+  };
+}
+
 export const SendPhase2: React.FC<SendPhase2Props> = observer(
   ({
     sendConfigs,
@@ -32,7 +59,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     configs,
     setFromPhase1,
   }) => {
-    const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
+    const {
+      chainStore,
+      accountStore,
+      priceStore,
+      analyticsStore,
+      activityStore,
+    } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
     const location = useLocation();
@@ -261,7 +294,52 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         chainName: chainStore.current.chainName,
                         feeType: sendConfigs.feeConfig.feeType,
                       });
-                      console.log(txHash.toLocaleString());
+
+                      const txId =
+                        Buffer.from(txHash)
+                          .toString("hex")
+                          .toLocaleUpperCase() + "-1-spend-0";
+
+                      console.log({ sendConfigs });
+
+                      const feeOrZero = sendConfigs.feeConfig.fee;
+
+                      const newNode: Node = {
+                        balanceOffset: `-${sendConfigs.amountConfig.amount}`,
+                        block: {
+                          timestamp: new Date().toJSON(),
+                          __typename: "Block",
+                        },
+                        id: txId,
+                        transaction: {
+                          fees: `[{"denom":"${
+                            sendConfigs.feeConfig.feeCurrency.coinDenom
+                          }","amount":"${feeOrZero
+                            .maxDecimals(6)
+                            .trim(true)
+                            .hideDenom(true)
+                            .toString()}"}]`,
+                          gasUsed: sendConfigs.gasConfig.gas,
+                          id: Buffer.from(txHash)
+                            .toString("hex")
+                            .toLocaleUpperCase(),
+                          memo: sendConfigs.memoConfig.memo,
+                          signerAddress: sendConfigs.amountConfig.sender,
+                          status: "Pending",
+                          timeoutHeight: "0",
+                          messages: {
+                            nodes: [
+                              {
+                                typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+                                json: `{"fromAddress":"${sendConfigs.amountConfig.sender}","toAddress":"${sendConfigs.recipientConfig.recipient}","amount":{"denom":"${sendConfigs.amountConfig.sendCurrency.coinMinimalDenom}","amount":"${sendConfigs.amountConfig.amount}"}}`,
+                                __typename: "Message",
+                              },
+                            ],
+                          },
+                        },
+                      };
+
+                      activityStore.addNode(newNode);
                       navigate("/send", {
                         replace: true,
                         state: { trnsxStatus: "pending", isNext: true },
