@@ -16,11 +16,8 @@ export class ActivityStore {
 
   // updates or adds new nodes to the list
   updateNodes(nodes: any) {
-    const oldNodes = Object.freeze(this.nodes);
-    const updatedNodes = { ...oldNodes, ...nodes };
+    const updatedNodes = { ...this.nodes, ...nodes };
     this.setNodes(updatedNodes);
-
-    console.log({ saved: this.nodes });
 
     this.saveNodes();
   }
@@ -41,7 +38,11 @@ export class ActivityStore {
 
   @flow
   *saveNodes() {
-    yield this.kvStore.set<any>(`extension_activity_nodes-${this.address}-${this.chainId}`, this.nodes);
+    const currNodes = Object.keys(this.nodes).length > 0 ? this.nodes : {};
+    yield this.kvStore.set<any>(
+      `extension_activity_nodes-${this.address}-${this.chainId}`,
+      currNodes
+    );
   }
 
   @flow
@@ -56,7 +57,10 @@ export class ActivityStore {
 
   @flow
   *savePageInfo() {
-    yield this.kvStore.set<any>("extension_activity_page_info", this.pageInfo);
+    yield this.kvStore.set<any>(
+      `extension_activity_page-info-${this.address}-${this.chainId}`,
+      this.pageInfo
+    );
   }
 
   getNode(id: any) {
@@ -71,7 +75,6 @@ export class ActivityStore {
 
   @flow
   *init() {
-
     const savedAddress = yield* toGenerator(
       this.kvStore.get<any>("extension_activity_address")
     );
@@ -81,21 +84,28 @@ export class ActivityStore {
       this.kvStore.get<any>("extension_activity_chain_id")
     );
     this.chainId = savedChainId;
+  }
+
+  @flow
+  *accountInit() {
+    const savedNodes = yield* toGenerator(
+      this.kvStore.get<any>(
+        `extension_activity_nodes-${this.address}-${this.chainId}`
+      )
+    );
+    this.nodes = savedNodes !== undefined ? savedNodes : {};
 
     const savedPageInfo = yield* toGenerator(
-      this.kvStore.get<any>("extension_activity_page_info")
+      this.kvStore.get<any>(
+        `extension_activity_page-info-${this.address}-${this.chainId}`
+      )
     );
     this.pageInfo = savedPageInfo;
-
-    const savedNodes = yield* toGenerator(
-      this.kvStore.get<any>(`extension_activity_nodes-${this.address}-${this.chainId}`)
-    );
-    if (savedNodes !== undefined) this.nodes = savedNodes;
   }
 
   @action
   addNode(node: any) {
-  this.updateNodes({ [node.id]: node });
+    this.updateNodes({ [node.id]: node });
   }
 
   @action

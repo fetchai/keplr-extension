@@ -94,49 +94,46 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     activityStore.getAddress !== accountInfo.bech32Address ||
     activityStore.getChainId !== current.chainId;
 
-  const fetchNodes = debounce(
-    async (after: any, before: any, isFilter?: boolean) => {
-      setIsLoading(true);
-      try {
-        const data = await fetchTransactions(
-          current.chainId,
-          accountInfo.bech32Address,
-          filter,
-          after,
-          before
-        );
+  const fetchNodes = debounce(async (after: any, before: any) => {
+    setIsLoading(true);
+    try {
+      const data = await fetchTransactions(
+        current.chainId,
+        accountInfo.bech32Address,
+        filter,
+        after,
+        before
+      );
 
-        const nodeMap: any = {};
+      const nodeMap: any = {};
 
-        data?.nodes.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
+      data?.nodes.map((node: any) => {
+        nodeMap[node.id] = node;
+      });
 
-        activityStore.updateNodes({ ...nodeMap });
+      activityStore.updateNodes({ ...nodeMap });
 
-        console.log({ nodeMap });
+      if (!activityStore.getPageInfo || Object.keys(nodeMap).length > 0)
+        activityStore.setPageInfo(data.pageInfo);
+    } catch (error) {
+      setIsError(true);
+    }
 
-        if (!activityStore.getPageInfo || Object.keys(nodeMap).length > 0)
-          activityStore.setPageInfo(data?.pageInfo);
-
-        if (isFilter) {
-          activityStore.setPageInfo({});
-        }
-      } catch (error) {
-        setIsError(true);
-      }
-
-      setLoadingRequest(false);
-      setIsLoading(false);
-    },
-    1000
-  );
+    setLoadingRequest(false);
+    setIsLoading(false);
+  }, 1000);
 
   useEffect(() => {
+    //In case of reload, this.nodes (saved nodes in the store gets lost, so for that on every render, get the address-chainId and set the saved nodes)
+    activityStore.accountInit();
+
     if (accountOrChainChanged || !activityStore.getPageInfo) {
       fetchNodes("", "");
     } else {
-      fetchNodes("", activityStore.getPageInfo.startCursor);
+      fetchNodes(
+        activityStore.getPageInfo.endCursor,
+        activityStore.getPageInfo.startCursor
+      );
     }
   }, [latestBlock]);
 
@@ -144,18 +141,16 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
     if (pageRender) {
       setPageRender(false);
     } else {
-      fetchNodes("", "", true);
+      fetchNodes("", "");
     }
   }, [filter]);
 
-  console.log({ info: activityStore.getPageInfo });
-
   useEffect(() => {
     if (accountOrChainChanged) {
-      activityStore.updateNodes({});
       activityStore.setPageInfo({});
       activityStore.setAddress(accountInfo.bech32Address);
       activityStore.setChainId(current.chainId);
+      activityStore.accountInit();
     }
   }, []);
 
@@ -269,7 +264,13 @@ export const NativeTab = observer(({ latestBlock }: { latestBlock: any }) => {
             )
           ).length > 0 ? (
           <React.Fragment>
-            {renderNodes(activityStore.getNodes)}
+            {renderNodes(
+              activityStore.sortedNodes.filter((node: any) =>
+                processFilters(filter).includes(
+                  node.transaction.messages.nodes[0].typeUrl
+                )
+              )
+            )}
             {activityStore.getPageInfo?.hasNextPage && (
               <ButtonV2
                 text={
