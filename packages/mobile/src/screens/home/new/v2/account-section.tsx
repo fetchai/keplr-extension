@@ -44,6 +44,7 @@ import { StakeIcon } from "components/new/icon/stake-icon";
 import { ClaimRewardsModal } from "components/new/claim-reward-model";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 import { Dec } from "@keplr-wallet/unit";
+import { TxnStatus } from "components/new/txn-status.tsx";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -143,19 +144,19 @@ export const AccountSection: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
-      setloadingClaimButtom(false);
-      setClaimModel(false);
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
+            setloadingClaimButtom(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
               pageName: "Home",
             });
+            setClaimModel(false);
             setTxnHash(Buffer.from(txHash).toString("hex"));
             setOpenModal(true);
           },
@@ -181,6 +182,7 @@ export const AccountSection: FunctionComponent<{
       smartNavigation.navigateSmart("Home", {});
     } finally {
       setloadingClaimButtom(false);
+      setClaimModel(false);
     }
   }
 
@@ -346,6 +348,12 @@ export const AccountSection: FunctionComponent<{
           </LinearGradient>
         </TouchableOpacity>
       ) : null}
+      {account.txTypeInProgress && (
+        <TxnStatus
+          txnType={account.txTypeInProgress}
+          containerStyle={style.flatten(["margin-top-12"]) as ViewStyle}
+        />
+      )}
       <View style={style.flatten(["items-center"]) as ViewStyle}>
         <View
           style={

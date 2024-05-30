@@ -18,6 +18,7 @@ import { shortenNumber } from "utils/format/format";
 import { STAKE_VALIDATOR_URL } from "../../../../config";
 import { SortIcon } from "components/new/icon/sort";
 import { SelectorModal } from "components/new/selector-model/selector";
+import { CheckIcon } from "components/new/icon/check";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -293,27 +294,37 @@ const ValidatorItem: FunctionComponent<{
           thumbnailUrl={bondedValidators.getValidatorThumbnail(
             validator.operator_address
           )}
-          trailingIcon={<ChevronRightIcon />}
+          trailingIcon={
+            selectedValidator == validatorAddress ? (
+              <CheckIcon color="white" />
+            ) : (
+              <ChevronRightIcon />
+            )
+          }
           delegated={shortenNumber(validator.delegator_shares)}
           commission={commisionRate}
           status={status}
           apr={`${APR.maxDecimals(2).trim(true).toString()}%`}
-          onPress={() => {
-            if (prevSelectedValidator) {
-              smartNavigation.navigateSmart;
-              smartNavigation.navigate("SelectorValidator.Details", {
-                prevSelectedValidator: prevSelectValidatorAdress,
-                validatorAddress: validatorAddress,
-              });
-            } else {
-              analyticsStore.logEvent("stake_validator_click", {
-                pageName: "Validator Detail",
-              });
-              smartNavigation.navigateSmart("NewValidator.Details", {
-                validatorAddress,
-              });
-            }
-          }}
+          onPress={
+            !(selectedValidator == validatorAddress)
+              ? () => {
+                  if (prevSelectedValidator) {
+                    smartNavigation.navigateSmart;
+                    smartNavigation.navigate("SelectorValidator.Details", {
+                      prevSelectedValidator: prevSelectValidatorAdress,
+                      validatorAddress: validatorAddress,
+                    });
+                  } else {
+                    analyticsStore.logEvent("stake_validator_click", {
+                      pageName: "Validator Detail",
+                    });
+                    smartNavigation.navigateSmart("NewValidator.Details", {
+                      validatorAddress,
+                    });
+                  }
+                }
+              : undefined
+          }
           onExplorerPress={() => {
             smartNavigation.navigateSmart("WebView", {
               url: `${

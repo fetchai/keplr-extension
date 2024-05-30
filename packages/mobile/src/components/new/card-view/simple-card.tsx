@@ -15,8 +15,8 @@ export const SimpleCardView: FunctionComponent<{
   headingMode?: HeadingMode;
   subHeading?: string;
   cardStyle?: ViewStyle;
-  leadingIcon?: ViewStyle;
-  trailingIcon?: ViewStyle;
+  leadingIconStyle?: ViewStyle;
+  trailingIconStyle?: ViewStyle;
   text?: string;
   backgroundBlur?: boolean;
 }> = ({
@@ -29,8 +29,8 @@ export const SimpleCardView: FunctionComponent<{
   backgroundBlur = true,
   subHeading,
   cardStyle,
-  leadingIcon,
-  trailingIcon,
+  leadingIconStyle,
+  trailingIconStyle,
 }) => {
   const style = useStyle();
 
@@ -71,7 +71,7 @@ export const SimpleCardView: FunctionComponent<{
             style={
               [
                 style.flatten(["items-start", "margin-right-12"]),
-                leadingIcon,
+                leadingIconStyle,
               ] as ViewStyle
             }
           >
@@ -83,12 +83,7 @@ export const SimpleCardView: FunctionComponent<{
             <Text
               style={
                 [
-                  style.flatten([
-                    "h6",
-                    "padding-4",
-                    "color-white",
-                    "font-normal",
-                  ]),
+                  style.flatten(["h6", "color-white", "font-normal"]),
                   headingStyle,
                 ] as ViewStyle
               }
@@ -125,7 +120,7 @@ export const SimpleCardView: FunctionComponent<{
             style={
               [
                 style.flatten(["flex-1", "items-end"]),
-                trailingIcon,
+                trailingIconStyle,
               ] as ViewStyle
             }
           >

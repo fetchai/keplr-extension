@@ -120,7 +120,8 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
           style.flatten([
             "h1",
             "color-white",
-            "margin-y-10",
+            "margin-top-16",
+            "margin-bottom-14",
             "font-normal",
           ]) as ViewStyle
         }

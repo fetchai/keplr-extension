@@ -22,6 +22,7 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
+import { txType } from "components/new/txn-status.tsx";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -102,6 +103,13 @@ export const SendPhase2: FunctionComponent<{
       Toast.show({
         type: "error",
         text1: "No internet connection",
+      });
+      return;
+    }
+    if (account.txTypeInProgress === "send") {
+      Toast.show({
+        type: "error",
+        text1: `${txType[account.txTypeInProgress]} in progress`,
       });
       return;
     }

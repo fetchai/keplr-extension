@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
-import { Text, View, ViewStyle } from "react-native";
+import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Staking } from "@keplr-wallet/stores";
 import { ValidatorThumbnail } from "components/thumbnail";
@@ -64,174 +64,183 @@ export const DelegationsCard: FunctionComponent<{
 
   return (
     <React.Fragment>
-      {delegations.map((del) => {
-        const val = validatorsMap.get(del.delegation.validator_address);
-        if (!val) {
-          return null;
-        }
+      {delegations.length > 0 ? (
+        delegations.map((del) => {
+          const val = validatorsMap.get(del.delegation.validator_address);
+          if (!val) {
+            return null;
+          }
 
-        const thumbnail =
-          bondedValidators.getValidatorThumbnail(val.operator_address) ||
-          unbondingValidators.getValidatorThumbnail(val.operator_address) ||
-          unbondedValidators.getValidatorThumbnail(val.operator_address);
+          const thumbnail =
+            bondedValidators.getValidatorThumbnail(val.operator_address) ||
+            unbondingValidators.getValidatorThumbnail(val.operator_address) ||
+            unbondedValidators.getValidatorThumbnail(val.operator_address);
 
-        const amount = queryDelegations.getDelegationTo(val.operator_address);
-        const amountUSD = priceStore.calculatePrice(
-          amount.maxDecimals(5).trim(true).shrink(true)
-        );
-        const reward = queries.cosmos.queryRewards
-          .getQueryBech32Address(account.bech32Address)
-          .getStakableRewardOf(val.operator_address);
+          const amount = queryDelegations.getDelegationTo(val.operator_address);
+          const amountUSD = priceStore.calculatePrice(
+            amount.maxDecimals(5).trim(true).shrink(true)
+          );
+          const reward = queries.cosmos.queryRewards
+            .getQueryBech32Address(account.bech32Address)
+            .getStakableRewardOf(val.operator_address);
 
-        const inflation = queries.cosmos.queryInflation;
-        const { inflation: ARR } = inflation;
-        const validatorCom: any = parseFloat(
-          val?.commission.commission_rates.rate || "0"
-        );
-        const APR = ARR.mul(new Dec(1 - validatorCom));
-        return (
-          <BlurBackground
-            key={del.delegation.validator_address}
-            borderRadius={12}
-            blurIntensity={20}
-            containerStyle={
-              [
-                style.flatten(["padding-18", "flex-row"]),
-                containerStyle,
-              ] as ViewStyle
-            }
-            onPress={() => {
-              analyticsStore.logEvent("stake_validator_click", {
-                pageName: "Stake",
-              });
-              navigation.navigate("Others", {
-                screen: "NewValidator.Details",
-                params: {
-                  validatorAddress: del.delegation.validator_address,
-                },
-              });
-            }}
-          >
-            <View
-              style={
-                style.flatten([
-                  "width-32",
-                  "margin-right-10",
-                  "margin-top-6",
-                ]) as ViewStyle
+          const inflation = queries.cosmos.queryInflation;
+          const { inflation: ARR } = inflation;
+          const validatorCom: any = parseFloat(
+            val?.commission.commission_rates.rate || "0"
+          );
+          const APR = ARR.mul(new Dec(1 - validatorCom));
+          return (
+            <BlurBackground
+              key={del.delegation.validator_address}
+              borderRadius={12}
+              blurIntensity={20}
+              containerStyle={
+                [
+                  style.flatten(["padding-18", "flex-row"]),
+                  containerStyle,
+                ] as ViewStyle
               }
+              onPress={() => {
+                analyticsStore.logEvent("stake_validator_click", {
+                  pageName: "Stake",
+                });
+                navigation.navigate("Others", {
+                  screen: "NewValidator.Details",
+                  params: {
+                    validatorAddress: del.delegation.validator_address,
+                  },
+                });
+              }}
             >
-              <ValidatorThumbnail size={32} url={thumbnail} />
-            </View>
-            <View style={style.flatten(["flex-1"])}>
-              <View style={style.flatten(["flex-row", "items-center"])}>
-                <View style={style.flatten(["flex-1"])}>
-                  <Text
-                    style={
-                      style.flatten([
-                        "body3",
-                        "color-white",
-                        "margin-bottom-2",
-                      ]) as ViewStyle
-                    }
-                  >
-                    {val.description.moniker.trim()}
-                  </Text>
-                  <Text
-                    style={
-                      style.flatten([
-                        "body3",
-                        "color-white@60%",
-                        "font-medium",
-                      ]) as ViewStyle
-                    }
-                  >
-                    {amount.maxDecimals(4).trim(true).shrink(true).toString()}
-                  </Text>
-                </View>
-                <View style={style.flatten(["items-end"])}>
-                  {amountUSD ? (
-                    <View style={style.flatten(["flex-row"]) as ViewStyle}>
-                      <Text
-                        style={
-                          style.flatten([
-                            "body3",
-                            "color-white",
-                            "margin-right-2",
-                          ]) as ViewStyle
-                        }
-                      >
-                        {amountUSD
-                          .shrink(true)
-                          .maxDecimals(6)
-                          .trim(true)
-                          .toString()}
-                      </Text>
-                      <Text
-                        style={
-                          style.flatten([
-                            "body3",
-                            "color-white@60%",
-                          ]) as ViewStyle
-                        }
-                      >
-                        {priceStore.defaultVsCurrency.toUpperCase()}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
               <View
                 style={
                   style.flatten([
-                    "height-1",
-                    "background-color-white@20%",
-                    "margin-y-10",
+                    "width-32",
+                    "margin-right-10",
+                    "margin-top-6",
                   ]) as ViewStyle
                 }
-              />
-              <View style={style.flatten(["flex-row", "items-center"])}>
-                <Text
+              >
+                <ValidatorThumbnail size={32} url={thumbnail} />
+              </View>
+              <View style={style.flatten(["flex-1"])}>
+                <View style={style.flatten(["flex-row", "items-center"])}>
+                  <View style={style.flatten(["flex-1"])}>
+                    <Text
+                      style={
+                        style.flatten([
+                          "body3",
+                          "color-white",
+                          "margin-bottom-2",
+                        ]) as ViewStyle
+                      }
+                    >
+                      {val.description.moniker.trim()}
+                    </Text>
+                    <Text
+                      style={
+                        style.flatten([
+                          "body3",
+                          "color-white@60%",
+                          "font-medium",
+                        ]) as ViewStyle
+                      }
+                    >
+                      {amount.maxDecimals(4).trim(true).shrink(true).toString()}
+                    </Text>
+                  </View>
+                  <View style={style.flatten(["items-end"])}>
+                    {amountUSD ? (
+                      <View style={style.flatten(["flex-row"]) as ViewStyle}>
+                        <Text
+                          style={
+                            style.flatten([
+                              "body3",
+                              "color-white",
+                              "margin-right-2",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {amountUSD
+                            .shrink(true)
+                            .maxDecimals(6)
+                            .trim(true)
+                            .toString()}
+                        </Text>
+                        <Text
+                          style={
+                            style.flatten([
+                              "body3",
+                              "color-white@60%",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {priceStore.defaultVsCurrency.toUpperCase()}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
+                <View
                   style={
                     style.flatten([
-                      "flex-1",
-                      "text-caption2",
-                      "color-white@60%",
+                      "height-1",
+                      "background-color-white@20%",
+                      "margin-y-10",
                     ]) as ViewStyle
                   }
-                >
-                  {`${APR.maxDecimals(2).trim(true).toString()}% APR`}
-                </Text>
-                <View
-                  style={style.flatten(["flex-row", "items-end"]) as ViewStyle}
-                >
+                />
+                <View style={style.flatten(["flex-row", "items-center"])}>
                   <Text
                     style={
                       style.flatten([
-                        "text-caption2",
-                        "color-white",
-                      ]) as ViewStyle
-                    }
-                  >
-                    {reward.maxDecimals(6).trim(true).shrink(true).toString()}
-                  </Text>
-                  <Text
-                    style={
-                      style.flatten([
+                        "flex-1",
                         "text-caption2",
                         "color-white@60%",
-                        "margin-left-2",
                       ]) as ViewStyle
                     }
                   >
-                    Earned
+                    {`${APR.maxDecimals(2).trim(true).toString()}% APR`}
                   </Text>
+                  <View
+                    style={
+                      style.flatten(["flex-row", "items-end"]) as ViewStyle
+                    }
+                  >
+                    <Text
+                      style={
+                        style.flatten([
+                          "text-caption2",
+                          "color-white",
+                        ]) as ViewStyle
+                      }
+                    >
+                      {reward.maxDecimals(6).trim(true).shrink(true).toString()}
+                    </Text>
+                    <Text
+                      style={
+                        style.flatten([
+                          "text-caption2",
+                          "color-white@60%",
+                          "margin-left-2",
+                        ]) as ViewStyle
+                      }
+                    >
+                      Earned
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          </BlurBackground>
-        );
-      })}
+            </BlurBackground>
+          );
+        })
+      ) : (
+        <ActivityIndicator
+          size="large"
+          color={style.get("color-white").color}
+        />
+      )}
     </React.Fragment>
   );
 });

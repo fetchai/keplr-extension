@@ -12,6 +12,8 @@ import { Dec } from "@keplr-wallet/unit";
 import { Button } from "components/button";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { UnbondingCard } from "./unbonding-card";
+import Toast from "react-native-toast-message";
+import { txType } from "components/new/txn-status.tsx";
 
 export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -89,6 +91,17 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                 analyticsStore.logEvent("redelegate_click", {
                   pageName: "Validator Detail",
                 });
+                if (
+                  account.txTypeInProgress === "undelegate" ||
+                  account.txTypeInProgress === "redelegate" ||
+                  account.txTypeInProgress === "delegate"
+                ) {
+                  Toast.show({
+                    type: "error",
+                    text1: `${txType[account.txTypeInProgress]} in progress`,
+                  });
+                  return;
+                }
                 smartNavigation.navigateSmart("NewRedelegate", {
                   validatorAddress,
                 });
@@ -105,6 +118,17 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                 analyticsStore.logEvent("stake_more_click", {
                   pageName: "Validator Detail",
                 });
+                if (
+                  account.txTypeInProgress === "undelegate" ||
+                  account.txTypeInProgress === "redelegate" ||
+                  account.txTypeInProgress === "delegate"
+                ) {
+                  Toast.show({
+                    type: "error",
+                    text1: `${txType[account.txTypeInProgress]} in progress`,
+                  });
+                  return;
+                }
                 smartNavigation.navigateSmart("NewDelegate", {
                   validatorAddress,
                 });
@@ -145,6 +169,17 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                 analyticsStore.logEvent("stake_with_validator_click", {
                   pageName: "Validator Detail",
                 });
+                if (
+                  account.txTypeInProgress === "undelegate" ||
+                  account.txTypeInProgress === "redelegate" ||
+                  account.txTypeInProgress === "delegate"
+                ) {
+                  Toast.show({
+                    type: "error",
+                    text1: `${txType[account.txTypeInProgress]} in progress`,
+                  });
+                  return;
+                }
                 smartNavigation.navigateSmart("NewDelegate", {
                   validatorAddress,
                 });

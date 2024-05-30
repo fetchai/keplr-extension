@@ -25,6 +25,7 @@ import {
 } from "@react-navigation/native";
 import { SlideDownAnimation } from "components/new/animations/slide-down";
 import { AnimatedNumber } from "components/new/animations/animated-number";
+import { txType } from "components/new/txn-status.tsx";
 
 interface ClaimData {
   reward: string;
@@ -54,6 +55,12 @@ export const MyRewardCard: FunctionComponent<{
     queries.cosmos.queryRewards.getQueryBech32Address(
       account.bech32Address
     ).stakableReward;
+
+  const queryDelegations =
+    queries.cosmos.queryDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
+  const delegations = queryDelegations.delegations;
 
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -109,13 +116,13 @@ export const MyRewardCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
-      setClaimModel(false);
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
+            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -138,6 +145,7 @@ export const MyRewardCard: FunctionComponent<{
       });
       smartNavigation.navigateSmart("Home", {});
     } finally {
+      setClaimModel(false);
       setIsSendingTx(false);
     }
   };
@@ -229,6 +237,13 @@ export const MyRewardCard: FunctionComponent<{
               analyticsStore.logEvent("claim_all_staking_reward_click", {
                 pageName: "Stake",
               });
+              if (account.txTypeInProgress === "withdrawRewards") {
+                Toast.show({
+                  type: "error",
+                  text1: `${txType[account.txTypeInProgress]} in progress`,
+                });
+                return;
+              }
               setClaimModel(true);
             }}
             disabled={
@@ -242,7 +257,8 @@ export const MyRewardCard: FunctionComponent<{
       {!(
         pendingStakableReward.toDec().equals(new Dec(0)) ||
         stakable.toDec().lte(new Dec(0)) ||
-        queryReward.pendingRewardValidatorAddresses.length === 0
+        queryReward.pendingRewardValidatorAddresses.length === 0 ||
+        delegations.length === 0
       ) ? (
         <TouchableOpacity
           onPress={() => setShowRewards(!showRewars)}
@@ -396,13 +412,13 @@ const DelegateReward: FunctionComponent = observer(() => {
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
-      setClaimModel(false);
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
+            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -425,6 +441,7 @@ const DelegateReward: FunctionComponent = observer(() => {
       });
       smartNavigation.navigateSmart("Home", {});
     } finally {
+      setClaimModel(false);
       setIsSendingTx("");
     }
   };
@@ -517,6 +534,13 @@ const DelegateReward: FunctionComponent = observer(() => {
                   analyticsStore.logEvent("claim_staking_reward_click", {
                     pageName: "Stake",
                   });
+                  if (account.txTypeInProgress === "withdrawRewards") {
+                    Toast.show({
+                      type: "error",
+                      text1: `${txType[account.txTypeInProgress]} in progress`,
+                    });
+                    return;
+                  }
                   setClaimData({
                     reward: rewards
                       .maxDecimals(10)

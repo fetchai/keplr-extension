@@ -91,13 +91,13 @@ export const PortfolioStakingCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
-      setClaimModel(false);
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
+            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -127,6 +127,7 @@ export const PortfolioStakingCard: FunctionComponent<{
       });
       smartNavigation.navigateSmart("Home", {});
     } finally {
+      setClaimModel(false);
       setIsSendingTx(false);
     }
   }

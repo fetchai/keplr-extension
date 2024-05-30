@@ -65,7 +65,10 @@ export const StakeValidatorCardView: FunctionComponent<{
   ];
 
   return (
-    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={onPress == undefined ? 1 : 0.6}
+      onPress={onPress}
+    >
       <BlurBackground
         borderRadius={12}
         blurIntensity={16}

@@ -18,6 +18,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { txType } from "components/new/txn-status.tsx";
 
 export const DelegatedCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -82,13 +83,13 @@ export const DelegatedCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
-      setClaimModel(false);
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
+            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -111,6 +112,7 @@ export const DelegatedCard: FunctionComponent<{
       console.log(e);
       smartNavigation.navigateSmart("Home", {});
     } finally {
+      setClaimModel(false);
       setIsSendingTx(false);
     }
   };
@@ -230,6 +232,17 @@ export const DelegatedCard: FunctionComponent<{
                 chainName: chainStore.current.chainName,
                 pageName: "Validator Detail",
               });
+              if (
+                account.txTypeInProgress === "undelegate" ||
+                account.txTypeInProgress === "redelegate" ||
+                account.txTypeInProgress === "delegate"
+              ) {
+                Toast.show({
+                  type: "error",
+                  text1: `${txType[account.txTypeInProgress]} in progress`,
+                });
+                return;
+              }
               smartNavigation.navigateSmart("NewUndelegate", {
                 validatorAddress,
               });
@@ -251,10 +264,17 @@ export const DelegatedCard: FunctionComponent<{
               }
               textStyle={style.flatten(["body3"]) as ViewStyle}
               onPress={() => {
-                setClaimModel(true);
                 analyticsStore.logEvent("claim_staking_reward_click", {
                   pageName: "Validator Details",
                 });
+                if (account.txTypeInProgress === "withdrawRewards") {
+                  Toast.show({
+                    type: "error",
+                    text1: `${txType[account.txTypeInProgress]} in progress`,
+                  });
+                  return;
+                }
+                setClaimModel(true);
               }}
             />
           ) : null}

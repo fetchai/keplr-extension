@@ -13,6 +13,7 @@ import { ShieldIcon } from "components/new/icon/shield";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CurrencyIcon } from "components/new/icon/currency";
 import { BranchIcon } from "components/new/icon/branch-icon";
+import { SignOutIcon } from "components/new/icon/sign-out";
 
 export const SettingScreen: FunctionComponent = observer(() => {
   const {
@@ -57,7 +58,8 @@ export const SettingScreen: FunctionComponent = observer(() => {
             "h1",
             "font-normal",
             "color-white",
-            "margin-y-16",
+            "margin-top-16",
+            "margin-bottom-20",
           ]) as ViewStyle
         }
       >
@@ -126,8 +128,23 @@ export const SettingScreen: FunctionComponent = observer(() => {
           smartNavigation.navigateSmart("Setting.Version", {});
         }}
       />
+      <SettingItem
+        label="Sign out"
+        left={<SignOutIcon size={16} />}
+        onPress={() => {
+          keyRingStore.lock();
+          smartNavigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: "Unlock",
+              },
+            ],
+          });
+        }}
+      />
       {/* Mock element for padding bottom */}
-      <View style={style.get("height-16") as ViewStyle} />
+      <View style={style.get("height-32") as ViewStyle} />
     </PageWithScrollViewInBottomTabView>
   );
 });
