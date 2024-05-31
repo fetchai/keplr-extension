@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { PageWithViewInBottomTabView } from "components/page";
 import {
   Platform,
@@ -15,6 +15,7 @@ import { FilterIcon } from "components/new/icon/filter-icon";
 import { ChatSection } from "screens/inbox/chat-section";
 import { ActivityNativeTab } from "screens/activity/activity-transaction";
 import { useStore } from "stores/index";
+import { useFocusedScreen } from "providers/focused-screen";
 
 export interface FilterItem {
   icon: ReactElement;
@@ -36,6 +37,14 @@ export const ActivityScreen = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { analyticsStore } = useStore();
+  const focusedScreen = useFocusedScreen();
+
+  /// Hide Refreshing when tab change
+  useEffect(() => {
+    if (focusedScreen.name !== "ActivityTab" && refreshing) {
+      setRefreshing(false);
+    }
+  }, [focusedScreen.name, refreshing]);
 
   return (
     <PageWithViewInBottomTabView

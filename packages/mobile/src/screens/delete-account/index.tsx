@@ -174,7 +174,6 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
                 await keyRingStore.deleteKeyRing(index, password);
                 if (keyRingStore.multiKeyStoreInfo.length === 0) {
                   await keychainStore.reset();
-
                   navigation.reset({
                     index: 0,
                     routes: [

@@ -27,6 +27,9 @@ export interface State {
 const { SmartNavigatorProvider, useSmartNavigation } =
   createSmartNavigatorProvider(
     new SmartNavigator({
+      Unlock: {
+        upperScreenName: "Unlock",
+      },
       "Register.Intro": {
         upperScreenName: "Register",
       },

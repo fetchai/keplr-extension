@@ -131,8 +131,8 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingItem
         label="Sign out"
         left={<SignOutIcon size={16} />}
-        onPress={() => {
-          keyRingStore.lock();
+        onPress={async () => {
+          await keyRingStore.lock();
           smartNavigation.reset({
             index: 0,
             routes: [

@@ -25,6 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePrevious } from "hooks/use-previous";
 import { LineGraphView } from "components/new/line-graph";
 import { useStyle } from "styles/index";
+import { useFocusedScreen } from "providers/focused-screen";
 
 export const NewHomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
@@ -47,6 +48,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const currentChainId = currentChain.chainId;
   const previousChainId = usePrevious(currentChainId);
   const chainStoreIsInitializing = chainStore.isInitializing;
+  const focusedScreen = useFocusedScreen();
   const previousChainStoreIsInitializing = usePrevious(
     chainStoreIsInitializing,
     true
@@ -125,10 +127,17 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       queries.cosmos.queryUnbondingDelegations
         .getQueryBech32Address(account.bech32Address)
         .waitFreshResponse(),
-    ]);
-
-    setRefreshing(false);
+    ]).finally(() => {
+      setRefreshing(false);
+    });
   }, [accountStore, chainStore, priceStore, queriesStore]);
+
+  /// Hide Refreshing when tab change
+  useEffect(() => {
+    if (focusedScreen.name !== "Home" && refreshing) {
+      setRefreshing(false);
+    }
+  }, [focusedScreen.name, refreshing]);
 
   return (
     <PageWithScrollViewInBottomTabView

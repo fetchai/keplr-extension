@@ -26,6 +26,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
+import { useFocusedScreen } from "providers/focused-screen";
 
 export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -57,7 +58,7 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
-
+  const focusedScreen = useFocusedScreen();
   const queryDelegations =
     queries.cosmos.queryDelegations.getQueryBech32Address(
       account.bech32Address
@@ -90,10 +91,17 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
       queries.cosmos.queryUnbondingDelegations
         .getQueryBech32Address(account.bech32Address)
         .waitFreshResponse(),
-    ]);
-
-    setRefreshing(false);
+    ]).finally(() => {
+      setRefreshing(false);
+    });
   }, [accountStore, chainStore, priceStore, queriesStore]);
+
+  /// Hide Refreshing when tab change
+  useEffect(() => {
+    if (focusedScreen.name !== "Stake" && refreshing) {
+      setRefreshing(false);
+    }
+  }, [focusedScreen.name, refreshing]);
 
   return (
     <PageWithScrollView

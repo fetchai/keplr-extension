@@ -51,7 +51,6 @@ export const SettingRemoveAccountItem: FunctionComponent<{
 
             if (keyRingStore.multiKeyStoreInfo.length === 0) {
               await keychainStore.reset();
-
               navigation.reset({
                 index: 0,
                 routes: [

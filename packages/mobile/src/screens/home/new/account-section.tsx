@@ -312,7 +312,6 @@ export const AccountSection: FunctionComponent<{ containtStyle?: ViewStyle }> =
 
               if (keyRingStore.multiKeyStoreInfo.length === 0) {
                 await keychainStore.reset();
-
                 navigation.reset({
                   index: 0,
                   routes: [
