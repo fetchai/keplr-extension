@@ -1,17 +1,12 @@
+import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { Staking } from "@keplr-wallet/stores";
 import { formatAddress, shortenNumber } from "@utils/format";
 import React from "react";
-import { useStore } from "../../../stores";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import styleValidators from "./validatordetails.module.scss";
 import { useNavigate } from "react-router";
-import { useNotification } from "@components/notification";
-
-export const URL: { [key in string]: string } = {
-  [CHAIN_ID_DORADO]: "https://explore-dorado.fetch.ai/validators",
-  [CHAIN_ID_FETCHHUB]: "https://www.mintscan.io/fetchai/validators",
-};
+import { useStore } from "../../../stores";
+import styleValidators from "./validatordetails.module.scss";
+import { VALIDATOR_URL } from "../../../config.ui.var";
 
 export const ValidatorDetails = ({
   validator,
@@ -202,7 +197,7 @@ export const ValidatorDetails = ({
         </div>
       </div>
       <a
-        href={`${URL[chainID]}/${validator.operator_address}`}
+        href={`${VALIDATOR_URL[chainID]}/${validator.operator_address}`}
         target="_blank"
         rel="noreferrer"
         style={{ fontSize: "12px" }}

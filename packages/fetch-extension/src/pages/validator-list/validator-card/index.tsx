@@ -1,17 +1,12 @@
 import { ToolTip } from "@components/tooltip";
 import { Staking } from "@keplr-wallet/stores";
+import { CoinPretty } from "@keplr-wallet/unit";
 import { formatAddress, shortenNumber } from "@utils/format";
 import React from "react";
-import styleValidators from "./validators.module.scss";
 import { useNavigate } from "react-router";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import { CoinPretty } from "@keplr-wallet/unit";
 import { useStore } from "../../../stores";
-
-export const URL: { [key in string]: string } = {
-  [CHAIN_ID_DORADO]: "https://explore-dorado.fetch.ai/validators",
-  [CHAIN_ID_FETCHHUB]: "https://www.mintscan.io/fetchai/validators",
-};
+import styleValidators from "./validators.module.scss";
+import { VALIDATOR_URL } from "../../../config.ui.var";
 
 export const ValidatorCard = ({
   validator,
@@ -72,7 +67,7 @@ export const ValidatorCard = ({
         </div>
       </div>
       <a
-        href={`${URL[chainID]}/${validator.operator_address}`}
+        href={`${VALIDATOR_URL[chainID]}/${validator.operator_address}`}
         target="_blank"
         rel="noreferrer"
         style={{ fontSize: "12px" }}
