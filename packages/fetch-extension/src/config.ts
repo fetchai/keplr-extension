@@ -2697,6 +2697,48 @@ export const EmbedChainInfos: ChainInfo[] = [
     walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
     govUrl: "https://explore-dorado.fetch.ai/proposals/",
   },
+  {
+    rpc: "https://rpc-eridanus-1.fetch.ai",
+    rest: "https://rest-eridanus-1.fetch.ai",
+    chainId: "eridanus-1",
+    chainName: "Eridanus",
+    stakeCurrency: {
+      coinDenom: "TESTASI",
+      coinMinimalDenom: "atestasi",
+      coinDecimals: 18,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("asi"),
+    currencies: [
+      {
+        coinDenom: "TESTASI",
+        coinMinimalDenom: "atestasi",
+        coinDecimals: 18,
+      },
+      {
+        coinDenom: "MOBX",
+        coinMinimalDenom: "nanomobx",
+        coinDecimals: 9,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "TESTASI",
+        coinMinimalDenom: "atestasi",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 0,
+          average: 5000000000,
+          high: 6250000000,
+        },
+      },
+    ],
+    features: ["cosmwasm"],
+    walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
+    govUrl: "https://explore-eridanus-1.fetch.ai/proposals",
+  },
 ];
 
 // The origins that are able to pass any permission that external webpages can have.
