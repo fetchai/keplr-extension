@@ -62,6 +62,7 @@ export interface ChainInfo {
   readonly beta?: boolean;
 
   readonly chainSymbolImageUrl?: string;
+  readonly hideInUI?: boolean;
 
   readonly explorerUrl?: string;
   readonly txExplorer?: {
