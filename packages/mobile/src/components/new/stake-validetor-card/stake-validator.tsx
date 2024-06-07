@@ -11,6 +11,7 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { titleCase } from "utils/format/format";
+import { VectorCharacter } from "components/vector-character";
 
 interface ItemData {
   title: string;
@@ -82,11 +83,30 @@ export const StakeValidatorCardView: FunctionComponent<{
               style.flatten(["flex-row", "flex-3", "items-center"]) as ViewStyle
             }
           >
-            <ValidatorThumbnail
-              style={style.flatten(["margin-right-12"]) as ViewStyle}
-              size={32}
-              url={thumbnailUrl}
-            />
+            {thumbnailUrl || heading === undefined ? (
+              <ValidatorThumbnail
+                style={style.flatten(["margin-right-12"]) as ViewStyle}
+                size={32}
+                url={thumbnailUrl}
+              />
+            ) : (
+              <BlurBackground
+                backgroundBlur={true}
+                blurIntensity={16}
+                containerStyle={
+                  style.flatten([
+                    "width-32",
+                    "height-32",
+                    "border-radius-64",
+                    "items-center",
+                    "justify-center",
+                    "margin-right-12",
+                  ]) as ViewStyle
+                }
+              >
+                <VectorCharacter char={heading[0]} color="white" height={12} />
+              </BlurBackground>
+            )}
             <View>
               <Text
                 style={style.flatten(["subtitle2", "color-white"]) as ViewStyle}

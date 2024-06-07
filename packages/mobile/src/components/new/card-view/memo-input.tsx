@@ -49,7 +49,7 @@ export const MemoInputView: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-x-18", "flex-row"],
+                ["padding-x-18", "padding-y-12", "flex-row"],
                 isFocused
                   ? [
                       // The order is important.
@@ -61,7 +61,7 @@ export const MemoInputView: FunctionComponent<{
                   : []
               ),
               inputcontainerStyle,
-              { paddingVertical: 9 },
+              // { paddingVertical: 9 },
             ] as ViewStyle
           }
         >

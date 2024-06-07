@@ -69,7 +69,7 @@ export const InputCardView: React.forwardRef<
         containerStyle={
           [
             style.flatten(
-              ["padding-x-18", "flex-row"],
+              ["padding-x-18", "padding-y-12", "flex-row"],
               isFocused || error
                 ? [
                     // The order is important.
@@ -83,7 +83,7 @@ export const InputCardView: React.forwardRef<
                 : []
             ),
             inputContainerStyle,
-            { paddingVertical: 9 },
+            // { paddingVertical: 9 },
           ] as ViewStyle
         }
       >

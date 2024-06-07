@@ -10,6 +10,10 @@ export const WCGoBackToBrowserModal: FunctionComponent<{
 }> = (isOpen) => {
   const style = useStyle();
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <CardModal
       isOpen={isOpen}

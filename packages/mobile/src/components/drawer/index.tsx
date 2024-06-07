@@ -21,11 +21,11 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { CheckIcon } from "components/new/icon/check";
 import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
-import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "components/new/empty";
 import { titleCase } from "utils/format/format";
 import { Button } from "components/button";
+import { InputCardView } from "components/new/card-view/input-card";
 
 export type DrawerContentProps =
   DrawerContentComponentProps<DrawerContentOptions>;
@@ -119,30 +119,16 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               />
             </View>
           </View>
-          <BlurBackground
-            borderRadius={12}
-            blurIntensity={20}
+          <InputCardView
+            placeholder="Search"
+            placeholderTextColor={"white"}
+            value={search}
+            onChangeText={(text: string) => {
+              setSearch(text);
+            }}
+            rightIcon={<SearchIcon size={12} />}
             containerStyle={style.flatten(["margin-top-24"]) as ViewStyle}
-          >
-            <TextInput
-              placeholder="Search"
-              placeholderTextColor={"white"}
-              style={style.flatten(["body3"])}
-              inputContainerStyle={
-                style.flatten([
-                  "border-width-0",
-                  "padding-x-18",
-                  "padding-y-12",
-                ]) as ViewStyle
-              }
-              value={search}
-              onChangeText={(text: string) => {
-                setSearch(text);
-              }}
-              containerStyle={style.flatten(["padding-0"]) as ViewStyle}
-              inputRight={<SearchIcon />}
-            />
-          </BlurBackground>
+          />
           <Button
             containerStyle={
               style.flatten([

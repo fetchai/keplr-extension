@@ -11,6 +11,7 @@ import { useRoute } from "@react-navigation/native";
 import { HeaderLeftBackButton, HeaderLeftBackBlurButton } from "./button";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
+import { getPlatformFontFamily } from "styles/builder/utils";
 
 type HeaderBackgroundMode =
   | "gradient"
@@ -65,7 +66,11 @@ export const TransparentHeaderOptionsPreset = {
     elevation: 0,
     shadowOpacity: 0,
   },
-  headerTitleStyle: { color: "white" },
+  headerTitleStyle: {
+    color: "white",
+    fontSize: 16,
+    fontFamily: getPlatformFontFamily("400"),
+  },
   headerBackground: undefined,
   headerBackTitleVisible: false,
   // eslint-disable-next-line react/display-name
@@ -90,7 +95,11 @@ export const BlurHeaderOptionsPreset = {
     elevation: 0,
     shadowOpacity: 0,
   },
-  headerTitleStyle: { color: "white" },
+  headerTitleStyle: {
+    color: "white",
+    fontSize: 16,
+    fontFamily: getPlatformFontFamily("400"),
+  },
   headerBackground: undefined,
   headerBackTitleVisible: false,
   // eslint-disable-next-line react/display-name

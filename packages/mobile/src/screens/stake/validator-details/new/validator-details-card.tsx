@@ -10,6 +10,7 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ValidatorThumbnail } from "components/thumbnail";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { CardDivider } from "components/card";
+import { VectorCharacter } from "components/vector-character";
 
 interface ItemData {
   title: string;
@@ -119,11 +120,34 @@ export const ValidatorDetailsCard: FunctionComponent<{
               ]) as ViewStyle
             }
           >
-            <ValidatorThumbnail
-              style={style.flatten(["margin-right-10"]) as ViewStyle}
-              size={32}
-              url={thumbnail}
-            />
+            {thumbnail || validator?.description.moniker === undefined ? (
+              <ValidatorThumbnail
+                size={32}
+                url={thumbnail}
+                style={style.flatten(["margin-right-10"]) as ViewStyle}
+              />
+            ) : (
+              <BlurBackground
+                backgroundBlur={true}
+                blurIntensity={16}
+                containerStyle={
+                  style.flatten([
+                    "width-32",
+                    "height-32",
+                    "border-radius-64",
+                    "items-center",
+                    "justify-center",
+                    "margin-right-10",
+                  ]) as ViewStyle
+                }
+              >
+                <VectorCharacter
+                  char={validator.description.moniker.trim()[0]}
+                  color="white"
+                  height={12}
+                />
+              </BlurBackground>
+            )}
             <View>
               <Text
                 style={style.flatten(["subtitle2", "color-white"]) as ViewStyle}

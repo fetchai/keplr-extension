@@ -125,6 +125,7 @@ export const QuickTabOptionModel: FunctionComponent<{
       >
         <RectButton
           onPress={() => {
+            return;
             close();
             onPress(QuickTabOptions.bridge);
           }}
@@ -139,7 +140,7 @@ export const QuickTabOptionModel: FunctionComponent<{
             ]) as ViewStyle
           }
           activeOpacity={1}
-          //   underlayColor={style.flatten(["color-gray-50"]).color}
+          // underlayColor={"rgba(255,255,255,0)"}
           rippleColor={"rgba(255,255,255,0)"}
         >
           <View

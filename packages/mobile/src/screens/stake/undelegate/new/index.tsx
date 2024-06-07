@@ -161,16 +161,18 @@ export const NewUndelegateScreen: FunctionComponent = observer(() => {
     >
       <View
         style={
-          style.flatten([
-            "flex-row",
-            "items-center",
-            "border-width-1",
-            "border-color-white@20%",
-            "border-radius-12",
-            "padding-12",
-            "justify-between",
-            "margin-y-16",
-          ]) as ViewStyle
+          [
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "border-width-1",
+              "border-color-white@20%",
+              "border-radius-12",
+              "padding-12",
+              "justify-between",
+              "margin-y-16",
+            ]),
+          ] as ViewStyle
         }
       >
         <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
@@ -240,9 +242,7 @@ export const NewUndelegateScreen: FunctionComponent = observer(() => {
           <CircleExclamationIcon />
         </View>
         <Text
-          style={
-            style.flatten(["subtitle3", "color-white", "flex-1"]) as ViewStyle
-          }
+          style={style.flatten(["body3", "color-white", "flex-1"]) as ViewStyle}
         >
           Your tokens will go through a 21-day unstaking process
         </Text>

@@ -231,6 +231,10 @@ export const LedgerGranterModal: FunctionComponent<{
     }
   };
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <CardModal
       isOpen={isOpen}

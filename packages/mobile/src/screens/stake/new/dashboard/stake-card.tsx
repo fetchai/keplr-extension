@@ -8,6 +8,7 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
 import { separateNumericAndDenom } from "utils/format/format";
 import { observer } from "mobx-react-lite";
+import { AnimatedNumber } from "components/new/animations/animated-number";
 
 export const StakeCard: FunctionComponent = observer(() => {
   const style = useStyle();
@@ -78,20 +79,21 @@ export const StakeCard: FunctionComponent = observer(() => {
     {
       color: "#F9774B",
       value: rewardsPercentage,
-      focused: Math.round(rewardsPercentage) > 0,
+      focused:
+        Math.round(stakablePercentage) == 0 &&
+        Math.round(rewardsPercentage) > 0,
     },
 
     {
       color: "#5F38FB",
       value: stakedPercentage,
-      focused:
-        Math.round(stakablePercentage) == 0 && Math.round(stakedPercentage) > 0,
+      focused: Math.round(stakedPercentage) > 0,
     },
     {
       color: "#CFC3FE",
       value: stakablePercentage,
       focused:
-        Math.round(stakablePercentage) == 0 &&
+        Math.round(rewardsPercentage) == 0 &&
         Math.round(stakedPercentage) == 0 &&
         Math.round(stakablePercentage) > 0,
     },
@@ -118,18 +120,57 @@ export const StakeCard: FunctionComponent = observer(() => {
           {renderLine("#CFC3FE")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "color-white@60%",
+                  "body3",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
             >
               Available
             </Text>
-            <Text
-              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
-            >
-              {`${parseFloat(stakableBalNumber).toFixed(2)} ${stakableDenom}`}
-              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`  (${stakablePercentage.toFixed(2)}%)`}
+            <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
+              <AnimatedNumber
+                numberForAnimated={parseFloat(stakableBalNumber).toFixed(2)}
+                includeComma={true}
+                decimalAmount={2}
+                gap={0}
+                colorValue={"white"}
+                fontSizeValue={16}
+                fontWeight="500"
+                hookName={"withTiming"}
+                withTimingProps={{
+                  durationValue: 1000,
+                  easingValue: "linear",
+                }}
+                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
+              />
+              <Text
+                style={
+                  [
+                    style.flatten([
+                      "color-white",
+                      "subtitle2",
+                      "margin-right-4",
+                    ]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`${stakableDenom}`}
               </Text>
-            </Text>
+              <Text
+                style={
+                  [
+                    style.flatten(["color-white@60%", "subtitle2"]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`(${stakablePercentage.toFixed(2)}%)`}
+              </Text>
+            </View>
             {priceStore.calculatePrice(stakable)?.toString() ? (
               <Text
                 style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
@@ -143,18 +184,58 @@ export const StakeCard: FunctionComponent = observer(() => {
           {renderLine("#5F38FB")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "color-white@60%",
+                  "body3",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
             >
               Staked
             </Text>
-            <Text
-              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
-            >
-              {`${parseFloat(stakedBalNumber).toFixed(2)} ${stakedDenom}`}
-              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`  (${stakedPercentage.toFixed(2)}%)`}
+            <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
+              <AnimatedNumber
+                numberForAnimated={parseFloat(stakedBalNumber).toFixed(2)}
+                includeComma={true}
+                decimalAmount={2}
+                gap={0}
+                colorValue={"white"}
+                fontSizeValue={16}
+                fontWeight="500"
+                hookName={"withTiming"}
+                withTimingProps={{
+                  durationValue: 1000,
+                  easingValue: "linear",
+                }}
+                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
+              />
+              <Text
+                style={
+                  [
+                    style.flatten([
+                      "color-white",
+                      "subtitle2",
+                      "margin-right-4",
+                    ]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`${stakedDenom}`}
               </Text>
-            </Text>
+              <Text
+                style={
+                  [
+                    style.flatten(["color-white@60%", "subtitle2"]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`(${stakedPercentage.toFixed(2)}%)`}
+              </Text>
+            </View>
+
             {priceStore.calculatePrice(stakedSum)?.toString() ? (
               <Text
                 style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
@@ -168,18 +249,65 @@ export const StakeCard: FunctionComponent = observer(() => {
           {renderLine("#F9774B")}
           <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
             <Text
-              style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "color-white@60%",
+                  "body3",
+                  "margin-bottom-4",
+                ]) as ViewStyle
+              }
             >
               Staking rewards
             </Text>
-            <Text
-              style={style.flatten(["color-white", "subtitle1"]) as ViewStyle}
+            <View
+              style={
+                style.flatten([
+                  "flex-row",
+                  "flex-wrap",
+                  "items-center",
+                ]) as ViewStyle
+              }
             >
-              {`${parseFloat(rewardsBalNumber).toFixed(2)} ${rewardDenom}`}
-              <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
-                {`  (${rewardsPercentage.toFixed(2)}%)`}
+              <AnimatedNumber
+                numberForAnimated={parseFloat(rewardsBalNumber).toFixed(2)}
+                includeComma={true}
+                decimalAmount={2}
+                gap={0}
+                colorValue={"white"}
+                fontSizeValue={16}
+                fontWeight="500"
+                hookName={"withTiming"}
+                withTimingProps={{
+                  durationValue: 1000,
+                  easingValue: "linear",
+                }}
+                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
+              />
+              <Text
+                style={
+                  [
+                    style.flatten([
+                      "color-white",
+                      "subtitle2",
+                      "margin-right-4",
+                    ]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`${rewardDenom}`}
               </Text>
-            </Text>
+              <Text
+                style={
+                  [
+                    style.flatten(["color-white@60%", "subtitle2"]),
+                    { lineHeight: 18 },
+                  ] as ViewStyle
+                }
+              >
+                {`(${rewardsPercentage.toFixed(2)}%)`}
+              </Text>
+            </View>
             {priceStore.calculatePrice(stakableReward)?.toString() ? (
               <Text
                 style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}

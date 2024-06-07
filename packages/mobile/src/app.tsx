@@ -87,6 +87,7 @@ const toastConfig = {
       {...props}
       text1NumberOfLines={2}
       text2NumberOfLines={2}
+      style={{ borderLeftColor: "#69C779" }}
       renderTrailingIcon={() => (
         <View
           style={{

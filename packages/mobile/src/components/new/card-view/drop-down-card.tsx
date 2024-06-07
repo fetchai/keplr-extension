@@ -43,12 +43,14 @@ export const DropDownCardView: FunctionComponent<{
         blurIntensity={16}
         containerStyle={
           [
-            style.flatten([
-              "flex-row",
-              "padding-x-18",
-              "padding-y-12",
-              "items-center",
-            ]),
+            [
+              style.flatten([
+                "flex-row",
+                "padding-x-18",
+                "padding-y-12",
+                "items-center",
+              ]),
+            ],
             containerStyle,
           ] as ViewStyle
         }

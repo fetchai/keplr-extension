@@ -5,11 +5,9 @@ import { PageWithSectionList } from "components/page";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Staking } from "@keplr-wallet/stores";
 import { useStyle } from "styles/index";
-import { TextInput } from "components/input";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { Dec } from "@keplr-wallet/unit";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { BlurBackground } from "components/new/blur-background/blur-background";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "components/new/empty";
 import { StakeValidatorCardView } from "components/new/stake-validetor-card/stake-validator";
@@ -19,6 +17,7 @@ import { STAKE_VALIDATOR_URL } from "../../../../config";
 import { SortIcon } from "components/new/icon/sort";
 import { SelectorModal } from "components/new/selector-model/selector";
 import { CheckIcon } from "components/new/icon/check";
+import { InputCardView } from "components/new/card-view/input-card";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -151,26 +150,15 @@ export const NewValidatorListScreen: FunctionComponent = observer(() => {
           return (
             <React.Fragment>
               <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
-                <BlurBackground borderRadius={12} blurIntensity={20}>
-                  <TextInput
-                    placeholder="Search"
-                    placeholderTextColor={"white"}
-                    style={style.flatten(["body3"]) as ViewStyle}
-                    value={search}
-                    inputContainerStyle={
-                      style.flatten([
-                        "border-width-0",
-                        "padding-x-18",
-                        "padding-y-10",
-                      ]) as ViewStyle
-                    }
-                    onChangeText={(text) => {
-                      setSearch(text);
-                    }}
-                    containerStyle={style.flatten(["padding-0"]) as ViewStyle}
-                    inputRight={<SearchIcon size={12} />}
-                  />
-                </BlurBackground>
+                <InputCardView
+                  placeholder="Search"
+                  placeholderTextColor={"white"}
+                  value={search}
+                  onChangeText={(text: string) => {
+                    setSearch(text);
+                  }}
+                  rightIcon={<SearchIcon size={12} />}
+                />
               </View>
               {data.length === 0 ? (
                 <EmptyView

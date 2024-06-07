@@ -18,6 +18,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StakeCard } from "screens/stake/new/dashboard/stake-card";
+import { txType } from "components/new/txn-status.tsx";
 
 export const PortfolioStakingCard: FunctionComponent<{
   cardStyle?: ViewStyle;
@@ -91,13 +92,17 @@ export const PortfolioStakingCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
+      setClaimModel(false);
+      Toast.show({
+        type: "success",
+        text1: "claim in process",
+      });
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
-            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -170,11 +175,19 @@ export const PortfolioStakingCard: FunctionComponent<{
           textStyle={style.flatten(["body3"]) as ViewStyle}
           rippleColor="black@50%"
           onPress={() => {
+            if (accountInfo.txTypeInProgress === "withdrawRewards") {
+              Toast.show({
+                type: "error",
+                text1: `${txType[accountInfo.txTypeInProgress]} in progress`,
+              });
+              return;
+            }
             setClaimModel(true);
             analyticsStore.logEvent("claim_all_staking_reward_click", {
               pageName: "Portfolio",
             });
           }}
+          loading={isSendingTx}
         />
       ) : null}
       <TransactionModal

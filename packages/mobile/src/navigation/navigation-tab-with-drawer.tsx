@@ -314,11 +314,6 @@ export const MainTabNavigation: FunctionComponent = () => {
               });
 
             case QuickTabOptions.bridge:
-              Toast.show({
-                type: "success",
-                text1: "Coming soon",
-                visibilityTime: 3000,
-              });
               break;
           }
         }}

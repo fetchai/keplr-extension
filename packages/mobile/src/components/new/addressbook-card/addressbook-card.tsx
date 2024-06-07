@@ -3,14 +3,13 @@ import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
-import { BlurBackground } from "components/new/blur-background/blur-background";
 import { AddressBookConfig } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "../empty";
 import { useStore } from "stores/index";
 import { Button } from "components/button";
+import { InputCardView } from "../card-view/input-card";
 
 export const AddressBookCardModel: FunctionComponent<{
   hideCurrentAddress?: boolean;
@@ -65,25 +64,16 @@ export const AddressBookCardModel: FunctionComponent<{
           close();
         }}
       >
-        <BlurBackground borderRadius={12} blurIntensity={15}>
-          <TextInput
-            placeholder="Search"
-            placeholderTextColor={"white"}
-            style={style.flatten(["body3"])}
-            inputContainerStyle={
-              style.flatten([
-                "border-width-0",
-                "padding-x-18",
-                "padding-y-12",
-              ]) as ViewStyle
-            }
-            onChangeText={(text) => {
-              setSearch(text);
-            }}
-            containerStyle={style.flatten(["padding-0"]) as ViewStyle}
-            inputRight={<SearchIcon />}
-          />
-        </BlurBackground>
+        <InputCardView
+          placeholder="Search"
+          placeholderTextColor={"white"}
+          value={search}
+          onChangeText={(text: string) => {
+            setSearch(text);
+          }}
+          rightIcon={<SearchIcon size={12} />}
+          containerStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
+        />
         {filterAddressBook.length > 0 ? (
           <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
             {filterAddressBook.map((data, i) => {

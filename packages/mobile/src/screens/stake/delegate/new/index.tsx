@@ -24,6 +24,7 @@ import { UseMaxButton } from "components/new/button/use-max-button";
 import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
 import { TransactionModal } from "modals/transaction";
+import { VectorCharacter } from "components/vector-character";
 
 interface ItemData {
   title: string;
@@ -222,11 +223,35 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          <ValidatorThumbnail
-            style={style.flatten(["margin-right-8"]) as ViewStyle}
-            size={32}
-            url={thumbnail}
-          />
+          {thumbnail || validator?.description.moniker === undefined ? (
+            <ValidatorThumbnail
+              size={32}
+              url={thumbnail}
+              style={style.flatten(["margin-right-8"]) as ViewStyle}
+            />
+          ) : (
+            <BlurBackground
+              backgroundBlur={true}
+              blurIntensity={16}
+              containerStyle={
+                style.flatten([
+                  "width-32",
+                  "height-32",
+                  "border-radius-64",
+                  "items-center",
+                  "justify-center",
+                  "margin-right-8",
+                ]) as ViewStyle
+              }
+            >
+              <VectorCharacter
+                char={validator.description.moniker.trim()[0]}
+                color="white"
+                height={12}
+              />
+            </BlurBackground>
+          )}
+
           <Text style={style.flatten(["body3", "color-white"]) as ViewStyle}>
             {validator?.description.moniker?.trim()}
           </Text>
@@ -325,9 +350,7 @@ export const NewDelegateScreen: FunctionComponent = observer(() => {
           <CircleExclamationIcon />
         </View>
         <Text
-          style={
-            style.flatten(["subtitle3", "color-white", "flex-1"]) as ViewStyle
-          }
+          style={style.flatten(["body3", "color-white", "flex-1"]) as ViewStyle}
         >
           When you decide to unstake, your assets will be locked 21 days to be
           liquid again

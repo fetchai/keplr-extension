@@ -19,10 +19,10 @@ import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { PageWithScrollView } from "components/page";
-import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "components/new/empty";
 import { titleCase } from "utils/format/format";
+import { InputCardView } from "components/new/card-view/input-card";
 
 export const SettingChainListScreen: FunctionComponent = observer(() => {
   const { chainStore } = useStore();
@@ -120,30 +120,16 @@ export const SettingChainListScreen: FunctionComponent = observer(() => {
           value={isEnabled}
         />
       </View>
-      <BlurBackground
-        borderRadius={12}
-        blurIntensity={20}
+      <InputCardView
+        placeholder="Search"
+        placeholderTextColor={"white"}
+        value={search}
+        onChangeText={(text: string) => {
+          setSearch(text);
+        }}
+        rightIcon={<SearchIcon size={12} />}
         containerStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
-      >
-        <TextInput
-          placeholder="Search"
-          placeholderTextColor={"white"}
-          style={style.flatten(["body3"]) as ViewStyle}
-          inputContainerStyle={
-            style.flatten([
-              "border-width-0",
-              "padding-x-18",
-              "padding-y-12",
-            ]) as ViewStyle
-          }
-          value={search}
-          onChangeText={(text: string) => {
-            setSearch(text);
-          }}
-          containerStyle={style.flatten(["padding-0"]) as ViewStyle}
-          inputRight={<SearchIcon />}
-        />
-      </BlurBackground>
+      />
       {/* <FlatList
         renderItem={({ item }) => <SettingChainListScreenElement {...item} />}
         keyExtractor={(item) => item.key}

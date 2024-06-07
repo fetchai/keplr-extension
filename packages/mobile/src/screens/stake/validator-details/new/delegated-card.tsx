@@ -83,13 +83,17 @@ export const DelegatedCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
+      setClaimModel(false);
+      Toast.show({
+        type: "success",
+        text1: "claim in process",
+      });
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
-            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -106,7 +110,14 @@ export const DelegatedCard: FunctionComponent<{
         chainName: chainStore.current.chainName,
         pageName: "Validator Details",
       });
-      if (e?.message === "Request rejected") {
+      if (
+        e?.message === "Request rejected" ||
+        e?.message === "Transaction rejected"
+      ) {
+        Toast.show({
+          type: "error",
+          text1: "Transaction rejected",
+        });
         return;
       }
       console.log(e);
@@ -127,7 +138,7 @@ export const DelegatedCard: FunctionComponent<{
           [
             style.flatten(["border-radius-12", "flex-row"]),
             containerStyle,
-            { padding: 2.5 },
+            { padding: 1.85 },
           ] as ViewStyle
         }
       >
@@ -225,7 +236,7 @@ export const DelegatedCard: FunctionComponent<{
                 "border-color-white@40%",
               ]) as ViewStyle
             }
-            textStyle={style.flatten(["body3", "color-gray-200"]) as ViewStyle}
+            textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
             onPress={() => {
               analyticsStore.logEvent("unstake_click", {
                 chainId: chainStore.current.chainId,
@@ -264,9 +275,6 @@ export const DelegatedCard: FunctionComponent<{
               }
               textStyle={style.flatten(["body3"]) as ViewStyle}
               onPress={() => {
-                analyticsStore.logEvent("claim_staking_reward_click", {
-                  pageName: "Validator Details",
-                });
                 if (account.txTypeInProgress === "withdrawRewards") {
                   Toast.show({
                     type: "error",
@@ -274,8 +282,12 @@ export const DelegatedCard: FunctionComponent<{
                   });
                   return;
                 }
+                analyticsStore.logEvent("claim_staking_reward_click", {
+                  pageName: "Validator Details",
+                });
                 setClaimModel(true);
               }}
+              loading={isSendingTx}
             />
           ) : null}
         </BlurBackground>

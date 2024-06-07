@@ -235,11 +235,7 @@ export const SignModal: FunctionComponent<{
   }
 
   return (
-    <CardModal
-      isOpen={isOpen}
-      title="Confirm transaction"
-      close={() => close()}
-    >
+    <CardModal isOpen={isOpen} title="Confirm transaction" close={close}>
       <TabBarView
         listItem={TransactionTabEnum}
         selected={selectedId}

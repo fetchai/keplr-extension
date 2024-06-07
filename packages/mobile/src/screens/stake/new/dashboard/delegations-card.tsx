@@ -12,6 +12,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { VectorCharacter } from "components/vector-character";
 
 export const DelegationsCard: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -122,7 +123,30 @@ export const DelegationsCard: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <ValidatorThumbnail size={32} url={thumbnail} />
+                {thumbnail || val.description.moniker === undefined ? (
+                  <ValidatorThumbnail size={32} url={thumbnail} />
+                ) : (
+                  <BlurBackground
+                    backgroundBlur={true}
+                    blurIntensity={16}
+                    containerStyle={
+                      style.flatten([
+                        "width-32",
+                        "height-32",
+                        "border-radius-64",
+                        "items-center",
+                        "justify-center",
+                        "margin-right-12",
+                      ]) as ViewStyle
+                    }
+                  >
+                    <VectorCharacter
+                      char={val.description.moniker.trim()[0]}
+                      color="white"
+                      height={12}
+                    />
+                  </BlurBackground>
+                )}
               </View>
               <View style={style.flatten(["flex-1"])}>
                 <View style={style.flatten(["flex-row", "items-center"])}>

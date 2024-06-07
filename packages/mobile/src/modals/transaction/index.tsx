@@ -52,9 +52,10 @@ export const TransactionModal: FunctionComponent<{
 
   useEffect(() => {
     const chainInfo = chainStore.getChain(chainId);
-    let txTracer: TendermintTxTracer | undefined;
-
-    txTracer = new TendermintTxTracer(chainInfo.rpc, "/websocket");
+    const txTracer: TendermintTxTracer = new TendermintTxTracer(
+      chainInfo.rpc,
+      "/websocket"
+    );
     txTracer
       .traceTx(Buffer.from(txnHash, "hex"))
       .then((tx) => {

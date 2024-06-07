@@ -171,6 +171,10 @@ export const BIP44SelectableModal: FunctionComponent<{
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <CardModal
       // isOpen={isOpen}

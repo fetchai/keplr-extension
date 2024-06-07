@@ -326,6 +326,10 @@ export const NewWalletModal: FunctionComponent<{
   ({ isOpen, onSelectGoogle, onSelectApple, onSelectNewMnemonic, close }) => {
     const style = useStyle();
 
+    if (!isOpen) {
+      return null;
+    }
+
     return (
       <CardModal
         isOpen={isOpen}
@@ -401,6 +405,10 @@ export const ImportExistingWalletModal: FunctionComponent<{
     close,
   }) => {
     const style = useStyle();
+
+    if (!isOpen) {
+      return null;
+    }
 
     return (
       <CardModal

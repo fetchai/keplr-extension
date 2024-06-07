@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ViewStyle } from "react-native";
 import { RenderNumber } from "components/new/animations/animated-number/render-number";
 import AddComma from "components/new/animations/animated-number/add-comma";
 
@@ -9,8 +9,10 @@ interface Props {
   includeComma?: boolean;
   gap?: number;
   colorValue?: string;
+  fontWeight?: string;
   fontSizeValue?: number;
   hookName: "withTiming" | "withSpring";
+  containerStyle?: ViewStyle;
   withTimingProps?: {
     durationValue?: number;
     easingValue: string;
@@ -35,6 +37,8 @@ export function AnimatedNumber({
   withSpringProps,
   colorValue,
   fontSizeValue,
+  fontWeight,
+  containerStyle,
 }: Props) {
   if (withTimingProps && withSpringProps) {
     throw new Error(
@@ -63,7 +67,9 @@ export function AnimatedNumber({
   const heightContainer = fontSizeValue! || 70;
 
   return (
-    <View style={[styles.container, { height: heightContainer }]}>
+    <View
+      style={[styles.container, { height: heightContainer }, containerStyle]}
+    >
       {numberArray.map((numberSymbol, i) => {
         const validNumber = isNaN(+numberSymbol);
         return (
@@ -76,6 +82,7 @@ export function AnimatedNumber({
                   fontSizeValue={fontSizeValue || 50}
                   numberSymbol={Number(numberSymbol)}
                   hookName={hookName}
+                  fontWeight={fontWeight}
                   listProperties={
                     hookName === "withTiming"
                       ? {

@@ -26,6 +26,7 @@ import {
 import { SlideDownAnimation } from "components/new/animations/slide-down";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 import { txType } from "components/new/txn-status.tsx";
+import { VectorCharacter } from "components/vector-character";
 
 interface ClaimData {
   reward: string;
@@ -116,13 +117,17 @@ export const MyRewardCard: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
+      setClaimModel(false);
+      Toast.show({
+        type: "success",
+        text1: "claim in process",
+      });
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
-            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -134,7 +139,14 @@ export const MyRewardCard: FunctionComponent<{
         }
       );
     } catch (e) {
-      if (e?.message === "Request rejected") {
+      if (
+        e?.message === "Request rejected" ||
+        e?.message === "Transaction rejected"
+      ) {
+        Toast.show({
+          type: "error",
+          text1: "Transaction rejected",
+        });
         return;
       }
       console.log(e);
@@ -194,7 +206,7 @@ export const MyRewardCard: FunctionComponent<{
               decimalAmount={2}
               gap={0}
               colorValue={"white"}
-              fontSizeValue={16}
+              fontSizeValue={14}
               hookName={"withTiming"}
               withTimingProps={{
                 durationValue: 1000,
@@ -204,8 +216,8 @@ export const MyRewardCard: FunctionComponent<{
             <Text
               style={
                 [
-                  style.flatten(["body2", "padding-left-4", "color-gray-300"]),
-                  { lineHeight: 18 },
+                  style.flatten(["body3", "padding-left-4", "color-gray-300"]),
+                  { lineHeight: 16 },
                 ] as ViewStyle
               }
             >
@@ -234,9 +246,6 @@ export const MyRewardCard: FunctionComponent<{
             buttonStyle={style.flatten(["padding-x-4"]) as ViewStyle}
             textStyle={style.flatten(["body3"]) as ViewStyle}
             onPress={() => {
-              analyticsStore.logEvent("claim_all_staking_reward_click", {
-                pageName: "Stake",
-              });
               if (account.txTypeInProgress === "withdrawRewards") {
                 Toast.show({
                   type: "error",
@@ -244,8 +253,12 @@ export const MyRewardCard: FunctionComponent<{
                 });
                 return;
               }
+              analyticsStore.logEvent("claim_all_staking_reward_click", {
+                pageName: "Stake",
+              });
               setClaimModel(true);
             }}
+            loading={isSendingTx}
             disabled={
               !account.isReadyToSendTx ||
               pendingStakableReward.toDec().equals(new Dec(0)) ||
@@ -294,18 +307,6 @@ export const MyRewardCard: FunctionComponent<{
           <DelegateReward />
         </SlideDownAnimation>
       )}
-
-      <TransactionModal
-        isOpen={showTransectionModal}
-        close={() => {
-          setTransectionModal(false);
-        }}
-        txnHash={txnHash}
-        chainId={chainStore.current.chainId}
-        buttonText="Go to stakescreen"
-        onHomeClick={() => navigation.navigate("Stake", {})}
-        onTryAgainClick={handleAllClaim}
-      />
       <ClaimRewardsModal
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
@@ -318,6 +319,17 @@ export const MyRewardCard: FunctionComponent<{
         buttonLoading={
           isSendingTx || account.txTypeInProgress === "withdrawRewards"
         }
+      />
+      <TransactionModal
+        isOpen={showTransectionModal}
+        close={() => {
+          setTransectionModal(false);
+        }}
+        txnHash={txnHash}
+        chainId={chainStore.current.chainId}
+        buttonText="Go to stakescreen"
+        onHomeClick={() => navigation.navigate("Stake", {})}
+        onTryAgainClick={handleAllClaim}
       />
     </BlurBackground>
   );
@@ -412,13 +424,17 @@ const DelegateReward: FunctionComponent = observer(() => {
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
+      setClaimModel(false);
+      Toast.show({
+        type: "success",
+        text1: "claim in process",
+      });
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
         {},
         {
           onBroadcasted: (txHash) => {
-            setClaimModel(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -430,7 +446,14 @@ const DelegateReward: FunctionComponent = observer(() => {
         }
       );
     } catch (e) {
-      if (e?.message === "Request rejected") {
+      if (
+        e?.message === "Request rejected" ||
+        e?.message === "Transaction rejected"
+      ) {
+        Toast.show({
+          type: "error",
+          text1: "Transaction rejected",
+        });
         return;
       }
       console.log(e);
@@ -488,11 +511,34 @@ const DelegateReward: FunctionComponent = observer(() => {
                 ]) as ViewStyle
               }
             >
-              <ValidatorThumbnail
-                style={style.flatten(["margin-right-12"]) as ViewStyle}
-                size={32}
-                url={thumbnail}
-              />
+              {thumbnail || val.description.moniker === undefined ? (
+                <ValidatorThumbnail
+                  size={32}
+                  url={thumbnail}
+                  style={style.flatten(["margin-right-12"]) as ViewStyle}
+                />
+              ) : (
+                <BlurBackground
+                  backgroundBlur={true}
+                  blurIntensity={16}
+                  containerStyle={
+                    style.flatten([
+                      "width-32",
+                      "height-32",
+                      "border-radius-64",
+                      "items-center",
+                      "justify-center",
+                      "margin-right-12",
+                    ]) as ViewStyle
+                  }
+                >
+                  <VectorCharacter
+                    char={val.description.moniker.trim()[0]}
+                    color="white"
+                    height={12}
+                  />
+                </BlurBackground>
+              )}
               <View>
                 <Text
                   style={
@@ -531,9 +577,6 @@ const DelegateReward: FunctionComponent = observer(() => {
                 }
                 textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
                 onPress={() => {
-                  analyticsStore.logEvent("claim_staking_reward_click", {
-                    pageName: "Stake",
-                  });
                   if (account.txTypeInProgress === "withdrawRewards") {
                     Toast.show({
                       type: "error",
@@ -541,6 +584,9 @@ const DelegateReward: FunctionComponent = observer(() => {
                     });
                     return;
                   }
+                  analyticsStore.logEvent("claim_staking_reward_click", {
+                    pageName: "Stake",
+                  });
                   setClaimData({
                     reward: rewards
                       .maxDecimals(10)
@@ -567,9 +613,7 @@ const DelegateReward: FunctionComponent = observer(() => {
       />
       <TransactionModal
         isOpen={showTransectionModal}
-        close={() => {
-          setTransectionModal(false);
-        }}
+        close={() => setTransectionModal(false)}
         txnHash={txnHash}
         chainId={chainStore.current.chainId}
         buttonText="Go to stakescreen"

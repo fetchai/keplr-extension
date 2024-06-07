@@ -98,6 +98,10 @@ export const ActivityFilterView: FunctionComponent<{
   );
   const selectAllButtonText = allSelected ? "Unselect all" : "Select all";
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <CardModal isOpen={isOpen} title="Filter" close={close}>
       <Button

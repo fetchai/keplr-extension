@@ -15,6 +15,7 @@ interface RenderNumberProps {
   colorValue?: string;
   fontSizeValue?: number;
   hookName: string;
+  fontWeight?: string;
   listProperties: {
     durationValue?: number;
     easingValue?: string;
@@ -43,6 +44,7 @@ export function RenderNumber({
   listProperties,
   colorValue,
   fontSizeValue,
+  fontWeight,
 }: RenderNumberProps) {
   const heightChange = fontSizeValue || 50;
   const initialY = useSharedValue(0);
@@ -97,6 +99,7 @@ export function RenderNumber({
                 fontSize: fontSizeValue,
                 height: fontSizeValue,
                 marginHorizontal: gap,
+                fontWeight: fontWeight ? fontWeight : "normal",
                 // includeFontPadding: false,
                 lineHeight: fontSizeValue! * 1.1,
               }}

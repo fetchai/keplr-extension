@@ -145,7 +145,7 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
               style.flatten(["border-radius-64", "margin-y-32"]) as ViewStyle
             }
             rippleColor="black@50%"
-            textStyle={style.flatten(["body3"]) as ViewStyle}
+            textStyle={style.flatten(["body2"]) as ViewStyle}
             onPress={() => {
               analyticsStore.logEvent("stake_click", {
                 chainId: chainStore.current.chainId,
@@ -229,13 +229,14 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
             subtitle={
               "Stake your assets to earn rewards and\n contribute to maintaining the networks"
             }
-            subtitleStyle={style.flatten(["subtitle3"]) as ViewStyle}
+            titleStyle={style.flatten(["h3", "font-normal"]) as ViewStyle}
+            subtitleStyle={style.flatten(["body3"]) as ViewStyle}
           />
           <Button
             containerStyle={
               style.flatten(["border-radius-32", "margin-top-18"]) as ViewStyle
             }
-            textStyle={style.flatten(["h6"]) as ViewStyle}
+            textStyle={style.flatten(["body2"]) as ViewStyle}
             text={"Start staking"}
             onPress={() => {
               analyticsStore.logEvent("stake_click", {

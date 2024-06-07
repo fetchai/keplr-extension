@@ -1,5 +1,11 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -44,7 +50,7 @@ import { StakeIcon } from "components/new/icon/stake-icon";
 import { ClaimRewardsModal } from "components/new/claim-reward-model";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 import { Dec } from "@keplr-wallet/unit";
-import { TxnStatus } from "components/new/txn-status.tsx";
+import { TxnStatus, txType } from "components/new/txn-status.tsx";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -61,8 +67,10 @@ export const AccountSection: FunctionComponent<{
   const [openCameraModel, setIsOpenCameraModel] = useState(false);
   const [modelStatus, setModelStatus] = useState(ModelStatus.First);
 
-  const [txnHash, setTxnHash] = useState<string>("");
-  const [openModal, setOpenModal] = useState(false);
+  const [txnObj, setTxnObj] = useState({
+    txnHash: "",
+    txnStatusModal: false,
+  });
   const [showClaimModel, setClaimModel] = useState(false);
   const [loadingClaimButtom, setloadingClaimButtom] = useState(false);
 
@@ -144,6 +152,11 @@ export const AccountSection: FunctionComponent<{
         // Therefore, the failure is expected. If the simulation fails, simply use the default value.
         console.log(e);
       }
+      setClaimModel(false);
+      Toast.show({
+        type: "success",
+        text1: "claim in process",
+      });
       await tx.send(
         { amount: [], gas: gas.toString() },
         "",
@@ -156,9 +169,10 @@ export const AccountSection: FunctionComponent<{
               chainName: chainStore.current.chainName,
               pageName: "Home",
             });
-            setClaimModel(false);
-            setTxnHash(Buffer.from(txHash).toString("hex"));
-            setOpenModal(true);
+            setTxnObj({
+              txnHash: Buffer.from(txHash).toString("hex"),
+              txnStatusModal: true,
+            });
           },
         }
       );
@@ -318,6 +332,13 @@ export const AccountSection: FunctionComponent<{
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => {
+            if (account.txTypeInProgress === "withdrawRewards") {
+              Toast.show({
+                type: "error",
+                text1: `${txType[account.txTypeInProgress]} in progress`,
+              });
+              return;
+            }
             analyticsStore.logEvent("claim_all_staking_reward_click", {
               pageName: "Home",
             });
@@ -336,7 +357,16 @@ export const AccountSection: FunctionComponent<{
               backgroundBlur={false}
               heading={"You’ve claimable staking rewards"}
               leadingIconComponent={<StakeIcon size={14} />}
-              trailingIconComponent={<ChevronRightIcon />}
+              trailingIconComponent={
+                loadingClaimButtom ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={style.get("color-white").color}
+                  />
+                ) : (
+                  <ChevronRightIcon />
+                )
+              }
               cardStyle={
                 [
                   style.flatten(["background-color-indigo-900"]),
@@ -570,11 +600,11 @@ export const AccountSection: FunctionComponent<{
         }}
       />
       <TransactionModal
-        isOpen={openModal}
+        isOpen={txnObj.txnStatusModal}
         close={() => {
-          setOpenModal(false);
+          setTxnObj({ txnHash: "", txnStatusModal: false });
         }}
-        txnHash={txnHash}
+        txnHash={txnObj.txnHash}
         chainId={chainStore.current.chainId}
         buttonText="Go to stakescreen"
         onHomeClick={() => navigation.navigate("Stake", {})}
