@@ -48,8 +48,8 @@ import { MakeTxResponse, ProtoMsgsOrWithAminoMsgs } from "./types";
 import {
   getEip712TypedDataBasedOnChainId,
   getNodes,
-  parseAmount,
   txEventsWithPreOnFulfill,
+  updateNodeOnTxnCompleted,
 } from "./utils";
 import { ExtensionOptionsWeb3Tx } from "@keplr-wallet/proto-types/ethermint/types/v1/web3";
 import { MsgRevoke } from "@keplr-wallet/proto-types/cosmos/authz/v1beta1/tx";
@@ -65,6 +65,7 @@ export interface Node {
     timestamp: string;
     __typename: string;
   };
+  type: string;
   id: string;
   transaction: {
     fees: string;
@@ -420,6 +421,7 @@ export class CosmosAccountImpl {
 
       const newNode: Node = {
         balanceOffset,
+        type,
         block: {
           timestamp: new Date().toJSON(),
           __typename: "Block",
@@ -488,18 +490,8 @@ export class CosmosAccountImpl {
     txTracer.traceTx(txHash).then((tx) => {
       txTracer.close();
 
-      if (type === "withdrawRewards") {
-        let sum = 0;
-
-        JSON.parse(tx.log).map((txn: any, index: number) => {
-          const currentAmount = parseAmount(txn.events[0].attributes[1].value);
-          this.activityStore.updateTxnJson(txId, index, currentAmount);
-          sum += Number(currentAmount[0]);
-        });
-        this.activityStore.updateTxnBalance(txId, sum);
-      }
-
-      this.activityStore.updateTxnGas(txId, tx.gas_used, tx.gas_wanted);
+      //update node's gas, amount and status on completed
+      updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
 
       this.base.setTxTypeInProgress("");
 
@@ -515,15 +507,6 @@ export class CosmosAccountImpl {
           bal.fetch();
         }
       }
-
-      // if txn fails, it will have tx.code.
-      if (tx.code) {
-        this.activityStore.setTxnStatus(txId, "Failed");
-      } else {
-        this.activityStore.setTxnStatus(txId, "Success");
-      }
-
-      this.activityStore.setIsNodeUpdated(true);
 
       // Always add the tx hash data.
       if (tx && !tx.hash) {

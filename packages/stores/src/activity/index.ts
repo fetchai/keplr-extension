@@ -1,5 +1,8 @@
 import { KVStore, toGenerator } from "@keplr-wallet/common";
+import { TendermintTxTracer } from "@keplr-wallet/cosmos";
 import { action, flow, makeObservable, observable } from "mobx";
+import { updateNodeOnTxnCompleted } from "../account";
+import { ChainGetter } from "src/common";
 
 export class ActivityStore {
   @observable
@@ -59,7 +62,10 @@ export class ActivityStore {
     return this.nodes[id];
   }
 
-  constructor(protected readonly kvStore: KVStore) {
+  constructor(
+    protected readonly kvStore: KVStore,
+    protected readonly chainGetter: ChainGetter
+  ) {
     makeObservable(this);
 
     this.init();
@@ -86,6 +92,19 @@ export class ActivityStore {
       )
     );
     this.nodes = savedNodes !== undefined ? savedNodes : {};
+
+    const txTracer = new TendermintTxTracer(
+      this.chainGetter.getChain(this.chainId).rpc,
+      "/websocket",
+      {}
+    );
+
+    Object.values(this.nodes).map((node: any) => {
+      const txHash = Uint8Array.from(Buffer.from(node.id, "hex"));
+      txTracer.traceTx(txHash).then((tx) => {
+        updateNodeOnTxnCompleted(node.type, tx, node.id, this);
+      });
+    });
   }
 
   @action

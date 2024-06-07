@@ -238,7 +238,8 @@ export class RootStore {
     );
 
     this.activityStore = new ActivityStore(
-      new ExtensionKVStore("store_activity_config")
+      new ExtensionKVStore("store_activity_config"),
+      this.chainStore
     );
 
     this.accountStore = new AccountStore(

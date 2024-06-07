@@ -266,3 +266,31 @@ export const parseAmount = (amount: string): [string, string] => {
 
   return ["", ""];
 };
+
+export const updateNodeOnTxnCompleted = (
+  type: string,
+  tx: any,
+  txId: string,
+  activityStore: any
+) => {
+  if (type === "withdrawRewards") {
+    let sum = 0;
+
+    JSON.parse(tx.log).map((txn: any, index: number) => {
+      const currentAmount = parseAmount(txn.events[0].attributes[1].value);
+      activityStore.updateTxnJson(txId, index, currentAmount);
+      sum += Number(currentAmount[0]);
+    });
+    activityStore.updateTxnBalance(txId, sum);
+  }
+
+  activityStore.updateTxnGas(txId, tx.gas_used, tx.gas_wanted);
+  // if txn fails, it will have tx.code.
+  if (tx.code) {
+    activityStore.setTxnStatus(txId, "Failed");
+  } else {
+    activityStore.setTxnStatus(txId, "Success");
+  }
+
+  activityStore.setIsNodeUpdated(true);
+};
