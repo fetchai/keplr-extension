@@ -10,14 +10,18 @@ import { useLanguage } from "../../../languages";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { AppCurrency } from "@keplr-wallet/types";
 import { DetailRows } from "./detail-rows";
+import { getDetails } from "../utils";
+import { observer } from "mobx-react-lite";
 
-export const ActivityDetails = () => {
+export const ActivityDetails = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const details = location.state.details || {};
+  const nodeId = location.state.nodeId || "";
   const [usdValue, setUsdValue] = useState<any>("$0");
-  const { priceStore } = useStore();
+  const { priceStore, activityStore, chainStore } = useStore();
+  const node = activityStore.getNode(nodeId);
+  const details = getDetails(node, chainStore);
   const fiatCurrency = language.fiatCurrency;
   const convertTofiatCurrency = (currency: any) => {
     const value = priceStore.calculatePrice(currency, fiatCurrency);
@@ -66,9 +70,20 @@ export const ActivityDetails = () => {
     >
       <div className={style["topBar"]}>
         <img src={require("@assets/svg/wireframe/fetch-logo.svg")} alt="verb" />
+        <div className={style["status"]}>
+          {details.status === "Success" ? (
+            <div>Confirmed{" ● "}</div>
+          ) : details.status === "Pending" ? (
+            <div>Pending{" ● "}</div>
+          ) : details.status === "Failed" ? (
+            <div>Failed{" ● "}</div>
+          ) : (
+            <div>Error</div>
+          )}
+        </div>
         <div className={style["verb"]}>{details.verb}</div>
         <div className={style["time"]}>
-          {moment(details.timestamp).utc().format("ddd, DD MMM YYYY hh:mm A")}
+          {moment(details.timestamp).format("ddd, DD MMM YYYY hh:mm A")}
         </div>
       </div>
 
@@ -146,4 +161,4 @@ export const ActivityDetails = () => {
       <DetailRows details={details} />
     </HeaderLayout>
   );
-};
+});
