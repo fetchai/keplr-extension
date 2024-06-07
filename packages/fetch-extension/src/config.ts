@@ -304,10 +304,144 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
   },
   {
+    rpc: "https://rpc-evmos.keplr.app",
+    rest: "https://lcd-evmos.keplr.app",
+    chainId: "evmos_9001-2",
+    chainName: "Evmos",
+    stakeCurrency: {
+      coinDenom: "EVMOS",
+      coinMinimalDenom: "aevmos",
+      coinDecimals: 18,
+      coinGeckoId: "evmos",
+    },
+    walletUrl:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/evmos"
+        : "http://localhost:8080/chains/evmos",
+    walletUrlForStaking:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/evmos"
+        : "http://localhost:8080/chains/evmos",
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("evmos"),
+    currencies: [
+      {
+        coinDenom: "EVMOS",
+        coinMinimalDenom: "aevmos",
+        coinDecimals: 18,
+        coinGeckoId: "evmos",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "EVMOS",
+        coinMinimalDenom: "aevmos",
+        coinDecimals: 18,
+        coinGeckoId: "evmos",
+        gasPriceStep: {
+          low: 25000000000,
+          average: 25000000000,
+          high: 40000000000,
+        },
+      },
+    ],
+    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
+  },
+  {
+    rpc: "https://rpc-injective.keplr.app",
+    rest: "https://lcd-injective.keplr.app",
+    chainId: "injective-1",
+    chainName: "Injective",
+    stakeCurrency: {
+      coinDenom: "INJ",
+      coinMinimalDenom: "inj",
+      coinDecimals: 18,
+      coinGeckoId: "injective-protocol",
+    },
+    walletUrl:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/injective"
+        : "http://localhost:8080/chains/injective",
+    walletUrlForStaking:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/injective"
+        : "http://localhost:8080/chains/injective",
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("inj"),
+    currencies: [
+      {
+        coinDenom: "INJ",
+        coinMinimalDenom: "inj",
+        coinDecimals: 18,
+        coinGeckoId: "injective-protocol",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "INJ",
+        coinMinimalDenom: "inj",
+        coinDecimals: 18,
+        coinGeckoId: "injective-protocol",
+        gasPriceStep: {
+          low: 5000000000,
+          average: 25000000000,
+          high: 50000000000,
+        },
+      },
+    ],
+    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
+  },
+  {
+    rpc: "https://rpc-eridanus-1.fetch.ai",
+    rest: "https://rest-eridanus-1.fetch.ai",
+    chainId: "eridanus-1",
+    chainName: "Eridanus Testnet",
+    stakeCurrency: {
+      coinDenom: "TESTASI",
+      coinMinimalDenom: "atestasi",
+      coinDecimals: 18,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("asi"),
+    currencies: [
+      {
+        coinDenom: "TESTASI",
+        coinMinimalDenom: "atestasi",
+        coinDecimals: 18,
+      },
+      {
+        coinDenom: "MOBX",
+        coinMinimalDenom: "nanomobx",
+        coinDecimals: 9,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "TESTASI",
+        coinMinimalDenom: "atestasi",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 0,
+          average: 5000000000,
+          high: 6250000000,
+        },
+      },
+    ],
+    features: ["cosmwasm"],
+    walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
+    govUrl: "https://explore-eridanus-1.fetch.ai/proposals",
+  },
+  {
     rpc: "https://rpc.osmotest5.osmosis.zone",
     rest: "https://lcd.osmotest5.osmosis.zone/",
     chainId: "osmo-test-5",
-    chainName: "Osmosis testnet",
+    chainName: "Osmosis Testnet",
     hideInUI: true,
     stakeCurrency: {
       coinDenom: "OSMO",
@@ -2116,98 +2250,6 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: ["ibc-transfer", "ibc-go"],
   },
   {
-    rpc: "https://rpc-evmos.keplr.app",
-    rest: "https://lcd-evmos.keplr.app",
-    chainId: "evmos_9001-2",
-    chainName: "Evmos",
-    stakeCurrency: {
-      coinDenom: "EVMOS",
-      coinMinimalDenom: "aevmos",
-      coinDecimals: 18,
-      coinGeckoId: "evmos",
-    },
-    walletUrl:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/chains/evmos"
-        : "http://localhost:8080/chains/evmos",
-    walletUrlForStaking:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/chains/evmos"
-        : "http://localhost:8080/chains/evmos",
-    bip44: {
-      coinType: 60,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("evmos"),
-    currencies: [
-      {
-        coinDenom: "EVMOS",
-        coinMinimalDenom: "aevmos",
-        coinDecimals: 18,
-        coinGeckoId: "evmos",
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "EVMOS",
-        coinMinimalDenom: "aevmos",
-        coinDecimals: 18,
-        coinGeckoId: "evmos",
-        gasPriceStep: {
-          low: 25000000000,
-          average: 25000000000,
-          high: 40000000000,
-        },
-      },
-    ],
-    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
-  },
-  {
-    rpc: "https://rpc-injective.keplr.app",
-    rest: "https://lcd-injective.keplr.app",
-    chainId: "injective-1",
-    chainName: "Injective",
-    stakeCurrency: {
-      coinDenom: "INJ",
-      coinMinimalDenom: "inj",
-      coinDecimals: 18,
-      coinGeckoId: "injective-protocol",
-    },
-    walletUrl:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/chains/injective"
-        : "http://localhost:8080/chains/injective",
-    walletUrlForStaking:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/chains/injective"
-        : "http://localhost:8080/chains/injective",
-    bip44: {
-      coinType: 60,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("inj"),
-    currencies: [
-      {
-        coinDenom: "INJ",
-        coinMinimalDenom: "inj",
-        coinDecimals: 18,
-        coinGeckoId: "injective-protocol",
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "INJ",
-        coinMinimalDenom: "inj",
-        coinDecimals: 18,
-        coinGeckoId: "injective-protocol",
-        gasPriceStep: {
-          low: 5000000000,
-          average: 25000000000,
-          high: 50000000000,
-        },
-      },
-    ],
-    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
-  },
-  {
     rpc: "https://rpc-kava.keplr.app",
     rest: "https://lcd-kava.keplr.app",
     chainId: "kava_2222-10",
@@ -2730,48 +2772,6 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
     govUrl: "https://explore-dorado.fetch.ai/proposals/",
-  },
-  {
-    rpc: "https://rpc-eridanus-1.fetch.ai",
-    rest: "https://rest-eridanus-1.fetch.ai",
-    chainId: "eridanus-1",
-    chainName: "Eridanus",
-    stakeCurrency: {
-      coinDenom: "TESTASI",
-      coinMinimalDenom: "atestasi",
-      coinDecimals: 18,
-    },
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("asi"),
-    currencies: [
-      {
-        coinDenom: "TESTASI",
-        coinMinimalDenom: "atestasi",
-        coinDecimals: 18,
-      },
-      {
-        coinDenom: "MOBX",
-        coinMinimalDenom: "nanomobx",
-        coinDecimals: 9,
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "TESTASI",
-        coinMinimalDenom: "atestasi",
-        coinDecimals: 18,
-        gasPriceStep: {
-          low: 0,
-          average: 5000000000,
-          high: 6250000000,
-        },
-      },
-    ],
-    features: ["cosmwasm"],
-    walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
-    govUrl: "https://explore-eridanus-1.fetch.ai/proposals",
   },
 ];
 
