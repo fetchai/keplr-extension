@@ -1,17 +1,15 @@
-import { fetchTransactions } from "@graphQL/activity-api";
-import React, { useEffect, useState } from "react";
-import { useStore } from "../../../stores";
-import { FilterDropdown, FilterActivities } from "../filter";
-import { ActivityRow } from "./activity-row";
-import style from "../style.module.scss";
-import styles from "./style.module.scss";
-
-import { NoActivity } from "../no-activity";
-import { ButtonV2 } from "@components-v2/buttons/button";
+import { observer } from "mobx-react-lite";
 import moment from "moment";
-import { UnsupportedNetwork } from "../unsupported-network";
+import React, { useEffect, useState } from "react";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import { ErrorActivity } from "../error-activity";
+import { useStore } from "../../../stores";
+import { FilterActivities, FilterDropdown } from "../filter";
+import style from "../style.module.scss";
+import { ActivityRow } from "./activity-row";
+import styles from "./style.module.scss";
+import { NoActivity } from "../no-activity";
+import { UnsupportedNetwork } from "../unsupported-network";
+
 const options = [
   {
     icon: require("@assets/svg/wireframe/arrow-down.svg"),
@@ -59,80 +57,65 @@ const processFilters = (filters: string[]) => {
   return result;
 };
 
-function debounce(func: any, timeout = 500) {
-  let timer: any;
-  return (...args: any) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func(args);
-    }, timeout);
-  };
-}
-
-export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
-  const { chainStore, accountStore, analyticsStore } = useStore();
+export const NativeTab = observer(() => {
+  const { chainStore, accountStore, analyticsStore, activityStore } =
+    useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
   const [isOpen, setIsOpen] = useState(false);
   const [_date, setDate] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingRequest, setLoadingRequest] = useState(true);
-  const [fetchedData, setFetchedData] = useState<any>();
-  const [nodes, setNodes] = useState<any>({});
+  const [activities, setActivities] = useState<unknown[]>([]);
   const [isSelectAll, setIsSelectAll] = useState(true);
   const [isSaveChangesButtonDisabled, setIsSaveChangesButtonDisabled] =
     useState(true);
-  const [pageInfo, setPageInfo] = useState<any>();
   const [filter, setFilter] = useState<string[]>(
     options.map((option) => option.value)
   );
 
-  const [isError, setIsError] = useState(false);
+  // const [isError, setIsError] = useState(false);
 
-  const fetchNodes = debounce(async (cursor: any) => {
-    setIsLoading(true);
-    try {
-      const data = await fetchTransactions(
-        current.chainId,
-        cursor,
-        accountInfo.bech32Address,
-        processFilters(filter)
-      );
-      setFetchedData(data?.nodes);
-      if (!pageInfo || cursor != "") setPageInfo(data?.pageInfo);
-    } catch (error) {
-      setIsError(true);
-    }
-    setIsLoading(false);
-  }, 1000);
+  const accountOrChainChanged =
+    activityStore.getAddress !== accountInfo.bech32Address ||
+    activityStore.getChainId !== current.chainId;
 
   useEffect(() => {
-    fetchNodes("");
-  }, [filter, latestBlock]);
+    // this is required because accountInit sets the nodes on reload, so we wait for accountInit to set the node and then setActivities
+    // else activityStore.getNodes will be empty
+    const timeout = setTimeout(() => {
+      setActivities(activityStore.sortedNodes);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   useEffect(() => {
-    if (fetchedData) {
-      const nodeMap: any = {};
-      fetchedData.map((node: any) => {
-        nodeMap[node.id] = node;
-      });
-      setNodes({ ...nodes, ...nodeMap });
-      setIsLoading(false);
-      setLoadingRequest(false);
+    if (activityStore.checkIsNodeUpdated === true) {
+      setActivities(activityStore.sortedNodes);
+      activityStore.setIsNodeUpdated(false);
     }
-  }, [fetchedData]);
+  }, [activityStore.checkIsNodeUpdated]);
 
-  const handleClick = () => {
-    analyticsStore.logEvent("activity_transactions_click", {
-      pageName: "Transaction Tab",
-    });
-    setLoadingRequest(true);
-    fetchNodes(pageInfo.endCursor);
-  };
+  useEffect(() => {
+    if (accountOrChainChanged) {
+      activityStore.setAddress(accountInfo.bech32Address);
+      activityStore.setChainId(current.chainId);
+    }
+
+    //accountInit is required because in case of a reload, this.nodes becomes empty and should be updated with KVstore's saved nodes
+    activityStore.accountInit();
+  }, []);
+
+  // const handleClick = () => {
+  //   analyticsStore.logEvent("activity_transactions_click", {
+  //     pageName: "Transaction Tab",
+  //   });
+  //   setLoadingRequest(true);
+  //   fetchNodes(activityStore.getPageInfo.endCursor, "");
+  // };
 
   const handleFilterChange = (selectedFilter: string[]) => {
-    setPageInfo(undefined);
-    setNodes({});
     setFilter(selectedFilter);
     analyticsStore.logEvent("activity_filter_click", {
       pageName: "Transaction Tab",
@@ -171,13 +154,13 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
   const renderNodes = (nodes: any) => {
     const renderedNodes: JSX.Element[] = [];
     Object.values(nodes).forEach(async (node: any, index) => {
-      const currentDate = moment(node.block.timestamp)
-        .utc()
-        .format("ddd, DD MMM YYYY");
+      const currentDate = moment(node.block.timestamp).format(
+        "ddd, DD MMM YYYY"
+      );
       const previousNode: any =
         index > 0 ? Object.values(nodes)[index - 1] : null;
       const previousDate = previousNode
-        ? moment(previousNode.block.timestamp).utc().format("ddd, DD MMM YYYY")
+        ? moment(previousNode.block.timestamp).format("ddd, DD MMM YYYY")
         : null;
       const shouldDisplayDate = currentDate !== previousDate;
       renderedNodes.push(
@@ -197,6 +180,7 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
     });
     return renderedNodes;
   };
+
   return (
     <React.Fragment>
       <FilterDropdown
@@ -223,16 +207,24 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
 
       {current.chainId === CHAIN_ID_FETCHHUB ||
       current.chainId === CHAIN_ID_DORADO ? (
-        isError ? (
-          <ErrorActivity />
-        ) : Object.values(nodes).filter((node: any) =>
-            processFilters(filter).includes(
-              node.transaction.messages.nodes[0].typeUrl
-            )
-          ).length > 0 ? (
+        // isError ? (
+        //   <ErrorActivity />
+        // ) :
+        activities.length > 0 &&
+        activities.filter((node: any) =>
+          processFilters(filter).includes(
+            node.transaction.messages.nodes[0].typeUrl
+          )
+        ).length > 0 ? (
           <React.Fragment>
-            {renderNodes(nodes)}
-            {pageInfo?.hasNextPage && (
+            {renderNodes(
+              activities.filter((node: any) =>
+                processFilters(filter).includes(
+                  node.transaction.messages.nodes[0].typeUrl
+                )
+              )
+            )}
+            {/* {activityStore.getPageInfo?.hasNextPage && (
               <ButtonV2
                 text={
                   loadingRequest ? (
@@ -241,14 +233,15 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
                     "Load more"
                   )
                 }
-                disabled={!pageInfo?.hasNextPage || loadingRequest}
+                disabled={
+                  !activityStore.getPageInfo?.hasNextPage ||
+                  loadingRequest === true
+                }
                 onClick={handleClick}
                 styleProps={{ width: "326px" }}
               />
-            )}
+            )} */}
           </React.Fragment>
-        ) : isLoading ? (
-          <div className={style["activityMessage"]}>Loading Activities...</div>
         ) : (
           <NoActivity />
         )
@@ -257,4 +250,4 @@ export const NativeTab = ({ latestBlock }: { latestBlock: any }) => {
       )}
     </React.Fragment>
   );
-};
+});
