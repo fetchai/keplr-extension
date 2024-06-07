@@ -27,7 +27,6 @@ export const AUTH_SERVER = "https://accounts.fetch.ai/v1";
 
 export const FNS_TEST_ADDRESS = "fetch1s84mudgmjfjmkef7ludqnwy0fchh3mf4p4rmll";
 
-export const CHAIN_ID_DORADO = "dorado-1";
 export const CHAIN_ID_ERIDANUS = "eridanus-1";
 export const CHAIN_ID_FETCHHUB = "fetchhub-4";
 export const GROUP_PAGE_COUNT = 30;
@@ -49,7 +48,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const ACTIVITY_SERVER: { [key: string]: string } = {
-  [CHAIN_ID_DORADO]: "https://subquery-dorado.fetch.ai/",
   [CHAIN_ID_FETCHHUB]: "https://subquery.fetch.ai/",
 };
 
@@ -59,35 +57,35 @@ export const GRAPHQL_URL = {
   ACTIVITY_SERVER,
 };
 
-let FETCHHUB_AGENT, DORADO_AGENT;
-let FETCHHUB_FEEDBACK, DORADO_FEEDBACK;
+let FETCHHUB_AGENT, ERIDANUS_AGENT;
+let FETCHHUB_FEEDBACK, ERIDANUS_FEEDBACK;
 
 if (process.env.NODE_ENV === "production") {
   FETCHHUB_AGENT =
     "agent1qvmfez9k6fycllzqc6p7telhwyzzj709n32sc5x2q0ss62ehqc3e52qgna7";
-  DORADO_AGENT =
+    ERIDANUS_AGENT =
     "agent1qdhydny2mmdntqn6dx3d3wpyukaq855j2yexl2f0z07d5esl76932mctpvf";
   FETCHHUB_FEEDBACK = "https://fetchbot.prod.fetch-ai.com/";
-  DORADO_FEEDBACK = "https://fetchbot-dorado.prod.fetch-ai.com/";
+  ERIDANUS_FEEDBACK = "https://fetchbot-dorado.prod.fetch-ai.com/";
 } else {
   FETCHHUB_AGENT =
     "agent1qv5rmumv0xe0fqlmm3k4lxu4mhmz9aluy07tgp5lmzr2z0mccttcyjksf7r";
-  DORADO_AGENT =
+    ERIDANUS_AGENT =
     "agent1qtvyuq8gkywtymym00n83llwcj6dscwfaz9dgdhm2dw0e9tqmkzq7tesse9";
   FETCHHUB_FEEDBACK =
     "https://fetchbot-uagent-staging-mainnet.sandbox-london-b.fetch-ai.com";
-  DORADO_FEEDBACK =
+    ERIDANUS_FEEDBACK =
     "https://fetchbot-uagent-staging.sandbox-london-b.fetch-ai.com";
 }
 
 export const AGENT_FEEDBACK_URL: { [key: string]: string } = {
-  [CHAIN_ID_DORADO]: DORADO_FEEDBACK,
+  [CHAIN_ID_ERIDANUS]: ERIDANUS_FEEDBACK,
   [CHAIN_ID_FETCHHUB]: FETCHHUB_FEEDBACK,
 };
 
 export const AGENT_ADDRESS: { [key: string]: string } = {
   [CHAIN_ID_FETCHHUB]: FETCHHUB_AGENT,
-  [CHAIN_ID_DORADO]: DORADO_AGENT,
+  [CHAIN_ID_ERIDANUS]: ERIDANUS_AGENT,
 };
 // export const AGENT_ADDRESS =
 //   "agent1qdh7x8k7se255j44dmt2yrpnxqdyn9qqt3dvcn4zy3dwq5qthl577v7njct";
@@ -187,13 +185,13 @@ export const FNS_CONFIG: {
     isEditable: boolean;
   };
 } = {
-  [CHAIN_ID_DORADO]: {
-    network: "testnet",
-    rpc: "https://rpc-dorado.fetch.ai:443",
-    contractAddress:
-      "fetch15hq5u4susv7d064llmupeyevx6hmskkc3p8zvt8rwn0lj02yt72s88skrf",
-    isEditable: true,
-  },
+  // [CHAIN_ID_ERIDANUS]: {
+  //   network: "testnet",
+  //   rpc: "https://rpc-eridanus.fetch.ai:443",
+  //   contractAddress:
+  //     "fetch15hq5u4susv7d064llmupeyevx6hmskkc3p8zvt8rwn0lj02yt72s88skrf",
+  //   isEditable: true,
+  // },
   [CHAIN_ID_FETCHHUB]: {
     network: "mainnet",
     rpc: "https://rpc-fetchhub.fetch.ai:443",
@@ -215,7 +213,6 @@ export const AXL_BRIDGE_EVM_TRNSX_FEE = {
 
 
 export const VALIDATOR_URL: { [key in string]: string } = {
-  [CHAIN_ID_DORADO]: "https://explore-dorado.fetch.ai/validators",
   [CHAIN_ID_FETCHHUB]: "https://www.mintscan.io/fetchai/validators",
   [CHAIN_ID_ERIDANUS]: "https://explore-eridanus-1.fetch.ai/validators"
 };

@@ -7,7 +7,7 @@ export const fetchProposals = async (chainId: string) => {
       .catch((e) => console.log(e));
 
   return await axios
-    .get("https://rest-dorado.fetch.ai/cosmos/gov/v1beta1/proposals")
+    .get("https://rest-eridanus.fetch.ai/cosmos/gov/v1beta1/proposals")
     .then((response) => response.data)
     .catch((e) => console.log(e));
 };

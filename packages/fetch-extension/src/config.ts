@@ -2656,48 +2656,6 @@ export const EmbedChainInfos: ChainInfo[] = [
     features: ["stargate", "no-legacy-stdTx", "ibc-transfer"],
   },
   {
-    rpc: "https://rpc-dorado.fetch.ai",
-    rest: "https://rest-dorado.fetch.ai",
-    chainId: "dorado-1",
-    chainName: "Dorado",
-    stakeCurrency: {
-      coinDenom: "TESTFET",
-      coinMinimalDenom: "atestfet",
-      coinDecimals: 18,
-    },
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("fetch"),
-    currencies: [
-      {
-        coinDenom: "TESTFET",
-        coinMinimalDenom: "atestfet",
-        coinDecimals: 18,
-      },
-      {
-        coinDenom: "MOBX",
-        coinMinimalDenom: "nanomobx",
-        coinDecimals: 9,
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "TESTFET",
-        coinMinimalDenom: "atestfet",
-        coinDecimals: 18,
-        gasPriceStep: {
-          low: 0,
-          average: 5000000000,
-          high: 6250000000,
-        },
-      },
-    ],
-    features: ["cosmwasm"],
-    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
-    govUrl: "https://explore-dorado.fetch.ai/proposals/",
-  },
-  {
     rpc: "https://rpc-eridanus-1.fetch.ai",
     rest: "https://rest-eridanus-1.fetch.ai",
     chainId: "eridanus-1",
