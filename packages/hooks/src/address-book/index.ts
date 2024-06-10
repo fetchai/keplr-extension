@@ -4,6 +4,7 @@ import { ChainInfo } from "@keplr-wallet/types";
 import { ChainGetter, HasMapStore } from "@keplr-wallet/stores";
 import { DeepReadonly } from "utility-types";
 import { useState } from "react";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export interface AddressBookSelectHandler {
   setRecipient(recipient: string): void;
@@ -39,6 +40,19 @@ export class AddressBookConfig {
   }
 
   get addressBookDatas(): DeepReadonly<AddressBookData[]> {
+    if (this.chainId === "fetchhub-4") {
+      this._addressBookDatas.map((data, i) => {
+        if (data.address.startsWith("fetch")) {
+          const bechAddress = Bech32Address.fromBech32(data.address);
+          const asiAddress = bechAddress.toBech32("asi");
+          this.editAddressBookAt(i, {
+            name: data.name,
+            address: asiAddress,
+            memo: data.memo,
+          });
+        }
+      });
+    }
     return this._addressBookDatas;
   }
 
