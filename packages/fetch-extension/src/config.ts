@@ -2695,7 +2695,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
-    govUrl: "https://explore-eridanus-1.fetch.ai/proposals",
+    govUrl: "https://explore-eridanus-1.fetch.ai/proposals/",
   },
 ];
 
