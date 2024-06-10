@@ -181,7 +181,11 @@ export const TokenDetail: FunctionComponent = observer(() => {
         totalPrice={balances.balanceInUsd}
       />
       {tokenInfo.coinGeckoId && (
-        <React.Fragment>
+        <View style={
+          style.flatten([
+            "display-none"
+          ]) as ViewStyle
+        }>
           <View
             style={
               style.flatten([
@@ -220,7 +224,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
             isOpenModal={isOpenModal}
             setIsOpenModal={setIsOpenModal}
           />
-        </React.Fragment>
+        </View>
       )}
     </PageWithScrollView>
   );
