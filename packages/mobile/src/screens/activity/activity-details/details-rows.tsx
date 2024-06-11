@@ -49,7 +49,7 @@ export const DetailRows = ({ details }: { details: any }) => {
       pageName: "Activity Detail",
     });
     navigation.navigate("Others", {
-      screen: "NewValidator.Details",
+      screen: "Validator.Details",
       params: {
         validatorAddress: details.validatorAddress,
       },
@@ -61,7 +61,7 @@ export const DetailRows = ({ details }: { details: any }) => {
       pageName: "Activity Detail",
     });
     navigation.navigate("Others", {
-      screen: "SendNew",
+      screen: "Send",
       params: {
         currency: currency,
         state: {

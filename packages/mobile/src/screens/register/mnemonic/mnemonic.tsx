@@ -19,11 +19,11 @@ import { SimpleCardView } from "components/new/card-view/simple-card";
 import { CopyIcon } from "components/new/icon/copy-icon";
 import { useSimpleTimer } from "hooks/use-simple-timer";
 import LottieView from "lottie-react-native";
-import { useNewMnemonicConfig } from "../hook";
+import { useNewMnemonicConfig } from "./hook";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { useStore } from "stores/index";
 
-export const NewMnemonicScreen: FunctionComponent = observer(() => {
+export const MnemonicScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<

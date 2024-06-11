@@ -9,28 +9,27 @@ import {
 } from "@react-navigation/native";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
-import { Staking } from "@keplr-wallet/stores";
-import { useRedelegateTxConfig } from "@keplr-wallet/hooks";
+import { useUndelegateTxConfig } from "@keplr-wallet/hooks";
 import { PageWithScrollView } from "components/page";
 import { Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
+import { Staking } from "@keplr-wallet/stores";
+import { Buffer } from "buffer/";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import { DropDownCardView } from "components/new/card-view/drop-down-card";
-import { ChevronRightIcon } from "components/new/icon/chevron-right";
 import { StakeAmountInput } from "components/new/input/stake-amount";
 import { UseMaxButton } from "components/new/button/use-max-button";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { FeeButtons } from "components/new/fee-button/fee-button-component";
+import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
 import { TransactionModal } from "modals/transaction";
 
-export const NewRedelegateScreen: FunctionComponent = observer(() => {
+export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
         string,
         {
           validatorAddress: string;
-          selectedValidatorAddress: string;
         }
       >,
       string
@@ -38,17 +37,13 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
   >();
 
   const validatorAddress = route.params.validatorAddress;
-  const selectedValidatorAddress = route.params.selectedValidatorAddress
-    ? route.params.selectedValidatorAddress
-    : "";
-
-  const smartNavigation = useSmartNavigation();
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
     useStore();
 
   const style = useStyle();
+  const smartNavigation = useSmartNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -59,7 +54,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
   const [showTransectionModal, setTransectionModal] = useState(false);
   const [txnHash, setTxnHash] = useState<string>("");
 
-  const srcValidator =
+  const validator =
     queries.cosmos.queryValidators
       .getQueryStatus(Staking.BondStatus.Bonded)
       .getValidator(validatorAddress) ||
@@ -74,7 +69,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
     .getQueryBech32Address(account.bech32Address)
     .getDelegationTo(validatorAddress);
 
-  const sendConfigs = useRedelegateTxConfig(
+  const sendConfigs = useUndelegateTxConfig(
     chainStore,
     queriesStore,
     accountStore,
@@ -83,20 +78,9 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
     validatorAddress
   );
 
-  const dstValidator =
-    queries.cosmos.queryValidators
-      .getQueryStatus(Staking.BondStatus.Bonded)
-      .getValidator(selectedValidatorAddress) ||
-    queries.cosmos.queryValidators
-      .getQueryStatus(Staking.BondStatus.Unbonding)
-      .getValidator(selectedValidatorAddress) ||
-    queries.cosmos.queryValidators
-      .getQueryStatus(Staking.BondStatus.Unbonded)
-      .getValidator(selectedValidatorAddress);
-
   useEffect(() => {
-    sendConfigs.recipientConfig.setRawRecipient(selectedValidatorAddress);
-  }, [selectedValidatorAddress, sendConfigs.recipientConfig]);
+    sendConfigs.recipientConfig.setRawRecipient(validatorAddress);
+  }, [sendConfigs.recipientConfig, validatorAddress]);
 
   const sendConfigError =
     sendConfigs.recipientConfig.error ??
@@ -125,16 +109,15 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
     .maxDecimals(6)
     .toString()}${Usd}`;
 
-  const redelegateAmount = async () => {
+  const unstakeBalance = async () => {
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
-        analyticsStore.logEvent("redelegate_txn_click", {
+        analyticsStore.logEvent("unstake_txn_click", {
           pageName: "Stake Validator",
         });
-        await account.cosmos.sendBeginRedelegateMsg(
+        await account.cosmos.sendUndelegateMsg(
           sendConfigs.amountConfig.amount,
-          sendConfigs.srcValidatorAddress,
-          sendConfigs.dstValidatorAddress,
+          sendConfigs.recipientConfig.recipient,
           sendConfigs.memoConfig.memo,
           sendConfigs.feeConfig.toStdFee(),
           {
@@ -143,11 +126,10 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           },
           {
             onBroadcasted: (txHash) => {
-              analyticsStore.logEvent("redelegate_txn_broadcasted", {
+              analyticsStore.logEvent("unstake_txn_broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
-                validatorName: srcValidator?.description.moniker,
-                toValidatorName: dstValidator?.description.moniker,
+                validatorName: validator?.description.moniker,
                 feeType: sendConfigs.feeConfig.feeType,
               });
               setTxnHash(Buffer.from(txHash).toString("hex"));
@@ -160,7 +142,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           return;
         }
         console.log(e);
-        analyticsStore.logEvent("redelegate_txn_broadcasted_fail", {
+        analyticsStore.logEvent("unstake_txn_broadcasted_fail", {
           chainId: chainStore.current.chainId,
           chainName: chainStore.current.chainName,
           feeType: sendConfigs.feeConfig.feeType,
@@ -179,16 +161,18 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
     >
       <View
         style={
-          style.flatten([
-            "flex-row",
-            "items-center",
-            "border-width-1",
-            "border-color-white@20%",
-            "border-radius-12",
-            "padding-12",
-            "justify-between",
-            "margin-y-16",
-          ]) as ViewStyle
+          [
+            style.flatten([
+              "flex-row",
+              "items-center",
+              "border-width-1",
+              "border-color-white@20%",
+              "border-radius-12",
+              "padding-12",
+              "justify-between",
+              "margin-y-16",
+            ]),
+          ] as ViewStyle
         }
       >
         <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
@@ -198,56 +182,13 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           {staked.trim(true).shrink(true).maxDecimals(6).toString()}
         </Text>
       </View>
-      <Text
-        style={
-          style.flatten([
-            "body3",
-            "color-white@60%",
-            "margin-bottom-8",
-          ]) as ViewStyle
-        }
-      >
-        From
-      </Text>
-      <View
-        style={
-          style.flatten([
-            "border-width-1",
-            "border-color-white@20%",
-            "border-radius-12",
-            "padding-x-18",
-            "padding-y-12",
-            "margin-bottom-8",
-          ]) as ViewStyle
-        }
-      >
-        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
-          {srcValidator ? srcValidator.description.moniker : "..."}
-        </Text>
-      </View>
-
-      <DropDownCardView
-        containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
-        mainHeadingrStyle={style.flatten(["body3"]) as ViewStyle}
-        headingrStyle={style.flatten(["body3", "color-white@60%"]) as ViewStyle}
-        mainHeading="To"
-        heading={
-          dstValidator ? dstValidator.description.moniker : "Choose validator"
-        }
-        trailingIcon={<ChevronRightIcon color="white" />}
-        onPress={() => {
-          smartNavigation.navigateSmart("NewValidator.List", {
-            prevSelectedValidator: srcValidator?.operator_address,
-            selectedValidator: dstValidator?.operator_address,
-          });
-        }}
-      />
       <StakeAmountInput
         label="Amount"
         labelStyle={
           style.flatten([
             "body3",
             "color-white@60%",
+            "padding-y-0",
             "margin-y-0",
             "margin-bottom-8",
           ]) as ViewStyle
@@ -281,8 +222,31 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
           ]) as ViewStyle
         }
         memoConfig={sendConfigs.memoConfig}
-        containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
       />
+      <View
+        style={
+          style.flatten([
+            "margin-y-16",
+            "padding-12",
+            "background-color-cardColor@25%",
+            "flex-row",
+            "border-radius-12",
+          ]) as ViewStyle
+        }
+      >
+        <View
+          style={
+            [style.flatten(["margin-top-4", "margin-right-10"])] as ViewStyle
+          }
+        >
+          <CircleExclamationIcon />
+        </View>
+        <Text
+          style={style.flatten(["body3", "color-white", "flex-1"]) as ViewStyle}
+        >
+          Your tokens will go through a 21-day unstaking process
+        </Text>
+      </View>
       <FeeButtons
         label="Fee"
         gasLabel="gas"
@@ -291,14 +255,13 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
       />
       <View style={style.flatten(["flex-1"])} />
       <Button
-        text="Confirm"
+        text="Unstake"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
-        loading={account.txTypeInProgress === "redelegate"}
+        loading={account.txTypeInProgress === "undelegate"}
         containerStyle={
           style.flatten(["margin-top-16", "border-radius-32"]) as ViewStyle
         }
-        textStyle={style.flatten(["body2"]) as ViewStyle}
-        onPress={redelegateAmount}
+        onPress={unstakeBalance}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <TransactionModal
@@ -310,7 +273,7 @@ export const NewRedelegateScreen: FunctionComponent = observer(() => {
         chainId={chainStore.current.chainId}
         buttonText="Go to stakescreen"
         onHomeClick={() => navigation.navigate("Stake", {})}
-        onTryAgainClick={redelegateAmount}
+        onTryAgainClick={unstakeBalance}
       />
     </PageWithScrollView>
   );

@@ -18,7 +18,7 @@ import { HeaderBackButtonIcon } from "components/header/icon";
 import { State, useSmartNavigation } from "navigation/smart-navigation";
 import { IconButton } from "components/new/button/icon";
 
-export const NewSendScreen: FunctionComponent = observer(() => {
+export const SendScreen: FunctionComponent = observer(() => {
   const [isNext, setIsNext] = useState(false);
   const { chainStore, accountStore, queriesStore } = useStore();
   const style = useStyle();

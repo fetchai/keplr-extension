@@ -10,7 +10,7 @@ import {
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
 
-import { UnlockScreen } from "screens/unlock/new";
+import { UnlockScreen } from "screens/unlock";
 import { SettingChainListScreen } from "screens/setting/screens/chain-list";
 import {
   AddAddressBookScreen,

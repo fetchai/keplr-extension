@@ -259,7 +259,7 @@ export const DelegatedCard: FunctionComponent<{
                 });
                 return;
               }
-              smartNavigation.navigateSmart("NewUndelegate", {
+              smartNavigation.navigateSmart("Undelegate", {
                 validatorAddress,
               });
             }}

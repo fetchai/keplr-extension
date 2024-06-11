@@ -53,7 +53,7 @@ export const SelectorValidatorDetailsScreen: FunctionComponent = observer(
             analyticsStore.logEvent("choose_validator_click", {
               pageName: "Validator Detail",
             });
-            smartNavigation.navigateSmart("NewRedelegate", {
+            smartNavigation.navigateSmart("Redelegate", {
               validatorAddress: prevSelectValidator,
               selectedValidatorAddress: validatorAddress,
             });

@@ -15,7 +15,7 @@ import { UnbondingCard } from "./unbonding-card";
 import Toast from "react-native-toast-message";
 import { txType } from "components/new/txn-status.tsx";
 
-export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
+export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -102,7 +102,7 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                   });
                   return;
                 }
-                smartNavigation.navigateSmart("NewRedelegate", {
+                smartNavigation.navigateSmart("Redelegate", {
                   validatorAddress,
                 });
               }}
@@ -129,7 +129,7 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                   });
                   return;
                 }
-                smartNavigation.navigateSmart("NewDelegate", {
+                smartNavigation.navigateSmart("Delegate", {
                   validatorAddress,
                 });
               }}
@@ -154,7 +154,7 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                 analyticsStore.logEvent("choose_validator_click", {
                   pageName: "Validator Detail",
                 });
-                smartNavigation.navigateSmart("NewRedelegate", {
+                smartNavigation.navigateSmart("Redelegate", {
                   validatorAddress: validatorSelector,
                   selectedValidatorAddress: validatorAddress,
                 });
@@ -180,7 +180,7 @@ export const NewValidatorDetailsScreen: FunctionComponent = observer(() => {
                   });
                   return;
                 }
-                smartNavigation.navigateSmart("NewDelegate", {
+                smartNavigation.navigateSmart("Delegate", {
                   validatorAddress,
                 });
               }}

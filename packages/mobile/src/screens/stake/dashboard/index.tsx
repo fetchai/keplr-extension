@@ -28,7 +28,7 @@ import { PageWithScrollView } from "components/page";
 import { observer } from "mobx-react-lite";
 import { useFocusedScreen } from "providers/focused-screen";
 
-export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
+export const StakingDashboardScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -153,7 +153,7 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
                 pageName: "Stake",
               });
               navigation.navigate("Others", {
-                screen: "NewValidator.List",
+                screen: "Validator.List",
                 params: {},
               });
             }}
@@ -245,7 +245,7 @@ export const NewStakingDashboardScreen: FunctionComponent = observer(() => {
                 pageName: "Stake",
               });
               navigation.navigate("Others", {
-                screen: "NewValidator.List",
+                screen: "Validator.List",
                 params: {},
               });
             }}

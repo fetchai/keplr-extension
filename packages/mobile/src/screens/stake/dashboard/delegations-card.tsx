@@ -107,7 +107,7 @@ export const DelegationsCard: FunctionComponent<{
                   pageName: "Stake",
                 });
                 navigation.navigate("Others", {
-                  screen: "NewValidator.Details",
+                  screen: "Validator.Details",
                   params: {
                     validatorAddress: del.delegation.validator_address,
                   },

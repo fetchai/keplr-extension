@@ -13,7 +13,7 @@ import { EmptyView } from "components/new/empty";
 import { StakeValidatorCardView } from "components/new/stake-validetor-card/stake-validator";
 import { ChevronRightIcon } from "components/new/icon/chevron-right";
 import { shortenNumber } from "utils/format/format";
-import { STAKE_VALIDATOR_URL } from "../../../../config";
+import { STAKE_VALIDATOR_URL } from "../../../config";
 import { SortIcon } from "components/new/icon/sort";
 import { SelectorModal } from "components/new/selector-model/selector";
 import { CheckIcon } from "components/new/icon/check";
@@ -21,7 +21,7 @@ import { InputCardView } from "components/new/card-view/input-card";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
-export const NewValidatorListScreen: FunctionComponent = observer(() => {
+export const ValidatorListScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -306,7 +306,7 @@ const ValidatorItem: FunctionComponent<{
                     analyticsStore.logEvent("stake_validator_click", {
                       pageName: "Validator Detail",
                     });
-                    smartNavigation.navigateSmart("NewValidator.Details", {
+                    smartNavigation.navigateSmart("Validator.Details", {
                       validatorAddress,
                     });
                   }

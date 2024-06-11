@@ -78,7 +78,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Receive: {
         upperScreenName: "Others",
       },
-      SendNew: {
+      Send: {
         upperScreenName: "Others",
       },
       Portfolio: {
@@ -96,25 +96,25 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Inbox: {
         upperScreenName: "HomeTab",
       },
-      "NewStaking.Dashboard": {
+      "Staking.Dashboard": {
         upperScreenName: "Others",
       },
-      "NewValidator.Details": {
+      "Validator.Details": {
         upperScreenName: "Others",
       },
       "SelectorValidator.Details": {
         upperScreenName: "Others",
       },
-      "NewValidator.List": {
+      "Validator.List": {
         upperScreenName: "Others",
       },
-      NewDelegate: {
+      Delegate: {
         upperScreenName: "Others",
       },
-      NewUndelegate: {
+      Undelegate: {
         upperScreenName: "Others",
       },
-      NewRedelegate: {
+      Redelegate: {
         upperScreenName: "Others",
       },
       Governance: {
@@ -190,7 +190,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       WebView: {
         url: string;
       };
-      "NewStaking.Dashboard": {
+      "Staking.Dashboard": {
         isTab?: boolean;
       };
       "Register.Intro": {
@@ -239,7 +239,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Receive: {
         chainId?: string;
       };
-      SendNew: {
+      Send: {
         chainId?: string;
         currency?: string;
         recipient?: string;
@@ -253,7 +253,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         showMyQRButton?: boolean;
         recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
       };
-      "NewValidator.Details": {
+      "Validator.Details": {
         validatorAddress: string;
         prevSelectedValidator?: string;
       };
@@ -261,17 +261,17 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         prevSelectedValidator?: string;
         validatorAddress: string;
       };
-      "NewValidator.List": {
+      "Validator.List": {
         prevSelectedValidator?: string;
         selectedValidator?: string;
       };
-      NewDelegate: {
+      Delegate: {
         validatorAddress: string;
       };
-      NewUndelegate: {
+      Undelegate: {
         validatorAddress: string;
       };
-      NewRedelegate: {
+      Redelegate: {
         selectedValidatorAddress?: string;
         validatorAddress: string;
       };

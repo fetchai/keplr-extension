@@ -5,11 +5,11 @@ import {
   BlurHeaderOptionsPreset,
   TransparentHeaderOptionsPreset,
 } from "components/header";
-import { RegisterIntroScreen } from "screens/register/new";
+import { RegisterIntroScreen } from "screens/register";
 import { RegisterNewUserScreen } from "screens/register/new-user";
 import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
-import { NewMnemonicScreen } from "screens/register/mnemonic/new/new-mnemonic";
-import { VerifyMnemonicScreen } from "screens/register/mnemonic/new/verify-mnemonic";
+import { MnemonicScreen } from "screens/register/mnemonic/mnemonic";
+import { VerifyMnemonicScreen } from "screens/register/mnemonic/verify-mnemonic";
 import { NewLedgerScreen } from "screens/register/ledger";
 import { TorusSignInScreen } from "screens/register/torus";
 import {
@@ -17,10 +17,10 @@ import {
   ImportFromExtensionScreen,
   ImportFromExtensionSetPasswordScreen,
 } from "screens/register/import-from-extension";
-import { RegisterEndScreen } from "screens/register/new/end";
+import { RegisterEndScreen } from "screens/register/end";
 import { Stack } from "./navigation";
-import { RecoverMnemonicScreen } from "screens/register/mnemonic/new/recover-mnemonic";
-import { CreateAccountScreen } from "screens/register/mnemonic/new/create-account";
+import { RecoverMnemonicScreen } from "screens/register/mnemonic/recover-mnemonic";
+import { CreateAccountScreen } from "screens/register/mnemonic/create-account";
 import { MigrateETHScreen } from "screens/register/migration";
 import { ViewStyle } from "react-native";
 
@@ -67,7 +67,7 @@ export const RegisterNavigation: FunctionComponent = () => {
           title: "",
         }}
         name="Register.NewMnemonic"
-        component={NewMnemonicScreen}
+        component={MnemonicScreen}
       />
       <Stack.Screen
         options={{

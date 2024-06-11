@@ -31,7 +31,7 @@ interface ItemData {
   value: string;
 }
 
-export const NewDelegateScreen: FunctionComponent = observer(() => {
+export const DelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<

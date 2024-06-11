@@ -131,7 +131,7 @@ export const TokenBalanceSection: FunctionComponent<{
                 pageName: "Token Detail",
               });
               navigation.navigate("Others", {
-                screen: "SendNew",
+                screen: "Send",
                 params: {
                   currency: chainStore.current.stakeCurrency.coinMinimalDenom,
                 },
@@ -160,7 +160,7 @@ export const TokenBalanceSection: FunctionComponent<{
             pageName: "Portfolio",
           });
           navigation.navigate("Others", {
-            screen: "NewStaking.Dashboard",
+            screen: "Staking.Dashboard",
             params: { isTab: false },
           });
         }}

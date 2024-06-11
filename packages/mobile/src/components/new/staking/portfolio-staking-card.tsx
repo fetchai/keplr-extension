@@ -17,7 +17,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { StakeCard } from "screens/stake/new/dashboard/stake-card";
+import { StakeCard } from "screens/stake/dashboard/stake-card";
 import { txType } from "components/new/txn-status.tsx";
 
 export const PortfolioStakingCard: FunctionComponent<{
