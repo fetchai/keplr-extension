@@ -329,7 +329,15 @@ export const AccountSection: FunctionComponent<{
         <IconButton
           backgroundBlur={false}
           icon={<ThreeDotIcon size={15} />}
-          iconStyle={style.flatten(["padding-12"]) as ViewStyle}
+          iconStyle={
+            style.flatten([
+              "width-32",
+              "height-32",
+              "border-radius-64",
+              "items-center",
+              "justify-center",
+            ]) as ViewStyle
+          }
           onPress={() => setIsOpenModal(true)}
         />
       </BlurBackground>

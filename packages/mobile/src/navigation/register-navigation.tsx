@@ -22,6 +22,7 @@ import { Stack } from "./navigation";
 import { RecoverMnemonicScreen } from "screens/register/mnemonic/new/recover-mnemonic";
 import { CreateAccountScreen } from "screens/register/mnemonic/new/create-account";
 import { MigrateETHScreen } from "screens/register/migration";
+import { ViewStyle } from "react-native";
 
 export const RegisterNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -30,7 +31,7 @@ export const RegisterNavigation: FunctionComponent = () => {
     <Stack.Navigator
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
-        headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerTitleStyle: style.flatten(["h5", "color-text-high"]) as ViewStyle,
         headerMode: "screen",
       }}
       initialRouteName="Register.Intro"

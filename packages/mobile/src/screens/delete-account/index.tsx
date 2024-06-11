@@ -96,12 +96,14 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
       {showPrivateData && !isFocused ? (
         <React.Fragment>
           <SimpleCardView
+            backgroundBlur={false}
             heading="Make sure you’ve backed up your mnemonic seed before proceeding."
             headingStyle={style.flatten(["body3"]) as ViewStyle}
             cardStyle={
               style.flatten([
-                "background-color-coral-red@30%",
+                "background-color-coral-red@25%",
                 "margin-y-6",
+                "padding-12",
               ]) as ViewStyle
             }
           />

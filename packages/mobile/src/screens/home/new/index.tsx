@@ -20,7 +20,6 @@ import { useStore } from "stores/index";
 import { observer } from "mobx-react-lite";
 import { useFocusEffect } from "@react-navigation/native";
 import { AccountSection } from "./v2/account-section";
-import { BIP44Selectable } from "../bip44-selectable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePrevious } from "hooks/use-previous";
 import { LineGraphView } from "components/new/line-graph";
@@ -162,7 +161,6 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       containerStyle={style.flatten(["overflow-scroll"]) as ViewStyle}
       ref={scrollViewRef}
     >
-      <BIP44Selectable />
       <AccountSection tokenState={tokenState} setGraphHeight={setGraphHeight} />
       <View style={style.flatten(["flex-2"])} />
       <LineGraphView

@@ -26,6 +26,7 @@ import { SmartNavigatorProvider } from "navigation/smart-navigation";
 import { RegisterNavigation } from "navigation/register-navigation";
 import { OtherNavigation } from "navigation/other-navigation";
 import { MainTabNavigationWithDrawer } from "navigation/navigation-tab-with-drawer";
+import { ViewStyle } from "react-native";
 
 export const Stack = createStackNavigator();
 
@@ -36,7 +37,7 @@ export const AddressBookStackScreen: FunctionComponent = () => {
     <Stack.Navigator
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
-        headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerTitleStyle: style.flatten(["h5", "color-text-high"]) as ViewStyle,
         headerMode: "screen",
       }}
     >
@@ -76,7 +77,7 @@ export const ChainListStackScreen: FunctionComponent = () => {
     <Stack.Navigator
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
-        headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerTitleStyle: style.flatten(["h5", "color-text-high"]) as ViewStyle,
         headerMode: "screen",
       }}
     >

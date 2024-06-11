@@ -8,33 +8,15 @@ import {
 import { TransitionPresets } from "@react-navigation/stack";
 import {
   BlurHeaderOptionsPreset,
-  HeaderAtSecondaryScreenOptionsPreset,
   HeaderOnGradientScreenOptionsPreset,
-  HeaderOnSecondaryScreenOptionsPreset,
-  HeaderOnTertiaryScreenOptionsPreset,
   HeaderRightButton,
   TransparentHeaderOptionsPreset,
 } from "components/header";
-import { SendScreen } from "screens/send";
 import { NewSendScreen } from "screens/send/new";
 import { ReceiveScreen } from "screens/receive";
 import { TokensScreen } from "screens/tokens";
 import { CameraScreen } from "screens/camera";
-import { ManageWalletConnectScreen } from "screens/manage-wallet-connect";
-import {
-  DelegateScreen,
-  StakingDashboardScreen,
-  ValidatorDetailsScreen,
-  ValidatorListScreen,
-} from "screens/stake";
 import { GovernanceDetailsScreen, GovernanceScreen } from "screens/governance";
-import { UndelegateScreen } from "screens/stake/undelegate";
-import { RedelegateScreen } from "screens/stake/redelegate";
-import {
-  TxFailedResultScreen,
-  TxPendingResultScreen,
-  TxSuccessResultScreen,
-} from "screens/tx-result";
 import {
   SettingAddTokenScreen,
   SettingManageTokensScreen,
@@ -70,18 +52,10 @@ export const OtherNavigation: FunctionComponent = () => {
     <Stack.Navigator
       screenOptions={{
         ...TransitionPresets.SlideFromRightIOS,
-        headerTitleStyle: style.flatten(["h5", "color-text-high"]),
+        headerTitleStyle: style.flatten(["h5", "color-text-high"]) as ViewStyle,
         headerMode: "screen",
       }}
     >
-      <Stack.Screen
-        options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Send",
-        }}
-        name="Send"
-        component={SendScreen}
-      />
       <Stack.Screen
         options={{
           ...BlurHeaderOptionsPreset,
@@ -124,22 +98,6 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnSecondaryScreenOptionsPreset,
-          title: "WalletConnect",
-        }}
-        name="ManageWalletConnect"
-        component={ManageWalletConnectScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...HeaderOnGradientScreenOptionsPreset,
-          title: "Validator Details",
-        }}
-        name="Validator Details"
-        component={ValidatorDetailsScreen}
-      />
-      <Stack.Screen
-        options={{
           ...HeaderOnGradientScreenOptionsPreset,
           title: "Governance",
         }}
@@ -156,28 +114,12 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnGradientScreenOptionsPreset,
-          title: "Staking Dashboard",
-        }}
-        name="Staking.Dashboard"
-        component={StakingDashboardScreen}
-      />
-      <Stack.Screen
-        options={{
           ...TransparentHeaderOptionsPreset,
           // Only show the back button.
           title: "",
         }}
         name="NewStaking.Dashboard"
         component={NewStakingDashboardScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...HeaderOnGradientScreenOptionsPreset,
-          title: "Validator Details",
-        }}
-        name="Validator.Details"
-        component={ValidatorDetailsScreen}
       />
       <Stack.Screen
         options={{
@@ -197,27 +139,11 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderAtSecondaryScreenOptionsPreset,
-          title: "All Active Validators",
-        }}
-        name="Validator.List"
-        component={ValidatorListScreen}
-      />
-      <Stack.Screen
-        options={{
           ...TransparentHeaderOptionsPreset,
           title: "Choose validator",
         }}
         name="NewValidator.List"
         component={NewValidatorListScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Stake",
-        }}
-        name="Delegate"
-        component={DelegateScreen}
       />
       <Stack.Screen
         options={{
@@ -229,14 +155,6 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Unstake",
-        }}
-        name="Undelegate"
-        component={UndelegateScreen}
-      />
-      <Stack.Screen
-        options={{
           ...TransparentHeaderOptionsPreset,
           title: "Unstake",
         }}
@@ -245,43 +163,11 @@ export const OtherNavigation: FunctionComponent = () => {
       />
       <Stack.Screen
         options={{
-          ...HeaderOnTertiaryScreenOptionsPreset,
-          title: "Switch Validator",
-        }}
-        name="Redelegate"
-        component={RedelegateScreen}
-      />
-      <Stack.Screen
-        options={{
           ...TransparentHeaderOptionsPreset,
           title: "Choose Validator",
         }}
         name="NewRedelegate"
         component={NewRedelegateScreen}
-      />
-      <Stack.Screen
-        options={{
-          gestureEnabled: false,
-          headerShown: false,
-        }}
-        name="TxPendingResult"
-        component={TxPendingResultScreen}
-      />
-      <Stack.Screen
-        options={{
-          gestureEnabled: false,
-          headerShown: false,
-        }}
-        name="TxSuccessResult"
-        component={TxSuccessResultScreen}
-      />
-      <Stack.Screen
-        options={{
-          gestureEnabled: false,
-          headerShown: false,
-        }}
-        name="TxFailedResult"
-        component={TxFailedResultScreen}
       />
       <Stack.Screen
         options={{

@@ -75,9 +75,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Home: {
         upperScreenName: "HomeTab",
       },
-      Send: {
-        upperScreenName: "Others",
-      },
       Receive: {
         upperScreenName: "Others",
       },
@@ -99,16 +96,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Inbox: {
         upperScreenName: "HomeTab",
       },
-      ManageWalletConnect: {
-        upperScreenName: "Others",
-      },
-      "Staking.Dashboard": {
-        upperScreenName: "Others",
-      },
       "NewStaking.Dashboard": {
-        upperScreenName: "Others",
-      },
-      "Validator.Details": {
         upperScreenName: "Others",
       },
       "NewValidator.Details": {
@@ -117,25 +105,13 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "SelectorValidator.Details": {
         upperScreenName: "Others",
       },
-      "Validator.List": {
-        upperScreenName: "Others",
-      },
       "NewValidator.List": {
-        upperScreenName: "Others",
-      },
-      Delegate: {
         upperScreenName: "Others",
       },
       NewDelegate: {
         upperScreenName: "Others",
       },
-      Undelegate: {
-        upperScreenName: "Others",
-      },
       NewUndelegate: {
-        upperScreenName: "Others",
-      },
-      Redelegate: {
         upperScreenName: "Others",
       },
       NewRedelegate: {
@@ -148,9 +124,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Others",
       },
       Setting: {
-        upperScreenName: "Settings",
-      },
-      SettingSelectAccount: {
         upperScreenName: "Settings",
       },
       "Setting.ViewPrivateData": {
@@ -184,15 +157,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "AddressBooks",
       },
       Result: {
-        upperScreenName: "Others",
-      },
-      TxPendingResult: {
-        upperScreenName: "Others",
-      },
-      TxSuccessResult: {
-        upperScreenName: "Others",
-      },
-      TxFailedResult: {
         upperScreenName: "Others",
       },
       "Web.Intro": {
@@ -272,11 +236,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.End": {
         password?: string;
       };
-      Send: {
-        chainId?: string;
-        currency?: string;
-        recipient?: string;
-      };
       Receive: {
         chainId?: string;
       };
@@ -294,9 +253,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         showMyQRButton?: boolean;
         recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
       };
-      "Validator.Details": {
-        validatorAddress: string;
-      };
       "NewValidator.Details": {
         validatorAddress: string;
         prevSelectedValidator?: string;
@@ -305,26 +261,14 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         prevSelectedValidator?: string;
         validatorAddress: string;
       };
-      "Validator.List": {
-        validatorSelector?: (validatorAddress: string) => void;
-      };
       "NewValidator.List": {
         prevSelectedValidator?: string;
         selectedValidator?: string;
       };
-      Delegate: {
-        validatorAddress: string;
-      };
       NewDelegate: {
         validatorAddress: string;
       };
-      Undelegate: {
-        validatorAddress: string;
-      };
       NewUndelegate: {
-        validatorAddress: string;
-      };
-      Redelegate: {
         validatorAddress: string;
       };
       NewRedelegate: {
@@ -345,18 +289,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       AddAddressBook: {
         chainId: string;
         addressBookConfig: AddressBookConfig;
-      };
-      TxPendingResult: {
-        chainId?: string;
-        txHash: string;
-      };
-      TxSuccessResult: {
-        chainId?: string;
-        txHash: string;
-      };
-      TxFailedResult: {
-        chainId?: string;
-        txHash: string;
       };
     }>()
   );

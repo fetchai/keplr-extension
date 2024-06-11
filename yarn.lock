@@ -39656,7 +39656,6 @@ __metadata:
     react-native-localize: ^3.0.2
     react-native-markdown-view: ^1.1.4
     react-native-modal: ^13.0.1
-    react-native-parallax-scroll-view: ^0.21.3
     react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: 3.5.4
     react-native-safe-area-context: ^4.4.1
@@ -45123,15 +45122,6 @@ __metadata:
     react: "*"
     react-native: ">=0.65.0"
   checksum: 15985fd6aaae7a2134ec1003c63abd384f4a17beabd0a80b74033c98eccee29161aa07150f479373fb43106cfb33b5837b7a4f1d2b721ff03b3727490c830a07
-  languageName: node
-  linkType: hard
-
-"react-native-parallax-scroll-view@npm:^0.21.3":
-  version: 0.21.3
-  resolution: "react-native-parallax-scroll-view@npm:0.21.3"
-  dependencies:
-    prop-types: ^15.6.0
-  checksum: 0a4507dac486bef0322303268b3262e6ffc38dd62292e132a76e21cd7cd3b27c4f38075be6e82bcaf2656af23010cf1535bdcffd72d067e883a9db664f34165f
   languageName: node
   linkType: hard
 
