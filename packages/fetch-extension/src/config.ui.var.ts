@@ -215,8 +215,9 @@ export const AXL_BRIDGE_EVM_TRNSX_FEE = {
   amount: [{ denom: "eth", amount: "4000000000000000" }],
 };
 
+
 export const VALIDATOR_URL: { [key in string]: string } = {
   [CHAIN_ID_DORADO]: "https://explore-dorado.fetch.ai/validators",
   [CHAIN_ID_FETCHHUB]: "https://www.mintscan.io/fetchai/validators",
-  [CHAIN_ID_ERIDANUS]: "https://explore-eridanus-1.fetch.ai/validators",
+  [CHAIN_ID_ERIDANUS]: "https://explore-eridanus-1.fetch.ai/validators"
 };
