@@ -18,7 +18,7 @@ export const fetchFollowedOrganisations = async (walletAddress: string) => {
       headers: headers,
     })
     .then((res) => res.data)
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
 };
 
 export const followOrganisation = async (

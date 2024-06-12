@@ -13,7 +13,7 @@ import React, {
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { Button } from "reactstrap";
-import { CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { CHAIN_ID_FETCHHUB, FNS_CONFIG } from "../../config.ui.var";
 import { getPrimaryDomain } from "../../name-service/fns-apis";
 import { useStore } from "../../stores";
 import styleAccount from "./account.module.scss";
@@ -91,7 +91,7 @@ export const AccountView: FunctionComponent = observer(() => {
       setIsDomainloading(false);
     };
     setDomain(undefined);
-    fetchData();
+    if (FNS_CONFIG[current.chainId]) fetchData();
   }, [accountInfo.bech32Address, current.chainId]);
 
   return (

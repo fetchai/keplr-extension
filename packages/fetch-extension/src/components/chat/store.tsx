@@ -28,7 +28,7 @@ export const ChatStoreProvider: FunctionComponent = observer((props) => {
       const followOrganisationList: NotyphiOrganisation[] =
         await fetchFollowedOrganisations(accountInfo.bech32Address);
 
-      if (followOrganisationList.length > 0) {
+      if (followOrganisationList && followOrganisationList.length > 0) {
         store.dispatch(
           setNotifications({
             organisations: followOrganisationList,
