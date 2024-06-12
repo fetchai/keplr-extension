@@ -1,10 +1,6 @@
 import { NotificationSetup } from "@notificationTypes";
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  CHAIN_ID_DORADO,
-  CHAIN_ID_ERIDANUS,
-  CHAIN_ID_FETCHHUB,
-} from "../../config.ui.var";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 export interface WalletConfig {
   notiphyWhitelist: string[] | undefined;

@@ -2734,7 +2734,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     rpc: "https://rpc-dorado.fetch.ai",
     rest: "https://rest-dorado.fetch.ai",
     chainId: "dorado-1",
-    chainName: "Dorado",
+    chainName: "Dorado Testnet",
     stakeCurrency: {
       coinDenom: "TESTFET",
       coinMinimalDenom: "atestfet",
