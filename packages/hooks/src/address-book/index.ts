@@ -40,19 +40,18 @@ export class AddressBookConfig {
   }
 
   get addressBookDatas(): DeepReadonly<AddressBookData[]> {
-    if (this.chainId === "fetchhub-4") {
-      this._addressBookDatas.map((data, i) => {
-        if (data.address.startsWith("fetch")) {
-          const bechAddress = Bech32Address.fromBech32(data.address);
-          const asiAddress = bechAddress.toBech32("asi");
-          this.editAddressBookAt(i, {
-            name: data.name,
-            address: asiAddress,
-            memo: data.memo,
-          });
-        }
-      });
-    }
+    /// This will migrate all the fetch addresses stored across all chains to ASI.
+    this._addressBookDatas.map((data, i) => {
+      if (data.address.startsWith("fetch")) {
+        const bechAddress = Bech32Address.fromBech32(data.address);
+        const asiAddress = bechAddress.toBech32("asi");
+        this.editAddressBookAt(i, {
+          name: data.name,
+          address: asiAddress,
+          memo: data.memo,
+        });
+      }
+    });
     return this._addressBookDatas;
   }
 
