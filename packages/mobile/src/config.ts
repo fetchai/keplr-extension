@@ -2586,7 +2586,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["cosmwasm"],
-    walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
+    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
     govUrl: "https://fetchstation.azoyalabs.com/dorado/governance/",
   },
 ];

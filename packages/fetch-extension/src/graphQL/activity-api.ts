@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import { blocks, govProposals, transactions } from "./activity-queries";
-import { eridanusActivityClient, fetchhubActivityClient } from "./client";
+import { doradoActivityClient, fetchhubActivityClient } from "./client";
+import { CHAIN_ID_DORADO } from "../config.ui.var";
 import axios from "axios";
-import { CHAIN_ID_FETCHHUB } from "../config.ui.var";
 
 export const fetchTransactions = async (
   chainId: string,
@@ -17,7 +17,7 @@ export const fetchTransactions = async (
   };
 
   const activityClient =
-    chainId !== CHAIN_ID_FETCHHUB ? eridanusActivityClient : fetchhubActivityClient;
+    chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
 
   const { data, errors } = await activityClient.query({
     query: gql(transactions),
@@ -45,7 +45,7 @@ export const fetchGovProposalTransactions = async (
   };
 
   const activityClient =
-    chainId !== CHAIN_ID_FETCHHUB ? eridanusActivityClient : fetchhubActivityClient;
+    chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
 
   const { data, errors } = await activityClient.query({
     query: gql(govProposals),
@@ -63,7 +63,7 @@ export const fetchGovProposalTransactions = async (
 
 export const fetchLatestBlock = async (chainId: string) => {
   const activityClient =
-    chainId !== CHAIN_ID_FETCHHUB ? eridanusActivityClient : fetchhubActivityClient;
+    chainId === CHAIN_ID_DORADO ? doradoActivityClient : fetchhubActivityClient;
 
   const { data, errors } = await activityClient.query({
     query: gql(blocks),

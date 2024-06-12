@@ -4,7 +4,7 @@ import { createClient } from "graphql-ws";
 import { store } from "@chatStore/index";
 import { setIsChatSubscriptionActive } from "@chatStore/messages-slice";
 import {
-  CHAIN_ID_ERIDANUS,
+  CHAIN_ID_DORADO,
   CHAIN_ID_FETCHHUB,
   GRAPHQL_URL,
 } from "../config.ui.var";
@@ -23,8 +23,8 @@ export const fetchhubActivityClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const eridanusActivityClient = new ApolloClient({
-  uri: GRAPHQL_URL.ACTIVITY_SERVER[CHAIN_ID_ERIDANUS],
+export const doradoActivityClient = new ApolloClient({
+  uri: GRAPHQL_URL.ACTIVITY_SERVER[CHAIN_ID_DORADO],
   cache: new InMemoryCache(),
 });
 

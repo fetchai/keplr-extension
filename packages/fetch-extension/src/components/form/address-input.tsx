@@ -27,7 +27,11 @@ import {
 import { observer } from "mobx-react-lite";
 import { useIntl } from "react-intl";
 import { validateAgentAddress } from "@utils/validate-agent";
-import { CHAIN_ID_ERIDANUS, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import {
+  CHAIN_ID_DORADO,
+  CHAIN_ID_ERIDANUS,
+  CHAIN_ID_FETCHHUB,
+} from "../../config.ui.var";
 import { getBeneficiaryAddress } from "../../name-service/fns-apis";
 import { useStore } from "../../stores";
 
@@ -147,7 +151,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
         "isICNSEnabled" in recipientConfig &&
         recipientConfig.isICNSEnabled &&
         value.length > 0 &&
-        ![CHAIN_ID_FETCHHUB, CHAIN_ID_ERIDANUS].includes(
+        ![CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB, CHAIN_ID_ERIDANUS].includes(
           recipientConfig.chainId
         ) &&
         value[value.length - 1] === "." &&
@@ -161,7 +165,7 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
 
     const updateFNSValue = async (value: string) => {
       if (
-        [CHAIN_ID_FETCHHUB].includes(
+        [CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(
           recipientConfig.chainId
         ) &&
         value.length > 5 &&

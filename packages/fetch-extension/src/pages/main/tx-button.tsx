@@ -25,7 +25,11 @@ import activeStake from "@assets/icon/activeStake.png";
 import activeSend from "@assets/icon/activeSend.png";
 import { DepositModal } from "./qr-code";
 import { Link } from "react-router-dom";
-import { CHAIN_ID_ERIDANUS, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import {
+  CHAIN_ID_DORADO,
+  CHAIN_ID_ERIDANUS,
+  CHAIN_ID_FETCHHUB,
+} from "../../config.ui.var";
 
 export const TxButtonView: FunctionComponent = observer(() => {
   const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
@@ -64,9 +68,11 @@ export const TxButtonView: FunctionComponent = observer(() => {
 
   const isRewardExist = rewards.stakableReward.toDec().gt(new Dec(0));
 
-  const isStakableInApp = [CHAIN_ID_FETCHHUB, CHAIN_ID_ERIDANUS].includes(
-    chainStore.current.chainId
-  );
+  const isStakableInApp = [
+    CHAIN_ID_DORADO,
+    CHAIN_ID_FETCHHUB,
+    CHAIN_ID_ERIDANUS,
+  ].includes(chainStore.current.chainId);
   const isStakableExist = useMemo(() => {
     return stakable.balance.toDec().gt(new Dec(0));
   }, [stakable.balance]);
