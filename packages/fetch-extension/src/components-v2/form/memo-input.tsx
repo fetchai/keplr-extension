@@ -35,8 +35,12 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
         <div className={style["label"]}>Memo</div>
         <div
           style={{
+            opacity: "0.8",
+            fontWeight: 400,
+            background: "rgba(255, 255, 255, 0.1)",
+            marginBottom: 0,
+            borderRadius: "12px",
             height: "48px",
-            marginBottom: "24px",
           }}
         >
           <Input
@@ -45,7 +49,6 @@ export const MemoInput: FunctionComponent<MemoInputProps> = observer(
               fontWeight: 400,
               background: "rgba(255, 255, 255, 0.1)",
               padding: "12px 18px",
-              marginBottom: "24px",
             }}
             id={inputId}
             placeholder="Optional"
