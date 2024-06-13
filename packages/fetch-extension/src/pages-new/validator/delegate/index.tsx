@@ -226,7 +226,7 @@ export const Delegate: FunctionComponent = observer(() => {
             />
 
             <ButtonV2
-              text="Confirm"
+              text=""
               styleProps={{
                 width: "336px",
                 padding: "12px",
@@ -237,9 +237,21 @@ export const Delegate: FunctionComponent = observer(() => {
                 left: "0px",
                 right: "0px",
               }}
-              disabled={!account.isReadyToSendTx || !txStateIsValid}
-              onClick={stakeClicked}
-            />
+              disabled={
+                !account.isReadyToSendTx ||
+                !txStateIsValid ||
+                account.txTypeInProgress === "delegate"
+              }
+              onClick={() => {
+                if (account.txTypeInProgress === "delegate") return;
+                stakeClicked();
+              }}
+            >
+              Confirm
+              {account.txTypeInProgress === "delegate" && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )}
+            </ButtonV2>
           </FormGroup>
         </div>
       )}

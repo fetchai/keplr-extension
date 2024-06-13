@@ -244,7 +244,7 @@ export const Unstake = observer(() => {
             priceStore={priceStore}
           />
           <ButtonV2
-            text="Confirm"
+            text=""
             styleProps={{
               width: "336px",
               padding: "12px",
@@ -255,9 +255,21 @@ export const Unstake = observer(() => {
               left: "0px",
               right: "0px",
             }}
-            disabled={errorText != null || !amountConfig.amount}
-            onClick={unstakeClicked}
-          />
+            disabled={
+              errorText != null ||
+              !amountConfig.amount ||
+              account.txTypeInProgress === "undelegate"
+            }
+            onClick={() => {
+              if (account.txTypeInProgress === "undelegate") return;
+              unstakeClicked();
+            }}
+          >
+            Confirm
+            {account.txTypeInProgress === "undelegate" && (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            )}
+          </ButtonV2>
         </div>
       </FormGroup>
     </HeaderLayout>

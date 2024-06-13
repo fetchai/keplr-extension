@@ -155,7 +155,8 @@ export const StakeDetails = observer(
                 rewards.length === 0 ||
                 parseFloat(
                   rewards[0]?.maxDecimals(4).toString().split(" ")[0]
-                ) <= 0.0
+                ) <= 0.0 ||
+                account.txTypeInProgress === "withdrawRewards"
               }
               onClick={() => {
                 if (account.txTypeInProgress === "withdrawRewards") {
@@ -173,8 +174,13 @@ export const StakeDetails = observer(
                 }
                 handleClaim();
               }}
-              text="Claim rewards"
-            />
+              text=""
+            >
+              Claim rewards
+              {account.txTypeInProgress === "withdrawRewards" && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )}
+            </ButtonV2>
           </div>
         </div>
       </GlassCardGradient>

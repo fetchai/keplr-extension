@@ -220,13 +220,26 @@ export const MyStakes = observer(
                     height: "36px",
                     marginTop: "0",
                     fontSize: "14px",
+
                     background:
                       "linear-gradient(270deg, #F9774B 10.08%, #cf447b 70.82%",
                     color: "white",
                   }}
-                  text="Claim all"
-                  onClick={() => handleClaimRewards()}
-                />
+                  disabled={account.txTypeInProgress === "withdrawRewards"}
+                  text={
+                    account.txTypeInProgress === "withdrawRewards"
+                      ? ""
+                      : "Claim all"
+                  }
+                  onClick={() => {
+                    if (account.txTypeInProgress === "withdrawRewards") return;
+                    handleClaimRewards();
+                  }}
+                >
+                  {account.txTypeInProgress === "withdrawRewards" && (
+                    <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+                  )}
+                </ButtonV2>
               )}
             </div>
 
@@ -452,17 +465,29 @@ const DelegateReward: FunctionComponent = observer(() => {
             </div>
             <ButtonV2
               styleProps={{
-                width: "auto",
+                width: "71px",
                 padding: "2px 15px",
                 height: "36px",
                 marginTop: "0",
+                fontSize: "14px",
+                fontWeight: 400,
                 background: "transparent",
                 color: "white",
                 border: "1px solid rgba(255,255,255,0.4)",
               }}
-              text="Claim"
-              onClick={() => handleClaim(val.operator_address)}
-            />
+              disabled={account.txTypeInProgress === "withdrawRewards"}
+              text={
+                account.txTypeInProgress === "withdrawRewards" ? "" : "Claim"
+              }
+              onClick={() => {
+                if (account.txTypeInProgress === "withdrawRewards") return;
+                handleClaim(val.operator_address);
+              }}
+            >
+              {account.txTypeInProgress === "withdrawRewards" && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )}
+            </ButtonV2>
           </div>
         ) : null;
       })}

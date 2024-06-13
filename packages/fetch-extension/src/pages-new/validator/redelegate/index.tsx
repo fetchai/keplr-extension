@@ -312,7 +312,7 @@ export const Redelegate = observer(() => {
             />
 
             <ButtonV2
-              text="Confirm"
+              text=""
               styleProps={{
                 width: "336px",
                 padding: "12px",
@@ -323,9 +323,21 @@ export const Redelegate = observer(() => {
                 left: "0px",
                 right: "0px",
               }}
-              disabled={!account.isReadyToSendTx || !txStateIsValid}
-              onClick={redelegateClicked}
-            />
+              disabled={
+                !account.isReadyToSendTx ||
+                !txStateIsValid ||
+                account.txTypeInProgress === "redelegate"
+              }
+              onClick={() => {
+                if (account.txTypeInProgress === "redelegate") return;
+                redelegateClicked();
+              }}
+            >
+              Confirm
+              {account.txTypeInProgress === "redelegate" && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )}
+            </ButtonV2>
           </div>
         </FormGroup>
       )}
