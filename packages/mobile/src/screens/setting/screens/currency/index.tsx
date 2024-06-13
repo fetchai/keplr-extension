@@ -56,7 +56,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
               navigation.goBack();
             }}
           >
-            <Text style={style.flatten(["body3", "color-white"])}>
+            <Text style={style.flatten(["body3", "color-white"]) as ViewStyle}>
               {item.label} ({item.symbol})
             </Text>
             {item.key === priceStore.defaultVsCurrency ? <CheckIcon /> : null}

@@ -88,7 +88,7 @@ export const RegisterNewUserScreen: FunctionComponent = observer(() => {
             </View>
           }
           style={style.flatten(["background-color-white"])}
-          textStyle={style.flatten(["color-black"])}
+          textStyle={style.flatten(["color-black"]) as ViewStyle}
           underlayColor={
             style.flatten(["color-gray-50", "dark:color-gray-100"]).color
           }

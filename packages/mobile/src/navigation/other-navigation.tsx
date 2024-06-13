@@ -33,7 +33,7 @@ import { CurrencyScreen } from "screens/setting/screens/currency";
 import { RenameWalletScreen } from "screens/rename-account";
 import { DeleteWalletScreen } from "screens/delete-account";
 import { ActivityDetails } from "screens/activity/activity-details";
-import { WebViewScreen } from "screens/web/webpages/webview";
+import { WebViewScreen } from "screens/web";
 import { StakingDashboardScreen } from "screens/stake";
 import { ValidatorListScreen } from "screens/stake";
 import { ValidatorDetailsScreen } from "screens/stake";

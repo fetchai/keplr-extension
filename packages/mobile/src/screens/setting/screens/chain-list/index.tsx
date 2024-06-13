@@ -226,7 +226,7 @@ export const SettingChainListScreenElement: FunctionComponent<{
         )}
       </BlurBackground>
       <View style={style.flatten(["justify-center"]) as ViewStyle}>
-        <Text style={style.flatten(["subtitle3", "color-white"])}>
+        <Text style={style.flatten(["subtitle3", "color-white"]) as ViewStyle}>
           {titleCase(chainName)}
         </Text>
       </View>
@@ -246,7 +246,9 @@ export const SettingChainListScreenElement: FunctionComponent<{
             },
             style.flatten(["border-color-pink-light@40%"]),
           ]}
-          onValueChange={() => chainStore.toggleChainInfoInUI(chainId)}
+          onValueChange={(_) => {
+            chainStore.toggleChainInfoInUI(chainId);
+          }}
           value={!disabled}
         />
       </View>

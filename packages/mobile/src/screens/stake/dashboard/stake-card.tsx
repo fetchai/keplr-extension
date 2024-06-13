@@ -132,7 +132,9 @@ export const StakeCard: FunctionComponent = observer(() => {
             </Text>
             <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
               <AnimatedNumber
-                numberForAnimated={parseFloat(stakableBalNumber).toFixed(2)}
+                numberForAnimated={parseFloat(
+                  parseFloat(stakableBalNumber).toFixed(2)
+                )}
                 includeComma={true}
                 decimalAmount={2}
                 gap={0}
@@ -196,7 +198,9 @@ export const StakeCard: FunctionComponent = observer(() => {
             </Text>
             <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
               <AnimatedNumber
-                numberForAnimated={parseFloat(stakedBalNumber).toFixed(2)}
+                numberForAnimated={parseFloat(
+                  parseFloat(stakedBalNumber).toFixed(2)
+                )}
                 includeComma={true}
                 decimalAmount={2}
                 gap={0}
@@ -269,7 +273,9 @@ export const StakeCard: FunctionComponent = observer(() => {
               }
             >
               <AnimatedNumber
-                numberForAnimated={parseFloat(rewardsBalNumber).toFixed(2)}
+                numberForAnimated={parseFloat(
+                  parseFloat(rewardsBalNumber).toFixed(2)
+                )}
                 includeComma={true}
                 decimalAmount={2}
                 gap={0}

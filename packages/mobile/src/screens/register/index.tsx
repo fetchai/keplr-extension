@@ -21,7 +21,6 @@ import { HeaderAddIcon, HeaderBackButtonIcon } from "components/header/icon";
 import { LinearGradientText } from "components/svg/linear-gradient-text";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { IconButton } from "components/new/button/icon";
-import { KeyIcon } from "components/new/icon/key_icon";
 import { BluetoothIcon } from "components/new/icon/bluetooth-icon";
 import { MetaMaskIcon } from "components/new/icon/metamask-icon";
 import { TokenCardView } from "components/new/card-view/token-card-view";
@@ -34,6 +33,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
+import { KeyIconLarge } from "components/new/icon/key";
 
 const SelectWalletOptionCard: FunctionComponent<{
   img: any;
@@ -370,7 +370,7 @@ export const NewWalletModal: FunctionComponent<{
           title="Create new seed phrase"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <KeyIcon width={30} height={30} />
+              <KeyIconLarge />
             </BlurBackground>
           }
           containerStyle={
@@ -431,7 +431,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
           title="Use a seed phrase or a private key"
           leadingIcon={
             <BlurBackground blurIntensity={18}>
-              <KeyIcon width={30} height={30} />
+              <KeyIconLarge />
             </BlurBackground>
           }
           containerStyle={

@@ -7,7 +7,7 @@ import Svg, { Circle, Path } from "react-native-svg";
 export const WCGoBackToBrowserModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
-}> = (isOpen) => {
+}> = ({ isOpen, close }) => {
   const style = useStyle();
 
   if (!isOpen) {
@@ -17,6 +17,7 @@ export const WCGoBackToBrowserModal: FunctionComponent<{
   return (
     <CardModal
       isOpen={isOpen}
+      close={close}
       childrenContainerStyle={
         style.flatten([
           "padding-top-24",
@@ -43,7 +44,9 @@ export const WCGoBackToBrowserModal: FunctionComponent<{
             />
           </Svg>
         </View>
-        <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+        <Text
+          style={style.flatten(["subtitle1", "color-text-middle"]) as ViewStyle}
+        >
           Go back to your browser
         </Text>
       </View>

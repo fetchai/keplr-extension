@@ -40,10 +40,7 @@ export function AddComma(
     }
     return newArray.reverse();
   }
-  const arrayInteger: any[] = AddCommaForInteger(numberAddComma);
-  const newArray = [...arrayInteger, ...dotAndElementAfterDot];
-  // console.log('newArray',newArray);
-  return newArray;
-}
 
-export default AddComma;
+  const arrayInteger: any[] = AddCommaForInteger(numberAddComma);
+  return [...arrayInteger, ...dotAndElementAfterDot];
+}

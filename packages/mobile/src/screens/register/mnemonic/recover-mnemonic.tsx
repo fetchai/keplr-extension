@@ -227,10 +227,14 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       <InputCardView
         key={items.index}
         autoCapitalize="none"
-        label={selectedSeed === SeedType.PRIVATE_KEY ? "Private key" : null}
-        labelStyle={style.flatten(["margin-top-0", "padding-top-0"])}
+        label={
+          selectedSeed === SeedType.PRIVATE_KEY ? "Private key" : undefined
+        }
+        labelStyle={
+          style.flatten(["margin-top-0", "padding-top-0"]) as ViewStyle
+        }
         containerStyle={[style.flatten(["margin-4", "flex-1"])] as ViewStyle}
-        inputStyle={style.flatten(["text-center"])}
+        inputStyle={style.flatten(["text-center"]) as ViewStyle}
         value={items.item}
         multiline={selectedSeed === SeedType.PRIVATE_KEY}
         numberOfLines={selectedSeed === SeedType.PRIVATE_KEY ? 2 : 1}
@@ -306,7 +310,13 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
             text="Paste all from clipboard"
             size="large"
             mode="outline"
-            textStyle={style.flatten(["color-white", "body3", "font-normal"])}
+            textStyle={
+              style.flatten([
+                "color-white",
+                "body3",
+                "font-normal",
+              ]) as ViewStyle
+            }
             containerStyle={
               style.flatten([
                 "border-radius-32",

@@ -75,16 +75,18 @@ export const ChangeWalletCardModel: FunctionComponent<{
             <IconButton
               icon={<SimpleAppleIcon />}
               backgroundBlur={false}
-              iconStyle={style.flatten([
-                "border-width-1",
-                "border-radius-4",
-                "border-color-new-gray-500",
-                "width-24",
-                "height-20",
-                "items-center",
-                "justify-center",
-                "margin-left-6",
-              ])}
+              iconStyle={
+                style.flatten([
+                  "border-width-1",
+                  "border-radius-4",
+                  "border-color-new-gray-500",
+                  "width-24",
+                  "height-20",
+                  "items-center",
+                  "justify-center",
+                  "margin-left-6",
+                ]) as ViewStyle
+              }
             />
           );
         } else if (
@@ -96,16 +98,18 @@ export const ChangeWalletCardModel: FunctionComponent<{
             <IconButton
               icon={<SimpleGoogleIcon />}
               backgroundBlur={false}
-              iconStyle={style.flatten([
-                "border-width-1",
-                "border-radius-4",
-                "border-color-new-gray-500",
-                "width-24",
-                "height-20",
-                "items-center",
-                "justify-center",
-                "margin-left-6",
-              ])}
+              iconStyle={
+                style.flatten([
+                  "border-width-1",
+                  "border-radius-4",
+                  "border-color-new-gray-500",
+                  "width-24",
+                  "height-20",
+                  "items-center",
+                  "justify-center",
+                  "margin-left-6",
+                ]) as ViewStyle
+              }
             />
           );
         }

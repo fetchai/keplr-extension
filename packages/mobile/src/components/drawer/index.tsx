@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
-  DrawerContentComponentProps,
-  DrawerContentOptions,
   DrawerContentScrollView,
+  DrawerContentComponentProps,
 } from "@react-navigation/drawer";
 import { useStore } from "stores/index";
 import {
@@ -11,7 +10,7 @@ import {
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
-import { Platform, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,17 +26,14 @@ import { titleCase } from "utils/format/format";
 import { Button } from "components/button";
 import { InputCardView } from "components/new/card-view/input-card";
 
-export type DrawerContentProps =
-  DrawerContentComponentProps<DrawerContentOptions>;
-
-export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
-  (props) => {
+export const DrawerContent: FunctionComponent<DrawerContentComponentProps> =
+  observer((props) => {
     const { chainStore, analyticsStore } = useStore();
     const navigation = useNavigation();
 
     const safeAreaInsets = useSafeAreaInsets();
 
-    const { style: propStyle, ...rest } = props;
+    const { ...rest } = props;
 
     const style = useStyle();
     const [search, setSearch] = useState("");
@@ -57,14 +53,13 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
 
     return (
       <DrawerContentScrollView
-        style={StyleSheet.flatten([
-          propStyle,
+        style={
           style.flatten([
             "background-color-indigo-900",
             "dark:background-color-platinum-600",
             "padding-x-page",
-          ]),
-        ])}
+          ]) as ViewStyle
+        }
         contentContainerStyle={{
           paddingTop: Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48,
           height: filterChainInfos.length === 0 ? "100%" : undefined,
@@ -138,7 +133,7 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
               ]) as ViewStyle
             }
             mode="outline"
-            textStyle={style.flatten(["color-white", "body3"])}
+            textStyle={style.flatten(["color-white", "body3"]) as ViewStyle}
             text="Manage networks"
             onPress={() => {
               navigation.dispatch(
@@ -231,7 +226,14 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
                           />
                         )}
                       </BlurBackground>
-                      <Text style={style.flatten(["subtitle3", "color-white"])}>
+                      <Text
+                        style={
+                          style.flatten([
+                            "subtitle3",
+                            "color-white",
+                          ]) as ViewStyle
+                        }
+                      >
                         {titleCase(chainInfo.chainName)}
                       </Text>
                     </View>
@@ -245,5 +247,4 @@ export const DrawerContent: FunctionComponent<DrawerContentProps> = observer(
         <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       </DrawerContentScrollView>
     );
-  }
-);
+  });

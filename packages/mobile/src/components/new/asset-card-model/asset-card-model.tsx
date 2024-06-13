@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CardModal } from "modals/card";
-import { ViewStyle } from "react-native";
+import { Platform, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { observer } from "mobx-react-lite";
 import { SearchIcon } from "components/new/icon/search-icon";
@@ -10,6 +10,7 @@ import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { TokenCardView } from "../card-view/token-card-view";
 import { EmptyView } from "../empty";
 import { InputCardView } from "../card-view/input-card";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const AssetCardModel: FunctionComponent<{
   isOpen: boolean;
@@ -18,7 +19,7 @@ export const AssetCardModel: FunctionComponent<{
   amountConfig: IAmountConfig;
 }> = observer(({ close, title, isOpen, amountConfig }) => {
   const style = useStyle();
-
+  const safeAreaInsets = useSafeAreaInsets();
   const { queriesStore, priceStore, analyticsStore } = useStore();
   const [search, setSearch] = useState("");
   const queryBalances = queriesStore
@@ -79,7 +80,7 @@ export const AssetCardModel: FunctionComponent<{
             "max-height-full",
           ]) as ViewStyle,
           {
-            // paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
+            paddingTop: Platform.OS === "ios" ? safeAreaInsets.top : 48,
             // height: filterCurrencies.length === 0 ? "100%" : undefined,
           },
         ] as ViewStyle

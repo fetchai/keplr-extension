@@ -69,11 +69,17 @@ export const MemoInputView: FunctionComponent<{
             <TextInput
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
-                style.flatten([
-                  "body3",
-                  "color-white",
-                  "padding-0",
-                ]) as ViewStyle
+                [
+                  style.flatten(["body3", "color-white", "padding-0"]),
+                  Platform.select({
+                    ios: {},
+                    android: {
+                      // On android, the text input's height does not equals to the line height by strange.
+                      // To fix this problem, set the height explicitly.
+                      height: 19,
+                    },
+                  }),
+                ] as ViewStyle
               }
               keyboardType={
                 Platform.OS === "ios" ? "ascii-capable" : "visible-password"

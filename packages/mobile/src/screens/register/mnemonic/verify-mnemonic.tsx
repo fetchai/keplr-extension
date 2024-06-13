@@ -184,7 +184,7 @@ export const VerifyMnemonicScreen: FunctionComponent = observer(() => {
           size="large"
           loading={isCreating}
           disabled={wordSet.join(" ") !== newMnemonicConfig.mnemonic}
-          textStyle={style.flatten(["body2"])}
+          textStyle={style.flatten(["body2"]) as ViewStyle}
           onPress={async () => {
             setIsCreating(true);
             analyticsStore.logEvent("continue_click", { pageName: "More" });
@@ -232,10 +232,12 @@ const WordButton: FunctionComponent<{
       rippleColor={"black@50%"}
     >
       <Text
-        style={style.flatten(
-          ["text-caption2", "color-white", "text-center"],
-          [used && "color-white@20%"]
-        )}
+        style={
+          style.flatten(
+            ["text-caption2", "color-white", "text-center"],
+            [used && "color-white@20%"]
+          ) as ViewStyle
+        }
       >
         {word}
       </Text>

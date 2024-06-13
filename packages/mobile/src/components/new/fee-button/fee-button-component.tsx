@@ -93,7 +93,7 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           }}
         />
         {feeButtonState.isGasInputOpen || !props.feeConfig.feeCurrency ? (
-          <GasInput label={props.gasLabel} gasConfig={props.gasConfig} />
+          <GasInput gasConfig={props.gasConfig} />
         ) : null}
       </React.Fragment>
     );
@@ -194,7 +194,9 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
           onPress={onPress}
         >
           <View style={style.flatten(["flex-row"])}>
-            <Text style={style.flatten(["body3", "color-white"])}>{label}</Text>
+            <Text style={style.flatten(["body3", "color-white"]) as ViewStyle}>
+              {label}
+            </Text>
             {price ? (
               <Text
                 style={
@@ -313,7 +315,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
           </View>
         ) : null}
         {!isFeeLoading && errorText ? (
-          <View style={style.flatten(["margin-bottom-12"])}>
+          <View style={style.flatten(["margin-bottom-12"]) as ViewStyle}>
             <Text
               style={StyleSheet.flatten([
                 style.flatten([

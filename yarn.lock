@@ -17339,12 +17339,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/d3-path@npm:^1":
+  version: 1.0.11
+  resolution: "@types/d3-path@npm:1.0.11"
+  checksum: 5feb35cc6091e63563587d180b4eaded8ed4fc6a017696dc6184d7051db0a4ee130938cc0ae82ef8ea0dc3681f7339469f5eb3144cd87b44f1cf32fda0617f7f
+  languageName: node
+  linkType: hard
+
+"@types/d3-scale@npm:^1":
+  version: 1.0.22
+  resolution: "@types/d3-scale@npm:1.0.22"
+  dependencies:
+    "@types/d3-time": ^1
+  checksum: fe881a2cba393cc669cc19c0cf4470c9ddb968705e5c55243a3e42da1c73d29f5d49991fed7481613d47ce095ce7077fb8ab74dad3d763502075f0362a065a15
+  languageName: node
+  linkType: hard
+
+"@types/d3-shape@npm:^1":
+  version: 1.3.12
+  resolution: "@types/d3-shape@npm:1.3.12"
+  dependencies:
+    "@types/d3-path": ^1
+  checksum: 3a62a0a20ef3f767ecd396b2331b836aeaba43a87926a33bb257e3bbe9c70013a2be60718dd94539e287d628da2c5b6f80675c12c0c3a086a3f4129b04ac2285
+  languageName: node
+  linkType: hard
+
 "@types/d3-shape@npm:^3":
   version: 3.1.6
   resolution: "@types/d3-shape@npm:3.1.6"
   dependencies:
     "@types/d3-path": "*"
   checksum: bd765be021019c43c8dca066a798a1de28a051d1213db6ca25f76c9e577da7ec40a592e3bda7628383ab48cb87164fe60b95eb5ec23761b2012bd0adb30c549a
+  languageName: node
+  linkType: hard
+
+"@types/d3-time@npm:^1":
+  version: 1.1.4
+  resolution: "@types/d3-time@npm:1.1.4"
+  checksum: a794a2e05365de5bd4b139d7ff94f0d9eeb362116677f1edadb1aa08d5ddb93c4e50ace092f8fa9d7358efab5073770654ac6d294a2a39ca5106c0a55f38c22e
   languageName: node
   linkType: hard
 
@@ -18117,6 +18149,29 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 975c0238d81cea234a2318a7cfcb95a8e6beb7fc5341ca2311651535c6476881e8d2f2f2e1c679ca6e416c04505c748071a1fab0d3fb3e88b0a9e43060b012fe
+  languageName: node
+  linkType: hard
+
+"@types/react-native-svg-charts@npm:5.0.13":
+  version: 5.0.13
+  resolution: "@types/react-native-svg-charts@npm:5.0.13"
+  dependencies:
+    "@types/d3-scale": ^1
+    "@types/d3-shape": ^1
+    "@types/react": "*"
+    "@types/react-native": "*"
+    react-native-svg: ^6.2.1
+  checksum: 365661adbae6badd08b1a79741ae1b94d9ecbcf5a1a4c9666fc2326bad4132fd6504b41f154fe17c9a02c2a73e2d350d4ab24278a92081623b56eadee47d8e89
+  languageName: node
+  linkType: hard
+
+"@types/react-native@npm:*":
+  version: 0.72.8
+  resolution: "@types/react-native@npm:0.72.8"
+  dependencies:
+    "@react-native/virtualized-lists": ^0.72.4
+    "@types/react": "*"
+  checksum: a9fdf0a11ed42f800eb646d038702d3652d0732aa017ecd8203fb2aee77a782fa7ef388433e5cfcb6ab658a1642e1286698fecedcbc379547e4aeefa681ed685
   languageName: node
   linkType: hard
 
@@ -24293,6 +24348,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"color-string@npm:^1.5.2, color-string@npm:^1.9.0":
+  version: 1.9.1
+  resolution: "color-string@npm:1.9.1"
+  dependencies:
+    color-name: ^1.0.0
+    simple-swizzle: ^0.2.2
+  checksum: c13fe7cff7885f603f49105827d621ce87f4571d78ba28ef4a3f1a104304748f620615e6bf065ecd2145d0d9dad83a3553f52bb25ede7239d18e9f81622f1cc5
+  languageName: node
+  linkType: hard
+
 "color-string@npm:^1.5.4":
   version: 1.5.4
   resolution: "color-string@npm:1.5.4"
@@ -24300,16 +24365,6 @@ __metadata:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
   checksum: ae53f205d7a757ce7e1256dc4c8873675a8d3a5f136963183b94bbe725184239e0c19002177ee71488884abb7db958b1744cf83095c5b2b95d0b8937839162b7
-  languageName: node
-  linkType: hard
-
-"color-string@npm:^1.9.0":
-  version: 1.9.1
-  resolution: "color-string@npm:1.9.1"
-  dependencies:
-    color-name: ^1.0.0
-    simple-swizzle: ^0.2.2
-  checksum: c13fe7cff7885f603f49105827d621ce87f4571d78ba28ef4a3f1a104304748f620615e6bf065ecd2145d0d9dad83a3553f52bb25ede7239d18e9f81622f1cc5
   languageName: node
   linkType: hard
 
@@ -24330,6 +24385,16 @@ __metadata:
     color-convert: ^1.3.0
     color-string: ^0.3.0
   checksum: a6f624fd159e9311a6c1c86ac05b5b550c98e2d1e5646e032b8481e5e113127c06a84678b91c89c96b11b58c1c723dd9766b1b02cb2d441c6212a0f7cb3dad73
+  languageName: node
+  linkType: hard
+
+"color@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "color@npm:2.0.1"
+  dependencies:
+    color-convert: ^1.9.1
+    color-string: ^1.5.2
+  checksum: ee9217daf7316482d06237c0ec0cb7d94eee7fbcb71869c58631d8467cdcd3ffc64c69fd143c027ee7c5d793eb416dcad50a6391357c690e94e9dd969719ee28
   languageName: node
   linkType: hard
 
@@ -36873,7 +36938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:>=3.5 <5, lodash@npm:^4.17.11, lodash@npm:^4.17.12, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.2.1, lodash@npm:^4.7.0, lodash@npm:~4.17.0":
+"lodash@npm:>=3.5 <5, lodash@npm:^4.16.6, lodash@npm:^4.17.11, lodash@npm:^4.17.12, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.2.1, lodash@npm:^4.7.0, lodash@npm:~4.17.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -39586,6 +39651,7 @@ __metadata:
     "@types/d3-shape": ^3
     "@types/js-yaml": ^4
     "@types/react-native": ^0.72.2
+    "@types/react-native-svg-charts": 5.0.13
     "@types/react-test-renderer": ^18.0.0
     "@types/sha.js": ^2.4.0
     "@types/text-encoding": ^0
@@ -39594,7 +39660,7 @@ __metadata:
     aes-js: ^3.1.2
     appcenter: ^4.4.5
     appcenter-analytics: ^4.4.5
-    axios: ^1.6.5
+    axios: ^0.27.2
     bip39: ^3.0.2
     browserify: ^17.0.0
     buffer: ^6.0.3
@@ -39632,6 +39698,7 @@ __metadata:
     mobx: ^6.1.7
     mobx-react-lite: ^3.2.0
     mobx-utils: ^6.0.3
+    moment: ^2.10.2
     os-browserify: ^0.3.0
     path-browserify: ^1.0.1
     pod-install: ^0.1.38
@@ -42211,6 +42278,15 @@ __metadata:
     duplexify: ^3.5.0
     through2: ^2.0.3
   checksum: a0e09d6d1a8a01158a3334f20d6b1cdd91747eba24eb06a1d742eefb620385593121a76d4378cc81f77cdce6a66df0575a41041b1189c510254aec91878afc99
+  languageName: node
+  linkType: hard
+
+"pegjs@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "pegjs@npm:0.10.0"
+  bin:
+    pegjs: bin/pegjs
+  checksum: 65d184ca0e1823ec0a3e7f384d7fd771bcbbc7abf460c82c9704022c1fa325425dc9007c92982b951879c3c9d4c39bf5cd6d99690e0540ff5016c04ca1ecd17e
   languageName: node
   linkType: hard
 
@@ -45248,6 +45324,21 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 5b71a69f779eb0c8139b716f76736a798c99d85cd5f1741bdc54cf46bfc032505df7b81a92c76859d09317fe5787dc31aabee8a79e67db083442d00af1600f26
+  languageName: node
+  linkType: hard
+
+"react-native-svg@npm:^6.2.1":
+  version: 6.5.3
+  resolution: "react-native-svg@npm:6.5.3"
+  dependencies:
+    color: ^2.0.1
+    lodash: ^4.16.6
+    pegjs: ^0.10.0
+  peerDependencies:
+    prop-types: ^15.5.7
+    react: "*"
+    react-native: ">=0.50.0"
+  checksum: 13f721581288cb23d630bdea2acb30b68b7cc69677cb31d7b3bbcb50a75e77eb2d37192949c282d131f4a738306d4dbe4e81d2134ec163edc4277e895ccdba0d
   languageName: node
   linkType: hard
 

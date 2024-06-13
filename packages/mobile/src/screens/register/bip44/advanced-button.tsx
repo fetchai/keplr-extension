@@ -45,7 +45,6 @@ export const BIP44AdvancedButton: FunctionComponent<{
   selected?: boolean;
 }> = observer(({ bip44Option, selected }) => {
   const style = useStyle();
- 
   const change = useZeroOrPositiveIntegerString(bip44Option.change.toString());
   const isChangeZeroOrOne =
     change.isValid && (change.number === 0 || change.number === 1);

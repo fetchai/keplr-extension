@@ -6,7 +6,7 @@ import { useStyle } from "styles/index";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { Controller, useForm } from "react-hook-form";
 import { PageWithScrollView } from "components/page";
-import { Platform, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import Web3Auth, {
   LOGIN_PROVIDER,
@@ -28,6 +28,7 @@ import { HideEyeIcon } from "components/new/icon/hide-eye-icon";
 import { PasswordValidateView } from "components/new/password-validate/password-validate";
 import { XmarkIcon } from "components/new/icon/xmark";
 import { CheckIcon } from "components/new/icon/check"; // for using ethers.js
+import DeviceInfo from "react-native-device-info";
 
 const isEnvDevelopment = process.env["NODE_ENV"] !== "production";
 const scheme = "fetchwallet";
@@ -147,7 +148,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
 
   const smartNavigation = useSmartNavigation();
 
-  const isPad = Platform?.constants?.systemName === "iPadOS";
+  const isPad = DeviceInfo.getSystemName() === "iPadOS";
 
   const title =
     route.params.type === "apple"
@@ -302,7 +303,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
               }}
               value={value}
               maxLength={30}
-              refs={ref}
+              ref={ref}
             />
           );
         }}
@@ -337,7 +338,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   onBlur={onBlur}
                   onChangeText={(text: string) => onChange(text.trim())}
                   value={value}
-                  refs={ref}
+                  ref={ref}
                   rightIcon={
                     !showPassword ? (
                       <IconButton

@@ -74,16 +74,21 @@ export const SendPhase2: FunctionComponent<{
     return value && value.shrink(true).maxDecimals(6).toString();
   };
 
-  const usdValue = () =>
-    convertToUsd(
-      sendConfigs.amountConfig
-        ? new CoinPretty(
-            sendConfigs.amountConfig.sendCurrency,
-            new Int(sendConfigs.amountConfig.amount * 10 ** decimals)
-          )
-        : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0))
-    );
+  const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
 
+  const usdValue = () => {
+    const amountConfig = sendConfigs.amountConfig;
+    const amount = parseFloat(amountConfig.amount);
+    const sendCurrency = amountConfig.sendCurrency;
+    return convertToUsd(
+      amountConfig
+        ? new CoinPretty(
+            amountConfig.sendCurrency,
+            new Int(amount * 10 ** decimals)
+          )
+        : new CoinPretty(sendCurrency, new Int(0))
+    );
+  };
   useEffect(() => {
     if (route.params.recipient) {
       sendConfigs.recipientConfig.setRawRecipient(route.params.recipient);
@@ -171,8 +176,6 @@ export const SendPhase2: FunctionComponent<{
       }
     }
   }
-
-  const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
 
   return (
     <React.Fragment>

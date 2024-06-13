@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, ViewStyle } from "react-native";
 import { RenderNumber } from "components/new/animations/animated-number/render-number";
-import AddComma from "components/new/animations/animated-number/add-comma";
+import { AddComma } from "components/new/animations/animated-number/add-comma";
 
 interface Props {
   numberForAnimated: number;

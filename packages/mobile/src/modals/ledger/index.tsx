@@ -308,7 +308,13 @@ export const LedgerGranterModal: FunctionComponent<{
         <React.Fragment>
           {!errorOnListen && bluetoothMode == BluetoothMode.Ledger ? (
             <Text
-              style={style.flatten(["body3", "color-white", "text-center"])}
+              style={
+                style.flatten([
+                  "body3",
+                  "color-white",
+                  "text-center",
+                ]) as ViewStyle
+              }
             >
               To unlock your ledger device,
             </Text>

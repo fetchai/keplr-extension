@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ViewStyle } from "react-native";
 import Animated, {
   withSpring,
   withTiming,
@@ -94,15 +94,17 @@ export function RenderNumber({
           return (
             <Text
               key={i}
-              style={{
-                color: colorValue,
-                fontSize: fontSizeValue,
-                height: fontSizeValue,
-                marginHorizontal: gap,
-                fontWeight: fontWeight ? fontWeight : "normal",
-                // includeFontPadding: false,
-                lineHeight: fontSizeValue! * 1.1,
-              }}
+              style={
+                {
+                  color: colorValue,
+                  fontSize: fontSizeValue,
+                  height: fontSizeValue,
+                  marginHorizontal: gap,
+                  fontWeight: fontWeight ? fontWeight : "normal",
+                  // includeFontPadding: false,
+                  lineHeight: fontSizeValue! * 1.1,
+                } as ViewStyle
+              }
             >
               {numberCharacter}
             </Text>

@@ -39,7 +39,8 @@ export const CardModal: FunctionComponent<{
       }}
       onBackButtonPress={close}
       onBackdropPress={close}
-      animationType="slide"
+      animationIn={"slideInUp"}
+      animationOut={"slideOutDown"}
       animationInTiming={500}
       animationOutTiming={500}
       backdropColor={style.get("color-indigo-backdrop").color}

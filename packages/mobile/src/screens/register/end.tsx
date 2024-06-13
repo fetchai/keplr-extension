@@ -82,7 +82,9 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          <Text style={style.flatten(["subtitle1", "color-text-low"])}>
+          <Text
+            style={style.flatten(["subtitle1", "color-text-low"]) as ViewStyle}
+          >
             Enable Biometric
           </Text>
           <View style={style.get("flex-1")} />

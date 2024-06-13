@@ -168,13 +168,22 @@ export const SignModal: FunctionComponent<{
                   scrollEnabled={true}
                   showsVerticalScrollIndicator={false}
                 >
-                  <Text style={style.flatten(["body3", "color-text-low"])}>
+                  <Text
+                    style={
+                      style.flatten(["body3", "color-text-low"]) as ViewStyle
+                    }
+                  >
                     {content}
                   </Text>
                 </ScrollView>
               ) : (
                 <Text
-                  style={style.flatten(["text-caption2", "color-gray-300"])}
+                  style={
+                    style.flatten([
+                      "text-caption2",
+                      "color-gray-300",
+                    ]) as ViewStyle
+                  }
                 >
                   {content}
                 </Text>
@@ -206,7 +215,9 @@ export const SignModal: FunctionComponent<{
         return (
           <View key={i.toString()}>
             <Msg title={title}>
-              <Text style={style.flatten(["body3", "color-text-low"])}>
+              <Text
+                style={style.flatten(["body3", "color-text-low"]) as ViewStyle}
+              >
                 {content}
               </Text>
             </Msg>
@@ -254,10 +265,18 @@ export const SignModal: FunctionComponent<{
         <React.Fragment>
           <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
             <Text style={style.flatten(["margin-bottom-3"]) as ViewStyle}>
-              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+              <Text
+                style={
+                  style.flatten(["subtitle3", "color-gray-300"]) as ViewStyle
+                }
+              >
                 {`${msgs.length.toString()} `}
               </Text>
-              <Text style={style.flatten(["subtitle3", "color-gray-300"])}>
+              <Text
+                style={
+                  style.flatten(["subtitle3", "color-gray-300"]) as ViewStyle
+                }
+              >
                 {msgs.length > 1 ? "Messages" : "Message"}
               </Text>
             </Text>

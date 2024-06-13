@@ -1,6 +1,6 @@
 import { CardModal } from "modals/card";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { NodeRequire, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { Button } from "components/button";
@@ -19,7 +19,7 @@ interface TransactionProcess {
   status: TransactionStatus;
   title: string;
   subTitle: string;
-  img: NodeRequire;
+  img: string;
 }
 export const TransactionModal: FunctionComponent<{
   isOpen: boolean;

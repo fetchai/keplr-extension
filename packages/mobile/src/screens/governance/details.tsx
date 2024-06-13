@@ -91,7 +91,9 @@ export const TallyVoteInfoView: FunctionComponent<{
             {text}
           </Text>
           <Text
-            style={style.flatten(["text-button3", "color-text-middle"])}
+            style={
+              style.flatten(["text-button3", "color-text-middle"]) as ViewStyle
+            }
           >{`${percentage.trim(true).maxDecimals(1).toString()}%`}</Text>
         </View>
       </View>
@@ -144,7 +146,7 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
             }
           >
             <Text
-              style={style.flatten(["h6", "color-text-high"])}
+              style={style.flatten(["h6", "color-text-high"]) as ViewStyle}
             >{`#${proposal.id}`}</Text>
             <View style={style.flatten(["flex-1"])} />
             <GovernanceProposalStatusChip status={proposal.proposalStatus} />
@@ -173,12 +175,16 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
                 ]) as ViewStyle
               }
             >
-              <Text style={style.flatten(["h7", "color-text-middle"])}>
+              <Text
+                style={style.flatten(["h7", "color-text-middle"]) as ViewStyle}
+              >
                 Turnout
               </Text>
               <View style={style.flatten(["flex-1"])} />
               <Text
-                style={style.flatten(["body3", "color-text-middle"])}
+                style={
+                  style.flatten(["body3", "color-text-middle"]) as ViewStyle
+                }
               >{`${proposal.turnout
                 .trim(true)
                 .maxDecimals(1)
@@ -257,15 +263,19 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
             style={style.flatten(["flex-row", "margin-bottom-24"]) as ViewStyle}
           >
             <View style={style.flatten(["flex-1"])}>
-              <Text style={style.flatten(["h7", "color-text-middle"])}>
+              <Text
+                style={style.flatten(["h7", "color-text-middle"]) as ViewStyle}
+              >
                 Voting Start
               </Text>
               <Text
-                style={style.flatten([
-                  "body3",
-                  "color-text-middle",
-                  "dark:color-platinum-200",
-                ])}
+                style={
+                  style.flatten([
+                    "body3",
+                    "color-text-middle",
+                    "dark:color-platinum-200",
+                  ]) as ViewStyle
+                }
               >
                 {`${dateToLocalStringFormatGMT(
                   intl,
@@ -274,15 +284,19 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
               </Text>
             </View>
             <View style={style.flatten(["flex-1"])}>
-              <Text style={style.flatten(["h7", "color-text-middle"])}>
+              <Text
+                style={style.flatten(["h7", "color-text-middle"]) as ViewStyle}
+              >
                 Voting End
               </Text>
               <Text
-                style={style.flatten([
-                  "body3",
-                  "color-text-middle",
-                  "dark:color-platinum-200",
-                ])}
+                style={
+                  style.flatten([
+                    "body3",
+                    "color-text-middle",
+                    "dark:color-platinum-200",
+                  ]) as ViewStyle
+                }
               >
                 {`${dateToLocalStringFormatGMT(
                   intl,
@@ -331,13 +345,9 @@ export const GovernanceVoteModal: FunctionComponent<{
   // So need to get the props from the parent.
   smartNavigation: ReturnType<typeof useSmartNavigation>;
 }> = observer(({ proposalId, close, smartNavigation, isOpen }) => {
-  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
-  const queries = queriesStore.get(chainStore.current.chainId);
-
-  const proposal = queries.cosmos.queryGovernance.getProposal(proposalId);
-
   const style = useStyle();
 
   const [vote, setVote] = useState<
@@ -427,7 +437,11 @@ export const GovernanceVoteModal: FunctionComponent<{
           }
           onPress={() => setVote("Yes")}
         >
-          <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+          <Text
+            style={
+              style.flatten(["subtitle1", "color-text-middle"]) as ViewStyle
+            }
+          >
             Yes
           </Text>
           {renderBall(vote === "Yes")}
@@ -451,7 +465,11 @@ export const GovernanceVoteModal: FunctionComponent<{
           }
           onPress={() => setVote("No")}
         >
-          <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+          <Text
+            style={
+              style.flatten(["subtitle1", "color-text-middle"]) as ViewStyle
+            }
+          >
             No
           </Text>
           {renderBall(vote === "No")}
@@ -475,7 +493,11 @@ export const GovernanceVoteModal: FunctionComponent<{
           }
           onPress={() => setVote("NoWithVeto")}
         >
-          <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+          <Text
+            style={
+              style.flatten(["subtitle1", "color-text-middle"]) as ViewStyle
+            }
+          >
             No with veto
           </Text>
           {renderBall(vote === "NoWithVeto")}
@@ -499,7 +521,11 @@ export const GovernanceVoteModal: FunctionComponent<{
           }
           onPress={() => setVote("Abstain")}
         >
-          <Text style={style.flatten(["subtitle1", "color-text-middle"])}>
+          <Text
+            style={
+              style.flatten(["subtitle1", "color-text-middle"]) as ViewStyle
+            }
+          >
             Abstain
           </Text>
           {renderBall(vote === "Abstain")}
@@ -540,12 +566,11 @@ export const GovernanceVoteModal: FunctionComponent<{
                     analyticsStore.logEvent("Vote tx broadcasted", {
                       chainId: chainStore.current.chainId,
                       chainName: chainStore.current.chainName,
-                      proposalId,
-                      proposalTitle: proposal?.title,
                     });
-                    smartNavigation.pushSmart("TxPendingResult", {
-                      txHash: Buffer.from(txHash).toString("hex"),
-                    });
+                    console.log("Hash", txHash);
+                    // smartNavigation.pushSmart("TxPendingResult", {
+                    //   txHash: Buffer.from(txHash).toString("hex"),
+                    // });
                   },
                 }
               );

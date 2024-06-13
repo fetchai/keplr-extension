@@ -117,7 +117,13 @@ export const DeleteWalletScreen: FunctionComponent = observer(() => {
                 pageName: "Home",
               });
             }}
-            textStyle={style.flatten(["color-white", "body2", "font-normal"])}
+            textStyle={
+              style.flatten([
+                "color-white",
+                "body2",
+                "font-normal",
+              ]) as ViewStyle
+            }
             containerStyle={
               style.flatten([
                 "border-radius-32",

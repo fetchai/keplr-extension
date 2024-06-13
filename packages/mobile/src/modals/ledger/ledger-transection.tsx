@@ -4,6 +4,7 @@ import { CardModal } from "modals/card";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Image, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
+import { ImageRequireSource } from "react-native/Libraries/Image/ImageSource";
 
 enum ImgStatus {
   First,
@@ -13,7 +14,7 @@ enum ImgStatus {
 
 interface ImgNavigateMode {
   status: ImgStatus;
-  img: NodeRequire;
+  img: ImageRequireSource;
 }
 
 export const LedgerTransectionGuideModel: FunctionComponent<{

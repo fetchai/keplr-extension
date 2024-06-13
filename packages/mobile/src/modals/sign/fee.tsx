@@ -66,13 +66,19 @@ export const FeeInSign: FunctionComponent<{
               Fee
             </Text>
             <View style={style.get("flex-1")} />
-            <Text style={style.flatten(["body3", "color-text-low"])}>
+            <Text
+              style={style.flatten(["body3", "color-text-low"]) as ViewStyle}
+            >
               {price ? price.toString() : "-"}
             </Text>
           </View>
           <View style={style.flatten(["flex-row"])}>
             <View style={style.get("flex-1")} />
-            <Text style={style.flatten(["subtitle1", "color-gray-300"])}>
+            <Text
+              style={
+                style.flatten(["subtitle1", "color-gray-300"]) as ViewStyle
+              }
+            >
               {fee.trim(true).toString()}
             </Text>
           </View>
