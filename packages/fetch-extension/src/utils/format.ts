@@ -30,6 +30,10 @@ export const formatTokenName = (name: string) => {
   return name;
 };
 
+export function titleCase(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
+}
+
 export const shortenNumber = (value: string, decimal = 18) => {
   const number = Math.abs(parseFloat(value)) / 10 ** decimal;
   let result = "";

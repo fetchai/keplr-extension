@@ -84,7 +84,7 @@ const StakeTab = () => {
         title={"Stake"}
         icon={stakeTabIcon}
         activeIcon={selectedStakeTabIcon}
-        path={"/validators/validator"}
+        path={"/stake"}
         disabled={z}
         tooltip={stakingTooltip}
       />
