@@ -291,6 +291,7 @@ export const IBCTransferPageChannel: FunctionComponent<{
                   e.preventDefault();
                   onNext();
                 }}
+                btnBgEnabled={true}
               >
                 <FormattedMessage id="ibc.transfer.next" />
               </ButtonV2>
@@ -391,6 +392,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
               marginTop: "12px",
               height: "56px",
             }}
+            btnBgEnabled={true}
           />
         </div>
         <Dropdown

@@ -145,10 +145,8 @@ export const MyStakes = observer(
               },
             }
           );
-
-          navigate("/", { replace: true });
         } catch (e) {
-          navigate("/portfolio", { replace: true });
+          navigate("/stake", { replace: true });
           notification.push({
             type: "warning",
             placement: "top-center",
@@ -161,6 +159,7 @@ export const MyStakes = observer(
           });
         } finally {
           setIsWithdrawingRewards(false);
+          navigate("/stake", { replace: true });
         }
       }
     };
@@ -403,7 +402,7 @@ const DelegateReward: FunctionComponent = observer(() => {
     } catch (err) {
       console.error(err);
       if (err.toString().includes("Error: Request rejected")) {
-        navigate(`/validators/${validatorAddress}/stake`);
+        navigate(`/validators/${validatorAddress}`);
       }
     } finally {
       setIsWithdrawingRewards(false);

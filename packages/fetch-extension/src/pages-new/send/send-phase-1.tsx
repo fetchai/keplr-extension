@@ -111,6 +111,7 @@ export const SendPhase1: React.FC<SendPhase1Props> = observer(
           styleProps={{
             height: "56px",
           }}
+          btnBgEnabled={true}
         />
         <Dropdown
           isOpen={isChangeWalletOpen}

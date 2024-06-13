@@ -246,6 +246,7 @@ export const Delegate: FunctionComponent = observer(() => {
                 if (account.txTypeInProgress === "delegate") return;
                 stakeClicked();
               }}
+              btnBgEnabled={true}
             >
               Confirm
               {account.txTypeInProgress === "delegate" && (

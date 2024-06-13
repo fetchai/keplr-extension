@@ -264,6 +264,7 @@ export const Unstake = observer(() => {
               if (account.txTypeInProgress === "undelegate") return;
               unstakeClicked();
             }}
+            btnBgEnabled={true}
           >
             Confirm
             {account.txTypeInProgress === "undelegate" && (

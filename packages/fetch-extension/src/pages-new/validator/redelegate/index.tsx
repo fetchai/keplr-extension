@@ -332,6 +332,7 @@ export const Redelegate = observer(() => {
                 if (account.txTypeInProgress === "redelegate") return;
                 redelegateClicked();
               }}
+              btnBgEnabled={true}
             >
               Confirm
               {account.txTypeInProgress === "redelegate" && (

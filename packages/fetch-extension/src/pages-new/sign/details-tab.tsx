@@ -110,11 +110,18 @@ export const DetailsTab: FunctionComponent<{
         </div>
         <div style={{ flex: 1 }} />
         {!preferNoSetMemo ? (
-          <MemoInput
-            memoConfig={memoConfig}
-            label={intl.formatMessage({ id: "sign.info.memo" })}
-            rows={1}
-          />
+          <div>
+            <MemoInput
+              memoConfig={memoConfig}
+              label={intl.formatMessage({ id: "sign.info.memo" })}
+              rows={1}
+            />
+            <div
+              style={{
+                marginTop: "24px",
+              }}
+            />
+          </div>
         ) : (
           <div style={{ color: "white" }}>
             <Label for="memo" className="form-control-label">

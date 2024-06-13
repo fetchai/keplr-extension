@@ -9,6 +9,7 @@ export interface Props {
   disabled?: boolean;
   styleProps?: React.CSSProperties;
   children?: ReactNode;
+  btnBgEnabled?: boolean;
 }
 
 export const ButtonV2: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const ButtonV2: React.FC<Props> = ({
   disabled,
   styleProps,
   children,
+  btnBgEnabled,
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (onClick) {
@@ -37,7 +39,9 @@ export const ButtonV2: React.FC<Props> = ({
       disabled={disabled}
       onClick={handleClick}
       data-loading={dataLoading ? dataLoading : null}
-      className={style["btn"]}
+      className={`${style["btn"]} ${
+        btnBgEnabled && disabled ? style["btnBgDisabled"] : ""
+      }`}
       style={{ ...styleProps }}
     >
       {text} <span className={style["gradient"]}>{gradientText}</span>

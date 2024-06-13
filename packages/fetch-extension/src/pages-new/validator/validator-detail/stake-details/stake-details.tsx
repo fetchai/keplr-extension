@@ -76,7 +76,7 @@ export const StakeDetails = observer(
       } catch (err) {
         console.error(err);
         if (err.toString().includes("Error: Request rejected")) {
-          navigate(`/validators/${validatorAddress}/stake`);
+          navigate(`/validator/${validatorAddress}`);
         }
       } finally {
         setIsWithdrawingRewards(false);

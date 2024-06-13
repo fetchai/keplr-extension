@@ -54,11 +54,13 @@ export const Dashboard = observer(() => {
   const stakedBal = stakedSum.toString();
   const rewardsBal = stakableReward.toString();
 
-  const { numericPart: stakableBalNumber } =
+  const { numericPart: stakableBalNumber, denomPart: stakableDenom } =
     separateNumericAndDenom(stakableBal);
+  const { numericPart: stakedBalNumber, denomPart: stakedDenom } =
+    separateNumericAndDenom(stakedBal);
+  const { numericPart: rewardsBalNumber, denomPart: rewardDenom } =
+    separateNumericAndDenom(rewardsBal);
 
-  const { numericPart: stakedBalNumber } = separateNumericAndDenom(stakedBal);
-  const { numericPart: rewardsBalNumber } = separateNumericAndDenom(rewardsBal);
   const total =
     parseFloat(stakableBalNumber) +
     parseFloat(stakedBalNumber) +
@@ -119,7 +121,7 @@ export const Dashboard = observer(() => {
             >
               <div className={style["label"]}>Available</div>
               <div className={style["value"]}>
-                {parseFloat(stakableBal).toFixed(4)} FET{" "}
+                {parseFloat(stakableBalNumber).toFixed(2)} {` ${stakableDenom}`}
                 <span className={style["label"]}>
                   ({stakablePercentage.toFixed(1)}%)
                 </span>
@@ -155,7 +157,7 @@ export const Dashboard = observer(() => {
             >
               <div className={style["label"]}>Staked</div>
               <div className={style["value"]}>
-                {parseFloat(stakedBal).toFixed(4)} FET{" "}
+                {parseFloat(stakedBalNumber).toFixed(2)} {` ${stakedDenom}`}
                 <span className={style["label"]}>
                   ({stakedPercentage.toFixed(1)}
                   %)
@@ -192,7 +194,7 @@ export const Dashboard = observer(() => {
             >
               <div className={style["label"]}>Staking rewards</div>
               <div className={style["value"]}>
-                {parseFloat(rewardsBal).toFixed(4)} FET{" "}
+                {parseFloat(rewardsBalNumber).toFixed(2)} {` ${rewardDenom}`}
                 <span className={style["label"]}>
                   ({rewardsPercentage.toFixed(1)}%)
                 </span>
