@@ -148,6 +148,11 @@ export const MyRewardCard: FunctionComponent<{
           text1: "Transaction rejected",
         });
         return;
+      } else {
+        Toast.show({
+          type: "error",
+          text1: e?.message,
+        });
       }
       console.log(e);
       analyticsStore.logEvent("claim_txn_broadcasted_fail", {
@@ -455,6 +460,11 @@ const DelegateReward: FunctionComponent = observer(() => {
           text1: "Transaction rejected",
         });
         return;
+      } else {
+        Toast.show({
+          type: "error",
+          text1: e?.message,
+        });
       }
       console.log(e);
       analyticsStore.logEvent("claim_txn_broadcasted_fail", {

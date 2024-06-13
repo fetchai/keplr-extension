@@ -10,6 +10,7 @@ import { AmountInput, FeeButtons, MemoInput } from "components/input";
 import { Button } from "components/button";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { Staking } from "@keplr-wallet/stores";
+import Toast from "react-native-toast-message";
 
 export const DelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -123,8 +124,20 @@ export const DelegateScreen: FunctionComponent = observer(() => {
                 }
               );
             } catch (e) {
-              if (e?.message === "Request rejected") {
+              if (
+                e?.message === "Request rejected" ||
+                e?.message === "Transaction rejected"
+              ) {
+                Toast.show({
+                  type: "error",
+                  text1: "Transaction rejected",
+                });
                 return;
+              } else {
+                Toast.show({
+                  type: "error",
+                  text1: e?.message,
+                });
               }
               console.log(e);
               smartNavigation.navigateSmart("Home", {});

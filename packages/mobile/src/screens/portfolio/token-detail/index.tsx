@@ -181,11 +181,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
         totalPrice={balances.balanceInUsd}
       />
       {tokenInfo.coinGeckoId && (
-        <View style={
-          style.flatten([
-            "display-none"
-          ]) as ViewStyle
-        }>
+        <View style={style.flatten(["display-none"]) as ViewStyle}>
           <View
             style={
               style.flatten([

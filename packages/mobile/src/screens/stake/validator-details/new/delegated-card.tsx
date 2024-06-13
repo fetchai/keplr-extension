@@ -119,6 +119,11 @@ export const DelegatedCard: FunctionComponent<{
           text1: "Transaction rejected",
         });
         return;
+      } else {
+        Toast.show({
+          type: "error",
+          text1: e?.message,
+        });
       }
       console.log(e);
       smartNavigation.navigateSmart("Home", {});

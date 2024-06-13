@@ -10,6 +10,8 @@ import { ArrowDownIcon } from "../icon/arrow-down";
 import { NewBridgeIcon } from "../icon/new-bridge-icon";
 import { Button } from "components/button";
 import { useStore } from "stores/index";
+import Toast from "react-native-toast-message";
+import { txType } from "components/new/txn-status.tsx";
 
 export enum QuickTabOptions {
   receive,
@@ -23,7 +25,10 @@ export const QuickTabOptionModel: FunctionComponent<{
   onPress: (event: QuickTabOptions) => void;
 }> = ({ close, isOpen, onPress }) => {
   const style = useStyle();
-  const { analyticsStore } = useStore();
+  const { analyticsStore, accountStore, chainStore } = useStore();
+
+  const chainId = chainStore.current.chainId;
+  const account = accountStore.getAccount(chainId);
 
   if (!isOpen) {
     return null;
@@ -38,6 +43,14 @@ export const QuickTabOptionModel: FunctionComponent<{
       >
         <RectButton
           onPress={() => {
+            if (account.txTypeInProgress === "send") {
+              Toast.show({
+                type: "error",
+                text1: `${txType[account.txTypeInProgress]} in progress`,
+              });
+              close();
+              return;
+            }
             close();
             onPress(QuickTabOptions.send);
             analyticsStore.logEvent("send_click", {

@@ -186,6 +186,11 @@ export const AccountSection: FunctionComponent<{
           text1: "Transaction rejected",
         });
         return;
+      } else {
+        Toast.show({
+          type: "error",
+          text1: e?.message,
+        });
       }
       console.log(e);
       analyticsStore.logEvent("claim_txn_broadcasted_fail", {
