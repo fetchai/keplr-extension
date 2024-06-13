@@ -1,0 +1,71 @@
+.validator-data-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.validator-data-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  img {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 100px;
+  }
+}
+.validator-data-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.address {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.validator-description {
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 22.4px;
+}
+
+.table-container {
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row-first {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table-row-title {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table-row-value {
+  font-weight: 500;
+}
