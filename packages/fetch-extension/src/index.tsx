@@ -14,14 +14,10 @@ import "./styles/global.scss";
 
 import { HashRouter, Route, Routes } from "react-router-dom";
 
+import { IBCTransferPage } from "./pages-new/more/ibc-transfer";
 import { AccessPage, Secret20ViewingKeyAccessPage } from "./pages/access";
 import { NotificationPage } from "./pages/notification";
-import { IBCTransferPage } from "./pages-new/more/ibc-transfer";
 
-import { MainPage } from "./pages-new/main";
-import { RegisterPage } from "./pages-new/register";
-import { SendPage } from "./pages-new/send";
-import { SetKeyRingPage } from "./pages/setting/keyring";
 import { Banner } from "@components/banner";
 import { ConfirmProvider } from "@components/confirm";
 import { LoadingIndicatorProvider } from "@components/loading-indicator";
@@ -30,6 +26,10 @@ import {
   NotificationStoreProvider,
 } from "@components/notification";
 import { LockPage } from "./pages-new/lock";
+import { MainPage } from "./pages-new/main";
+import { RegisterPage } from "./pages-new/register";
+import { SendPage } from "./pages-new/send";
+import { SetKeyRingPage } from "./pages/setting/keyring";
 
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -63,9 +63,11 @@ import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { AssetView } from "./pages-new/asset-view";
 
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
+import { DeleteWallet } from "./pages-new/keyring-dev/delete";
 import { MorePage } from "./pages-new/more";
 import { AppVersion } from "./pages-new/more/app-version";
 import { MoreLanguagePage } from "./pages-new/more/language";
+import { ManageNetworks } from "./pages-new/more/manage-networks";
 import { MoreNotifications } from "./pages-new/more/notification";
 import { NotificationOrganizations } from "./pages-new/more/notification/notiphy-notification/notification-organizations";
 import { NotificationTopics } from "./pages-new/more/notification/notiphy-notification/notification-topics";
@@ -76,8 +78,21 @@ import { ExportPage } from "./pages-new/more/view-mnemonic-seed";
 import { Portfolio } from "./pages-new/portfolio";
 import { Receive } from "./pages-new/receive";
 import { SignPageV2 } from "./pages-new/sign";
+import { Stake } from "./pages-new/stake";
+import { ValidatorList } from "./pages-unused/validator-list";
+import { ValidatorListPage } from "./pages-new/validator-list";
+import { Validator } from "./pages-new/validator";
+import { Delegate } from "./pages-new/validator/delegate";
+import { Redelegate } from "./pages-new/validator/redelegate";
+import { Unstake } from "./pages-new/validator/unstake";
+import { AxelarBridgeCosmos } from "./pages-unused/axelar-bridge/axelar-bridge-cosmos";
+import { AxelarBridgeEVM } from "./pages-unused/axelar-bridge/axelar-bridge-evm";
 import { AgentChatSection } from "./pages/agent-chat-section";
+import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
+import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
+import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
 import { AuthZPage } from "./pages/authz";
+import { BridgePage } from "./pages/bridge";
 import { BridgeHistoryView } from "./pages/bridge/bridge-history";
 import { ChainSuggestedPage } from "./pages/chain/suggest";
 import { ChatPage } from "./pages/chat";
@@ -106,17 +121,7 @@ import { Privacy } from "./pages/setting/chat/privacy";
 import { ReadRecipt } from "./pages/setting/chat/readRecipt";
 import { SettingEndpointsPage } from "./pages/setting/endpoints";
 import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
-import { Validator } from "./pages/validator";
-import { ValidatorList } from "./pages/validator-list";
 import { StakeComplete } from "./pages/validator/stake-complete";
-import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
-import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
-import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
-import { DeleteWallet } from "./pages-new/keyring-dev/delete";
-import { AxelarBridgeEVM } from "./pages-unused/axelar-bridge/axelar-bridge-evm";
-import { AxelarBridgeCosmos } from "./pages-unused/axelar-bridge/axelar-bridge-cosmos";
-import { BridgePage } from "./pages/bridge";
-import { ManageNetworks } from "./pages-new/more/manage-networks";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -452,6 +457,27 @@ ReactDOM.render(
                       <Route
                         path="/manage-networks"
                         element={<ManageNetworks />}
+                      />
+                      <Route path="/stake" element={<Stake />} />
+                      <Route
+                        path="/validator/:validator_address/"
+                        element={<Validator />}
+                      />
+                      <Route
+                        path="/validator/:validator_address/redelegate"
+                        element={<Redelegate />}
+                      />
+                      <Route
+                        path="/validator/validator-list"
+                        element={<ValidatorListPage />}
+                      />
+                      <Route
+                        path="/validator/:validator_address/delegate"
+                        element={<Delegate />}
+                      />
+                      <Route
+                        path="/validator/:validator_address/unstake"
+                        element={<Unstake />}
                       />
 
                       <Route path="*" element={<StateRenderer />} />
