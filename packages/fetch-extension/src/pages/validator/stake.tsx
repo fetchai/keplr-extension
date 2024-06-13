@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { TXNTYPE } from "../../config";
 
 export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
   ({ validatorAddress }) => {
@@ -176,7 +177,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
             disabled={
               errorText != null ||
               !amountConfig.amount ||
-              account.txTypeInProgress === "delegate"
+              account.txTypeInProgress === TXNTYPE.delegate
             }
             style={{ alignItems: "end", marginTop: "10px" }}
             onClick={stakeClicked}
@@ -190,7 +191,7 @@ export const Stake: FunctionComponent<{ validatorAddress: string }> = observer(
               }}
             />
             Stake
-            {account.txTypeInProgress === "delegate" && (
+            {account.txTypeInProgress === TXNTYPE.delegate && (
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
             )}
           </Button>

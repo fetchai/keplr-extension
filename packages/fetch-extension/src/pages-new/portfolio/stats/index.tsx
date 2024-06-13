@@ -9,6 +9,7 @@ import { ButtonV2 } from "@components-v2/buttons/button";
 import { DefaultGasMsgWithdrawRewards } from "../../../config.ui";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
+import { TXNTYPE } from "../../../config";
 
 export const Stats = () => {
   const navigate = useNavigate();
@@ -239,11 +240,11 @@ export const Stats = () => {
         text="Claim rewards"
         disabled={
           rewardsBal === "0.000000000000000000 FET" ||
-          accountInfo.txTypeInProgress === "withdrawRewards" ||
+          accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards ||
           _isWithdrawingRewards
         }
       >
-        {(accountInfo.txTypeInProgress === "withdrawRewards" ||
+        {(accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards ||
           _isWithdrawingRewards) && (
           <i className="fas fa-spinner fa-spin ml-2 mr-2" />
         )}

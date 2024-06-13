@@ -9,6 +9,7 @@ import { Activity } from "./activity";
 import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
 import { useStore } from "../../stores";
+import { TXNTYPE } from "../../config";
 
 export const AssetView = observer(() => {
   const { chainStore, accountStore } = useStore();
@@ -65,7 +66,7 @@ export const AssetView = observer(() => {
         : -(parseFloat(totalNumber) * assetValues.diff) / 100;
   }
 
-  const sendDisabled = accountInfo.txTypeInProgress === "send";
+  const isSendDisabled = accountInfo.txTypeInProgress === TXNTYPE.send;
 
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
@@ -148,17 +149,17 @@ export const AssetView = observer(() => {
           </ButtonV2>
           <ButtonV2
             styleProps={{
-              cursor: sendDisabled ? "not-allowed" : "pointer",
+              cursor: isSendDisabled ? "not-allowed" : "pointer",
               display: "flex",
               alignItems: "center",
               gap: "4px",
               justifyContent: "center",
-              opacity: sendDisabled ? 0.5 : 1,
+              opacity: isSendDisabled ? 0.5 : 1,
             }}
-            onClick={!sendDisabled ? () => navigate("/send") : () => {}}
+            onClick={!isSendDisabled ? () => navigate("/send") : () => {}}
             text={"Send"}
           >
-            {sendDisabled ? (
+            {isSendDisabled ? (
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
             ) : (
               <img

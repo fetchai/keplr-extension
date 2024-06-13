@@ -6,6 +6,7 @@ import { observer } from "mobx-react-lite";
 import { Card } from "@components-v2/card";
 import style from "./style.module.scss";
 import { Dropdown } from "@components-v2/dropdown";
+import { TXNTYPE } from "../../../config";
 
 interface WalletActionsProps {
   isOpen: boolean;
@@ -49,12 +50,12 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               background: "rgba(255,255,255,0.1)",
               height: "60px",
               marginBottom: "6px",
-              opacity: accountInfo.txTypeInProgress === "send" ? 0.5 : 1,
+              opacity: accountInfo.txTypeInProgress === TXNTYPE.send ? 0.5 : 1,
             }}
-            disabled={accountInfo.txTypeInProgress === "send"}
+            disabled={accountInfo.txTypeInProgress === TXNTYPE.send}
             leftImage={require("@assets/svg/wireframe/arrow-up.svg")}
             rightContent={
-              accountInfo.txTypeInProgress === "send" && (
+              accountInfo.txTypeInProgress === TXNTYPE.send && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )
             }

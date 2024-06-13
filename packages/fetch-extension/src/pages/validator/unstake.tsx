@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
+import { TXNTYPE } from "../../config";
 
 export const Unstake: FunctionComponent<{
   validatorAddress: string;
@@ -174,7 +175,7 @@ export const Unstake: FunctionComponent<{
           disabled={
             errorText != null ||
             !amountConfig.amount ||
-            account.txTypeInProgress === "undelegate"
+            account.txTypeInProgress === TXNTYPE.undelegate
           }
           style={{ alignItems: "end", marginTop: "10px" }}
           onClick={stakeClicked}
@@ -188,7 +189,7 @@ export const Unstake: FunctionComponent<{
             }}
           />
           Unstake
-          {account.txTypeInProgress === "undelegate" && (
+          {account.txTypeInProgress === TXNTYPE.undelegate && (
             <i className="fas fa-spinner fa-spin ml-2 mr-2" />
           )}
         </Button>
