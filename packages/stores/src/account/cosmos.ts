@@ -443,6 +443,7 @@ export class CosmosAccountImpl {
       };
 
       this.activityStore.addNode(newNode);
+      this.activityStore.addPendingTxn({ id: txId, type });
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
 
@@ -492,6 +493,7 @@ export class CosmosAccountImpl {
 
       //update node's gas, amount and status on completed
       updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
+      this.activityStore.removePendingTxn(txId);
 
       this.base.setTxTypeInProgress("");
 
