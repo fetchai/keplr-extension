@@ -16,6 +16,7 @@ import { useIntl } from "react-intl";
 import { ExtensionKVStore } from "@keplr-wallet/common";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { Card } from "@components-v2/card";
+import { TXNTYPE } from "../../config";
 
 export const FetchhubBridge: FunctionComponent<{
   limit: string;
@@ -78,7 +79,7 @@ export const FetchhubBridge: FunctionComponent<{
     nativeBridgeConfig.feeConfig.error == null &&
     nativeBridgeConfig.gasConfig.error == null;
 
-  if (accountInfo.txTypeInProgress === "nativeBridgeSend") {
+  if (accountInfo.txTypeInProgress === TXNTYPE.nativeBridgeSend) {
     return (
       <p
         style={{

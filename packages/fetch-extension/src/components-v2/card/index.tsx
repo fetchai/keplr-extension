@@ -15,6 +15,7 @@ export interface CardProps {
   rightContentOnClick?: any;
   rightContentStyle?: any;
   inActiveBackground?: any;
+  disabled?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -31,6 +32,7 @@ export const Card: React.FC<CardProps> = ({
   onClick,
   rightContentOnClick,
   inActiveBackground,
+  disabled,
 }) => {
   const containerStyle: React.CSSProperties = {
     backgroundColor: isActive
@@ -38,7 +40,11 @@ export const Card: React.FC<CardProps> = ({
       : inActiveBackground
       ? inActiveBackground
       : "rgba(255,255,255,0.1)",
-    cursor: onClick || rightContentOnClick ? "pointer" : "default",
+    cursor: disabled
+      ? "not-allowed"
+      : onClick || rightContentOnClick
+      ? "pointer"
+      : "default",
     ...style,
   };
 
@@ -46,7 +52,7 @@ export const Card: React.FC<CardProps> = ({
     <div
       style={containerStyle}
       className={styles["cardContainer"]}
-      onClick={onClick}
+      onClick={!disabled && onClick}
     >
       {leftImage &&
         (leftImage.length > 1 ? (
