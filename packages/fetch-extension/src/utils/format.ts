@@ -120,7 +120,9 @@ export const formatAmount = (amount: string) => {
 };
 
 export const separateNumericAndDenom = (value: any) => {
-  const [numericPart, denomPart] = value ? value.split(" ") : ["", ""];
+  const [numericPart, denomPart] = value
+    ? value.replace(",", "").split(" ")
+    : ["", ""];
   return { numericPart, denomPart };
 };
 

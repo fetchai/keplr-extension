@@ -62,6 +62,7 @@ export const Stats = () => {
 
   const { numericPart: stakedBalNumber } = separateNumericAndDenom(stakedBal);
   const { numericPart: rewardsBalNumber } = separateNumericAndDenom(rewardsBal);
+
   const total =
     parseFloat(stakableBalNumber) +
     parseFloat(stakedBalNumber) +
@@ -195,7 +196,7 @@ export const Stats = () => {
           <div>
             <div className={style["label"]}>Available</div>
             <div className={style["value"]}>
-              {parseFloat(stakableBal).toFixed(4)} FET (
+              {parseFloat(stakableBalNumber).toFixed(4)} FET (
               {stakablePercentage.toFixed(1)}%)
             </div>
           </div>
@@ -208,7 +209,7 @@ export const Stats = () => {
           <div>
             <div className={style["label"]}>Staked</div>
             <div className={style["value"]}>
-              {parseFloat(stakedBal).toFixed(4)} FET (
+              {parseFloat(stakedBalNumber).toFixed(4)} FET (
               {stakedPercentage.toFixed(1)}
               %)
             </div>
@@ -222,7 +223,7 @@ export const Stats = () => {
           <div>
             <div className={style["label"]}>Staking rewards</div>
             <div className={style["value"]}>
-              {parseFloat(rewardsBal).toFixed(4)} FET (
+              {parseFloat(rewardsBalNumber).toFixed(4)} FET (
               {rewardsPercentage.toFixed(1)}%)
             </div>
           </div>
