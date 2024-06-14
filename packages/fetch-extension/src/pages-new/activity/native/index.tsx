@@ -105,7 +105,7 @@ export const NativeTab = observer(() => {
 
     //accountInit is required because in case of a reload, this.nodes becomes empty and should be updated with KVstore's saved nodes
     activityStore.accountInit();
-  }, []);
+  }, [accountInfo.bech32Address]);
 
   // const handleClick = () => {
   //   analyticsStore.logEvent("activity_transactions_click", {

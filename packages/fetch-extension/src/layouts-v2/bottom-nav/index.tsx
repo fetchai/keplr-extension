@@ -111,9 +111,6 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
-
-    setActivityTooltip("Coming soon");
-    setActivityDisabled(true);
   }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
