@@ -51,7 +51,7 @@ export const Validator: FunctionComponent = observer(() => {
           : validator?.description.website
       }`}
       showBottomMenu={false}
-      onBackButton={() => navigate(`/validator/validator-list/`)}
+      onBackButton={() => navigate(-1)}
     >
       {validator && <ValidatorDetails validatorAddress={validatorAddress} />}
     </HeaderLayout>

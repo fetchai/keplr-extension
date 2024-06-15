@@ -21,7 +21,7 @@ export const DetailRows = ({ details }: { details: any }) => {
     window.open(mintscanURL, "_blank");
   };
   const handleValidatorClicked = () => {
-    navigate(`/validators/${details.validatorAddress}/stake`);
+    navigate(`/validator/${details.validatorAddress}/delegate`);
   };
   const handleSendClicked = () => {
     navigate("/send", {

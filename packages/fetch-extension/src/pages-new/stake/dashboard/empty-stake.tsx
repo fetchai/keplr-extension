@@ -9,7 +9,7 @@ export const EmptyStake = () => {
     <div className={style["empty-stake-container"]}>
       <div className={style["empty-stake-text"]}>
         <img src={require("@assets/svg/wireframe/ic_staking.svg")} alt="" />
-        <div className={style["title-text"]}>Start stacking now</div>
+        <div className={style["title-text"]}>Start staking now</div>
         <div className={style["subtitle-text"]}>
           Stack your assets to earn rewards and contribute to maintaining the
           networks
