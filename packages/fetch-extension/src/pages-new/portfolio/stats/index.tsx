@@ -16,7 +16,8 @@ export const Stats = () => {
   const notification = useNotification();
 
   const [_isWithdrawingRewards, setIsWithdrawingRewards] = useState(false);
-  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
+    useStore();
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const accountInfo = accountStore.getAccount(current.chainId);
@@ -57,11 +58,12 @@ export const Stats = () => {
   const stakedBal = stakedSum.toString();
   const rewardsBal = stakableReward.toString();
 
-  const { numericPart: stakableBalNumber } =
+  const { numericPart: stakableBalNumber, denomPart: stakableDenom } =
     separateNumericAndDenom(stakableBal);
-
-  const { numericPart: stakedBalNumber } = separateNumericAndDenom(stakedBal);
-  const { numericPart: rewardsBalNumber } = separateNumericAndDenom(rewardsBal);
+  const { numericPart: stakedBalNumber, denomPart: stakedDenom } =
+    separateNumericAndDenom(stakedBal);
+  const { numericPart: rewardsBalNumber, denomPart: rewardDenom } =
+    separateNumericAndDenom(rewardsBal);
 
   const total =
     parseFloat(stakableBalNumber) +
@@ -78,6 +80,10 @@ export const Stats = () => {
     ? (parseFloat(rewardsBalNumber) / total) * 100
     : 0;
 
+  const stakableInUSD = priceStore.calculatePrice(stakable)?.toString();
+  const stakedInUSD = priceStore.calculatePrice(stakedSum)?.toString();
+  const rewardsInUSD = priceStore.calculatePrice(stakableReward)?.toString();
+
   const doughnutData = {
     labels: ["Balance", "Staked", "Rewards"],
     datasets: [
@@ -87,8 +93,8 @@ export const Stats = () => {
           parseFloat(stakedBalNumber),
           parseFloat(rewardsBalNumber),
         ],
-        backgroundColor: ["#F9774B", "#5F38FB", "#CFC3FE"],
-        hoverBackgroundColor: ["#F9774B", "#5F38FB", "#CFC3FE"],
+        backgroundColor: ["#CFC3FE", "#5F38FB", "#F9774B"],
+        hoverBackgroundColor: ["#CFC3FE", "#5F38FB", "#F9774B"],
         borderColor: "transparent",
       },
     ],
@@ -187,56 +193,137 @@ export const Stats = () => {
   return (
     <div className={style["card"]}>
       <div className={style["heading"]}>STAKING</div>
-      <div className={style["legends"]}>
-        <div className={style["legend"]}>
-          <img
-            src={require("@assets/svg/wireframe/legend-orange.svg")}
-            alt=""
-          />
-          <div>
-            <div className={style["label"]}>Available</div>
-            <div className={style["value"]}>
-              {parseFloat(stakableBalNumber).toFixed(4)} FET (
-              {stakablePercentage.toFixed(1)}%)
+      <div
+        style={{
+          display: "flex",
+          position: "relative",
+        }}
+      >
+        <div>
+          <div className={style["legends"]}>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  stakableInUSD !== undefined && stakableInUSD > "$0"
+                    ? require("@assets/svg/wireframe/legend-light-purple-long.svg")
+                    : require("@assets/svg/wireframe/legend-light-purple.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Available</div>
+                <div className={style["value"]}>
+                  {parseFloat(stakableBalNumber).toFixed(2)}{" "}
+                  {` ${stakableDenom} `}
+                  <span className={style["label"]}>
+                    ({stakablePercentage.toFixed(1)}%)
+                  </span>
+                </div>
+                {stakableInUSD !== undefined && stakableInUSD > "$0" ? (
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      color: "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    {stakableInUSD}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  stakedInUSD !== undefined && stakedInUSD > "$0"
+                    ? require("@assets/svg/wireframe/legend-purple-long.svg")
+                    : require("@assets/svg/wireframe/legend-purple.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Staked</div>
+                <div className={style["value"]}>
+                  {parseFloat(stakedBalNumber).toFixed(2)}
+                  {` ${stakedDenom} `}
+                  <span className={style["label"]}>
+                    ({stakedPercentage.toFixed(1)}
+                    %)
+                  </span>
+                </div>
+                {stakedInUSD !== undefined && stakedInUSD > "$0" ? (
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      color: "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    {stakedInUSD}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  rewardsInUSD !== undefined && rewardsInUSD > "$0"
+                    ? require("@assets/svg/wireframe/legend-orange-long.svg")
+                    : require("@assets/svg/wireframe/legend-orange.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Staking rewards</div>
+                <div className={style["value"]}>
+                  {parseFloat(rewardsBalNumber).toFixed(2)} {` ${rewardDenom} `}
+                  <span className={style["label"]}>
+                    ({rewardsPercentage.toFixed(1)}%)
+                  </span>
+                </div>
+                {rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      color: "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    {rewardsInUSD}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
-        <div className={style["legend"]}>
-          <img
-            src={require("@assets/svg/wireframe/legend-purple.svg")}
-            alt=""
-          />
-          <div>
-            <div className={style["label"]}>Staked</div>
-            <div className={style["value"]}>
-              {parseFloat(stakedBalNumber).toFixed(4)} FET (
-              {stakedPercentage.toFixed(1)}
-              %)
-            </div>
-          </div>
+        <div className={style["doughnut-graph"]}>
+          <Doughnut data={doughnutData} options={doughnutData.options} />
         </div>
-        <div className={style["legend"]}>
-          <img
-            src={require("@assets/svg/wireframe/legend-light-purple.svg")}
-            alt=""
-          />
-          <div>
-            <div className={style["label"]}>Staking rewards</div>
-            <div className={style["value"]}>
-              {parseFloat(rewardsBalNumber).toFixed(4)} FET (
-              {rewardsPercentage.toFixed(1)}%)
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={style["doughnut-graph"]}>
-        <Doughnut data={doughnutData} options={doughnutData.options} />
       </div>
       <ButtonV2
         onClick={handleClaimRewards}
         styleProps={{
           background: "linear-gradient(269deg, #F9774B 0%, #CF447B 99.29%)",
           color: "white",
+          marginTop: "24px",
         }}
         text="Claim rewards"
         disabled={
