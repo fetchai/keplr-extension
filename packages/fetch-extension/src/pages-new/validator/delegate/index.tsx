@@ -14,6 +14,7 @@ import { FeeButtons, MemoInput } from "@components-v2/form";
 import style from "./style.module.scss";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
+import { TXNTYPE } from "../../../config";
 
 export const Delegate: FunctionComponent = observer(() => {
   const location = useLocation();
@@ -169,7 +170,7 @@ export const Delegate: FunctionComponent = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={`Stake`}
       showBottomMenu={false}
-      onBackButton={() => navigate(`/validator/${validatorAddress}`)}
+      onBackButton={() => navigate(-1)}
     >
       {validator && (
         <div style={{ color: "white" }}>
@@ -240,16 +241,16 @@ export const Delegate: FunctionComponent = observer(() => {
               disabled={
                 !account.isReadyToSendTx ||
                 !txStateIsValid ||
-                account.txTypeInProgress === "delegate"
+                account.txTypeInProgress === TXNTYPE.delegate
               }
               onClick={() => {
-                if (account.txTypeInProgress === "delegate") return;
+                if (account.txTypeInProgress === TXNTYPE.delegate) return;
                 stakeClicked();
               }}
               btnBgEnabled={true}
             >
               Confirm
-              {account.txTypeInProgress === "delegate" && (
+              {account.txTypeInProgress === TXNTYPE.delegate && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

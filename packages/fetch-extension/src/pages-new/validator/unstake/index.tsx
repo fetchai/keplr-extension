@@ -20,6 +20,7 @@ import { StakeInput } from "@components-v2/form/stake-input";
 import { UseMaxButton } from "@components-v2/buttons/use-max-button";
 import { FeeButtons, MemoInput } from "@components-v2/form";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { TXNTYPE } from "../../../config";
 
 export const Unstake = observer(() => {
   const location = useLocation();
@@ -177,7 +178,7 @@ export const Unstake = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={`Unstake`}
       showBottomMenu={false}
-      onBackButton={() => navigate(`/validator/${validatorAddress}`)}
+      onBackButton={() => navigate(-1)}
     >
       <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
         <div className={style["unstake-container"]}>
@@ -258,16 +259,16 @@ export const Unstake = observer(() => {
             disabled={
               errorText != null ||
               !amountConfig.amount ||
-              account.txTypeInProgress === "undelegate"
+              account.txTypeInProgress === TXNTYPE.undelegate
             }
             onClick={() => {
-              if (account.txTypeInProgress === "undelegate") return;
+              if (account.txTypeInProgress === TXNTYPE.undelegate) return;
               unstakeClicked();
             }}
             btnBgEnabled={true}
           >
             Confirm
-            {account.txTypeInProgress === "undelegate" && (
+            {account.txTypeInProgress === TXNTYPE.undelegate && (
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
             )}
           </ButtonV2>

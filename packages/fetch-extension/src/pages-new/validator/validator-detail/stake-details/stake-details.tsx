@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../../stores";
 import style from "../style.module.scss";
+import { TXNTYPE } from "../../../../config";
 
 export const StakeDetails = observer(
   ({ validatorAddress }: { validatorAddress: string }) => {
@@ -156,10 +157,10 @@ export const StakeDetails = observer(
                 parseFloat(
                   rewards[0]?.maxDecimals(4).toString().split(" ")[0]
                 ) <= 0.0 ||
-                account.txTypeInProgress === "withdrawRewards"
+                account.txTypeInProgress === TXNTYPE.withdrawRewards
               }
               onClick={() => {
-                if (account.txTypeInProgress === "withdrawRewards") {
+                if (account.txTypeInProgress === TXNTYPE.withdrawRewards) {
                   notification.push({
                     type: "danger",
                     placement: "top-center",
@@ -177,7 +178,7 @@ export const StakeDetails = observer(
               text=""
             >
               Claim rewards
-              {account.txTypeInProgress === "withdrawRewards" && (
+              {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

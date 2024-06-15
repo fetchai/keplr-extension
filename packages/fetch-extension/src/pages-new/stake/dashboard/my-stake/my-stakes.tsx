@@ -20,6 +20,7 @@ import { MyValidator } from "./my-validator";
 import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
 import { Dec } from "@keplr-wallet/unit";
+import { TXNTYPE } from "../../../../config";
 
 export const MyStakes = observer(
   ({
@@ -224,18 +225,21 @@ export const MyStakes = observer(
                       "linear-gradient(270deg, #F9774B 10.08%, #cf447b 70.82%",
                     color: "white",
                   }}
-                  disabled={account.txTypeInProgress === "withdrawRewards"}
+                  disabled={
+                    account.txTypeInProgress === TXNTYPE.withdrawRewards
+                  }
                   text={
-                    account.txTypeInProgress === "withdrawRewards"
+                    account.txTypeInProgress === TXNTYPE.withdrawRewards
                       ? ""
                       : "Claim all"
                   }
                   onClick={() => {
-                    if (account.txTypeInProgress === "withdrawRewards") return;
+                    if (account.txTypeInProgress === TXNTYPE.withdrawRewards)
+                      return;
                     handleClaimRewards();
                   }}
                 >
-                  {account.txTypeInProgress === "withdrawRewards" && (
+                  {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
                     <i className="fas fa-spinner fa-spin ml-2 mr-2" />
                   )}
                 </ButtonV2>
@@ -248,7 +252,12 @@ export const MyStakes = observer(
               queryReward.pendingRewardValidatorAddresses.length === 0 ||
               delegations.length === 0
             ) && (
-              <div onClick={() => setShowRegard((prev) => !prev)}>
+              <div
+                onClick={() => setShowRegard((prev) => !prev)}
+                style={{
+                  cursor: "pointer",
+                }}
+              >
                 <span
                   style={{
                     fontSize: "12px",
@@ -474,16 +483,19 @@ const DelegateReward: FunctionComponent = observer(() => {
                 color: "white",
                 border: "1px solid rgba(255,255,255,0.4)",
               }}
-              disabled={account.txTypeInProgress === "withdrawRewards"}
+              disabled={account.txTypeInProgress === TXNTYPE.withdrawRewards}
               text={
-                account.txTypeInProgress === "withdrawRewards" ? "" : "Claim"
+                account.txTypeInProgress === TXNTYPE.withdrawRewards
+                  ? ""
+                  : "Claim"
               }
               onClick={() => {
-                if (account.txTypeInProgress === "withdrawRewards") return;
+                if (account.txTypeInProgress === TXNTYPE.withdrawRewards)
+                  return;
                 handleClaim(val.operator_address);
               }}
             >
-              {account.txTypeInProgress === "withdrawRewards" && (
+              {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

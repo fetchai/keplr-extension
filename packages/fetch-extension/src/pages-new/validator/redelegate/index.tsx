@@ -19,6 +19,7 @@ import { ChooseValidator } from "./choose-validator";
 import { SelectValidatorList } from "./select-validator-list";
 import style from "./style.module.scss";
 import { RedelegateValidatorDetail } from "./validator-detail";
+import { TXNTYPE } from "../../../config";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -237,7 +238,7 @@ export const Redelegate = observer(() => {
       canChangeChainInfo={false}
       alternativeTitle={`Redelegate`}
       showBottomMenu={false}
-      onBackButton={() => navigate(`/validator/${validatorAddress}`)}
+      onBackButton={() => navigate(-1)}
     >
       {validator && (
         <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
@@ -326,16 +327,16 @@ export const Redelegate = observer(() => {
               disabled={
                 !account.isReadyToSendTx ||
                 !txStateIsValid ||
-                account.txTypeInProgress === "redelegate"
+                account.txTypeInProgress === TXNTYPE.redelegate
               }
               onClick={() => {
-                if (account.txTypeInProgress === "redelegate") return;
+                if (account.txTypeInProgress === TXNTYPE.redelegate) return;
                 redelegateClicked();
               }}
               btnBgEnabled={true}
             >
               Confirm
-              {account.txTypeInProgress === "redelegate" && (
+              {account.txTypeInProgress === TXNTYPE.redelegate && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>
