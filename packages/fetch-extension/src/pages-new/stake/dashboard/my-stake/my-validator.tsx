@@ -91,7 +91,9 @@ export const MyValidator = observer(() => {
                 analyticsStore.logEvent("stake_validator_click", {
                   pageName: "Stake",
                 });
-                navigate(`/validator/${del.delegation.validator_address}`);
+                navigate(`/validator/${del.delegation.validator_address}`, {
+                  state: { previousAddress: "stake" },
+                });
               }}
               key={del.delegation.validator_address}
             >

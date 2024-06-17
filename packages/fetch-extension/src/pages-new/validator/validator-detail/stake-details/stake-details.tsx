@@ -3,7 +3,7 @@ import { GlassCardGradient } from "@components-v2/glass-card/glass-card-gradient
 import { useNotification } from "@components/notification";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useStore } from "../../../../stores";
 import style from "../style.module.scss";
 import { TXNTYPE } from "../../../../config";
@@ -14,6 +14,7 @@ export const StakeDetails = observer(
     const { chainStore, accountStore, queriesStore } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
+    const location = useLocation();
 
     const queryDelegations =
       queries.cosmos.queryDelegations.getQueryBech32Address(
@@ -23,11 +24,10 @@ export const StakeDetails = observer(
       account.bech32Address
     );
 
+    const previousAddress = location.state?.previousAddress || "";
+
     const amount = queryDelegations.getDelegationTo(validatorAddress);
     const rewards = queryRewards.getRewardsOf(validatorAddress);
-
-    const inflation = queries.cosmos.queryInflation;
-    const { isFetching } = inflation;
 
     const notification = useNotification();
 
@@ -73,11 +73,15 @@ export const StakeDetails = observer(
             },
           }
         );
-        navigate(`/validator/${validatorAddress}`);
+        navigate(`/validator/${validatorAddress}`, {
+          state: { previousAddress: previousAddress },
+        });
       } catch (err) {
         console.error(err);
         if (err.toString().includes("Error: Request rejected")) {
-          navigate(`/validator/${validatorAddress}`);
+          navigate(`/validator/${validatorAddress}`, {
+            state: { previousAddress: previousAddress },
+          });
         }
       } finally {
         setIsWithdrawingRewards(false);
@@ -98,7 +102,7 @@ export const StakeDetails = observer(
             <div className={style["stake-data-row"]}>
               <div className={style["stake-data-title"]}>Earned rewards</div>
               <div className={style["stake-data-value"]}>
-                {!isFetching ? (
+                {account.txTypeInProgress !== TXNTYPE.withdrawRewards ? (
                   <div>
                     {!rewards ||
                     rewards.length === 0 ||

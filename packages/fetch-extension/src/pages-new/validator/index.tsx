@@ -11,6 +11,8 @@ export const Validator: FunctionComponent = observer(() => {
   const location = useLocation();
   const validatorAddress = location.pathname.split("/")[2];
 
+  const previousAddress = location.state?.previousAddress || "";
+
   const { chainStore, queriesStore } = useStore();
   const queries = queriesStore.get(chainStore.current.chainId);
 
@@ -51,7 +53,11 @@ export const Validator: FunctionComponent = observer(() => {
           : validator?.description.website
       }`}
       showBottomMenu={false}
-      onBackButton={() => navigate(-1)}
+      onBackButton={() =>
+        previousAddress === "stake"
+          ? navigate("/stake")
+          : navigate("/validator/validator-list")
+      }
     >
       {validator && <ValidatorDetails validatorAddress={validatorAddress} />}
     </HeaderLayout>
