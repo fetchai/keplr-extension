@@ -45,10 +45,22 @@ export class ActivityStore {
   @flow
   *saveNodes() {
     const currNodes = Object.keys(this.nodes).length > 0 ? this.nodes : {};
-    yield this.kvStore.set<any>(
-      `extension_activity_nodes-${this.address}-${this.chainId}`,
-      currNodes
+    let oldNodes = yield* toGenerator(
+      this.kvStore.get<any>(
+        `extension_activity_nodes-${this.address}-${this.chainId}`
+      )
     );
+
+    if (oldNodes === undefined || oldNodes === null) {
+      oldNodes = {};
+    }
+
+    if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
+      yield this.kvStore.set<any>(
+        `extension_activity_nodes-${this.address}-${this.chainId}`,
+        currNodes
+      );
+    }
   }
 
   @flow

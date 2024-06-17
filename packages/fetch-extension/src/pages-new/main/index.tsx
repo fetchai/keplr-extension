@@ -89,8 +89,9 @@ export const MainPage: FunctionComponent = observer(() => {
       activityStore.setAddress(accountInfo.bech32Address);
       activityStore.setChainId(current.chainId);
     }
-
-    activityStore.accountInit();
+    if (accountInfo.bech32Address !== "") {
+      activityStore.accountInit();
+    }
   }, [accountInfo.bech32Address]);
 
   return (
