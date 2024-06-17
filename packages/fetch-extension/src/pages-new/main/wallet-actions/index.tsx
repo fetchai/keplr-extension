@@ -3,10 +3,10 @@ import { useNavigate } from "react-router";
 import { useStore } from "../../../stores";
 import { Dec } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
 import { Card } from "@components-v2/card";
 import style from "./style.module.scss";
 import { Dropdown } from "@components-v2/dropdown";
+import { TXNTYPE } from "../../../config";
 
 interface WalletActionsProps {
   isOpen: boolean;
@@ -26,9 +26,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
       queryBalances.balances.find((bal) =>
         bal.balance.toDec().gt(new Dec(0))
       ) !== undefined;
-    const isStakableInApp = [CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB].includes(
-      chainStore.current.chainId
-    );
+
     const stakable = queries.queryBalances.getQueryBech32Address(
       accountInfo.bech32Address
     ).stakable;
@@ -52,8 +50,15 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               background: "rgba(255,255,255,0.1)",
               height: "60px",
               marginBottom: "6px",
+              opacity: accountInfo.txTypeInProgress === TXNTYPE.send ? 0.5 : 1,
             }}
+            disabled={accountInfo.txTypeInProgress === TXNTYPE.send}
             leftImage={require("@assets/svg/wireframe/arrow-up.svg")}
+            rightContent={
+              accountInfo.txTypeInProgress === TXNTYPE.send && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )
+            }
             heading={"Send"}
             onClick={() => navigate("/send")}
           />
@@ -72,25 +77,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               }
             }}
           />
-          {isStakableInApp && (
-            <Card
-              leftImageStyle={{ background: "transparent", height: "16px" }}
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                height: "60px",
-                marginBottom: "6px",
-              }}
-              leftImage={require("@assets/svg/wireframe/stake.svg")}
-              heading={"Stake"}
-              onClick={() =>
-                navigate(
-                  isStakableInApp
-                    ? "/validators/validator"
-                    : chainStore.current.walletUrlForStaking || ""
-                )
-              }
-            />
-          )}{" "}
+
           <Card
             leftImageStyle={{ background: "transparent", height: "22px" }}
             style={{

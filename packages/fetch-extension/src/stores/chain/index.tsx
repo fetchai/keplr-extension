@@ -16,6 +16,7 @@ import {
   SetChainEndpointsMsg,
   ResetChainEndpointsMsg,
   SuggestChainInfoMsg,
+  SetSelectedChainMsg,
 } from "@keplr-wallet/background";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
@@ -35,6 +36,9 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
   protected chainInfoInUIConfig: {
     disabledChains: string[];
   };
+
+  @observable
+  protected _showTestnet: boolean = false;
 
   constructor(
     protected readonly kvStore: KVStore,
@@ -153,12 +157,24 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     return this._selectedChainId;
   }
 
+  get showTestnet(): boolean {
+    return this._showTestnet;
+  }
+
   @action
   selectChain(chainId: string) {
     if (this._isInitializing) {
       this.deferChainIdSelect = chainId;
     }
     this._selectedChainId = chainId;
+    const msg = new SetSelectedChainMsg(this._selectedChainId);
+    this.requester.sendMessage(BACKGROUND_PORT, msg);
+  }
+
+  @action
+  toggleShowTestnet(value: boolean) {
+    this._showTestnet = value;
+    this.saveLastViewShowTestnet();
   }
 
   @computed
@@ -175,6 +191,14 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     yield this.kvStore.set<string>(
       "extension_last_view_chain_id",
       this._selectedChainId
+    );
+  }
+
+  @flow
+  *saveLastViewShowTestnet() {
+    yield this.kvStore.set<boolean>(
+      "extension_last_view_show_testnet",
+      this._showTestnet
     );
   }
 
@@ -201,6 +225,14 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
       this.deferChainIdSelect = "";
     }
 
+    const lastViewShowTestnet = yield* toGenerator(
+      this.kvStore.get<boolean>("extension_last_view_show_testnet")
+    );
+
+    if (lastViewShowTestnet) {
+      this.toggleShowTestnet(lastViewShowTestnet);
+    }
+
     const chainInfoUI = yield* toGenerator(
       this.kvStore.get<{ disabledChains: string[] }>(
         "extension_chainInfoInUIConfig"
@@ -209,7 +241,17 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
     if (chainInfoUI) {
       this.chainInfoInUIConfig.disabledChains =
-        chainInfoUI.disabledChains ?? [];
+        chainInfoUI?.disabledChains?.length > 0
+          ? chainInfoUI.disabledChains
+          : this.chainInfos
+              .filter((chainInfo) => chainInfo.hideInUI)
+              .map(
+                (element) => ChainIdHelper.parse(element.chainId).identifier
+              );
+    } else {
+      this.chainInfoInUIConfig.disabledChains = this.chainInfos
+        .filter((chainInfo) => chainInfo.hideInUI)
+        .map((element) => ChainIdHelper.parse(element.chainId).identifier);
     }
   }
 

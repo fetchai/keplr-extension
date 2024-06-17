@@ -5,7 +5,6 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { useLanguage } from "../../../languages";
 import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
-import { Button } from "reactstrap";
 import { useNavigate } from "react-router";
 import { separateNumericAndDenom } from "@utils/format";
 
@@ -123,6 +122,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
               : ` ${total
                   .shrink(true)
                   .trim(true)
+                  .hideDenom(true)
                   .maxDecimals(6)
                   .toString()} USD`}
           </div>
@@ -150,12 +150,12 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
           )}
         </div>
       )}
-      <Button
+      <button
         className={style["portfolio"]}
         onClick={() => navigate("/portfolio")}
       >
         View portfolio
-      </Button>
+      </button>
     </div>
   );
 });

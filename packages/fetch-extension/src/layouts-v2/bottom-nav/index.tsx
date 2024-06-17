@@ -1,9 +1,9 @@
-import activityIcon from "@assets/svg/wireframe/new-clock-white.svg";
+import activityIcon from "@assets/svg/wireframe/clock.svg";
 import activitygreyIcon from "@assets/svg/wireframe/new-clock.svg";
 
-import homeTabIcon from "@assets/svg/wireframe/new-home.svg";
+import homeTabIcon from "@assets/svg/wireframe/wallet-new.svg";
 import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
-import selectedHomeTabIcon from "@assets/svg/wireframe/selected-home.svg";
+import selectedHomeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
 import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
@@ -96,7 +96,7 @@ const ActivityTab = () => {
   const { keyRingStore, chainStore } = useStore();
   const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
-  const [z, setActivityDisabled] = useState(false);
+  const [activityDisabled, setActivityDisabled] = useState(false);
   const isEvm = current.features?.includes("evm") ?? false;
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
@@ -111,6 +111,9 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
+
+    setActivityTooltip("Coming soon");
+    setActivityDisabled(true);
   }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
@@ -119,7 +122,7 @@ const ActivityTab = () => {
       icon={activitygreyIcon}
       activeIcon={activityIcon}
       path={"/activity"}
-      disabled={z}
+      disabled={activityDisabled}
       tooltip={activityTooltip}
     />
   );

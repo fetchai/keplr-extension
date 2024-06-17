@@ -27,6 +27,7 @@ import {
   PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
+import { TXNTYPE } from "../../config";
 
 export const SendPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -433,7 +434,7 @@ export const SendPage: FunctionComponent = observer(() => {
             type="submit"
             color="primary"
             block
-            data-loading={accountInfo.txTypeInProgress === "send"}
+            data-loading={accountInfo.txTypeInProgress === TXNTYPE.send}
             disabled={!accountInfo.isReadyToSendTx || !txStateIsValid}
             style={{
               marginTop: "12px",

@@ -16,20 +16,25 @@ import { useIntl } from "react-intl";
 import { useLocation, useNavigate } from "react-router";
 import { Modal, ModalBody } from "reactstrap";
 import { useStore } from "../../stores";
-import { AddAddressModal } from "./add-address-modal";
 import {
   default as style,
   default as styleAddressBook,
 } from "./style.module.scss";
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { SearchBar } from "@components-v2/search-bar";
+import { getFilteredAddressValues } from "@utils/filters";
+import { AddAddress } from "../more/address-book/add-address";
 
 export interface chatSectionParams {
   openModal: boolean;
   addressInputValue: string;
 }
+
 export const defaultParamValues: chatSectionParams = {
   openModal: false,
   addressInputValue: "",
 };
+
 export const ContactBookPage: FunctionComponent<{
   onBackButton?: () => void;
   selectHandler?: AddressBookSelectHandler;
@@ -160,6 +165,8 @@ export const ContactBookPage: FunctionComponent<{
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   return (
     <React.Fragment>
       <Modal
@@ -170,7 +177,7 @@ export const ContactBookPage: FunctionComponent<{
         contentClassName={styleAddressBook["fullModal"]}
       >
         <ModalBody className={styleAddressBook["fullModal"]}>
-          <AddAddressModal
+          <AddAddress
             closeModal={() => closeModal()}
             recipientConfig={recipientConfig}
             memoConfig={memoConfig}
@@ -184,30 +191,59 @@ export const ContactBookPage: FunctionComponent<{
         <div className={styleAddressBook["loader"]}>Loading ....</div>
       ) : (
         <div className={style["container"]}>
+          <SearchBar
+            valuesArray={addressBookConfig.addressBookDatas}
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}
+            filterFunction={getFilteredAddressValues}
+            disabled={addressBookConfig.addressBookDatas.length === 0}
+            renderResult={(data, i) => (
+              <Card
+                key={i.toString()}
+                heading={data.name}
+                subheading={
+                  data.address.indexOf(
+                    chainStore.getChain(selectedChainId).bech32Config
+                      .bech32PrefixAccAddr
+                  ) === 0
+                    ? Bech32Address.shortenAddress(data.address, 34)
+                    : data.address.startsWith("agent")
+                    ? shortenAgentAddress(data.address)
+                    : Bech32Address.shortenAddress(data.address, 34, true)
+                }
+                rightContent={addressBookIcons(i)}
+                data-index={i}
+                onClick={(e: any) => handleAddressClick(e, data.address, i)}
+                style={{ cursor: selectHandler ? undefined : "auto" }}
+              />
+            )}
+          />
           <div>
-            {addressBookConfig.addressBookDatas.map((data, i) => {
-              return (
-                <Card
-                  key={i.toString()}
-                  heading={data.name}
-                  subheading={
-                    data.address.indexOf(
-                      chainStore.getChain(selectedChainId).bech32Config
-                        .bech32PrefixAccAddr
-                    ) === 0
-                      ? Bech32Address.shortenAddress(data.address, 34)
-                      : data.address.startsWith("agent")
-                      ? shortenAgentAddress(data.address)
-                      : Bech32Address.shortenAddress(data.address, 34, true)
-                  }
-                  rightContent={addressBookIcons(i)}
-                  data-index={i}
-                  onClick={(e: any) => handleAddressClick(e, data.address, i)}
-                  style={{ cursor: selectHandler ? undefined : "auto" }}
-                />
-              );
-            })}
+            {addressBookConfig.addressBookDatas.length === 0 && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  opacity: 0.8,
+                  textAlign: "center",
+                  color: "white",
+                }}
+              >
+                You haven’t saved any addresses yet
+              </div>
+            )}
           </div>
+          <ButtonV2
+            styleProps={{
+              height: "56px",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.4)",
+              color: "white",
+              marginTop: "24px",
+            }}
+            text={"Add an address"}
+            onClick={() => setAddAddressModalOpen(true)}
+          />
         </div>
       )}
     </React.Fragment>

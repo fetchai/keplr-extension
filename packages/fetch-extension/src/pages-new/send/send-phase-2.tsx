@@ -7,13 +7,12 @@ import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useGasSimulator } from "@keplr-wallet/hooks";
 import { useNavigate } from "react-router";
-import { Button } from "reactstrap";
 import { useLanguage } from "../../languages";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
 import { useLocation } from "react-router";
-
+import { TXNTYPE } from "../../config";
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;
@@ -191,9 +190,9 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
               {sendConfigs.amountConfig.sendCurrency.coinDenom}
             </div>
           </div>
-          <Button onClick={() => setIsNext(false)} className={style["edit"]}>
+          <button onClick={() => setIsNext(false)} className={style["edit"]}>
             Edit
-          </Button>
+          </button>
         </div>
         <AddressInput
           recipientConfig={sendConfigs.recipientConfig}
@@ -222,8 +221,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           gasSimulator={gasSimulator}
         />
         <ButtonV2
-          text="Review transfer"
+          text="Review transaction"
           gradientText=""
+          styleProps={{
+            height: "56px",
+            position: "sticky",
+            bottom: "5px",
+          }}
           onClick={async (e: any) => {
             e.preventDefault();
             if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
@@ -304,7 +308,11 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           }}
           data-loading={accountInfo.isSendingMsg === "send"}
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
-        />
+        >
+          {accountInfo.txTypeInProgress === TXNTYPE.send && (
+            <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+          )}
+        </ButtonV2>
         {trnsxStatus !== undefined && <TransxStatus status={trnsxStatus} />}
       </div>
     );

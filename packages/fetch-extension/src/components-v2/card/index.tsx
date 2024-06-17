@@ -10,9 +10,12 @@ export interface CardProps {
   isActive?: boolean;
   style?: any;
   subheadingStyle?: any;
+  headingStyle?: any;
   onClick?: any;
   rightContentOnClick?: any;
   rightContentStyle?: any;
+  inActiveBackground?: any;
+  disabled?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -25,12 +28,23 @@ export const Card: React.FC<CardProps> = ({
   isActive,
   style,
   subheadingStyle,
+  headingStyle,
   onClick,
   rightContentOnClick,
+  inActiveBackground,
+  disabled,
 }) => {
   const containerStyle: React.CSSProperties = {
-    backgroundColor: isActive ? "var(--Indigo---Fetch, #5F38FB)" : "",
-    cursor: onClick || rightContentOnClick ? "pointer" : "default",
+    backgroundColor: isActive
+      ? "var(--Indigo---Fetch, #5F38FB)"
+      : inActiveBackground
+      ? inActiveBackground
+      : "rgba(255,255,255,0.1)",
+    cursor: disabled
+      ? "not-allowed"
+      : onClick || rightContentOnClick
+      ? "pointer"
+      : "default",
     ...style,
   };
 
@@ -38,7 +52,7 @@ export const Card: React.FC<CardProps> = ({
     <div
       style={containerStyle}
       className={styles["cardContainer"]}
-      onClick={onClick}
+      onClick={!disabled && onClick}
     >
       {leftImage &&
         (leftImage.length > 1 ? (
@@ -63,7 +77,10 @@ export const Card: React.FC<CardProps> = ({
         }}
       >
         <div className={styles["middleSection"]}>
-          <div className={`${styles["heading"]} ${styles["wordBreak"]}`}>
+          <div
+            style={{ ...headingStyle }}
+            className={`${styles["heading"]} ${styles["wordBreak"]}`}
+          >
             {heading}
           </div>
           {subheading && (

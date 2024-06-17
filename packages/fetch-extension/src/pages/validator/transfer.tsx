@@ -26,6 +26,7 @@ import { useStore } from "../../stores";
 import style from "./style.module.scss";
 import { Staking } from "@keplr-wallet/stores";
 import { CoinPretty } from "@keplr-wallet/unit";
+import { TXNTYPE } from "../../config";
 
 export const Transfer: FunctionComponent<{
   validatorAddress: string;
@@ -231,7 +232,11 @@ export const Transfer: FunctionComponent<{
           type="submit"
           color="primary"
           block
-          disabled={errorText != null || !amountConfig.amount}
+          disabled={
+            errorText != null ||
+            !amountConfig.amount ||
+            account.txTypeInProgress === TXNTYPE.redelegate
+          }
           style={{ alignItems: "end", marginTop: "10px" }}
           onClick={stakeClicked}
         >
@@ -244,6 +249,9 @@ export const Transfer: FunctionComponent<{
             }}
           />
           Redelegate
+          {account.txTypeInProgress === TXNTYPE.redelegate && (
+            <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+          )}
         </Button>
       </FormGroup>
     </React.Fragment>

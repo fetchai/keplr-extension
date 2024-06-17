@@ -8,14 +8,18 @@ import { getTokenIcon } from "@utils/get-token-icon";
 import { Activity } from "./activity";
 import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
+import { useStore } from "../../stores";
+import { TXNTYPE } from "../../config";
 
 export const AssetView = observer(() => {
+  const { chainStore, accountStore } = useStore();
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const location = useLocation();
   const [tokenInfo, setTokenInfo] = useState<any>();
   const [tokenIcon, setTokenIcon] = useState<string>("");
 
   const [balances, setBalances] = useState<any>();
-  const [assetValues, setAssetValues] = useState();
+  const [assetValues, setAssetValues] = useState<any>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +49,25 @@ export const AssetView = observer(() => {
   }, [tokenInfo?.coinGeckoId]);
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(balances?.balance.toString());
+
+  let changeInDollarsClass = null;
+  if (assetValues) {
+    changeInDollarsClass =
+      assetValues?.type === "positive"
+        ? style["increaseInDollarsGreen"]
+        : style["increaseInDollarsOrange"];
+  }
+
+  let changeInDollarsValue = null;
+  if (assetValues) {
+    changeInDollarsValue =
+      assetValues?.type === "positive"
+        ? (parseFloat(totalNumber) * assetValues.diff) / 100
+        : -(parseFloat(totalNumber) * assetValues.diff) / 100;
+  }
+
+  const isSendDisabled = accountInfo.txTypeInProgress === TXNTYPE.send;
+
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
       <div className={style["asset-info"]}>
@@ -57,8 +80,30 @@ export const AssetView = observer(() => {
         )}
         <div className={style["name"]}>{tokenInfo?.coinDenom}</div>
         <div className={style["price-in-usd"]}>
-          {/* {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"} */}
+          {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"}
         </div>
+
+        {assetValues?.diff && (
+          <div
+            className={` ${
+              assetValues.type === "positive"
+                ? style["priceChangesGreen"]
+                : style["priceChangesOrange"]
+            }`}
+          >
+            <div
+              className={style["changeInDollars"] + " " + changeInDollarsClass}
+            >
+              {changeInDollarsValue !== null && changeInDollarsValue.toFixed(4)}{" "}
+              {totalDenom}
+            </div>
+            <div className={style["changeInPer"]}>
+              ( {assetValues.type === "positive" ? "+" : "-"}
+              {parseFloat(assetValues.diff).toFixed(2)} %)
+            </div>
+            <div className={style["day"]}>{assetValues.time}</div>
+          </div>
+        )}
       </div>
       {tokenInfo?.coinGeckoId && (
         <LineGraphView
@@ -75,7 +120,9 @@ export const AssetView = observer(() => {
               {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
             </div>
             <div className={style["inUsd"]}>
-              {balances?.balanceInUsd ? `${balances?.balanceInUsd}` : "0"}{" "}
+              {balances?.balanceInUsd
+                ? `${balances?.balanceInUsd} USD`
+                : "0 USD"}{" "}
             </div>
           </div>
         </div>
@@ -102,20 +149,25 @@ export const AssetView = observer(() => {
           </ButtonV2>
           <ButtonV2
             styleProps={{
-              cursor: "pointer",
+              cursor: isSendDisabled ? "not-allowed" : "pointer",
               display: "flex",
               alignItems: "center",
               gap: "4px",
               justifyContent: "center",
+              opacity: isSendDisabled ? 0.5 : 1,
             }}
-            onClick={() => navigate("/send")}
+            onClick={!isSendDisabled ? () => navigate("/send") : () => {}}
             text={"Send"}
           >
-            <img
-              className={style["img"]}
-              src={require("@assets/svg/wireframe/arrow-up-gradient.svg")}
-              alt=""
-            />
+            {isSendDisabled ? (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            ) : (
+              <img
+                className={style["img"]}
+                src={require("@assets/svg/wireframe/arrow-up-gradient.svg")}
+                alt=""
+              />
+            )}
           </ButtonV2>
         </div>
         {tokenInfo?.coinDenom === "FET" && (
@@ -129,7 +181,7 @@ export const AssetView = observer(() => {
               marginBottom: "48px",
             }}
             onClick={() => navigate("/validators/validator")}
-            text={"Earn"}
+            text={"Stake"}
           >
             <img
               className={style["img"]}

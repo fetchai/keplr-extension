@@ -49,7 +49,6 @@ import { AddTokenPage } from "./pages-new/more/token/add";
 import { ManageTokenPage } from "./pages-new/more/token/manage";
 import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
-import { ClearPage } from "./pages/setting/clear";
 import { StoreProvider, useStore } from "./stores";
 
 import { AdditionalIntlMessages, LanguageToFiatCurrency } from "./config.ui";
@@ -62,9 +61,7 @@ import manifest from "./manifest.v2.json";
 import { ActivityPage } from "./pages-new/activity";
 import { ActivityDetails } from "./pages-new/activity/activity-details";
 import { AssetView } from "./pages-new/asset-view";
-import { AxelarBridgeCosmos } from "./pages-new/axelar-bridge/axelar-bridge-cosmos";
-import { AxelarBridgeEVM } from "./pages-new/axelar-bridge/axelar-bridge-evm";
-import { BridgePage } from "./pages-new/bridge";
+
 import { ChangeNamePageV2 } from "./pages-new/keyring-dev/change";
 import { MorePage } from "./pages-new/more";
 import { AppVersion } from "./pages-new/more/app-version";
@@ -112,6 +109,14 @@ import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { Validator } from "./pages/validator";
 import { ValidatorList } from "./pages/validator-list";
 import { StakeComplete } from "./pages/validator/stake-complete";
+import { ApproveAddChainByNetworkPage } from "./pages/approveAddChainByNetwork";
+import { ApproveSwitchChainPage } from "./pages/approveSwitchChainPage";
+import { ApproveSwitchAccountByAddressPage } from "./pages/approveSwitchAccountPage";
+import { DeleteWallet } from "./pages-new/keyring-dev/delete";
+import { AxelarBridgeEVM } from "./pages-unused/axelar-bridge/axelar-bridge-evm";
+import { AxelarBridgeCosmos } from "./pages-unused/axelar-bridge/axelar-bridge-cosmos";
+import { BridgePage } from "./pages/bridge";
+import { ManageNetworks } from "./pages-new/more/manage-networks";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -286,7 +291,7 @@ ReactDOM.render(
                       />
                       <Route
                         path="/setting/clear/:index"
-                        element={<ClearPage />}
+                        element={<DeleteWallet />}
                       />
                       <Route
                         path="/setting/keyring/change/name/:index"
@@ -322,6 +327,18 @@ ReactDOM.render(
                       <Route
                         path="/suggest-chain"
                         element={<ChainSuggestedPage />}
+                      />
+                      <Route
+                        path="/add-chain-by-network"
+                        element={<ApproveAddChainByNetworkPage />}
+                      />
+                      <Route
+                        path="/switch-chain-by-chainid"
+                        element={<ApproveSwitchChainPage />}
+                      />
+                      <Route
+                        path="/switch-account-by-address"
+                        element={<ApproveSwitchAccountByAddressPage />}
                       />
                       <Route
                         path="/axl-bridge-evm"
@@ -432,6 +449,10 @@ ReactDOM.render(
                       <Route path="/receive" element={<Receive />} />
                       <Route path="/portfolio" element={<Portfolio />} />
                       <Route path="/asset" element={<AssetView />} />
+                      <Route
+                        path="/manage-networks"
+                        element={<ManageNetworks />}
+                      />
 
                       <Route path="*" element={<StateRenderer />} />
                     </Routes>

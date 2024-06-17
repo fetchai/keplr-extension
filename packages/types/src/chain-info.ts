@@ -62,9 +62,14 @@ export interface ChainInfo {
   readonly beta?: boolean;
 
   readonly chainSymbolImageUrl?: string;
+  readonly explorerUrl?: string;
+
+  readonly grpcUrl?: string;
+
+  readonly type?: "mainnet" | "testnet";
   readonly hideInUI?: boolean;
   readonly isTestnet?: boolean;
-  readonly explorerUrl?: string;
+  readonly status?: "alpha" | "beta" | "production";
   readonly txExplorer?: {
     readonly name: string;
     readonly txUrl: string;

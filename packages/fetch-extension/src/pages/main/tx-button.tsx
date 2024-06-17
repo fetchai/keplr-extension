@@ -26,6 +26,7 @@ import activeSend from "@assets/icon/activeSend.png";
 import { DepositModal } from "./qr-code";
 import { Link } from "react-router-dom";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import { TXNTYPE } from "../../config";
 
 export const TxButtonView: FunctionComponent = observer(() => {
   const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
@@ -138,7 +139,7 @@ export const TxButtonView: FunctionComponent = observer(() => {
         }
         color="primary"
         outline
-        data-loading={accountInfo.txTypeInProgress === "send"}
+        data-loading={accountInfo.txTypeInProgress === TXNTYPE.send}
         onClick={(e) => {
           e.preventDefault();
           if (hasAssets) {
@@ -179,7 +180,9 @@ export const TxButtonView: FunctionComponent = observer(() => {
           outline
           color="primary"
           onClick={withdrawAllRewards}
-          data-loading={accountInfo.txTypeInProgress === "withdrawRewards"}
+          data-loading={
+            accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards
+          }
           onMouseEnter={() => {
             setIsActiveReward(true);
           }}
