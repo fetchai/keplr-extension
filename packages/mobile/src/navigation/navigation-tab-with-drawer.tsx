@@ -32,7 +32,7 @@ import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { StakingDashboardScreen } from "screens/stake";
 import { HomeIcon } from "components/new/icon/home-icon";
-import { ActivityComingSoonView } from "screens/activity/coming-soon-screen";
+import { ActivityScreen } from "screens/activity";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -289,7 +289,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
         <Tab.Screen name="Stake" component={StakingDashboardScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
-        <Tab.Screen name="ActivityTab" component={ActivityComingSoonView} />
+        <Tab.Screen name="ActivityTab" component={ActivityScreen} />
         <Tab.Screen name="MoreTab" component={MoreNavigation} />
       </Tab.Navigator>
       <QuickTabOptionModel

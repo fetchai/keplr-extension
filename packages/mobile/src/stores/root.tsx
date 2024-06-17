@@ -23,6 +23,7 @@ import {
   ChainSuggestStore,
   ObservableQueryBase,
   DeferInitialQueryController,
+  ActivityStore,
 } from "@keplr-wallet/stores";
 import { AsyncKVStore } from "../common";
 import { APP_PORT } from "@keplr-wallet/router";
@@ -53,6 +54,7 @@ export class RootStore {
   public readonly ledgerInitStore: LedgerInitStore;
   public readonly signInteractionStore: SignInteractionStore;
   public readonly chainSuggestStore: ChainSuggestStore;
+  public readonly activityStore: ActivityStore;
 
   public readonly queriesStore: QueriesStore<
     [CosmosQueries, CosmwasmQueries, SecretQueries, KeplrETCQueries]
@@ -170,6 +172,11 @@ export class RootStore {
       })
     );
 
+    this.activityStore = new ActivityStore(
+      new AsyncKVStore("store_activity_config"),
+      this.chainStore
+    );
+
     this.accountStore = new AccountStore(
       {
         addEventListener: (type: string, fn: () => void) => {
@@ -180,6 +187,7 @@ export class RootStore {
         },
       },
       this.chainStore,
+      this.activityStore,
       () => {
         return {
           suggestChain: false,

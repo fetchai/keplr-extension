@@ -33,7 +33,6 @@ export const ActivityScreen = () => {
   const style = useStyle();
   const [selectedId, _setSelectedId] = useState(ActivityEnum.Transactions);
   const safeAreaInsets = useSafeAreaInsets();
-  const [latestBlock, _setLatestBlock] = useState<string>();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { analyticsStore } = useStore();
@@ -116,11 +115,8 @@ export const ActivityScreen = () => {
             }
           >
             <ActivityNativeTab
-              latestBlock={latestBlock}
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
-              refreshing={refreshing}
-              onRefresh={() => setRefreshing(false)}
             />
           </View>
         )}

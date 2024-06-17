@@ -69,7 +69,6 @@ export const TokenDetail: FunctionComponent = observer(() => {
       total.shrink(true).trim(true).maxDecimals(6).toString()
     );
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [latestBlock, _setLatestBlock] = useState<string>();
 
   useEffect(() => {
     if (tokenInfo?.coinGeckoId) {
@@ -181,7 +180,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
         totalPrice={balances.balanceInUsd}
       />
       {tokenInfo.coinGeckoId && (
-        <View style={style.flatten(["display-none"]) as ViewStyle}>
+        <React.Fragment>
           <View
             style={
               style.flatten([
@@ -216,11 +215,10 @@ export const TokenDetail: FunctionComponent = observer(() => {
             />
           </View>
           <ActivityNativeTab
-            latestBlock={latestBlock}
             isOpenModal={isOpenModal}
             setIsOpenModal={setIsOpenModal}
           />
-        </View>
+        </React.Fragment>
       )}
     </PageWithScrollView>
   );
