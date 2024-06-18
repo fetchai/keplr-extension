@@ -93,13 +93,33 @@ export const ActivityDetails = () => {
         </View>
         <Text
           style={
-            style.flatten(["color-white", "h4", "margin-top-10"]) as ViewStyle
+            style.flatten([
+              "color-white",
+              "h3",
+              "font-normal",
+              "margin-top-10",
+            ]) as ViewStyle
           }
         >
           {details.verb}
         </Text>
-        <Text style={style.flatten(["color-gray-200", "h7"]) as ViewStyle}>
-          {moment(details.timestamp).utc().format("MMMM DD, hh:mm A")}
+        {details.status === "Success" ? (
+          <Text
+            style={style.flatten(["color-white@80%", "body2"]) as ViewStyle}
+          >
+            Confirmed
+          </Text>
+        ) : details.status === "Pending" ? (
+          <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
+            Pending
+          </Text>
+        ) : (
+          <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
+            Error
+          </Text>
+        )}
+        <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
+          {moment(details.timestamp).format("MMMM DD, hh:mm A")}
         </Text>
       </View>
       <View style={style.flatten(["margin-y-16"]) as ViewStyle}>
