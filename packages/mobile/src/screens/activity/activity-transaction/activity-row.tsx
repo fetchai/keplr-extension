@@ -124,8 +124,12 @@ export const ActivityRow: FunctionComponent<{
             <React.Fragment>
               Confirmed • {moment(details.timestamp).format("hh:mm A")}
             </React.Fragment>
+          ) : node.transaction.status === "Pending" ? (
+            <Text style={style.flatten(["color-white@60%", "h7"]) as ViewStyle}>
+              Pending
+            </Text>
           ) : (
-            <Text style={style.flatten(["color-white", "h7"]) as ViewStyle}>
+            <Text style={style.flatten(["color-white@60%", "h7"]) as ViewStyle}>
               Error
             </Text>
           )}

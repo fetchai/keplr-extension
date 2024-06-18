@@ -4,7 +4,13 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { View, Text, ViewStyle, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  ViewStyle,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import moment from "moment";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
@@ -37,6 +43,7 @@ export const ActivityNativeTab: FunctionComponent<{
   const [activities, setActivities] = useState<unknown[]>([]);
 
   const [filters, setFilters] = useState<FilterItem[]>(activityFilterOptions);
+  const [isLoading, setIsLoading] = useState(true);
 
   const filter = useCallback(
     () =>
@@ -53,9 +60,11 @@ export const ActivityNativeTab: FunctionComponent<{
   useEffect(() => {
     // this is required because accountInit sets the nodes on reload, so we wait for accountInit to set the node and then setActivities
     // else activityStore.getNodes will be empty
+    setIsLoading(true);
     const timeout = setTimeout(() => {
       setActivities(activityStore.sortedNodes);
     }, 100);
+    setIsLoading(false);
 
     return () => {
       clearTimeout(timeout);
@@ -63,9 +72,15 @@ export const ActivityNativeTab: FunctionComponent<{
   }, [activityStore.sortedNodes]);
 
   useEffect(() => {
+    setFilters(activityFilterOptions);
+  }, [accountOrChainChanged]);
+
+  useEffect(() => {
+    setIsLoading(true);
     if (activityStore.checkIsNodeUpdated === true) {
       setActivities(activityStore.sortedNodes);
       activityStore.setIsNodeUpdated(false);
+      setIsLoading(false);
     }
   }, [activityStore, activityStore.checkIsNodeUpdated]);
 
@@ -149,6 +164,11 @@ export const ActivityNativeTab: FunctionComponent<{
       data.length > 0 &&
       activities.length > 0 ? (
         renderList(data)
+      ) : activities.length == 0 && isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={style.get("color-white").color}
+        />
       ) : (
         <NoActivityView />
       )}

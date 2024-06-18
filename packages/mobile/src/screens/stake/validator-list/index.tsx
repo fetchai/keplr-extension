@@ -19,7 +19,7 @@ import { SelectorModal } from "components/new/selector-model/selector";
 import { CheckIcon } from "components/new/icon/check";
 import { InputCardView } from "components/new/card-view/input-card";
 
-type Sort = "APR" | "Voting Power" | "Name";
+type Sort = "Voting Power" | "APR" | "Name";
 
 export const ValidatorListScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -96,8 +96,8 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
     // If inflation is 0 or not fetched properly, there is no need to sort by APY.
     if (apr.toDec().gt(new Dec(0))) {
       return [
-        { label: "APR", key: "APR" },
         { label: "Voting Power", key: "Voting Power" },
+        { label: "APR", key: "APR" },
         { label: "Name", key: "Name" },
       ];
     } else {
