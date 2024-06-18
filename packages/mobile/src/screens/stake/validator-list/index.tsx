@@ -18,8 +18,11 @@ import { SortIcon } from "components/new/icon/sort";
 import { SelectorModal } from "components/new/selector-model/selector";
 import { CheckIcon } from "components/new/icon/check";
 import { InputCardView } from "components/new/card-view/input-card";
+import { VotingIcon } from "components/new/icon/voting-icon";
+import { PercentIcon } from "components/new/icon/percent-icon";
+import { CommissionIcon } from "components/new/icon/commission-icon";
 
-type Sort = "Voting Power" | "APR" | "Name";
+type Sort = "Voting Power" | "APR" | "Commission";
 
 export const ValidatorListScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -69,15 +72,13 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
             : -1;
         });
         break;
-      case "Name":
+      case "Commission":
         data.sort((val1, val2) => {
-          if (!val1.description.moniker) {
-            return -1;
-          }
-          if (!val2.description.moniker) {
-            return 1;
-          }
-          return val1.description.moniker > val2.description.moniker ? 1 : -1;
+          return new Dec(val1.commission.commission_rates.rate).lt(
+            new Dec(val2.commission.commission_rates.rate)
+          )
+            ? -1
+            : 1;
         });
         break;
       case "Voting Power":
@@ -96,14 +97,22 @@ export const ValidatorListScreen: FunctionComponent = observer(() => {
     // If inflation is 0 or not fetched properly, there is no need to sort by APY.
     if (apr.toDec().gt(new Dec(0))) {
       return [
-        { label: "Voting Power", key: "Voting Power" },
-        { label: "APR", key: "APR" },
-        { label: "Name", key: "Name" },
+        { label: "Voting Power", key: "Voting Power", icon: <VotingIcon /> },
+        { label: "APR: High to low", key: "APR", icon: <PercentIcon /> },
+        {
+          label: "Commission: Low to high",
+          key: "Commission",
+          icon: <CommissionIcon />,
+        },
       ];
     } else {
       return [
-        { label: "Voting Power", key: "Voting Power" },
-        { label: "Name", key: "Name" },
+        { label: "Voting Power", key: "Voting Power", icon: <VotingIcon /> },
+        {
+          label: "Commission: Low to high",
+          key: "Commission",
+          icon: <CommissionIcon />,
+        },
       ];
     }
   }, [apr]);

@@ -65,64 +65,53 @@ export const CardModal: FunctionComponent<{
           {title || showCloseButton ? (
             <View
               style={
-                style.flatten(["padding-x-10", "margin-top-24"]) as ViewStyle
+                style.flatten([
+                  "flex-row",
+                  "items-center",
+                  "justify-between",
+                  "margin-x-28",
+                  "margin-top-24",
+                ]) as ViewStyle
               }
             >
-              {/* {!disableGesture ? (
-              <View style={style.flatten(["items-center"]) as ViewStyle}>
-                <View style={style.flatten(["margin-top-10"]) as ViewStyle} />
-              </View>
-            ) : null} */}
-
-              <View
-                style={
-                  style.flatten([
-                    "flex-row",
-                    "items-center",
-                    "justify-between",
-                    "margin-x-10",
-                  ]) as ViewStyle
-                }
-              >
-                {title ? (
-                  <Text
-                    style={
-                      [
-                        style.flatten([
-                          "subtitle2",
-                          "color-text-high",
-                          "color-white",
-                          "flex-3",
-                        ]),
-                        titleStyle,
-                      ] as ViewStyle
+              {title ? (
+                <Text
+                  style={
+                    [
+                      style.flatten([
+                        "subtitle2",
+                        "color-text-high",
+                        "color-white",
+                        "flex-3",
+                      ]),
+                      titleStyle,
+                    ] as ViewStyle
+                  }
+                >
+                  {title}
+                </Text>
+              ) : null}
+              {showCloseButton && close ? (
+                <View style={style.flatten(["flex-1", "items-end"])}>
+                  <IconButton
+                    icon={<XmarkIcon color={"white"} />}
+                    backgroundBlur={false}
+                    blurIntensity={20}
+                    borderRadius={50}
+                    iconStyle={
+                      style.flatten([
+                        "width-32",
+                        "height-32",
+                        "items-center",
+                        "justify-center",
+                        "border-width-1",
+                        "border-color-white@20%",
+                      ]) as ViewStyle
                     }
-                  >
-                    {title}
-                  </Text>
-                ) : null}
-                {showCloseButton && close ? (
-                  <View style={style.flatten(["flex-1", "items-end"])}>
-                    <IconButton
-                      icon={<XmarkIcon color={"white"} />}
-                      backgroundBlur={false}
-                      blurIntensity={20}
-                      borderRadius={50}
-                      iconStyle={
-                        style.flatten([
-                          "width-32",
-                          "height-32",
-                          "items-center",
-                          "justify-center",
-                          "border-width-1",
-                          "border-color-white@20%",
-                        ]) as ViewStyle
-                      }
-                      onPress={() => close()}
-                    />
-                  </View>
-                ) : null}
-              </View>
+                    onPress={() => close()}
+                  />
+                </View>
+              ) : null}
             </View>
           ) : null}
           <KeyboardAwareScrollView

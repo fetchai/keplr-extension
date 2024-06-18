@@ -223,13 +223,18 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
         >
           <IconWithText
             icon={
-              <Image source={require("assets/image/icon/stake_rewards.png")} />
+              <Image source={require("assets/image/icon/ic_staking.png")} />
             }
             title={"Start staking now"}
             subtitle={
               "Stake your assets to earn rewards and\n contribute to maintaining the networks"
             }
-            titleStyle={style.flatten(["h3", "font-normal"]) as ViewStyle}
+            titleStyle={
+              [
+                style.flatten(["h3", "font-normal"]),
+                { marginTop: 3 },
+              ] as ViewStyle
+            }
             subtitleStyle={style.flatten(["body3"]) as ViewStyle}
           />
           <Button

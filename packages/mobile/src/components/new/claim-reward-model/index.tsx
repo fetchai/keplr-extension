@@ -4,7 +4,7 @@ import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { GradientButton } from "../button/gradient-button";
-import { StakeIcon } from "../icon/stake-icon";
+import { ClaimRewardIcon } from "../icon/claim-reward";
 
 export const ClaimRewardsModal: FunctionComponent<{
   isOpen: boolean;
@@ -27,7 +27,7 @@ export const ClaimRewardsModal: FunctionComponent<{
       showCloseButton={false}
     >
       <IconWithText
-        icon={<StakeIcon size={64} />}
+        icon={<ClaimRewardIcon size={64} />}
         iconStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
         title={"Claim rewards"}
         subtitle={

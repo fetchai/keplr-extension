@@ -1,9 +1,11 @@
-import React, { FunctionComponent, useRef } from "react";
-import { ScrollView, Text, View, ViewStyle } from "react-native";
+import React, { FunctionComponent, ReactElement } from "react";
+import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
 import { CheckIcon } from "components/new/icon/check";
 import { CardModal } from "modals/card";
+import { IconButton } from "../button/icon";
+import { BlurBackground } from "../blur-background/blur-background";
 
 export const SelectorModal: FunctionComponent<{
   isOpen: boolean;
@@ -11,8 +13,8 @@ export const SelectorModal: FunctionComponent<{
   items: {
     label: string;
     key: string;
+    icon: ReactElement;
   }[];
-  maxItemsToShow?: number;
   selectedKey: string | undefined;
   setSelectedKey: (key: string | undefined) => void;
   modalPersistent?: boolean;
@@ -22,50 +24,28 @@ export const SelectorModal: FunctionComponent<{
   items,
   selectedKey,
   setSelectedKey,
-  maxItemsToShow,
   modalPersistent,
 }) => {
   const style = useStyle();
 
-  const renderBall = (selected: boolean) => {
+  const renderSelectIcon = (selected: boolean) => {
     if (selected) {
       return (
-        <View
-          style={style.flatten(["items-center", "justify-center"]) as ViewStyle}
-        >
-          <CheckIcon />
-        </View>
+        <IconButton
+          backgroundBlur={false}
+          icon={<CheckIcon size={16} />}
+          iconStyle={
+            style.flatten([
+              "width-24",
+              "height-24",
+              "items-center",
+              "justify-center",
+            ]) as ViewStyle
+          }
+        />
       );
     } else {
       return null;
-    }
-  };
-
-  const scrollViewRef = useRef<ScrollView | null>(null);
-  const initOnce = useRef<boolean>(false);
-
-  const onInit = () => {
-    if (!initOnce.current) {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.flashScrollIndicators();
-
-        if (maxItemsToShow) {
-          const selectedIndex = items.findIndex(
-            (item) => item.key === selectedKey
-          );
-
-          if (selectedIndex) {
-            const scrollViewHeight = maxItemsToShow * 64;
-
-            scrollViewRef.current.scrollTo({
-              y: selectedIndex * 64 - scrollViewHeight / 2 + 32,
-              animated: false,
-            });
-          }
-        }
-
-        initOnce.current = true;
-      }
     }
   };
 
@@ -74,29 +54,25 @@ export const SelectorModal: FunctionComponent<{
   }
 
   return (
-    <CardModal isOpen={isOpen} close={close} showCloseButton={false}>
-      <ScrollView
-        style={{
-          maxHeight: maxItemsToShow ? 64 * maxItemsToShow : undefined,
-        }}
-        ref={scrollViewRef}
-        persistentScrollbar={true}
-        onLayout={onInit}
-        indicatorStyle={style.theme === "dark" ? "white" : "black"}
-      >
-        {items.map((item) => {
-          return (
+    <CardModal isOpen={isOpen} close={close} title="Sort by">
+      {items.map((item) => {
+        return (
+          <BlurBackground
+            key={item.key}
+            borderRadius={12}
+            blurIntensity={15}
+            containerStyle={style.flatten(["margin-bottom-6"]) as ViewStyle}
+          >
             <RectButton
-              key={item.key}
               style={
                 style.flatten(
                   [
-                    "padding-x-18",
-                    "padding-y-16",
                     "flex-row",
                     "items-center",
                     "justify-between",
                     "border-radius-12",
+                    "padding-x-12",
+                    "padding-y-18",
                   ],
                   [item.key === selectedKey && "background-color-indigo"]
                 ) as ViewStyle
@@ -108,16 +84,34 @@ export const SelectorModal: FunctionComponent<{
                 }
               }}
             >
-              <Text
-                style={style.flatten(["body3", "color-white"]) as ViewStyle}
+              <View
+                style={style.flatten(["flex-row", "items-center"]) as ViewStyle}
               >
-                {item.label.trim()}
-              </Text>
-              {renderBall(item.key === selectedKey)}
+                <IconButton
+                  backgroundBlur={false}
+                  icon={item.icon}
+                  iconStyle={
+                    style.flatten([
+                      "width-24",
+                      "height-24",
+                      "items-center",
+                      "justify-center",
+                      "margin-right-12",
+                    ]) as ViewStyle
+                  }
+                />
+                <Text
+                  style={style.flatten(["body3", "color-white"]) as ViewStyle}
+                >
+                  {item.label.trim()}
+                </Text>
+              </View>
+
+              {renderSelectIcon(item.key === selectedKey)}
             </RectButton>
-          );
-        })}
-      </ScrollView>
+          </BlurBackground>
+        );
+      })}
     </CardModal>
   );
 };
