@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 
 import { FormattedMessage } from "react-intl";
 import { DefaultGasMsgWithdrawRewards } from "../../config.ui";
+import { TXNTYPE } from "../../config";
 
 export const StakeView: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -150,7 +151,7 @@ export const StakeView: FunctionComponent = observer(() => {
                 disabled={!accountInfo.isReadyToSendTx}
                 onClick={withdrawAllRewards}
                 data-loading={
-                  accountInfo.txTypeInProgress === "withdrawRewards" ||
+                  accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards ||
                   isWithdrawingRewards
                 }
               >

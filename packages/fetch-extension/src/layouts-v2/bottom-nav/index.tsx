@@ -96,7 +96,7 @@ const ActivityTab = () => {
   const { keyRingStore, chainStore } = useStore();
   const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
-  const [z, setActivityDisabled] = useState(false);
+  const [activityDisabled, setActivityDisabled] = useState(false);
   const isEvm = current.features?.includes("evm") ?? false;
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
@@ -111,6 +111,9 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
+
+    setActivityTooltip("Coming soon");
+    setActivityDisabled(true);
   }, [current.chainId, keyRingStore.keyRingType]);
 
   return (
@@ -119,7 +122,7 @@ const ActivityTab = () => {
       icon={activitygreyIcon}
       activeIcon={activityIcon}
       path={"/activity"}
-      disabled={z}
+      disabled={activityDisabled}
       tooltip={activityTooltip}
     />
   );

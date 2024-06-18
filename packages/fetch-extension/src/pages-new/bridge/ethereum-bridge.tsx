@@ -24,6 +24,7 @@ import queryString from "querystring";
 import { Card } from "@components-v2/card";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { TXNTYPE } from "../../config";
 
 export const EthereumBridge: FunctionComponent<{
   limit: string;
@@ -69,7 +70,7 @@ export const EthereumBridge: FunctionComponent<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.defaultAmount, query.defaultRecipient]);
 
-  if (accountInfo.txTypeInProgress === "nativeBridgeSend") {
+  if (accountInfo.txTypeInProgress === TXNTYPE.nativeBridgeSend) {
     return (
       <p className={style["loaderScreen"]}>
         Bridging in progress <i className="fa fa-spinner fa-spin fa-fw" />{" "}
@@ -145,7 +146,7 @@ export const Configure: FunctionComponent<{
       memoConfig.error == null &&
       amountConfig.error == null &&
       !allowanceQuery.isFetching &&
-      accountInfo.txTypeInProgress !== "approval";
+      accountInfo.txTypeInProgress !== TXNTYPE.approval;
 
     return (
       <form className={style["formContainer"]}>
@@ -224,7 +225,7 @@ export const Configure: FunctionComponent<{
               setPhase("approve");
             }}
             text={
-              accountInfo.txTypeInProgress === "approval"
+              accountInfo.txTypeInProgress === TXNTYPE.approval
                 ? ` Approve txn in progress
              ${(<i className="fa fa-spinner fa-spin fa-fw" />)}`
                 : "Next"

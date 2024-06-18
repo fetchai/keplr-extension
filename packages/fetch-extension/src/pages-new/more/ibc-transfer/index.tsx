@@ -33,6 +33,7 @@ import style from "./style.module.scss";
 import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 import { SetKeyRingPage } from "../../keyring-dev";
+import { TXNTYPE } from "../../../config";
 
 export const IBCTransferPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -366,7 +367,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
           />
           <ButtonV2
             disabled={!isValid || loading}
-            data-loading={accountInfo.txTypeInProgress === "ibcTransfer"}
+            data-loading={accountInfo.txTypeInProgress === TXNTYPE.ibcTransfer}
             text={
               loading ? (
                 <i className="fas fa-spinner fa-spin ml-2" />

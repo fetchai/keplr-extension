@@ -1,5 +1,5 @@
 name: ☝️Feature request
-description: Suggest an idea for the Fetch Wallet.
+description: Suggest an idea.
 labels: ["enhancement", "unconfirmed"]
 body:
   - type: markdown
@@ -21,7 +21,7 @@ body:
     attributes:
       label: Feature
       description: |
-        Provide a description of the feature you would like to see implemented within the Fetch Wallet.
+        Provide a description of the feature you would like to see implemented.
     validations:
       required: true
   - type: textarea

@@ -17,6 +17,7 @@ import { Dec } from "@keplr-wallet/unit";
 import { DenomHelper } from "@keplr-wallet/common";
 import { ToolTip } from "@components/tooltip";
 import { formatTokenName } from "@utils/format";
+import { TXNTYPE } from "../../config";
 
 const TokenView: FunctionComponent<{
   balance: ObservableQueryBalanceInner;
@@ -195,7 +196,7 @@ const TokenView: FunctionComponent<{
             }
           }}
         >
-          {accountInfo.txTypeInProgress === "createSecret20ViewingKey" ? (
+          {accountInfo.txTypeInProgress === TXNTYPE.createSecret20ViewingKey ? (
             <i className="fa fa-spinner fa-spin fa-fw" />
           ) : (
             <i className="fas fa-wrench" />

@@ -20,6 +20,7 @@ import { useLoadingIndicator } from "@components/loading-indicator";
 import { useNotification } from "@components/notification";
 import { isAddress } from "@ethersproject/address";
 import { HeaderLayout } from "@layouts-v2/header-layout";
+import { TXNTYPE } from "../../../../config";
 
 interface FormData {
   contractAddress: string;
@@ -46,7 +47,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
   const interactionInfo = useInteractionInfo(() => {
     // When creating the secret20 viewing key, this page will be moved to "/sign" page to generate the signature.
     // So, if it is creating phase, don't reject the waiting datas.
-    if (accountInfo.txTypeInProgress !== "createSecret20ViewingKey") {
+    if (accountInfo.txTypeInProgress !== TXNTYPE.createSecret20ViewingKey) {
       tokensStore.rejectAllSuggestedTokens();
     }
   });
@@ -394,7 +395,7 @@ export const AddTokenPage: FunctionComponent = observer(() => {
             !accountInfo.isReadyToSendTx
           }
           data-loading={
-            accountInfo.txTypeInProgress === "createSecret20ViewingKey"
+            accountInfo.txTypeInProgress === TXNTYPE.createSecret20ViewingKey
           }
           styleProps={{
             height: "56px",

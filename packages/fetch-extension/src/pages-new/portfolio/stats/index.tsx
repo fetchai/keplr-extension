@@ -9,6 +9,7 @@ import { ButtonV2 } from "@components-v2/buttons/button";
 import { DefaultGasMsgWithdrawRewards } from "../../../config.ui";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
+import { TXNTYPE } from "../../../config";
 
 export const Stats = () => {
   const navigate = useNavigate();
@@ -133,9 +134,32 @@ export const Stats = () => {
           undefined,
           {
             onBroadcasted: () => {
+              notification.push({
+                type: "primary",
+                placement: "top-center",
+                duration: 2,
+                content: `Transaction broadcasted`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
+              });
+
               analyticsStore.logEvent("Claim reward tx broadcasted", {
                 chainId: chainStore.current.chainId,
                 chainName: chainStore.current.chainName,
+              });
+            },
+            onFulfill: () => {
+              notification.push({
+                type: "success",
+                placement: "top-center",
+                duration: 5,
+                content: `Transaction Completed`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
               });
             },
           }
@@ -214,8 +238,17 @@ export const Stats = () => {
           color: "white",
         }}
         text="Claim rewards"
-        disabled={rewardsBal === "0.000000000000000000 FET"}
-      />
+        disabled={
+          rewardsBal === "0.000000000000000000 FET" ||
+          accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards ||
+          _isWithdrawingRewards
+        }
+      >
+        {(accountInfo.txTypeInProgress === TXNTYPE.withdrawRewards ||
+          _isWithdrawingRewards) && (
+          <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+        )}
+      </ButtonV2>
     </div>
   );
 };
