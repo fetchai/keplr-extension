@@ -17,7 +17,7 @@
    git clone https://github.com/fetchai/fetch-wallet.git
    ```
 
-3. Define an `upstream` remote pointing back to the main uAgents repository:
+3. Define an `upstream` remote pointing back to the main Fetch Wallet repository:
 
    ``` shell
    git remote add upstream https://github.com/fetchai/fetch-wallet.git
