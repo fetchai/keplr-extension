@@ -327,7 +327,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
 
               return (
                 <InputCardView
-                  label="Password"
+                  label="Create wallet password"
                   containerStyle={style.flatten(["margin-top-8"]) as ViewStyle}
                   keyboardType={"default"}
                   secureTextEntry={!showPassword}

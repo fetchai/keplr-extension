@@ -46,7 +46,6 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
   } = useForm<FormData>();
 
   const submit = handleSubmit(() => {
-    console.log(getValues("ethAddress"));
     smartNavigation.navigateSmart("Register.CreateAccount", {
       registerConfig: registerConfig,
       mnemonic: encodeURIComponent(

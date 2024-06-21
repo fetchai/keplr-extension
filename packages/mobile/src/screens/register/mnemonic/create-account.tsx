@@ -72,8 +72,8 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
   } = useForm<FormData>();
 
   const submit = handleSubmit(async () => {
-    setShowPassword(false);
     setIsCreating(true);
+    setShowPassword(false);
 
     const mnemonic = trimWordsStr(getValues("mnemonic"));
 

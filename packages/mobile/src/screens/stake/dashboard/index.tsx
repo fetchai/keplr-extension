@@ -159,6 +159,8 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
             }}
           />
           <MyRewardCard
+            queries={queries}
+            queryDelegations={queryDelegations}
             containerStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
           />
           <View
@@ -209,6 +211,9 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
           </View>
           <DelegationsCard
             containerStyle={style.flatten(["margin-y-6"]) as ViewStyle}
+            queries={queries}
+            queryDelegations={queryDelegations}
+            accountBech32Address={account.bech32Address}
           />
         </React.Fragment>
       ) : (

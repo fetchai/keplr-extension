@@ -13,7 +13,14 @@ import Toast from "react-native-toast-message";
 import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { Button } from "components/button";
 import { ValidatorThumbnail } from "components/thumbnail";
-import { Staking } from "@keplr-wallet/stores";
+import {
+  CosmosQueriesImpl,
+  CosmwasmQueriesImpl,
+  ObservableQueryBalances,
+  ObservableQueryDelegationsInner,
+  SecretQueriesImpl,
+  Staking,
+} from "@keplr-wallet/stores";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronUpIcon } from "components/new/icon/chevron-up";
 import { TransactionModal } from "modals/transaction";
@@ -27,22 +34,31 @@ import { SlideDownAnimation } from "components/new/animations/slide-down";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 import { txType } from "components/new/txn-status.tsx";
 import { VectorCharacter } from "components/vector-character";
+import { KeplrETCQueriesImpl } from "@keplr-wallet/stores-etc";
 
 interface ClaimData {
   reward: string;
   validatorAddress: string;
 }
 
+interface DeepReadonlyObject {
+  queryBalances: ObservableQueryBalances;
+  cosmos: CosmosQueriesImpl;
+  cosmwasm: CosmwasmQueriesImpl;
+  secret: SecretQueriesImpl;
+  keplrETC: KeplrETCQueriesImpl;
+}
+
 export const MyRewardCard: FunctionComponent<{
   containerStyle?: ViewStyle;
-}> = observer(({ containerStyle }) => {
+  queries: DeepReadonlyObject;
+  queryDelegations: ObservableQueryDelegationsInner;
+}> = observer(({ containerStyle, queries, queryDelegations }) => {
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
-    useStore();
+  const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
-  const queries = queriesStore.get(chainStore.current.chainId);
 
   const queryReward = queries.cosmos.queryRewards.getQueryBech32Address(
     account.bech32Address
@@ -57,10 +73,6 @@ export const MyRewardCard: FunctionComponent<{
       account.bech32Address
     ).stakableReward;
 
-  const queryDelegations =
-    queries.cosmos.queryDelegations.getQueryBech32Address(
-      account.bech32Address
-    );
   const delegations = queryDelegations.delegations;
 
   const smartNavigation = useSmartNavigation();
@@ -309,7 +321,10 @@ export const MyRewardCard: FunctionComponent<{
       ) : null}
       {showRewars && (
         <SlideDownAnimation>
-          <DelegateReward />
+          <DelegateReward
+            queries={queries}
+            queryDelegations={queryDelegations}
+          />
         </SlideDownAnimation>
       )}
       <ClaimRewardsModal
@@ -340,10 +355,13 @@ export const MyRewardCard: FunctionComponent<{
   );
 });
 
-const DelegateReward: FunctionComponent = observer(() => {
+const DelegateReward: FunctionComponent<{
+  queries: DeepReadonlyObject;
+  queryDelegations: ObservableQueryDelegationsInner;
+}> = observer(({ queries, queryDelegations }) => {
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore } = useStore();
 
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -362,12 +380,7 @@ const DelegateReward: FunctionComponent = observer(() => {
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const account = accountStore.getAccount(chainStore.current.chainId);
-  const queries = queriesStore.get(chainStore.current.chainId);
 
-  const queryDelegations =
-    queries.cosmos.queryDelegations.getQueryBech32Address(
-      account.bech32Address
-    );
   const delegations = queryDelegations.delegations;
 
   const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(
