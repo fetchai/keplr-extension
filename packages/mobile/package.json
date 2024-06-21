@@ -22,8 +22,8 @@
     "start:reset": "expo start --dev-client --reset-cache",
     "generate:splash-image": "expo-splash-screen --background-color \"#FBF8FF\" --image-path ./src/assets/logo/splash-screen-only-k.png --image-resize-mode contain --status-bar-translucent --status-bar-background-color \"#FBF8FF\" --status-bar-style dark-content",
     "pod-install": "pod-install",
-    "lint-test": "eslint ./src --ext .js,.jsx,.ts,.tsx && prettier --check ./src --ext .js,.jsx,.ts,.tsx",
-    "lint-fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx && prettier --write ./src --ext .js,.jsx,.ts,.tsx",
+    "lint-test": "eslint ./src --ext .js,.jsx,.ts,.tsx && prettier --check ./src app.json firebase.json --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx && prettier --write ./src app.json firebase.json --ext .js,.jsx,.ts,.tsx",
     "postinstall": "sh ./scripts/fix-android-splash-screen-flash.sh && sh ./scripts/fix-ios-blur-view.sh && sh ./scripts/force-export-ble-manager-from-ledger.sh && sh ./scripts/fix-android-legacy-dependency.sh"
   },
   "dependencies": {
@@ -59,6 +59,8 @@
     "@react-native-community/cli": "^11.3.6",
     "@react-native-community/cli-platform-android": "^11.3.6",
     "@react-native-community/netinfo": "^9.4.1",
+    "@react-native-firebase/app": "^20.0.0",
+    "@react-native-firebase/crashlytics": "^20.0.0",
     "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/drawer": "^6.6.3",

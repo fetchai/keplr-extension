@@ -16,7 +16,8 @@
 
 #import <AppCenterReactNative.h>
 #import <AppCenterReactNativeAnalytics.h>
-
+#import <Firebase.h>
+#import <FirebaseCrashlytics.h>
 // #import <Bugsnag/Bugsnag.h>
 
 #ifdef FB_SONARKIT_ENABLED
@@ -51,6 +52,7 @@ static void InitializeFlipper(UIApplication *application) {
 //   [Bugsnag start];
   [AppCenterReactNative register];
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  [FIRApp configure];
 
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
