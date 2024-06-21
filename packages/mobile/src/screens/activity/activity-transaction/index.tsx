@@ -20,7 +20,7 @@ import { activityFilterOptions, ActivityFilterView } from "./activity-filter";
 import { ActivityRow } from "./activity-row";
 import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "src/config";
+import { CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO } from "../../../config";
 
 const processFilters = (filters: string[]) => {
   let result: any[] = [];
