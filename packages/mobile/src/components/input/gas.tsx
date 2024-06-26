@@ -19,15 +19,23 @@ export const GasInput: FunctionComponent<{
   const [isEnabled, setIsEnabled] = useState(true);
 
   return (
-    <View>
-      <View style={style.flatten(["flex-row", "items-center"])}>
+    <React.Fragment>
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "items-center",
+            "padding-y-12",
+            "margin-y-12",
+          ]) as ViewStyle
+        }
+      >
         <Text
           style={StyleSheet.flatten([
             style.flatten([
-              "h6",
-              "color-platinum-100",
-              "margin-y-24",
-              "margin-right-18",
+              "body3",
+              "color-white",
+              "margin-right-16",
             ]) as ViewStyle,
           ])}
         >
@@ -53,11 +61,20 @@ export const GasInput: FunctionComponent<{
       </View>
       {!isEnabled ? (
         <View
-          style={style.flatten(["flex-row", "justify-between"]) as ViewStyle}
+          style={
+            style.flatten([
+              "flex-row",
+              "justify-between",
+              "margin-bottom-16",
+            ]) as ViewStyle
+          }
         >
           <InputCardView
             label="Gas adjustment"
             placeholder="-"
+            labelStyle={
+              style.flatten(["margin-y-0", "margin-bottom-12"]) as ViewStyle
+            }
             containerStyle={
               style.flatten(["flex-2", "margin-right-16"]) as ViewStyle
             }
@@ -67,27 +84,31 @@ export const GasInput: FunctionComponent<{
           <InputCardView
             label="Estimated "
             placeholder="-"
+            labelStyle={
+              style.flatten(["margin-y-0", "margin-bottom-12"]) as ViewStyle
+            }
             containerStyle={style.flatten(["flex-2"]) as ViewStyle}
             editable={false}
             keyboardType="numeric"
           />
         </View>
       ) : null}
-      <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
-        <InputCardView
-          label="Gas amount"
-          placeholder="-"
-          value={gasConfig.gasRaw}
-          onChangeText={(value: string) => {
-            if (value.match(/^\d*$/)) {
-              gasConfig.setGas(value);
-            }
-          }}
-          maxLength={8}
-          keyboardType="numeric"
-          editable={isEnabled}
-        />
-      </View>
-    </View>
+      <InputCardView
+        label="Gas amount"
+        placeholder="-"
+        value={gasConfig.gasRaw}
+        onChangeText={(value: string) => {
+          if (value.match(/^\d*$/)) {
+            gasConfig.setGas(value);
+          }
+        }}
+        labelStyle={
+          style.flatten(["margin-y-0", "margin-bottom-12"]) as ViewStyle
+        }
+        maxLength={8}
+        keyboardType="numeric"
+        editable={isEnabled}
+      />
+    </React.Fragment>
   );
 });

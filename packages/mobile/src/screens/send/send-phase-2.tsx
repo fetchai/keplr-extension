@@ -9,7 +9,6 @@ import {
 } from "@keplr-wallet/hooks";
 import { useStore } from "stores/index";
 import { Text, View, ViewStyle } from "react-native";
-import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -23,6 +22,9 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
 import { txType } from "components/new/txn-status.tsx";
+import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
+import { GearIcon } from "components/new/icon/gear-icon";
+import { IconButton } from "components/new/button/icon";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -40,6 +42,7 @@ export const SendPhase2: FunctionComponent<{
 
   const [txnHash, setTxnHash] = useState<string>("");
   const [openModal, setOpenModal] = useState(false);
+  const [showFeeModal, setFeeModal] = useState(false);
 
   const route = useRoute<
     RouteProp<
@@ -75,6 +78,11 @@ export const SendPhase2: FunctionComponent<{
   };
 
   const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
+
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  const feePrice = sendConfigs.feeConfig.getFeeTypePretty(
+    sendConfigs.feeConfig.feeType ? sendConfigs.feeConfig.feeType : "average"
+  );
 
   const usdValue = () => {
     const amountConfig = sendConfigs.amountConfig;
@@ -241,14 +249,49 @@ export const SendPhase2: FunctionComponent<{
           memoConfig={sendConfigs.memoConfig}
         />
       </View>
-      <FeeButtons
-        label="Fee"
-        gasLabel="gas"
-        feeConfig={sendConfigs.feeConfig}
-        gasConfig={sendConfigs.gasConfig}
-        pageName="Send"
-      />
       <View style={style.flatten(["flex-1"])} />
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "justify-between",
+            "items-center",
+            "margin-y-12",
+          ]) as ViewStyle
+        }
+      >
+        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
+          Transaction fee:
+        </Text>
+        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten([
+                "body3",
+                "color-white",
+                "margin-right-6",
+              ]) as ViewStyle
+            }
+          >
+            {feePrice.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)}
+          </Text>
+          <IconButton
+            backgroundBlur={false}
+            icon={<GearIcon />}
+            iconStyle={
+              style.flatten([
+                "width-32",
+                "height-32",
+                "items-center",
+                "justify-center",
+                "border-width-1",
+                "border-color-white@40%",
+              ]) as ViewStyle
+            }
+            onPress={() => setFeeModal(true)}
+          />
+        </View>
+      </View>
       <Button
         text="Review transaction"
         size="large"
@@ -279,6 +322,13 @@ export const SendPhase2: FunctionComponent<{
           smartNavigation.navigateSmart("Home", {});
         }}
         onTryAgainClick={onSubmit}
+      />
+      <TransectionFreeModel
+        isOpen={showFeeModal}
+        close={() => setFeeModal(false)}
+        title={"Transaction fee"}
+        feeConfig={sendConfigs.feeConfig}
+        gasConfig={sendConfigs.gasConfig}
       />
     </React.Fragment>
   );

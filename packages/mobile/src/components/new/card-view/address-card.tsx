@@ -147,7 +147,7 @@ export const AddressInputCard: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-x-18", "padding-y-6"],
+                ["padding-x-18", "padding-y-12"],
                 isFocused || errorText
                   ? [
                       // The order is important.
@@ -170,11 +170,17 @@ export const AddressInputCard: FunctionComponent<{
               <TextInput
                 placeholderTextColor={style.flatten(["color-white@60%"]).color}
                 style={
-                  style.flatten([
-                    "body3",
-                    "color-white",
-                    "padding-0",
-                  ]) as ViewStyle
+                  [
+                    style.flatten(["body3", "color-white", "padding-0"]),
+                    Platform.select({
+                      ios: {},
+                      android: {
+                        // On android, the text input's height does not equals to the line height by strange.
+                        // To fix this problem, set the height explicitly.
+                        height: 19,
+                      },
+                    }),
+                  ] as ViewStyle
                 }
                 keyboardType={
                   Platform.OS === "ios" ? "ascii-capable" : "visible-password"
@@ -182,7 +188,7 @@ export const AddressInputCard: FunctionComponent<{
                 returnKeyType="done"
                 placeholder={placeholderText}
                 value={recipientConfig.rawRecipient}
-                multiline
+                multiline={true}
                 onChangeText={(text) => {
                   if (
                     // If icns is possible and users enters ".", complete bech32 prefix automatically.
@@ -224,12 +230,11 @@ export const AddressInputCard: FunctionComponent<{
             >
               <View style={style.flatten(["flex-row", "items-center"])}>
                 <Divider
-                  containerStyle={
-                    style.flatten(["margin-right-16", "height-16"]) as ViewStyle
-                  }
+                  containerStyle={style.flatten(["height-16"]) as ViewStyle}
                 />
                 <IconButton
                   icon={<QRCodeIcon size={16} />}
+                  borderRadius={0}
                   backgroundBlur={false}
                   onPress={() => {
                     if (permission?.status == PermissionStatus.UNDETERMINED) {
@@ -249,15 +254,11 @@ export const AddressInputCard: FunctionComponent<{
                       }
                     }
                   }}
-                  iconStyle={
-                    style.flatten([
-                      "padding-y-12",
-                      "margin-right-16",
-                    ]) as ViewStyle
-                  }
+                  iconStyle={style.flatten(["margin-x-18"]) as ViewStyle}
                 />
                 <IconButton
                   icon={<ATIcon size={16} />}
+                  borderRadius={0}
                   backgroundBlur={false}
                   onPress={() => {
                     analyticsStore.logEvent("recipient_address_click", {
@@ -265,7 +266,6 @@ export const AddressInputCard: FunctionComponent<{
                     });
                     setIsOpenModal(true);
                   }}
-                  iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
                 />
               </View>
             </View>
