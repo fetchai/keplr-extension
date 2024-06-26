@@ -33,12 +33,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.Intro": {
         upperScreenName: "Register",
       },
-      "Register.NewUser": {
-        upperScreenName: "Register",
-      },
-      "Register.NotNewUser": {
-        upperScreenName: "Register",
-      },
       "Register.NewMnemonic": {
         upperScreenName: "Register",
       },
@@ -54,7 +48,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.CreateAccount": {
         upperScreenName: "Register",
       },
-      "Register.NewLedger": {
+      "Register.Ledger": {
         upperScreenName: "Register",
       },
       "Register.TorusSignIn": {
@@ -97,52 +91,49 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "HomeTab",
       },
       "Staking.Dashboard": {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       "Validator.Details": {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       "SelectorValidator.Details": {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       "Validator.List": {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       Delegate: {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       Undelegate: {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       Redelegate: {
-        upperScreenName: "Others",
+        upperScreenName: "Stake",
       },
       Governance: {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       "Governance Details": {
-        upperScreenName: "Others",
-      },
-      Setting: {
-        upperScreenName: "Settings",
+        upperScreenName: "Setting",
       },
       "Setting.ViewPrivateData": {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       "Setting.Currency": {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       "Setting.Version": {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       "Setting.ChainList": {
-        upperScreenName: "ChainList",
+        upperScreenName: "Setting",
       },
       "Setting.AddToken": {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       "Setting.ManageTokens": {
-        upperScreenName: "Others",
+        upperScreenName: "Setting",
       },
       AddressBook: {
         upperScreenName: "AddressBooks",
@@ -215,7 +206,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         bip44HDPath?: BIP44HDPath;
         title?: string;
       };
-      "Register.NewLedger": {
+      "Register.Ledger": {
         registerConfig: RegisterConfig;
       };
       "Register.TorusSignIn": {

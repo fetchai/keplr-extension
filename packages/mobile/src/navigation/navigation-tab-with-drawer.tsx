@@ -27,12 +27,12 @@ import {
   QuickTabOptionModel,
   QuickTabOptions,
 } from "components/new/quick-tab-card/quick-tab-card";
-import { MoreNavigation } from "./more-navigation";
 import Toast from "react-native-toast-message";
 import { StakeIcon } from "components/new/icon/stake-icon";
 import { StakingDashboardScreen } from "screens/stake";
 import { HomeIcon } from "components/new/icon/home-icon";
 import { ActivityScreen } from "screens/activity";
+import { SettingScreen } from "screens/setting";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -60,7 +60,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         analyticsStore.logEvent("home_tab_click");
         break;
 
-      case "Stake":
+      case "StakeTab":
         analyticsStore.logEvent("stake_tab_click");
         break;
 
@@ -68,7 +68,7 @@ export const MainTabNavigation: FunctionComponent = () => {
         analyticsStore.logEvent("activity_tab_click");
         break;
 
-      case "Setting":
+      case "MoreTab":
         analyticsStore.logEvent("more_tab_click");
         break;
     }
@@ -82,9 +82,9 @@ export const MainTabNavigation: FunctionComponent = () => {
   const handleBackButton = () => {
     if (
       focusedScreen.name === "Home" ||
-      focusedScreen.name === "Stake" ||
+      focusedScreen.name === "StakeTab" ||
       focusedScreen.name === "ActivityTab" ||
-      focusedScreen.name === "Setting"
+      focusedScreen.name === "MoreTab"
     ) {
       if (backClickCountRef.current == 1) {
         BackHandler.exitApp();
@@ -143,7 +143,7 @@ export const MainTabNavigation: FunctionComponent = () => {
                     containerStyle={style.flatten(["items-center"])}
                   />
                 );
-              case "Stake":
+              case "StakeTab":
                 return (
                   <IconButton
                     icon={
@@ -287,10 +287,10 @@ export const MainTabNavigation: FunctionComponent = () => {
         )}
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
-        <Tab.Screen name="Stake" component={StakingDashboardScreen} />
+        <Tab.Screen name="StakeTab" component={StakingDashboardScreen} />
         <Tab.Screen name="InboxTab" component={HomeNavigation} />
         <Tab.Screen name="ActivityTab" component={ActivityScreen} />
-        <Tab.Screen name="MoreTab" component={MoreNavigation} />
+        <Tab.Screen name="MoreTab" component={SettingScreen} />
       </Tab.Navigator>
       <QuickTabOptionModel
         isOpen={isQuickOptionEnable}

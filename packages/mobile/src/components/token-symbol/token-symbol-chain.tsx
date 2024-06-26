@@ -85,7 +85,14 @@ export const TokenSymbolUsingChainInfo: FunctionComponent<{
               color="white"
             />
           }
-          iconStyle={style.flatten(["padding-10"]) as ViewStyle}
+          iconStyle={
+            style.flatten([
+              "width-32",
+              "height-32",
+              "items-center",
+              "justify-center",
+            ]) as ViewStyle
+          }
           containerStyle={{
             width: size * imageScale,
             height: size * imageScale,

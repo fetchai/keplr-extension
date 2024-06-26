@@ -6,11 +6,9 @@ import {
   TransparentHeaderOptionsPreset,
 } from "components/header";
 import { RegisterIntroScreen } from "screens/register";
-import { RegisterNewUserScreen } from "screens/register/new-user";
-import { RegisterNotNewUserScreen } from "screens/register/not-new-user";
 import { MnemonicScreen } from "screens/register/mnemonic/mnemonic";
 import { VerifyMnemonicScreen } from "screens/register/mnemonic/verify-mnemonic";
-import { NewLedgerScreen } from "screens/register/ledger";
+import { LedgerScreen } from "screens/register/ledger";
 import { TorusSignInScreen } from "screens/register/torus";
 import {
   ImportFromExtensionIntroScreen,
@@ -43,22 +41,6 @@ export const RegisterNavigation: FunctionComponent = () => {
         }}
         name="Register.Intro"
         component={RegisterIntroScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          title: "Create a New Wallet",
-        }}
-        name="Register.NewUser"
-        component={RegisterNewUserScreen}
-      />
-      <Stack.Screen
-        options={{
-          ...TransparentHeaderOptionsPreset,
-          title: "Import Existing Wallet",
-        }}
-        name="Register.NotNewUser"
-        component={RegisterNotNewUserScreen}
       />
       <Stack.Screen
         options={{
@@ -111,8 +93,8 @@ export const RegisterNavigation: FunctionComponent = () => {
           // Only show the back button.
           title: "",
         }}
-        name="Register.NewLedger"
-        component={NewLedgerScreen}
+        name="Register.Ledger"
+        component={LedgerScreen}
       />
       <Stack.Screen
         options={{

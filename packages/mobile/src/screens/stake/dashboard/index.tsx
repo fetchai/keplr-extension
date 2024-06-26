@@ -152,7 +152,7 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
                 chainName: chainStore.current.chainName,
                 pageName: "Stake",
               });
-              navigation.navigate("Others", {
+              navigation.navigate("Stake", {
                 screen: "Validator.List",
                 params: {},
               });
@@ -254,7 +254,7 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
                 chainName: chainStore.current.chainName,
                 pageName: "Stake",
               });
-              navigation.navigate("Others", {
+              navigation.navigate("Stake", {
                 screen: "Validator.List",
                 params: {},
               });

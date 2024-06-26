@@ -298,7 +298,7 @@ export const RegisterIntroScreen: FunctionComponent = observer(() => {
               }}
               onConnectLedger={() => {
                 setImportWalletModalOpen(false);
-                smartNavigation.navigateSmart("Register.NewLedger", {
+                smartNavigation.navigateSmart("Register.Ledger", {
                   registerConfig,
                 });
                 analyticsStore.logEvent("connect_hardware_wallet_click", {

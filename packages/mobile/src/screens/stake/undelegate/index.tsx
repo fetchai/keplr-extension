@@ -316,7 +316,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         txnHash={txnHash}
         chainId={chainStore.current.chainId}
         buttonText="Go to stakescreen"
-        onHomeClick={() => navigation.navigate("Stake", {})}
+        onHomeClick={() => navigation.navigate("StakeTab", {})}
         onTryAgainClick={unstakeBalance}
       />
       <TransectionFreeModel

@@ -1,12 +1,6 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { PageWithViewInBottomTabView } from "components/page";
-import {
-  Platform,
-  RefreshControl,
-  ScrollView,
-  Text,
-  ViewStyle,
-} from "react-native";
+import { Platform, ScrollView, Text, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,7 +9,6 @@ import { FilterIcon } from "components/new/icon/filter-icon";
 import { ChatSection } from "screens/inbox/chat-section";
 import { ActivityNativeTab } from "screens/activity/activity-transaction";
 import { useStore } from "stores/index";
-import { useFocusedScreen } from "providers/focused-screen";
 
 export interface FilterItem {
   icon: ReactElement;
@@ -34,16 +27,7 @@ export const ActivityScreen = () => {
   const [selectedId, _setSelectedId] = useState(ActivityEnum.Transactions);
   const safeAreaInsets = useSafeAreaInsets();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const { analyticsStore } = useStore();
-  const focusedScreen = useFocusedScreen();
-
-  /// Hide Refreshing when tab change
-  useEffect(() => {
-    if (focusedScreen.name !== "ActivityTab" && refreshing) {
-      setRefreshing(false);
-    }
-  }, [focusedScreen.name, refreshing]);
 
   return (
     <PageWithViewInBottomTabView
@@ -99,13 +83,6 @@ export const ActivityScreen = () => {
         indicatorStyle={"white"}
         contentContainerStyle={
           style.flatten(["margin-y-16", "flex-grow-1"]) as ViewStyle
-        }
-        refreshControl={
-          <RefreshControl
-            tintColor={"white"}
-            refreshing={refreshing}
-            onRefresh={() => setRefreshing(true)}
-          />
         }
       >
         {selectedId === ActivityEnum.Transactions && (

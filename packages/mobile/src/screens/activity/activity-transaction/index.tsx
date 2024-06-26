@@ -77,7 +77,7 @@ export const ActivityNativeTab: FunctionComponent<{
 
   useEffect(() => {
     setIsLoading(true);
-    if (activityStore.checkIsNodeUpdated === true) {
+    if (activityStore.checkIsNodeUpdated) {
       setActivities(activityStore.sortedNodes);
       activityStore.setIsNodeUpdated(false);
       setIsLoading(false);

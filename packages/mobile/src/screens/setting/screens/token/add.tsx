@@ -6,15 +6,15 @@ import { Button } from "components/button";
 import { observer } from "mobx-react-lite";
 import { useRecipientConfig } from "@keplr-wallet/hooks";
 import { useStore } from "stores/index";
-import { useNavigation } from "@react-navigation/native";
 import { InputCardView } from "components/new/card-view/input-card";
 import { TokenAddressInput } from "components/new/input/token-address";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const SettingAddTokenScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, tokensStore, analyticsStore } = useStore();
   const [loading, setIsLoading] = useState(false);
 
-  const navigation = useNavigation();
+  const smartNavigation = useSmartNavigation();
 
   const style = useStyle();
 
@@ -82,8 +82,8 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
             analyticsStore.logEvent("save_click", {
               pageName: "More",
             });
-            if (navigation.canGoBack()) {
-              navigation.goBack();
+            if (smartNavigation.canGoBack()) {
+              smartNavigation.goBack();
             }
           }
           setIsLoading(false);
