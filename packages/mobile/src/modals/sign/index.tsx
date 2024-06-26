@@ -303,8 +303,11 @@ export const SignModal: FunctionComponent<{
               </ScrollView>
             </BlurBackground>
           </View>
-          <MemoInputView label="Memo" memoConfig={memoConfig} />
-          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
+          <MemoInputView
+            label="Memo"
+            memoConfig={memoConfig}
+            containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
+          />
           <FeeInSign
             feeConfig={feeConfig}
             gasConfig={gasConfig}

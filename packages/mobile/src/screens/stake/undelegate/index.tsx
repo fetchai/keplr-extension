@@ -19,9 +19,11 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { StakeAmountInput } from "components/new/input/stake-amount";
 import { UseMaxButton } from "components/new/button/use-max-button";
 import { MemoInputView } from "components/new/card-view/memo-input";
-import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
 import { TransactionModal } from "modals/transaction";
+import { IconButton } from "components/new/button/icon";
+import { GearIcon } from "components/new/icon/gear-icon";
+import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
 
 export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -53,6 +55,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
   const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
   const [showTransectionModal, setTransectionModal] = useState(false);
   const [txnHash, setTxnHash] = useState<string>("");
+  const [showFeeModal, setFeeModal] = useState(false);
 
   const validator =
     queries.cosmos.queryValidators
@@ -108,6 +111,11 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
     .shrink(true)
     .maxDecimals(6)
     .toString()}${Usd}`;
+
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  const feePrice = sendConfigs.feeConfig.getFeeTypePretty(
+    sendConfigs.feeConfig.feeType ? sendConfigs.feeConfig.feeType : "average"
+  );
 
   const unstakeBalance = async () => {
     if (account.isReadyToSendTx && txStateIsValid) {
@@ -247,15 +255,51 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           Your tokens will go through a 21-day unstaking process
         </Text>
       </View>
-      <FeeButtons
-        label="Fee"
-        gasLabel="gas"
-        feeConfig={sendConfigs.feeConfig}
-        gasConfig={sendConfigs.gasConfig}
-      />
       <View style={style.flatten(["flex-1"])} />
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "justify-between",
+            "items-center",
+            "margin-y-12",
+          ]) as ViewStyle
+        }
+      >
+        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
+          Transaction fee:
+        </Text>
+        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten([
+                "body3",
+                "color-white",
+                "margin-right-6",
+              ]) as ViewStyle
+            }
+          >
+            {feePrice.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)}
+          </Text>
+          <IconButton
+            backgroundBlur={false}
+            icon={<GearIcon />}
+            iconStyle={
+              style.flatten([
+                "width-32",
+                "height-32",
+                "items-center",
+                "justify-center",
+                "border-width-1",
+                "border-color-white@40%",
+              ]) as ViewStyle
+            }
+            onPress={() => setFeeModal(true)}
+          />
+        </View>
+      </View>
       <Button
-        text="Unstake"
+        text="Confirm"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "undelegate"}
         containerStyle={
@@ -274,6 +318,13 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         buttonText="Go to stakescreen"
         onHomeClick={() => navigation.navigate("Stake", {})}
         onTryAgainClick={unstakeBalance}
+      />
+      <TransectionFreeModel
+        isOpen={showFeeModal}
+        close={() => setFeeModal(false)}
+        title={"Transaction fee"}
+        feeConfig={sendConfigs.feeConfig}
+        gasConfig={sendConfigs.gasConfig}
       />
     </PageWithScrollView>
   );

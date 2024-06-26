@@ -21,10 +21,12 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { StakeAmountInput } from "components/new/input/stake-amount";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { UseMaxButton } from "components/new/button/use-max-button";
-import { FeeButtons } from "components/new/fee-button/fee-button-component";
 import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
 import { TransactionModal } from "modals/transaction";
 import { VectorCharacter } from "components/vector-character";
+import { IconButton } from "components/new/button/icon";
+import { GearIcon } from "components/new/icon/gear-icon";
+import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
 
 interface ItemData {
   title: string;
@@ -58,6 +60,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
   const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
   const [showTransectionModal, setTransectionModal] = useState(false);
   const [txnHash, setTxnHash] = useState<string>("");
+  const [showFeeModal, setFeeModal] = useState(false);
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -116,6 +119,11 @@ export const DelegateScreen: FunctionComponent = observer(() => {
 
   const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(
     Staking.BondStatus.Bonded
+  );
+
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  const feePrice = sendConfigs.feeConfig.getFeeTypePretty(
+    sendConfigs.feeConfig.feeType ? sendConfigs.feeConfig.feeType : "average"
   );
 
   const validator = bondedValidators.getValidator(validatorAddress);
@@ -356,13 +364,49 @@ export const DelegateScreen: FunctionComponent = observer(() => {
           liquid again
         </Text>
       </View>
-      <FeeButtons
-        label="Fee"
-        gasLabel="gas"
-        feeConfig={sendConfigs.feeConfig}
-        gasConfig={sendConfigs.gasConfig}
-      />
       <View style={style.flatten(["flex-1"])} />
+      <View
+        style={
+          style.flatten([
+            "flex-row",
+            "justify-between",
+            "items-center",
+            "margin-y-12",
+          ]) as ViewStyle
+        }
+      >
+        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
+          Transaction fee:
+        </Text>
+        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+          <Text
+            style={
+              style.flatten([
+                "body3",
+                "color-white",
+                "margin-right-6",
+              ]) as ViewStyle
+            }
+          >
+            {feePrice.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)}
+          </Text>
+          <IconButton
+            backgroundBlur={false}
+            icon={<GearIcon />}
+            iconStyle={
+              style.flatten([
+                "width-32",
+                "height-32",
+                "items-center",
+                "justify-center",
+                "border-width-1",
+                "border-color-white@40%",
+              ]) as ViewStyle
+            }
+            onPress={() => setFeeModal(true)}
+          />
+        </View>
+      </View>
       <Button
         text="Confirm"
         containerStyle={
@@ -383,6 +427,13 @@ export const DelegateScreen: FunctionComponent = observer(() => {
         buttonText="Go to stakescreen"
         onHomeClick={() => navigation.navigate("Stake", {})}
         onTryAgainClick={stakeAmount}
+      />
+      <TransectionFreeModel
+        isOpen={showFeeModal}
+        close={() => setFeeModal(false)}
+        title={"Transaction fee"}
+        feeConfig={sendConfigs.feeConfig}
+        gasConfig={sendConfigs.gasConfig}
       />
     </PageWithScrollView>
   );
