@@ -1,6 +1,8 @@
 name: ☝️Feature request
 description: Suggest an idea.
 labels: ["enhancement", "unconfirmed"]
+assignees:
+  - UrAvgDeveloper
 body:
   - type: markdown
     attributes:

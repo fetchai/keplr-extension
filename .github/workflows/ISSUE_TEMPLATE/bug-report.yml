@@ -1,6 +1,8 @@
 name: 🐛 Bug Report
 description: Report a bug.
 labels: ["bug", "unconfirmed"]
+assignees:
+  - UrAvgDeveloper
 body:
   - type: markdown
     attributes:
@@ -23,7 +25,6 @@ body:
       description: Select the category that best describes the bug.
       options:
         - Bug (unexpected behavior)
-        - Documentation Issue (error or unclear information in docs)
         - Other
     validations:
       required: true
@@ -60,7 +61,7 @@ body:
     id: environment
     attributes:
       label: Environment Details (Optional)
-      description: Provide any relevant information about your environment, such as operating system, Python version, and any other libraries used.
+      description: Provide any relevant information about your environment, such as operating system, protoc version, node version and any other libraries used.
       render: markdown
     validations:
       required: false
