@@ -306,7 +306,6 @@ const ValidatorItem: FunctionComponent<{
             !(selectedValidator == validatorAddress)
               ? () => {
                   if (prevSelectedValidator) {
-                    smartNavigation.navigateSmart;
                     smartNavigation.navigate("SelectorValidator.Details", {
                       prevSelectedValidator: prevSelectValidatorAdress,
                       validatorAddress: validatorAddress,

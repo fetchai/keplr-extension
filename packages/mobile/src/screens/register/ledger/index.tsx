@@ -49,7 +49,7 @@ enum BLEPermissionGrantStatus {
   Granted = "granted",
 }
 
-export const NewLedgerScreen: FunctionComponent = () => {
+export const LedgerScreen: FunctionComponent = () => {
   const route = useRoute<
     RouteProp<
       Record<

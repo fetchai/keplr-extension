@@ -119,7 +119,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
             <IconButton
               icon={
                 <VectorCharacter
-                  char={tokenInfo.coinDenom[0]}
+                  char={chainStore.current.chainName[0]}
                   height={Math.floor(size * 0.35)}
                   color="white"
                 />

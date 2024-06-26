@@ -14,6 +14,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CurrencyIcon } from "components/new/icon/currency";
 import { BranchIcon } from "components/new/icon/branch-icon";
 import { SignOutIcon } from "components/new/icon/sign-out";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
 
 export const SettingScreen: FunctionComponent = observer(() => {
   const {
@@ -30,6 +35,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
 
   const smartNavigation = useSmartNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const showPrivateData = canShowPrivateData(keyRingStore.keyRingType);
   const showManageTokenButton = (() => {
@@ -71,7 +77,10 @@ export const SettingScreen: FunctionComponent = observer(() => {
         left={<CurrencyIcon size={16} />}
         right={<Right paragraph={priceStore.defaultVsCurrency.toUpperCase()} />}
         onPress={() => {
-          smartNavigation.navigateSmart("Setting.Currency", {});
+          navigation.navigate("Setting", {
+            screen: "Setting.Currency",
+          });
+          // smartNavigation.navigateSmart("Setting.Currency", {});
           analyticsStore.logEvent("currency_click", {
             pageName: "More",
           });
@@ -89,7 +98,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
             />
           }
           onPress={() => {
-            smartNavigation.navigateSmart("Setting.ManageTokens", {});
+            navigation.navigate("Setting", {
+              screen: "Setting.ManageTokens",
+            });
             analyticsStore.logEvent("manage_tokens_click", {
               pageName: "More",
             });
@@ -100,7 +111,10 @@ export const SettingScreen: FunctionComponent = observer(() => {
         left={<ATIcon size={16} />}
         label="Address book"
         onPress={() => {
-          smartNavigation.navigateSmart("AddressBook", {});
+          navigation.navigate("AddressBooks", {
+            screen: "AddressBook",
+            params: {},
+          });
           analyticsStore.logEvent("address_book_click", {
             pageName: "More",
           });
@@ -113,7 +127,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
           label="Security & privacy"
           left={<ShieldIcon size={16} />}
           onPress={() => {
-            smartNavigation.navigateSmart("SecurityAndPrivacy", {});
+            navigation.navigate("Setting", {
+              screen: "SecurityAndPrivacy",
+            });
             analyticsStore.logEvent("security_and_privacy_click", {
               pageName: "More",
             });
@@ -125,7 +141,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
         label="Fetch Wallet version"
         left={<BranchIcon size={16} />}
         onPress={() => {
-          smartNavigation.navigateSmart("Setting.Version", {});
+          navigation.navigate("Setting", {
+            screen: "Setting.Version",
+          });
         }}
       />
       <SettingItem

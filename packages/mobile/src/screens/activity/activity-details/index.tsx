@@ -14,6 +14,7 @@ import { IconButton } from "components/new/button/icon";
 import { getActivityIcon } from "utils/stable-sort";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { TimelineView } from "components/new/timeline";
+import { BlurButton } from "components/new/button/blur-button";
 
 export const ActivityDetails = () => {
   const route = useRoute<
@@ -103,21 +104,41 @@ export const ActivityDetails = () => {
         >
           {details.verb}
         </Text>
-        {details.status === "Success" ? (
-          <Text
-            style={style.flatten(["color-white@80%", "body2"]) as ViewStyle}
-          >
-            Confirmed
-          </Text>
-        ) : details.status === "Pending" ? (
-          <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
-            Pending
-          </Text>
-        ) : (
-          <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
-            Error
-          </Text>
-        )}
+        <BlurButton
+          text={
+            details.status === "Success"
+              ? "Confirmed"
+              : details.status === "Pending"
+              ? "Pending"
+              : "Error"
+          }
+          backgroundBlur={false}
+          textStyle={
+            [
+              style.flatten(
+                ["text-caption2"],
+                [
+                  details.status === "Success" || details.status === "Pending"
+                    ? "color-indigo-900"
+                    : "color-white",
+                ]
+              ),
+              { lineHeight: 14 },
+            ] as ViewStyle
+          }
+          containerStyle={
+            style.flatten(
+              ["padding-x-12", "margin-y-8"],
+              [
+                details.status === "Success"
+                  ? "background-color-vibrant-green-500"
+                  : details.status === "Pending"
+                  ? "background-color-yellow-500"
+                  : "background-color-vibrant-red-500",
+              ]
+            ) as ViewStyle
+          }
+        />
         <Text style={style.flatten(["color-gray-200", "body2"]) as ViewStyle}>
           {moment(details.timestamp).format("MMMM DD, hh:mm A")}
         </Text>

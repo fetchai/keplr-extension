@@ -8,14 +8,11 @@ import { useStyle } from "styles/index";
 import { TrashCanIcon } from "components/icon";
 import { Currency } from "@keplr-wallet/types";
 import { BorderlessButton } from "react-native-gesture-handler";
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from "@react-navigation/native";
+
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ConfirmCardModel } from "components/new/confirm-modal";
 import { Button } from "components/button";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const SettingManageTokensScreen: FunctionComponent = observer(() => {
   const {
@@ -26,7 +23,7 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
     analyticsStore,
   } = useStore();
 
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const smartNavigation = useSmartNavigation();
 
   const style = useStyle();
 
@@ -90,7 +87,7 @@ export const SettingManageTokensScreen: FunctionComponent = observer(() => {
             containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
             textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
             onPress={() => {
-              navigation.navigate("Setting.AddToken");
+              smartNavigation.navigateSmart("Setting.AddToken", {});
               analyticsStore.logEvent("add_token_icon_click", {
                 pageName: "Manage Tokens",
               });
@@ -118,7 +115,7 @@ export const ManageTokenItem: FunctionComponent<{
 
   const tokensOf = tokensStore.getTokensOf(chainStore.current.chainId);
 
-  const navigation = useNavigation();
+  const smartNavigation = useSmartNavigation();
 
   const [showConfirmModal, setConfirmModal] = useState(false);
 
@@ -169,8 +166,8 @@ export const ManageTokenItem: FunctionComponent<{
           onPress={() => {
             setConfirmModal(true);
 
-            if (tokensOf.tokens.length === 0 && navigation.canGoBack()) {
-              navigation.goBack();
+            if (tokensOf.tokens.length === 0 && smartNavigation.canGoBack()) {
+              smartNavigation.goBack();
             }
           }}
         >

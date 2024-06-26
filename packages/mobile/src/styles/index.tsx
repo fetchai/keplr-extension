@@ -61,6 +61,7 @@ export const ColorPalette = {
   "red-600": "#911830",
   "red-700": "#440B17",
   "coral-red": "#FF3E3E",
+  "vibrant-red-500": "#F04646",
 
   "pink-50": "#FDF4F9",
   "pink-100": "#FFE9F4",
@@ -121,6 +122,8 @@ export const ColorPalette = {
   "indigo-backdrop": "#270e8dcc",
 
   "orange-400": "#fa8f6b",
+
+  "yellow-500": "#EDC32C",
 };
 
 export const TextColors = {

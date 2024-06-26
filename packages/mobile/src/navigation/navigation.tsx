@@ -27,6 +27,8 @@ import { RegisterNavigation } from "navigation/register-navigation";
 import { OtherNavigation } from "navigation/other-navigation";
 import { MainTabNavigationWithDrawer } from "navigation/navigation-tab-with-drawer";
 import { ViewStyle } from "react-native";
+import { StakeNavigation } from "./stake-navigation";
+import { MoreNavigation } from "./more-navigation";
 
 export const Stack = createStackNavigator();
 
@@ -172,6 +174,8 @@ export const AppNavigation: FunctionComponent = observer(() => {
                 component={AddressBookStackScreen}
               />
               <Stack.Screen name="ChainList" component={ChainListStackScreen} />
+              <Stack.Screen name="Stake" component={StakeNavigation} />
+              <Stack.Screen name="Setting" component={MoreNavigation} />
             </Stack.Navigator>
           </NavigationContainer>
           {/*</BugsnagNavigationContainer>*/}

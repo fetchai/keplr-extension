@@ -203,7 +203,7 @@ export const PortfolioStakingCard: FunctionComponent<{
         txnHash={txnHash}
         chainId={chainStore.current.chainId}
         buttonText="Go to stakescreen"
-        onHomeClick={() => navigation.navigate("Stake", {})}
+        onHomeClick={() => navigation.navigate("StakeTab", {})}
         onTryAgainClick={onSubmit}
       />
       <ClaimRewardsModal

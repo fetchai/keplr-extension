@@ -120,7 +120,7 @@ export const DelegationsCard: FunctionComponent<{
                   analyticsStore.logEvent("stake_validator_click", {
                     pageName: "Stake",
                   });
-                  navigation.navigate("Others", {
+                  navigation.navigate("Stake", {
                     screen: "Validator.Details",
                     params: {
                       validatorAddress: del.delegation.validator_address,
