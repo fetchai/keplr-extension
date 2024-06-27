@@ -585,44 +585,50 @@ const DelegateReward: FunctionComponent<{
               </View>
             </View>
             {!(!networkIsConnected || !account.isReadyToSendTx) ? (
-              <Button
-                text={"Claim"}
-                rippleColor="black@50%"
-                size="small"
-                mode="outline"
-                containerStyle={
-                  style.flatten([
-                    "border-radius-64",
-                    "border-color-white@40%",
-                    "padding-x-6",
-                    "height-30",
-                  ]) as ViewStyle
-                }
-                textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
-                onPress={() => {
-                  if (account.txTypeInProgress === "withdrawRewards") {
-                    Toast.show({
-                      type: "error",
-                      text1: `${txType[account.txTypeInProgress]} in progress`,
-                    });
-                    return;
+              <View style={style.flatten(["flex-2", "items-end"])}>
+                <Button
+                  text={"Claim"}
+                  rippleColor="black@50%"
+                  size="small"
+                  mode="outline"
+                  containerStyle={
+                    style.flatten([
+                      "border-radius-64",
+                      "border-color-white@40%",
+                      "padding-x-6",
+                      "height-30",
+                    ]) as ViewStyle
                   }
-                  analyticsStore.logEvent("claim_staking_reward_click", {
-                    pageName: "Stake",
-                  });
-                  setClaimData({
-                    reward: rewards
-                      .maxDecimals(10)
-                      .trim(true)
-                      .shrink(true)
-                      .toString(),
-                    validatorAddress: val.operator_address,
-                  });
-                  setClaimModel(true);
-                }}
-                disabled={!account.isReadyToSendTx}
-                loading={isSendingTx == val.operator_address}
-              />
+                  textStyle={
+                    style.flatten(["body3", "color-white"]) as ViewStyle
+                  }
+                  onPress={() => {
+                    if (account.txTypeInProgress === "withdrawRewards") {
+                      Toast.show({
+                        type: "error",
+                        text1: `${
+                          txType[account.txTypeInProgress]
+                        } in progress`,
+                      });
+                      return;
+                    }
+                    analyticsStore.logEvent("claim_staking_reward_click", {
+                      pageName: "Stake",
+                    });
+                    setClaimData({
+                      reward: rewards
+                        .maxDecimals(10)
+                        .trim(true)
+                        .shrink(true)
+                        .toString(),
+                      validatorAddress: val.operator_address,
+                    });
+                    setClaimModel(true);
+                  }}
+                  disabled={!account.isReadyToSendTx}
+                  loading={isSendingTx == val.operator_address}
+                />
+              </View>
             ) : null}
           </View>
         ) : null;

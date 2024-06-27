@@ -130,6 +130,7 @@ export const SendPhase2: FunctionComponent<{
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
         const stdFee = sendConfigs.feeConfig.toStdFee();
+
         analyticsStore.logEvent("send_txn_click", { pageName: "Send" });
         const tx = account.makeSendTokenTx(
           sendConfigs.amountConfig.amount,
@@ -137,7 +138,6 @@ export const SendPhase2: FunctionComponent<{
           sendConfigs.amountConfig.sendCurrency!,
           sendConfigs.recipientConfig.recipient
         );
-
         await tx.send(
           stdFee,
           sendConfigs.memoConfig.memo,

@@ -35,9 +35,6 @@ export const FeeInSign: FunctionComponent<{
   const price = priceStore.calculatePrice(fee);
 
   const isEvm = chainStore.current.features?.includes("evm") ?? false;
-  const feePrice = feeConfig.getFeeTypePretty(
-    feeConfig.feeType ? feeConfig.feeType : "average"
-  );
 
   // If the signing request is from internal and the "preferNoSetFee" option is set,
   // prevent the user to edit the fee.
@@ -72,7 +69,13 @@ export const FeeInSign: FunctionComponent<{
                 ]) as ViewStyle
               }
             >
-              {feePrice.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)}
+              {feeConfig
+                .getFeeTypePretty(
+                  feeConfig.feeType ? feeConfig.feeType : "average"
+                )
+                .hideIBCMetadata(true)
+                .trim(true)
+                .toMetricPrefix(isEvm)}
             </Text>
             <IconButton
               backgroundBlur={false}
@@ -117,7 +120,7 @@ export const FeeInSign: FunctionComponent<{
             <Text
               style={style.flatten(["body3", "color-text-low"]) as ViewStyle}
             >
-              {price ? "price" : "-"}
+              {price ? price.toString() : "-"}
             </Text>
           </View>
           <View style={style.flatten(["flex-row"])}>
@@ -127,7 +130,7 @@ export const FeeInSign: FunctionComponent<{
                 style.flatten(["subtitle1", "color-gray-300"]) as ViewStyle
               }
             >
-              {"fee.trim(true).toString()"}
+              {fee.trim(true).toString()}
             </Text>
           </View>
         </View>

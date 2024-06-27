@@ -44,15 +44,17 @@ export const GasInput: FunctionComponent<{
         <Switch
           trackColor={{
             false: "#767577",
-            true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
+            true: Platform.OS === "ios" ? "#5F38FB" : "#767577",
           }}
-          thumbColor={isEnabled ? "#5F38FB" : "#D0BCFF66"}
+          thumbColor={isEnabled ? "#FFFFFF" : "#D0BCFF66"}
           style={[
             {
               borderRadius: 16,
-              borderWidth: 1,
             },
-            style.flatten(["border-color-pink-light@90%"]),
+            style.flatten(
+              ["border-color-pink-light@40%"],
+              [!isEnabled && "border-width-1"]
+            ),
           ]}
           onValueChange={() => setIsEnabled((previousState) => !previousState)}
           value={isEnabled}

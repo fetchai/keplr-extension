@@ -31,7 +31,6 @@ export const TransectionFreeModel: FunctionComponent<{
     if (!isOpen) {
       return null;
     }
-
     return (
       <CardModal isOpen={isOpen} close={close} title={title}>
         {!feeButtonInner ? (
@@ -58,6 +57,7 @@ export const TransectionFreeModel: FunctionComponent<{
           containerStyle={
             style.flatten(["margin-top-24", "border-radius-32"]) as ViewStyle
           }
+          textStyle={style.flatten(["body2"]) as ViewStyle}
           onPress={() => {
             feeConfig.setFeeType(selectFeeButton);
             close();

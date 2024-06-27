@@ -87,15 +87,17 @@ export const FeeButtons: FunctionComponent<FeeButtonsProps> = observer(
           <Switch
             trackColor={{
               false: "#767577",
-              true: Platform.OS === "ios" ? "#ffffff00" : "#767577",
+              true: Platform.OS === "ios" ? "#5F38FB" : "#767577",
             }}
-            thumbColor={feeButtonState.isGasInputOpen ? "#5F38FB" : "#D0BCFF66"}
+            thumbColor={feeButtonState.isGasInputOpen ? "#FFFFFF" : "#D0BCFF66"}
             style={[
               {
                 borderRadius: 16,
-                borderWidth: 1,
               },
-              style.flatten(["border-color-pink-light@90%"]),
+              style.flatten(
+                ["border-color-pink-light@40%"],
+                [!feeButtonState.isGasInputOpen && "border-width-1"]
+              ),
             ]}
             onValueChange={() => {
               feeButtonState.setIsGasInputOpen(!feeButtonState.isGasInputOpen);
@@ -270,9 +272,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                 });
             }
           )}
-          <View
-            style={style.flatten(["width-1", "margin-top-6"]) as ViewStyle}
-          />
+          <View style={style.flatten(["margin-top-6"]) as ViewStyle} />
           {renderButton(
             "Average",
             averageFeePrice,
@@ -288,9 +288,7 @@ export const FeeButtonsInner: FunctionComponent<FeeButtonsProps> = observer(
                 });
             }
           )}
-          <View
-            style={style.flatten(["width-1", "margin-top-6"]) as ViewStyle}
-          />
+          <View style={style.flatten(["margin-top-6"]) as ViewStyle} />
           {renderButton(
             "High",
             highFeePrice,
