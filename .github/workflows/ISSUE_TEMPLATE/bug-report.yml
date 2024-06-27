@@ -61,7 +61,7 @@ body:
     id: environment
     attributes:
       label: Environment Details (Optional)
-      description: Provide any relevant information about your environment, such as operating system, protoc version, node version and any other libraries used.
+      description: Provide any relevant information about your environment, such as operating system, bowser and its version, protoc version, node version and anything else that might be useful.
       render: markdown
     validations:
       required: false
