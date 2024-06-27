@@ -1,12 +1,11 @@
 # Fetch Wallet
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Official Website](https://img.shields.io/badge/Official%20Website-fetch.ai-blue?style=flat&logo=world&logoColor=white)](https://fetch.ai) [![Twitter Follow](https://img.shields.io/twitter/follow/fetch_ai?style=social)](https://twitter.com/fetch_ai)
 
-[Fetch.ai](https://fetch.ai)'s fork of the Keplr wallet by [chainapsis](https://github.com/chainapsis), which is designed to act as a generic wallet software for blockchains built using the [Cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and to support the inter-blockchain communication (IBC) protocol.
 
-The wallet is configured for the Fetch.ai Stargate network. 
+This is the code repository of the Fetch Wallet, a generic wallet for blockchains built using the [Cosmos-SDK](https://github.com/cosmos/cosmos-sdk) with support for EVM-based chains and the inter-blockchain communication (IBC) protocol. 
 
-Further information on the Keplr wallet can be found at the base [repo](https://github.com/chainapsis/keplr-extension).  
+This is a fork of the Keplr wallet by [chainapsis](https://github.com/chainapsis).
 
 ## Official Releases
 
@@ -74,10 +73,3 @@ In case of any error, try this and re-run the local dev server for mobile
 ```bash
 yarn postinstall
 ```
-
-## Author
-
-👤 **Fetch.ai**
-
-* Twitter: [@fetch_ai](https://twitter.com/Fetch_ai)
-* Github: [@fetchai](https://github.com/fetchai)
