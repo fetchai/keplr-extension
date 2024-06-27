@@ -2849,14 +2849,14 @@ export const CommunityChainInfoRepo = {
 };
 
 export enum TXNTYPE {
-  ibcTransfer="ibcTransfer",
-  send="send",
-  withdrawRewards="withdrawRewards",
-  delegate="delegate",
-  undelegate="undelegate",
-  redelegate="redelegate",
-  govVote="govVote",
-  nativeBridgeSend="nativeBridgeSend",
-  approval="approval",
-  createSecret20ViewingKey="createSecret20ViewingKey",
+  ibcTransfer = "ibcTransfer",
+  send = "send",
+  withdrawRewards = "withdrawRewards",
+  delegate = "delegate",
+  undelegate = "undelegate",
+  redelegate = "redelegate",
+  govVote = "govVote",
+  nativeBridgeSend = "nativeBridgeSend",
+  approval = "approval",
+  createSecret20ViewingKey = "createSecret20ViewingKey",
 }
