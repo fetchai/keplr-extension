@@ -15,6 +15,7 @@ import style from "./style.module.scss";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
 import { TXNTYPE } from "../../../config";
+import { useIntl } from "react-intl";
 
 export const Delegate: FunctionComponent = observer(() => {
   const location = useLocation();
@@ -22,8 +23,14 @@ export const Delegate: FunctionComponent = observer(() => {
 
   const navigate = useNavigate();
 
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
 
@@ -162,6 +169,8 @@ export const Delegate: FunctionComponent = observer(() => {
     }
   };
 
+  const intl = useIntl();
+
   return (
     <HeaderLayout
       smallTitle={true}
@@ -173,7 +182,7 @@ export const Delegate: FunctionComponent = observer(() => {
       onBackButton={() => navigate(-1)}
     >
       {validator && (
-        <div style={{ color: "white" }}>
+        <div style={{ color: "white", paddingBottom: "48px" }}>
           <ValidatorCardV2 validator={validator} />
 
           <FormGroup
@@ -197,7 +206,9 @@ export const Delegate: FunctionComponent = observer(() => {
                 marginTop: "8px",
               }}
             >
-              {`Available: ${availableBalance}`}
+              {`${intl.formatMessage({
+                id: "unstake.available",
+              })} ${availableBalance}`}
             </div>
 
             <UseMaxButton
@@ -212,8 +223,9 @@ export const Delegate: FunctionComponent = observer(() => {
               <img src={require("@assets/svg/wireframe/alert.svg")} alt="" />
               <div>
                 <p className={style["lightText"]}>
-                  When you decide to unstake, your assets will be locked for 21
-                  days to be liquid again
+                  {intl.formatMessage({
+                    id: "stake.alert",
+                  })}
                 </p>
               </div>
             </Alert>
@@ -241,16 +253,18 @@ export const Delegate: FunctionComponent = observer(() => {
               disabled={
                 !account.isReadyToSendTx ||
                 !txStateIsValid ||
-                account.txTypeInProgress === TXNTYPE.delegate
+                activityStore.getPendingTxnTypes[TXNTYPE.delegate]
               }
               onClick={() => {
-                if (account.txTypeInProgress === TXNTYPE.delegate) return;
+                if (activityStore.getPendingTxnTypes[TXNTYPE.delegate]) return;
                 stakeClicked();
               }}
               btnBgEnabled={true}
             >
-              Confirm
-              {account.txTypeInProgress === TXNTYPE.delegate && (
+              {intl.formatMessage({
+                id: "unstake.confirm",
+              })}
+              {activityStore.getPendingTxnTypes[TXNTYPE.delegate] && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

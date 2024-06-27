@@ -33,7 +33,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     configs,
     setFromPhase1,
   }) => {
-    const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
+    const {
+      chainStore,
+      accountStore,
+      priceStore,
+      analyticsStore,
+      activityStore,
+    } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
     const location = useLocation();
@@ -231,9 +237,14 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           text="Review transaction"
           gradientText=""
           styleProps={{
+            width: "336px",
+            padding: "12px",
             height: "56px",
-            position: "sticky",
-            bottom: "5px",
+            margin: "0 auto",
+            position: "fixed",
+            bottom: "15px",
+            left: "0px",
+            right: "0px",
           }}
           onClick={async (e: any) => {
             e.preventDefault();
@@ -317,7 +328,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
           btnBgEnabled={true}
         >
-          {accountInfo.txTypeInProgress === TXNTYPE.send && (
+          {activityStore.getPendingTxnTypes[TXNTYPE.send] && (
             <i className="fas fa-spinner fa-spin ml-2 mr-2" />
           )}
         </ButtonV2>

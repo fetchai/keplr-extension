@@ -11,7 +11,8 @@ import { TXNTYPE } from "../../../../config";
 export const StakeDetails = observer(
   ({ validatorAddress }: { validatorAddress: string }) => {
     const navigate = useNavigate();
-    const { chainStore, accountStore, queriesStore } = useStore();
+    const { chainStore, accountStore, queriesStore, activityStore } =
+      useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
     const location = useLocation();
@@ -102,7 +103,7 @@ export const StakeDetails = observer(
             <div className={style["stake-data-row"]}>
               <div className={style["stake-data-title"]}>Earned rewards</div>
               <div className={style["stake-data-value"]}>
-                {account.txTypeInProgress !== TXNTYPE.withdrawRewards ? (
+                {!activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ? (
                   <div>
                     {!rewards ||
                     rewards.length === 0 ||
@@ -161,15 +162,15 @@ export const StakeDetails = observer(
                 parseFloat(
                   rewards[0]?.maxDecimals(4).toString().split(" ")[0]
                 ) <= 0.0 ||
-                account.txTypeInProgress === TXNTYPE.withdrawRewards
+                activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
               }
               onClick={() => {
-                if (account.txTypeInProgress === TXNTYPE.withdrawRewards) {
+                if (activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]) {
                   notification.push({
                     type: "danger",
                     placement: "top-center",
                     duration: 5,
-                    content: `${account.txTypeInProgress} in progress`,
+                    content: `${TXNTYPE.withdrawRewards} in progress`,
                     canDelete: true,
                     transition: {
                       duration: 0.25,
@@ -182,7 +183,7 @@ export const StakeDetails = observer(
               text=""
             >
               Claim rewards
-              {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
+              {activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

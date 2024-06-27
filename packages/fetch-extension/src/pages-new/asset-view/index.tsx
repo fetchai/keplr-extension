@@ -12,8 +12,7 @@ import { useStore } from "../../stores";
 import { TXNTYPE } from "../../config";
 
 export const AssetView = observer(() => {
-  const { chainStore, accountStore } = useStore();
-  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+  const { activityStore } = useStore();
   const location = useLocation();
   const [tokenInfo, setTokenInfo] = useState<any>();
   const [tokenIcon, setTokenIcon] = useState<string>("");
@@ -66,7 +65,7 @@ export const AssetView = observer(() => {
         : -(parseFloat(totalNumber) * assetValues.diff) / 100;
   }
 
-  const isSendDisabled = accountInfo.txTypeInProgress === TXNTYPE.send;
+  const isSendDisabled = activityStore.getPendingTxnTypes[TXNTYPE.send];
 
   return (
     <HeaderLayout showTopMenu={true} onBackButton={() => navigate(-1)}>
