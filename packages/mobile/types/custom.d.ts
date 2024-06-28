@@ -5,3 +5,7 @@ declare module "*.svg" {
 }
 
 declare module "react-native-markdown-view";
+
+declare module "hypher";
+
+declare module "hyphenation.en-us";

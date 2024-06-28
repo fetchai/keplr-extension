@@ -31,7 +31,6 @@ const getBlurredHeaderScreenOptionsPreset = (
     },
     headerBackground: undefined,
     headerBackTitleVisible: false,
-    // eslint-disable-next-line react/display-name
     header: (props: any) => {
       return <BlurredHeader {...props} backgroundMode={backgroundMode} />;
     },
@@ -41,7 +40,6 @@ const getBlurredHeaderScreenOptionsPreset = (
     headerRightContainerStyle: {
       paddingRight: 20,
     },
-    // eslint-disable-next-line react/display-name
     headerLeft: (props: any) => <HeaderLeftBackButton {...props} />,
     ...TransitionPresets.SlideFromRightIOS,
   };
@@ -73,7 +71,6 @@ export const TransparentHeaderOptionsPreset = {
   },
   headerBackground: undefined,
   headerBackTitleVisible: false,
-  // eslint-disable-next-line react/display-name
   header: (props: any) => {
     return <TransparentHeader {...props} />;
   },
@@ -83,7 +80,6 @@ export const TransparentHeaderOptionsPreset = {
   headerRightContainerStyle: {
     paddingRight: 20,
   },
-  // eslint-disable-next-line react/display-name
   headerLeft: (props: any) => <HeaderLeftBackBlurButton {...props} />,
   ...TransitionPresets.SlideFromRightIOS,
 };
@@ -102,7 +98,6 @@ export const BlurHeaderOptionsPreset = {
   },
   headerBackground: undefined,
   headerBackTitleVisible: false,
-  // eslint-disable-next-line react/display-name
   header: (props: any) => {
     return <BlurHeader {...props} />;
   },
@@ -112,7 +107,6 @@ export const BlurHeaderOptionsPreset = {
   headerRightContainerStyle: {
     paddingRight: 20,
   },
-  // eslint-disable-next-line react/display-name
   headerLeft: (props: any) => <HeaderLeftBackBlurButton {...props} />,
   ...TransitionPresets.SlideFromRightIOS,
 };
@@ -143,22 +137,18 @@ export const BlurredHeader: FunctionComponent<
     backgroundMode: HeaderBackgroundMode;
   }
 > = (props) => {
+  const { backgroundMode, ...restProps } = props;
+
+  const styleInfo = useStyleInfo(backgroundMode);
+  const route = useRoute();
+  const pageScrollPosition = usePageScrollPosition();
+
   if (Platform.OS !== "ios") {
     return <AndroidAlternativeBlurredHeader {...props} />;
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const route = useRoute();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const pageScrollPosition = usePageScrollPosition();
-
   const scrollY =
     pageScrollPosition.getScrollYValueOf(route.key) ?? new Animated.Value(0);
-
-  const { backgroundMode, ...restProps } = props;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const styleInfo = useStyleInfo(backgroundMode);
 
   return (
     <AnimatedBlurView

@@ -128,7 +128,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
           left={<ShieldIcon size={16} />}
           onPress={() => {
             navigation.navigate("Setting", {
-              screen: "SecurityAndPrivacy",
+              screen: "Setting.SecurityAndPrivacy",
             });
             analyticsStore.logEvent("security_and_privacy_click", {
               pageName: "More",

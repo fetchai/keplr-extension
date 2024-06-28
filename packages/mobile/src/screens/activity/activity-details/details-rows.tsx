@@ -48,7 +48,7 @@ export const DetailRows = ({ details }: { details: any }) => {
       chainName: chainStore.current.chainName,
       pageName: "Activity Detail",
     });
-    navigation.navigate("Others", {
+    navigation.navigate("Stake", {
       screen: "Validator.Details",
       params: {
         validatorAddress: details.validatorAddress,

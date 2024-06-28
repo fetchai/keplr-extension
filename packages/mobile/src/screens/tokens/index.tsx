@@ -56,7 +56,6 @@ export const TokensScreen: FunctionComponent = observer(() => {
   useEffect(() => {
     if (showAddTokenButton) {
       smartNavigation.setOptions({
-        // eslint-disable-next-line react/display-name
         headerRight: () => (
           <HeaderRightButton
             onPress={() => {

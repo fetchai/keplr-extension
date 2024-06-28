@@ -87,7 +87,7 @@ export const MoreNavigation: FunctionComponent = () => {
 
           title: "Security & Privacy",
         }}
-        name="SecurityAndPrivacy"
+        name="Setting.SecurityAndPrivacy"
         component={SecurityAndPrivacyScreen}
       />
       <Stack.Screen
@@ -126,7 +126,7 @@ export const MoreNavigation: FunctionComponent = () => {
           ...HeaderOnGradientScreenOptionsPreset,
           title: "Proposal",
         }}
-        name="Governance Details"
+        name="Governance.Details"
         component={GovernanceDetailsScreen}
       />
     </Stack.Navigator>

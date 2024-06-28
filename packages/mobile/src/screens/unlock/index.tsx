@@ -313,7 +313,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                   />
                 )
               }
-              containerStyle={style.flatten(["margin-y-20"])}
+              containerStyle={style.flatten(["margin-y-20"]) as ViewStyle}
               secureTextEntry={!showPassword}
               value={password}
               returnKeyType="done"

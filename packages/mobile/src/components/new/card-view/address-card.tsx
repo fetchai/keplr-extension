@@ -111,20 +111,6 @@ export const AddressInputCard: FunctionComponent<{
       }
     }, [error]);
 
-    // const isICNSName: boolean = (() => {
-    //   if ("isICNSName" in recipientConfig) {
-    //     return recipientConfig.isICNSName;
-    //   }
-    //   return false;
-    // })();
-
-    // const isICNSfetching: boolean = (() => {
-    //   if ("isICNSFetching" in recipientConfig) {
-    //     return recipientConfig.isICNSFetching;
-    //   }
-    //   return false;
-    // })();
-
     return (
       <React.Fragment>
         {label ? (

@@ -209,7 +209,6 @@ export const LedgerGranterModal: FunctionComponent<{
         unsubscriber();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBLEAvailable, permissionStatus]);
 
   const decideLedgerImage = (bluetoothMode: BluetoothMode) => {

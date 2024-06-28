@@ -203,7 +203,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
               }}
               value={value}
               maxLength={30}
-              refs={ref}
+              ref={ref}
             />
           );
         }}
@@ -240,7 +240,7 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
                   onBlur={onBlur}
                   onChangeText={(text: string) => onChange(text.trim())}
                   value={value}
-                  refs={ref}
+                  ref={ref}
                   rightIcon={
                     !showPassword ? (
                       <IconButton

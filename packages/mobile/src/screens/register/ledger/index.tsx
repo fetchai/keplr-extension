@@ -385,7 +385,7 @@ export const LedgerScreen: FunctionComponent = () => {
               }}
               value={value}
               maxLength={30}
-              refs={ref}
+              ref={ref}
             />
           );
         }}
@@ -422,7 +422,7 @@ export const LedgerScreen: FunctionComponent = () => {
                   onBlur={onBlur}
                   onChangeText={(text: string) => onChange(text.trim())}
                   value={value}
-                  refs={ref}
+                  ref={ref}
                   rightIcon={
                     !showPassword ? (
                       <IconButton

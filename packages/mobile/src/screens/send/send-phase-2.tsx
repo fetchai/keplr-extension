@@ -134,8 +134,7 @@ export const SendPhase2: FunctionComponent<{
         analyticsStore.logEvent("send_txn_click", { pageName: "Send" });
         const tx = account.makeSendTokenTx(
           sendConfigs.amountConfig.amount,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          sendConfigs.amountConfig.sendCurrency!,
+          sendConfigs.amountConfig.sendCurrency,
           sendConfigs.recipientConfig.recipient
         );
         await tx.send(

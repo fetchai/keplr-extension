@@ -152,7 +152,7 @@ export const GovernanceCardBody: FunctionComponent<{
             ]) as ViewStyle
           }
           onPress={() => {
-            navigation.navigateSmart("Governance Details", {
+            navigation.navigateSmart("Governance.Details", {
               proposalId: proposal.id,
             });
           }}

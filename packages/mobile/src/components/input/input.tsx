@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import React, { useState } from "react";
 import {
   Platform,
@@ -207,3 +206,4 @@ export const TextInput = React.forwardRef<
     </View>
   );
 });
+TextInput.displayName = "TextInput";

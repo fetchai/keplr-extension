@@ -69,23 +69,11 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Home: {
         upperScreenName: "HomeTab",
       },
-      Receive: {
-        upperScreenName: "Others",
-      },
-      Send: {
-        upperScreenName: "Others",
-      },
       Portfolio: {
         upperScreenName: "HomeTab",
       },
       NativeTokens: {
         upperScreenName: "HomeTab",
-      },
-      Tokens: {
-        upperScreenName: "Others",
-      },
-      Camera: {
-        upperScreenName: "Others",
       },
       Inbox: {
         upperScreenName: "HomeTab",
@@ -114,7 +102,7 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       Governance: {
         upperScreenName: "Setting",
       },
-      "Governance Details": {
+      "Governance.Details": {
         upperScreenName: "Setting",
       },
       "Setting.ViewPrivateData": {
@@ -135,11 +123,11 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Setting.ManageTokens": {
         upperScreenName: "Setting",
       },
+      "Setting.SecurityAndPrivacy": {
+        upperScreenName: "Setting",
+      },
       AddressBook: {
         upperScreenName: "AddressBooks",
-      },
-      SecurityAndPrivacy: {
-        upperScreenName: "Others",
       },
       AddAddressBook: {
         upperScreenName: "AddressBooks",
@@ -147,26 +135,17 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       EditAddressBook: {
         upperScreenName: "AddressBooks",
       },
-      Result: {
+      Tokens: {
         upperScreenName: "Others",
       },
-      "Web.Intro": {
-        upperScreenName: "Web",
+      Camera: {
+        upperScreenName: "Others",
       },
-      "Web.Osmosis": {
-        upperScreenName: "Web",
+      Receive: {
+        upperScreenName: "Others",
       },
-      "Web.OsmosisFrontier": {
-        upperScreenName: "Web",
-      },
-      "Web.Stargaze": {
-        upperScreenName: "Web",
-      },
-      "Web.Umee": {
-        upperScreenName: "Web",
-      },
-      "Web.Junoswap": {
-        upperScreenName: "Web",
+      Send: {
+        upperScreenName: "Others",
       },
       WebView: {
         upperScreenName: "Others",
@@ -178,12 +157,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         upperScreenName: "Others",
       },
     }).withParams<{
-      WebView: {
-        url: string;
-      };
-      "Staking.Dashboard": {
-        isTab?: boolean;
-      };
       "Register.Intro": {
         isBack: boolean;
       };
@@ -227,22 +200,8 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       "Register.End": {
         password?: string;
       };
-      Receive: {
-        chainId?: string;
-      };
-      Send: {
-        chainId?: string;
-        currency?: string;
-        recipient?: string;
-        state?: State;
-      };
-      NativeTokens: {
-        tokenString: string;
-        tokenBalanceString: string;
-      };
-      Camera: {
-        showMyQRButton?: boolean;
-        recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
+      "Staking.Dashboard": {
+        isTab?: boolean;
       };
       "Validator.Details": {
         validatorAddress: string;
@@ -266,9 +225,6 @@ const { SmartNavigatorProvider, useSmartNavigation } =
         selectedValidatorAddress?: string;
         validatorAddress: string;
       };
-      "Governance Details": {
-        proposalId: string;
-      };
       "Setting.ViewPrivateData": {
         privateData: string;
         privateDataType: string;
@@ -280,6 +236,29 @@ const { SmartNavigatorProvider, useSmartNavigation } =
       AddAddressBook: {
         chainId: string;
         addressBookConfig: AddressBookConfig;
+      };
+      "Governance.Details": {
+        proposalId: string;
+      };
+      Send: {
+        chainId?: string;
+        currency?: string;
+        recipient?: string;
+        state?: State;
+      };
+      Receive: {
+        chainId?: string;
+      };
+      NativeTokens: {
+        tokenString: string;
+        tokenBalanceString: string;
+      };
+      Camera: {
+        showMyQRButton?: boolean;
+        recipientConfig?: IRecipientConfig | IRecipientConfigWithICNS;
+      };
+      WebView: {
+        url: string;
       };
     }>()
   );

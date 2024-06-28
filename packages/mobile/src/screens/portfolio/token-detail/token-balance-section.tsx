@@ -159,7 +159,7 @@ export const TokenBalanceSection: FunctionComponent<{
             chainName: chainStore.current.chainName,
             pageName: "Portfolio",
           });
-          navigation.navigate("Others", {
+          navigation.navigate("Stake", {
             screen: "Staking.Dashboard",
             params: { isTab: false },
           });

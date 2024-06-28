@@ -74,7 +74,6 @@ export const AddressBookScreen: FunctionComponent = observer(() => {
 
   useEffect(() => {
     smartNavigation.setOptions({
-      // eslint-disable-next-line react/display-name
       headerRight: () => (
         <HeaderRightButton
           onPress={() => {
