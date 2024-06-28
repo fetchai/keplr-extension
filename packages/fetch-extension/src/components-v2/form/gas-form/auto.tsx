@@ -7,7 +7,6 @@ import { Card } from "@components-v2/card";
 
 export const GasAutoContainer: FunctionComponent<{
   gasConfig: IGasConfig;
-
   gasSimulator: IGasSimulator;
 }> = observer(({ gasConfig, gasSimulator }) => {
   return (
@@ -23,7 +22,7 @@ export const GasAutoContainer: FunctionComponent<{
         >
           <div
             style={{
-              color: "white",
+              color: "rgba(255,255,255,0.6)",
               fontFamily: "Lexend",
               fontSize: "14px",
               fontWeight: 400,
@@ -76,7 +75,7 @@ export const GasAutoContainer: FunctionComponent<{
         >
           <div
             style={{
-              color: "white",
+              color: "rgba(255,255,255,0.6)",
               fontFamily: "Lexend",
               fontSize: "14px",
               fontWeight: 400,
@@ -113,7 +112,7 @@ export const GasAutoContainer: FunctionComponent<{
       >
         <div
           style={{
-            color: "white",
+            color: "rgba(255,255,255,0.6)",
             fontFamily: "Lexend",
             fontSize: "14px",
             fontWeight: 400,

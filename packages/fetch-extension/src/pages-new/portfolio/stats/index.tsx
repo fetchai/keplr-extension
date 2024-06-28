@@ -10,8 +10,15 @@ import { DefaultGasMsgWithdrawRewards } from "../../../config.ui";
 import { useNavigate } from "react-router";
 import { useNotification } from "@components/notification";
 import { TXNTYPE } from "../../../config";
+import { Dropdown } from "@components-v2/dropdown";
 
-export const Stats = () => {
+export const Stats = ({
+  isClaimRewardsOpen,
+  setIsClaimRewardsOpen,
+}: {
+  isClaimRewardsOpen: boolean;
+  setIsClaimRewardsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const navigate = useNavigate();
   const notification = useNotification();
 
@@ -320,7 +327,7 @@ export const Stats = () => {
         </div>
       </div>
       <ButtonV2
-        onClick={handleClaimRewards}
+        onClick={() => setIsClaimRewardsOpen(true)}
         styleProps={{
           background: "linear-gradient(269deg, #F9774B 0%, #CF447B 99.29%)",
           color: "white",
@@ -336,6 +343,60 @@ export const Stats = () => {
           <i className="fas fa-spinner fa-spin ml-2 mr-2" />
         )}
       </ButtonV2>
+
+      <Dropdown
+        setIsOpen={isClaimRewardsOpen}
+        isOpen={isClaimRewardsOpen}
+        title=""
+        closeClicked={() => setIsClaimRewardsOpen(false)}
+        showTopNav={false}
+        showCloseIcon={false}
+      >
+        <div className={style["claim-rewards-dropdown-container"]}>
+          <img
+            src={require("@assets/svg/wireframe/ic_claimrewards.png")}
+            alt=""
+          />
+          <div className={style["claim-rewards-dropdown-text-container"]}>
+            <div className={style["claim-rewards-dropdown-title"]}>
+              Claim rewards
+            </div>
+            <div className={style["claim-rewards-dropdown-subtitle"]}>
+              Transaction has been broadcasted to blockchain and pending
+              confirmation
+            </div>
+          </div>
+
+          <div className={style["claim-rewards-reward"]}>
+            <div
+              style={{
+                color: "rgba(255,255,255,0.6)",
+                fontSize: "14px",
+                fontWeight: 400,
+                lineHeight: "17.5px",
+              }}
+            >
+              You’ve earned
+            </div>
+            <div style={{ fontWeight: 500, lineHeight: "17.5px" }}>
+              {parseFloat(rewardsBalNumber).toFixed(2)} {` ${rewardDenom} `}
+            </div>
+          </div>
+
+          <ButtonV2
+            onClick={handleClaimRewards}
+            styleProps={{
+              background: "linear-gradient(269deg, #F9774B 0%, #CF447B 99.29%)",
+              color: "white",
+              height: "56px",
+            }}
+            text="Claim my rewards"
+          >
+            {activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ===
+              true && <i className="fas fa-spinner fa-spin ml-2 mr-2" />}
+          </ButtonV2>
+        </div>
+      </Dropdown>
     </div>
   );
 };
