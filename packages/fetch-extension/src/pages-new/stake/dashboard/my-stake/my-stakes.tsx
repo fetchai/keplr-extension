@@ -21,6 +21,7 @@ import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
 import { Dec } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../../config";
+import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 
 export const MyStakes = observer(
   ({
@@ -51,6 +52,8 @@ export const MyStakes = observer(
     const queries = queriesStore.get(chainStore.current.chainId);
 
     const isDorado = chainStore.current.chainId === "dorado-1";
+
+    const { setIsDropdownOpen } = useDropdown();
 
     const queryDelegations =
       queries.cosmos.queryDelegations.getQueryBech32Address(
@@ -162,6 +165,7 @@ export const MyStakes = observer(
         } finally {
           setIsWithdrawingRewards(false);
           navigate("/stake", { replace: true });
+          setIsDropdownOpen(false);
         }
       }
     };
