@@ -18,9 +18,10 @@ import style from "./style.module.scss";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { StakeInput } from "@components-v2/form/stake-input";
 import { UseMaxButton } from "@components-v2/buttons/use-max-button";
-import { FeeButtons, MemoInput } from "@components-v2/form";
+import { MemoInput } from "@components-v2/form";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../config";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 export const Unstake = observer(() => {
   const location = useLocation();

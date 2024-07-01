@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import style from "./style.module.scss";
 import { useIntl } from "react-intl";
-import { AddressInput, FeeButtons, MemoInput } from "@components-v2/form";
+import { AddressInput, MemoInput } from "@components-v2/form";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
@@ -13,6 +13,7 @@ import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
 import { useLocation } from "react-router";
 import { TXNTYPE } from "../../config";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;

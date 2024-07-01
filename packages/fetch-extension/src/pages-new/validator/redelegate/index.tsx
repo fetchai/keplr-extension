@@ -1,7 +1,7 @@
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { UseMaxButton } from "@components-v2/buttons/use-max-button";
 import { Dropdown } from "@components-v2/dropdown";
-import { FeeButtons, MemoInput } from "@components-v2/form";
+import { MemoInput } from "@components-v2/form";
 import { StakeInput } from "@components-v2/form/stake-input";
 import { SelectorModal } from "@components-v2/selector-modal/selector";
 import { useNotification } from "@components/notification";
@@ -21,6 +21,7 @@ import style from "./style.module.scss";
 import { RedelegateValidatorDetail } from "./validator-detail";
 import { TXNTYPE } from "../../../config";
 import { useIntl } from "react-intl";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 type Sort = "APR" | "Voting Power" | "Name";
 

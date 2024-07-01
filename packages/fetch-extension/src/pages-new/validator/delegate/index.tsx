@@ -10,12 +10,13 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import { Alert, FormGroup } from "reactstrap";
 import { StakeInput } from "@components-v2/form/stake-input";
 import { UseMaxButton } from "@components-v2/buttons/use-max-button";
-import { FeeButtons, MemoInput } from "@components-v2/form";
+import { MemoInput } from "@components-v2/form";
 import style from "./style.module.scss";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
 import { TXNTYPE } from "../../../config";
 import { useIntl } from "react-intl";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 export const Delegate: FunctionComponent = observer(() => {
   const location = useLocation();
