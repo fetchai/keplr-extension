@@ -32,6 +32,7 @@ export const WalletDetailsView = observer(
       chainStore,
       queriesStore,
       uiConfigStore,
+      activityStore,
     } = useStore();
     const userState = chatStore.userDetailsStore;
 
@@ -40,6 +41,8 @@ export const WalletDetailsView = observer(
     const current = chainStore.current;
     const [chatTooltip, setChatTooltip] = useState("");
     const [chatDisabled, setChatDisabled] = useState(false);
+
+    const [currentTxnType, setCurrentTxnType] = useState<string>("");
 
     useEffect(() => {
       if (keyRingStore.keyRingType === "ledger") {
@@ -111,6 +114,13 @@ export const WalletDetailsView = observer(
       },
       [accountInfo.walletStatus, notification, intl]
     );
+
+    useEffect(() => {
+      if (Object.values(activityStore.getPendingTxn).length > 0) {
+        const txns: any = Object.values(activityStore.getPendingTxn);
+        setCurrentTxnType(txns[0].type);
+      }
+    }, [activityStore.getPendingTxn]);
 
     return (
       <div>
@@ -301,7 +311,7 @@ export const WalletDetailsView = observer(
           </div>
         ) : null}
 
-        {accountInfo.txTypeInProgress && (
+        {Object.values(activityStore.getPendingTxn).length > 0 && (
           <div
             className={style["wallet-detail-card"]}
             style={{
@@ -309,9 +319,21 @@ export const WalletDetailsView = observer(
               gap: "2px",
             }}
           >
-            <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
-              {txType[accountInfo.txTypeInProgress]} in progress
+              {Object.values(activityStore.getPendingTxn).length > 1 ? (
+                <div>
+                  {Object.values(activityStore.getPendingTxn).length}{" "}
+                  transactions in progress
+                </div>
+              ) : (
+                <div>{txType[currentTxnType]} in progress</div>
+              )}
             </div>
           </div>
         )}

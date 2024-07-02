@@ -1,0 +1,63 @@
+.validator-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stake-data-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stake-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stake-data-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+  align-items: center;
+  font-size: 14px;
+}
+
+.stake-data-title {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.stake-data-value {
+  font-weight: 500;
+}
+
+.stake-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.validator-buttons {
+  display: flex;
+  gap: 10px;
+  font-size: 16px;
+  // justify-content: space-between;
+}
+.tooltip {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 10px;
+
+  padding: 2px 4px;
+}
+
+.address {
+  color: #fff;
+  text-align: center;
+  opacity: 0.8;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

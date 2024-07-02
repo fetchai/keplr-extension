@@ -14,7 +14,9 @@
   line-height: normal;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 18px;
+  padding: 16px;
+  position: relative;
+  margin-bottom: 35px;
 }
 .heading {
   font-family: Lexend;
@@ -24,13 +26,14 @@
   display: block;
   height: 120px;
   width: 240px;
-  position: fixed;
-  right: -35px;
-  top: 257px;
+  position: absolute;
+  right: -68px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .legend {
   display: flex;
-  gap: 6px;
+  gap: 10px;
 }
 
 .legends {

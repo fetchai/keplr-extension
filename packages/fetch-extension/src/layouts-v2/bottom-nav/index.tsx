@@ -84,7 +84,7 @@ const StakeTab = () => {
         title={"Stake"}
         icon={stakeTabIcon}
         activeIcon={selectedStakeTabIcon}
-        path={"/validators/validator"}
+        path={"/stake"}
         disabled={z}
         tooltip={stakingTooltip}
       />
@@ -111,9 +111,6 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
-
-    setActivityTooltip("Coming soon");
-    setActivityDisabled(true);
   }, [current.chainId, keyRingStore.keyRingType]);
 
   return (

@@ -1,0 +1,418 @@
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { UseMaxButton } from "@components-v2/buttons/use-max-button";
+import { Dropdown } from "@components-v2/dropdown";
+import { FeeButtons, MemoInput } from "@components-v2/form";
+import { StakeInput } from "@components-v2/form/stake-input";
+import { SelectorModal } from "@components-v2/selector-modal/selector";
+import { useNotification } from "@components/notification";
+import { useRedelegateTxConfig } from "@keplr-wallet/hooks";
+import { Staking } from "@keplr-wallet/stores";
+import { CoinPretty, Dec, Int } from "@keplr-wallet/unit";
+import { HeaderLayout } from "@layouts-v2/header-layout";
+import { observer } from "mobx-react-lite";
+import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { FormGroup } from "reactstrap";
+import { InputField } from "../../../components-v2/input-field";
+import { useStore } from "../../../stores";
+import { ChooseValidator } from "./choose-validator";
+import { SelectValidatorList } from "./select-validator-list";
+import style from "./style.module.scss";
+import { RedelegateValidatorDetail } from "./validator-detail";
+import { TXNTYPE } from "../../../config";
+
+type Sort = "APR" | "Voting Power" | "Name";
+
+export const Redelegate = observer(() => {
+  const location = useLocation();
+  const validatorAddress = location.pathname.split("/")[2];
+
+  const navigate = useNavigate();
+  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
+    useStore();
+  const account = accountStore.getAccount(chainStore.current.chainId);
+
+  const queries = queriesStore.get(chainStore.current.chainId);
+
+  const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Bonded
+  );
+  const unbondingValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Unbonding
+  );
+  const unbondedValidators = queries.cosmos.queryValidators.getQueryStatus(
+    Staking.BondStatus.Unbonded
+  );
+
+  const { validator } = useMemo(() => {
+    const validator =
+      bondedValidators.getValidator(validatorAddress) ||
+      unbondingValidators.getValidator(validatorAddress) ||
+      unbondedValidators.getValidator(validatorAddress);
+    return {
+      validator,
+    };
+  }, [
+    validatorAddress,
+    bondedValidators,
+    unbondingValidators,
+    unbondedValidators,
+  ]);
+
+  const validatorsList = [
+    ...bondedValidators.validators,
+    ...unbondedValidators.validators,
+    ...unbondingValidators.validators,
+  ].filter((validator) => validator.operator_address != validatorAddress);
+
+  const [selectedValidator, setSelectedValidator] = useState<Staking.Validator>(
+    validatorsList[0]
+  );
+  const [clickedValidator, setClickedValidator] = useState<Staking.Validator>(
+    validatorsList[0]
+  );
+
+  const [showValidatorDropdown, setShowValidatorDropdown] = useState(false);
+  const [showValidatorListDropDown, setShowValidatorListDropDown] =
+    useState(false);
+
+  const [sort, setSort] = useState<Sort>("Voting Power");
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isSortModalOpen) {
+      setShowValidatorListDropDown(false);
+    }
+  }, [isSortModalOpen]);
+
+  const sendConfigs = useRedelegateTxConfig(
+    chainStore,
+    queriesStore,
+    accountStore,
+    chainStore.current.chainId,
+    account.bech32Address,
+    validatorAddress
+  );
+  const { amountConfig, memoConfig, feeConfig } = sendConfigs;
+
+  const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
+  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+
+  const stakedAmount = queriesStore
+    .get(amountConfig.chainId)
+    .cosmos.queryDelegations.getQueryBech32Address(amountConfig.sender)
+    .getDelegationTo(validatorAddress);
+
+  useEffect(() => {
+    sendConfigs.recipientConfig.setRawRecipient(
+      selectedValidator?.operator_address
+    );
+  }, [selectedValidator, sendConfigs.recipientConfig]);
+
+  const sendConfigError =
+    sendConfigs.recipientConfig.error ??
+    sendConfigs.amountConfig.error ??
+    sendConfigs.memoConfig.error ??
+    sendConfigs.gasConfig.error ??
+    sendConfigs.feeConfig.error;
+  const txStateIsValid = sendConfigError == null;
+
+  const queryBalances = queriesStore
+    .get(sendConfigs.amountConfig.chainId)
+    .queryBalances.getQueryBech32Address(sendConfigs.amountConfig.sender);
+
+  const queryBalance = queryBalances.balances.find(
+    (bal) =>
+      sendConfigs.amountConfig.sendCurrency.coinMinimalDenom ===
+      bal.currency.coinMinimalDenom
+  );
+  const balance = queryBalance
+    ? queryBalance.balance
+    : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0));
+
+  const convertToUsd = (currency: any) => {
+    const value = priceStore.calculatePrice(currency);
+    return value && value.shrink(true).maxDecimals(6).toString();
+  };
+
+  useEffect(() => {
+    const inputValueInUsd = convertToUsd(balance);
+    setInputInUsd(inputValueInUsd);
+  }, [sendConfigs.amountConfig.amount]);
+
+  const Usd = inputInUsd
+    ? ` (${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()})`
+    : "";
+
+  const availableBalance = `${balance
+    .trim(true)
+    .shrink(true)
+    .maxDecimals(6)
+    .toString()}${Usd}`;
+
+  const notification = useNotification();
+
+  const txnResult = {
+    onBroadcasted: () => {
+      notification.push({
+        type: "primary",
+        placement: "top-center",
+        duration: 2,
+        content: `Transaction broadcasted`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+
+      analyticsStore.logEvent("Redelegate tx broadcasted", {
+        chainId: chainStore.current.chainId,
+        chainName: chainStore.current.chainName,
+      });
+    },
+    onFulfill: (tx: any) => {
+      const istxnSuccess = tx.code ? false : true;
+      notification.push({
+        type: istxnSuccess ? "success" : "danger",
+        placement: "top-center",
+        duration: 5,
+        content: istxnSuccess
+          ? `Transaction Completed`
+          : `Transaction Failed: ${tx.log}`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    },
+  };
+
+  const redelegateClicked = async () => {
+    try {
+      await account.cosmos
+        .makeBeginRedelegateTx(
+          amountConfig.amount,
+          validatorAddress,
+          selectedValidator.operator_address
+        )
+        .send(feeConfig.toStdFee(), memoConfig.memo, undefined, txnResult);
+    } catch (e) {
+      notification.push({
+        type: "danger",
+        placement: "top-center",
+        duration: 5,
+        content: `Transaction Failed`,
+        canDelete: true,
+        transition: {
+          duration: 0.25,
+        },
+      });
+    } finally {
+      navigate("/", { replace: true });
+    }
+  };
+
+  const apr = queries.cosmos.queryInflation.inflation;
+
+  const items = useMemo(() => {
+    // If inflation is 0 or not fetched properly, there is no need to sort by APY.
+    if (apr.toDec().gt(new Dec(0))) {
+      return [
+        { label: "APR", key: "APR" },
+        { label: "Voting Power", key: "Voting Power" },
+        { label: "Name", key: "Name" },
+      ];
+    } else {
+      return [
+        { label: "Voting Power", key: "Voting Power" },
+        { label: "Name", key: "Name" },
+      ];
+    }
+  }, [apr]);
+
+  return (
+    <HeaderLayout
+      smallTitle={true}
+      showTopMenu={true}
+      showChainName={false}
+      canChangeChainInfo={false}
+      alternativeTitle={`Redelegate`}
+      showBottomMenu={false}
+      onBackButton={() => navigate(-1)}
+    >
+      {validator && (
+        <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
+          <div className={style["redelegate-container"]}>
+            <div className={style["current-stake"]}>
+              <div
+                style={{
+                  color: "rgba(255,255,255,0.6)",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  lineHeight: "17.5px",
+                }}
+              >
+                Current staked amount
+              </div>
+              <div
+                className={style["value"]}
+                style={{ fontWeight: 500, lineHeight: "17.5px" }}
+              >
+                {stakedAmount.maxDecimals(4).trim(true).toString()}
+              </div>
+            </div>
+
+            <InputField
+              label="From"
+              disabled={true}
+              value={validator.description.moniker}
+              labelStyle={{
+                color: "rgba(255,255,255,0.4)",
+              }}
+            />
+
+            <ChooseValidator
+              onClick={() => setShowValidatorListDropDown(true)}
+              selectedValidator={selectedValidator}
+              validator={validator}
+            />
+
+            <div>
+              <StakeInput
+                label="Amount"
+                amountConfig={sendConfigs.amountConfig}
+                isToggleClicked={isToggleClicked}
+              />
+
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 400,
+                  color: "rgba(255,255,255,0.6)",
+                  marginTop: "8px",
+                }}
+              >
+                {`Available: ${availableBalance}`}
+              </div>
+
+              <UseMaxButton
+                amountConfig={sendConfigs.amountConfig}
+                isToggleClicked={isToggleClicked}
+                setIsToggleClicked={setIsToggleClicked}
+              />
+
+              <MemoInput memoConfig={sendConfigs.memoConfig} />
+            </div>
+
+            <FeeButtons
+              label="Fee"
+              gasLabel="gas"
+              feeConfig={sendConfigs.feeConfig}
+              gasConfig={sendConfigs.gasConfig}
+              priceStore={priceStore}
+            />
+
+            <ButtonV2
+              text=""
+              styleProps={{
+                width: "336px",
+                padding: "12px",
+                height: "56px",
+                margin: "0 auto",
+                position: "fixed",
+                bottom: "15px",
+                left: "0px",
+                right: "0px",
+              }}
+              disabled={
+                !account.isReadyToSendTx ||
+                !txStateIsValid ||
+                account.txTypeInProgress === TXNTYPE.redelegate
+              }
+              onClick={() => {
+                if (account.txTypeInProgress === TXNTYPE.redelegate) return;
+                redelegateClicked();
+              }}
+              btnBgEnabled={true}
+            >
+              Confirm
+              {account.txTypeInProgress === TXNTYPE.redelegate && (
+                <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+              )}
+            </ButtonV2>
+          </div>
+        </FormGroup>
+      )}
+      <div>
+        <Dropdown
+          closeClicked={() => setShowValidatorListDropDown(false)}
+          title="Select Validator"
+          isOpen={showValidatorListDropDown}
+          setIsOpen={setShowValidatorListDropDown}
+          styleProp={{
+            maxHeight: "600px",
+            top: 0,
+          }}
+        >
+          <SelectValidatorList
+            filteredValidators={validatorsList}
+            selectedValidator={selectedValidator}
+            setShowValidatorDropdown={setShowValidatorDropdown}
+            setShowValidatorListDropDown={setShowValidatorListDropDown}
+            setClickedValidator={setClickedValidator}
+            sort={sort}
+            setIsSortModalOpen={setIsSortModalOpen}
+          />
+        </Dropdown>
+
+        <Dropdown
+          closeClicked={() => {
+            setShowValidatorDropdown(false);
+            setShowValidatorListDropDown(true);
+          }}
+          title="Choose Validator"
+          isOpen={showValidatorDropdown}
+          setIsOpen={setShowValidatorDropdown}
+          styleProp={{
+            maxHeight: "600px",
+            top: 0,
+            justifyContent: "center",
+          }}
+        >
+          <RedelegateValidatorDetail
+            onClick={() => {
+              setSelectedValidator(clickedValidator);
+              setShowValidatorDropdown(false);
+            }}
+            validatorAddress={clickedValidator.operator_address}
+          />
+        </Dropdown>
+
+        <Dropdown
+          closeClicked={() => {
+            setIsSortModalOpen(false);
+            setShowValidatorListDropDown(true);
+          }}
+          title="Sort By"
+          isOpen={isSortModalOpen}
+          setIsOpen={setIsSortModalOpen}
+          styleProp={{
+            maxHeight: "600px",
+          }}
+        >
+          <SelectorModal
+            close={() => {
+              setIsSortModalOpen(false);
+              setShowValidatorListDropDown(true);
+            }}
+            isOpen={isSortModalOpen}
+            items={items}
+            selectedKey={sort}
+            setSelectedKey={(key) => setSort(key as Sort)}
+            modalPersistent={false}
+          />
+        </Dropdown>
+      </div>
+    </HeaderLayout>
+  );
+});
