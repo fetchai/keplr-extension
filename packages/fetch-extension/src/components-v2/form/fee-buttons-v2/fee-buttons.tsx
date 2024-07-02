@@ -530,7 +530,7 @@ export const FeeButtonsInner: FunctionComponent<
               height: "56px",
               margin: "0 auto",
               position: "fixed",
-              bottom: "15px",
+              bottom: "10px",
               left: "0px",
               right: "0px",
             }}
