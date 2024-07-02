@@ -1,3 +1,8 @@
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { UseMaxButton } from "@components-v2/buttons/use-max-button";
+import { MemoInput } from "@components-v2/form";
+import { StakeInput } from "@components-v2/form/stake-input";
+import { useNotification } from "@components/notification";
 import {
   EmptyAmountError,
   InsufficientAmountError,
@@ -6,22 +11,16 @@ import {
   ZeroAmountError,
   useUndelegateTxConfig,
 } from "@keplr-wallet/hooks";
+import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { useStore } from "../../../stores";
 import { useIntl } from "react-intl";
-import { useNotification } from "@components/notification";
-import { ButtonV2 } from "@components-v2/buttons/button";
+import { useLocation, useNavigate } from "react-router";
 import { Alert, FormGroup } from "reactstrap";
-import style from "./style.module.scss";
-import { HeaderLayout } from "@layouts-v2/header-layout";
-import { StakeInput } from "@components-v2/form/stake-input";
-import { UseMaxButton } from "@components-v2/buttons/use-max-button";
-import { MemoInput } from "@components-v2/form";
-import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../config";
-import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
+import { useStore } from "../../../stores";
+import style from "./style.module.scss";
 
 export const Unstake = observer(() => {
   const location = useLocation();
@@ -254,14 +253,6 @@ export const Unstake = observer(() => {
               </p>
             </div>
           </Alert>
-
-          <FeeButtons
-            label="Fee"
-            gasLabel="gas"
-            feeConfig={sendConfigs.feeConfig}
-            gasConfig={sendConfigs.gasConfig}
-            priceStore={priceStore}
-          />
           <ButtonV2
             text=""
             styleProps={{
