@@ -360,6 +360,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
                   text="Use biometric authentication"
                   mode="text"
                   loading={isBiometricLoading}
+                  showLoadingSpinner={true}
                   loaderColor="white"
                 />
               </View>

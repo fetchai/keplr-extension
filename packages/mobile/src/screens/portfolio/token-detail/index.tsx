@@ -9,7 +9,6 @@ import { IconButton } from "components/new/button/icon";
 import { useStore } from "stores/index";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { separateNumericAndDenom } from "utils/format/format";
-import { getTokenIcon } from "utils/get-token-icon";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
 import { ActivityNativeTab } from "screens/activity/activity-transaction";
@@ -18,7 +17,7 @@ import { FilterIcon } from "components/new/icon/filter-icon";
 
 export const TokenDetail: FunctionComponent = observer(() => {
   const size = 56;
-  const [tokenIcon, setTokenIcon] = useState<string>("");
+  const [tokenIcon, setTokenIcon] = useState<string | undefined>();
 
   const route = useRoute<
     RouteProp<
@@ -73,12 +72,13 @@ export const TokenDetail: FunctionComponent = observer(() => {
   useEffect(() => {
     if (tokenInfo?.coinGeckoId) {
       const fetchTokenImage = async () => {
-        const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
+        const tokenImage =
+          chainStore.current?.["_chainInfo"]?.chainSymbolImageUrl;
         setTokenIcon(tokenImage);
       };
       fetchTokenImage();
     } else {
-      setTokenIcon("");
+      setTokenIcon(undefined);
     }
   }, [tokenInfo?.coinGeckoId]);
 
@@ -119,7 +119,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
             <IconButton
               icon={
                 <VectorCharacter
-                  char={chainStore.current.chainName[0]}
+                  char={tokenInfo.coinDenom[0]}
                   height={Math.floor(size * 0.35)}
                   color="white"
                 />

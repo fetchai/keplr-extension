@@ -92,6 +92,7 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
         onChangeText={(text: string) => setName(text)}
         value={name}
+        maxLength={30}
       />
       <AddressInput
         label="Address"

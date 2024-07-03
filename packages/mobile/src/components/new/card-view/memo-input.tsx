@@ -5,12 +5,13 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 
 import { observer } from "mobx-react-lite";
 import { IMemoConfig } from "@keplr-wallet/hooks";
+import { removeEmojis } from "utils/format/format";
 
 export const MemoInputView: FunctionComponent<{
   label?: string;
   labelStyle?: ViewStyle;
   containerStyle?: ViewStyle;
-  inputcontainerStyle?: ViewStyle;
+  inputContainerStyle?: ViewStyle;
   placeholderText?: string;
   memoConfig: IMemoConfig;
   onFocus?: any;
@@ -20,7 +21,7 @@ export const MemoInputView: FunctionComponent<{
     label,
     labelStyle,
     containerStyle,
-    inputcontainerStyle,
+    inputContainerStyle,
     placeholderText,
     memoConfig,
     onFocus,
@@ -60,7 +61,7 @@ export const MemoInputView: FunctionComponent<{
                     ]
                   : []
               ),
-              inputcontainerStyle,
+              inputContainerStyle,
               // { paddingVertical: 9 },
             ] as ViewStyle
           }
@@ -88,7 +89,7 @@ export const MemoInputView: FunctionComponent<{
               placeholder={placeholderText}
               value={memoConfig.memo}
               onChangeText={(text: string) => {
-                memoConfig.setMemo(text);
+                memoConfig.setMemo(removeEmojis(text));
               }}
               maxLength={100}
               onFocus={(e) => {

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
+import { removeEmojis } from "utils/format/format";
 
 interface InputCardViewProps extends React.ComponentProps<typeof TextInput> {
   label?: string;
@@ -42,6 +43,7 @@ export const InputCardView = React.forwardRef<TextInput, InputCardViewProps>(
       onBlur,
       onFocus,
       errorMassageShow = true,
+      onChangeText,
       ...restProps
     } = props;
     const style = useStyle();
@@ -91,6 +93,11 @@ export const InputCardView = React.forwardRef<TextInput, InputCardViewProps>(
                 (Platform.OS === "ios" ? "ascii-capable" : "visible-password")
               }
               placeholderTextColor={style.flatten(["color-white@60%"]).color}
+              onChangeText={(text) => {
+                if (onChangeText) {
+                  onChangeText(removeEmojis(text));
+                }
+              }}
               style={
                 [
                   style.flatten([

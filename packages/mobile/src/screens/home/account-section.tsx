@@ -619,8 +619,8 @@ export const AccountSection: FunctionComponent<{
         }}
         txnHash={txnObj.txnHash}
         chainId={chainStore.current.chainId}
-        buttonText="Go to stakescreen"
-        onHomeClick={() => navigation.navigate("StakeTab", {})}
+        buttonText="Go to activity screen"
+        onHomeClick={() => navigation.navigate("ActivityTab", {})}
         onTryAgainClick={onSubmit}
       />
       <ClaimRewardsModal

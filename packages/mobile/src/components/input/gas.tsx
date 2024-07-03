@@ -1,13 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
-import {
-  Platform,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleSheet, Switch, Text, View, ViewStyle } from "react-native";
 import { IGasConfig } from "@keplr-wallet/hooks";
 import { InputCardView } from "components/new/card-view/input-card";
 import { useStyle } from "styles/index";
@@ -44,7 +37,7 @@ export const GasInput: FunctionComponent<{
         <Switch
           trackColor={{
             false: "#767577",
-            true: Platform.OS === "ios" ? "#5F38FB" : "#767577",
+            true: "#5F38FB",
           }}
           thumbColor={isEnabled ? "#FFFFFF" : "#D0BCFF66"}
           style={[

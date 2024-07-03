@@ -53,9 +53,6 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     true
   );
 
-  const account = accountStore.getAccount(chainStore.current.chainId);
-  const queries = queriesStore.get(chainStore.current.chainId);
-
   const checkAndUpdateChainInfo = useCallback(() => {
     if (!chainStoreIsInitializing) {
       (async () => {
@@ -110,6 +107,9 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     // Because the components share the states related to the queries,
     // fetching new query responses here would make query responses on all other components also refresh.
     setRefreshing(true);
+    const account = accountStore.getAccount(chainStore.current.chainId);
+    const queries = queriesStore.get(chainStore.current.chainId);
+
     await Promise.all([
       priceStore.waitFreshResponse(),
       ...queries.queryBalances
