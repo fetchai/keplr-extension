@@ -92,6 +92,9 @@ export const getDetails = (node: any, chainStore: any): any => {
   }
   const [feeNumber, feeAlphabetic] = parseAmount(fee);
 
+  const validatorCount =
+    Object.values(nodes).length > 1 ? Object.values(nodes).length - 1 : 0;
+
   return {
     amountNumber,
     amountAlphabetic,
@@ -113,6 +116,8 @@ export const getDetails = (node: any, chainStore: any): any => {
     feeAlphabetic,
     chainId,
     status,
+    nodes,
+    validatorCount,
   };
 };
 

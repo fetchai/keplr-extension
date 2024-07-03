@@ -1,8 +1,9 @@
 import React, { CSSProperties, FunctionComponent, useState } from "react";
 
-import { MenuProvider, MenuContext } from "../menu";
-import { Header, Props as HeaderProps } from "../header";
+import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 import { BottomNav } from "../bottom-nav";
+import { Header, Props as HeaderProps } from "../header";
+import { MenuContext, MenuProvider } from "../menu";
 import style from "./style.module.scss";
 
 export interface Props extends HeaderProps {
@@ -32,6 +33,8 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
     paddingTop: props.showTopMenu ? "64px" : "0px",
   };
 
+  const { isDropdownOpen } = useDropdown();
+
   return (
     <MenuProvider value={menuContext}>
       <div className={style["container"]} style={props.style}>
@@ -39,7 +42,7 @@ export const HeaderLayout: FunctionComponent<Props> = (props) => {
         <div
           style={{ ...headerStyle, ...props.innerStyle }}
           className={
-            props.showBottomMenu
+            props.showBottomMenu && isDropdownOpen === false
               ? style["innerContainerWithMask"]
               : style["innerContainer"]
           }

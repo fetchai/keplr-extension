@@ -1,7 +1,7 @@
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { UseMaxButton } from "@components-v2/buttons/use-max-button";
 import { Dropdown } from "@components-v2/dropdown";
-import { FeeButtons, MemoInput } from "@components-v2/form";
+import { MemoInput } from "@components-v2/form";
 import { StakeInput } from "@components-v2/form/stake-input";
 import { SelectorModal } from "@components-v2/selector-modal/selector";
 import { useNotification } from "@components/notification";
@@ -20,6 +20,7 @@ import { SelectValidatorList } from "./select-validator-list";
 import style from "./style.module.scss";
 import { RedelegateValidatorDetail } from "./validator-detail";
 import { TXNTYPE } from "../../../config";
+import { useIntl } from "react-intl";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -28,8 +29,14 @@ export const Redelegate = observer(() => {
   const validatorAddress = location.pathname.split("/")[2];
 
   const navigate = useNavigate();
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
 
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -230,6 +237,8 @@ export const Redelegate = observer(() => {
     }
   }, [apr]);
 
+  const intl = useIntl();
+
   return (
     <HeaderLayout
       smallTitle={true}
@@ -241,7 +250,13 @@ export const Redelegate = observer(() => {
       onBackButton={() => navigate(-1)}
     >
       {validator && (
-        <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
+        <FormGroup
+          style={{
+            borderRadius: "0%",
+            marginBottom: "2px",
+            paddingBottom: "64px",
+          }}
+        >
           <div className={style["redelegate-container"]}>
             <div className={style["current-stake"]}>
               <div
@@ -252,7 +267,9 @@ export const Redelegate = observer(() => {
                   lineHeight: "17.5px",
                 }}
               >
-                Current staked amount
+                {intl.formatMessage({
+                  id: "unstake.current-staked",
+                })}
               </div>
               <div
                 className={style["value"]}
@@ -292,7 +309,9 @@ export const Redelegate = observer(() => {
                   marginTop: "8px",
                 }}
               >
-                {`Available: ${availableBalance}`}
+                {`${intl.formatMessage({
+                  id: "unstake.available",
+                })} ${availableBalance}`}
               </div>
 
               <UseMaxButton
@@ -303,15 +322,6 @@ export const Redelegate = observer(() => {
 
               <MemoInput memoConfig={sendConfigs.memoConfig} />
             </div>
-
-            <FeeButtons
-              label="Fee"
-              gasLabel="gas"
-              feeConfig={sendConfigs.feeConfig}
-              gasConfig={sendConfigs.gasConfig}
-              priceStore={priceStore}
-            />
-
             <ButtonV2
               text=""
               styleProps={{
@@ -327,16 +337,19 @@ export const Redelegate = observer(() => {
               disabled={
                 !account.isReadyToSendTx ||
                 !txStateIsValid ||
-                account.txTypeInProgress === TXNTYPE.redelegate
+                activityStore.getPendingTxnTypes[TXNTYPE.redelegate]
               }
               onClick={() => {
-                if (account.txTypeInProgress === TXNTYPE.redelegate) return;
+                if (activityStore.getPendingTxnTypes[TXNTYPE.redelegate])
+                  return;
                 redelegateClicked();
               }}
               btnBgEnabled={true}
             >
-              Confirm
-              {account.txTypeInProgress === TXNTYPE.redelegate && (
+              {intl.formatMessage({
+                id: "unstake.confirm",
+              })}
+              {activityStore.getPendingTxnTypes[TXNTYPE.redelegate] && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

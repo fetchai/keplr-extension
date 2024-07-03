@@ -4,6 +4,18 @@ import { action, flow, makeObservable, observable } from "mobx";
 import { updateNodeOnTxnCompleted } from "../account";
 import { ChainGetter } from "src/common";
 
+enum TXNTYPE {
+  ibcTransfer = "ibcTransfer",
+  send = "send",
+  withdrawRewards = "withdrawRewards",
+  delegate = "delegate",
+  undelegate = "undelegate",
+  redelegate = "redelegate",
+  govVote = "govVote",
+  nativeBridgeSend = "nativeBridgeSend",
+  approval = "approval",
+  createSecret20ViewingKey = "createSecret20ViewingKey",
+}
 export class ActivityStore {
   @observable
   protected nodes: any = {};
@@ -19,6 +31,20 @@ export class ActivityStore {
 
   @observable
   protected pendingTxn: any = {};
+
+  @observable
+  protected pendingTxnTypes: any = {
+    [TXNTYPE.ibcTransfer]: false,
+    [TXNTYPE.send]: false,
+    [TXNTYPE.approval]: false,
+    [TXNTYPE.createSecret20ViewingKey]: false,
+    [TXNTYPE.delegate]: false,
+    [TXNTYPE.govVote]: false,
+    [TXNTYPE.nativeBridgeSend]: false,
+    [TXNTYPE.redelegate]: false,
+    [TXNTYPE.undelegate]: false,
+    [TXNTYPE.withdrawRewards]: false,
+  };
 
   // updates or adds new nodes to the list
   updateNodes(nodes: any) {
@@ -83,6 +109,14 @@ export class ActivityStore {
     );
   }
 
+  @flow
+  *savePendingTxnTypes() {
+    yield this.kvStore.set<any>(
+      `extension_pending_txn_types-${this.address}-${this.chainId}`,
+      this.pendingTxnTypes
+    );
+  }
+
   getNode(id: any) {
     return this.nodes[id];
   }
@@ -126,6 +160,17 @@ export class ActivityStore {
 
     this.pendingTxn = savedPendingTxn !== undefined ? savedPendingTxn : {};
 
+    const savedPendingTxnTypes = yield* toGenerator(
+      this.kvStore.get<any>(
+        `extension_pending_txn_types-${this.address}-${this.chainId}`
+      )
+    );
+
+    this.pendingTxnTypes =
+      savedPendingTxnTypes !== undefined
+        ? savedPendingTxnTypes
+        : this.pendingTxnTypes;
+
     const txTracer = new TendermintTxTracer(
       this.chainGetter.getChain(this.chainId).rpc,
       "/websocket",
@@ -139,6 +184,10 @@ export class ActivityStore {
         this.removePendingTxn(node.id);
       });
     });
+
+    if (Object.keys(this.pendingTxn).length === 0) {
+      this.resetPendingTxnTypes();
+    }
   }
 
   @action
@@ -162,6 +211,8 @@ export class ActivityStore {
     Object.values(this.pendingTxn).map((node: any) => {
       if (node.id !== nodeId) {
         updatedNodes[node.id] = node;
+      } else {
+        this.setPendingTxnTypes(this.pendingTxn[node.id].type, false);
       }
     });
     this.setPendingTxn(updatedNodes);
@@ -177,6 +228,23 @@ export class ActivityStore {
   resetPendingTxn() {
     this.pendingTxn = {};
     this.savePendingTxn();
+  }
+
+  @action
+  resetPendingTxnTypes() {
+    this.pendingTxnTypes = {
+      [TXNTYPE.ibcTransfer]: false,
+      [TXNTYPE.send]: false,
+      [TXNTYPE.approval]: false,
+      [TXNTYPE.createSecret20ViewingKey]: false,
+      [TXNTYPE.delegate]: false,
+      [TXNTYPE.govVote]: false,
+      [TXNTYPE.nativeBridgeSend]: false,
+      [TXNTYPE.redelegate]: false,
+      [TXNTYPE.undelegate]: false,
+      [TXNTYPE.withdrawRewards]: false,
+    };
+    this.savePendingTxnTypes();
   }
 
   @action
@@ -208,7 +276,6 @@ export class ActivityStore {
 
     this.nodes[nodeId].transaction.messages.nodes[index].json =
       JSON.stringify(newJson);
-
     this.saveNodes();
   }
 
@@ -231,6 +298,12 @@ export class ActivityStore {
   setPendingTxn(nodes: any) {
     this.pendingTxn = nodes;
     this.savePendingTxn();
+  }
+
+  @action
+  setPendingTxnTypes(type: string, value: boolean) {
+    this.pendingTxnTypes[type] = value;
+    this.savePendingTxnTypes();
   }
 
   @action
@@ -273,6 +346,10 @@ export class ActivityStore {
 
   get getPendingTxn() {
     return this.pendingTxn;
+  }
+
+  get getPendingTxnTypes() {
+    return this.pendingTxnTypes;
   }
 
   get sortedNodes() {

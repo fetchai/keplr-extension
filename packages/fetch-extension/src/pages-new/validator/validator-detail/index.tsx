@@ -6,12 +6,14 @@ import { ValidatorData } from "../../../components-v2/validator-data";
 import { useNavigate } from "react-router";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
+import { TXNTYPE } from "../../../config";
 
 export const ValidatorDetails = observer(
   ({ validatorAddress }: { validatorAddress: string }) => {
     const navigate = useNavigate();
 
-    const { chainStore, accountStore, queriesStore } = useStore();
+    const { chainStore, accountStore, queriesStore, activityStore } =
+      useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
 
@@ -80,11 +82,18 @@ export const ValidatorDetails = observer(
                   justifyContent: "center",
                   marginTop: "0px",
                 }}
+                disabled={activityStore.getPendingTxnTypes[TXNTYPE.redelegate]}
                 text="Redelegate"
-                onClick={() =>
-                  navigate(`/validator/${validatorAddress}/redelegate`)
-                }
-              />
+                onClick={() => {
+                  if (activityStore.getPendingTxnTypes[TXNTYPE.redelegate])
+                    return;
+                  navigate(`/validator/${validatorAddress}/redelegate`);
+                }}
+              >
+                {activityStore.getPendingTxnTypes[TXNTYPE.redelegate] && (
+                  <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+                )}
+              </ButtonV2>
             )}
 
           <ButtonV2
@@ -103,8 +112,16 @@ export const ValidatorDetails = observer(
                 ? "Stake"
                 : "Stake with this validator"
             }`}
-            onClick={() => navigate(`/validator/${validatorAddress}/delegate`)}
-          />
+            disabled={activityStore.getPendingTxnTypes[TXNTYPE.delegate]}
+            onClick={() => {
+              if (activityStore.getPendingTxnTypes[TXNTYPE.delegate]) return;
+              navigate(`/validator/${validatorAddress}/delegate`);
+            }}
+          >
+            {activityStore.getPendingTxnTypes[TXNTYPE.delegate] && (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            )}
+          </ButtonV2>
         </div>
 
         {/* {amount &&

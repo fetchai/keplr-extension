@@ -1,3 +1,8 @@
+import { ButtonV2 } from "@components-v2/buttons/button";
+import { UseMaxButton } from "@components-v2/buttons/use-max-button";
+import { MemoInput } from "@components-v2/form";
+import { StakeInput } from "@components-v2/form/stake-input";
+import { useNotification } from "@components/notification";
 import {
   EmptyAmountError,
   InsufficientAmountError,
@@ -6,28 +11,29 @@ import {
   ZeroAmountError,
   useUndelegateTxConfig,
 } from "@keplr-wallet/hooks";
+import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { useStore } from "../../../stores";
 import { useIntl } from "react-intl";
-import { useNotification } from "@components/notification";
-import { ButtonV2 } from "@components-v2/buttons/button";
+import { useLocation, useNavigate } from "react-router";
 import { Alert, FormGroup } from "reactstrap";
-import style from "./style.module.scss";
-import { HeaderLayout } from "@layouts-v2/header-layout";
-import { StakeInput } from "@components-v2/form/stake-input";
-import { UseMaxButton } from "@components-v2/buttons/use-max-button";
-import { FeeButtons, MemoInput } from "@components-v2/form";
-import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../config";
+import { useStore } from "../../../stores";
+import style from "./style.module.scss";
 
 export const Unstake = observer(() => {
   const location = useLocation();
   const validatorAddress = location.pathname.split("/")[2];
   const navigate = useNavigate();
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
 
   const sendConfigs = useUndelegateTxConfig(
@@ -180,7 +186,13 @@ export const Unstake = observer(() => {
       showBottomMenu={false}
       onBackButton={() => navigate(-1)}
     >
-      <FormGroup style={{ borderRadius: "0%", marginBottom: "2px" }}>
+      <FormGroup
+        style={{
+          borderRadius: "0%",
+          marginBottom: "2px",
+          paddingBottom: "48px",
+        }}
+      >
         <div className={style["unstake-container"]}>
           <div className={style["current-stake"]}>
             <div
@@ -191,7 +203,9 @@ export const Unstake = observer(() => {
                 lineHeight: "17.5px",
               }}
             >
-              Current staked amount
+              {intl.formatMessage({
+                id: "unstake.current-staked",
+              })}
             </div>
             <div
               className={style["value"]}
@@ -216,7 +230,9 @@ export const Unstake = observer(() => {
                 marginTop: "8px",
               }}
             >
-              {`Available: ${availableBalance}`}
+              {`${intl.formatMessage({
+                id: "unstake.available",
+              })} ${availableBalance}`}
             </div>
 
             <UseMaxButton
@@ -231,19 +247,12 @@ export const Unstake = observer(() => {
             <img src={require("@assets/svg/wireframe/alert.svg")} alt="" />
             <div>
               <p className={style["lightText"]}>
-                When you decide to unstake, your assets will be locked for 21
-                days to be liquid again
+                {intl.formatMessage({
+                  id: "unstake.alert",
+                })}
               </p>
             </div>
           </Alert>
-
-          <FeeButtons
-            label="Fee"
-            gasLabel="gas"
-            feeConfig={sendConfigs.feeConfig}
-            gasConfig={sendConfigs.gasConfig}
-            priceStore={priceStore}
-          />
           <ButtonV2
             text=""
             styleProps={{
@@ -259,16 +268,18 @@ export const Unstake = observer(() => {
             disabled={
               errorText != null ||
               !amountConfig.amount ||
-              account.txTypeInProgress === TXNTYPE.undelegate
+              activityStore.getPendingTxnTypes[TXNTYPE.undelegate]
             }
             onClick={() => {
-              if (account.txTypeInProgress === TXNTYPE.undelegate) return;
+              if (activityStore.getPendingTxnTypes[TXNTYPE.undelegate]) return;
               unstakeClicked();
             }}
             btnBgEnabled={true}
           >
-            Confirm
-            {account.txTypeInProgress === TXNTYPE.undelegate && (
+            {intl.formatMessage({
+              id: "unstake.confirm",
+            })}
+            {activityStore.getPendingTxnTypes[TXNTYPE.undelegate] && (
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
             )}
           </ButtonV2>

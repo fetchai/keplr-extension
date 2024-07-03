@@ -12,6 +12,8 @@
 
 .msgContainer {
   flex: 1;
+  max-height: 155px;
+  overflow-y: scroll;
 
   hr {
     margin: 8px 0;

@@ -32,7 +32,7 @@
     -webkit-transition: 0.4s;
     transition: 0.4s;
     border-radius: 34px;
-    border: 1px solid #5f38fb;
+    border: 1px solid #d0bcff66;
 
     &::before {
       position: absolute;
@@ -41,7 +41,7 @@
       height: 27px;
       left: 3px;
       top: 1px;
-      background-color: white;
+      background-color: #d0bcff66;
       -webkit-transition: 0.4s;
       transition: 0.4s;
       border-radius: 50%;

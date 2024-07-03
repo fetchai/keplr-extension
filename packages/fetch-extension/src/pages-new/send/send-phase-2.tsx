@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import style from "./style.module.scss";
 import { useIntl } from "react-intl";
-import { AddressInput, FeeButtons, MemoInput } from "@components-v2/form";
+import { AddressInput, MemoInput } from "@components-v2/form";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
@@ -13,6 +13,7 @@ import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
 import { useLocation } from "react-router";
 import { TXNTYPE } from "../../config";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;
@@ -33,7 +34,13 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     configs,
     setFromPhase1,
   }) => {
-    const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
+    const {
+      chainStore,
+      accountStore,
+      priceStore,
+      analyticsStore,
+      activityStore,
+    } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
     const location = useLocation();
@@ -231,9 +238,14 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           text="Review transaction"
           gradientText=""
           styleProps={{
+            width: "336px",
+            padding: "12px",
             height: "56px",
-            position: "sticky",
-            bottom: "5px",
+            margin: "0 auto",
+            position: "fixed",
+            bottom: "15px",
+            left: "0px",
+            right: "0px",
           }}
           onClick={async (e: any) => {
             e.preventDefault();
@@ -317,7 +329,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}
           btnBgEnabled={true}
         >
-          {accountInfo.txTypeInProgress === TXNTYPE.send && (
+          {activityStore.getPendingTxnTypes[TXNTYPE.send] && (
             <i className="fas fa-spinner fa-spin ml-2 mr-2" />
           )}
         </ButtonV2>

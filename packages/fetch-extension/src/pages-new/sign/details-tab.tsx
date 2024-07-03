@@ -8,7 +8,7 @@ import styleDetailsTab from "./details-tab.module.scss";
 import { renderAminoMessage } from "./amino";
 import { Msg } from "@keplr-wallet/types";
 import { FormattedMessage, useIntl } from "react-intl";
-import { FeeButtons, MemoInput } from "@components-v2/form";
+import { MemoInput } from "@components-v2/form";
 import {
   IFeeConfig,
   IGasConfig,
@@ -20,6 +20,7 @@ import { Button, Label } from "reactstrap";
 import { renderDirectMessage } from "./direct";
 import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
 import { CoinPretty } from "@keplr-wallet/unit";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 export const DetailsTab: FunctionComponent<{
   signDocHelper: SignDocHelper;

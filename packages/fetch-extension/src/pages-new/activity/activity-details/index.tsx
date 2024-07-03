@@ -52,7 +52,16 @@ export const ActivityDetails = observer(() => {
       case Boolean(details.toAddress):
         return formatAddress(details.toAddress);
       case Boolean(details.validatorAddress):
-        return formatAddress(details.validatorAddress);
+        return (
+          <div>
+            {formatAddress(details.validatorAddress)}
+            <div>
+              {details.validatorCount > 0
+                ? ` +${details.validatorCount} others`
+                : ""}
+            </div>
+          </div>
+        );
       case Boolean(details.validatorDstAddress):
         return formatAddress(details.validatorDstAddress);
       case details.verb == "IBC transfer":

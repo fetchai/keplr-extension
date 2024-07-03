@@ -21,6 +21,7 @@ import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
 import { Dec } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../../config";
+import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 
 export const MyStakes = observer(
   ({
@@ -44,12 +45,15 @@ export const MyStakes = observer(
       accountStore,
       priceStore,
       queriesStore,
+      activityStore,
     } = useStore();
 
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
 
     const isDorado = chainStore.current.chainId === "dorado-1";
+
+    const { setIsDropdownOpen } = useDropdown();
 
     const queryDelegations =
       queries.cosmos.queryDelegations.getQueryBech32Address(
@@ -161,6 +165,7 @@ export const MyStakes = observer(
         } finally {
           setIsWithdrawingRewards(false);
           navigate("/stake", { replace: true });
+          setIsDropdownOpen(false);
         }
       }
     };
@@ -226,22 +231,24 @@ export const MyStakes = observer(
                     color: "white",
                   }}
                   disabled={
-                    account.txTypeInProgress === TXNTYPE.withdrawRewards
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
                   }
                   text={
-                    account.txTypeInProgress === TXNTYPE.withdrawRewards
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
                       ? ""
                       : "Claim all"
                   }
                   onClick={() => {
-                    if (account.txTypeInProgress === TXNTYPE.withdrawRewards)
+                    if (
+                      activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                    )
                       return;
                     handleClaimRewards();
                   }}
                 >
-                  {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
-                    <i className="fas fa-spinner fa-spin ml-2 mr-2" />
-                  )}
+                  {activityStore.getPendingTxnTypes[
+                    TXNTYPE.withdrawRewards
+                  ] && <i className="fas fa-spinner fa-spin ml-2 mr-2" />}
                 </ButtonV2>
               )}
             </div>
@@ -324,7 +331,7 @@ export const MyStakes = observer(
 );
 
 const DelegateReward: FunctionComponent = observer(() => {
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, activityStore } = useStore();
 
   const navigate = useNavigate();
 
@@ -483,19 +490,21 @@ const DelegateReward: FunctionComponent = observer(() => {
                 color: "white",
                 border: "1px solid rgba(255,255,255,0.4)",
               }}
-              disabled={account.txTypeInProgress === TXNTYPE.withdrawRewards}
+              disabled={
+                activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+              }
               text={
-                account.txTypeInProgress === TXNTYPE.withdrawRewards
+                activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
                   ? ""
                   : "Claim"
               }
               onClick={() => {
-                if (account.txTypeInProgress === TXNTYPE.withdrawRewards)
+                if (activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards])
                   return;
                 handleClaim(val.operator_address);
               }}
             >
-              {account.txTypeInProgress === TXNTYPE.withdrawRewards && (
+              {activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

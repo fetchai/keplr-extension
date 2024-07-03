@@ -395,6 +395,7 @@ export class CosmosAccountImpl {
         }
   ) {
     this.base.setTxTypeInProgress(type);
+    this.activityStore.setPendingTxnTypes(type, true);
 
     let txHash: Uint8Array;
     let signDoc: StdSignDoc;
@@ -446,6 +447,7 @@ export class CosmosAccountImpl {
       this.activityStore.addPendingTxn({ id: txId, type });
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
+      this.activityStore.setPendingTxnTypes(type, false);
 
       if (this.txOpts.preTxEvents?.onBroadcastFailed) {
         this.txOpts.preTxEvents.onBroadcastFailed(this.chainId, e);
