@@ -14,13 +14,14 @@ export const DetailRows = ({ details }: { details: any }) => {
     coinGeckoId: "fetch-ai",
   };
   const fees = JSON.parse(details.fees);
+  const { feeNumber, feeAlphabetic } = details;
   const navigate = useNavigate();
   const handleClick = () => {
     const mintscanURL = `https://www.mintscan.io/fetchai/tx/${details.hash}/`;
     window.open(mintscanURL, "_blank");
   };
   const handleValidatorClicked = () => {
-    navigate(`/validators/${details.validatorAddress}/stake`);
+    navigate(`/validator/${details.validatorAddress}/delegate`);
   };
   const handleSendClicked = () => {
     navigate("/send", {
@@ -39,24 +40,27 @@ export const DetailRows = ({ details }: { details: any }) => {
       },
     });
   };
+
   return (
     <div className={style["detail-rows"]}>
       <DetailRow
         label="Transaction Hash"
         value={formatActivityHash(details.hash)}
       />
-      <DetailRow label="Chain ID" value="fetchhub-4" />
+      <DetailRow label="Chain ID" value={details.chainId} />
       {details.verb !== "Received" &&
         details.verb !== "Unstaked" &&
         details.verb !== "Smart Contract Interaction" && (
           <React.Fragment>
             <DetailRow
               label="Gas used/wanted"
-              value={details.gasUsed ? details.gasUsed : "-"}
+              value={`${details.gasUsed ? details.gasUsed : "-"}/${
+                details.gasWanted ? details.gasWanted : "-"
+              }`}
             />
             <DetailRow
               label="Fees"
-              value={`${fees[0].amount} ${fees[0].denom}`}
+              value={fees.length > 0 ? `${feeNumber} ${feeAlphabetic}` : "-"}
             />
             <DetailRow
               label="Memo"

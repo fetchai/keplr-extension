@@ -284,6 +284,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                       disabled={
                         approveIsDisabled || signInteractionStore.isLoading
                       }
+                      btnBgEnabled={true}
                       text={
                         signInteractionStore.isLoading ? (
                           <i className="fas fa-spinner fa-spin ml-2" />

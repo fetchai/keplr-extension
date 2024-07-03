@@ -32,7 +32,7 @@ export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
         onClick={() =>
           navigate("/activity-details", {
             state: {
-              details: details,
+              nodeId: node.id,
             },
           })
         }
@@ -51,6 +51,16 @@ export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
               {node.transaction.status === "Success" ? (
                 <div>
                   Confirmed{" ● "}
+                  {moment(details.timestamp).format("hh:mm A")}
+                </div>
+              ) : node.transaction.status === "Pending" ? (
+                <div>
+                  Pending{" ● "}
+                  {moment(details.timestamp).format("hh:mm A")}
+                </div>
+              ) : node.transaction.status === "Failed" ? (
+                <div>
+                  Failed{" ● "}
                   {moment(details.timestamp).format("hh:mm A")}
                 </div>
               ) : (

@@ -1,16 +1,17 @@
 .container {
   background: transparent;
   .autoButtonGroup {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
+    padding: 12px 0;
 
     .label {
       font-weight: 400;
       font-size: 14px;
       line-height: 150%;
       color: white;
-      margin-right: 0.325rem;
+      margin-right: 16px;
     }
   }
 }
