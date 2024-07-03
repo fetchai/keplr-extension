@@ -81,7 +81,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
               valuesArray={cosmosList}
-              itemsStyleProp={{ overflow: "auto", height: "360px" }}
+              itemsStyleProp={{ overflow: "auto", height: "228px" }}
               filterFunction={getFilteredChainValues}
               midElement={
                 <ButtonV2
@@ -151,9 +151,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 />
               )}
             />
-            <div className={style["chain-title"]}>
-              {betaChainList.length > 0 ? "Beta support" : null}
-            </div>
+            {betaChainList.length > 0 && (
+              <div className={style["chain-title"]}>Beta support</div>
+            )}
 
             {betaChainList.map((chainInfo) => (
               <Card

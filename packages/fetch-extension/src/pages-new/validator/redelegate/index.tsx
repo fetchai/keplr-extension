@@ -21,7 +21,6 @@ import style from "./style.module.scss";
 import { RedelegateValidatorDetail } from "./validator-detail";
 import { TXNTYPE } from "../../../config";
 import { useIntl } from "react-intl";
-import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -255,7 +254,7 @@ export const Redelegate = observer(() => {
           style={{
             borderRadius: "0%",
             marginBottom: "2px",
-            paddingBottom: "48px",
+            paddingBottom: "64px",
           }}
         >
           <div className={style["redelegate-container"]}>
@@ -323,15 +322,6 @@ export const Redelegate = observer(() => {
 
               <MemoInput memoConfig={sendConfigs.memoConfig} />
             </div>
-
-            <FeeButtons
-              label="Fee"
-              gasLabel="gas"
-              feeConfig={sendConfigs.feeConfig}
-              gasConfig={sendConfigs.gasConfig}
-              priceStore={priceStore}
-            />
-
             <ButtonV2
               text=""
               styleProps={{
