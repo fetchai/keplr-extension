@@ -65,6 +65,9 @@ export const WalletDetailsView = observer(
         setChatTooltip("Feature not available on this network");
         return;
       }
+
+      setChatDisabled(true);
+      setChatTooltip("Feature coming soon.");
     }, [
       hasFET,
       enabledChainIds,
