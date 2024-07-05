@@ -21,14 +21,8 @@ export const MainPage: FunctionComponent = observer(() => {
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   const [tokenState, setTokenState] = useState({});
   const intl = useIntl();
-  const {
-    chainStore,
-    accountStore,
-    keyRingStore,
-    analyticsStore,
-    chatStore,
-    activityStore,
-  } = useStore();
+  const { chainStore, accountStore, keyRingStore, analyticsStore, chatStore } =
+    useStore();
 
   const userState = chatStore.userDetailsStore;
   useEffect(() => {
@@ -60,10 +54,6 @@ export const MainPage: FunctionComponent = observer(() => {
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
-  const accountOrChainChanged =
-    activityStore.getAddress !== accountInfo.bech32Address ||
-    activityStore.getChainId !== current.chainId;
-
   /// Fetching wallet config info
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
@@ -83,16 +73,6 @@ export const MainPage: FunctionComponent = observer(() => {
     accountInfo.bech32Address,
     keyRingStore.keyRingType,
   ]);
-
-  useEffect(() => {
-    if (accountOrChainChanged) {
-      activityStore.setAddress(accountInfo.bech32Address);
-      activityStore.setChainId(current.chainId);
-    }
-    if (accountInfo.bech32Address !== "") {
-      activityStore.accountInit();
-    }
-  }, [accountInfo.bech32Address]);
 
   return (
     <HeaderLayout>

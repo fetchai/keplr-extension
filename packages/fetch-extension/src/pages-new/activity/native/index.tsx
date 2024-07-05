@@ -111,7 +111,12 @@ export const NativeTab = observer(() => {
     if (accountInfo.bech32Address !== "") {
       activityStore.accountInit();
     }
-  }, [accountInfo.bech32Address]);
+  }, [
+    accountInfo.bech32Address,
+    current.chainId,
+    accountOrChainChanged,
+    activityStore,
+  ]);
 
   // const handleClick = () => {
   //   analyticsStore.logEvent("activity_transactions_click", {
