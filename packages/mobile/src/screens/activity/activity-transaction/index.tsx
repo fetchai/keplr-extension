@@ -94,7 +94,12 @@ export const ActivityNativeTab: FunctionComponent<{
     if (accountInfo.bech32Address !== "") {
       activityStore.accountInit();
     }
-  }, [accountInfo.bech32Address]);
+  }, [
+    accountInfo.bech32Address,
+    accountOrChainChanged,
+    activityStore,
+    current.chainId,
+  ]);
 
   const handleFilterChange = (selectedFilters: FilterItem[]) => {
     setFilters(selectedFilters);
