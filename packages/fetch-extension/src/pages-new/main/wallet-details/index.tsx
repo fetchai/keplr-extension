@@ -61,8 +61,8 @@ export const WalletDetailsView = observer(
       }
 
       if (!enabledChainIds.includes(current.chainId)) {
-        setChatTooltip("Feature not available on this network");
         setChatDisabled(true);
+        setChatTooltip("Feature not available on this network");
         return;
       }
     }, [
@@ -152,9 +152,13 @@ export const WalletDetailsView = observer(
             }}
             className={style["chat-button"]}
           >
-            <img src={require("@assets/svg/wireframe/chat-alt.svg")} alt="" />
+            <img
+              id="chat-img"
+              src={require("@assets/svg/wireframe/chat-alt.svg")}
+              alt=""
+            />
             {chatDisabled && (
-              <UncontrolledTooltip placement="top" target={"img"}>
+              <UncontrolledTooltip placement="top" target={"chat-img"}>
                 {chatTooltip}
               </UncontrolledTooltip>
             )}
