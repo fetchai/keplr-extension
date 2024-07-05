@@ -1,8 +1,15 @@
 import axios from "axios";
+import { CHAIN_ID_ERIDANUS } from "../config.ui.var";
 export const fetchProposals = async (chainId: string) => {
   if (chainId === "fetchhub-4")
     return await axios
       .get("https://rest-fetchhub.fetch.ai/cosmos/gov/v1beta1/proposals")
+      .then((response) => response.data)
+      .catch((e) => console.log(e));
+
+  if (chainId === CHAIN_ID_ERIDANUS)
+    return await axios
+      .get("https://rest-eridanus-1.fetch.ai/cosmos/gov/v1beta1/proposals")
       .then((response) => response.data)
       .catch((e) => console.log(e));
 
