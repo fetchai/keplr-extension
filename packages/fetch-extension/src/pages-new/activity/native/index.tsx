@@ -1,7 +1,11 @@
 import { observer } from "mobx-react-lite";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
+import {
+  CHAIN_ID_DORADO,
+  CHAIN_ID_ERIDANUS,
+  CHAIN_ID_FETCHHUB,
+} from "../../../config.ui.var";
 import { useStore } from "../../../stores";
 import { FilterActivities, FilterDropdown } from "../filter";
 import style from "../style.module.scss";
@@ -208,7 +212,8 @@ export const NativeTab = observer(() => {
       </div>
 
       {current.chainId === CHAIN_ID_FETCHHUB ||
-      current.chainId === CHAIN_ID_DORADO ? (
+      current.chainId === CHAIN_ID_DORADO ||
+      current.chainId === CHAIN_ID_ERIDANUS ? (
         // isError ? (
         //   <ErrorActivity />
         // ) :
