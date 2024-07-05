@@ -3,7 +3,7 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
-import { formatAddress } from "@utils/format";
+import { formatAddress, separateNumericAndDenom } from "@utils/format";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
@@ -118,12 +118,43 @@ export const WalletDetailsView = observer(
       [accountInfo.walletStatus, notification, intl]
     );
 
+    const accountOrChainChanged =
+      activityStore.getAddress !== accountInfo.bech32Address ||
+      activityStore.getChainId !== current.chainId;
+
+    useEffect(() => {
+      if (accountOrChainChanged) {
+        activityStore.setAddress(accountInfo.bech32Address);
+        activityStore.setChainId(current.chainId);
+      }
+      if (accountInfo.bech32Address !== "") {
+        activityStore.accountInit();
+      }
+    }, [
+      accountInfo.bech32Address,
+      current.chainId,
+      accountOrChainChanged,
+      activityStore,
+    ]);
+
     useEffect(() => {
       if (Object.values(activityStore.getPendingTxn).length > 0) {
         const txns: any = Object.values(activityStore.getPendingTxn);
         setCurrentTxnType(txns[0].type);
       }
     }, [activityStore.getPendingTxn]);
+
+    const queries = queriesStore.get(current.chainId);
+
+    const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
+
+    const stakableReward = rewards.stakableReward;
+    const rewardsBal = stakableReward.toString();
+
+    const { numericPart: rewardsBalNumber } =
+      separateNumericAndDenom(rewardsBal);
 
     return (
       <div>
@@ -341,6 +372,33 @@ export const WalletDetailsView = observer(
               ) : (
                 <div>{txType[currentTxnType]} in progress</div>
               )}
+            </div>
+          </div>
+        )}
+
+        {rewardsBalNumber > 0 && (
+          <div
+            className={style["rewards-card"]}
+            style={{
+              marginTop: "12px",
+              gap: "2px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/stake")}
+          >
+            <div className={style["rewards-card-inner"]}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  alignItems: "center",
+                }}
+              >
+                <img src={require("@assets/svg/wireframe/stake.svg")} />
+                <div>You’ve claimable staking rewards </div>
+              </div>
+
+              <i key="next" className="fas fa-chevron-right" />
             </div>
           </div>
         )}
