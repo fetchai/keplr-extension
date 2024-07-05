@@ -8,7 +8,7 @@ import { CoinPretty, Dec } from "@keplr-wallet/unit";
 import { KeplrSignOptions } from "@keplr-wallet/types";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
-import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
+import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 
 export const FeeInSign: FunctionComponent<{
   isInternal: boolean;
@@ -135,7 +135,7 @@ export const FeeInSign: FunctionComponent<{
           </View>
         </View>
       )}
-      <TransectionFreeModel
+      <TransactionFeeModel
         isOpen={showFeeModal}
         close={() => setFeeModal(false)}
         title={"Transaction fee"}

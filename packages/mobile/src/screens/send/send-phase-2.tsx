@@ -22,7 +22,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
 import { txType } from "components/new/txn-status.tsx";
-import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
+import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { IconButton } from "components/new/button/icon";
 
@@ -97,6 +97,16 @@ export const SendPhase2: FunctionComponent<{
         : new CoinPretty(sendCurrency, new Int(0))
     );
   };
+  useEffect(() => {
+    if (sendConfigs.feeConfig.feeCurrency && !sendConfigs.feeConfig.fee) {
+      sendConfigs.feeConfig.setFeeType("average");
+    }
+  }, [
+    sendConfigs.feeConfig,
+    sendConfigs.feeConfig.feeCurrency,
+    sendConfigs.feeConfig.fee,
+  ]);
+
   useEffect(() => {
     if (route.params.recipient) {
       sendConfigs.recipientConfig.setRawRecipient(route.params.recipient);
@@ -248,7 +258,6 @@ export const SendPhase2: FunctionComponent<{
           memoConfig={sendConfigs.memoConfig}
         />
       </View>
-      <View style={style.flatten(["flex-1"])} />
       <View
         style={
           style.flatten([
@@ -291,6 +300,7 @@ export const SendPhase2: FunctionComponent<{
           />
         </View>
       </View>
+      <View style={style.flatten(["flex-1"])} />
       <Button
         text="Review transaction"
         size="large"
@@ -322,7 +332,7 @@ export const SendPhase2: FunctionComponent<{
         }}
         onTryAgainClick={onSubmit}
       />
-      <TransectionFreeModel
+      <TransactionFeeModel
         isOpen={showFeeModal}
         close={() => setFeeModal(false)}
         title={"Transaction fee"}

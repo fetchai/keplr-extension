@@ -66,7 +66,7 @@ export const AccountSection: FunctionComponent<{
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [openCameraModel, setIsOpenCameraModel] = useState(false);
   const [modelStatus, setModelStatus] = useState(ModelStatus.First);
-
+  const [currentTxnType, setCurrentTxnType] = useState<string>("");
   const [txnObj, setTxnObj] = useState({
     txnHash: "",
     txnStatusModal: false,
@@ -81,6 +81,7 @@ export const AccountSection: FunctionComponent<{
     priceStore,
     keyRingStore,
     analyticsStore,
+    activityStore,
   } = useStore();
   const chainInfo = chainStore.getChain(chainStore.current.chainId);
 
@@ -218,6 +219,13 @@ export const AccountSection: FunctionComponent<{
   useEffect(() => {
     setGraphHeight(isShowClaimOption() ? 4.5 : 4.2);
   }, [isShowClaimOption]);
+
+  useEffect(() => {
+    if (Object.values(activityStore.getPendingTxn).length > 0) {
+      const txns: any = Object.values(activityStore.getPendingTxn);
+      setCurrentTxnType(txns[0].type);
+    }
+  }, [activityStore.getPendingTxn]);
 
   return (
     <View style={style.flatten(["padding-x-page"]) as ViewStyle}>
@@ -391,9 +399,15 @@ export const AccountSection: FunctionComponent<{
           </LinearGradient>
         </TouchableOpacity>
       ) : null}
-      {account.txTypeInProgress && (
+      {Object.values(activityStore.getPendingTxn).length > 0 && (
         <TxnStatus
-          txnType={account.txTypeInProgress}
+          txnType={
+            Object.values(activityStore.getPendingTxn).length > 1
+              ? `${
+                  Object.values(activityStore.getPendingTxn).length
+                } transactions`
+              : txType[currentTxnType]
+          }
           containerStyle={style.flatten(["margin-top-12"]) as ViewStyle}
         />
       )}

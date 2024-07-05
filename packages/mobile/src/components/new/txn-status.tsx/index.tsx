@@ -51,7 +51,7 @@ export const TxnStatus: FunctionComponent<{
           ] as ViewStyle
         }
       >
-        {txType[txnType]} in progress
+        {`${txnType} in progress`}
       </Text>
       <View style={style.flatten(["margin-left-8"]) as ViewStyle}>
         <ActivityIndicator

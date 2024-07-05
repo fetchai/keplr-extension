@@ -10,7 +10,7 @@ import { Button } from "components/button";
 import { ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 
-export const TransectionFreeModel: FunctionComponent<{
+export const TransactionFeeModel: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   title: string;

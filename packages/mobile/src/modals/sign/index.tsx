@@ -27,6 +27,7 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { FeeInSign } from "modals/sign/fee";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { DataTab } from "./data-tab";
+import { LedgerTransectionGuideModel } from "modals/ledger/ledger-transection";
 
 enum TransactionTabEnum {
   Details = "Details",
@@ -43,7 +44,9 @@ export const SignModal: FunctionComponent<{
     queriesStore,
     walletConnectStore,
     signInteractionStore,
+    ledgerInitStore,
   } = useStore();
+
   useUnmount(() => {
     signInteractionStore.rejectAll();
   });
@@ -86,6 +89,12 @@ export const SignModal: FunctionComponent<{
 
   const [isInternal, setIsInternal] = useState(false);
   const [selectedId, setSelectedId] = useState(TransactionTabEnum.Details);
+
+  const [showLedgerGuide, setShowLedgerGuide] = useState(false);
+
+  useEffect(() => {
+    setShowLedgerGuide(ledgerInitStore.isShowSignTxnGuide);
+  }, [ledgerInitStore.isShowSignTxnGuide]);
 
   useEffect(() => {
     if (signInteractionStore.waitingData) {
@@ -321,7 +330,7 @@ export const SignModal: FunctionComponent<{
 
       <Button
         text="Approve transaction"
-        size="large"
+        textStyle={style.flatten(["body2"]) as ViewStyle}
         containerStyle={
           style.flatten(["border-radius-64", "margin-top-20"]) as ViewStyle
         }
@@ -343,6 +352,10 @@ export const SignModal: FunctionComponent<{
             console.log(error);
           }
         }}
+      />
+      <LedgerTransectionGuideModel
+        isOpen={showLedgerGuide}
+        close={() => setShowLedgerGuide(false)}
       />
     </CardModal>
   );

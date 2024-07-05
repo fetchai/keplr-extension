@@ -2,7 +2,7 @@ import LottieView from "lottie-react-native";
 import { observer } from "mobx-react-lite";
 import { CardModal } from "modals/card";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Image, Text, View, ViewStyle } from "react-native";
+import { Image, Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { ImageRequireSource } from "react-native/Libraries/Image/ImageSource";
 
@@ -79,7 +79,10 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
               style={
                 [
                   style.flatten(["height-44"]),
-                  { marginLeft: 60, marginTop: 2 },
+                  {
+                    marginLeft: Platform.OS === "android" ? 60 : 40,
+                    marginTop: Platform.OS === "android" ? 2 : 1.25,
+                  },
                 ] as ViewStyle
               }
             />

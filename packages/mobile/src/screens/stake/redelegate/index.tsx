@@ -23,7 +23,7 @@ import { MemoInputView } from "components/new/card-view/memo-input";
 import { TransactionModal } from "modals/transaction";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
-import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
+import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 
 export const RedelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -96,6 +96,16 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
     queries.cosmos.queryValidators
       .getQueryStatus(Staking.BondStatus.Unbonded)
       .getValidator(selectedValidatorAddress);
+
+  useEffect(() => {
+    if (sendConfigs.feeConfig.feeCurrency && !sendConfigs.feeConfig.fee) {
+      sendConfigs.feeConfig.setFeeType("average");
+    }
+  }, [
+    sendConfigs.feeConfig,
+    sendConfigs.feeConfig.feeCurrency,
+    sendConfigs.feeConfig.fee,
+  ]);
 
   useEffect(() => {
     sendConfigs.recipientConfig.setRawRecipient(selectedValidatorAddress);
@@ -291,7 +301,6 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         memoConfig={sendConfigs.memoConfig}
         containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
       />
-      <View style={style.flatten(["flex-1"])} />
       <View
         style={
           style.flatten([
@@ -334,6 +343,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           />
         </View>
       </View>
+      <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
@@ -356,7 +366,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         onHomeClick={() => navigation.navigate("ActivityTab", {})}
         onTryAgainClick={redelegateAmount}
       />
-      <TransectionFreeModel
+      <TransactionFeeModel
         isOpen={showFeeModal}
         close={() => setFeeModal(false)}
         title={"Transaction fee"}

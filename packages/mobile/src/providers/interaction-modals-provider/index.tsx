@@ -10,10 +10,9 @@ import { BackHandler, Platform } from "react-native";
 import { KeyRingStatus } from "@keplr-wallet/background";
 import { NetworkErrorModal } from "modals/network";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { LedgerTransectionGuideModel } from "modals/ledger/ledger-transection";
 import { LoadingScreenModal } from "providers/loading-screen/modal";
 
-export const InteractionModalsProivder: FunctionComponent = observer(
+export const InteractionModalsProvider: FunctionComponent = observer(
   ({ children }) => {
     const {
       keyRingStore,
@@ -26,11 +25,6 @@ export const InteractionModalsProivder: FunctionComponent = observer(
     const netInfo = useNetInfo();
 
     const [openNetworkModel, setIsNetworkModel] = useState(false);
-    const [showLedgerGuide, setShowLedgerGuide] = useState(false);
-
-    useEffect(() => {
-      setShowLedgerGuide(ledgerInitStore.isShowSignTxnGuide);
-    }, [ledgerInitStore.isShowSignTxnGuide]);
 
     useEffect(() => {
       const networkIsConnected =
@@ -111,34 +105,25 @@ export const InteractionModalsProivder: FunctionComponent = observer(
 
           return null;
         })}
-        {
-          <SignModal
-            isOpen={signInteractionStore.waitingData !== undefined}
-            close={() => {
-              signInteractionStore.rejectAll();
-            }}
-          />
-        }
-        {
-          <LedgerGranterModal
-            isOpen={ledgerInitStore.isInitNeeded}
-            close={() => ledgerInitStore.abortAll()}
-          />
-        }
-        {
-          <LedgerTransectionGuideModel
-            isOpen={showLedgerGuide}
-            close={() => setShowLedgerGuide(false)}
-          />
-        }
-        {
-          <NetworkErrorModal
-            isOpen={openNetworkModel}
-            close={() => {
-              setIsNetworkModel(false);
-            }}
-          />
-        }
+        <SignModal
+          isOpen={
+            signInteractionStore.waitingData !== undefined &&
+            !ledgerInitStore.isInitNeeded
+          }
+          close={() => {
+            signInteractionStore.rejectAll();
+          }}
+        />
+        <LedgerGranterModal
+          isOpen={ledgerInitStore.isInitNeeded}
+          close={() => ledgerInitStore.abortAll()}
+        />
+        <NetworkErrorModal
+          isOpen={openNetworkModel}
+          close={() => {
+            setIsNetworkModel(false);
+          }}
+        />
         {children}
       </React.Fragment>
     );

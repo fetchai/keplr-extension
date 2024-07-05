@@ -192,11 +192,17 @@ export const CreateAccountScreen: FunctionComponent = observer(() => {
               }}
               onChangeText={(text: string) => {
                 text = text.replace(
-                  /[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/,
+                  /[~`!#$%^&*()+={}\[\]|\\:;"'<>,.?/₹•€£]/,
                   ""
                 );
-                if (text[0] === " ") {
-                  text = text.replace(/\s+/g, "");
+                if (text[0] === " " || text[0] === "-") {
+                  return;
+                }
+                if (
+                  (text[text.length - 1] === "-" && text[text.length - 2]) ===
+                  "-"
+                ) {
+                  return;
                 }
                 text = text.replace(/ {1,}/g, " ");
                 onChange(text);

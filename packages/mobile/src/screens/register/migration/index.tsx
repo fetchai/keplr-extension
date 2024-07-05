@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "components/page";
 import { Text, View, ViewStyle } from "react-native";
@@ -37,6 +37,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
 
   const smartNavigation = useSmartNavigation();
   const { analyticsStore } = useStore();
+  const [error, setError] = useState<string>();
 
   const {
     control,
@@ -132,9 +133,17 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
             <InputCardView
               label="Private Key"
               containerStyle={style.flatten(["margin-top-18"]) as ViewStyle}
-              error={errors.ethPrivateKey?.message}
+              error={error ? error : errors.ethPrivateKey?.message}
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(text: string) => {
+                if (text.length === 0) {
+                  setError("");
+                } else {
+                  const data = privateKeyValidate(text);
+                  setError(data ? data : "");
+                }
+                onChange(text);
+              }}
               value={value}
               onSubmitEditing={() => {
                 submit();

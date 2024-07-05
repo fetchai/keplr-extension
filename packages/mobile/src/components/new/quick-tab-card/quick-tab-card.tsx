@@ -153,7 +153,7 @@ export const QuickTabOptionModel: FunctionComponent<{
             ]) as ViewStyle
           }
           activeOpacity={1}
-          // underlayColor={"rgba(255,255,255,0)"}
+          underlayColor={"rgba(255,255,255,0)"}
           rippleColor={"rgba(255,255,255,0)"}
         >
           <View

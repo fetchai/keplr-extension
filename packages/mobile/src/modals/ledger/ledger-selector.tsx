@@ -69,10 +69,10 @@ export const LedgerNanoBLESelector: FunctionComponent<{
       if (e.errorOn != null) {
         initErrorOn = e.errorOn;
         if (initErrorOn === LedgerInitErrorOn.App) {
+          setBluetoothMode(BluetoothMode.Device);
           setMainContent(
             "Open Cosmos app on your ledger and pair with Fetch wallet"
           );
-          setBluetoothMode(BluetoothMode.Device);
           setIsConnecting(false);
         } else if (initErrorOn === LedgerInitErrorOn.Transport) {
           setMainContent("Please unlock ledger nano X");

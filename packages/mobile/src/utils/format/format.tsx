@@ -15,10 +15,17 @@ export const parseDollarAmount = (dollarString: any) => {
   }
   return 0;
 };
+
 export const formatActivityHash = (address: string) => {
-  if (address?.length > 12) return address.substring(0, 10) + "...";
+  if (address?.length > 12)
+    return (
+      address.substring(0, 8) +
+      "..." +
+      address.substring(address.length - 4, address.length)
+    );
   else return address;
 };
+
 export const formatAddress = (address: string) => {
   if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
   if (address?.length > 15)

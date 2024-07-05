@@ -5,7 +5,7 @@ import { IntlProvider } from "react-intl";
 import { Platform, StatusBar, View } from "react-native";
 
 import codePush from "react-native-code-push";
-import { InteractionModalsProivder } from "providers/interaction-modals-provider";
+import { InteractionModalsProvider } from "providers/interaction-modals-provider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LoadingScreenProvider } from "providers/loading-screen";
 import * as SplashScreen from "expo-splash-screen";
@@ -152,9 +152,9 @@ const AppBody: FunctionComponent = () => {
             <ThemeStatusBar />
             <SafeAreaProvider>
               <LoadingScreenProvider>
-                <InteractionModalsProivder>
+                <InteractionModalsProvider>
                   <AppNavigation />
-                </InteractionModalsProivder>
+                </InteractionModalsProvider>
               </LoadingScreenProvider>
             </SafeAreaProvider>
           </IntlProvider>

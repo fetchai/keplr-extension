@@ -52,8 +52,8 @@ export const TokenSymbolUsingChainInfo: FunctionComponent<{
         <IconButton
           icon={
             <VectorCharacter
-              char={chainInfo.chainName[0]}
-              height={Math.floor(size * 0.35)}
+              char={currency.coinDenom[0]}
+              height={Math.floor(size * 0.3)}
               color="white"
             />
           }

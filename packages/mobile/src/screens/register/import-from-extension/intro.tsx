@@ -2,10 +2,9 @@ import React, { FunctionComponent, useState } from "react";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { PageWithView } from "components/page";
-import { Linking, Platform, Text, View, ViewStyle } from "react-native";
+import { Image, Linking, Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
-import ImportFromExtensionSvg from "assets/svg/import-from-extension.svg";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { IconWithText } from "components/new/icon-with-text/icon-with-text";
 import { BlurBackground } from "components/new/blur-background/blur-background";
@@ -56,7 +55,17 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = observer(
         >
           <View style={style.get("flex-2")} />
           <IconWithText
-            icon={<ImportFromExtensionSvg />}
+            icon={
+              <Image
+                source={require("assets/svg/img-extension.png")}
+                style={{
+                  width: 286,
+                  height: 186,
+                }}
+                resizeMode="contain"
+                fadeDuration={0}
+              />
+            }
             title={"Import from Fetch extension"}
             subtitle={`Import your account(s) by going to\n‘Settings > Link Fetch Mobile’ on Fetch Extension and scanning the QR Code`}
             iconStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}

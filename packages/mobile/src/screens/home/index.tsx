@@ -32,7 +32,8 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const windowHeight = Dimensions.get("window").height;
 
   const [refreshing, setRefreshing] = useState(false);
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, activityStore } =
+    useStore();
 
   const [tokenState, setTokenState] = useState({
     diff: 0,
@@ -52,6 +53,13 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     chainStoreIsInitializing,
     true
   );
+
+  const account = accountStore.getAccount(chainStore.current.chainId);
+  const queries = queriesStore.get(chainStore.current.chainId);
+
+  const accountOrChainChanged =
+    activityStore.getAddress !== account.bech32Address ||
+    activityStore.getChainId !== chainStore.current.chainId;
 
   const checkAndUpdateChainInfo = useCallback(() => {
     if (!chainStoreIsInitializing) {
@@ -107,8 +115,6 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     // Because the components share the states related to the queries,
     // fetching new query responses here would make query responses on all other components also refresh.
     setRefreshing(true);
-    const account = accountStore.getAccount(chainStore.current.chainId);
-    const queries = queriesStore.get(chainStore.current.chainId);
 
     await Promise.all([
       priceStore.waitFreshResponse(),
@@ -137,6 +143,16 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
       setRefreshing(false);
     }
   }, [focusedScreen.name, refreshing]);
+
+  useEffect(() => {
+    if (accountOrChainChanged) {
+      activityStore.setAddress(account.bech32Address);
+      activityStore.setChainId(chainStore.current.chainId);
+    }
+    if (account.bech32Address !== "") {
+      activityStore.accountInit();
+    }
+  }, [account.bech32Address]);
 
   return (
     <PageWithScrollViewInBottomTabView

@@ -83,7 +83,7 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
           ) : null}
         </View>
         <View style={style.get("flex-2")} />
-        <View style={style.get("flex-6")}>
+        <View style={style.flatten(["flex-5", "items-center"])}>
           <Svg width="250" height="220" viewBox="0 0 277 277" fill="none">
             <G clipPath="url(#clip0_2489_3885)">
               <Path

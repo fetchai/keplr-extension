@@ -23,7 +23,7 @@ import { CircleExclamationIcon } from "components/new/icon/circle-exclamation";
 import { TransactionModal } from "modals/transaction";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
-import { TransectionFreeModel } from "components/new/fee-modal/transection-fee-modal";
+import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 
 export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -80,6 +80,16 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
     account.bech32Address,
     validatorAddress
   );
+
+  useEffect(() => {
+    if (sendConfigs.feeConfig.feeCurrency && !sendConfigs.feeConfig.fee) {
+      sendConfigs.feeConfig.setFeeType("average");
+    }
+  }, [
+    sendConfigs.feeConfig,
+    sendConfigs.feeConfig.feeCurrency,
+    sendConfigs.feeConfig.fee,
+  ]);
 
   useEffect(() => {
     sendConfigs.recipientConfig.setRawRecipient(validatorAddress);
@@ -255,7 +265,6 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           Your tokens will go through a 21-day unstaking process
         </Text>
       </View>
-      <View style={style.flatten(["flex-1"])} />
       <View
         style={
           style.flatten([
@@ -298,10 +307,12 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           />
         </View>
       </View>
+      <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
         loading={account.txTypeInProgress === "undelegate"}
+        textStyle={style.flatten(["body2"]) as ViewStyle}
         containerStyle={
           style.flatten(["margin-top-16", "border-radius-32"]) as ViewStyle
         }
@@ -319,7 +330,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         onHomeClick={() => navigation.navigate("ActivityTab", {})}
         onTryAgainClick={unstakeBalance}
       />
-      <TransectionFreeModel
+      <TransactionFeeModel
         isOpen={showFeeModal}
         close={() => setFeeModal(false)}
         title={"Transaction fee"}

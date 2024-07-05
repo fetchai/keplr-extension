@@ -84,16 +84,21 @@ export const RenameWalletScreen: FunctionComponent = observer(() => {
         label="wallet name"
         value={account.name}
         editable={false}
-        inputStyle={style.flatten(["color-gray-300"])}
+        inputStyle={style.flatten(["color-gray-300"]) as ViewStyle}
       />
       <InputCardView
         label="New wallet name"
         onChangeText={(text: string) => {
           if (!isReadOnly) {
             setErrorMessage("");
-            text = text.replace(/[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/, "");
-            if (text[0] === " ") {
-              text = text.replace(/\s+/g, "");
+            text = text.replace(/[~`!#$%^&*()+={}\[\]|\\:;"'<>,.?/₹•€£]/, "");
+            if (text[0] === " " || text[0] === "-") {
+              return;
+            }
+            if (
+              (text[text.length - 1] === "-" && text[text.length - 2]) === "-"
+            ) {
+              return;
             }
             text = text.replace(/ {1,}/g, " ");
             setNewName(text);

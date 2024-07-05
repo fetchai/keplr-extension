@@ -160,7 +160,6 @@ export const LedgerGranterModal: FunctionComponent<{
           next: (e: { type: string; descriptor: any }) => {
             if (e.type === "add") {
               const device = e.descriptor;
-
               if (!_devices.find((d) => d.id === device.id)) {
                 console.log(
                   `Ledger device found (id: ${device.id}, name: ${device.name})`
@@ -175,10 +174,14 @@ export const LedgerGranterModal: FunctionComponent<{
                 setDevices(_devices);
                 setMainContent("Choose a wallet to connect");
                 setBluetoothMode(BluetoothMode.Device);
+              } else if (bluetoothMode != BluetoothMode.Device) {
+                setMainContent("Choose a wallet to connect");
+                setBluetoothMode(BluetoothMode.Device);
               }
             }
           },
           error: (e?: Error | any) => {
+            console.log("Ledger:Exception", e);
             if (!e) {
               setErrorOnListen("Unknown error");
             } else {
@@ -383,23 +386,24 @@ export const LedgerGranterModal: FunctionComponent<{
               }
             />
           ) : null}
-          {devices.map((device) => {
-            return (
-              <LedgerNanoBLESelector
-                key={device.id}
-                deviceId={device.id}
-                name={device.name}
-                setMainContent={setMainContent}
-                setBluetoothMode={setBluetoothMode}
-                setIsPairingText={setIsPairingText}
-                setIsPaired={setIsPaired}
-                onCanResume={async () => {
-                  resumed.current = true;
-                  await ledgerInitStore.resumeAll(device.id);
-                }}
-              />
-            );
-          })}
+          {bluetoothMode == BluetoothMode.Device &&
+            devices.map((device) => {
+              return (
+                <LedgerNanoBLESelector
+                  key={device.id}
+                  deviceId={device.id}
+                  name={device.name}
+                  setMainContent={setMainContent}
+                  setBluetoothMode={setBluetoothMode}
+                  setIsPairingText={setIsPairingText}
+                  setIsPaired={setIsPaired}
+                  onCanResume={async () => {
+                    resumed.current = true;
+                    await ledgerInitStore.resumeAll(device.id);
+                  }}
+                />
+              );
+            })}
         </React.Fragment>
       ) : (
         <Text

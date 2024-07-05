@@ -119,7 +119,7 @@ export const AddressBookCardModel: FunctionComponent<{
               );
             })}
           </View>
-        ) : addressBookConfig.addressBookDatas.length == 0 ? (
+        ) : filterAddressBook.length == 0 ? (
           <React.Fragment>
             <Text
               style={

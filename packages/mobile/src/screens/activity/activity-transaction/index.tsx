@@ -82,21 +82,19 @@ export const ActivityNativeTab: FunctionComponent<{
       activityStore.setIsNodeUpdated(false);
       setIsLoading(false);
     }
-  }, [activityStore, activityStore.checkIsNodeUpdated]);
+  }, [activityStore.checkIsNodeUpdated]);
 
   useEffect(() => {
     if (accountOrChainChanged) {
       activityStore.setAddress(accountInfo.bech32Address);
       activityStore.setChainId(current.chainId);
     }
+
     //accountInit is required because in case of a reload, this.nodes becomes empty and should be updated with KVstore's saved nodes
-    activityStore.accountInit();
-  }, [
-    accountInfo.bech32Address,
-    accountOrChainChanged,
-    activityStore,
-    current.chainId,
-  ]);
+    if (accountInfo.bech32Address !== "") {
+      activityStore.accountInit();
+    }
+  }, [accountInfo.bech32Address]);
 
   const handleFilterChange = (selectedFilters: FilterItem[]) => {
     setFilters(selectedFilters);
