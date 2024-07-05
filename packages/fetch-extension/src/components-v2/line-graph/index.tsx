@@ -30,10 +30,6 @@ const tabs = [
     id: "1Y",
     duration: 360,
   },
-  {
-    id: "All",
-    duration: 3600,
-  },
 ];
 
 export const LineGraphView: React.FC<LineGraphViewProps> = ({
