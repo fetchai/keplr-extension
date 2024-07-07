@@ -386,20 +386,18 @@ export const WalletDetailsView = observer(
             }}
             onClick={() => navigate("/stake")}
           >
-            <div className={style["rewards-card-inner"]}>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "12px",
-                  alignItems: "center",
-                }}
-              >
-                <img src={require("@assets/svg/wireframe/stake.svg")} />
-                <div>You’ve claimable staking rewards </div>
-              </div>
-
-              <i key="next" className="fas fa-chevron-right" />
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+              }}
+            >
+              <img src={require("@assets/svg/wireframe/stake.svg")} />
+              <div>You’ve claimable staking rewards </div>
             </div>
+
+            <i key="next" className="fas fa-chevron-right" />
           </div>
         )}
 
