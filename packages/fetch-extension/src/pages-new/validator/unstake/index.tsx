@@ -172,7 +172,7 @@ export const Unstake = observer(() => {
         },
       });
     } finally {
-      navigate("/", { replace: true });
+      navigate("/stake", { replace: true });
     }
   };
 

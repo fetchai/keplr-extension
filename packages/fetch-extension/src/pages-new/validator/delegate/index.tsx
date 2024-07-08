@@ -165,7 +165,7 @@ export const Delegate: FunctionComponent = observer(() => {
         },
       });
     } finally {
-      navigate("/", { replace: true });
+      navigate("/stake", { replace: true });
     }
   };
 
