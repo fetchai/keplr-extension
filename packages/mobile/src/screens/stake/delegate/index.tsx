@@ -27,6 +27,8 @@ import { VectorCharacter } from "components/vector-character";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
+import Toast from "react-native-toast-message";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 interface ItemData {
   title: string;
@@ -54,6 +56,10 @@ export const DelegateScreen: FunctionComponent = observer(() => {
   const style = useStyle();
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
 
@@ -178,6 +184,13 @@ export const DelegateScreen: FunctionComponent = observer(() => {
   ];
 
   const stakeAmount = async () => {
+    if (!networkIsConnected) {
+      Toast.show({
+        type: "error",
+        text1: "No internet connection",
+      });
+      return;
+    }
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
         analyticsStore.logEvent("stake_txn_click", { pageName: "Stake" });

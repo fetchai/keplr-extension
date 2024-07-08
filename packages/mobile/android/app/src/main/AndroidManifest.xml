@@ -37,7 +37,7 @@
       android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
       android:screenOrientation="portrait"
       android:launchMode="singleTask"
-      android:windowSoftInputMode="adjustResize"
+      android:windowSoftInputMode="adjustPan"
       android:theme="@style/Theme.App.SplashScreen"
       android:exported="true"
     >

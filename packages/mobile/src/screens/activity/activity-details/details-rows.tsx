@@ -15,6 +15,8 @@ import { ArrowUpIcon } from "components/new/icon/arrow-up";
 import { AppCurrency } from "@keplr-wallet/types";
 import { clearDecimals } from "modals/sign/messages";
 import { useStore } from "stores/index";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from "react-native-toast-message";
 
 interface ItemData {
   title: string;
@@ -28,6 +30,10 @@ interface ButtonData {
 }
 
 export const DetailRows = ({ details }: { details: any }) => {
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
+
   const style = useStyle();
   const { chainStore, analyticsStore } = useStore();
   const fees = JSON.parse(details.fees);
@@ -257,7 +263,16 @@ export const DetailRows = ({ details }: { details: any }) => {
                 "border-color-platinum-400",
               ]) as ViewStyle
             }
-            onPress={() => openURL()}
+            onPress={() => {
+              if (!networkIsConnected) {
+                Toast.show({
+                  type: "error",
+                  text1: "No internet connection",
+                });
+                return;
+              }
+              openURL();
+            }}
           />
         </View>
       </View>

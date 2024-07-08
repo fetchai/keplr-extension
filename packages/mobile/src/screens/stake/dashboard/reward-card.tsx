@@ -245,7 +245,6 @@ export const MyRewardCard: FunctionComponent<{
           </View>
         </View>
         {!(
-          !networkIsConnected ||
           !account.isReadyToSendTx ||
           pendingStakableReward.toDec().equals(new Dec(0)) ||
           stakable.toDec().lte(new Dec(0)) ||
@@ -263,6 +262,13 @@ export const MyRewardCard: FunctionComponent<{
             buttonStyle={style.flatten(["padding-x-4"]) as ViewStyle}
             textStyle={style.flatten(["body3"]) as ViewStyle}
             onPress={() => {
+              if (!networkIsConnected) {
+                Toast.show({
+                  type: "error",
+                  text1: "No internet connection",
+                });
+                return;
+              }
               if (account.txTypeInProgress === "withdrawRewards") {
                 Toast.show({
                   type: "error",
@@ -584,7 +590,7 @@ const DelegateReward: FunctionComponent<{
                 </Text>
               </View>
             </View>
-            {!(!networkIsConnected || !account.isReadyToSendTx) ? (
+            {account.isReadyToSendTx ? (
               <View style={style.flatten(["flex-2", "items-end"])}>
                 <Button
                   text={"Claim"}
@@ -603,6 +609,13 @@ const DelegateReward: FunctionComponent<{
                     style.flatten(["body3", "color-white"]) as ViewStyle
                   }
                   onPress={() => {
+                    if (!networkIsConnected) {
+                      Toast.show({
+                        type: "error",
+                        text1: "No internet connection",
+                      });
+                      return;
+                    }
                     if (account.txTypeInProgress === "withdrawRewards") {
                       Toast.show({
                         type: "error",

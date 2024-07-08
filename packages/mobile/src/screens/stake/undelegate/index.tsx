@@ -24,6 +24,8 @@ import { TransactionModal } from "modals/transaction";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
+import Toast from "react-native-toast-message";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -46,6 +48,10 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
   const style = useStyle();
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -128,6 +134,13 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
   );
 
   const unstakeBalance = async () => {
+    if (!networkIsConnected) {
+      Toast.show({
+        type: "error",
+        text1: "No internet connection",
+      });
+      return;
+    }
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
         analyticsStore.logEvent("unstake_txn_click", {

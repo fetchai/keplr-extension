@@ -24,6 +24,8 @@ import { TransactionModal } from "modals/transaction";
 import { IconButton } from "components/new/button/icon";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from "react-native-toast-message";
 
 export const RedelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -46,6 +48,10 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
 
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
     useStore();
@@ -144,6 +150,13 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
   );
 
   const redelegateAmount = async () => {
+    if (!networkIsConnected) {
+      Toast.show({
+        type: "error",
+        text1: "No internet connection",
+      });
+      return;
+    }
     if (account.isReadyToSendTx && txStateIsValid) {
       try {
         analyticsStore.logEvent("redelegate_txn_click", {
