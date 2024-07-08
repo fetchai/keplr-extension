@@ -3,13 +3,18 @@ import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
-import { AddressBookConfig } from "@keplr-wallet/hooks";
+import { AddressBookConfig, AddressBookData } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "../empty";
 import { useStore } from "stores/index";
 import { Button } from "components/button";
 import { InputCardView } from "../card-view/input-card";
+
+interface IndexedItem<T> {
+  index: number;
+  item: T;
+}
 
 export const AddressBookCardModel: FunctionComponent<{
   hideCurrentAddress?: boolean;
@@ -32,20 +37,43 @@ export const AddressBookCardModel: FunctionComponent<{
     const { chainStore, accountStore, analyticsStore } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
 
-    const [filterAddressBook, setFilterAddressBook] = useState(
-      addressBookConfig.addressBookDatas
-    );
+    const [filterAddressBook, setFilterAddressBook] = useState<
+      IndexedItem<AddressBookData>[]
+    >([]);
+
+    function deepFilterWithOriginalIndices<T>(
+      arr: ReadonlyArray<T>,
+      search: string,
+      predicate: (item: T, search: string) => boolean
+    ): IndexedItem<T>[] {
+      const result: IndexedItem<T>[] = [];
+
+      function deepFilter(arr: ReadonlyArray<T>): void {
+        arr.forEach((item, index) => {
+          if (predicate(item, search)) {
+            result.push({ index, item });
+          }
+          if (Array.isArray(item)) {
+            deepFilter(item);
+          }
+        });
+      }
+
+      deepFilter(arr);
+      return result;
+    }
+
+    const predicate = (data: AddressBookData, search: string) =>
+      data.name.toLowerCase().includes(search.toLowerCase()) &&
+      hideCurrentAddress &&
+      !data.address.includes(account.bech32Address);
 
     useEffect(() => {
       const searchTrim = search.trim();
-      const newAddressBook = addressBookConfig.addressBookDatas.filter(
-        (data) => {
-          return (
-            data.name.toLowerCase().includes(searchTrim.toLowerCase()) &&
-            hideCurrentAddress &&
-            !data.address.includes(account.bech32Address)
-          );
-        }
+      const newAddressBook = deepFilterWithOriginalIndices(
+        addressBookConfig.addressBookDatas,
+        searchTrim,
+        predicate
       );
       setFilterAddressBook(newAddressBook);
     }, [addressBookConfig.addressBookDatas, search]);
@@ -76,12 +104,12 @@ export const AddressBookCardModel: FunctionComponent<{
         />
         {filterAddressBook.length > 0 ? (
           <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
-            {filterAddressBook.map((data, i) => {
+            {filterAddressBook.map((data: IndexedItem<AddressBookData>) => {
               return (
                 <RectButton
-                  key={i.toString()}
+                  key={data.index.toString()}
                   onPress={() => {
-                    addressBookConfig.selectAddressAt(i);
+                    addressBookConfig.selectAddressAt(data.index);
                     setSearch("");
                     close();
                   }}
@@ -103,7 +131,7 @@ export const AddressBookCardModel: FunctionComponent<{
                       ]) as ViewStyle
                     }
                   >
-                    {data.name}
+                    {data.item.name}
                   </Text>
                   <Text
                     style={
@@ -113,7 +141,7 @@ export const AddressBookCardModel: FunctionComponent<{
                       ]) as ViewStyle
                     }
                   >
-                    {data.address}
+                    {data.item.address}
                   </Text>
                 </RectButton>
               );

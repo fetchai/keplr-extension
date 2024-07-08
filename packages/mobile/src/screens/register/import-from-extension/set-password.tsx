@@ -297,7 +297,10 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
           text="Confirm"
           size="large"
           loading={isCreating}
-          onPress={submit}
+          onPress={() => {
+            setShowPassword(false);
+            submit();
+          }}
           containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         />
         {/* Mock element for bottom padding */}

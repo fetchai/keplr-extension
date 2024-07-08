@@ -65,7 +65,7 @@ export const AddressInputCard: FunctionComponent<{
     const style = useStyle();
     const smartNavigation = useSmartNavigation();
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const { chainStore, analyticsStore } = useStore();
+    const { chainStore, analyticsStore, accountStore } = useStore();
 
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [openCameraModel, setIsOpenCameraModel] = useState(false);
@@ -73,6 +73,7 @@ export const AddressInputCard: FunctionComponent<{
     const [isFocused, setIsFocused] = useState(false);
 
     const chainId = chainStore.current.chainId;
+    const account = accountStore.getAccount(chainStore.current.chainId);
 
     const addressBookConfig = useAddressBookConfig(
       new AsyncKVStore("address_book"),
@@ -108,6 +109,8 @@ export const AddressInputCard: FunctionComponent<{
           default:
             return "Unknown error";
         }
+      } else if (account.bech32Address == recipientConfig.recipient) {
+        return "Same account address is not allowed.";
       }
     }, [error]);
 
