@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from "react";
-import Svg, { Circle, Path, Rect } from "react-native-svg";
-import { G } from "react-native-svg";
+import Svg, { Circle, G, Path, Rect } from "react-native-svg";
 
 export const RowFrame: FunctionComponent = () => {
   return (

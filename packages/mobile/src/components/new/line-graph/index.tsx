@@ -37,11 +37,6 @@ const tabs = [
     id: DurationFilter["1Y"],
     duration: "365",
   },
-  {
-    index: 5,
-    id: DurationFilter.ALL,
-    duration: "max",
-  },
 ];
 
 export const LineGraphView: FunctionComponent<{

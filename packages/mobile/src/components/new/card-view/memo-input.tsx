@@ -5,11 +5,13 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 
 import { observer } from "mobx-react-lite";
 import { IMemoConfig } from "@keplr-wallet/hooks";
+import { removeEmojis } from "utils/format/format";
 
 export const MemoInputView: FunctionComponent<{
   label?: string;
+  labelStyle?: ViewStyle;
   containerStyle?: ViewStyle;
-  inputcontainerStyle?: ViewStyle;
+  inputContainerStyle?: ViewStyle;
   placeholderText?: string;
   memoConfig: IMemoConfig;
   onFocus?: any;
@@ -17,8 +19,9 @@ export const MemoInputView: FunctionComponent<{
 }> = observer(
   ({
     label,
+    labelStyle,
     containerStyle,
-    inputcontainerStyle,
+    inputContainerStyle,
     placeholderText,
     memoConfig,
     onFocus,
@@ -32,11 +35,10 @@ export const MemoInputView: FunctionComponent<{
         {label ? (
           <Text
             style={
-              style.flatten([
-                "padding-y-4",
-                "color-gray-200",
-                "margin-y-8",
-              ]) as ViewStyle
+              [
+                style.flatten(["padding-y-4", "color-white@60%", "margin-y-8"]),
+                labelStyle,
+              ] as ViewStyle
             }
           >
             {label}
@@ -48,7 +50,7 @@ export const MemoInputView: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-y-12", "padding-x-18", "flex-row"],
+                ["padding-x-18", "padding-y-12", "flex-row"],
                 isFocused
                   ? [
                       // The order is important.
@@ -59,7 +61,8 @@ export const MemoInputView: FunctionComponent<{
                     ]
                   : []
               ),
-              inputcontainerStyle,
+              inputContainerStyle,
+              // { paddingVertical: 9 },
             ] as ViewStyle
           }
         >
@@ -67,11 +70,17 @@ export const MemoInputView: FunctionComponent<{
             <TextInput
               placeholderTextColor={style.flatten(["color-gray-200"]).color}
               style={
-                style.flatten([
-                  "body3",
-                  "color-white",
-                  "padding-0",
-                ]) as ViewStyle
+                [
+                  style.flatten(["body3", "color-white", "padding-0"]),
+                  Platform.select({
+                    ios: {},
+                    android: {
+                      // On android, the text input's height does not equals to the line height by strange.
+                      // To fix this problem, set the height explicitly.
+                      height: 19,
+                    },
+                  }),
+                ] as ViewStyle
               }
               keyboardType={
                 Platform.OS === "ios" ? "ascii-capable" : "visible-password"
@@ -80,7 +89,7 @@ export const MemoInputView: FunctionComponent<{
               placeholder={placeholderText}
               value={memoConfig.memo}
               onChangeText={(text: string) => {
-                memoConfig.setMemo(text);
+                memoConfig.setMemo(removeEmojis(text));
               }}
               maxLength={100}
               onFocus={(e) => {

@@ -9,7 +9,6 @@ import { IconButton } from "components/new/button/icon";
 import { useStore } from "stores/index";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { separateNumericAndDenom } from "utils/format/format";
-import { getTokenIcon } from "utils/get-token-icon";
 import FastImage from "react-native-fast-image";
 import { VectorCharacter } from "components/vector-character";
 import { ActivityNativeTab } from "screens/activity/activity-transaction";
@@ -18,7 +17,7 @@ import { FilterIcon } from "components/new/icon/filter-icon";
 
 export const TokenDetail: FunctionComponent = observer(() => {
   const size = 56;
-  const [tokenIcon, setTokenIcon] = useState<string>("");
+  const [tokenIcon, setTokenIcon] = useState<string | undefined>();
 
   const route = useRoute<
     RouteProp<
@@ -42,7 +41,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
 
   const style = useStyle();
 
-  const { chainStore, accountStore, queriesStore } = useStore();
+  const { chainStore, accountStore, queriesStore, analyticsStore } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -69,17 +68,17 @@ export const TokenDetail: FunctionComponent = observer(() => {
       total.shrink(true).trim(true).maxDecimals(6).toString()
     );
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [latestBlock, _setLatestBlock] = useState<string>();
 
   useEffect(() => {
     if (tokenInfo?.coinGeckoId) {
       const fetchTokenImage = async () => {
-        const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
+        const tokenImage =
+          chainStore.current?.["_chainInfo"]?.chainSymbolImageUrl;
         setTokenIcon(tokenImage);
       };
       fetchTokenImage();
     } else {
-      setTokenIcon("");
+      setTokenIcon(undefined);
     }
   }, [tokenInfo?.coinGeckoId]);
 
@@ -207,11 +206,15 @@ export const TokenDetail: FunctionComponent = observer(() => {
                 ]) as ViewStyle
               }
               backgroundBlur={false}
-              onPress={() => setIsOpenModal(true)}
+              onPress={() => {
+                setIsOpenModal(true);
+                analyticsStore.logEvent("filter_click", {
+                  pageName: "Token Detail",
+                });
+              }}
             />
           </View>
           <ActivityNativeTab
-            latestBlock={latestBlock}
             isOpenModal={isOpenModal}
             setIsOpenModal={setIsOpenModal}
           />

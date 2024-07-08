@@ -22,6 +22,7 @@ export const RenameWalletScreen: FunctionComponent = observer(() => {
   const [newName, setNewName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isInvalidName, setIsInvalidName] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedKeyStore, setSelectedKeyStore] =
     useState<MultiKeyStoreInfoWithSelectedElem>();
 
@@ -53,8 +54,9 @@ export const RenameWalletScreen: FunctionComponent = observer(() => {
   };
 
   const submitNewName = async () => {
-    if (newName.length == 0) {
+    if (newName.length < 3) {
       setIsInvalidName(true);
+      setErrorMessage("Name at least 3 characters");
       return;
     }
 
@@ -82,16 +84,30 @@ export const RenameWalletScreen: FunctionComponent = observer(() => {
         label="wallet name"
         value={account.name}
         editable={false}
-        inputStyle={style.flatten(["color-gray-300"])}
+        inputStyle={style.flatten(["color-gray-300"]) as ViewStyle}
       />
       <InputCardView
         label="New wallet name"
         onChangeText={(text: string) => {
-          if (!isReadOnly) setNewName(text);
+          if (!isReadOnly) {
+            setErrorMessage("");
+            text = text.replace(/[~`!#$%^&*()+={}\[\]|\\:;"'<>,.?/₹•€£]/, "");
+            if (text[0] === " " || text[0] === "-") {
+              return;
+            }
+            if (
+              (text[text.length - 1] === "-" && text[text.length - 2]) === "-"
+            ) {
+              return;
+            }
+            text = text.replace(/ {1,}/g, " ");
+            setNewName(text);
+          }
         }}
+        onBlur={() => setNewName(newName.trim())}
         value={newName}
         maxLength={30}
-        error={isInvalidName ? "Name is required" : undefined}
+        error={isInvalidName ? errorMessage : undefined}
         returnKeyType="done"
         onSubmitEditing={submitNewName}
       />
@@ -102,7 +118,7 @@ export const RenameWalletScreen: FunctionComponent = observer(() => {
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         loading={isLoading}
         onPress={submitNewName}
-        disabled={!newName}
+        disabled={!newName || account.name === newName}
       />
       <KeyboardSpacerView />
     </PageWithScrollView>

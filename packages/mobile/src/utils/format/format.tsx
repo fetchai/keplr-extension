@@ -2,7 +2,10 @@ import { Buffer } from "buffer/";
 import { AGENT_ADDRESS } from "../../config";
 
 export const separateNumericAndDenom = (value: any) => {
-  const [numericPart, denomPart] = value ? value.split(" ") : ["", ""];
+  const data = value ? value.split(" ") : ["", ""];
+  let numericPart = data[0].replace(/,/g, "");
+  numericPart = numericPart.length > 0 ? numericPart : "0";
+  const denomPart = data[1];
   return { numericPart, denomPart };
 };
 
@@ -13,10 +16,17 @@ export const parseDollarAmount = (dollarString: any) => {
   }
   return 0;
 };
+
 export const formatActivityHash = (address: string) => {
-  if (address?.length > 12) return address.substring(0, 10) + "...";
+  if (address?.length > 12)
+    return (
+      address.substring(0, 8) +
+      "..." +
+      address.substring(address.length - 4, address.length)
+    );
   else return address;
 };
+
 export const formatAddress = (address: string) => {
   if (Object.values(AGENT_ADDRESS).includes(address)) return "Fetchbot";
   if (address?.length > 15)
@@ -92,4 +102,11 @@ export const shortenNumber = (value: string, decimal = 18) => {
     result = number.toFixed(2) + " ";
   }
   return result;
+};
+
+export const removeEmojis = (text: string) => {
+  const emojiRegex =
+    /([\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F700}-\u{1F77F}]|[\u{1F780}-\u{1F7FF}]|[\u{1F800}-\u{1F8FF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA00}-\u{1FA6F}]|[\u{1FA70}-\u{1FAFF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{2B50}-\u{2B55}]|[\u{2300}-\u{23FF}]|[\u{2C60}-\u{2C7F}]|[\u{2B06}-\u{2B07}]|[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F700}-\u{1F77F}]|[\u{1F780}-\u{1F7FF}]|[\u{1F800}-\u{1F8FF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA00}-\u{1FA6F}]|[\u{1FA70}-\u{1FAFF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{2B50}-\u{2B55}]|[\u{2300}-\u{23FF}]|[\u{2C60}-\u{2C7F}]|[\u{2B06}-\u{2B07}])/gu;
+
+  return text.replace(emojiRegex, "");
 };

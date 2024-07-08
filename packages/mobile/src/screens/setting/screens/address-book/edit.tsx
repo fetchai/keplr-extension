@@ -90,8 +90,21 @@ export const EditAddressBookScreen: FunctionComponent = observer(() => {
       <InputCardView
         label="Nickname"
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
-        onChangeText={(text: string) => setName(text)}
+        onChangeText={(text: string) => {
+          text = text.replace(/[~`!#$%^&*()+={}\[\]|\\:;"'<>,.?/₹•€£]/, "");
+          if (text[0] === " " || text[0] === "-") {
+            return;
+          }
+          if (
+            (text[text.length - 1] === "-" && text[text.length - 2]) === "-"
+          ) {
+            return;
+          }
+          text = text.replace(/ {1,}/g, " ");
+          setName(text);
+        }}
         value={name}
+        maxLength={30}
       />
       <AddressInput
         label="Address"

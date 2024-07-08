@@ -31,7 +31,7 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
     >
   >();
 
-  const { chainStore } = useStore();
+  const { chainStore, analyticsStore } = useStore();
 
   const smartNavigation = useSmartNavigation();
   const addressBookConfig = route.params.addressBookConfig;
@@ -55,9 +55,14 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
         label="Nickname"
         containerStyle={style.flatten(["margin-y-4"]) as ViewStyle}
         onChangeText={(text: string) => {
-          text = text.replace(/[`#$%^&*()+!\=\[\]{}'?*;:"\\|,.<>\/~]/, "");
-          if (text[0] === " ") {
-            text = text.replace(/\s+/g, "");
+          text = text.replace(/[~`!#$%^&*()+={}\[\]|\\:;"'<>,.?/₹•€£]/, "");
+          if (text[0] === " " || text[0] === "-") {
+            return;
+          }
+          if (
+            (text[text.length - 1] === "-" && text[text.length - 2]) === "-"
+          ) {
+            return;
           }
           text = text.replace(/ {1,}/g, " ");
           setName(text);
@@ -102,6 +107,9 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
                 name: name.trim(),
                 address: recipientConfig.recipient,
                 memo: memoConfig.memo,
+              });
+              analyticsStore.logEvent("save_new_address_click", {
+                pageName: "Add an address",
               });
               smartNavigation.goBack();
             } else {
