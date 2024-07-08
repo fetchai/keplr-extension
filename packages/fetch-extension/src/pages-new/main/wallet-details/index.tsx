@@ -7,7 +7,7 @@ import { formatAddress, separateNumericAndDenom } from "@utils/format";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import { Button, UncontrolledTooltip } from "reactstrap";
+import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { Balances } from "../balances";
 import style from "../style.module.scss";
@@ -66,8 +66,10 @@ export const WalletDetailsView = observer(
         return;
       }
 
-      setChatDisabled(true);
-      setChatTooltip("Feature coming soon.");
+      if (!chatDisabled && chatTooltip === "") {
+        setChatDisabled(true);
+        setChatTooltip("Feature coming soon.");
+      }
     }, [
       hasFET,
       enabledChainIds,
@@ -179,7 +181,9 @@ export const WalletDetailsView = observer(
               alt=""
             />
           </button>
-          <button
+
+          {/* Chat disabled */}
+          {/* <button
             disabled={chatDisabled}
             onClick={() => {
               navigate("/chat");
@@ -196,7 +200,7 @@ export const WalletDetailsView = observer(
                 {chatTooltip}
               </UncontrolledTooltip>
             )}
-          </button>
+          </button> */}
         </div>
         <div className={style["wallet-detail-card"]}>
           <div

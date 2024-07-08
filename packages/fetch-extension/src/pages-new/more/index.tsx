@@ -167,7 +167,7 @@ export const MorePage: FunctionComponent = () => {
       />
       <div
         style={{
-          marginBottom: "20px",
+          marginBottom: "40px",
         }}
       />
     </HeaderLayout>
