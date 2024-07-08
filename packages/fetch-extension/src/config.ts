@@ -171,6 +171,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "ETH",
       coinMinimalDenom: "eth",
       coinDecimals: 18,
+      coinGeckoId: "ethereum",
     },
     type: "testnet",
     hideInUI: true,
@@ -201,6 +202,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "ETH",
         coinMinimalDenom: "eth",
         coinDecimals: 18,
+        coinGeckoId: "ethereum",
         gasPriceStep: {
           low: 40000000000,
           average: 40000000000,
@@ -1392,6 +1394,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "IXO",
       coinMinimalDenom: "uixo",
       coinDecimals: 6,
+      coinGeckoId: "ixo",
     },
     walletUrl:
       process.env.NODE_ENV === "production"
@@ -1410,6 +1413,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "IXO",
         coinMinimalDenom: "uixo",
         coinDecimals: 6,
+        coinGeckoId: "ixo",
       },
     ],
     feeCurrencies: [
@@ -1417,6 +1421,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "IXO",
         coinMinimalDenom: "uixo",
         coinDecimals: 6,
+        coinGeckoId: "ixo",
       },
     ],
     chainSymbolImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ixo.png",
@@ -1621,6 +1626,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "BOOT",
       coinMinimalDenom: "boot",
       coinDecimals: 0,
+      coinGeckoId: "bostrom",
     },
     walletUrl:
       process.env.NODE_ENV === "production"
@@ -1639,6 +1645,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "BOOT",
         coinMinimalDenom: "boot",
         coinDecimals: 0,
+        coinGeckoId: "bostrom",
       },
       {
         coinDenom: "H",
@@ -1666,6 +1673,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "BOOT",
         coinMinimalDenom: "boot",
         coinDecimals: 0,
+        coinGeckoId: "bostrom",
         gasPriceStep: {
           low: 0,
           average: 0,
@@ -2118,6 +2126,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "TGD",
       coinMinimalDenom: "utgd",
       coinDecimals: 6,
+      coinGeckoId: "tgrade",
     },
     bip44: {
       coinType: 118,
@@ -2128,6 +2137,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TGD",
         coinMinimalDenom: "utgd",
         coinDecimals: 6,
+        coinGeckoId: "tgrade",
       },
     ],
     feeCurrencies: [
@@ -2135,6 +2145,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TGD",
         coinMinimalDenom: "utgd",
         coinDecimals: 6,
+        coinGeckoId: "tgrade",
         gasPriceStep: {
           low: 0.05,
           average: 0.05,
@@ -2398,6 +2409,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "QCK",
       coinMinimalDenom: "uqck",
       coinDecimals: 6,
+      coinGeckoId: "quicksilver",
     },
     walletUrlForStaking:
       process.env.NODE_ENV === "production"
@@ -2419,6 +2431,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "QCK",
         coinMinimalDenom: "uqck",
         coinDecimals: 6,
+        coinGeckoId: "quicksilver",
       },
     ],
     feeCurrencies: [
@@ -2426,6 +2439,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "QCK",
         coinMinimalDenom: "uqck",
         coinDecimals: 6,
+        coinGeckoId: "quicksilver",
         gasPriceStep: {
           low: 0,
           average: 0.0001,
@@ -2558,6 +2572,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "QSR",
       coinMinimalDenom: "uqsr",
       coinDecimals: 6,
+      coinGeckoId: "quasar-2",
     },
     bip44: {
       coinType: 118,
@@ -2575,6 +2590,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "QSR",
         coinMinimalDenom: "uqsr",
         coinDecimals: 6,
+        coinGeckoId: "quasar-2",
       },
     ],
     feeCurrencies: [
@@ -2583,6 +2599,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom:
           "ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B",
         coinDecimals: 6,
+        coinGeckoId: "quasar-2",
         gasPriceStep: {
           low: 0.01,
           average: 0.01,
@@ -2678,6 +2695,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "FLIX",
       coinMinimalDenom: "uflix",
       coinDecimals: 6,
+      coinGeckoId: "omniflix-network",
     },
     bip44: {
       coinType: 118,
@@ -2695,6 +2713,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FLIX",
         coinMinimalDenom: "uflix",
         coinDecimals: 6,
+        coinGeckoId: "omniflix-network",
       },
     ],
     feeCurrencies: [
@@ -2702,6 +2721,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "FLIX",
         coinMinimalDenom: "uflix",
         coinDecimals: 6,
+        coinGeckoId: "omniflix-network",
         gasPriceStep: {
           low: 0.001,
           average: 0.0025,
@@ -2721,6 +2741,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "KYVE",
       coinMinimalDenom: "ukyve",
       coinDecimals: 6,
+      coinGeckoId: "kyve-network",
     },
     bip44: {
       coinType: 118,
@@ -2738,6 +2759,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "KYVE",
         coinMinimalDenom: "ukyve",
         coinDecimals: 6,
+        coinGeckoId: "kyve-network",
       },
     ],
     feeCurrencies: [
@@ -2745,6 +2767,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "KYVE",
         coinMinimalDenom: "ukyve",
         coinDecimals: 6,
+        coinGeckoId: "kyve-network",
         gasPriceStep: {
           low: 0.02,
           average: 0.03,
@@ -2764,6 +2787,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "AXL",
       coinMinimalDenom: "uaxl",
       coinDecimals: 6,
+      coinGeckoId: "axelar",
     },
     bech32Config: {
       bech32PrefixAccAddr: "axelar",
@@ -2776,13 +2800,19 @@ export const EmbedChainInfos: ChainInfo[] = [
     bip44: { coinType: 118 },
     type: "testnet",
     currencies: [
-      { coinDenom: "AXL", coinMinimalDenom: "uaxl", coinDecimals: 6 },
+      {
+        coinDenom: "AXL",
+        coinMinimalDenom: "uaxl",
+        coinDecimals: 6,
+        coinGeckoId: "axelar",
+      },
     ],
     feeCurrencies: [
       {
         coinDenom: "AXL",
         coinMinimalDenom: "uaxl",
         coinDecimals: 6,
+        coinGeckoId: "axelar",
         gasPriceStep: { low: 0.05, average: 0.125, high: 0.2 },
       },
     ],
@@ -2798,6 +2828,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "TESTFET",
       coinMinimalDenom: "atestfet",
       coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
     },
     bip44: {
       coinType: 118,
@@ -2809,6 +2840,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TESTFET",
         coinMinimalDenom: "atestfet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
       {
         coinDenom: "MOBX",
@@ -2821,6 +2853,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TESTFET",
         coinMinimalDenom: "atestfet",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
         gasPriceStep: {
           low: 0,
           average: 5000000000,
@@ -2842,6 +2875,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinDenom: "TESTASI",
       coinMinimalDenom: "atestasi",
       coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
     },
     type: "testnet",
     bip44: {
@@ -2853,6 +2887,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TESTASI",
         coinMinimalDenom: "atestasi",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
       },
       {
         coinDenom: "MOBX",
@@ -2865,6 +2900,7 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinDenom: "TESTASI",
         coinMinimalDenom: "atestasi",
         coinDecimals: 18,
+        coinGeckoId: "fetch-ai",
         gasPriceStep: {
           low: 0,
           average: 5000000000,
