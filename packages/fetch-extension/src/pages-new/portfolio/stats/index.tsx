@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "../style.module.scss";
 import { Doughnut } from "react-chartjs-2";
 import { separateNumericAndDenom } from "@utils/format";
@@ -23,6 +23,8 @@ export const Stats = observer(
   }) => {
     const navigate = useNavigate();
     const notification = useNotification();
+
+    const [_isWithdrawingRewards, setIsWithdrawingRewards] = useState(false);
 
     const {
       chainStore,
@@ -124,6 +126,8 @@ export const Stats = observer(
     const handleClaimRewards = async () => {
       if (accountInfo.isReadyToSendTx) {
         try {
+          setIsWithdrawingRewards(true);
+
           // When the user delegated too many validators,
           // it can't be sent to withdraw rewards from all validators due to the block gas limit.
           // So, to prevent this problem, just send the msgs up to 8.
@@ -185,8 +189,6 @@ export const Stats = observer(
               },
             }
           );
-
-          navigate("/", { replace: true });
         } catch (e) {
           navigate("/portfolio", { replace: true });
           notification.push({
@@ -199,6 +201,9 @@ export const Stats = observer(
               duration: 0.25,
             },
           });
+        } finally {
+          setIsWithdrawingRewards(false);
+          navigate("/portfolio");
         }
       }
     };
@@ -400,10 +405,12 @@ export const Stats = observer(
               text="Claim my rewards"
               disabled={
                 rewardsBal === "0.000000000000000000 FET" ||
-                activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                _isWithdrawingRewards
               }
             >
-              {activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] && (
+              {(activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                _isWithdrawingRewards) && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )}
             </ButtonV2>

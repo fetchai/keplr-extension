@@ -231,24 +231,30 @@ export const MyStakes = observer(
                     color: "white",
                   }}
                   disabled={
-                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards
                   }
                   text={
-                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards
                       ? ""
                       : "Claim all"
                   }
                   onClick={() => {
                     if (
-                      activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                      activityStore.getPendingTxnTypes[
+                        TXNTYPE.withdrawRewards
+                      ] ||
+                      _isWithdrawingRewards
                     )
                       return;
                     handleClaimRewards();
                   }}
                 >
-                  {activityStore.getPendingTxnTypes[
-                    TXNTYPE.withdrawRewards
-                  ] && <i className="fas fa-spinner fa-spin ml-2 mr-2" />}
+                  {(activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards) && (
+                    <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+                  )}
                 </ButtonV2>
               )}
             </div>
