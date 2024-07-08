@@ -3,7 +3,8 @@ import { AGENT_ADDRESS } from "../../config";
 
 export const separateNumericAndDenom = (value: any) => {
   const data = value ? value.split(" ") : ["", ""];
-  const numericPart = data[0].replace(/,/g, "");
+  let numericPart = data[0].replace(/,/g, "");
+  numericPart = numericPart.length > 0 ? numericPart : "0";
   const denomPart = data[1];
   return { numericPart, denomPart };
 };

@@ -331,15 +331,17 @@ export const StakeCard: FunctionComponent = observer(() => {
     <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
       {renderLegendComponent()}
       <View style={style.flatten(["flex-2", "margin-right-18"]) as ViewStyle}>
-        <PieChart
-          data={pieData}
-          donut
-          sectionAutoFocus
-          radius={62}
-          innerRadius={38}
-          innerCircleColor={"#232B5D"}
-          focusOnPress={true}
-        />
+        {total > 0 && (
+          <PieChart
+            data={pieData}
+            donut
+            sectionAutoFocus
+            radius={62}
+            innerRadius={38}
+            innerCircleColor={"#232B5D"}
+            focusOnPress={true}
+          />
+        )}
       </View>
     </View>
   );

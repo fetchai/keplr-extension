@@ -288,7 +288,7 @@ export const MainTabNavigation: FunctionComponent = () => {
       >
         <Tab.Screen name="HomeTab" component={HomeNavigation} />
         <Tab.Screen name="StakeTab" component={StakingDashboardScreen} />
-        <Tab.Screen name="InboxTab" component={HomeNavigation} />
+        <Tab.Screen name="InboxTab" component={SettingScreen} />
         <Tab.Screen name="ActivityTab" component={ActivityScreen} />
         <Tab.Screen name="MoreTab" component={SettingScreen} />
       </Tab.Navigator>
