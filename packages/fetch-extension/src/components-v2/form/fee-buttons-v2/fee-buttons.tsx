@@ -285,7 +285,9 @@ export const FeeButtonsInner: FunctionComponent<
                 color: "white",
               }}
             >
-              {feeConfig.feeType === "low"
+              {feeButtonState.isGasInputOpen
+                ? gasConfig.gasRaw
+                : feeConfig.feeType === "low"
                 ? lowFee.hideIBCMetadata(true).trim(true).toMetricPrefix(isEvm)
                 : feeConfig.feeType === "average"
                 ? averageFee

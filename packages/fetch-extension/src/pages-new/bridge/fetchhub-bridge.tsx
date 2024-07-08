@@ -3,12 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 
 import style from "./style.module.scss";
-import {
-  AddressInput,
-  CoinInput,
-  FeeButtons,
-  MemoInput,
-} from "@components-v2/form";
+import { AddressInput, CoinInput, MemoInput } from "@components-v2/form";
 import { useGasSimulator, useNativeBridgeConfig } from "@keplr-wallet/hooks";
 import { useStore } from "../../stores";
 import { useNotification } from "@components/notification";
@@ -17,6 +12,7 @@ import { ExtensionKVStore } from "@keplr-wallet/common";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { Card } from "@components-v2/card";
 import { TXNTYPE } from "../../config";
+import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
 
 export const FetchhubBridge: FunctionComponent<{
   limit: string;
@@ -159,7 +155,12 @@ export const FetchhubBridge: FunctionComponent<{
   };
 
   return (
-    <form className={style["formContainer"]}>
+    <form
+      className={style["formContainer"]}
+      style={{
+        paddingBottom: "45px",
+      }}
+    >
       <Card
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "18px" }}
         heading={`Native to ERC20 Limit: ${limit} FET`}
@@ -227,6 +228,16 @@ export const FetchhubBridge: FunctionComponent<{
         />
 
         <ButtonV2
+          styleProps={{
+            width: "336px",
+            padding: "12px",
+            height: "56px",
+            margin: "0 auto",
+            position: "fixed",
+            bottom: "15px",
+            left: "0px",
+            right: "0px",
+          }}
           disabled={!isValid}
           onClick={(e: any) => {
             e.preventDefault();

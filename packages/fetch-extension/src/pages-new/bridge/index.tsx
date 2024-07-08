@@ -43,6 +43,7 @@ export const BridgePage: FunctionComponent = observer(() => {
       showTopMenu={true}
       smallTitle={true}
       showChainName={false}
+      showBottomMenu={false}
       alternativeTitle={"Bridge"}
       canChangeChainInfo={false}
       onBackButton={() => {
