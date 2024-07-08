@@ -429,6 +429,21 @@ export const DelegateScreen: FunctionComponent = observer(() => {
           />
         </View>
       </View>
+      {sendConfigs.feeConfig.error ? (
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-red-250",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
+        >
+          {sendConfigs.feeConfig.error.message == "insufficient fee"
+            ? "Insufficient available balance for transaction fee"
+            : sendConfigs.feeConfig.error.message}
+        </Text>
+      ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"
