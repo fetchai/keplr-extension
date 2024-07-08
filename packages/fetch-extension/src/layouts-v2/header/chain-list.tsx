@@ -16,9 +16,10 @@ import { getFilteredChainValues } from "@utils/filters";
 import { NotificationOption } from "@components-v2/notification-option";
 interface ChainListProps {
   showAddress?: boolean;
+  setIsSelectNetOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const ChainList: FunctionComponent<ChainListProps> = observer(
-  ({ showAddress }) => {
+  ({ showAddress, setIsSelectNetOpen }) => {
     const {
       chatStore,
       proposalStore,
@@ -139,6 +140,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                     if (Object.values(properties).length > 0) {
                       analyticsStore.logEvent("Chain changed", properties);
                     }
+                    if (setIsSelectNetOpen) {
+                      setIsSelectNetOpen(false);
+                    }
                   }}
                   subheading={
                     showAddress
@@ -208,6 +212,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                   // navigate("/");
                   if (Object.values(properties).length > 0) {
                     analyticsStore.logEvent("Chain changed", properties);
+                  }
+                  if (setIsSelectNetOpen) {
+                    setIsSelectNetOpen(false);
                   }
                 }}
                 subheading={
@@ -313,6 +320,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
 
                     if (Object.values(properties).length > 0) {
                       analyticsStore.logEvent("Chain changed", properties);
+                    }
+                    if (setIsSelectNetOpen) {
+                      setIsSelectNetOpen(false);
                     }
                   }}
                   subheading={
