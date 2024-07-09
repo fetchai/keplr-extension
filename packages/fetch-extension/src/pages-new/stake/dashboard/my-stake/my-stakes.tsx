@@ -51,8 +51,6 @@ export const MyStakes = observer(
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
 
-    const isDorado = chainStore.current.chainId === "dorado-1";
-
     const { setIsDropdownOpen } = useDropdown();
 
     const queryDelegations =
@@ -200,7 +198,6 @@ export const MyStakes = observer(
                   Staking rewards
                 </span>
                 <span style={{ fontWeight: 400 }}>
-                  {isDorado && `$`}
                   {pendingStakableRewardUSD
                     ? pendingStakableRewardUSD
                         .shrink(true)
