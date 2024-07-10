@@ -98,7 +98,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             fetchPrices();
           }, 10 * 1000);
           console.log("Too many request error, trying to fetch again");
-          if (cachedPrices) setPrices(cachedPrices);
+          if (cachedPrices) setPrices(cachedPrices.newPrices);
           return;
         }
 
