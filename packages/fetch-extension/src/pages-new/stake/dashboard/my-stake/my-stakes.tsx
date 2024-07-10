@@ -162,7 +162,9 @@ export const MyStakes = observer(
           });
         } finally {
           setIsWithdrawingRewards(false);
-          navigate("/stake", { replace: true });
+          setTimeout(() => {
+            navigate("/activity", { replace: true });
+          }, 200);
           setIsDropdownOpen(false);
         }
       }

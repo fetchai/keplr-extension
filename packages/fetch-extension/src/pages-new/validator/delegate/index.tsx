@@ -165,7 +165,9 @@ export const Delegate: FunctionComponent = observer(() => {
         },
       });
     } finally {
-      navigate("/stake", { replace: true });
+      setTimeout(() => {
+        navigate("/activity", { replace: true });
+      }, 200);
     }
   };
 

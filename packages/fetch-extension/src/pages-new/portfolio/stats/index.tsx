@@ -189,6 +189,9 @@ export const Stats = observer(
               },
             }
           );
+          setTimeout(() => {
+            navigate("/activity", { replace: true });
+          }, 200);
         } catch (e) {
           navigate("/portfolio", { replace: true });
           notification.push({
@@ -203,7 +206,6 @@ export const Stats = observer(
           });
         } finally {
           setIsWithdrawingRewards(false);
-          navigate("/portfolio");
         }
       }
     };
