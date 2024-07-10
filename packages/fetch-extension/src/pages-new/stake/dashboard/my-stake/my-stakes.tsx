@@ -51,8 +51,6 @@ export const MyStakes = observer(
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
 
-    const isDorado = chainStore.current.chainId === "dorado-1";
-
     const { setIsDropdownOpen } = useDropdown();
 
     const queryDelegations =
@@ -164,7 +162,9 @@ export const MyStakes = observer(
           });
         } finally {
           setIsWithdrawingRewards(false);
-          navigate("/stake", { replace: true });
+          setTimeout(() => {
+            navigate("/activity", { replace: true });
+          }, 200);
           setIsDropdownOpen(false);
         }
       }
@@ -200,7 +200,6 @@ export const MyStakes = observer(
                   Staking rewards
                 </span>
                 <span style={{ fontWeight: 400 }}>
-                  {isDorado && `$`}
                   {pendingStakableRewardUSD
                     ? pendingStakableRewardUSD
                         .shrink(true)
@@ -231,24 +230,30 @@ export const MyStakes = observer(
                     color: "white",
                   }}
                   disabled={
-                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards
                   }
                   text={
-                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                    activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards
                       ? ""
                       : "Claim all"
                   }
                   onClick={() => {
                     if (
-                      activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards]
+                      activityStore.getPendingTxnTypes[
+                        TXNTYPE.withdrawRewards
+                      ] ||
+                      _isWithdrawingRewards
                     )
                       return;
                     handleClaimRewards();
                   }}
                 >
-                  {activityStore.getPendingTxnTypes[
-                    TXNTYPE.withdrawRewards
-                  ] && <i className="fas fa-spinner fa-spin ml-2 mr-2" />}
+                  {(activityStore.getPendingTxnTypes[TXNTYPE.withdrawRewards] ||
+                    _isWithdrawingRewards) && (
+                    <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+                  )}
                 </ButtonV2>
               )}
             </div>

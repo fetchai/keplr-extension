@@ -93,6 +93,7 @@ const ValidatorItem: FunctionComponent<{
       commission={commisionRate}
       status={status}
       apr={`${APR.maxDecimals(2).trim(true).toString()}%`}
+      chainID={chainStore.current.chainId}
     />
   ) : null;
 });

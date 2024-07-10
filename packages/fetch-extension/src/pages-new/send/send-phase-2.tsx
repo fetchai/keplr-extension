@@ -166,12 +166,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     const txStateIsValid = sendConfigError == null;
 
     const decimals = sendConfigs.amountConfig.sendCurrency.coinDecimals;
-    console.log({
-      amount: sendConfigs.amountConfig.amount,
-      sendCurr: sendConfigs.amountConfig.sendCurrency,
-      recipient: sendConfigs.recipientConfig.recipient,
-      memo: sendConfigs.memoConfig.memo,
-    });
     return (
       <div>
         <div className={style["editCard"]}>

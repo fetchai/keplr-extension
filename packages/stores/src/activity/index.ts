@@ -248,7 +248,10 @@ export class ActivityStore {
   }
 
   @action
-  setTxnStatus(nodeId: any, status: "Pending" | "Success" | "Failed") {
+  setTxnStatus(
+    nodeId: any,
+    status: "Pending" | "Success" | "Failed" | "Unconfirmed"
+  ) {
     this.nodes[nodeId].transaction.status = status;
     this.saveNodes();
   }

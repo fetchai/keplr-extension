@@ -3,6 +3,8 @@ import style from "./style.module.scss";
 import { titleCase } from "@utils/format";
 import { Address } from "@components/address";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import { VALIDATOR_URL } from "../../config.ui.var";
 
 interface ItemData {
   title: string;
@@ -18,6 +20,7 @@ export const StakeValidatorCard = ({
   commission,
   status,
   apr,
+  chainID,
 }: {
   trailingIcon?: any;
   thumbnailUrl?: any;
@@ -28,6 +31,7 @@ export const StakeValidatorCard = ({
   commission?: string;
   status?: string;
   apr?: string;
+  chainID: string;
 }) => {
   const navigate = useNavigate();
 
@@ -134,17 +138,25 @@ export const StakeValidatorCard = ({
         ))}
       </div>
 
-      <div
-        style={{
-          color: "#BFAFFD",
-          fontFamily: "Lexend",
-          fontSize: "12px",
-          fontWeight: 400,
-          cursor: "pointer",
+      <Link
+        onClick={(e) => {
+          e.stopPropagation();
         }}
+        to={`${VALIDATOR_URL[chainID]}/${validatorAddress}`}
+        target="_blank"
       >
-        View in explorer
-      </div>
+        <div
+          style={{
+            color: "#BFAFFD",
+            fontFamily: "Lexend",
+            fontSize: "12px",
+            fontWeight: 400,
+            cursor: "pointer",
+          }}
+        >
+          View in explorer
+        </div>
+      </Link>
     </div>
   );
 };

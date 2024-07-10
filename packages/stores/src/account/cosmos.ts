@@ -490,41 +490,48 @@ export class CosmosAccountImpl {
         wsObject: this.txOpts.wsObject,
       }
     );
-    txTracer.traceTx(txHash).then((tx) => {
-      txTracer.close();
+    txTracer
+      .traceTx(txHash)
+      .then((tx) => {
+        txTracer.close();
+        //update node's gas, amount and status on completed
+        updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
+        this.activityStore.removePendingTxn(txId);
 
-      //update node's gas, amount and status on completed
-      updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
-      this.activityStore.removePendingTxn(txId);
+        this.base.setTxTypeInProgress("");
 
-      this.base.setTxTypeInProgress("");
+        // After sending tx, the balances is probably changed due to the fee.
+        for (const feeAmount of signDoc.fee.amount) {
+          const bal = this.queries.queryBalances
+            .getQueryBech32Address(this.base.bech32Address)
+            .balances.find(
+              (bal) => bal.currency.coinMinimalDenom === feeAmount.denom
+            );
 
-      // After sending tx, the balances is probably changed due to the fee.
-      for (const feeAmount of signDoc.fee.amount) {
-        const bal = this.queries.queryBalances
-          .getQueryBech32Address(this.base.bech32Address)
-          .balances.find(
-            (bal) => bal.currency.coinMinimalDenom === feeAmount.denom
-          );
-
-        if (bal) {
-          bal.fetch();
+          if (bal) {
+            bal.fetch();
+          }
         }
-      }
 
-      // Always add the tx hash data.
-      if (tx && !tx.hash) {
-        tx.hash = Buffer.from(txHash).toString("hex");
-      }
+        // Always add the tx hash data.
+        if (tx && !tx.hash) {
+          tx.hash = Buffer.from(txHash).toString("hex");
+        }
 
-      if (this.txOpts.preTxEvents?.onFulfill) {
-        this.txOpts.preTxEvents.onFulfill(this.chainId, tx);
-      }
+        if (this.txOpts.preTxEvents?.onFulfill) {
+          this.txOpts.preTxEvents.onFulfill(this.chainId, tx);
+        }
 
-      if (onFulfill) {
-        onFulfill(tx);
-      }
-    });
+        if (onFulfill) {
+          onFulfill(tx);
+        }
+      })
+      .catch(() => {
+        this.activityStore.removePendingTxn(txId);
+        this.activityStore.setTxnStatus(txId, "Unconfirmed");
+        this.base.setTxTypeInProgress("");
+        this.activityStore.setIsNodeUpdated(true);
+      });
   }
 
   // Return the tx hash.

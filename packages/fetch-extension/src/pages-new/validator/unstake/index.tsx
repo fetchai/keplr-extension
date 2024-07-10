@@ -172,7 +172,9 @@ export const Unstake = observer(() => {
         },
       });
     } finally {
-      navigate("/", { replace: true });
+      setTimeout(() => {
+        navigate("/activity", { replace: true });
+      }, 200);
     }
   };
 

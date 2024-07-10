@@ -16,8 +16,6 @@ export const MyValidator = observer(() => {
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
 
-  const isDorado = chainStore.current.chainId === "dorado-1";
-
   const queryDelegations =
     queries.cosmos.queryDelegations.getQueryBech32Address(
       account.bech32Address
@@ -137,7 +135,6 @@ export const MyValidator = observer(() => {
                     {amountUSD && (
                       <div className={styles["right-col"]}>
                         <span>
-                          {isDorado && `$`}
                           {amountUSD
                             .shrink(true)
                             .maxDecimals(6)

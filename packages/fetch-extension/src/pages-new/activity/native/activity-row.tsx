@@ -63,6 +63,11 @@ export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
                   Failed{" ● "}
                   {moment(details.timestamp).format("hh:mm A")}
                 </div>
+              ) : node.transaction.status === "Unconfirmed" ? (
+                <div>
+                  Unconfirmed{" ● "}
+                  {moment(details.timestamp).format("hh:mm A")}
+                </div>
               ) : (
                 <div>Error</div>
               )}

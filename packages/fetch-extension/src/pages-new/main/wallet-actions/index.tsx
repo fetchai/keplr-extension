@@ -90,7 +90,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               marginBottom: "6px",
             }}
             leftImage={require("@assets/svg/wireframe/bridge.svg")}
-            heading={"Bridge"}
+            heading={"Native Bridge"}
             onClick={() => {
               navigate("/bridge");
             }}

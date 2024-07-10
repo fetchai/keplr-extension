@@ -74,9 +74,9 @@ export const StakeDetails = observer(
             },
           }
         );
-        navigate(`/validator/${validatorAddress}`, {
-          state: { previousAddress: previousAddress },
-        });
+        setTimeout(() => {
+          navigate("/activity", { replace: true });
+        }, 200);
       } catch (err) {
         console.error(err);
         if (err.toString().includes("Error: Request rejected")) {

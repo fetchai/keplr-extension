@@ -28,11 +28,7 @@ const tabs = [
   },
   {
     id: "1Y",
-    duration: 360,
-  },
-  {
-    id: "All",
-    duration: 3600,
+    duration: 365,
   },
 ];
 

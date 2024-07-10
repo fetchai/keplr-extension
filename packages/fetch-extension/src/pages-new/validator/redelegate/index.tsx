@@ -215,7 +215,9 @@ export const Redelegate = observer(() => {
         },
       });
     } finally {
-      navigate("/", { replace: true });
+      setTimeout(() => {
+        navigate("/activity", { replace: true });
+      }, 200);
     }
   };
 
