@@ -82,7 +82,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
               valuesArray={cosmosList}
-              itemsStyleProp={{ overflow: "auto", height: "228px" }}
+              itemsStyleProp={{ height: "228px" }}
               filterFunction={getFilteredChainValues}
               midElement={
                 <ButtonV2
