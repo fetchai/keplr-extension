@@ -23,6 +23,7 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import { Dropdown } from "@components-v2/dropdown";
 import { PasswordInput } from "@components-v2/form";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 
 export interface QRCodeSharedData {
   // The uri for the wallet connect
@@ -52,7 +53,7 @@ export const ExportToMobilePage: FunctionComponent = () => {
     ExportKeyRingData[]
   >([]);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const { isDropdownOpen, setIsDropdownOpen } = useDropdown();
 
   useEffect(() => {
     if (exportKeyRingDatas.length === 0) {
@@ -87,7 +88,10 @@ export const ExportToMobilePage: FunctionComponent = () => {
       )}
 
       <Dropdown
-        closeClicked={() => navigate("/more")}
+        closeClicked={() => {
+          setIsDropdownOpen(false);
+          navigate("/more");
+        }}
         isOpen={isDropdownOpen}
         setIsOpen={setIsDropdownOpen}
         title=""
