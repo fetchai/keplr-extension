@@ -396,6 +396,8 @@ const QRCodeView: FunctionComponent<{
         }}
       >
         <QRCode
+          bgColor="transparent"
+          fgColor="white"
           size={180}
           value={(() => {
             if (isExpired) {

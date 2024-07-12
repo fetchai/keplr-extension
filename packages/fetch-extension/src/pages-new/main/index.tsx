@@ -75,7 +75,11 @@ export const MainPage: FunctionComponent = observer(() => {
   ]);
 
   return (
-    <HeaderLayout>
+    <HeaderLayout
+      innerStyle={{
+        marginBottom: "0px",
+      }}
+    >
       <WalletDetailsView
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
