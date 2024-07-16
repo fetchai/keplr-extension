@@ -7,13 +7,13 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
-import { formatTimestamp } from "utils/format-time-stamp/parse-timestamp-to-date";
 import { Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { AndroidLineChart } from "./android-chart";
 import { IOSLineChart } from "./ios-chart";
 import { useStore } from "stores/index";
 import { ChartData, TokenStateData } from "@keplr-wallet/stores";
+import { formatTimestamp } from "utils/format/date";
 
 export const LineGraph: FunctionComponent<{
   tokenName: string | undefined;
@@ -52,7 +52,7 @@ export const LineGraph: FunctionComponent<{
   const setDefaultPricing = useCallback(() => {
     const chartDataList: ChartData[] = [];
     const timestamp = new Date().getTime();
-    const date = formatTimestamp(timestamp);
+    const date = formatTimestamp(timestamp, duration);
     const tokenState: TokenStateData = {
       diff: 0,
       time: getTimeLabel(),
@@ -80,7 +80,7 @@ export const LineGraph: FunctionComponent<{
 
         const response = await axios.get(apiUrl, { params });
         chartDataList = response.data.prices.map((price: number[]) => ({
-          date: formatTimestamp(price[0]),
+          date: formatTimestamp(price[0], duration),
           value: Number(price[1].toFixed(3)),
         }));
 
