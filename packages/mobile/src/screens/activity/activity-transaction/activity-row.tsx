@@ -41,7 +41,7 @@ export const ActivityRow: FunctionComponent<{
         navigation.navigate("Others", {
           screen: "ActivityDetails",
           params: {
-            details: details,
+            id: details.hash,
           },
         });
         analyticsStore.logEvent("activity_transactions_click", {
