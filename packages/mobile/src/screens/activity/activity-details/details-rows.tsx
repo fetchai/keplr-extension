@@ -250,18 +250,26 @@ export const DetailRows = ({ details }: { details: any }) => {
           <Button
             text="View on Mintscan"
             size="default"
+            mode="outline"
             textStyle={
-              style.flatten(["h7", "color-white", "items-center"]) as ViewStyle
+              style.flatten(
+                ["h7", "items-center"],
+                [
+                  details.status === "Pending"
+                    ? "color-white@20%"
+                    : "color-white",
+                ]
+              ) as ViewStyle
             }
             containerStyle={
-              style.flatten([
-                "border-radius-32",
-                "margin-left-6",
-                "border-color-gray-400",
-                "background-color-transparent",
-                "border-width-1",
-                "border-color-platinum-400",
-              ]) as ViewStyle
+              style.flatten(
+                ["border-radius-32", "margin-left-6"],
+                [
+                  details.status === "Pending"
+                    ? "border-color-white@20%"
+                    : "border-color-white@40%",
+                ]
+              ) as ViewStyle
             }
             onPress={() => {
               if (!networkIsConnected) {
@@ -273,6 +281,7 @@ export const DetailRows = ({ details }: { details: any }) => {
               }
               openURL();
             }}
+            disabled={details.status === "Pending"}
           />
         </View>
       </View>
