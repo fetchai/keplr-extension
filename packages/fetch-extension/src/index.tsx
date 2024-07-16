@@ -123,6 +123,7 @@ import { SettingEndpointsPage } from "./pages/setting/endpoints";
 import { StakeComplete } from "./pages/validator/stake-complete";
 import { DropdownContextProvider } from "@components-v2/dropdown/dropdown-context";
 import { ExportToMobilePage } from "./pages-new/more/export-to-mobile";
+import { GovProposalsDetails } from "./pages-new/activity/gov-proposals-v2/gov-proposal-details";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -487,6 +488,11 @@ ReactDOM.render(
                         <Route
                           path="/validator/:validator_address/unstake"
                           element={<Unstake />}
+                        />
+
+                        <Route
+                          path="/gov-proposal/details/:id"
+                          element={<GovProposalsDetails />}
                         />
 
                         <Route path="*" element={<StateRenderer />} />
