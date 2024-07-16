@@ -141,6 +141,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     [accountStore, chainStore, priceStore, queriesStore]
   );
 
+  /// 30 sec Auto-Refresh balances
   useEffect(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -149,6 +150,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     onRefresh(false);
     intervalRef.current = setInterval(() => onRefresh(false), 30000);
 
+    // Clean up the interval on component unmount
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
