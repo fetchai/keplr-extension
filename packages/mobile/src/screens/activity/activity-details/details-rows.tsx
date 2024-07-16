@@ -220,10 +220,11 @@ export const DetailRows = ({ details }: { details: any }) => {
             <Button
               text={decideButton().title ?? ""}
               size="default"
+              mode="outline"
               leftIcon={decideButton().icon}
               textStyle={
                 style.flatten([
-                  "h7",
+                  "body3",
                   "color-white",
                   "margin-left-8",
                 ]) as ViewStyle
@@ -232,10 +233,7 @@ export const DetailRows = ({ details }: { details: any }) => {
                 style.flatten([
                   "border-radius-32",
                   "margin-right-6",
-                  "border-color-gray-400",
-                  "background-color-transparent",
-                  "border-width-1",
-                  "border-color-platinum-400",
+                  "border-color-white@40%",
                 ]) as ViewStyle
               }
               onPress={() => {
@@ -253,7 +251,7 @@ export const DetailRows = ({ details }: { details: any }) => {
             mode="outline"
             textStyle={
               style.flatten(
-                ["h7", "items-center"],
+                ["body3", "items-center"],
                 [
                   details.status === "Pending"
                     ? "color-white@20%"

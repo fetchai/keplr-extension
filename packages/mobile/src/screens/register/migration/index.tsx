@@ -110,6 +110,7 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              multiline={true}
               onSubmitEditing={() => {
                 submit();
               }}
