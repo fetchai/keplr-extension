@@ -38,13 +38,15 @@ export class TokenGraphStore {
 
   @flow
   *init() {
-    const savedData = yield* toGenerator(this.kvStore.get<any>("token-graph"));
-    this.data = (savedData?.chartData.length ?? 0) == 0 ? {} : savedData;
+    const savedData = yield* toGenerator(
+      this.kvStore.get<GraphDurationData>("token-graph")
+    );
+    this.data = savedData ? savedData : {};
   }
 
   @flow
   *saveData() {
-    yield this.kvStore.set<any>("token-graph", this.data);
+    yield this.kvStore.set<GraphDurationData>("token-graph", this.data);
   }
 
   @action
