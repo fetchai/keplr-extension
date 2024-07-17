@@ -34,17 +34,19 @@ export const TokenCardView: FunctionComponent<{
           [
             style.flatten([
               "flex-row",
-              "padding-x-18",
-              "padding-y-12",
+              "padding-18",
               "justify-between",
               "items-center",
-              "height-74",
             ]),
             containerStyle,
           ] as ViewStyle
         }
       >
-        <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
+        <View
+          style={
+            style.flatten(["flex-row", "items-center", "flex-3"]) as ViewStyle
+          }
+        >
           {leadingIcon ? (
             <IconButton icon={leadingIcon} backgroundBlur={false} />
           ) : null}
@@ -80,7 +82,7 @@ export const TokenCardView: FunctionComponent<{
               "flex-row",
               "justify-end",
               "flex-wrap",
-              "flex-1",
+              "flex-2",
             ]) as ViewStyle
           }
         >

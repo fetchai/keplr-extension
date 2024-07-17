@@ -336,11 +336,7 @@ export const MyRewardCard: FunctionComponent<{
       <ClaimRewardsModal
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
-        earnedAmount={pendingStakableReward
-          .shrink(true)
-          .maxDecimals(10)
-          .trim(true)
-          .toString()}
+        earnedAmount={pendingStakableReward.shrink(true).trim(true).toString()}
         onPress={handleAllClaim}
         buttonLoading={
           isSendingTx || account.txTypeInProgress === "withdrawRewards"

@@ -328,7 +328,7 @@ export const AccountSection: FunctionComponent<{
           ] as ViewStyle
         }
       >
-        <View>
+        <View style={style.flatten(["flex-3"]) as ViewStyle}>
           <Text style={style.flatten(["body3", "color-white"]) as ViewStyle}>
             {account.name}
           </Text>
@@ -346,6 +346,7 @@ export const AccountSection: FunctionComponent<{
               "justify-center",
             ]) as ViewStyle
           }
+          containerStyle={style.flatten(["flex-1", "items-end"]) as ViewStyle}
           onPress={() => setIsOpenModal(true)}
         />
       </BlurBackground>
@@ -640,11 +641,7 @@ export const AccountSection: FunctionComponent<{
       <ClaimRewardsModal
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
-        earnedAmount={stakableReward
-          .maxDecimals(10)
-          .trim(true)
-          .shrink(true)
-          .toString()}
+        earnedAmount={stakableReward.trim(true).shrink(true).toString()}
         onPress={onSubmit}
         buttonLoading={loadingClaimButtom}
       />

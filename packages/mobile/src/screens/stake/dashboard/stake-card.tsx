@@ -330,7 +330,7 @@ export const StakeCard: FunctionComponent = observer(() => {
   return (
     <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
       {renderLegendComponent()}
-      <View style={style.flatten(["flex-2", "margin-right-18"]) as ViewStyle}>
+      <View style={style.flatten(["flex-3", "items-end"]) as ViewStyle}>
         {total > 0 && (
           <PieChart
             data={pieData}

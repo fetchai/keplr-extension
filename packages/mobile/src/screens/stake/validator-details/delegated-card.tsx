@@ -311,11 +311,7 @@ export const DelegatedCard: FunctionComponent<{
       <ClaimRewardsModal
         isOpen={showClaimModel}
         close={() => setClaimModel(false)}
-        earnedAmount={stakableReward
-          .trim(true)
-          .shrink(true)
-          .maxDecimals(10)
-          .toString()}
+        earnedAmount={stakableReward.trim(true).shrink(true).toString()}
         onPress={handleClaim}
         buttonLoading={
           isSendingTx || account.txTypeInProgress === "withdrawRewards"

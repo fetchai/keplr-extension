@@ -330,7 +330,11 @@ export const SendPhase2: FunctionComponent<{
         }
         textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         rippleColor="black@50%"
-        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        disabled={
+          !account.isReadyToSendTx ||
+          !txStateIsValid ||
+          account.bech32Address == sendConfigs.recipientConfig.recipient
+        }
         loading={account.txTypeInProgress === "send"}
         onPress={onSubmit}
       />
