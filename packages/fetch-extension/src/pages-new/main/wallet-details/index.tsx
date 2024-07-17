@@ -3,11 +3,11 @@ import { useNotification } from "@components/notification";
 import { ToolTip } from "@components/tooltip";
 import { KeplrError } from "@keplr-wallet/router";
 import { WalletStatus } from "@keplr-wallet/stores";
-import { formatAddress } from "@utils/format";
+import { formatAddress, separateNumericAndDenom } from "@utils/format";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import { Button, UncontrolledTooltip } from "reactstrap";
+import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { Balances } from "../balances";
 import style from "../style.module.scss";
@@ -32,6 +32,7 @@ export const WalletDetailsView = observer(
       chainStore,
       queriesStore,
       uiConfigStore,
+      activityStore,
     } = useStore();
     const userState = chatStore.userDetailsStore;
 
@@ -40,6 +41,8 @@ export const WalletDetailsView = observer(
     const current = chainStore.current;
     const [chatTooltip, setChatTooltip] = useState("");
     const [chatDisabled, setChatDisabled] = useState(false);
+
+    const [currentTxnType, setCurrentTxnType] = useState<string>("");
 
     useEffect(() => {
       if (keyRingStore.keyRingType === "ledger") {
@@ -58,9 +61,14 @@ export const WalletDetailsView = observer(
       }
 
       if (!enabledChainIds.includes(current.chainId)) {
-        setChatTooltip("Feature not available on this network");
         setChatDisabled(true);
+        setChatTooltip("Feature not available on this network");
         return;
+      }
+
+      if (!chatDisabled && chatTooltip === "") {
+        setChatDisabled(true);
+        setChatTooltip("Feature coming soon.");
       }
     }, [
       hasFET,
@@ -112,6 +120,44 @@ export const WalletDetailsView = observer(
       [accountInfo.walletStatus, notification, intl]
     );
 
+    const accountOrChainChanged =
+      activityStore.getAddress !== accountInfo.bech32Address ||
+      activityStore.getChainId !== current.chainId;
+
+    useEffect(() => {
+      if (accountOrChainChanged) {
+        activityStore.setAddress(accountInfo.bech32Address);
+        activityStore.setChainId(current.chainId);
+      }
+      if (accountInfo.bech32Address !== "") {
+        activityStore.accountInit();
+      }
+    }, [
+      accountInfo.bech32Address,
+      current.chainId,
+      accountOrChainChanged,
+      activityStore,
+    ]);
+
+    useEffect(() => {
+      if (Object.values(activityStore.getPendingTxn).length > 0) {
+        const txns: any = Object.values(activityStore.getPendingTxn);
+        setCurrentTxnType(txns[0].type);
+      }
+    }, [activityStore.getPendingTxn]);
+
+    const queries = queriesStore.get(current.chainId);
+
+    const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
+
+    const stakableReward = rewards.stakableReward;
+    const rewardsBal = stakableReward.toString();
+
+    const { numericPart: rewardsBalNumber } =
+      separateNumericAndDenom(rewardsBal);
+
     return (
       <div>
         <div
@@ -135,20 +181,26 @@ export const WalletDetailsView = observer(
               alt=""
             />
           </button>
-          <button
+
+          {/* Chat disabled */}
+          {/* <button
             disabled={chatDisabled}
             onClick={() => {
               navigate("/chat");
             }}
             className={style["chat-button"]}
           >
-            <img src={require("@assets/svg/wireframe/chat-alt.svg")} alt="" />
+            <img
+              id="chat-img"
+              src={require("@assets/svg/wireframe/chat-alt.svg")}
+              alt=""
+            />
             {chatDisabled && (
-              <UncontrolledTooltip placement="top" target={"img"}>
+              <UncontrolledTooltip placement="top" target={"chat-img"}>
                 {chatTooltip}
               </UncontrolledTooltip>
             )}
-          </button>
+          </button> */}
         </div>
         <div className={style["wallet-detail-card"]}>
           <div
@@ -301,7 +353,7 @@ export const WalletDetailsView = observer(
           </div>
         ) : null}
 
-        {accountInfo.txTypeInProgress && (
+        {Object.values(activityStore.getPendingTxn).length > 0 && (
           <div
             className={style["wallet-detail-card"]}
             style={{
@@ -309,10 +361,47 @@ export const WalletDetailsView = observer(
               gap: "2px",
             }}
           >
-            <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
               <i className="fas fa-spinner fa-spin ml-2 mr-2" />
-              {txType[accountInfo.txTypeInProgress]} in progress
+              {Object.values(activityStore.getPendingTxn).length > 1 ? (
+                <div>
+                  {Object.values(activityStore.getPendingTxn).length}{" "}
+                  transactions in progress
+                </div>
+              ) : (
+                <div>{txType[currentTxnType]} in progress</div>
+              )}
             </div>
+          </div>
+        )}
+
+        {rewardsBalNumber > 0 && (
+          <div
+            className={style["rewards-card"]}
+            style={{
+              marginTop: "12px",
+              gap: "2px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/stake")}
+          >
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+              }}
+            >
+              <img src={require("@assets/svg/wireframe/stake.svg")} />
+              <div>You’ve claimable staking rewards </div>
+            </div>
+
+            <i key="next" className="fas fa-chevron-right" />
           </div>
         )}
 

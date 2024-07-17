@@ -256,17 +256,17 @@ export const IBCTransferPageChannel: FunctionComponent<{
                 // pageName={"IBC Transfer"}
               />
 
-              <MemoInput
-                label={intl.formatMessage({
-                  id: "send.input.memo",
-                })}
-                memoConfig={memoConfig}
-                disabled={!isChannelSet}
-              />
+              <MemoInput memoConfig={memoConfig} disabled={!isChannelSet} />
               <div />
               <Alert className={style["alert"]}>
                 <img src={require("@assets/svg/wireframe/alert.svg")} alt="" />
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                  }}
+                >
                   <div className={style["text"]}>IBC is production ready</div>
                   <p className={style["lightText"]}>
                     However, all new technologies should be used with caution.
@@ -276,7 +276,14 @@ export const IBCTransferPageChannel: FunctionComponent<{
               </Alert>
               <ButtonV2
                 styleProps={{
+                  width: "336px",
+                  padding: "12px",
                   height: "56px",
+                  margin: "0 auto",
+                  position: "fixed",
+                  bottom: "15px",
+                  left: "0px",
+                  right: "0px",
                 }}
                 text=""
                 disabled={!isValid}
@@ -284,6 +291,7 @@ export const IBCTransferPageChannel: FunctionComponent<{
                   e.preventDefault();
                   onNext();
                 }}
+                btnBgEnabled={true}
               >
                 <FormattedMessage id="ibc.transfer.next" />
               </ButtonV2>
@@ -384,6 +392,7 @@ export const IBCTransferPageAmount: FunctionComponent<{
               marginTop: "12px",
               height: "56px",
             }}
+            btnBgEnabled={true}
           />
         </div>
         <Dropdown

@@ -17,7 +17,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
   const tab = [
     {
       id: "Transactions",
-      component: <NativeTab latestBlock={latestBlock} />,
+      component: <NativeTab />,
     },
     {
       id: "Gov Proposals",

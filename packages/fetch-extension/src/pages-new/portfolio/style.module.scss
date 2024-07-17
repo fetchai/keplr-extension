@@ -14,7 +14,8 @@
   line-height: normal;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 18px;
+  padding: 16px;
+  margin-bottom: 35px;
 }
 .heading {
   font-family: Lexend;
@@ -24,13 +25,14 @@
   display: block;
   height: 120px;
   width: 240px;
-  position: fixed;
-  right: -35px;
-  top: 257px;
+  position: absolute;
+  right: -68px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .legend {
   display: flex;
-  gap: 6px;
+  gap: 10px;
 }
 
 .legends {
@@ -54,4 +56,49 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.claim-rewards-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    height: 82px;
+    width: 82px;
+  }
+}
+
+.claim-rewards-dropdown-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.claim-rewards-dropdown-title {
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  line-height: 28.8px;
+}
+
+.claim-rewards-dropdown-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  line-height: 28.8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.claim-rewards-reward {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 12px;
+  align-items: center;
+  border-radius: 12px;
+  height: 45px;
 }

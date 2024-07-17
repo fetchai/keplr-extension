@@ -16,9 +16,10 @@ import { getFilteredChainValues } from "@utils/filters";
 import { NotificationOption } from "@components-v2/notification-option";
 interface ChainListProps {
   showAddress?: boolean;
+  setIsSelectNetOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const ChainList: FunctionComponent<ChainListProps> = observer(
-  ({ showAddress }) => {
+  ({ showAddress, setIsSelectNetOpen }) => {
     const {
       chatStore,
       proposalStore,
@@ -81,7 +82,7 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
               onSearchTermChange={setCosmosSearchTerm}
               searchTerm={cosmosSearchTerm}
               valuesArray={cosmosList}
-              itemsStyleProp={{ overflow: "auto", height: "360px" }}
+              itemsStyleProp={{ overflow: "auto", height: "228px" }}
               filterFunction={getFilteredChainValues}
               midElement={
                 <ButtonV2
@@ -139,6 +140,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                     if (Object.values(properties).length > 0) {
                       analyticsStore.logEvent("Chain changed", properties);
                     }
+                    if (setIsSelectNetOpen) {
+                      setIsSelectNetOpen(false);
+                    }
                   }}
                   subheading={
                     showAddress
@@ -151,9 +155,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                 />
               )}
             />
-            <div className={style["chain-title"]}>
-              {betaChainList.length > 0 ? "Beta support" : null}
-            </div>
+            {betaChainList.length > 0 && (
+              <div className={style["chain-title"]}>Beta support</div>
+            )}
 
             {betaChainList.map((chainInfo) => (
               <Card
@@ -208,6 +212,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
                   // navigate("/");
                   if (Object.values(properties).length > 0) {
                     analyticsStore.logEvent("Chain changed", properties);
+                  }
+                  if (setIsSelectNetOpen) {
+                    setIsSelectNetOpen(false);
                   }
                 }}
                 subheading={
@@ -313,6 +320,9 @@ export const ChainList: FunctionComponent<ChainListProps> = observer(
 
                     if (Object.values(properties).length > 0) {
                       analyticsStore.logEvent("Chain changed", properties);
+                    }
+                    if (setIsSelectNetOpen) {
+                      setIsSelectNetOpen(false);
                     }
                   }}
                   subheading={

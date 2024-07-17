@@ -2,7 +2,7 @@ import { Ledger, LedgerApp, LedgerInitErrorOn } from "@keplr-wallet/background";
 import React, { FunctionComponent, useState } from "react";
 import { useStyle } from "styles/index";
 import { BluetoothMode } from ".";
-import { View, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { BlurButton } from "components/new/button/blur-button";
 import TransportBLE from "@ledgerhq/react-native-hw-transport-ble";
 
@@ -69,10 +69,10 @@ export const LedgerNanoBLESelector: FunctionComponent<{
       if (e.errorOn != null) {
         initErrorOn = e.errorOn;
         if (initErrorOn === LedgerInitErrorOn.App) {
+          setBluetoothMode(BluetoothMode.Device);
           setMainContent(
             "Open Cosmos app on your ledger and pair with Fetch wallet"
           );
-          setBluetoothMode(BluetoothMode.Device);
           setIsConnecting(false);
         } else if (initErrorOn === LedgerInitErrorOn.Transport) {
           setMainContent("Please unlock ledger nano X");
@@ -86,21 +86,17 @@ export const LedgerNanoBLESelector: FunctionComponent<{
     }
   };
 
-  return (
-    <View style={style.flatten(["margin-y-10"]) as ViewStyle}>
-      {!isConnecting ? (
-        <BlurButton
-          text={name}
-          blurIntensity={25}
-          borderRadius={12}
-          containerStyle={
-            style.flatten(["padding-12", "margin-y-4"]) as ViewStyle
-          }
-          onPress={async () => {
-            await testLedgerConnection();
-          }}
-        />
-      ) : null}
-    </View>
-  );
+  return !isConnecting ? (
+    <BlurButton
+      text={name}
+      blurIntensity={25}
+      borderRadius={12}
+      containerStyle={
+        style.flatten(["padding-12", "margin-bottom-6"]) as ViewStyle
+      }
+      onPress={async () => {
+        await testLedgerConnection();
+      }}
+    />
+  ) : null;
 };

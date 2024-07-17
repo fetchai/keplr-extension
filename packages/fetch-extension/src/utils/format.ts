@@ -30,6 +30,10 @@ export const formatTokenName = (name: string) => {
   return name;
 };
 
+export function titleCase(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
+}
+
 export const shortenNumber = (value: string, decimal = 18) => {
   const number = Math.abs(parseFloat(value)) / 10 ** decimal;
   let result = "";
@@ -120,7 +124,9 @@ export const formatAmount = (amount: string) => {
 };
 
 export const separateNumericAndDenom = (value: any) => {
-  const [numericPart, denomPart] = value ? value.split(" ") : ["", ""];
+  const [numericPart, denomPart] = value
+    ? value.replace(",", "").split(" ")
+    : ["", ""];
   return { numericPart, denomPart };
 };
 
@@ -154,4 +160,9 @@ export const getDate = (timestamp: number): string => {
     return "Yesterday";
   }
   return format(d, "dd MMMM yyyy");
+};
+
+export const formatPendingTxn = (amount: any) => {
+  const curr = Number(amount) * 10 ** 18;
+  return `-${curr}`;
 };

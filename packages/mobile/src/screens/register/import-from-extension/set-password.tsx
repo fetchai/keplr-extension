@@ -103,6 +103,8 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
       } catch (e) {
         console.log(e);
         smartNavigation.goBack();
+      } finally {
+        setIsCreating(false);
       }
     });
 
@@ -163,7 +165,7 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
                 onBlur={onBlur}
                 onChangeText={(text: string) => onChange(text.trim())}
                 value={value}
-                refs={ref}
+                ref={ref}
                 rightIcon={
                   !showPassword ? (
                     <IconButton
@@ -295,7 +297,10 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = observer(
           text="Confirm"
           size="large"
           loading={isCreating}
-          onPress={submit}
+          onPress={() => {
+            setShowPassword(false);
+            submit();
+          }}
           containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}
         />
         {/* Mock element for bottom padding */}

@@ -25,6 +25,12 @@
   line-height: normal;
   opacity: 0.4;
 }
+
+.btnBgDisabled {
+  background-color: #1a2753;
+  opacity: 1 !important;
+}
+
 .gradient {
   background: $gradient;
   -webkit-background-clip: text;

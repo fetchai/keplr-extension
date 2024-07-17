@@ -16,7 +16,9 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
   ({ isOpen, setIsOpen }) => {
     const navigate = useNavigate();
 
-    const { accountStore, chainStore, queriesStore } = useStore();
+    const { accountStore, chainStore, queriesStore, activityStore } =
+      useStore();
+
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
     const queryBalances = queries.queryBalances.getQueryBech32Address(
@@ -50,12 +52,14 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               background: "rgba(255,255,255,0.1)",
               height: "60px",
               marginBottom: "6px",
-              opacity: accountInfo.txTypeInProgress === TXNTYPE.send ? 0.5 : 1,
+              opacity: activityStore.getPendingTxnTypes[TXNTYPE.send]
+                ? "0.5"
+                : "1",
             }}
-            disabled={accountInfo.txTypeInProgress === TXNTYPE.send}
+            disabled={activityStore.getPendingTxnTypes[TXNTYPE.send]}
             leftImage={require("@assets/svg/wireframe/arrow-up.svg")}
             rightContent={
-              accountInfo.txTypeInProgress === TXNTYPE.send && (
+              activityStore.getPendingTxnTypes[TXNTYPE.send] && (
                 <i className="fas fa-spinner fa-spin ml-2 mr-2" />
               )
             }
@@ -86,7 +90,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
               marginBottom: "6px",
             }}
             leftImage={require("@assets/svg/wireframe/bridge.svg")}
-            heading={"Bridge"}
+            heading={"Native Bridge"}
             onClick={() => {
               navigate("/bridge");
             }}

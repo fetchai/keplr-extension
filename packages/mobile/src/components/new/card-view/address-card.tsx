@@ -50,6 +50,7 @@ export const AddressInputCard: FunctionComponent<{
   memoConfig?: IMemoConfig;
   onFocus?: any;
   onBlur?: any;
+  pageName: string;
 }> = observer(
   ({
     label,
@@ -59,11 +60,12 @@ export const AddressInputCard: FunctionComponent<{
     memoConfig,
     onFocus,
     onBlur,
+    pageName,
   }) => {
     const style = useStyle();
     const smartNavigation = useSmartNavigation();
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const { chainStore, analyticsStore } = useStore();
+    const { chainStore, analyticsStore, accountStore } = useStore();
 
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [openCameraModel, setIsOpenCameraModel] = useState(false);
@@ -71,6 +73,7 @@ export const AddressInputCard: FunctionComponent<{
     const [isFocused, setIsFocused] = useState(false);
 
     const chainId = chainStore.current.chainId;
+    const account = accountStore.getAccount(chainStore.current.chainId);
 
     const addressBookConfig = useAddressBookConfig(
       new AsyncKVStore("address_book"),
@@ -106,22 +109,10 @@ export const AddressInputCard: FunctionComponent<{
           default:
             return "Unknown error";
         }
+      } else if (account.bech32Address == recipientConfig.recipient) {
+        return "Same account address is not allowed.";
       }
     }, [error]);
-
-    // const isICNSName: boolean = (() => {
-    //   if ("isICNSName" in recipientConfig) {
-    //     return recipientConfig.isICNSName;
-    //   }
-    //   return false;
-    // })();
-
-    // const isICNSfetching: boolean = (() => {
-    //   if ("isICNSFetching" in recipientConfig) {
-    //     return recipientConfig.isICNSFetching;
-    //   }
-    //   return false;
-    // })();
 
     return (
       <React.Fragment>
@@ -145,7 +136,7 @@ export const AddressInputCard: FunctionComponent<{
           containerStyle={
             [
               style.flatten(
-                ["padding-x-14", "padding-y-2"],
+                ["padding-x-18", "padding-y-12"],
                 isFocused || errorText
                   ? [
                       // The order is important.
@@ -168,11 +159,17 @@ export const AddressInputCard: FunctionComponent<{
               <TextInput
                 placeholderTextColor={style.flatten(["color-white@60%"]).color}
                 style={
-                  style.flatten([
-                    "body3",
-                    "color-white",
-                    "padding-0",
-                  ]) as ViewStyle
+                  [
+                    style.flatten(["body3", "color-white", "padding-0"]),
+                    Platform.select({
+                      ios: {},
+                      android: {
+                        // On android, the text input's height does not equals to the line height by strange.
+                        // To fix this problem, set the height explicitly.
+                        height: 19,
+                      },
+                    }),
+                  ] as ViewStyle
                 }
                 keyboardType={
                   Platform.OS === "ios" ? "ascii-capable" : "visible-password"
@@ -180,7 +177,7 @@ export const AddressInputCard: FunctionComponent<{
                 returnKeyType="done"
                 placeholder={placeholderText}
                 value={recipientConfig.rawRecipient}
-                multiline
+                multiline={true}
                 onChangeText={(text) => {
                   if (
                     // If icns is possible and users enters ".", complete bech32 prefix automatically.
@@ -222,12 +219,11 @@ export const AddressInputCard: FunctionComponent<{
             >
               <View style={style.flatten(["flex-row", "items-center"])}>
                 <Divider
-                  containerStyle={
-                    style.flatten(["margin-right-16", "height-16"]) as ViewStyle
-                  }
+                  containerStyle={style.flatten(["height-16"]) as ViewStyle}
                 />
                 <IconButton
                   icon={<QRCodeIcon size={16} />}
+                  borderRadius={0}
                   backgroundBlur={false}
                   onPress={() => {
                     if (permission?.status == PermissionStatus.UNDETERMINED) {
@@ -237,6 +233,9 @@ export const AddressInputCard: FunctionComponent<{
                         setModelStatus(ModelStatus.Second);
                         setIsOpenCameraModel(true);
                       } else {
+                        analyticsStore.logEvent("recipient_address_click", {
+                          pageName,
+                        });
                         smartNavigation.navigateSmart("Camera", {
                           showMyQRButton: false,
                           recipientConfig: recipientConfig,
@@ -244,18 +243,18 @@ export const AddressInputCard: FunctionComponent<{
                       }
                     }
                   }}
-                  iconStyle={
-                    style.flatten([
-                      "padding-y-12",
-                      "margin-right-16",
-                    ]) as ViewStyle
-                  }
+                  iconStyle={style.flatten(["margin-x-18"]) as ViewStyle}
                 />
                 <IconButton
                   icon={<ATIcon size={16} />}
+                  borderRadius={0}
                   backgroundBlur={false}
-                  onPress={() => setIsOpenModal(true)}
-                  iconStyle={style.flatten(["padding-y-12"]) as ViewStyle}
+                  onPress={() => {
+                    analyticsStore.logEvent("recipient_address_click", {
+                      pageName,
+                    });
+                    setIsOpenModal(true);
+                  }}
                 />
               </View>
             </View>
@@ -279,7 +278,9 @@ export const AddressInputCard: FunctionComponent<{
           addressBookConfig={addressBookConfig}
           addAddressBook={(add) => {
             if (add) {
-              analyticsStore.logEvent("Add additional account started");
+              analyticsStore.logEvent("add_new_address_click", {
+                pageName,
+              });
               smartNavigation.navigateSmart("AddAddressBook", {
                 chainId,
                 addressBookConfig,

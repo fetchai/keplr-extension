@@ -1,0 +1,107 @@
+.redelegate-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.current-stake {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  align-items: center;
+  border-radius: 12px;
+  height: 45px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.row-outer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.searchContainer {
+  margin: 6px 0px 0px 0px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+
+  .searchBox {
+    display: flex;
+    padding: 12px 18px;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+    img {
+      width: 16px;
+      height: 16px;
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+    }
+    input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      &::placeholder {
+        color: white;
+        font-weight: 400;
+      }
+      flex-grow: 1;
+    }
+  }
+}
+
+.sort-selector {
+  margin: 16px 0px;
+  display: flex;
+  height: 32px;
+  padding: 6px 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.choose-validator-outer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.choose-validator-inner-container {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 12px;
+  justify-content: space-between;
+}
+
+.choose-validator-heading {
+  color: rgba(255, 255, 255, 1);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+}

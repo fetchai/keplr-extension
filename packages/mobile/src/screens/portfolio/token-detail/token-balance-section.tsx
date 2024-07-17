@@ -11,6 +11,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { EarnIcon } from "components/new/icon/earn-icon";
 
 export const TokenBalanceSection: FunctionComponent<{
   totalNumber: string;
@@ -18,7 +19,7 @@ export const TokenBalanceSection: FunctionComponent<{
   totalPrice: string;
 }> = observer(({ totalNumber, totalDenom, totalPrice }) => {
   const style = useStyle();
-  const { chainStore } = useStore();
+  const { chainStore, priceStore, analyticsStore } = useStore();
   const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -32,7 +33,12 @@ export const TokenBalanceSection: FunctionComponent<{
       <View style={style.flatten(["flex-row", "margin-top-8"]) as ViewStyle}>
         <Text
           style={
-            style.flatten(["color-white", "h3", "items-center"]) as ViewStyle
+            style.flatten([
+              "color-white",
+              "h2",
+              "font-normal",
+              "items-center",
+            ]) as ViewStyle
           }
         >
           {totalNumber}
@@ -41,7 +47,8 @@ export const TokenBalanceSection: FunctionComponent<{
           style={
             style.flatten([
               "color-gray-400",
-              "h3",
+              "h2",
+              "font-normal",
               "margin-left-8",
             ]) as ViewStyle
           }
@@ -59,19 +66,19 @@ export const TokenBalanceSection: FunctionComponent<{
             ]) as ViewStyle
           }
         >
-          <Text style={style.flatten(["color-gray-300", "h5"]) as ViewStyle}>
+          <Text style={style.flatten(["color-gray-300", "body2"]) as ViewStyle}>
             {totalPrice}
           </Text>
           <Text
             style={
               style.flatten([
                 "color-gray-300",
-                "h5",
-                "margin-left-8",
+                "body2",
+                "margin-left-6",
               ]) as ViewStyle
             }
           >
-            {"USD"}
+            {priceStore.defaultVsCurrency.toUpperCase()}
           </Text>
         </View>
       ) : null}
@@ -91,7 +98,11 @@ export const TokenBalanceSection: FunctionComponent<{
             text={"Receive"}
             rightIcon={<ArrowDownGradientIcon size={15} />}
             textStyle={
-              style.flatten(["color-indigo-900", "margin-right-8"]) as ViewStyle
+              style.flatten([
+                "color-indigo-900",
+                "margin-right-8",
+                "body2",
+              ]) as ViewStyle
             }
             containerStyle={
               style.flatten([
@@ -100,12 +111,15 @@ export const TokenBalanceSection: FunctionComponent<{
                 "margin-right-6",
               ]) as ViewStyle
             }
-            onPress={() =>
+            onPress={() => {
+              analyticsStore.logEvent("receive_click", {
+                pageName: "Token Detail",
+              });
               navigation.navigate("Others", {
                 screen: "Receive",
                 params: { chainId: chainId },
-              })
-            }
+              });
+            }}
           />
         </View>
         <View style={style.flatten(["flex-1"]) as ViewStyle}>
@@ -113,7 +127,11 @@ export const TokenBalanceSection: FunctionComponent<{
             text={"Send"}
             rightIcon={<ArrowUpGradientIcon size={15} />}
             textStyle={
-              style.flatten(["color-indigo-900", "margin-right-8"]) as ViewStyle
+              style.flatten([
+                "color-indigo-900",
+                "margin-right-8",
+                "body2",
+              ]) as ViewStyle
             }
             containerStyle={
               style.flatten([
@@ -122,36 +140,49 @@ export const TokenBalanceSection: FunctionComponent<{
                 "margin-left-6",
               ]) as ViewStyle
             }
-            onPress={() =>
+            onPress={() => {
+              analyticsStore.logEvent("send_click", {
+                pageName: "Token Detail",
+              });
               navigation.navigate("Others", {
-                screen: "SendNew",
+                screen: "Send",
                 params: {
                   currency: chainStore.current.stakeCurrency.coinMinimalDenom,
                 },
-              })
-            }
+              });
+            }}
           />
         </View>
       </View>
-      {/*<Button*/}
-      {/*  text={"Earn"}*/}
-      {/*  textStyle={*/}
-      {/*    style.flatten(["color-indigo-900", "margin-x-8"]) as ViewStyle*/}
-      {/*  }*/}
-      {/*  rightIcon={<EarnIcon size={15} />}*/}
-      {/*  containerStyle={*/}
-      {/*    style.flatten([*/}
-      {/*      "background-color-white",*/}
-      {/*      "border-radius-32",*/}
-      {/*      "margin-y-16",*/}
-      {/*    ]) as ViewStyle*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    navigation.navigate("Others", {*/}
-      {/*      screen: "Staking.Dashboard",*/}
-      {/*    })*/}
-      {/*  }*/}
-      {/*/>*/}
+      <Button
+        text={"Stake"}
+        textStyle={
+          style.flatten([
+            "color-indigo-900",
+            "margin-x-8",
+            "body2",
+          ]) as ViewStyle
+        }
+        rightIcon={<EarnIcon size={15} />}
+        containerStyle={
+          style.flatten([
+            "background-color-white",
+            "border-radius-32",
+            "margin-bottom-16",
+          ]) as ViewStyle
+        }
+        onPress={() => {
+          analyticsStore.logEvent("stake_click", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Portfolio",
+          });
+          navigation.navigate("Stake", {
+            screen: "Staking.Dashboard",
+            params: { isTab: false },
+          });
+        }}
+      />
     </View>
   );
 });

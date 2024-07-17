@@ -8,7 +8,11 @@ import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
 import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
 import React, { useEffect, useState } from "react";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
+import {
+  CHAIN_ID_DORADO,
+  CHAIN_ID_ERIDANUS,
+  CHAIN_ID_FETCHHUB,
+} from "../../config.ui.var";
 import { WalletActions } from "../../pages-new/main/wallet-actions";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
@@ -59,22 +63,23 @@ const StakeTab = () => {
   const current = chainStore.current;
 
   const [stakingTooltip, setStakingTooltip] = useState("");
-  const [z, setStakingDisabled] = useState(false);
+  const [stakingDisabled, setStakingDisabled] = useState(false);
   useEffect(() => {
     if (keyRingStore.keyRingType === "ledger") {
-      setStakingTooltip("Coming soon for ledger");
       setStakingDisabled(true);
+      setStakingTooltip("Coming soon for ledger");
       return;
     }
     if (
       current.chainId != CHAIN_ID_DORADO &&
-      current.chainId != CHAIN_ID_FETCHHUB
+      current.chainId != CHAIN_ID_FETCHHUB &&
+      current.chainId != CHAIN_ID_ERIDANUS
     ) {
-      setStakingTooltip("Feature not available on this network");
       setStakingDisabled(true);
+      setStakingTooltip("Feature not available on this network");
     } else {
-      setStakingTooltip("");
       setStakingDisabled(false);
+      setStakingTooltip("");
     }
   }, [current.chainId, keyRingStore.keyRingType]);
 
@@ -84,8 +89,8 @@ const StakeTab = () => {
         title={"Stake"}
         icon={stakeTabIcon}
         activeIcon={selectedStakeTabIcon}
-        path={"/validators/validator"}
-        disabled={z}
+        path={"/stake"}
+        disabled={stakingDisabled}
         tooltip={stakingTooltip}
       />
     </React.Fragment>
@@ -111,9 +116,6 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
-
-    setActivityTooltip("Coming soon");
-    setActivityDisabled(true);
   }, [current.chainId, keyRingStore.keyRingType]);
 
   return (

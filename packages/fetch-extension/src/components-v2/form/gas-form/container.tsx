@@ -5,6 +5,7 @@ import { GasAutoContainer } from "./auto";
 import { GasInput } from "../gas-input";
 import styleContainer from "./container.module.scss";
 import { Alert } from "reactstrap";
+import { ToggleSwitchButton } from "@components-v2/buttons/toggle-switch-button";
 
 export const GasContainer: FunctionComponent<{
   label?: string;
@@ -20,25 +21,15 @@ export const GasContainer: FunctionComponent<{
     <div className={styleContainer["container"]}>
       <div className={styleContainer["autoButtonGroup"]}>
         <div className={styleContainer["label"]}>Auto</div>
-        <label
-          key="toggle"
-          className="custom-toggle"
-          style={{ marginBottom: 0 }}
-        >
-          <input
-            type="checkbox"
-            checked={gasSimulator.enabled}
-            onChange={() => {
-              if (!gasSimulator.forceDisabled) {
-                gasSimulator.setEnabled(!gasSimulator.enabled);
-              }
-            }}
-          />
-          <span
-            style={{ color: "#5F38FB", borderColor: "#5F38FB" }}
-            className="custom-toggle-slider rounded-circle"
-          />
-        </label>
+
+        <ToggleSwitchButton
+          checked={gasSimulator.enabled}
+          onChange={() => {
+            if (!gasSimulator.forceDisabled) {
+              gasSimulator.setEnabled(!gasSimulator.enabled);
+            }
+          }}
+        />
       </div>
       {gasSimulator.outdatedCosmosSdk ? (
         <Alert color="warning">

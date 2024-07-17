@@ -2,8 +2,9 @@ import LottieView from "lottie-react-native";
 import { observer } from "mobx-react-lite";
 import { CardModal } from "modals/card";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Image, Text, View, ViewStyle } from "react-native";
+import { Image, Platform, Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
+import { ImageRequireSource } from "react-native/Libraries/Image/ImageSource";
 
 enum ImgStatus {
   First,
@@ -13,7 +14,7 @@ enum ImgStatus {
 
 interface ImgNavigateMode {
   status: ImgStatus;
-  img: NodeRequire;
+  img: ImageRequireSource;
 }
 
 export const LedgerTransectionGuideModel: FunctionComponent<{
@@ -56,7 +57,7 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
       title="Confirm transaction"
       close={() => close()}
     >
-      <View style={style.flatten(["items-center", "margin-y-16"]) as ViewStyle}>
+      <View style={style.flatten(["items-center"]) as ViewStyle}>
         <Image
           source={navigateImg.img}
           style={{
@@ -78,7 +79,10 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
               style={
                 [
                   style.flatten(["height-44"]),
-                  { marginLeft: 60, marginTop: 2 },
+                  {
+                    marginLeft: Platform.OS === "android" ? 60 : 40,
+                    marginTop: Platform.OS === "android" ? 2 : 1.25,
+                  },
                 ] as ViewStyle
               }
             />
@@ -100,7 +104,7 @@ export const LedgerTransectionGuideModel: FunctionComponent<{
             "subtitle3",
             "color-white",
             "text-center",
-            "margin-y-28",
+            "margin-top-24",
           ]) as ViewStyle
         }
       >

@@ -1,5 +1,5 @@
-import { formatTimestamp } from "@utils/parse-timestamp-to-date";
 import axios from "axios";
+import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { chartOptions } from "./chart-options";
@@ -33,17 +33,29 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   );
 
   const cachedPrices = useMemo(() => {
-    const cachedData = sessionStorage.getItem(cacheKey);
+    const cachedData = localStorage.getItem(cacheKey);
     return cachedData ? JSON.parse(cachedData) : null;
   }, [cacheKey]);
+
+  const isCachedPricesValid = (updatedAt: any) => {
+    const currTime = Date.parse(new Date().toString());
+    const prevUpdatedAt = Date.parse(updatedAt.toString());
+
+    return currTime - prevUpdatedAt < 10 * 60 * 1000;
+  };
 
   useEffect(() => {
     const fetchPrices = async () => {
       setLoading(true);
+      setError("");
       try {
         let newPrices: any[] = [];
-        if (cachedPrices) {
-          newPrices = cachedPrices;
+        if (
+          cachedPrices &&
+          !!cachedPrices.updatedAt &&
+          isCachedPricesValid(cachedPrices.updatedAt)
+        ) {
+          newPrices = cachedPrices.newPrices;
         } else {
           const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
           const params = { vs_currency: "usd", days: duration };
@@ -54,7 +66,12 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             price: price[1],
           }));
 
-          sessionStorage.setItem(cacheKey, JSON.stringify(newPrices));
+          const lastUpdatedPrice = {
+            newPrices,
+            updatedAt: new Date(),
+          };
+
+          localStorage.setItem(cacheKey, JSON.stringify(lastUpdatedPrice));
         }
         if (newPrices.length > 0) {
           const firstValue = newPrices[0].price || 0;
@@ -66,7 +83,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           else if (duration === 7) time = "1 WEEK";
           else if (duration === 30) time = "1 MONTH";
           else if (duration === 90) time = "3 MONTH";
-          else if (duration === 360) time = "1 YEAR";
+          else if (duration === 365) time = "1 YEAR";
           else if (duration === 100000) time = "ALL";
 
           const type = diff >= 0 ? "positive" : "negative";
@@ -74,11 +91,19 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           setTokenState({ diff: Math.abs(percentageDiff), time, type });
         }
         setPrices(newPrices);
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-        setError("Unable to fetch data. Please try again.");
-      } finally {
         setLoading(false);
+      } catch (error) {
+        if (error.response.status === 429) {
+          setTimeout(() => {
+            fetchPrices();
+          }, 10 * 1000);
+          console.log("Too many request error, trying to fetch again");
+          if (cachedPrices) setPrices(cachedPrices.newPrices);
+          return;
+        }
+
+        console.log("Error fetching data:", { error });
+        setError("Unable to fetch data. Please try again.");
       }
     };
 
@@ -87,9 +112,13 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 
   const chartData = {
     labels: prices.map((priceData: any) => {
-      const time = formatTimestamp(
-        new Date(priceData.timestamp).toLocaleString()
-      );
+      let format = "MMM DD, YYYY";
+      if (duration === 1) format = "MMM DD, HH:mm";
+      else if (duration === 7) format = "MMM DD, HH:mm";
+      else if (duration === 30) format = "MMM DD";
+      else if (duration === 90) format = "MMM DD YYYY";
+      else if (duration === 365) format = "MMM DD, YYYY";
+      const time = moment(priceData.timestamp).format(format);
       return time;
     }),
     datasets: [

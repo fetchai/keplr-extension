@@ -310,7 +310,7 @@
   "send.input.memo": "Memo (Optional)",
   "send.input.fee": "Fee",
   "send.input.fee.error.required": "Fee is required",
-  "send.input.gas": "Gas",
+  "send.input.gas": "Gas amount",
   "send.input-button.balance": "Balance",
   "send.button.send": "Send",
   "send.button.speedup": "Speed up",
@@ -322,6 +322,13 @@
   "fee.input.memo": "Memo (Optional)",
   "fee.input.fee": "Fee",
   "fee.button.set": "Set Fee",
+
+  "stake.alert": "When you decide to unstake, your assets will be locked for 21 days to be liquid again",
+
+  "unstake.current-staked": "Current staked amount",
+  "unstake.alert": "Your tokens will go through a 21-day unstaking process",
+  "unstake.available": "Available:",
+  "unstake.confirm": "Confirm",
 
   "sign.tab.details": "Details",
   "sign.tab.data": "Data",

@@ -2,17 +2,18 @@ import { HeaderLayout } from "@layouts-v2/header-layout";
 import React, { FunctionComponent } from "react";
 import { useStore } from "../../stores";
 import style from "./style.module.scss";
-import { CHAINS } from "../../config.axl-brdige.var";
+// import { CHAINS } from "../../config.axl-brdige.var";
 import { Card } from "@components-v2/card";
 import { useNavigate } from "react-router";
+// import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 
 export const MorePage: FunctionComponent = () => {
   const { chainStore, analyticsStore, keyRingStore } = useStore();
   const navigate = useNavigate();
-  const isAxlViewVisible = CHAINS.some((chain) => {
-    return chain.chainId?.toString() === chainStore.current.chainId;
-  });
-  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  // const isAxlViewVisible = CHAINS.some((chain) => {
+  //   return chain.chainId?.toString() === chainStore.current.chainId;
+  // });
+  // const isEvm = chainStore.current.features?.includes("evm") ?? false;
   return (
     <HeaderLayout
       innerStyle={{
@@ -53,13 +54,16 @@ export const MorePage: FunctionComponent = () => {
         heading={"Language"}
         onClick={() => navigate("/more/language")}
       />
-      <Card
+
+      {/* 
+       <Card
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "6px" }}
         leftImage={require("@assets/svg/wireframe/notification.svg")}
         heading={"Notifications"}
         onClick={() => navigate("/more/notifications")}
-      />
+      /> */}
+
       <Card
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "6px" }}
@@ -114,8 +118,9 @@ export const MorePage: FunctionComponent = () => {
           )
         }
       />
-      {(chainStore.current.chainId === "fetchhub-4" ||
-        chainStore.current.chainId === "dorado-1") && (
+
+      {/* {(chainStore.current.chainId === CHAIN_ID_FETCHHUB ||
+        chainStore.current.chainId === CHAIN_ID_DORADO) && (
         <Card
           leftImageStyle={{ background: "transparent" }}
           style={{ background: "rgba(255,255,255,0.1)", marginBottom: "8px" }}
@@ -123,7 +128,9 @@ export const MorePage: FunctionComponent = () => {
           heading={".FET Domains"}
           onClick={() => navigate("/fetch-name-service/explore")}
         />
-      )}
+      )} */}
+
+      {/* 
       {isAxlViewVisible && (
         <Card
           leftImageStyle={{ background: "transparent" }}
@@ -134,7 +141,7 @@ export const MorePage: FunctionComponent = () => {
             isEvm ? navigate("/axl-bridge-evm") : navigate("/axl-bridge-cosmos")
           }
         />
-      )}
+      )} */}
       {/* <Card
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
@@ -160,7 +167,7 @@ export const MorePage: FunctionComponent = () => {
       />
       <div
         style={{
-          marginBottom: "20px",
+          marginBottom: "40px",
         }}
       />
     </HeaderLayout>

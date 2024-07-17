@@ -73,6 +73,7 @@ export const MainPage: FunctionComponent = observer(() => {
     accountInfo.bech32Address,
     keyRingStore.keyRingType,
   ]);
+
   return (
     <HeaderLayout>
       <WalletDetailsView
@@ -93,7 +94,7 @@ export const MainPage: FunctionComponent = observer(() => {
         title="Change Network"
         closeClicked={() => setIsSelectNetOpen(false)}
       >
-        <ChainList />
+        <ChainList setIsSelectNetOpen={setIsSelectNetOpen} />
       </Dropdown>
       <Dropdown
         setIsOpen={setIsSelectWalletOpen}

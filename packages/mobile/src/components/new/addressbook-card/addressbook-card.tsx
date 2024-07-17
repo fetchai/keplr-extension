@@ -3,14 +3,18 @@ import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
-import { BlurBackground } from "components/new/blur-background/blur-background";
-import { AddressBookConfig } from "@keplr-wallet/hooks";
+import { AddressBookConfig, AddressBookData } from "@keplr-wallet/hooks";
 import { observer } from "mobx-react-lite";
-import { TextInput } from "components/input";
 import { SearchIcon } from "components/new/icon/search-icon";
 import { EmptyView } from "../empty";
 import { useStore } from "stores/index";
 import { Button } from "components/button";
+import { InputCardView } from "../card-view/input-card";
+
+interface IndexedItem<T> {
+  index: number;
+  item: T;
+}
 
 export const AddressBookCardModel: FunctionComponent<{
   hideCurrentAddress?: boolean;
@@ -30,23 +34,46 @@ export const AddressBookCardModel: FunctionComponent<{
   }) => {
     const style = useStyle();
     const [search, setSearch] = useState("");
-    const { chainStore, accountStore } = useStore();
+    const { chainStore, accountStore, analyticsStore } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
 
-    const [filterAddressBook, setFilterAddressBook] = useState(
-      addressBookConfig.addressBookDatas
-    );
+    const [filterAddressBook, setFilterAddressBook] = useState<
+      IndexedItem<AddressBookData>[]
+    >([]);
+
+    function deepFilterWithOriginalIndices<T>(
+      arr: ReadonlyArray<T>,
+      search: string,
+      predicate: (item: T, search: string) => boolean
+    ): IndexedItem<T>[] {
+      const result: IndexedItem<T>[] = [];
+
+      function deepFilter(arr: ReadonlyArray<T>): void {
+        arr.forEach((item, index) => {
+          if (predicate(item, search)) {
+            result.push({ index, item });
+          }
+          if (Array.isArray(item)) {
+            deepFilter(item);
+          }
+        });
+      }
+
+      deepFilter(arr);
+      return result;
+    }
+
+    const predicate = (data: AddressBookData, search: string) =>
+      data.name.toLowerCase().includes(search.toLowerCase()) &&
+      hideCurrentAddress &&
+      !data.address.includes(account.bech32Address);
 
     useEffect(() => {
       const searchTrim = search.trim();
-      const newAddressBook = addressBookConfig.addressBookDatas.filter(
-        (data) => {
-          return (
-            data.name.toLowerCase().includes(searchTrim.toLowerCase()) &&
-            hideCurrentAddress &&
-            !data.address.includes(account.bech32Address)
-          );
-        }
+      const newAddressBook = deepFilterWithOriginalIndices(
+        addressBookConfig.addressBookDatas,
+        searchTrim,
+        predicate
       );
       setFilterAddressBook(newAddressBook);
     }, [addressBookConfig.addressBookDatas, search]);
@@ -65,33 +92,24 @@ export const AddressBookCardModel: FunctionComponent<{
           close();
         }}
       >
-        <BlurBackground borderRadius={12} blurIntensity={15}>
-          <TextInput
-            placeholder="Search"
-            placeholderTextColor={"white"}
-            style={style.flatten(["body3"])}
-            inputContainerStyle={
-              style.flatten([
-                "border-width-0",
-                "padding-x-18",
-                "padding-y-12",
-              ]) as ViewStyle
-            }
-            onChangeText={(text) => {
-              setSearch(text);
-            }}
-            containerStyle={style.flatten(["padding-0"]) as ViewStyle}
-            inputRight={<SearchIcon />}
-          />
-        </BlurBackground>
+        <InputCardView
+          placeholder="Search"
+          placeholderTextColor={"white"}
+          value={search}
+          onChangeText={(text: string) => {
+            setSearch(text);
+          }}
+          rightIcon={<SearchIcon size={12} />}
+          containerStyle={style.flatten(["margin-bottom-24"]) as ViewStyle}
+        />
         {filterAddressBook.length > 0 ? (
-          <View style={style.flatten(["margin-y-24"]) as ViewStyle}>
-            {filterAddressBook.map((data, i) => {
+          <View style={style.flatten(["margin-top-24"]) as ViewStyle}>
+            {filterAddressBook.map((data: IndexedItem<AddressBookData>) => {
               return (
                 <RectButton
-                  key={i.toString()}
+                  key={data.index.toString()}
                   onPress={() => {
-                    addressBookConfig.selectAddressAt(i);
+                    addressBookConfig.selectAddressAt(data.index);
                     setSearch("");
                     close();
                   }}
@@ -113,7 +131,7 @@ export const AddressBookCardModel: FunctionComponent<{
                       ]) as ViewStyle
                     }
                   >
-                    {data.name}
+                    {data.item.name}
                   </Text>
                   <Text
                     style={
@@ -123,13 +141,13 @@ export const AddressBookCardModel: FunctionComponent<{
                       ]) as ViewStyle
                     }
                   >
-                    {data.address}
+                    {data.item.address}
                   </Text>
                 </RectButton>
               );
             })}
           </View>
-        ) : addressBookConfig.addressBookDatas.length == 0 ? (
+        ) : filterAddressBook.length == 0 ? (
           <React.Fragment>
             <Text
               style={
@@ -156,11 +174,13 @@ export const AddressBookCardModel: FunctionComponent<{
               onPress={() => {
                 if (addAddressBook) {
                   addAddressBook(true);
+                  analyticsStore.logEvent("add_an_address_click", {
+                    pageName: "Send",
+                  });
                 }
                 close();
               }}
             />
-            <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
           </React.Fragment>
         ) : (
           <EmptyView

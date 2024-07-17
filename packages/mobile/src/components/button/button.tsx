@@ -9,6 +9,7 @@ import Svg, {
 import { useStyle } from "styles/index";
 import { RectButton } from "components/rect-button";
 import LottieView from "lottie-react-native";
+import { LoadingSpinner } from "../spinner";
 
 export const Button: FunctionComponent<{
   color?: "primary" | "danger" | "gradient";
@@ -20,6 +21,7 @@ export const Button: FunctionComponent<{
   loading?: boolean;
   loaderColor?: string;
   disabled?: boolean;
+  showLoadingSpinner?: boolean;
 
   onPress?: () => void;
 
@@ -37,6 +39,7 @@ export const Button: FunctionComponent<{
   leftIcon,
   rightIcon,
   loading = false,
+  showLoadingSpinner = false,
   disabled = false,
   onPress,
   containerStyle,
@@ -371,12 +374,19 @@ export const Button: FunctionComponent<{
               "items-center",
             ])}
           >
-            <LottieView
-              source={require("assets/lottie/loading.json")}
-              autoPlay
-              loop
-              style={style.flatten(["width-24", "height-24"]) as ViewStyle}
-            />
+            {showLoadingSpinner ? (
+              <LoadingSpinner
+                color={style.flatten(["color-white"]).color}
+                size={20}
+              />
+            ) : (
+              <LottieView
+                source={require("assets/lottie/loading.json")}
+                autoPlay
+                loop
+                style={style.flatten(["width-24", "height-24"]) as ViewStyle}
+              />
+            )}
           </View>
         ) : null}
       </RectButton>

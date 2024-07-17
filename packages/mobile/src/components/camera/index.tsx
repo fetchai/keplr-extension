@@ -4,11 +4,11 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useStyle } from "styles/index";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LoadingSpinner } from "components/spinner";
 import { IconButton } from "components/new/button/icon";
 import { XmarkIcon } from "components/new/icon/xmark";
+import { ScannerFrame } from "./scanner-frame";
 
 interface CameraProp extends CameraProps {
   containerBottom?: React.ReactElement;
@@ -82,17 +82,23 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
             </TouchableOpacity>
           ) : null}
         </View>
-        <View style={style.get("flex-1")} />
-        <View>
-          <Svg width="217" height="217" fill="none" viewBox="0 0 217 217">
-            <Path
-              stroke={style.get("color-indigo-900").color}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="6"
-              d="M34 3H3v31M3 183v31h31M183 3h31v31M214 183v31h-31"
-            />
-          </Svg>
+        <View style={style.get("flex-2")} />
+        <View style={style.flatten(["flex-5", "items-center"])}>
+          <ScannerFrame />
+          <Text
+            style={
+              style.flatten([
+                "text-caption2",
+                "color-white",
+                "margin-top-24",
+                "text-center",
+              ]) as ViewStyle
+            }
+          >
+            {
+              "Send assets or connect to Fetch Wallet\nbrowser extension by scanning a QR code"
+            }
+          </Text>
           {isLoading ? (
             <View
               style={style.flatten([
