@@ -14,8 +14,10 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FullScreenCameraView } from "components/camera";
 
 import {
+  AddressBookConfigMap,
   IRecipientConfig,
   IRecipientConfigWithICNS,
+  useRegisterConfig,
 } from "@keplr-wallet/hooks";
 import {
   RouteProp,
@@ -27,6 +29,13 @@ import { CameraType } from "expo-camera/src/Camera.types";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { CHAIN_ID_DORADO } from "../../config";
 import Toast from "react-native-toast-message";
+import {
+  importFromExtension,
+  parseQRCodeDataForImportFromExtension,
+  registerExportedAddressBooks,
+  registerExportedKeyRingDatas,
+} from "utils/import-from-extension";
+import { AsyncKVStore } from "src/common";
 
 export const CameraScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -42,9 +51,9 @@ export const CameraScreen: FunctionComponent = observer(() => {
     >
   >();
 
-  const showQRButton = route.params.showMyQRButton ? true : false;
+  const showQRButton = route.params.showMyQRButton && false;
 
-  const { chainStore, walletConnectStore } = useStore();
+  const { chainStore, walletConnectStore, keyRingStore } = useStore();
 
   const navigation = useNavigation();
 
@@ -72,10 +81,21 @@ export const CameraScreen: FunctionComponent = observer(() => {
   const [showingAddressQRCodeChainId, setShowingAddressQRCodeChainId] =
     useState(chainStore.current.chainId);
 
+  const registerConfig = useRegisterConfig(keyRingStore, []);
+
+  const [addressBookConfigMap] = useState(
+    () => new AddressBookConfigMap(new AsyncKVStore("address_book"), chainStore)
+  );
+
   return (
     <PageWithView disableSafeArea={true} backgroundMode={null}>
       <FullScreenCameraView
         type={CameraType.back}
+        scannerBottomText={
+          route.params.recipientConfig
+            ? "Send assets by scanning a QR code"
+            : "Send assets or connect to Fetch Wallet\nbrowser extension by scanning a QR code"
+        }
         barCodeScannerSettings={{
           barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
         }}
@@ -130,6 +150,42 @@ export const CameraScreen: FunctionComponent = observer(() => {
                   } else {
                     smartNavigation.navigateSmart("Home", {});
                   }
+                } else if (!route.params.recipientConfig) {
+                  const sharedData =
+                    parseQRCodeDataForImportFromExtension(data);
+
+                  const improted = await importFromExtension(
+                    sharedData,
+                    chainStore.chainInfosInUI.map(
+                      (chainInfo) => chainInfo.chainId
+                    )
+                  );
+
+                  // In this case, there are other accounts definitely.
+                  // So, there is no need to consider the password.
+                  await registerExportedKeyRingDatas(
+                    keyRingStore,
+                    registerConfig,
+                    improted.KeyRingDatas,
+                    ""
+                  );
+
+                  await registerExportedAddressBooks(
+                    addressBookConfigMap,
+                    improted.addressBooks
+                  );
+
+                  smartNavigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: "Register",
+                        params: {
+                          screen: "Register.End",
+                        },
+                      },
+                    ],
+                  });
                 } else {
                   navigation.goBack();
                   Toast.show({
