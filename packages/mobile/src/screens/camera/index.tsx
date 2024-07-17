@@ -35,7 +35,7 @@ import {
   registerExportedAddressBooks,
   registerExportedKeyRingDatas,
 } from "utils/import-from-extension";
-import { AsyncKVStore } from "src/common";
+import { AsyncKVStore } from "../../common";
 
 export const CameraScreen: FunctionComponent = observer(() => {
   const route = useRoute<
