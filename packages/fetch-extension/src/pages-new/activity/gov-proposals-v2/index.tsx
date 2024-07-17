@@ -169,7 +169,7 @@ export const GovProposalsTabV2 = () => {
             onSearchTermChange={setSearchTerm}
           />
         ) : isLoading ? (
-          <div className={style["activityMessage"]}>Loading Activities...</div>
+          <div className={style["activity-loading"]}>Loading Proposals...</div>
         ) : (
           <NoActivity />
         )
