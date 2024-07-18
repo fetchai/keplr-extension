@@ -299,6 +299,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
+        disable={account.txTypeInProgress === "redelegate"}
       />
       <MemoInputView
         label="Memo"
@@ -341,7 +342,15 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           </Text>
           <IconButton
             backgroundBlur={false}
-            icon={<GearIcon />}
+            icon={
+              <GearIcon
+                color={
+                  account.txTypeInProgress === "redelegate"
+                    ? style.get("color-white@20%").color
+                    : "white"
+                }
+              />
+            }
             iconStyle={
               style.flatten([
                 "width-32",
@@ -349,9 +358,12 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                "border-color-white@40%",
+                account.txTypeInProgress === "redelegate"
+                  ? "border-color-white@20%"
+                  : "border-color-white@40%",
               ]) as ViewStyle
             }
+            disable={account.txTypeInProgress === "redelegate"}
             onPress={() => setFeeModal(true)}
           />
         </View>
