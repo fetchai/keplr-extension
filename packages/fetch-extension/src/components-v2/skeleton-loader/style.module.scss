@@ -1,0 +1,19 @@
+.isLoading {
+  // background: var(--neutral-1000);
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.23)
+  );
+  width: 100%;
+  border-radius: 5px;
+  background-size: 400% 100%;
+  animation: 3s shine linear infinite;
+  z-index: 10;
+}
+@keyframes shine {
+  to {
+    background-position-x: -400%;
+  }
+}
