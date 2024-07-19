@@ -1,5 +1,5 @@
 import style from "./style.module.scss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useStore } from "../../../stores";
 import moment from "moment";
 import { useNavigate } from "react-router";
@@ -8,11 +8,6 @@ import { getActivityIcon, getDetails } from "../utils";
 export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
   const navigate = useNavigate();
   const { chainStore } = useStore();
-  const [isAmountDeducted, setIsAmountDeducted] = useState<boolean>();
-
-  useEffect(() => {
-    setIsAmountDeducted(isAmountDeducted);
-  }, [isAmountDeducted]);
 
   useEffect(() => {
     const details = getDetails(node, chainStore);
@@ -41,7 +36,7 @@ export const ActivityRow = ({ node, setDate }: { node: any; setDate: any }) => {
           <div className={style["leftImage"]}>
             <img
               className={style["img"]}
-              src={getActivityIcon(typeUrl, isAmountDeducted)}
+              src={getActivityIcon(typeUrl, details.verb)}
               alt={typeUrl}
             />
           </div>

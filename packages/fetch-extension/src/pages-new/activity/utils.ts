@@ -121,13 +121,10 @@ export const getDetails = (node: any, chainStore: any): any => {
   };
 };
 
-export const getActivityIcon = (
-  type: string,
-  isAmountDeducted: boolean | undefined
-): string => {
+export const getActivityIcon = (type: string, verb: string): string => {
   switch (type) {
     case "/cosmos.bank.v1beta1.MsgSend":
-      return isAmountDeducted ? sendIcon : recieveIcon;
+      return verb === "Sent" ? sendIcon : recieveIcon;
     case "/cosmos.staking.v1beta1.MsgDelegate":
     case "/cosmos.staking.v1beta1.MsgUndelegate":
     case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
