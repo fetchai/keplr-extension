@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { CardModal } from "../card";
@@ -28,6 +28,12 @@ export const PasswordInputModal: FunctionComponent<{
   const [showPassword, setShowPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setShowPassword(false);
+    setPassword("");
+    setIsInvalidPassword(false);
+  }, [isOpen]);
 
   const submitPassword = async () => {
     setIsLoading(true);

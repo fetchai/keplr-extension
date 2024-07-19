@@ -144,12 +144,18 @@ export const StakeValidatorCardView: FunctionComponent<{
           data={data}
           scrollEnabled={false}
           horizontal={true}
-          contentContainerStyle={style.flatten(["width-full"]) as ViewStyle}
+          contentContainerStyle={
+            style.flatten([
+              "width-full",
+              "justify-between",
+              "flex-wrap",
+            ]) as ViewStyle
+          }
           renderItem={({ item, index }: { item: ItemData; index: number }) => {
             return (
               <View
                 key={index}
-                style={style.flatten(["margin-right-18"]) as ViewStyle}
+                style={style.flatten(["margin-right-6"]) as ViewStyle}
               >
                 <Text
                   style={
