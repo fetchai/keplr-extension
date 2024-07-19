@@ -132,6 +132,9 @@ export const ImportFromExtensionScreen: FunctionComponent = observer(() => {
         barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
       }}
       onBarCodeScanned={onBarCodeScanned}
+      scannerBottomText={
+        "Connect to Fetch Wallet\nbrowser extension by scanning a QR code"
+      }
       isLoading={isLoading}
     />
   );

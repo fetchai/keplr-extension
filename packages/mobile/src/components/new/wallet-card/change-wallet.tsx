@@ -39,29 +39,38 @@ export const ChangeWalletCardModel: FunctionComponent<{
     switch (keyStore.type) {
       case "ledger":
         return (
-          <Text
+          <View
             style={
-              [
-                style.flatten([
-                  "font-medium",
-                  "color-white",
-                  "margin-left-6",
-                  "border-width-1",
-                  "border-color-new-gray-500",
-                  "border-radius-4",
-                  "padding-x-4",
-                  "text-center",
-                  "padding-top-1",
-                ]),
-                {
-                  fontSize: 10,
-                  textTransform: "uppercase",
-                },
-              ] as ViewStyle
+              style.flatten([
+                "margin-left-6",
+                "border-width-1",
+                "border-color-new-gray-500",
+                "border-radius-4",
+                "items-center",
+                "justify-center",
+              ]) as ViewStyle
             }
           >
-            ledger
-          </Text>
+            <Text
+              style={
+                [
+                  style.flatten([
+                    "font-medium",
+                    "color-white",
+                    "margin-x-4",
+                    "margin-y-1",
+                    "text-center",
+                  ]),
+                  {
+                    fontSize: 10,
+                    textTransform: "uppercase",
+                  },
+                ] as ViewStyle
+              }
+            >
+              ledger
+            </Text>
+          </View>
         );
 
       case "privateKey":
