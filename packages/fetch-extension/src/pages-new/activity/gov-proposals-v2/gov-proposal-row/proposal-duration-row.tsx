@@ -59,7 +59,7 @@ export const ProposalDurationRow = ({
             Voting start time
           </div>
           <div className={style["proposal-duration-date"]}>
-            {moment(voting_start_time).format("ddd, MMM DD YYYY")}
+            {moment(voting_start_time).format("ddd, MMM DD")}
           </div>
         </div>
         <div className={style["proposal-duration"]}>
@@ -67,7 +67,7 @@ export const ProposalDurationRow = ({
             Voting end time
           </div>
           <div className={style["proposal-duration-date"]}>
-            {moment(voting_end_time).format("ddd, MMM DD YYYY")}
+            {moment(voting_end_time).format("ddd, MMM DD")}
           </div>
         </div>
       </div>

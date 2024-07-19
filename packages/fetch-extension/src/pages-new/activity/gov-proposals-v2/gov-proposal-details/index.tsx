@@ -272,7 +272,7 @@ export const GovProposalsDetails = () => {
               />
             </Link>
 
-            <div className={style["turnout"]}>
+            {/* <div className={style["turnout"]}>
               <div className={style["label"]}>Turnout</div>
               <ProgressBar
                 progressWidth={54}
@@ -281,7 +281,7 @@ export const GovProposalsDetails = () => {
                 bgColor="rgba(249, 119, 75, 1)"
                 isShowPercentage={false}
               />
-            </div>
+            </div> */}
 
             <div className={style["tally-results"]}>
               {tallyResult.map((item: any, index: number) => (
