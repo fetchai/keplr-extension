@@ -72,6 +72,14 @@ export const MorePage: FunctionComponent = () => {
         onClick={() => navigate("/more/security-privacy")}
       />
 
+      <Card
+        leftImageStyle={{ background: "transparent" }}
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "6px" }}
+        leftImage={require("@assets/svg/wireframe/chain-list-access.svg")}
+        heading={"Link Fetch Mobile Wallet"}
+        onClick={() => navigate("/more/export-to-mobile")}
+      />
+
       <div
         style={{
           marginTop: "12px",

@@ -1,0 +1,64 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: white;
+  gap: "24px";
+}
+
+.alert {
+  display: flex;
+  padding: 12px;
+  align-items: flex-start;
+  gap: 6px;
+  align-self: stretch;
+  border: transparent;
+  border-radius: 12px;
+  background: rgba(255, 62, 62, 0.25);
+  backdrop-filter: blur(15px);
+  color: white;
+
+  box-shadow: 0px -10px 30px 0px rgba(255, 62, 62, 0.1) inset,
+    0px 1px 2px 0px rgba(255, 62, 62, 0.25) inset,
+    0px -1px 2px 0px rgba(255, 62, 62, 0.25) inset;
+
+  i {
+    font-size: 24px;
+    margin-right: 8px;
+  }
+
+  img {
+    padding-top: 4px;
+  }
+
+  h1 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #32325d;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.57;
+    margin: 0;
+  }
+  .text {
+    color: #fff;
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%; /* 22.4px */
+  }
+  .lightText {
+    color: rgba(255, 255, 255, 0.8);
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+  }
+}

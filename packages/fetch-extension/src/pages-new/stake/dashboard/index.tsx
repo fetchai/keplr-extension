@@ -10,6 +10,8 @@ import { useStore } from "../../../stores";
 import { EmptyStake } from "./empty-stake";
 import { MyStakes } from "./my-stake/my-stakes";
 import { observer } from "mobx-react-lite";
+import { WalletStatus } from "@keplr-wallet/stores";
+import { Skeleton } from "@components-v2/skeleton-loader";
 
 export const Dashboard = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
@@ -81,6 +83,11 @@ export const Dashboard = observer(() => {
   const stakedInUSD = priceStore.calculatePrice(stakedSum)?.toString();
   const rewardsInUSD = priceStore.calculatePrice(stakableReward)?.toString();
 
+  const isLoaded =
+    accountInfo.walletStatus === WalletStatus.Loaded &&
+    accountInfo.bech32Address &&
+    !rewards.isFetching;
+
   const doughnutData = {
     labels: ["Balance", "Staked", "Rewards"],
     datasets: [
@@ -102,7 +109,8 @@ export const Dashboard = observer(() => {
   };
   return (
     <div className={style["dashboard"]}>
-      {(parseFloat(stakableBalNumber) > 0 ||
+      {(!isLoaded ||
+        parseFloat(stakableBalNumber) > 0 ||
         parseFloat(stakedBalNumber) > 0 ||
         parseFloat(rewardsBalNumber) > 0) && (
         <div className={style["stake-container"]}>
@@ -124,23 +132,31 @@ export const Dashboard = observer(() => {
                 }}
               >
                 <div className={style["label"]}>Available</div>
-                <div className={style["value"]}>
-                  {stakableBalInUI.toFixed(2)} {` ${stakableDenom} `}
-                  <span className={style["label"]}>
-                    ({stakablePercentage.toFixed(1)}%)
-                  </span>
-                </div>
-                {stakableInUSD !== undefined && stakableInUSD > "$0" ? (
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      color: "rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    {stakableInUSD}
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {stakableBalInUI.toFixed(2)} {` ${stakableDenom} `}
+                    <span className={style["label"]}>
+                      ({stakablePercentage.toFixed(1)}%)
+                    </span>
                   </div>
-                ) : null}
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  stakableInUSD !== undefined && stakableInUSD > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {stakableInUSD}
+                    </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
               </div>
             </div>
             <div className={style["legend"]}>
@@ -160,24 +176,32 @@ export const Dashboard = observer(() => {
                 }}
               >
                 <div className={style["label"]}>Staked</div>
-                <div className={style["value"]}>
-                  {stakedBalInUI.toFixed(2)} {` ${stakedDenom} `}
-                  <span className={style["label"]}>
-                    ({stakedPercentage.toFixed(1)}
-                    %)
-                  </span>
-                </div>
-                {stakedInUSD !== undefined && stakedInUSD > "$0" ? (
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      color: "rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    {stakedInUSD}
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {stakedBalInUI.toFixed(2)} {` ${stakedDenom} `}
+                    <span className={style["label"]}>
+                      ({stakedPercentage.toFixed(1)}
+                      %)
+                    </span>
                   </div>
-                ) : null}
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  stakedInUSD !== undefined && stakedInUSD > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {stakedInUSD}
+                    </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
               </div>
             </div>
             <div className={style["legend"]}>
@@ -197,23 +221,31 @@ export const Dashboard = observer(() => {
                 }}
               >
                 <div className={style["label"]}>Staking rewards</div>
-                <div className={style["value"]}>
-                  {rewardsBalInUI.toFixed(2)} {` ${rewardDenom} `}
-                  <span className={style["label"]}>
-                    ({rewardsPercentage.toFixed(1)}%)
-                  </span>
-                </div>
-                {rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      color: "rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    {rewardsInUSD}
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {rewardsBalInUI.toFixed(2)} {` ${rewardDenom} `}
+                    <span className={style["label"]}>
+                      ({rewardsPercentage.toFixed(1)}%)
+                    </span>
                   </div>
-                ) : null}
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {rewardsInUSD}
+                    </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
               </div>
             </div>
           </div>
@@ -222,24 +254,24 @@ export const Dashboard = observer(() => {
           </div>
         </div>
       )}
-
-      {delegations && delegations.length > 0 ? (
-        <MyStakes rewards={rewards} accountInfo={accountInfo} />
-      ) : (
-        <div
-          style={{
-            paddingTop: !(
-              parseFloat(stakableBalNumber) > 0 ||
-              parseFloat(stakedBalNumber) > 0 ||
-              parseFloat(rewardsBalNumber) > 0
-            )
-              ? "85px"
-              : 0,
-          }}
-        >
-          <EmptyStake />
-        </div>
-      )}
+      {isLoaded &&
+        (delegations && delegations.length > 0 ? (
+          <MyStakes rewards={rewards} accountInfo={accountInfo} />
+        ) : (
+          <div
+            style={{
+              paddingTop: !(
+                parseFloat(stakableBalNumber) > 0 ||
+                parseFloat(stakedBalNumber) > 0 ||
+                parseFloat(rewardsBalNumber) > 0
+              )
+                ? "85px"
+                : 0,
+            }}
+          >
+            <EmptyStake />
+          </div>
+        ))}
     </div>
   );
 });

@@ -14,6 +14,7 @@ import style from "../style.module.scss";
 import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
 import { observer } from "mobx-react-lite";
 import { txType } from "./constants";
+import { Skeleton } from "@components-v2/skeleton-loader";
 
 export const WalletDetailsView = observer(
   ({
@@ -226,7 +227,7 @@ export const WalletDetailsView = observer(
                 } else if (accountInfo.walletStatus === WalletStatus.Rejected) {
                   return "Unable to Load Key";
                 } else {
-                  return "Loading...";
+                  return <Skeleton height="21px" />;
                 }
               })()}
             </div>
@@ -266,28 +267,30 @@ export const WalletDetailsView = observer(
               </div>
               {accountInfo.walletStatus !== WalletStatus.Rejected && !isEvm && (
                 <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      cursor: "pointer",
-                      fontWeight: 400,
-                    }}
-                    onClick={() => copyAddress(accountInfo.bech32Address)}
-                  >
-                    <Address maxCharacters={16} lineBreakBeforePrefix={false}>
-                      {accountInfo.walletStatus === WalletStatus.Loaded &&
-                      accountInfo.bech32Address
-                        ? accountInfo.bech32Address
-                        : "..."}
-                    </Address>
-                    <img
-                      style={{ cursor: "pointer" }}
-                      src={require("@assets/svg/wireframe/copy.svg")}
-                      alt=""
-                    />
-                  </div>
+                  {accountInfo.walletStatus === WalletStatus.Loaded &&
+                  accountInfo.bech32Address ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        cursor: "pointer",
+                        fontWeight: 400,
+                      }}
+                      onClick={() => copyAddress(accountInfo.bech32Address)}
+                    >
+                      <Address maxCharacters={16} lineBreakBeforePrefix={false}>
+                        {accountInfo.bech32Address}
+                      </Address>
+                      <img
+                        style={{ cursor: "pointer" }}
+                        src={require("@assets/svg/wireframe/copy.svg")}
+                        alt=""
+                      />
+                    </div>
+                  ) : (
+                    <Skeleton height="21px" />
+                  )}
                 </div>
               )}
               {accountInfo.walletStatus !== WalletStatus.Rejected &&

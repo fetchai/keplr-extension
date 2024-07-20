@@ -102,7 +102,7 @@ export const DetailsTab: FunctionComponent<{
         <Label
           for="signing-messages"
           className="form-control-label"
-          style={{ display: "flex" }}
+          style={{ display: "flex", fontWeight: 400, fontSize: "14px" }}
         >
           {msgs.length} <FormattedMessage id="sign.list.messages.label" />
         </Label>

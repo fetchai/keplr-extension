@@ -42,7 +42,7 @@ export const ManageNetworks: FunctionComponent = observer(() => {
             searchTerm={cosmosSearchTerm}
             valuesArray={mainChainList}
             filterFunction={getFilteredChainValues}
-            itemsStyleProp={{ overflow: "auto", height: "360px" }}
+            itemsStyleProp={{ height: "360px" }}
             renderResult={(chainInfo, index) => (
               <Card
                 key={index}

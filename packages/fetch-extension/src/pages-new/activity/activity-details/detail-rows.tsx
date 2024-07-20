@@ -48,7 +48,7 @@ export const DetailRows = ({ details }: { details: any }) => {
         value={formatActivityHash(details.hash)}
       />
       <DetailRow label="Chain ID" value={details.chainId} />
-      {details.verb !== "Received" &&
+      {details.verb !== "Sent" &&
         details.verb !== "Unstaked" &&
         details.verb !== "Smart Contract Interaction" && (
           <React.Fragment>
@@ -69,10 +69,15 @@ export const DetailRows = ({ details }: { details: any }) => {
           </React.Fragment>
         )}
       <DetailRow
-        label="Total amount"
+        label={`Total ${details.verb === "Sent" ? "estimated" : "amount"}`}
         value={`${details.amountNumber} ${details.amountAlphabetic}`}
       />
-      <div className={style["buttons"]}>
+      <div
+        className={style["buttons"]}
+        style={{
+          marginTop: "32px",
+        }}
+      >
         {details.verb == "Staked" || details.verb == "Sent" ? (
           <div className={style["buttons"]} style={{ width: "100%" }}>
             <ButtonV2
@@ -83,7 +88,9 @@ export const DetailRows = ({ details }: { details: any }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                height: "48px",
                 gap: "4px",
+                marginTop: 0,
               }}
               text=""
               onClick={
@@ -116,6 +123,8 @@ export const DetailRows = ({ details }: { details: any }) => {
                 background: "transparent",
                 color: "white",
                 border: "1px solid rgba(255, 255, 255, 0.6",
+                height: "48px",
+                marginTop: 0,
               }}
               text=""
               onClick={handleClick}
@@ -129,6 +138,8 @@ export const DetailRows = ({ details }: { details: any }) => {
               background: "transparent",
               color: "white",
               border: "1px solid rgba(255, 255, 255, 0.6",
+              height: "48px",
+              marginTop: 0,
             }}
             onClick={handleClick}
             text=""
