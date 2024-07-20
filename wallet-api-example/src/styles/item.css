@@ -1,0 +1,30 @@
+.item {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.item-title {
+  padding: 12px;
+  font-size: 20px;
+
+  background: #f2f2f6;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+  padding: 16px;
+}
+
+input {
+  margin: 0;
+  border: 1px solid #09090a;
+  border-radius: 0.5rem;
+
+  padding: 0.75rem 0.75rem;
+}
