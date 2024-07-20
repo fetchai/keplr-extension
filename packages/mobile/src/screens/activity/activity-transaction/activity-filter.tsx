@@ -15,7 +15,6 @@ import { ClaimIcon } from "components/new/icon/claim-icon";
 import { IbcUpDownIcon } from "components/new/icon/ibc-up-down";
 import { FilterItem } from "screens/activity";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
-import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 
 export const activityFilterOptions: FilterItem[] = [
@@ -76,15 +75,13 @@ export const ActivityFilterView: FunctionComponent<{
   close: () => void;
   filters: FilterItem[];
   handleFilterChange: (selectedFilters: FilterItem[]) => void;
-}> = observer(({ isOpen, close, filters, handleFilterChange }) => {
+}> = ({ isOpen, close, filters, handleFilterChange }) => {
   const style = useStyle();
   const { chainStore, activityStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const [selectedFilter, setSelectedFilter] = useState<FilterItem[]>([
-    ...filters,
-  ]);
+  const [selectedFilter, setSelectedFilter] = useState<FilterItem[]>([]);
 
   const accountOrChainChanged =
     activityStore.getAddress !== accountInfo.bech32Address ||
@@ -93,6 +90,10 @@ export const ActivityFilterView: FunctionComponent<{
   useEffect(() => {
     setSelectedFilter(activityFilterOptions);
   }, [accountOrChainChanged]);
+
+  useEffect(() => {
+    setSelectedFilter(filters);
+  }, [isOpen]);
 
   const handleClicks = () => {
     const anyUnselected = selectedFilter.some(
@@ -104,7 +105,7 @@ export const ActivityFilterView: FunctionComponent<{
         isSelected: anyUnselected,
       })
     );
-    setSelectedFilter([...updatedFilters]);
+    setSelectedFilter(updatedFilters);
   };
 
   const allSelected = selectedFilter.every(
@@ -153,9 +154,15 @@ export const ActivityFilterView: FunctionComponent<{
           >
             <RectButton
               onPress={() => {
-                const updatedFilters = [...selectedFilter];
-                updatedFilters[index].isSelected =
-                  !updatedFilters[index].isSelected;
+                const updatedFilters: FilterItem[] = selectedFilter.map(
+                  (filter: FilterItem, tempIndex) => ({
+                    ...filter,
+                    isSelected:
+                      index === tempIndex
+                        ? !filter.isSelected
+                        : filter.isSelected,
+                  })
+                );
                 setSelectedFilter(updatedFilters);
               }}
               activeOpacity={0.5}
@@ -217,4 +224,4 @@ export const ActivityFilterView: FunctionComponent<{
       />
     </CardModal>
   );
-});
+};

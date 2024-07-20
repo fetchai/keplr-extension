@@ -43,6 +43,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
   const [graphHeight, setGraphHeight] = useState(4.2);
 
   const scrollViewRef = useRef<ScrollView | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentChain = chainStore.current;
   const currentChainId = currentChain.chainId;
@@ -111,31 +112,51 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
     }
   }, [chainStore.current.chainId]);
 
-  const onRefresh = React.useCallback(async () => {
-    // Because the components share the states related to the queries,
-    // fetching new query responses here would make query responses on all other components also refresh.
-    setRefreshing(true);
+  const onRefresh = React.useCallback(
+    async (isLoading: boolean) => {
+      // Because the components share the states related to the queries,
+      // fetching new query responses here would make query responses on all other components also refresh.
+      if (isLoading) setRefreshing(isLoading);
 
-    await Promise.all([
-      priceStore.waitFreshResponse(),
-      ...queries.queryBalances
-        .getQueryBech32Address(account.bech32Address)
-        .balances.map((bal) => {
-          return bal.waitFreshResponse();
-        }),
-      queries.cosmos.queryRewards
-        .getQueryBech32Address(account.bech32Address)
-        .waitFreshResponse(),
-      queries.cosmos.queryDelegations
-        .getQueryBech32Address(account.bech32Address)
-        .waitFreshResponse(),
-      queries.cosmos.queryUnbondingDelegations
-        .getQueryBech32Address(account.bech32Address)
-        .waitFreshResponse(),
-    ]).finally(() => {
-      setRefreshing(false);
-    });
-  }, [accountStore, chainStore, priceStore, queriesStore]);
+      await Promise.all([
+        priceStore.waitFreshResponse(),
+        ...queries.queryBalances
+          .getQueryBech32Address(account.bech32Address)
+          .balances.map((bal) => {
+            return bal.waitFreshResponse();
+          }),
+        queries.cosmos.queryRewards
+          .getQueryBech32Address(account.bech32Address)
+          .waitFreshResponse(),
+        queries.cosmos.queryDelegations
+          .getQueryBech32Address(account.bech32Address)
+          .waitFreshResponse(),
+        queries.cosmos.queryUnbondingDelegations
+          .getQueryBech32Address(account.bech32Address)
+          .waitFreshResponse(),
+      ]).finally(() => {
+        setRefreshing(false);
+      });
+    },
+    [accountStore, chainStore, priceStore, queriesStore]
+  );
+
+  /// 30 sec Auto-Refresh balances
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    onRefresh(false);
+    intervalRef.current = setInterval(() => onRefresh(false), 30000);
+
+    // Clean up the interval on component unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [chainStore.current.chainId]);
 
   /// Hide Refreshing when tab change
   useEffect(() => {
@@ -162,7 +183,7 @@ export const NewHomeScreen: FunctionComponent = observer(() => {
         <RefreshControl
           tintColor={"white"}
           refreshing={refreshing}
-          onRefresh={onRefresh}
+          onRefresh={() => onRefresh(true)}
           progressViewOffset={
             Platform.OS === "ios" ? safeAreaInsets.top + 10 : 48
           }

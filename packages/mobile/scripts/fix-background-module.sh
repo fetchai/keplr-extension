@@ -84,31 +84,6 @@ auto_lock_init_replacement="\/\/ $auto_lock_init"
 sed -i'' -e "s|$auto_lock_init_replacement|$auto_lock_init|g" "$file_path"
 sed -i'' -e "s|$auto_lock_init|$auto_lock_init_replacement|g" "$file_path"
 
-###################################################################
-# Umbral service
-umbral='import \* as Umbral from "\./umbral/internal";'
-umbral_replacement="\/\/ $umbral"
-sed -i'' -e "s|$umbral_replacement|$umbral|g" "$file_path"
-sed -i'' -e "s|$umbral|$umbral_replacement|g" "$file_path"
-
-###################################################################
-umbral_service='const umbralService = new Umbral.UmbralService(chainsService);'
-umbral_service_replacement="\/\/ $umbral_service"
-sed -i'' -e "s|$umbral_service_replacement|$umbral_service|g" "$file_path"
-sed -i'' -e "s|$umbral_service|$umbral_service_replacement|g" "$file_path"
-
-###################################################################
-umbral_sinit='Umbral.init(router, umbralService);'
-umbral_sinit_replacement="\/\/ $umbral_sinit"
-sed -i'' -e "s|$umbral_sinit_replacement|$umbral_sinit|g" "$file_path"
-sed -i'' -e "s|$umbral_sinit|$umbral_sinit_replacement|g" "$file_path"
-
-###################################################################
-umbral_init='await umbralService.init(keyRingService, permissionService);'
-umbral_init_replacement="\/\/ $umbral_init"
-sed -i'' -e "s|$umbral_init_replacement|$umbral_init|g" "$file_path"
-sed -i'' -e "s|$umbral_init|$umbral_init_replacement|g" "$file_path"
-
 # Removing index.ts-e file
 rm -rf "${DIR}/../../background/src/index.ts-e"
 

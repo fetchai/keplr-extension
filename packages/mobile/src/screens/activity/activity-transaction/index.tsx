@@ -1,9 +1,4 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -22,11 +17,13 @@ import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
 import { CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO } from "../../../config";
 
-const processFilters = (filters: string[]) => {
+const processFilters = (filters: FilterItem[]) => {
   let result: any[] = [];
-  filters.map((value) => {
-    result = result.concat(value.split(","));
-  });
+  filters
+    .filter((filter) => filter.isSelected)
+    .map((data) => {
+      result = result.concat(data.value.split(","));
+    });
   return result;
 };
 
@@ -45,14 +42,6 @@ export const ActivityNativeTab: FunctionComponent<{
   const [filters, setFilters] = useState<FilterItem[]>(activityFilterOptions);
   const [isLoading, setIsLoading] = useState(true);
 
-  const filter = useCallback(
-    () =>
-      filters
-        .filter((filter) => filter.isSelected)
-        .map((option) => option.value),
-    [filters]
-  )();
-
   const accountOrChainChanged =
     activityStore.getAddress !== accountInfo.bech32Address ||
     activityStore.getChainId !== current.chainId;
@@ -63,7 +52,7 @@ export const ActivityNativeTab: FunctionComponent<{
     setIsLoading(true);
     const timeout = setTimeout(() => {
       setActivities(activityStore.sortedNodes);
-    }, 100);
+    }, 3000);
     setIsLoading(false);
 
     return () => {
@@ -157,7 +146,7 @@ export const ActivityNativeTab: FunctionComponent<{
   };
 
   const data = activities.filter((node: any) =>
-    processFilters(filter).includes(node.transaction.messages.nodes[0].typeUrl)
+    processFilters(filters).includes(node.transaction.messages.nodes[0].typeUrl)
   );
 
   return (

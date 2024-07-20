@@ -15,7 +15,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { Buffer } from "buffer/";
 import { AddressInputCard } from "components/new/card-view/address-card";
 import { BlurButton } from "components/new/button/blur-button";
-import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { MemoInputView } from "components/new/card-view/memo-input";
 import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -25,6 +25,7 @@ import { txType } from "components/new/txn-status.tsx";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { IconButton } from "components/new/button/icon";
+import { clearDecimals } from "modals/sign/messages";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -85,18 +86,37 @@ export const SendPhase2: FunctionComponent<{
   );
 
   const usdValue = () => {
-    const amountConfig = sendConfigs.amountConfig;
-    const amount = parseFloat(amountConfig.amount);
-    const sendCurrency = amountConfig.sendCurrency;
-    return convertToUsd(
-      amountConfig
-        ? new CoinPretty(
-            amountConfig.sendCurrency,
-            new Int(amount * 10 ** decimals)
-          )
-        : new CoinPretty(sendCurrency, new Int(0))
-    );
+    try {
+      const amountConfig = sendConfigs.amountConfig;
+      const sendCurrency = amountConfig.sendCurrency;
+      let dec = new Dec(amountConfig.amount ? amountConfig.amount : "0");
+      dec = dec.mul(DecUtils.getTenExponentNInPrecisionRange(decimals));
+      const amountInNumber = dec.truncate().toString();
+
+      return convertToUsd(
+        amountConfig
+          ? new CoinPretty(amountConfig.sendCurrency, new Int(amountInNumber))
+          : new CoinPretty(sendCurrency, new Int(0))
+      );
+    } catch (e) {
+      console.log("Error:SendPhase:2", e);
+      return undefined;
+    }
   };
+
+  function getAmountLabel() {
+    const amountConfig = sendConfigs.amountConfig;
+    let dec = new Dec(amountConfig.amount ? amountConfig.amount : "0");
+    dec = dec.mul(DecUtils.getTenExponentNInPrecisionRange(decimals));
+    const amountInNumber = dec.truncate().toString();
+
+    return `${clearDecimals(
+      new CoinPretty(amountConfig.sendCurrency, new Int(amountInNumber))
+        .hideDenom(true)
+        .toString()
+    )} ${amountConfig.sendCurrency.coinDenom}`;
+  }
+
   useEffect(() => {
     if (sendConfigs.feeConfig.feeCurrency && !sendConfigs.feeConfig.fee) {
       sendConfigs.feeConfig.setFeeType("average");
@@ -221,9 +241,7 @@ export const SendPhase2: FunctionComponent<{
               style.flatten(["color-white@60%", "text-caption2"]) as ViewStyle
             }
           >
-            {`${parseFloat(sendConfigs.amountConfig.amount)
-              .toFixed(6)
-              .toString()} ${sendConfigs.amountConfig.sendCurrency.coinDenom}`}
+            {getAmountLabel()}
           </Text>
         </View>
         <BlurButton
@@ -285,7 +303,15 @@ export const SendPhase2: FunctionComponent<{
           </Text>
           <IconButton
             backgroundBlur={false}
-            icon={<GearIcon />}
+            icon={
+              <GearIcon
+                color={
+                  account.txTypeInProgress === "send"
+                    ? style.get("color-white@20%").color
+                    : "white"
+                }
+              />
+            }
             iconStyle={
               style.flatten([
                 "width-32",
@@ -293,13 +319,31 @@ export const SendPhase2: FunctionComponent<{
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                "border-color-white@40%",
+                account.txTypeInProgress === "send"
+                  ? "border-color-white@20%"
+                  : "border-color-white@40%",
               ]) as ViewStyle
             }
+            disable={account.txTypeInProgress === "send"}
             onPress={() => setFeeModal(true)}
           />
         </View>
       </View>
+      {sendConfigs.feeConfig.error ? (
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-red-250",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
+        >
+          {sendConfigs.feeConfig.error.message == "insufficient fee"
+            ? "Insufficient available balance for transaction fee"
+            : sendConfigs.feeConfig.error.message}
+        </Text>
+      ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
         text="Review transaction"
@@ -315,7 +359,11 @@ export const SendPhase2: FunctionComponent<{
         }
         textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
         rippleColor="black@50%"
-        disabled={!account.isReadyToSendTx || !txStateIsValid}
+        disabled={
+          !account.isReadyToSendTx ||
+          !txStateIsValid ||
+          account.bech32Address == sendConfigs.recipientConfig.recipient
+        }
         loading={account.txTypeInProgress === "send"}
         onPress={onSubmit}
       />

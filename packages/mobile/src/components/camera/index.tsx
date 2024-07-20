@@ -13,6 +13,7 @@ import { ScannerFrame } from "./scanner-frame";
 interface CameraProp extends CameraProps {
   containerBottom?: React.ReactElement;
   isLoading?: boolean;
+  scannerBottomText: string;
 }
 
 export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
@@ -22,7 +23,8 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
 
   const isFocused = useIsFocused();
 
-  const { children, containerBottom, isLoading, ...rest } = props;
+  const { children, containerBottom, isLoading, scannerBottomText, ...rest } =
+    props;
 
   return (
     <React.Fragment>
@@ -95,9 +97,7 @@ export const FullScreenCameraView: FunctionComponent<CameraProp> = (props) => {
               ]) as ViewStyle
             }
           >
-            {
-              "Send assets or connect to Fetch Wallet\nbrowser extension by scanning a QR code"
-            }
+            {scannerBottomText}
           </Text>
           {isLoading ? (
             <View

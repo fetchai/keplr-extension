@@ -12,6 +12,7 @@ export const IconButton: FunctionComponent<{
   backgroundBlur?: boolean;
   blurIntensity?: number;
   borderRadius?: number;
+  disable?: boolean;
   onPress?: () => void;
 }> = ({
   containerStyle,
@@ -22,6 +23,7 @@ export const IconButton: FunctionComponent<{
   backgroundBlur,
   blurIntensity = 30,
   borderRadius = 50,
+  disable = false,
   onPress,
 }) => {
   const style = useStyle();
@@ -30,15 +32,20 @@ export const IconButton: FunctionComponent<{
       <BlurBackground
         borderRadius={borderRadius}
         backgroundBlur={backgroundBlur}
-        blurIntensity={blurIntensity}
+        blurIntensity={!disable ? blurIntensity : blurIntensity}
         containerStyle={iconStyle}
-        onPress={onPress}
+        onPress={disable ? undefined : onPress}
       >
         {icon}
       </BlurBackground>
       {bottomText ? (
         <Text
-          style={[style.flatten(["color-white"]), bottomTextStyle] as ViewStyle}
+          style={
+            [
+              style.flatten([disable ? "color-white@20%" : "color-white"]),
+              bottomTextStyle,
+            ] as ViewStyle
+          }
         >
           {bottomText}
         </Text>

@@ -8,6 +8,7 @@ import {
 } from "../common";
 import { AccountSetBase, AccountSetBaseSuper, AccountSetOpts } from "./base";
 import { DeepReadonly, UnionToIntersection } from "utility-types";
+import { TokenGraphStore } from "src/token-graph";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface IAccountStore<T extends IObject = {}> {
@@ -22,7 +23,7 @@ export class AccountStore<
     AccountSetBaseSuper,
     // chainGetter: ChainGetter,
     // chainId: string,
-    [ChainGetter, string, ActivityStore],
+    [ChainGetter, string, ActivityStore, TokenGraphStore],
     Injects
   >;
 
@@ -33,12 +34,13 @@ export class AccountStore<
     },
     protected readonly chainGetter: ChainGetter,
     protected readonly activityStore: ActivityStore,
+    protected readonly tokenGraphStore: TokenGraphStore,
     protected readonly storeOptsCreator: (chainId: string) => AccountSetOpts,
     ...accountSetCreators: ChainedFunctionifyTuple<
       AccountSetBaseSuper,
       // chainGetter: ChainGetter,
       // chainId: string,
-      [ChainGetter, string, ActivityStore],
+      [ChainGetter, string, ActivityStore, TokenGraphStore],
       Injects
     >
   ) {
@@ -52,7 +54,7 @@ export class AccountStore<
 
       return mergeStores(
         accountSetBase,
-        [this.chainGetter, chainId, this.activityStore],
+        [this.chainGetter, chainId, this.activityStore, this.tokenGraphStore],
         ...this.accountSetCreators
       );
     });

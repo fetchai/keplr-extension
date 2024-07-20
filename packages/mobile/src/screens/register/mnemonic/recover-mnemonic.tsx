@@ -193,6 +193,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   };
 
   const handleOnChangeText = async (content: string, index: number) => {
+    setSeedWordsError(undefined);
     const isPasted = content.trim().includes(clipboardContent.current.trim());
     if (isPasted) {
       handlePaste(content);
@@ -326,7 +327,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
             }
             onPress={async () => {
               const text = await Clipboard.getStringAsync();
-              if (text) {
+              if (text.length > 0) {
                 handlePaste(text);
               }
             }}

@@ -240,6 +240,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
+        disable={account.txTypeInProgress === "undelegate"}
       />
       <MemoInputView
         label="Memo"
@@ -305,7 +306,15 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           </Text>
           <IconButton
             backgroundBlur={false}
-            icon={<GearIcon />}
+            icon={
+              <GearIcon
+                color={
+                  account.txTypeInProgress === "undelegate"
+                    ? style.get("color-white@20%").color
+                    : "white"
+                }
+              />
+            }
             iconStyle={
               style.flatten([
                 "width-32",
@@ -313,13 +322,31 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                "border-color-white@40%",
+                account.txTypeInProgress === "undelegate"
+                  ? "border-color-white@20%"
+                  : "border-color-white@40%",
               ]) as ViewStyle
             }
+            disable={account.txTypeInProgress === "undelegate"}
             onPress={() => setFeeModal(true)}
           />
         </View>
       </View>
+      {sendConfigs.feeConfig.error ? (
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-red-250",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
+        >
+          {sendConfigs.feeConfig.error.message == "insufficient fee"
+            ? "Insufficient available balance for transaction fee"
+            : sendConfigs.feeConfig.error.message}
+        </Text>
+      ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"
