@@ -120,9 +120,9 @@ import { BlockList } from "./pages/setting/chat/block";
 import { Privacy } from "./pages/setting/chat/privacy";
 import { ReadRecipt } from "./pages/setting/chat/readRecipt";
 import { SettingEndpointsPage } from "./pages/setting/endpoints";
-import { ExportToMobilePage } from "./pages/setting/export-to-mobile";
 import { StakeComplete } from "./pages/validator/stake-complete";
 import { DropdownContextProvider } from "@components-v2/dropdown/dropdown-context";
+import { ExportToMobilePage } from "./pages-new/more/export-to-mobile";
 
 window.keplr = new Keplr(
   manifest.version,
@@ -283,8 +283,9 @@ ReactDOM.render(
                           element={<AddressBookPage />}
                         />
                         <Route path="/activity" element={<ActivityPage />} />
+
                         <Route
-                          path="/setting/export-to-mobile"
+                          path="/more/export-to-mobile"
                           element={<ExportToMobilePage />}
                         />
                         <Route

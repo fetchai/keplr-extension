@@ -309,9 +309,9 @@ export const FeeButtonsInner: FunctionComponent<
                 width: "32px",
                 border: "1px solid rgba(255,255,255,0.4)",
                 borderRadius: "100%",
-                padding: "10px",
+                padding: "8px",
               }}
-              src={require("@assets/svg/wireframe/sort.svg")}
+              src={require("@assets/svg/wireframe/setting.svg")}
               alt="settings"
             />
           </div>

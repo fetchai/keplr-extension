@@ -12,6 +12,8 @@ import { useNotification } from "@components/notification";
 import { TXNTYPE } from "../../../config";
 import { Dropdown } from "@components-v2/dropdown";
 import { observer } from "mobx-react-lite";
+import { WalletStatus } from "@keplr-wallet/stores";
+import { Skeleton } from "@components-v2/skeleton-loader";
 
 export const Stats = observer(
   ({
@@ -81,20 +83,15 @@ export const Stats = observer(
     const { numericPart: rewardsBalNumber, denomPart: rewardDenom } =
       separateNumericAndDenom(rewardsBal);
 
-    const total =
-      parseFloat(stakableBalNumber) +
-      parseFloat(stakedBalNumber) +
-      parseFloat(rewardsBalNumber);
+    const stakableBalInUI = parseFloat(stakableBalNumber);
+    const stakedBalInUI = parseFloat(stakedBalNumber);
+    const rewardsBalInUI = parseFloat(rewardsBalNumber);
 
-    const stakablePercentage = total
-      ? (parseFloat(stakableBalNumber) / total) * 100
-      : 0;
-    const stakedPercentage = total
-      ? (parseFloat(stakedBalNumber) / total) * 100
-      : 0;
-    const rewardsPercentage = total
-      ? (parseFloat(rewardsBalNumber) / total) * 100
-      : 0;
+    const total = stakableBalInUI + stakedBalInUI + rewardsBalInUI;
+
+    const stakablePercentage = total ? (stakableBalInUI / total) * 100 : 0;
+    const stakedPercentage = total ? (stakedBalInUI / total) * 100 : 0;
+    const rewardsPercentage = total ? (rewardsBalInUI / total) * 100 : 0;
 
     const stakableInUSD = priceStore.calculatePrice(stakable)?.toString();
     const stakedInUSD = priceStore.calculatePrice(stakedSum)?.toString();
@@ -210,6 +207,11 @@ export const Stats = observer(
       }
     };
 
+    const isLoaded =
+      accountInfo.walletStatus === WalletStatus.Loaded &&
+      accountInfo.bech32Address &&
+      !rewards.isFetching;
+
     return (
       <div className={style["card"]}>
         <div className={style["heading"]}>STAKING</div>
@@ -238,24 +240,31 @@ export const Stats = observer(
                   }}
                 >
                   <div className={style["label"]}>Available</div>
-                  <div className={style["value"]}>
-                    {parseFloat(stakableBalNumber).toFixed(2)}{" "}
-                    {` ${stakableDenom} `}
-                    <span className={style["label"]}>
-                      ({stakablePercentage.toFixed(1)}%)
-                    </span>
-                  </div>
-                  {stakableInUSD !== undefined && stakableInUSD > "$0" ? (
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        color: "rgba(255,255,255,0.6)",
-                      }}
-                    >
-                      {stakableInUSD}
+                  {isLoaded ? (
+                    <div className={style["value"]}>
+                      {stakableBalInUI.toFixed(2)} {` ${stakableDenom} `}
+                      <span className={style["label"]}>
+                        ({stakablePercentage.toFixed(1)}%)
+                      </span>
                     </div>
-                  ) : null}
+                  ) : (
+                    <Skeleton height="17.5px" />
+                  )}
+                  {isLoaded ? (
+                    stakableInUSD !== undefined && stakableInUSD > "$0" ? (
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                          color: "rgba(255,255,255,0.6)",
+                        }}
+                      >
+                        {stakableInUSD}
+                      </div>
+                    ) : null
+                  ) : (
+                    <Skeleton height="21px" />
+                  )}
                 </div>
               </div>
               <div className={style["legend"]}>
@@ -275,25 +284,32 @@ export const Stats = observer(
                   }}
                 >
                   <div className={style["label"]}>Staked</div>
-                  <div className={style["value"]}>
-                    {parseFloat(stakedBalNumber).toFixed(2)}
-                    {` ${stakedDenom} `}
-                    <span className={style["label"]}>
-                      ({stakedPercentage.toFixed(1)}
-                      %)
-                    </span>
-                  </div>
-                  {stakedInUSD !== undefined && stakedInUSD > "$0" ? (
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        color: "rgba(255,255,255,0.6)",
-                      }}
-                    >
-                      {stakedInUSD}
+                  {isLoaded ? (
+                    <div className={style["value"]}>
+                      {stakedBalInUI.toFixed(2)} {` ${stakedDenom} `}
+                      <span className={style["label"]}>
+                        ({stakedPercentage.toFixed(1)}
+                        %)
+                      </span>
                     </div>
-                  ) : null}
+                  ) : (
+                    <Skeleton height="17.5px" />
+                  )}
+                  {isLoaded ? (
+                    stakedInUSD !== undefined && stakedInUSD > "$0" ? (
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                          color: "rgba(255,255,255,0.6)",
+                        }}
+                      >
+                        {stakedInUSD}
+                      </div>
+                    ) : null
+                  ) : (
+                    <Skeleton height="21px" />
+                  )}
                 </div>
               </div>
               <div className={style["legend"]}>
@@ -313,24 +329,31 @@ export const Stats = observer(
                   }}
                 >
                   <div className={style["label"]}>Staking rewards</div>
-                  <div className={style["value"]}>
-                    {parseFloat(rewardsBalNumber).toFixed(2)}{" "}
-                    {` ${rewardDenom} `}
-                    <span className={style["label"]}>
-                      ({rewardsPercentage.toFixed(1)}%)
-                    </span>
-                  </div>
-                  {rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        color: "rgba(255,255,255,0.6)",
-                      }}
-                    >
-                      {rewardsInUSD}
+                  {isLoaded ? (
+                    <div className={style["value"]}>
+                      {rewardsBalInUI.toFixed(2)} {` ${rewardDenom} `}
+                      <span className={style["label"]}>
+                        ({rewardsPercentage.toFixed(1)}%)
+                      </span>
                     </div>
-                  ) : null}
+                  ) : (
+                    <Skeleton height="17.5px" />
+                  )}
+                  {isLoaded ? (
+                    rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                          color: "rgba(255,255,255,0.6)",
+                        }}
+                      >
+                        {rewardsInUSD}
+                      </div>
+                    ) : null
+                  ) : (
+                    <Skeleton height="21px" />
+                  )}
                 </div>
               </div>
             </div>

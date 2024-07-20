@@ -6,7 +6,7 @@ import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
 import selectedHomeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
-import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
+import stakeTabIcon from "@assets/svg/wireframe/stake-bottom-icon-new.svg";
 import React, { useEffect, useState } from "react";
 import {
   CHAIN_ID_DORADO,
