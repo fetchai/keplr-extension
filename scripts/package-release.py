@@ -57,7 +57,7 @@ def main():
         sys.exit(1)
 
     # package up up the built extension
-    cmd = ['zip', '-r', output_filename, 'manifest-v2']
+    cmd = ['zip', '-r', output_filename, 'manifest-v3']
     subprocess.check_call(cmd, cwd=os.path.join(EXTENSION_ROOT, 'build'))
 
     # package up firefox extenson
