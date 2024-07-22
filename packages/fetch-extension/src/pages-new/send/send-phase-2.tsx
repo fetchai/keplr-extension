@@ -175,12 +175,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                 sendConfigs.amountConfig
                   ? new CoinPretty(
                       sendConfigs.amountConfig?.sendCurrency,
-                      BigInt(
-                        (
-                          sendConfigs.amountConfig.amount *
-                          10 ** decimals
-                        ).toString()
-                      )
+                      BigInt(sendConfigs.amountConfig.amount * 10 ** decimals)
                     )
                   : new CoinPretty(
                       sendConfigs.amountConfig?.sendCurrency,
