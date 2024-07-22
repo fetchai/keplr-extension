@@ -179,7 +179,7 @@ export const AssetView = observer(() => {
               justifyContent: "center",
               marginBottom: "48px",
             }}
-            onClick={() => navigate("/validators/validator")}
+            onClick={() => navigate("/validator/validator-list")}
             text={"Stake"}
           >
             <img
