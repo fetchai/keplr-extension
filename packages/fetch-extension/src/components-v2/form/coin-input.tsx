@@ -161,7 +161,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               <span>
                 {isToggleClicked === true
                   ? "USD"
-                  : amountConfig.sendCurrency.coinDenom}
+                  : amountConfig.sendCurrency.coinDenom.split(" ")[0]}
               </span>
             </div>
             <div className={styleCoinInput["amount-usd"]}>
