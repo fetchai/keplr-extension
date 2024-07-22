@@ -78,7 +78,7 @@ export const TabsPanel: React.FC<TabsProps> = ({
       <div
         style={{
           height: tabHeight ? tabHeight : "",
-          overflowY: tabHeight ? "scroll" : "auto",
+          overflowY: tabHeight ? "scroll" : "inherit",
         }}
       >
         {tabs.map((tab) => (
