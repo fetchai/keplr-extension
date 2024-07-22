@@ -49,18 +49,18 @@ export const BridgePage: FunctionComponent = observer(() => {
       onBackButton={() => {
         navigate(-1);
       }}
-      rightRenderer={
-        <img
-          className={style["history-icon"]}
-          onClick={(e) => {
-            e.preventDefault();
+      // rightRenderer={
+      //   <img
+      //     className={style["history-icon"]}
+      //     onClick={(e) => {
+      //       e.preventDefault();
 
-            navigate("/bridge-history");
-          }}
-          src={require("@assets/svg/wireframe/bridge-history.svg")}
-          alt=""
-        />
-      }
+      //       navigate("/bridge-history");
+      //     }}
+      //     src={require("@assets/svg/wireframe/bridge-history.svg")}
+      //     alt=""
+      //   />
+      // }
     >
       {isLoading ? (
         <p className={style["loaderScreen"]}>
