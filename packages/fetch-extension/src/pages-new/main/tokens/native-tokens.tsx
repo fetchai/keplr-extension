@@ -16,14 +16,18 @@ export const NativeTokens = observer(() => {
   useEffect(() => {
     if (nativeToken) {
       const fetchTokenImage = async () => {
-        const tokenImage = await getTokenIcon(
-          nativeToken.currency?.coinGeckoId
-        );
-        setTokenIcon(tokenImage);
+        if (nativeToken.currency.coinImageUrl) {
+          setTokenIcon(nativeToken.currency?.coinImageUrl);
+        } else {
+          const tokenImage = await getTokenIcon(
+            nativeToken.currency?.coinGeckoId
+          );
+          setTokenIcon(tokenImage);
+        }
       };
       fetchTokenImage();
     }
-  }, [nativeToken.currency?.coinGeckoId]);
+  }, [nativeToken.currency?.coinGeckoId, nativeToken.currency?.coinImageUrl]);
 
   const navigate = useNavigate();
 
