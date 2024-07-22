@@ -14,6 +14,7 @@ export interface TabsProps {
   setActiveTab?: any;
   onTabChange?: any;
   styleProps?: React.CSSProperties;
+  tabHeight?: string;
 }
 
 export const TabsPanel: React.FC<TabsProps> = ({
@@ -22,6 +23,7 @@ export const TabsPanel: React.FC<TabsProps> = ({
   setActiveTab,
   onTabChange,
   styleProps,
+  tabHeight,
 }) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(tabs[0].id);
 
@@ -73,7 +75,12 @@ export const TabsPanel: React.FC<TabsProps> = ({
           ))}
         </div>
       )}
-      <div>
+      <div
+        style={{
+          height: tabHeight ? tabHeight : "",
+          overflowY: tabHeight ? "scroll" : "auto",
+        }}
+      >
         {tabs.map((tab) => (
           <div
             key={tab.id}
