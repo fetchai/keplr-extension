@@ -151,7 +151,11 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 onChange={(e: any) => {
                   e.preventDefault();
 
-                  if (e.target.value < 10000000) {
+                  if (
+                    e.target.value < 10 ** 9 &&
+                    e.target.value >
+                      10 ** (-1 * amountConfig.sendCurrency.coinDecimals)
+                  ) {
                     isToggleClicked === true
                       ? parseDollarAmount(inputInUsd)
                       : amountConfig.setAmount(e.target.value);
