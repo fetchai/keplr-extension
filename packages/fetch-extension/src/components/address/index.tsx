@@ -34,9 +34,10 @@ export const Address: FunctionComponent<
     return (
       <ToolTip
         trigger="hover"
-        options={{ placement: "top" }}
+        options={{ placement: "top-end" }}
         tooltipStyle={{
           background: "#5F38FB",
+          width: "324px",
         }}
         tooltip={
           <div
