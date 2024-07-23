@@ -794,7 +794,9 @@ export const WasmExecutionMsgView: FunctionComponent<{
     <div>
       {isOpen ? (
         <React.Fragment>
-          <pre style={{ width: "280px" }}>{isOpen ? detailsMsg : ""}</pre>
+          <pre style={{ width: "280px", color: "white" }}>
+            {isOpen ? detailsMsg : ""}
+          </pre>
           {warningMsg ? <div>{warningMsg}</div> : null}
         </React.Fragment>
       ) : null}
