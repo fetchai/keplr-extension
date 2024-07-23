@@ -182,7 +182,6 @@ export const AddressInput: FunctionComponent<AddressInputProps> = observer(
             background: "rgba(255, 255, 255, 0.1)",
             color: "rgba(255, 255, 255, 0.6)",
             padding: "12px 18px",
-            marginBottom: "16px",
           }}
           heading={""}
           subheading={

@@ -337,7 +337,12 @@ export const FeeButtonsInner: FunctionComponent<
                 height: "54px",
               }}
               heading={
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   {feeSelectLabels.low}
                   <span
                     style={{
@@ -346,6 +351,11 @@ export const FeeButtonsInner: FunctionComponent<
                       color: "var(--grey-white, #FFF)",
                       fontSize: "12px",
                       marginLeft: "5px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "100px",
+                      display: "inline-block",
                     }}
                   >
                     {lowFeePrice && lowFeePrice.trim(true).toString()}
@@ -355,7 +365,15 @@ export const FeeButtonsInner: FunctionComponent<
               isActive={feeConfig.feeType === "low"}
               rightContent={
                 <div
-                  style={{ fontSize: "12px", fontWeight: 400, opacity: "0.6" }}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    opacity: "0.6",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "100px",
+                  }}
                 >
                   {lowFee
                     .hideIBCMetadata(true)
@@ -367,7 +385,12 @@ export const FeeButtonsInner: FunctionComponent<
             <Card
               isActive={feeConfig.feeType === "average"}
               heading={
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   {feeSelectLabels.average}{" "}
                   <span
                     style={{
@@ -376,6 +399,11 @@ export const FeeButtonsInner: FunctionComponent<
                       color: "var(--grey-white, #FFF)",
                       fontSize: "12px",
                       marginLeft: "5px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "100px",
+                      display: "inline-block",
                     }}
                   >
                     {averageFeePrice && averageFeePrice.trim(true).toString()}
@@ -392,7 +420,15 @@ export const FeeButtonsInner: FunctionComponent<
               }}
               rightContent={
                 <div
-                  style={{ fontSize: "12px", fontWeight: 400, opacity: "0.6" }}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    opacity: "0.6",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "100px",
+                  }}
                 >
                   {averageFee
                     .hideIBCMetadata(true)
@@ -404,7 +440,12 @@ export const FeeButtonsInner: FunctionComponent<
             <Card
               isActive={feeConfig.feeType === "high"}
               heading={
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   {feeSelectLabels.high}{" "}
                   <span
                     style={{
@@ -413,6 +454,11 @@ export const FeeButtonsInner: FunctionComponent<
                       color: "var(--grey-white, #FFF)",
                       fontSize: "12px",
                       marginLeft: "5px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "100px",
+                      display: "inline-block",
                     }}
                   >
                     {highFeePrice && highFeePrice.trim(true).toString()}
@@ -429,7 +475,15 @@ export const FeeButtonsInner: FunctionComponent<
               }}
               rightContent={
                 <div
-                  style={{ fontSize: "12px", fontWeight: 400, opacity: "0.6" }}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    opacity: "0.6",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "100px",
+                  }}
                 >
                   {highFee
                     .hideIBCMetadata(true)
