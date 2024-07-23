@@ -363,21 +363,25 @@ export class LedgerService {
     await delay(1000);
 
     while (true) {
-      const views = browser.extension.getViews();
-      let find = false;
-      for (const view of views) {
-        if (
-          view.location.href.includes(
-            browser.runtime.getURL("popup.html#/ledger-grant")
-          )
-        ) {
-          find = true;
-          break;
+      try {
+        const views = browser.extension.getViews();
+        let find = false;
+        for (const view of views) {
+          if (
+            view.location.href.includes(
+              browser.runtime.getURL("popup.html#/ledger-grant")
+            )
+          ) {
+            find = true;
+            break;
+          }
         }
-      }
 
-      if (!find) {
-        throw new Error("Ledger init aborted");
+        if (!find) {
+          throw new Error("Ledger init aborted");
+        }
+      } catch (e) {
+        console.log("testLedgerGrantUIOpened:error", e);
       }
 
       await delay(1000);
