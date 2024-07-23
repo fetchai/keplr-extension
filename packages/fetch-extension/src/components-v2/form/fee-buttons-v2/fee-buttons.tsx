@@ -594,6 +594,7 @@ export const FeeButtonsInner: FunctionComponent<
               setIsFeeDropdownOpen(false);
             }}
             btnBgEnabled={true}
+            disabled={errorText != null}
           />
         </Dropdown>
       </FormGroup>
