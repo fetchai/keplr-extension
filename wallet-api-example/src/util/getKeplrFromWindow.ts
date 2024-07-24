@@ -1,4 +1,4 @@
-import { FetchBrowserWallet } from "../../../packages/wallet-types";
+import { FetchBrowserWallet } from "@fetchai/wallet-types";
 
 export const getFetchWalletFromWindow: () => Promise<
   FetchBrowserWallet | undefined

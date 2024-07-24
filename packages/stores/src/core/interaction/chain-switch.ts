@@ -27,7 +27,7 @@ export class ChainSwitchStore {
 
     try {
       const data = this.waitingSuggestedChainId;
-
+      console.log(data);
       if (data) {
         yield this.interactionStore.approve(data.type, data.id, chainId);
       }
