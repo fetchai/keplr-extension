@@ -62,7 +62,7 @@ def main():
 
     # package up firefox extenson
     cmd = ['zip', '-r', firefox_output_filename, '.']
-    subprocess.check_call(cmd, cwd= os.path.join(EXTENSION_ROOT, 'build/manifest-v2'))
+    subprocess.check_call(cmd, cwd= os.path.join(EXTENSION_ROOT, 'build/firefox'))
 
 if __name__ == '__main__':
     main()
