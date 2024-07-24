@@ -226,6 +226,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
+        editable={!(account.txTypeInProgress === "undelegate")}
       />
       <Text
         style={
@@ -254,6 +255,8 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           ]) as ViewStyle
         }
         memoConfig={sendConfigs.memoConfig}
+        error={sendConfigs.memoConfig.error?.message}
+        editable={!(account.txTypeInProgress === "undelegate")}
       />
       <View
         style={

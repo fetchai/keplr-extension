@@ -82,7 +82,7 @@ export const AmountInputSection: FunctionComponent<{
       <TextInput
         style={
           style.flatten(
-            ["h2", "font-medium", "height-58", "flex-0"],
+            ["h2", "font-medium", "height-66", "flex-0", "text-center"],
             [errorText ? "color-red-250" : "color-white"]
           ) as ViewStyle
         }

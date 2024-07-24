@@ -251,10 +251,13 @@ export const SendPhase2: FunctionComponent<{
           containerStyle={
             style.flatten([
               "border-width-1",
-              "border-color-white@40%",
+              account.txTypeInProgress === "send"
+                ? "border-color-white@20%"
+                : "border-color-white@40%",
             ]) as ViewStyle
           }
           textStyle={style.flatten(["padding-x-14", "body3"]) as ViewStyle}
+          disable={account.txTypeInProgress === "send"}
           onPress={() => setIsNext(false)}
         />
       </View>
@@ -269,11 +272,15 @@ export const SendPhase2: FunctionComponent<{
           recipientConfig={sendConfigs.recipientConfig}
           memoConfig={sendConfigs.memoConfig}
           pageName="Send"
+          buttonDisable={account.txTypeInProgress === "send"}
+          editable={!(account.txTypeInProgress === "send")}
         />
         <MemoInputView
           label="Memo"
           placeholderText="Optional"
           memoConfig={sendConfigs.memoConfig}
+          error={sendConfigs.memoConfig.error?.message}
+          editable={!(account.txTypeInProgress === "send")}
         />
       </View>
       <View

@@ -218,6 +218,7 @@ export const TokenDetail: FunctionComponent = observer(() => {
             isOpenModal={isOpenModal}
             setIsOpenModal={setIsOpenModal}
           />
+          <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
         </React.Fragment>
       )}
     </PageWithScrollView>

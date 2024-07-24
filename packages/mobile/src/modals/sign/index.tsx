@@ -315,6 +315,7 @@ export const SignModal: FunctionComponent<{
           <MemoInputView
             label="Memo"
             memoConfig={memoConfig}
+            error={memoConfig.error?.message}
             containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
           />
           <FeeInSign

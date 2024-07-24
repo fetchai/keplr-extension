@@ -43,6 +43,7 @@ export const SendScreen: FunctionComponent = observer(() => {
     : chainStore.current.chainId;
   const state = route.params?.state ?? {
     isNext: false,
+    noChangeAccount: false,
     configs: {
       amount: undefined,
       recipient: undefined,
@@ -134,7 +135,11 @@ export const SendScreen: FunctionComponent = observer(() => {
       style={style.flatten(["padding-x-page"]) as ViewStyle}
     >
       {!isNext ? (
-        <SendPhase1 setIsNext={setIsNext} sendConfigs={sendConfigs} />
+        <SendPhase1
+          setIsNext={setIsNext}
+          sendConfigs={sendConfigs}
+          noChangeAccount={state.noChangeAccount}
+        />
       ) : (
         <SendPhase2 sendConfigs={sendConfigs} setIsNext={setIsNext} />
       )}

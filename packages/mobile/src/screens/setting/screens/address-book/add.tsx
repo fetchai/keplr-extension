@@ -80,6 +80,7 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
         label="Default memo (optional)"
         memoConfig={memoConfig}
         containerStyle={style.flatten(["margin-y-8"]) as ViewStyle}
+        error={memoConfig.error?.message}
       />
       <View style={style.flatten(["flex-1"])} />
       <Button

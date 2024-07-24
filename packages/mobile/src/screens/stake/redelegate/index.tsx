@@ -265,13 +265,22 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         heading={
           dstValidator ? dstValidator.description.moniker : "Choose validator"
         }
-        trailingIcon={<ChevronRightIcon color="white" />}
+        trailingIcon={
+          <ChevronRightIcon
+            color={
+              account.txTypeInProgress === "redelegate"
+                ? style.get("color-white@20%").color
+                : "white"
+            }
+          />
+        }
         onPress={() => {
           smartNavigation.navigateSmart("Validator.List", {
             prevSelectedValidator: srcValidator?.operator_address,
             selectedValidator: dstValidator?.operator_address,
           });
         }}
+        disable={account.txTypeInProgress === "redelegate"}
       />
       <StakeAmountInput
         label="Amount"
@@ -285,6 +294,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
+        editable={!(account.txTypeInProgress === "redelegate")}
       />
       <Text
         style={
@@ -313,6 +323,8 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           ]) as ViewStyle
         }
         memoConfig={sendConfigs.memoConfig}
+        error={sendConfigs.memoConfig.error?.message}
+        editable={!(account.txTypeInProgress === "redelegate")}
         containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
       />
       <View

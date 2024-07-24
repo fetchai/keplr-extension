@@ -1,5 +1,12 @@
 import React, { FunctionComponent, useState } from "react";
-import { Platform, Text, TextInput, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 
@@ -16,6 +23,9 @@ export const MemoInputView: FunctionComponent<{
   memoConfig: IMemoConfig;
   onFocus?: any;
   onBlur?: any;
+  editable?: boolean;
+  errorLabelStyle?: ViewStyle;
+  error?: string;
 }> = observer(
   ({
     label,
@@ -26,6 +36,9 @@ export const MemoInputView: FunctionComponent<{
     memoConfig,
     onFocus,
     onBlur,
+    editable = true,
+    error,
+    errorLabelStyle,
   }) => {
     const style = useStyle();
     const [isFocused, setIsFocused] = useState(false);
@@ -51,13 +64,14 @@ export const MemoInputView: FunctionComponent<{
             [
               style.flatten(
                 ["padding-x-18", "padding-y-12", "flex-row"],
-                isFocused
+                isFocused || error
                   ? [
                       // The order is important.
                       // The border color has different priority according to state.
                       // The more in front, the lower the priority.
                       "border-width-1",
                       isFocused ? "border-color-indigo" : undefined,
+                      error ? "border-color-red-250" : undefined,
                     ]
                   : []
               ),
@@ -92,6 +106,7 @@ export const MemoInputView: FunctionComponent<{
                 memoConfig.setMemo(removeEmojis(text));
               }}
               maxLength={100}
+              editable={editable}
               onFocus={(e) => {
                 setIsFocused(true);
 
@@ -109,6 +124,23 @@ export const MemoInputView: FunctionComponent<{
             />
           </View>
         </BlurBackground>
+        {error ? (
+          <View>
+            <Text
+              style={StyleSheet.flatten([
+                style.flatten([
+                  // "absolute",
+                  "text-caption2",
+                  "color-red-250",
+                  "margin-top-2",
+                ]) as ViewStyle,
+                errorLabelStyle,
+              ])}
+            >
+              {error}
+            </Text>
+          </View>
+        ) : null}
       </View>
     );
   }
