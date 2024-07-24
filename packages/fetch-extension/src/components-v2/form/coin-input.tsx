@@ -152,9 +152,11 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                   e.preventDefault();
 
                   if (
-                    e.target.value < 10 ** 9 &&
-                    e.target.value >
-                      10 ** (-1 * amountConfig.sendCurrency.coinDecimals)
+                    (e.target.value < 10 ** 9 &&
+                      e.target.value >
+                        10 ** (-1 * amountConfig.sendCurrency.coinDecimals)) ||
+                    e.target.value === "0" ||
+                    e.target.value === ""
                   ) {
                     isToggleClicked === true
                       ? parseDollarAmount(inputInUsd)

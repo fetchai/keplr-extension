@@ -835,7 +835,7 @@ export const UnknownMsgView: FunctionComponent<{ msg: object }> = ({ msg }) => {
 
   return (
     <div>
-      <pre style={{ width: "280px" }}>{prettyMsg}</pre>
+      <pre style={{ width: "280px", color: "white" }}>{prettyMsg}</pre>
     </div>
   );
 };
