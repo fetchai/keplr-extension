@@ -794,7 +794,9 @@ export const WasmExecutionMsgView: FunctionComponent<{
     <div>
       {isOpen ? (
         <React.Fragment>
-          <pre style={{ width: "280px" }}>{isOpen ? detailsMsg : ""}</pre>
+          <pre style={{ width: "280px", color: "white" }}>
+            {isOpen ? detailsMsg : ""}
+          </pre>
           {warningMsg ? <div>{warningMsg}</div> : null}
         </React.Fragment>
       ) : null}
@@ -833,7 +835,7 @@ export const UnknownMsgView: FunctionComponent<{ msg: object }> = ({ msg }) => {
 
   return (
     <div>
-      <pre style={{ width: "280px" }}>{prettyMsg}</pre>
+      <pre style={{ width: "280px", color: "white" }}>{prettyMsg}</pre>
     </div>
   );
 };

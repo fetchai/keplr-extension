@@ -43,7 +43,7 @@
   .validator-details {
     display: flex;
     align-items: center;
-    gap: 18px;
+    justify-content: space-between;
     align-self: stretch;
   }
 }

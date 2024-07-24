@@ -12,6 +12,8 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinMinimalDenom: "afet",
       coinDecimals: 18,
       coinGeckoId: "fetch-ai",
+      coinImageUrl:
+        "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
     },
     bip44: {
       coinType: 118,
@@ -23,6 +25,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "afet",
         coinDecimals: 18,
         coinGeckoId: "fetch-ai",
+        coinImageUrl:
+          "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
       },
       {
         coinDenom: "MOBX",
@@ -46,6 +50,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "afet",
         coinDecimals: 18,
         coinGeckoId: "fetch-ai",
+        coinImageUrl:
+          "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
         gasPriceStep: {
           low: 0,
           average: 5000000000,

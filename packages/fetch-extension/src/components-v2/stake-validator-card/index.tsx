@@ -97,7 +97,7 @@ export const StakeValidatorCard = ({
                 color: "rgba(255,255,255,0.8)",
               }}
             >
-              <Address maxCharacters={20}>{validatorAddress}</Address>
+              <Address maxCharacters={32}>{validatorAddress}</Address>
             </div>
           </div>
         </div>

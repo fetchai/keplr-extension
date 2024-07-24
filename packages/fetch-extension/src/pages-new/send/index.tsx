@@ -15,8 +15,8 @@ import queryString from "querystring";
 import { useGasSimulator, useSendTxConfig } from "@keplr-wallet/hooks";
 import {
   fitPopupWindow,
-  openPopupWindow,
-  PopupSize,
+  // openPopupWindow,
+  // PopupSize,
 } from "@keplr-wallet/popup";
 import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 
@@ -232,55 +232,55 @@ export const SendPage: FunctionComponent = observer(() => {
               isNext ? setIsNext(false) : navigate("/");
             }
       }
-      rightRenderer={
-        isDetachedPage ? undefined : (
-          <div
-            style={{
-              height: "64px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingRight: "18px",
-            }}
-          >
-            <div className={style["external-link-div"]}>
-              <img
-                src={require("@assets/svg/wireframe/external-link.svg")}
-                onClick={async (e) => {
-                  e.preventDefault();
+      // rightRenderer={
+      //   isDetachedPage ? undefined : (
+      //     <div
+      //       style={{
+      //         height: "64px",
+      //         display: "flex",
+      //         justifyContent: "center",
+      //         alignItems: "center",
+      //         paddingRight: "18px",
+      //       }}
+      //     >
+      //       <div className={style["external-link-div"]}>
+      //         <img
+      //           src={require("@assets/svg/wireframe/external-link.svg")}
+      //           onClick={async (e) => {
+      //             e.preventDefault();
 
-                  const windowInfo = await browser.windows.getCurrent();
+      //             const windowInfo = await browser.windows.getCurrent();
 
-                  let queryString = `?detached=true&defaultDenom=${sendConfigs.amountConfig.sendCurrency.coinMinimalDenom}`;
-                  if (sendConfigs.recipientConfig.rawRecipient) {
-                    queryString += `&defaultRecipient=${sendConfigs.recipientConfig.rawRecipient}`;
-                  }
-                  if (sendConfigs.amountConfig.amount) {
-                    queryString += `&defaultAmount=${sendConfigs.amountConfig.amount}`;
-                  }
-                  if (sendConfigs.memoConfig.memo) {
-                    queryString += `&defaultMemo=${sendConfigs.memoConfig.memo}`;
-                  }
+      //             let queryString = `?detached=true&defaultDenom=${sendConfigs.amountConfig.sendCurrency.coinMinimalDenom}`;
+      //             if (sendConfigs.recipientConfig.rawRecipient) {
+      //               queryString += `&defaultRecipient=${sendConfigs.recipientConfig.rawRecipient}`;
+      //             }
+      //             if (sendConfigs.amountConfig.amount) {
+      //               queryString += `&defaultAmount=${sendConfigs.amountConfig.amount}`;
+      //             }
+      //             if (sendConfigs.memoConfig.memo) {
+      //               queryString += `&defaultMemo=${sendConfigs.memoConfig.memo}`;
+      //             }
 
-                  await openPopupWindow(
-                    browser.runtime.getURL(`/popup.html#/send${queryString}`),
-                    undefined,
-                    {
-                      top: (windowInfo.top || 0) + 80,
-                      left:
-                        (windowInfo.left || 0) +
-                        (windowInfo.width || 0) -
-                        PopupSize.width -
-                        20,
-                    }
-                  );
-                  window.close();
-                }}
-              />
-            </div>
-          </div>
-        )
-      }
+      //             await openPopupWindow(
+      //               browser.runtime.getURL(`/popup.html#/send${queryString}`),
+      //               undefined,
+      //               {
+      //                 top: (windowInfo.top || 0) + 80,
+      //                 left:
+      //                   (windowInfo.left || 0) +
+      //                   (windowInfo.width || 0) -
+      //                   PopupSize.width -
+      //                   20,
+      //               }
+      //             );
+      //             window.close();
+      //           }}
+      //         />
+      //       </div>
+      //     </div>
+      //   )
+      // }
     >
       <form
         className={style["formContainer"]}

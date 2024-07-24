@@ -96,7 +96,7 @@ export const Card: React.FC<CardProps> = ({
         <div className={styles["rightSection"]}>
           {React.isValidElement(rightContent) ? (
             <div style={rightContentStyle}> {rightContent}</div>
-          ) : rightContent && rightContent.includes("chrome-extension://") ? (
+          ) : rightContent && rightContent.includes("extension://") ? (
             <img
               onClick={rightContentOnClick}
               src={rightContent}

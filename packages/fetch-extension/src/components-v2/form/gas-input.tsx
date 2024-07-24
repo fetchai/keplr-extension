@@ -42,7 +42,10 @@ export const GasInput: FunctionComponent<GasInputProps> = observer(
               min={0}
               value={gasConfig.gasRaw}
               onChange={(e) => {
-                gasConfig.setGas(e.target.value);
+                if (parseFloat(e.target.value) < 10 ** 18) {
+                  gasConfig.setGas(e.target.value);
+                }
+
                 e.preventDefault();
               }}
               autoComplete="off"
