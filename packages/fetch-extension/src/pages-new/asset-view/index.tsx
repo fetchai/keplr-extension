@@ -41,11 +41,16 @@ export const AssetView = observer(() => {
   }, [location.search]);
   useEffect(() => {
     const fetchTokenImage = async () => {
-      const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
-      setTokenIcon(tokenImage);
+      if (!!tokenIcon || !tokenInfo) return;
+      if (tokenInfo?.coinImageUrl) {
+        setTokenIcon(tokenInfo.coinImageUrl);
+      } else {
+        const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
+        setTokenIcon(tokenImage);
+      }
     };
     fetchTokenImage();
-  }, [tokenInfo?.coinGeckoId]);
+  }, [tokenInfo?.coinGeckoId, tokenInfo?.coinImageUrl]);
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(balances?.balance.toString());
 
@@ -179,7 +184,7 @@ export const AssetView = observer(() => {
               justifyContent: "center",
               marginBottom: "48px",
             }}
-            onClick={() => navigate("/validators/validator")}
+            onClick={() => navigate("/validator/validator-list")}
             text={"Stake"}
           >
             <img

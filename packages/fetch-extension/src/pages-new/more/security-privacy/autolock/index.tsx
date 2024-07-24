@@ -89,7 +89,7 @@ export const AutoLockPage: FunctionComponent = () => {
         >
           <Input
             className={style["inputField"]}
-            style={{ marginBottom: "75px" }}
+            // style={{ marginBottom: "75px" }}
             label={"Lock after (unit:minutes)"}
             min="0"
             {...register("duration", {
@@ -116,7 +116,14 @@ export const AutoLockPage: FunctionComponent = () => {
           />
           <ButtonV2
             styleProps={{
+              width: "336px",
+              padding: "12px",
               height: "56px",
+              margin: "0 auto",
+              position: "fixed",
+              bottom: "15px",
+              left: "0px",
+              right: "0px",
             }}
             data-loading={isLoading}
             text={""}

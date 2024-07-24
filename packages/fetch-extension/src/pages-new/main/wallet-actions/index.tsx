@@ -21,13 +21,13 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
 
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
-    const queryBalances = queries.queryBalances.getQueryBech32Address(
-      accountInfo.bech32Address
-    );
-    const hasAssets =
-      queryBalances.balances.find((bal) =>
-        bal.balance.toDec().gt(new Dec(0))
-      ) !== undefined;
+    // const queryBalances = queries.queryBalances.getQueryBech32Address(
+    //   accountInfo.bech32Address
+    // );
+    // const hasAssets =
+    //   queryBalances.balances.find((bal) =>
+    //     bal.balance.toDec().gt(new Dec(0))
+    //   ) !== undefined;
 
     const stakable = queries.queryBalances.getQueryBech32Address(
       accountInfo.bech32Address
@@ -66,6 +66,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
             heading={"Send"}
             onClick={() => navigate("/send")}
           />
+
           <Card
             leftImageStyle={{ background: "transparent", height: "16px" }}
             style={{
@@ -76,9 +77,7 @@ export const WalletActions: React.FC<WalletActionsProps> = observer(
             leftImage={require("@assets/svg/wireframe/arrow-down.svg")}
             heading={"Receive"}
             onClick={() => {
-              if (hasAssets) {
-                navigate("/receive");
-              }
+              navigate("/receive");
             }}
           />
 

@@ -143,7 +143,7 @@ export const ValidatorData = observer(
               </div>
               <ToolTip
                 trigger="hover"
-                options={{ placement: "bottom-start" }}
+                options={{ placement: "bottom-end" }}
                 tooltip={
                   <div className={style["tooltip"]}>
                     {validator.operator_address}

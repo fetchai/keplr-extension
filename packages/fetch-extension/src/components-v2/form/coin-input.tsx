@@ -150,9 +150,18 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 }
                 onChange={(e: any) => {
                   e.preventDefault();
-                  isToggleClicked === true
-                    ? parseDollarAmount(inputInUsd)
-                    : amountConfig.setAmount(e.target.value);
+
+                  if (
+                    (e.target.value < 10 ** 9 &&
+                      e.target.value >
+                        10 ** (-1 * amountConfig.sendCurrency.coinDecimals)) ||
+                    e.target.value === "0" ||
+                    e.target.value === ""
+                  ) {
+                    isToggleClicked === true
+                      ? parseDollarAmount(inputInUsd)
+                      : amountConfig.setAmount(e.target.value);
+                  }
                 }}
                 min={0}
                 autoComplete="off"
@@ -161,7 +170,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               <span>
                 {isToggleClicked === true
                   ? "USD"
-                  : amountConfig.sendCurrency.coinDenom}
+                  : amountConfig.sendCurrency.coinDenom.split(" ")[0]}
               </span>
             </div>
             <div className={styleCoinInput["amount-usd"]}>

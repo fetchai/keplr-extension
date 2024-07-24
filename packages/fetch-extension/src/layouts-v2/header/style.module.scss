@@ -26,8 +26,11 @@
 
   .title {
     font-size: 24px;
-
+    width: 235px;
     margin-right: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &.small {
       font-size: 16px;
