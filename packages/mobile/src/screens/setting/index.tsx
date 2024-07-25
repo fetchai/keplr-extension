@@ -20,6 +20,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { ConfirmCardModel } from "components/new/confirm-modal";
+import { GuideIcon } from "components/new/icon/guide-icon";
 
 export const SettingScreen: FunctionComponent = observer(() => {
   const {
@@ -140,6 +141,18 @@ export const SettingScreen: FunctionComponent = observer(() => {
         />
       ) : null}
       <SettingSectionTitle title="Others" />
+      <SettingItem
+        label="Guide"
+        left={<GuideIcon />}
+        onPress={() =>
+          navigation.navigate("Others", {
+            screen: "WebView",
+            params: {
+              url: "https://fetch.ai/docs/guides/fetch-network/fetch-wallet/fetch-wallet-getting-started",
+            },
+          })
+        }
+      />
       <SettingItem
         label="Fetch Wallet version"
         left={<BranchIcon size={16} />}

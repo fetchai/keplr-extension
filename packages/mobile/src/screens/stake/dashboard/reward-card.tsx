@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { useStyle } from "styles/index";
 import { GradientButton } from "components/new/button/gradient-button";
@@ -95,7 +95,6 @@ export const MyRewardCard: FunctionComponent<{
     separateNumericAndDenom(
       pendingStakableReward.shrink(true).maxDecimals(6).trim(true).toString()
     );
-
   const handleAllClaim = async () => {
     if (!networkIsConnected) {
       Toast.show({
@@ -207,47 +206,62 @@ export const MyRewardCard: FunctionComponent<{
           >
             Staking rewards
           </Text>
-          <View style={style.flatten(["flex-row"])}>
-            <AnimatedNumber
-              numberForAnimated={
-                pendingStakableRewardUSD
-                  ? pendingStakableRewardUSD
-                      .shrink(true)
-                      .maxDecimals(6)
-                      .trim(true)
-                      .toString()
-                  : totalNumber
-              }
-              includeComma={true}
-              decimalAmount={2}
-              gap={0}
-              colorValue={"white"}
-              fontSizeValue={14}
-              hookName={"withTiming"}
-              withTimingProps={{
-                durationValue: 1000,
-                easingValue: "linear",
-              }}
-            />
-            <Text
+          {pendingStakableReward.isReady ? (
+            <View style={style.flatten(["flex-row"])}>
+              <AnimatedNumber
+                numberForAnimated={
+                  pendingStakableRewardUSD
+                    ? pendingStakableRewardUSD
+                        .shrink(true)
+                        .maxDecimals(6)
+                        .trim(true)
+                        .toString()
+                    : totalNumber
+                }
+                includeComma={true}
+                decimalAmount={2}
+                gap={0}
+                colorValue={"white"}
+                fontSizeValue={14}
+                hookName={"withTiming"}
+                withTimingProps={{
+                  durationValue: 1000,
+                  easingValue: "linear",
+                }}
+              />
+              <Text
+                style={
+                  [
+                    style.flatten([
+                      "body3",
+                      "padding-left-4",
+                      "color-gray-300",
+                    ]),
+                    { lineHeight: 16 },
+                  ] as ViewStyle
+                }
+              >
+                {pendingStakableRewardUSD
+                  ? priceStore.defaultVsCurrency.toUpperCase()
+                  : totalDenom}
+              </Text>
+            </View>
+          ) : (
+            <ActivityIndicator
+              size="small"
+              color={style.get("color-white").color}
               style={
-                [
-                  style.flatten(["body3", "padding-left-4", "color-gray-300"]),
-                  { lineHeight: 16 },
-                ] as ViewStyle
+                style.flatten(["margin-left-12", "items-start"]) as ViewStyle
               }
-            >
-              {pendingStakableRewardUSD
-                ? priceStore.defaultVsCurrency.toUpperCase()
-                : totalDenom}
-            </Text>
-          </View>
+            />
+          )}
         </View>
         {!(
           !account.isReadyToSendTx ||
           pendingStakableReward.toDec().equals(new Dec(0)) ||
           stakable.toDec().lte(new Dec(0)) ||
-          queryReward.pendingRewardValidatorAddresses.length === 0
+          queryReward.pendingRewardValidatorAddresses.length === 0 ||
+          !pendingStakableReward.isReady
         ) ? (
           <GradientButton
             text={"Claim all"}
@@ -293,7 +307,8 @@ export const MyRewardCard: FunctionComponent<{
         pendingStakableReward.toDec().equals(new Dec(0)) ||
         stakable.toDec().lte(new Dec(0)) ||
         queryReward.pendingRewardValidatorAddresses.length === 0 ||
-        delegations.length === 0
+        delegations.length === 0 ||
+        !pendingStakableReward.isReady
       ) ? (
         <TouchableOpacity
           onPress={() => setShowRewards(!showRewars)}

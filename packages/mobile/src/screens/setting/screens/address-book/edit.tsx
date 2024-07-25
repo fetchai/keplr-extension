@@ -15,8 +15,9 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
 import { InputCardView } from "components/new/card-view/input-card";
 import { MemoInputView } from "components/new/card-view/memo-input";
+import { observer } from "mobx-react-lite";
 
-export const EditAddressBookScreen: FunctionComponent = () => {
+export const EditAddressBookScreen: FunctionComponent = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -159,4 +160,4 @@ export const EditAddressBookScreen: FunctionComponent = () => {
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
-};
+});

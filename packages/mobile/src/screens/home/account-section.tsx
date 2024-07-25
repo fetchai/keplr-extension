@@ -412,61 +412,73 @@ export const AccountSection: FunctionComponent<{
         />
       )}
       <View style={style.flatten(["items-center"]) as ViewStyle}>
-        <View
-          style={
-            style.flatten([
-              "flex-row",
-              "margin-top-32",
-              "justify-center",
-              "width-full",
-              "items-center",
-            ]) as ViewStyle
-          }
-        >
-          <AnimatedNumber
-            numberForAnimated={parseFloat(totalNumber)}
-            includeComma={true}
-            decimalAmount={2}
-            gap={0}
-            colorValue={"white"}
-            fontSizeValue={32}
-            hookName={"withTiming"}
-            withTimingProps={{
-              durationValue: 1000,
-              easingValue: "linear",
-            }}
-          />
-          <Text
-            style={
-              [
+        {total.isReady ? (
+          <React.Fragment>
+            <View
+              style={
                 style.flatten([
-                  "h1",
-                  "color-new-gray-700",
-                  "margin-left-8",
-                  "font-normal",
-                ]),
-                { lineHeight: 35 },
-              ] as ViewStyle
-            }
-          >
-            {totalDenom}
-          </Text>
-        </View>
-        <View style={style.flatten(["flex-row", "margin-y-6"]) as ViewStyle}>
-          <Text
-            style={
-              style.flatten([
-                "color-white@60%",
-                "body2",
-                "width-full",
-                "text-center",
-              ]) as ViewStyle
-            }
-          >
-            {totalPrice &&
-              ` ${totalPrice.toString()} ${priceStore.defaultVsCurrency.toUpperCase()}`}
-          </Text>
-        </View>
+                  "flex-row",
+                  "margin-top-32",
+                  "justify-center",
+                  "width-full",
+                  "items-center",
+                ]) as ViewStyle
+              }
+            >
+              <AnimatedNumber
+                numberForAnimated={parseFloat(totalNumber)}
+                includeComma={true}
+                decimalAmount={2}
+                gap={0}
+                colorValue={"white"}
+                fontSizeValue={32}
+                hookName={"withTiming"}
+                withTimingProps={{
+                  durationValue: 1000,
+                  easingValue: "linear",
+                }}
+              />
+              <Text
+                style={
+                  [
+                    style.flatten([
+                      "h1",
+                      "color-new-gray-700",
+                      "margin-left-8",
+                      "font-normal",
+                    ]),
+                    { lineHeight: 35 },
+                  ] as ViewStyle
+                }
+              >
+                {totalDenom}
+              </Text>
+            </View>
+            <View
+              style={style.flatten(["flex-row", "margin-y-6"]) as ViewStyle}
+            >
+              <Text
+                style={
+                  style.flatten([
+                    "color-white@60%",
+                    "body2",
+                    "width-full",
+                    "text-center",
+                  ]) as ViewStyle
+                }
+              >
+                {totalPrice &&
+                  ` ${totalPrice.toString()} ${priceStore.defaultVsCurrency.toUpperCase()}`}
+              </Text>
+            </View>
+          </React.Fragment>
+        ) : (
+          <ActivityIndicator
+            size="large"
+            color={style.get("color-white").color}
+            style={style.flatten(["margin-y-32"]) as ViewStyle}
+          />
+        )}
         {tokenState ? (
           <View
             style={

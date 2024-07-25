@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { useStyle } from "styles/index";
 import { CardDivider } from "components/card";
@@ -129,56 +129,78 @@ export const StakeCard: FunctionComponent = () => {
             >
               Available
             </Text>
-            <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
-              <AnimatedNumber
-                numberForAnimated={parseFloat(
-                  parseFloat(stakableBalNumber).toFixed(2)
-                )}
-                includeComma={true}
-                decimalAmount={2}
-                gap={0}
-                colorValue={"white"}
-                fontSizeValue={16}
-                fontWeight="500"
-                hookName={"withTiming"}
-                withTimingProps={{
-                  durationValue: 1000,
-                  easingValue: "linear",
-                }}
-                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
+            {stakable.isReady ? (
+              <React.Fragment>
+                <View
+                  style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
+                >
+                  <AnimatedNumber
+                    numberForAnimated={parseFloat(
+                      parseFloat(stakableBalNumber).toFixed(2)
+                    )}
+                    includeComma={true}
+                    decimalAmount={2}
+                    gap={0}
+                    colorValue={"white"}
+                    fontSizeValue={16}
+                    fontWeight="500"
+                    hookName={"withTiming"}
+                    withTimingProps={{
+                      durationValue: 1000,
+                      easingValue: "linear",
+                    }}
+                    containerStyle={
+                      style.flatten(["margin-right-4"]) as ViewStyle
+                    }
+                  />
+                  <Text
+                    style={
+                      [
+                        style.flatten([
+                          "color-white",
+                          "subtitle2",
+                          "margin-right-4",
+                        ]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`${stakableDenom}`}
+                  </Text>
+                  <Text
+                    style={
+                      [
+                        style.flatten(["color-white@60%", "subtitle2"]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`(${stakablePercentage.toFixed(2)}%)`}
+                  </Text>
+                </View>
+                {priceStore.calculatePrice(stakable)?.toString() ? (
+                  <Text
+                    style={
+                      style.flatten(["color-white@60%", "body3"]) as ViewStyle
+                    }
+                  >
+                    {priceStore.calculatePrice(stakable)?.toString()}
+                  </Text>
+                ) : null}
+              </React.Fragment>
+            ) : (
+              <ActivityIndicator
+                size="small"
+                color={style.get("color-white").color}
+                style={
+                  style.flatten([
+                    "margin-top-4",
+                    "margin-left-12",
+                    "items-start",
+                  ]) as ViewStyle
+                }
               />
-              <Text
-                style={
-                  [
-                    style.flatten([
-                      "color-white",
-                      "subtitle2",
-                      "margin-right-4",
-                    ]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`${stakableDenom}`}
-              </Text>
-              <Text
-                style={
-                  [
-                    style.flatten(["color-white@60%", "subtitle2"]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`(${stakablePercentage.toFixed(2)}%)`}
-              </Text>
-            </View>
-            {priceStore.calculatePrice(stakable)?.toString() ? (
-              <Text
-                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
-              >
-                {priceStore.calculatePrice(stakable)?.toString()}
-              </Text>
-            ) : null}
+            )}
           </View>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
@@ -195,57 +217,79 @@ export const StakeCard: FunctionComponent = () => {
             >
               Staked
             </Text>
-            <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
-              <AnimatedNumber
-                numberForAnimated={parseFloat(
-                  parseFloat(stakedBalNumber).toFixed(2)
-                )}
-                includeComma={true}
-                decimalAmount={2}
-                gap={0}
-                colorValue={"white"}
-                fontSizeValue={16}
-                fontWeight="500"
-                hookName={"withTiming"}
-                withTimingProps={{
-                  durationValue: 1000,
-                  easingValue: "linear",
-                }}
-                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
-              />
-              <Text
-                style={
-                  [
-                    style.flatten([
-                      "color-white",
-                      "subtitle2",
-                      "margin-right-4",
-                    ]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`${stakedDenom}`}
-              </Text>
-              <Text
-                style={
-                  [
-                    style.flatten(["color-white@60%", "subtitle2"]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`(${stakedPercentage.toFixed(2)}%)`}
-              </Text>
-            </View>
+            {stakedSum.isReady ? (
+              <React.Fragment>
+                <View
+                  style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
+                >
+                  <AnimatedNumber
+                    numberForAnimated={parseFloat(
+                      parseFloat(stakedBalNumber).toFixed(2)
+                    )}
+                    includeComma={true}
+                    decimalAmount={2}
+                    gap={0}
+                    colorValue={"white"}
+                    fontSizeValue={16}
+                    fontWeight="500"
+                    hookName={"withTiming"}
+                    withTimingProps={{
+                      durationValue: 1000,
+                      easingValue: "linear",
+                    }}
+                    containerStyle={
+                      style.flatten(["margin-right-4"]) as ViewStyle
+                    }
+                  />
+                  <Text
+                    style={
+                      [
+                        style.flatten([
+                          "color-white",
+                          "subtitle2",
+                          "margin-right-4",
+                        ]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`${stakedDenom}`}
+                  </Text>
+                  <Text
+                    style={
+                      [
+                        style.flatten(["color-white@60%", "subtitle2"]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`(${stakedPercentage.toFixed(2)}%)`}
+                  </Text>
+                </View>
 
-            {priceStore.calculatePrice(stakedSum)?.toString() ? (
-              <Text
-                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
-              >
-                {priceStore.calculatePrice(stakedSum)?.toString()}
-              </Text>
-            ) : null}
+                {priceStore.calculatePrice(stakedSum)?.toString() ? (
+                  <Text
+                    style={
+                      style.flatten(["color-white@60%", "body3"]) as ViewStyle
+                    }
+                  >
+                    {priceStore.calculatePrice(stakedSum)?.toString()}
+                  </Text>
+                ) : null}
+              </React.Fragment>
+            ) : (
+              <ActivityIndicator
+                size="small"
+                color={style.get("color-white").color}
+                style={
+                  style.flatten([
+                    "margin-top-4",
+                    "margin-left-12",
+                    "items-start",
+                  ]) as ViewStyle
+                }
+              />
+            )}
           </View>
         </View>
         <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
@@ -262,64 +306,78 @@ export const StakeCard: FunctionComponent = () => {
             >
               Staking rewards
             </Text>
-            <View
-              style={
-                style.flatten([
-                  "flex-row",
-                  "flex-wrap",
-                  "items-center",
-                ]) as ViewStyle
-              }
-            >
-              <AnimatedNumber
-                numberForAnimated={parseFloat(
-                  parseFloat(rewardsBalNumber).toFixed(2)
-                )}
-                includeComma={true}
-                decimalAmount={2}
-                gap={0}
-                colorValue={"white"}
-                fontSizeValue={16}
-                fontWeight="500"
-                hookName={"withTiming"}
-                withTimingProps={{
-                  durationValue: 1000,
-                  easingValue: "linear",
-                }}
-                containerStyle={style.flatten(["margin-right-4"]) as ViewStyle}
+            {stakableReward.isReady ? (
+              <React.Fragment>
+                <View
+                  style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
+                >
+                  <AnimatedNumber
+                    numberForAnimated={parseFloat(
+                      parseFloat(rewardsBalNumber).toFixed(2)
+                    )}
+                    includeComma={true}
+                    decimalAmount={2}
+                    gap={0}
+                    colorValue={"white"}
+                    fontSizeValue={16}
+                    fontWeight="500"
+                    hookName={"withTiming"}
+                    withTimingProps={{
+                      durationValue: 1000,
+                      easingValue: "linear",
+                    }}
+                    containerStyle={
+                      style.flatten(["margin-right-4"]) as ViewStyle
+                    }
+                  />
+                  <Text
+                    style={
+                      [
+                        style.flatten([
+                          "color-white",
+                          "subtitle2",
+                          "margin-right-4",
+                        ]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`${rewardDenom}`}
+                  </Text>
+                  <Text
+                    style={
+                      [
+                        style.flatten(["color-white@60%", "subtitle2"]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`(${rewardsPercentage.toFixed(2)}%)`}
+                  </Text>
+                </View>
+                {priceStore.calculatePrice(stakableReward)?.toString() ? (
+                  <Text
+                    style={
+                      style.flatten(["color-white@60%", "body3"]) as ViewStyle
+                    }
+                  >
+                    {priceStore.calculatePrice(stakableReward)?.toString()}
+                  </Text>
+                ) : null}
+              </React.Fragment>
+            ) : (
+              <ActivityIndicator
+                size="small"
+                color={style.get("color-white").color}
+                style={
+                  style.flatten([
+                    "margin-top-4",
+                    "margin-left-12",
+                    "items-start",
+                  ]) as ViewStyle
+                }
               />
-              <Text
-                style={
-                  [
-                    style.flatten([
-                      "color-white",
-                      "subtitle2",
-                      "margin-right-4",
-                    ]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`${rewardDenom}`}
-              </Text>
-              <Text
-                style={
-                  [
-                    style.flatten(["color-white@60%", "subtitle2"]),
-                    { lineHeight: 18 },
-                  ] as ViewStyle
-                }
-              >
-                {`(${rewardsPercentage.toFixed(2)}%)`}
-              </Text>
-            </View>
-            {priceStore.calculatePrice(stakableReward)?.toString() ? (
-              <Text
-                style={style.flatten(["color-white@60%", "body3"]) as ViewStyle}
-              >
-                {priceStore.calculatePrice(stakableReward)?.toString()}
-              </Text>
-            ) : null}
+            )}
           </View>
         </View>
       </View>

@@ -79,7 +79,7 @@ export const DelegationsCard: FunctionComponent<{
       }
 
       return data;
-    }, [validators]);
+    }, [delegations, validators]);
 
     return (
       <React.Fragment>
