@@ -7,10 +7,9 @@ import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
 import { separateNumericAndDenom } from "utils/format/format";
-import { observer } from "mobx-react-lite";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 
-export const StakeCard: FunctionComponent = observer(() => {
+export const StakeCard: FunctionComponent = () => {
   const style = useStyle();
 
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
@@ -345,4 +344,4 @@ export const StakeCard: FunctionComponent = observer(() => {
       </View>
     </View>
   );
-});
+};

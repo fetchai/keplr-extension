@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { observer } from "mobx-react-lite";
 import { Platform, Text, View, ViewStyle } from "react-native";
 import {
   BridgeAmountError,
@@ -20,7 +19,7 @@ import { UseMaxButton } from "../button/use-max-button";
 
 export const AmountInputSection: FunctionComponent<{
   amountConfig: IAmountConfig;
-}> = observer(({ amountConfig }) => {
+}> = ({ amountConfig }) => {
   const style = useStyle();
   const { priceStore } = useStore();
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
@@ -204,4 +203,4 @@ export const AmountInputSection: FunctionComponent<{
       />
     </React.Fragment>
   );
-});
+};

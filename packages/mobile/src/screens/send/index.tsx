@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
 import { useSendTxConfig } from "@keplr-wallet/hooks";
 import { useStore } from "stores/index";
 import {
@@ -17,6 +16,7 @@ import { useStyle } from "styles/index";
 import { HeaderBackButtonIcon } from "components/header/icon";
 import { State, useSmartNavigation } from "navigation/smart-navigation";
 import { IconButton } from "components/new/button/icon";
+import { observer } from "mobx-react-lite";
 
 export const SendScreen: FunctionComponent = observer(() => {
   const [isNext, setIsNext] = useState(false);

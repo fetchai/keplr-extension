@@ -6,7 +6,6 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { observer } from "mobx-react-lite";
 import { useStyle } from "styles/index";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { ChipButton } from "components/new/chip";
@@ -56,7 +55,7 @@ export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
   tokenState: any;
   setGraphHeight: any;
-}> = observer(({ containerStyle, tokenState, setGraphHeight }) => {
+}> = ({ containerStyle, tokenState, setGraphHeight }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
@@ -647,4 +646,4 @@ export const AccountSection: FunctionComponent<{
       />
     </View>
   );
-});
+};

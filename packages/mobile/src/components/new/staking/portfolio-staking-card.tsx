@@ -19,10 +19,11 @@ import {
 } from "@react-navigation/native";
 import { StakeCard } from "screens/stake/dashboard/stake-card";
 import { txType } from "components/new/txn-status.tsx";
+import { observer } from "mobx-react-lite";
 
 export const PortfolioStakingCard: FunctionComponent<{
   cardStyle?: ViewStyle;
-}> = ({ cardStyle }) => {
+}> = observer(({ cardStyle }) => {
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [showClaimModel, setClaimModel] = useState(false);
 
@@ -217,4 +218,4 @@ export const PortfolioStakingCard: FunctionComponent<{
       />
     </BlurBackground>
   );
-};
+});

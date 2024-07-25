@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { observer } from "mobx-react-lite";
 import { Text, View, ViewStyle } from "react-native";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { useStyle } from "styles/index";
@@ -53,7 +52,7 @@ export const MyRewardCard: FunctionComponent<{
   containerStyle?: ViewStyle;
   queries: DeepReadonlyObject;
   queryDelegations: ObservableQueryDelegationsInner;
-}> = observer(({ containerStyle, queries, queryDelegations }) => {
+}> = ({ containerStyle, queries, queryDelegations }) => {
   const style = useStyle();
 
   const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
@@ -355,12 +354,12 @@ export const MyRewardCard: FunctionComponent<{
       />
     </BlurBackground>
   );
-});
+};
 
 const DelegateReward: FunctionComponent<{
   queries: DeepReadonlyObject;
   queryDelegations: ObservableQueryDelegationsInner;
-}> = observer(({ queries, queryDelegations }) => {
+}> = ({ queries, queryDelegations }) => {
   const style = useStyle();
 
   const { chainStore, accountStore, analyticsStore } = useStore();
@@ -660,4 +659,4 @@ const DelegateReward: FunctionComponent<{
       />
     </React.Fragment>
   );
-});
+};

@@ -7,7 +7,6 @@ import {
   useMemoConfig,
   useRecipientConfig,
 } from "@keplr-wallet/hooks";
-import { observer } from "mobx-react-lite";
 import { View, ViewStyle } from "react-native";
 import { useStore } from "stores/index";
 import { AddressInput } from "components/input";
@@ -17,7 +16,7 @@ import Toast from "react-native-toast-message";
 import { InputCardView } from "components/new/card-view/input-card";
 import { MemoInputView } from "components/new/card-view/memo-input";
 
-export const AddAddressBookScreen: FunctionComponent = observer(() => {
+export const AddAddressBookScreen: FunctionComponent = () => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -125,4 +124,4 @@ export const AddAddressBookScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
-});
+};
