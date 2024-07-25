@@ -13,6 +13,7 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { observer } from "mobx-react-lite";
 import { IMemoConfig } from "@keplr-wallet/hooks";
 import { removeEmojis } from "utils/format/format";
+import { KeplrSignOptions } from "@keplr-wallet/types";
 
 export const MemoInputView: FunctionComponent<{
   label?: string;
@@ -26,6 +27,7 @@ export const MemoInputView: FunctionComponent<{
   editable?: boolean;
   errorLabelStyle?: ViewStyle;
   error?: string;
+  signOptions?: KeplrSignOptions;
 }> = observer(
   ({
     label,
@@ -39,9 +41,11 @@ export const MemoInputView: FunctionComponent<{
     editable = true,
     error,
     errorLabelStyle,
+    signOptions,
   }) => {
     const style = useStyle();
     const [isFocused, setIsFocused] = useState(false);
+    const preferNoSetMemo = signOptions?.preferNoSetMemo ?? false;
 
     return (
       <View style={containerStyle}>
@@ -100,13 +104,17 @@ export const MemoInputView: FunctionComponent<{
                 Platform.OS === "ios" ? "ascii-capable" : "visible-password"
               }
               returnKeyType="done"
-              placeholder={placeholderText}
+              placeholder={
+                preferNoSetMemo && memoConfig.memo.length == 0
+                  ? "(Empty memo)"
+                  : placeholderText
+              }
               value={memoConfig.memo}
               onChangeText={(text: string) => {
                 memoConfig.setMemo(removeEmojis(text));
               }}
               maxLength={100}
-              editable={editable}
+              editable={editable || !preferNoSetMemo}
               onFocus={(e) => {
                 setIsFocused(true);
 
