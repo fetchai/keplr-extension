@@ -203,6 +203,7 @@ export const DeleteWallet: FunctionComponent = () => {
               })}
             >
               <FormattedMessage id="setting.clear.button.confirm" />
+              {loading && <i className="fas fa-spinner fa-spin ml-2 mr-2" />}
             </ButtonV2>
           </div>
         </div>
