@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
-import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { useStyle } from "styles/index";
 import { GradientButton } from "components/new/button/gradient-button";
@@ -34,6 +34,7 @@ import { AnimatedNumber } from "components/new/animations/animated-number";
 import { txType } from "components/new/txn-status.tsx";
 import { VectorCharacter } from "components/vector-character";
 import { KeplrETCQueriesImpl } from "@keplr-wallet/stores-etc";
+import Skeleton from "react-native-reanimated-skeleton";
 
 interface ClaimData {
   reward: string;
@@ -74,6 +75,15 @@ export const MyRewardCard: FunctionComponent<{
 
   const delegations = queryDelegations.delegations;
 
+  const queryUnbonding =
+    queries.cosmos.queryUnbondingDelegations.getQueryBech32Address(
+      account.bech32Address
+    );
+  const unbonding = queryUnbonding.total;
+
+  const delegated = queryDelegations.total;
+  const stakedSum = delegated.add(unbonding);
+
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -93,7 +103,7 @@ export const MyRewardCard: FunctionComponent<{
 
   const { numericPart: totalNumber, denomPart: totalDenom } =
     separateNumericAndDenom(
-      pendingStakableReward.shrink(true).maxDecimals(6).trim(true).toString()
+      pendingStakableReward.shrink(true).maxDecimals(8).trim(true).toString()
     );
   const handleAllClaim = async () => {
     if (!networkIsConnected) {
@@ -206,14 +216,28 @@ export const MyRewardCard: FunctionComponent<{
           >
             Staking rewards
           </Text>
-          {pendingStakableReward.isReady ? (
-            <View style={style.flatten(["flex-row"])}>
+          <Skeleton
+            isLoading={!stakedSum.isReady}
+            containerStyle={
+              style.flatten(["flex-row", "flex-wrap"]) as ViewStyle
+            }
+            layout={[
+              {
+                key: "totalClaim",
+                width: "50%",
+                height: 15,
+              },
+            ]}
+            boneColor={style.get("color-white@20%").color}
+            highlightColor={style.get("color-white@60%").color}
+          >
+            <View style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}>
               <AnimatedNumber
                 numberForAnimated={
                   pendingStakableRewardUSD
                     ? pendingStakableRewardUSD
                         .shrink(true)
-                        .maxDecimals(6)
+                        .maxDecimals(8)
                         .trim(true)
                         .toString()
                     : totalNumber
@@ -246,22 +270,14 @@ export const MyRewardCard: FunctionComponent<{
                   : totalDenom}
               </Text>
             </View>
-          ) : (
-            <ActivityIndicator
-              size="small"
-              color={style.get("color-white").color}
-              style={
-                style.flatten(["margin-left-12", "items-start"]) as ViewStyle
-              }
-            />
-          )}
+          </Skeleton>
         </View>
         {!(
           !account.isReadyToSendTx ||
           pendingStakableReward.toDec().equals(new Dec(0)) ||
           stakable.toDec().lte(new Dec(0)) ||
           queryReward.pendingRewardValidatorAddresses.length === 0 ||
-          !pendingStakableReward.isReady
+          !stakedSum.isReady
         ) ? (
           <GradientButton
             text={"Claim all"}
@@ -308,7 +324,7 @@ export const MyRewardCard: FunctionComponent<{
         stakable.toDec().lte(new Dec(0)) ||
         queryReward.pendingRewardValidatorAddresses.length === 0 ||
         delegations.length === 0 ||
-        !pendingStakableReward.isReady
+        !stakedSum.isReady
       ) ? (
         <TouchableOpacity
           onPress={() => setShowRewards(!showRewars)}

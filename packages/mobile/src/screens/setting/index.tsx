@@ -21,6 +21,8 @@ import {
 } from "@react-navigation/native";
 import { ConfirmCardModel } from "components/new/confirm-modal";
 import { GuideIcon } from "components/new/icon/guide-icon";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from "react-native-toast-message";
 
 export const SettingScreen: FunctionComponent = observer(() => {
   const {
@@ -35,6 +37,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
   const style = useStyle();
 
   const safeAreaInsets = useSafeAreaInsets();
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
   const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -144,14 +149,21 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingItem
         label="Guide"
         left={<GuideIcon />}
-        onPress={() =>
+        onPress={() => {
+          if (!networkIsConnected) {
+            Toast.show({
+              type: "error",
+              text1: "No internet connection",
+            });
+            return;
+          }
           navigation.navigate("Others", {
             screen: "WebView",
             params: {
-              url: "https://fetch.ai/docs/guides/fetch-network/fetch-wallet/fetch-wallet-getting-started",
+              url: "https://fetch.ai/docs/guides/fetch-network/fetch-wallet/mobile-wallet/get-started",
             },
-          })
-        }
+          });
+        }}
       />
       <SettingItem
         label="Fetch Wallet version"

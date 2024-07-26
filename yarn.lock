@@ -39825,6 +39825,7 @@ __metadata:
     react-native-modal: ^13.0.1
     react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: 3.5.4
+    react-native-reanimated-skeleton: ^1.5.1
     react-native-safe-area-context: ^4.4.1
     react-native-screens: ^3.18.2
     react-native-scrypt: ^1.2.1
@@ -45311,6 +45312,18 @@ __metadata:
     react-native: ">=0.63.4"
     react-native-svg: ^13.2.0
   checksum: e4e8a709900e16cf0116e9c5edd8ff7150cfbbb2c9763a5a7b171ba6efb1f84d8b93b919dedb915d16686d7a8b0c49c905c62dcbd86f98d471b1c0bcec6f1ae3
+  languageName: node
+  linkType: hard
+
+"react-native-reanimated-skeleton@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "react-native-reanimated-skeleton@npm:1.5.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-linear-gradient: "*"
+    react-native-reanimated: "*"
+  checksum: 425b61fda332de7442d1d838f2a14ecbda565ec87a78debd59295f97ad8c05f7f36ee7a21fbc9e22c2d09e6564946e8378dce24c2edc1565119e93cfdf7b0469
   languageName: node
   linkType: hard
 
