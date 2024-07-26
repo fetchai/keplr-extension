@@ -124,7 +124,11 @@ export const AdvancedBIP44Option: FunctionComponent<{
         <FormattedMessage id="register.bip44.button.advanced" />
       </Button>
       {isOpen ? (
-        <FormGroup>
+        <FormGroup
+          style={{
+            marginBottom: 0,
+          }}
+        >
           <Label target="bip44-path" className="form-control-label">
             <FormattedMessage id="register.bip44.input.hd-path" />
           </Label>
@@ -144,7 +148,7 @@ export const AdvancedBIP44Option: FunctionComponent<{
               type="number"
               className="form-control-alternative"
               style={{
-                width: "100px",
+                width: "76.67px",
                 textAlign: "right",
                 borderRadius: "12px",
                 background: "rgba(255, 255, 255, 0.10)",
@@ -168,7 +172,11 @@ export const AdvancedBIP44Option: FunctionComponent<{
                   }
                   const parsed = parseFloat(value);
                   // Should be integer and positive.
-                  if (Number.isInteger(parsed) && parsed >= 0) {
+                  if (
+                    Number.isInteger(parsed) &&
+                    parsed >= 0 &&
+                    parsed < Number.MAX_SAFE_INTEGER
+                  ) {
                     bip44Option.setAccount(parsed);
                   }
                 } else {
@@ -181,7 +189,7 @@ export const AdvancedBIP44Option: FunctionComponent<{
               type="number"
               className="form-control-alternative"
               style={{
-                width: "100px",
+                width: "76.67px",
                 textAlign: "right",
                 borderRadius: "12px",
                 background: "rgba(255, 255, 255, 0.10)",
@@ -221,7 +229,7 @@ export const AdvancedBIP44Option: FunctionComponent<{
               type="number"
               className="form-control-alternative"
               style={{
-                width: "100px",
+                width: "76.67px",
                 textAlign: "right",
                 borderRadius: "12px",
                 background: "rgba(255, 255, 255, 0.10)",
@@ -245,7 +253,11 @@ export const AdvancedBIP44Option: FunctionComponent<{
                   }
                   const parsed = parseFloat(value);
                   // Should be integer and positive.
-                  if (Number.isInteger(parsed) && parsed >= 0) {
+                  if (
+                    Number.isInteger(parsed) &&
+                    parsed >= 0 &&
+                    parsed < Number.MAX_SAFE_INTEGER
+                  ) {
                     bip44Option.setIndex(parsed);
                   }
                 } else {

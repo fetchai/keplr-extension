@@ -354,7 +354,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   </div>
                 )}
                 {registerConfig.mode === "create" ? (
-                  <div style={{ marginTop: "-27px" }}>
+                  <div style={{ marginTop: "-20px" }}>
                     <PasswordInput
                       {...register("password", {
                         required: intl.formatMessage({
