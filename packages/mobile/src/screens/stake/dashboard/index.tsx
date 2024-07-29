@@ -214,6 +214,9 @@ export const StakingDashboardScreen: FunctionComponent = observer(() => {
               });
             }}
           />
+          <View
+            style={style.flatten(["height-page-double-pad"]) as ViewStyle}
+          />
         </View>
       )}
       <View style={{ height: isTab ? 100 + safeAreaInsets.bottom : 0 }} />

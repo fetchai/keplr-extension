@@ -14,6 +14,7 @@ import { IOSLineChart } from "./ios-chart";
 import { useStore } from "stores/index";
 import { ChartData, TokenStateData } from "@keplr-wallet/stores";
 import { formatTimestamp } from "utils/format/date";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export const LineGraph: FunctionComponent<{
   tokenName: string | undefined;
@@ -26,7 +27,9 @@ export const LineGraph: FunctionComponent<{
   const { priceStore, chainStore, tokenGraphStore } = useStore();
   const [chartsData, setChartData] = useState<ChartData[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
+  const netInfo = useNetInfo();
+  const networkIsConnected =
+    typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
   let fetValue;
   const cacheKey = useMemo(
     () => `${tokenName}_${duration}`,
@@ -70,6 +73,11 @@ export const LineGraph: FunctionComponent<{
 
   function getChartData() {
     return new Promise(async (resolve, reject) => {
+      if (!networkIsConnected) {
+        reject("No Internet");
+        return;
+      }
+
       try {
         let chartDataList: ChartData[] = [];
         const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
@@ -140,7 +148,7 @@ export const LineGraph: FunctionComponent<{
           } else {
             setDefaultPricing();
           }
-          console.log("Error fetching data:", error.message);
+          console.log("Error fetching data:", error, error?.message);
         });
     } else {
       setTokenState(durationData[cacheKey].tokenState);
