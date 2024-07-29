@@ -63,8 +63,6 @@ export const ViewPrivateDataScreen: FunctionComponent = () => {
       ? JSON.parse(privateData)
       : privateData.split(" ");
 
-  console.log("hey", Object.keys(words)[0]);
-
   const renderButtonItem = ({ item }: any) => {
     return (
       <BlurBackground

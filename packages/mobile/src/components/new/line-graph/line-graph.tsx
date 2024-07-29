@@ -117,7 +117,10 @@ export const LineGraph: FunctionComponent<{
         1000
     );
 
-    if ((durationData[cacheKey]?.chartData.length ?? 0) == 0 || seconds >= 29) {
+    if (
+      (durationData[cacheKey]?.chartData?.length ?? 0) == 0 ||
+      seconds >= 29
+    ) {
       getChartData()
         .then((obj: any) => {
           setTokenState(obj.tokenState);

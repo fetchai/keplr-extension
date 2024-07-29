@@ -8,8 +8,9 @@ import { useStore } from "stores/index";
 import { InputCardView } from "components/new/card-view/input-card";
 import { TokenAddressInput } from "components/new/input/token-address";
 import { useSmartNavigation } from "navigation/smart-navigation";
+import { observer } from "mobx-react-lite";
 
-export const SettingAddTokenScreen: FunctionComponent = () => {
+export const SettingAddTokenScreen: FunctionComponent = observer(() => {
   const { chainStore, queriesStore, tokensStore, analyticsStore } = useStore();
   const [loading, setIsLoading] = useState(false);
 
@@ -90,4 +91,4 @@ export const SettingAddTokenScreen: FunctionComponent = () => {
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
-};
+});
