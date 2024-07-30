@@ -171,6 +171,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
         register,
         handleSubmit,
         getValues,
+        setValue,
         formState: { errors },
       } = useForm<FormData>({
         defaultValues: {
@@ -342,6 +343,10 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                       id: "register.name.error.required",
                     }),
                   })}
+                  onChange={(event) => {
+                    const trimmedValue = event.target.value.trimStart();
+                    setValue(event.target.name as keyof FormData, trimmedValue);
+                  }}
                   // error={errors.name && errors.name.message}
                   maxLength={20}
                   style={{
