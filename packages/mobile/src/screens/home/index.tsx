@@ -26,7 +26,7 @@ import { LineGraphView } from "components/new/line-graph";
 import { useStyle } from "styles/index";
 import { useFocusedScreen } from "providers/focused-screen";
 
-export const NewHomeScreen: FunctionComponent = observer(() => {
+export const HomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
   const style = useStyle();
   const windowHeight = Dimensions.get("window").height;

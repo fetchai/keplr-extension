@@ -13,9 +13,9 @@ import { useStyle } from "styles/index";
 export const ClaimCard: FunctionComponent<{
   account: AccountSetBase;
   setClaimModel: any;
-  loadingClaimButtom: boolean;
+  loadingClaimButton: boolean;
   isShowClaimOption: boolean;
-}> = ({ account, setClaimModel, loadingClaimButtom, isShowClaimOption }) => {
+}> = ({ account, setClaimModel, loadingClaimButton, isShowClaimOption }) => {
   const style = useStyle();
   const { analyticsStore } = useStore();
   return isShowClaimOption ? (
@@ -48,7 +48,7 @@ export const ClaimCard: FunctionComponent<{
           heading={"You’ve claimable staking rewards"}
           leadingIconComponent={<StakeIcon size={14} />}
           trailingIconComponent={
-            loadingClaimButtom ? (
+            loadingClaimButton ? (
               <ActivityIndicator
                 size="small"
                 color={style.get("color-white").color}

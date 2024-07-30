@@ -41,12 +41,13 @@ import { Dec } from "@keplr-wallet/unit";
 import { TxnStatus, txType } from "components/new/txn-status.tsx";
 import { BalanceCard } from "./balance-card";
 import { ClaimCard } from "./claim-card";
+import { observer } from "mobx-react-lite";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
   tokenState: any;
   setGraphHeight: any;
-}> = ({ containerStyle, tokenState, setGraphHeight }) => {
+}> = observer(({ containerStyle, tokenState, setGraphHeight }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
@@ -62,7 +63,7 @@ export const AccountSection: FunctionComponent<{
     txnStatusModal: false,
   });
   const [showClaimModel, setClaimModel] = useState(false);
-  const [loadingClaimButtom, setloadingClaimButtom] = useState(false);
+  const [loadingClaimButton, setLoadingClaimButton] = useState(false);
 
   const {
     chainStore,
@@ -124,7 +125,7 @@ export const AccountSection: FunctionComponent<{
       rewards.getDescendingPendingRewardValidatorAddresses(8);
     const tx =
       account.cosmos.makeWithdrawDelegationRewardTx(validatorAddresses);
-    setloadingClaimButtom(true);
+    setLoadingClaimButton(true);
 
     try {
       analyticsStore.logEvent("claim_click", {
@@ -154,7 +155,7 @@ export const AccountSection: FunctionComponent<{
         {},
         {
           onBroadcasted: (txHash) => {
-            setloadingClaimButtom(false);
+            setLoadingClaimButton(false);
             analyticsStore.logEvent("claim_txn_broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -191,7 +192,7 @@ export const AccountSection: FunctionComponent<{
       });
       smartNavigation.navigateSmart("Home", {});
     } finally {
-      setloadingClaimButtom(false);
+      setLoadingClaimButton(false);
       setClaimModel(false);
     }
   }
@@ -343,7 +344,7 @@ export const AccountSection: FunctionComponent<{
       <ClaimCard
         account={account}
         setClaimModel={setClaimModel}
-        loadingClaimButtom={loadingClaimButtom}
+        loadingClaimButton={loadingClaimButton}
         isShowClaimOption={isShowClaimOption()}
       />
       {Object.values(activityStore.getPendingTxn).length > 0 && (
@@ -540,8 +541,8 @@ export const AccountSection: FunctionComponent<{
         close={() => setClaimModel(false)}
         earnedAmount={stakableReward.trim(true).shrink(true).toString()}
         onPress={onSubmit}
-        buttonLoading={loadingClaimButtom}
+        buttonLoading={loadingClaimButton}
       />
     </View>
   );
-};
+});
