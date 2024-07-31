@@ -6,8 +6,9 @@ import { PasswordInputModal } from "modals/password-input/modal";
 import { Platform, Switch, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { FingerPrintIconWithoutCircle } from "components/new/icon/finger-print";
+import { observer } from "mobx-react-lite";
 
-export const SettingBiometricLockItem: FunctionComponent = () => {
+export const SettingBiometricLockItem: FunctionComponent = observer(() => {
   const { keychainStore } = useStore();
 
   const style = useStyle();
@@ -85,4 +86,4 @@ export const SettingBiometricLockItem: FunctionComponent = () => {
       />
     </React.Fragment>
   );
-};
+});
