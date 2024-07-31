@@ -1,12 +1,16 @@
 import { GlassCard } from "@components-v2/glass-card";
+import { ObservableQueryProposal } from "@keplr-wallet/stores";
 import React from "react";
-import style from "./style.module.scss";
 import { ProposalDurationRow } from "./proposal-duration-row";
-import { ProposalType } from "../../../../@types/proposal-type";
+import style from "./style.module.scss";
 
-export const GovtProposalRow = ({ proposal }: { proposal: ProposalType }) => {
+export const GovtProposalRow = ({
+  proposal,
+}: {
+  proposal: ObservableQueryProposal;
+}) => {
   const { content, voting_start_time, voting_end_time, status, proposal_id } =
-    proposal;
+    proposal.raw;
 
   return (
     <GlassCard

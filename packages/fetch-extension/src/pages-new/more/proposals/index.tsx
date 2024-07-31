@@ -11,11 +11,15 @@ import { getFilteredProposals } from "@utils/filters";
 import { useNavigate } from "react-router";
 import { ProposalType } from "src/@types/proposal-type";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import { ErrorActivity } from "../error-activity";
-import { NoActivity } from "../no-activity";
-import { UnsupportedNetwork } from "../unsupported-network";
-import { GovtProposalRow } from "./gov-proposal-row";
+import { ErrorActivity } from "../../activity/error-activity";
+import { NoActivity } from "../../activity/no-activity";
+import { UnsupportedNetwork } from "../../activity/unsupported-network";
+import { GovtProposalRow } from "./proposal-row";
 import style from "./style.module.scss";
+import { observer } from "mobx-react-lite";
+import { HeaderLayout } from "@layouts-v2/header-layout";
+import { ObservableQueryProposal } from "@keplr-wallet/stores";
+import { _DeepReadonlyArray } from "utility-types/dist/mapped-types";
 
 export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
@@ -24,31 +28,27 @@ export const proposalOptions = {
   ProposalFailed: "PROPOSAL_STATUS_FAILED",
 };
 
-export const GovProposalsTabV2 = () => {
+export const Proposals = observer(() => {
   const [filter, setFilter] = useState<"Active" | "Voted" | "Closed" | "">("");
-
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore, accountStore, proposalStore } = useStore();
+  const { chainStore, accountStore, proposalStore, queriesStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
-  const [proposals, setProposals] = useState<ProposalType[]>([]);
 
   const current = chainStore.current;
 
   const { isDropdownOpen, setIsDropdownOpen } = useDropdown();
-
   const [searchTerm, setSearchTerm] = useState("");
   const [isError, setIsError] = useState(false);
 
   const storedProposals = proposalStore.proposals;
+  const queries = queriesStore.get(chainStore.current.chainId);
+  const proposals = queries.cosmos.queryGovernance.proposals;
 
   useEffect(() => {
-    if (storedProposals.closedProposals.length === 0) {
-      setIsLoading(true);
-    } else {
-      setProposals(storedProposals.closedProposals);
-    }
     (async () => {
       try {
+        setIsLoading(true);
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
         const allProposals = response.proposals.reverse();
@@ -92,22 +92,6 @@ export const GovProposalsTabV2 = () => {
           votedProposals,
           allProposals,
         });
-
-        if (filter === "Active") {
-          setProposals(activeProposals);
-          return;
-        }
-        if (filter === "Closed") {
-          setProposals(closedProposals);
-          return;
-        }
-
-        if (filter === "Voted") {
-          setProposals(votedProposals);
-          return;
-        }
-
-        setProposals(allProposals);
       } catch (e) {
         setIsError(true);
       }
@@ -126,20 +110,29 @@ export const GovProposalsTabV2 = () => {
     } else {
       newProposal = storedProposals.allProposals;
     }
-
-    setProposals(newProposal);
+    console.log("newProposal", newProposal);
   };
 
   return (
-    <React.Fragment>
-      <GovtProposalFilterDropdown
-        isOpen={isDropdownOpen}
-        setIsOpen={setIsDropdownOpen}
-        setSelectedFilter={setFilter}
-        selectedFilter={filter}
-        handleFilterChange={handleFilterChange}
-      />
-
+    <HeaderLayout
+      showTopMenu={true}
+      smallTitle={true}
+      alternativeTitle={"Proposals"}
+      canChangeChainInfo={false}
+      showBottomMenu={false}
+      onBackButton={() => {
+        navigate(-1);
+      }}
+      rightRenderer={
+        <GovtProposalFilterDropdown
+          isOpen={isDropdownOpen}
+          setIsOpen={setIsDropdownOpen}
+          setSelectedFilter={setFilter}
+          selectedFilter={filter}
+          handleFilterChange={handleFilterChange}
+        />
+      }
+    >
       <div className={style["filter-container"]}>
         <div
           className={style["filter"]}
@@ -162,7 +155,7 @@ export const GovProposalsTabV2 = () => {
       current.chainId === CHAIN_ID_DORADO ? (
         isError ? (
           <ErrorActivity />
-        ) : Object.keys(proposals).length > 0 ? (
+        ) : proposals && Object.keys(proposals).length > 0 ? (
           <GovtProposal
             proposals={proposals}
             searchTerm={searchTerm}
@@ -176,16 +169,16 @@ export const GovProposalsTabV2 = () => {
       ) : (
         <UnsupportedNetwork chainID={current.chainName} />
       )}
-    </React.Fragment>
+    </HeaderLayout>
   );
-};
+});
 
 const GovtProposal = ({
   proposals,
   searchTerm,
   onSearchTermChange,
 }: {
-  proposals: ProposalType[];
+  proposals: _DeepReadonlyArray<ObservableQueryProposal>;
   searchTerm: string;
   onSearchTermChange: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -201,10 +194,10 @@ const GovtProposal = ({
         flexDirection: "column",
         gap: "16px",
       }}
-      renderResult={(proposal: ProposalType, index) => (
+      renderResult={(proposal: ObservableQueryProposal, index) => (
         <div
           onClick={() => {
-            navigate(`/gov-proposal/details/${proposal.proposal_id}`);
+            navigate(`/proposal-detail/${proposal.id}`);
           }}
         >
           <GovtProposalRow key={index} proposal={proposal} />

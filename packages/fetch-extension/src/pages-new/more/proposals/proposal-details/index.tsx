@@ -9,12 +9,12 @@ import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 import { useNotification } from "@components/notification";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { ProposalSetup, ProposalType } from "src/@types/proposal-type";
 import { useStore } from "../../../../stores";
-import { calculatePercentages } from "../../utils";
-import { ProposalDurationRow } from "../gov-proposal-row/proposal-duration-row";
+import { calculatePercentages } from "../../../activity/utils";
+import { ProposalDurationRow } from "../proposal-row/proposal-duration-row";
 import { ProgressBar } from "./progress-bar";
 import style from "./style.module.scss";
+import { observer } from "mobx-react-lite";
 
 type TallyResult = {
   title: string;
@@ -24,16 +24,14 @@ type TallyResult = {
 
 const voteArr = ["Unspecified", "Yes", "No", "NoWithVeto", "Abstain"];
 
-export const GovProposalsDetails = () => {
+export const ProposalDetail = observer(() => {
   const navigate = useNavigate();
   const notification = useNotification();
 
-  const { chainStore, accountStore, analyticsStore, proposalStore } =
-    useStore();
-  const { id } = useParams<{ id?: string }>();
-  const [proposal, setProposal] = useState<ProposalType>();
+  const { queriesStore, chainStore, accountStore, analyticsStore } = useStore();
+  const { id } = useParams<{ id: string }>();
   const [votedOn, setVotedOn] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [closed, setClosed] = useState(true);
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [tallyResult, setTallyResult] = useState<TallyResult[]>([
@@ -58,45 +56,17 @@ export const GovProposalsDetails = () => {
       color: "rgba(207, 195, 254, 1)",
     },
   ]);
-  const storedProposals: ProposalSetup = proposalStore.proposals;
-  // const [category, setCategory] = useState(1);
+
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
-
-  useEffect(() => {
-    let proposalItem = storedProposals.activeProposals.find(
-      (proposal) => proposal.proposal_id === id
-    );
-    if (!proposalItem) {
-      proposalItem = storedProposals.closedProposals.find(
-        (proposal) => proposal.proposal_id === id
-      );
-    }
-    if (!proposalItem) {
-      proposalItem = storedProposals.votedProposals.find(
-        (proposal) => proposal.proposal_id === id
-      );
-    }
-    setIsLoading(false);
-    setProposal(proposalItem);
-
-    // const cat = storedProposals.votedProposals.find(
-    //   (proposal) => proposal.proposal_id === id
-    // )
-    //   ? 3
-    //   : proposalItem?.status === proposalOptions.ProposalRejected ||
-    //     proposalItem?.status === proposalOptions.ProposalPassed ||
-    //     proposalItem?.status === proposalOptions.ProposalFailed
-    //   ? 2
-    //   : 1;
-    // setCategory(cat);
-  }, [id]);
+  const queries = queriesStore.get(chainStore.current.chainId);
+  const proposal = queries.cosmos.queryGovernance.getProposal(id || "");
 
   useEffect(() => {
     const date = new Date();
     if (
       proposal &&
-      moment(proposal?.voting_end_time).valueOf() > date.getTime()
+      moment(proposal.raw.voting_end_time).valueOf() > date.getTime()
     ) {
       setClosed(false);
     }
@@ -108,10 +78,10 @@ export const GovProposalsDetails = () => {
         abstainPercentage,
         noWithVetoPercentage,
       } = calculatePercentages(
-        proposal.final_tally_result.yes,
-        proposal.final_tally_result.abstain,
-        proposal.final_tally_result.no,
-        proposal.final_tally_result.no_with_veto
+        proposal.raw.final_tally_result.yes,
+        proposal.raw.final_tally_result.abstain,
+        proposal.raw.final_tally_result.no,
+        proposal.raw.final_tally_result.no_with_veto
       );
 
       setTallyResult([
@@ -146,7 +116,7 @@ export const GovProposalsDetails = () => {
       analyticsStore.logEvent("vote_txn_click", {
         action: vote,
       });
-      const tx = accountInfo.cosmos.makeGovVoteTx(proposal?.proposal_id, vote);
+      const tx = accountInfo.cosmos.makeGovVoteTx(proposal?.id, vote);
       setIsSendingTx(true);
       try {
         let gas = accountInfo.cosmos.msgOpts.govVote.gas;
@@ -241,16 +211,18 @@ export const GovProposalsDetails = () => {
         <div>
           <div className={style["gov-proposal-details-container"]}>
             <div className={style["content"]}>
-              <div className={style["title"]}>{proposal?.content.title}</div>
+              <div className={style["title"]}>
+                {proposal?.raw.content.title}
+              </div>
               <div className={style["description"]}>
-                {proposal?.content.description}
+                {proposal?.raw.content.description}
               </div>
             </div>
 
             <ProposalDurationRow
-              voting_start_time={proposal?.voting_start_time}
-              voting_end_time={proposal?.voting_end_time}
-              status={proposal?.status}
+              voting_start_time={proposal?.raw.voting_start_time}
+              voting_end_time={proposal?.raw.voting_end_time}
+              status={proposal?.proposalStatus}
             />
 
             <Link
@@ -272,16 +244,18 @@ export const GovProposalsDetails = () => {
               />
             </Link>
 
-            {/* <div className={style["turnout"]}>
+            <div className={style["turnout"]}>
               <div className={style["label"]}>Turnout</div>
               <ProgressBar
-                progressWidth={54}
+                progressWidth={
+                  parseInt(proposal?.turnout.toString() || "0") ?? 0
+                }
                 height="30px"
-                title="54%"
+                title={proposal?.turnout.toString() || "0%"}
                 bgColor="rgba(249, 119, 75, 1)"
                 isShowPercentage={false}
               />
-            </div> */}
+            </div>
 
             <div className={style["tally-results"]}>
               {tallyResult.map((item: any, index: number) => (
@@ -364,4 +338,4 @@ export const GovProposalsDetails = () => {
       )}
     </HeaderLayout>
   );
-};
+});
