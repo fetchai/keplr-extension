@@ -1,18 +1,18 @@
 import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import { observer } from "mobx-react-lite";
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { useStore } from "../../stores";
-import { GovProposalsTabV2 } from "./gov-proposals-v2";
+import { GovProposalsTab } from "./gov-proposals";
 import { NativeTab } from "./native";
 import style from "./style.module.scss";
 
 export const ActivityPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
   const intl = useIntl();
-  // const [latestBlock, _setLatestBlock] = useState<string>();
+  const [latestBlock, _setLatestBlock] = useState<string>();
   const { analyticsStore } = useStore();
   const tab = [
     {
@@ -21,7 +21,7 @@ export const ActivityPage: FunctionComponent = observer(() => {
     },
     {
       id: "Gov Proposals",
-      component: <GovProposalsTabV2 />,
+      component: <GovProposalsTab latestBlock={latestBlock} />,
     },
   ];
 
