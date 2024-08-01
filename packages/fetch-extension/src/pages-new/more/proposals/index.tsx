@@ -6,8 +6,10 @@ import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 import { SearchBar } from "@components-v2/search-bar";
+import { HeaderLayout } from "@layouts-v2/header-layout";
 import { fetchProposals, fetchVote } from "@utils/fetch-proposals";
 import { getFilteredProposals } from "@utils/filters";
+import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { ProposalType } from "src/@types/proposal-type";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
@@ -16,10 +18,6 @@ import { NoActivity } from "../../activity/no-activity";
 import { UnsupportedNetwork } from "../../activity/unsupported-network";
 import { GovtProposalRow } from "./proposal-row";
 import style from "./style.module.scss";
-import { observer } from "mobx-react-lite";
-import { HeaderLayout } from "@layouts-v2/header-layout";
-import { ObservableQueryProposal } from "@keplr-wallet/stores";
-import { _DeepReadonlyArray } from "utility-types/dist/mapped-types";
 
 export const proposalOptions = {
   ProposalActive: "PROPOSAL_STATUS_VOTING_PERIOD",
@@ -32,7 +30,7 @@ export const Proposals = observer(() => {
   const [filter, setFilter] = useState<"Active" | "Voted" | "Closed" | "">("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore, accountStore, proposalStore, queriesStore } = useStore();
+  const { chainStore, accountStore, proposalStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
   const current = chainStore.current;
@@ -40,11 +38,11 @@ export const Proposals = observer(() => {
   const { isDropdownOpen, setIsDropdownOpen } = useDropdown();
   const [searchTerm, setSearchTerm] = useState("");
   const [isError, setIsError] = useState(false);
+  const [proposals, setProposals] = useState<ProposalType[]>([]);
 
   const storedProposals = proposalStore.proposals;
-  const queries = queriesStore.get(chainStore.current.chainId);
-  const proposals = queries.cosmos.queryGovernance.proposals;
 
+  // Get proposals
   useEffect(() => {
     (async () => {
       try {
@@ -85,6 +83,7 @@ export const Proposals = observer(() => {
             );
           }
         );
+        setProposals(allProposals);
         setIsLoading(false);
         proposalStore.setProposalsInStore({
           activeProposals,
@@ -110,7 +109,8 @@ export const Proposals = observer(() => {
     } else {
       newProposal = storedProposals.allProposals;
     }
-    console.log("newProposal", newProposal);
+
+    setProposals(newProposal);
   };
 
   return (
@@ -124,33 +124,25 @@ export const Proposals = observer(() => {
         navigate(-1);
       }}
       rightRenderer={
-        <GovtProposalFilterDropdown
-          isOpen={isDropdownOpen}
-          setIsOpen={setIsDropdownOpen}
-          setSelectedFilter={setFilter}
-          selectedFilter={filter}
-          handleFilterChange={handleFilterChange}
-        />
-      }
-    >
-      <div className={style["filter-container"]}>
-        <div
-          className={style["filter"]}
-          onClick={() => setIsDropdownOpen(true)}
-        >
-          <div className={style["filter-toggle"]}>
-            <div className={style["filter-heading"]}>
-              Filter
-              <img
-                src={require("@assets/svg/wireframe/filter.svg")}
-                alt="filter"
-                className={style["arrow-icon"]}
-              />
+        <div className={style["filter-container"]}>
+          <div
+            className={style["filter"]}
+            onClick={() => setIsDropdownOpen(true)}
+          >
+            <div className={style["filter-toggle"]}>
+              <div className={style["filter-heading"]}>
+                Filter
+                <img
+                  src={require("@assets/svg/wireframe/filter.svg")}
+                  alt="filter"
+                  className={style["arrow-icon"]}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
+      }
+    >
       {current.chainId === CHAIN_ID_FETCHHUB ||
       current.chainId === CHAIN_ID_DORADO ? (
         isError ? (
@@ -169,6 +161,14 @@ export const Proposals = observer(() => {
       ) : (
         <UnsupportedNetwork chainID={current.chainName} />
       )}
+
+      <GovtProposalFilterDropdown
+        isOpen={isDropdownOpen}
+        setIsOpen={setIsDropdownOpen}
+        setSelectedFilter={setFilter}
+        selectedFilter={filter}
+        handleFilterChange={handleFilterChange}
+      />
     </HeaderLayout>
   );
 });
@@ -178,7 +178,7 @@ const GovtProposal = ({
   searchTerm,
   onSearchTermChange,
 }: {
-  proposals: _DeepReadonlyArray<ObservableQueryProposal>;
+  proposals: ProposalType[];
   searchTerm: string;
   onSearchTermChange: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -194,10 +194,13 @@ const GovtProposal = ({
         flexDirection: "column",
         gap: "16px",
       }}
-      renderResult={(proposal: ObservableQueryProposal, index) => (
+      renderResult={(proposal: ProposalType, index) => (
         <div
+          style={{
+            cursor: "pointer",
+          }}
           onClick={() => {
-            navigate(`/proposal-detail/${proposal.id}`);
+            navigate(`/proposal-detail/${proposal.proposal_id}`);
           }}
         >
           <GovtProposalRow key={index} proposal={proposal} />
