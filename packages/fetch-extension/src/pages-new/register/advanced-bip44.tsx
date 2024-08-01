@@ -86,6 +86,8 @@ export const AdvancedBIP44Option: FunctionComponent<{
 
   const confirm = useConfirm();
 
+  const [error, setError] = useState("");
+
   const [isOpen, setIsOpen] = useState(
     bip44Option.account !== 0 ||
       bip44Option.change !== 0 ||
@@ -217,10 +219,14 @@ export const AdvancedBIP44Option: FunctionComponent<{
                     Number.isInteger(parsed) &&
                     (parsed === 0 || parsed === 1)
                   ) {
+                    setError("");
                     bip44Option.setChange(parsed);
+                  } else {
+                    setError("Change value can only be either 0 or 1");
                   }
                 } else {
                   bip44Option.setChange(0);
+                  setError("");
                 }
               }}
             />
@@ -266,6 +272,16 @@ export const AdvancedBIP44Option: FunctionComponent<{
               }}
             />
           </div>
+          {!!error && (
+            <div
+              style={{
+                color: "#fb8c72",
+                marginTop: "12px",
+              }}
+            >
+              {error}
+            </div>
+          )}
         </FormGroup>
       ) : null}
     </React.Fragment>
