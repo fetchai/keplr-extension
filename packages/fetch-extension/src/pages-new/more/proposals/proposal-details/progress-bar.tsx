@@ -9,6 +9,7 @@ export const ProgressBar = ({
   bgColor,
   isShowPercentage = false,
   isYourVote = false,
+  borderRadius = "6px",
 }: {
   height: string;
   progressWidth: number;
@@ -16,12 +17,13 @@ export const ProgressBar = ({
   bgColor: string;
   isShowPercentage?: boolean;
   isYourVote?: boolean;
+  borderRadius?: string;
 }) => {
   return (
     <GlassCard
       styleProps={{
         height: height,
-        borderRadius: "6px",
+        borderRadius: borderRadius,
         padding: 0,
         display: "flex",
         alignItems: "center",
@@ -32,7 +34,7 @@ export const ProgressBar = ({
         style={{
           width: `${progressWidth}%`,
           backgroundColor: bgColor,
-          borderRadius: "6px",
+          borderRadius: borderRadius,
         }}
         className={style["turnout-progress"]}
       />
