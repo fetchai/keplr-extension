@@ -210,6 +210,10 @@ export const NativeTab = observer(() => {
         handleSelectClicks={handleSelectClicks}
         handleDeselectClicks={handleDeselectClicks}
         isSaveChangesButtonDisabled={isSaveChangesButtonDisabled}
+        closeClicked={() => {
+          setFilter(selectedFilter);
+          setIsOpen(false);
+        }}
       />
       <div className={style["filter"]}>
         <FilterActivities
