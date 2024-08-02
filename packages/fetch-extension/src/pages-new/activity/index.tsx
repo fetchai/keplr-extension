@@ -43,7 +43,12 @@ export const ActivityPage: FunctionComponent = observer(() => {
         </div>
         {
           <div style={{ width: "326px" }} className={style["tabContainer"]}>
-            <TabsPanel tabs={tab} />
+            <TabsPanel
+              tabs={tab}
+              tabStyle={{
+                margin: "24px 0px 32px 0px",
+              }}
+            />
           </div>
         }
       </div>

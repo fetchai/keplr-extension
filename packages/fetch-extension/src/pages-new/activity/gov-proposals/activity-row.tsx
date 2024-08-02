@@ -1,20 +1,44 @@
 import { formatActivityHash } from "@utils/format";
 import React from "react";
 import style from "./style.module.scss";
-import govPropsalIcon from "@assets/icon/gov.png";
+import { observer } from "mobx-react-lite";
+import { StatusButton } from "@components-v2/status-button";
 
-const getVoteIcon = (vote: string): string => {
-  switch (vote) {
-    case "YES":
-      return "gov-tick.svg";
-    case "NO":
-      return "gov-cross.svg";
+const cardStatus = (status: string) => {
+  switch (status) {
     case "ABSTAIN":
-      return "gov-abstain.svg";
+      return "Pending";
+
+    case "NO":
+      return "Failed";
+
+    case "YES":
+      return "Success";
+
     case "NO_WITH_VETO":
-      return "gov-no-veto.svg";
+      return "Failed";
+
     default:
-      return "gov-tick-white.svg";
+      return "Active";
+  }
+};
+
+const cardStatusTitle = (details: string) => {
+  switch (details) {
+    case "ABSTAIN":
+      return "Abstain";
+
+    case "NO":
+      return "No";
+
+    case "YES":
+      return "Yes";
+
+    case "NO_WITH_VETO":
+      return "No With Veto";
+
+    default:
+      return "Active";
   }
 };
 
@@ -25,7 +49,7 @@ const getHash = (proposal: any) => {
   return null;
 };
 
-export const ActivityRow = ({ node }: { node: any }) => {
+export const ActivityRow = observer(({ node }: { node: any }) => {
   const details = node.option;
   const hash = getHash(node);
   const { status, id } = node.transaction;
@@ -37,40 +61,29 @@ export const ActivityRow = ({ node }: { node: any }) => {
         rel="noreferrer"
       >
         <div className={style["activityRow"]}>
-          <div className={style["activityCol"]} style={{ width: "7%" }}>
-            <img
-              src={govPropsalIcon}
-              alt={govPropsalIcon}
-              className={style["govImage"]}
-            />
-          </div>
           <div className={style["middle"]}>
-            <div className={style["activityCol"]} style={{ width: "33%" }}>
-              {hash}
-            </div>
-            <div className={style["rowSubtitle"]} style={{ width: "53%" }}>
+            <div className={style["activityCol"]}>{hash}</div>
+            <div className={style["rowSubtitle"]}>
+              {/* {`PROPOSAL #30`}
+              {" ● "} */}
               {status === "Success" ? "Confirmed" : "Failed"}
             </div>
           </div>
           <div
             style={{
-              width: "7%",
               justifyContent: "center",
-              marginLeft: "134px",
               display: "flex",
               alignItems: "center",
             }}
           >
-            <img
-              draggable={false}
-              src={require("@assets/svg/" + getVoteIcon(details))}
-              className={style["govImage"]}
-            />{" "}
-            {details}
+            <StatusButton
+              status={cardStatus(details)}
+              title={cardStatusTitle(details)}
+            />
           </div>
         </div>
       </a>
       <div className={style["hr"]} />
     </React.Fragment>
   );
-};
+});
