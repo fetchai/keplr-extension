@@ -9,6 +9,7 @@ import { ChainGetter } from "../common";
 import { DenomHelper, toGenerator } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { MakeTxResponse } from "./types";
+import { Int } from "@keplr-wallet/unit";
 
 export enum WalletStatus {
   NotInit = "NotInit",
@@ -48,6 +49,10 @@ export class AccountSetBase {
 
   @observable
   protected _bech32Address: string = "";
+
+  @observable
+  protected _customSequence: Int = new Int(0);
+
   @observable
   protected _isNanoLedger: boolean = false;
   @observable
@@ -200,6 +205,10 @@ export class AccountSetBase {
       this._name = key.name;
       this._pubKey = key.pubKey;
 
+      if (this._bech32Address) {
+        this._customSequence = new Int(0);
+      }
+
       // Set the wallet status as loaded after getting all necessary infos.
       this._walletStatus = WalletStatus.Loaded;
     } catch (e) {
@@ -331,6 +340,10 @@ export class AccountSetBase {
     return this._bech32Address;
   }
 
+  get customSequence(): Int {
+    return this._customSequence;
+  }
+
   get pubKey(): Uint8Array {
     return this._pubKey.slice();
   }
@@ -376,6 +389,22 @@ export class AccountSetBase {
       this.bech32Address,
       this.chainGetter.getChain(this.chainId).bech32Config.bech32PrefixAccAddr
     ).toHex(true);
+  }
+
+  @action
+  setCustomNonce(nonce: Int): void {
+    let newNonce = new Int(0);
+    if (nonce.gt(this._customSequence)) {
+      newNonce = nonce;
+    } else {
+      newNonce = this._customSequence;
+    }
+    this._customSequence = newNonce;
+  }
+
+  @action
+  increaseCustomSequence(): void {
+    this._customSequence = this._customSequence.add(new Int(1));
   }
 }
 
