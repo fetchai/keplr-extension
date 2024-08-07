@@ -190,7 +190,7 @@ export const AccountSection: FunctionComponent<{
         chainName: chainStore.current.chainName,
         pageName: "Home",
       });
-      smartNavigation.navigateSmart("Home", {});
+      navigation.navigate("Home", {});
     } finally {
       setLoadingClaimButton(false);
       setClaimModel(false);

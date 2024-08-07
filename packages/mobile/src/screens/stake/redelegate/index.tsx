@@ -187,8 +187,20 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           }
         );
       } catch (e) {
-        if (e?.message === "Request rejected") {
+        if (
+          e?.message === "Request rejected" ||
+          e?.message === "Transaction rejected"
+        ) {
+          Toast.show({
+            type: "error",
+            text1: "Transaction rejected",
+          });
           return;
+        } else {
+          Toast.show({
+            type: "error",
+            text1: e?.message,
+          });
         }
         console.log(e);
         analyticsStore.logEvent("redelegate_txn_broadcasted_fail", {
@@ -197,7 +209,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           feeType: sendConfigs.feeConfig.feeType,
           message: e?.message ?? "",
         });
-        smartNavigation.navigateSmart("Home", {});
+        navigation.navigate("Home", {});
       }
     }
   };

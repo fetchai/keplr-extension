@@ -7,7 +7,6 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
 import { Dec } from "@keplr-wallet/unit";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { useSmartNavigation } from "navigation/smart-navigation";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
 import { GradientButton } from "components/new/button/gradient-button";
@@ -28,7 +27,6 @@ export const PortfolioStakingCard: FunctionComponent<{
   const [showClaimModel, setClaimModel] = useState(false);
 
   const style = useStyle();
-  const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const netInfo = useNetInfo();
@@ -136,7 +134,7 @@ export const PortfolioStakingCard: FunctionComponent<{
         chainName: chainStore.current.chainName,
         pageName: "Portfolio",
       });
-      smartNavigation.navigateSmart("Home", {});
+      navigation.navigate("Home", {});
     } finally {
       setClaimModel(false);
       setIsSendingTx(false);

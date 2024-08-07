@@ -4,7 +4,6 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { useStyle } from "styles/index";
 import { GradientButton } from "components/new/button/gradient-button";
 import { useStore } from "stores/index";
-import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { separateNumericAndDenom } from "utils/format/format";
 import { Dec } from "@keplr-wallet/unit";
@@ -84,7 +83,6 @@ export const MyRewardCard: FunctionComponent<{
   const delegated = queryDelegations.total;
   const stakedSum = delegated.add(unbonding);
 
-  const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const [showRewars, setShowRewards] = useState(false);
@@ -180,7 +178,7 @@ export const MyRewardCard: FunctionComponent<{
         chainName: chainStore.current.chainName,
         pageName: "Stake",
       });
-      smartNavigation.navigateSmart("Home", {});
+      navigation.navigate("Home", {});
     } finally {
       setClaimModel(false);
       setIsSendingTx(false);
@@ -395,7 +393,6 @@ const DelegateReward: FunctionComponent<{
 
   const { chainStore, accountStore, analyticsStore } = useStore();
 
-  const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const [isSendingTx, setIsSendingTx] = useState("");
@@ -517,7 +514,7 @@ const DelegateReward: FunctionComponent<{
         chainName: chainStore.current.chainName,
         pageName: "Stake",
       });
-      smartNavigation.navigateSmart("Home", {});
+      navigation.navigate("Home", {});
     } finally {
       setClaimModel(false);
       setIsSendingTx("");

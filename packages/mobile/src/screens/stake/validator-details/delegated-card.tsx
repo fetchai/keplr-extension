@@ -125,7 +125,7 @@ export const DelegatedCard: FunctionComponent<{
         });
       }
       console.log(e);
-      smartNavigation.navigateSmart("Home", {});
+      navigation.navigate("Home", {});
     } finally {
       setClaimModel(false);
       setIsSendingTx(false);

@@ -11,7 +11,13 @@ import { useStore } from "stores/index";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
 import { Button } from "components/button";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { Buffer } from "buffer/";
 import { AddressInputCard } from "components/new/card-view/address-card";
 import { BlurButton } from "components/new/button/blur-button";
@@ -62,6 +68,7 @@ export const SendPhase2: FunctionComponent<{
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const chainId = route.params.chainId
     ? route.params.chainId
@@ -203,7 +210,7 @@ export const SendPhase2: FunctionComponent<{
           });
         }
         console.log(e);
-        smartNavigation.navigateSmart("Home", {});
+        navigation.navigate("Home", {});
         analyticsStore.logEvent("send_txn_broadcasted_fail", {
           chainId: chainStore.current.chainId,
           chainName: chainStore.current.chainName,

@@ -50,6 +50,7 @@ export const BalanceCard: FunctionComponent<{
             "justify-center",
             "width-full",
             "items-center",
+            "flex-wrap",
           ]) as ViewStyle
         }
       >
