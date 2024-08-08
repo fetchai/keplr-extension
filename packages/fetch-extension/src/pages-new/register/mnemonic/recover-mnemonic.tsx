@@ -164,7 +164,7 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
               }}
               leftImage={require("@assets/svg/wireframe/hardware.svg")}
               heading={"Connect hardware wallet"}
-              subheading={"Requires bluetooth access to pair"}
+              subheading={"Please connect via USB"}
               subheadingStyle={{
                 fontSize: "14px",
                 opacity: 0.6,
