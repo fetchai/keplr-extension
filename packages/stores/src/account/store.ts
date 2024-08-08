@@ -9,6 +9,7 @@ import {
 import { AccountSetBase, AccountSetBaseSuper, AccountSetOpts } from "./base";
 import { DeepReadonly, UnionToIntersection } from "utility-types";
 import { TokenGraphStore } from "src/token-graph";
+import { KVStore } from "@keplr-wallet/common";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface IAccountStore<T extends IObject = {}> {
@@ -35,6 +36,7 @@ export class AccountStore<
     protected readonly chainGetter: ChainGetter,
     protected readonly activityStore: ActivityStore,
     protected readonly tokenGraphStore: TokenGraphStore,
+    protected readonly accountBaseStore: KVStore,
     protected readonly storeOptsCreator: (chainId: string) => AccountSetOpts,
     ...accountSetCreators: ChainedFunctionifyTuple<
       AccountSetBaseSuper,
@@ -49,7 +51,8 @@ export class AccountStore<
         eventListener,
         chainGetter,
         chainId,
-        storeOptsCreator(chainId)
+        storeOptsCreator(chainId),
+        this.accountBaseStore
       );
 
       return mergeStores(

@@ -6,7 +6,7 @@ import {
   StdFee,
 } from "@keplr-wallet/types";
 import { ChainGetter } from "../common";
-import { DenomHelper, toGenerator } from "@keplr-wallet/common";
+import { KVStore, DenomHelper, toGenerator } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { MakeTxResponse } from "./types";
 import { Int } from "@keplr-wallet/unit";
@@ -94,7 +94,8 @@ export class AccountSetBase {
     },
     protected readonly chainGetter: ChainGetter,
     protected readonly chainId: string,
-    protected readonly opts: AccountSetOpts
+    protected readonly opts: AccountSetOpts,
+    protected readonly kvStore: KVStore
   ) {
     makeObservable(this);
 
@@ -206,7 +207,12 @@ export class AccountSetBase {
       this._pubKey = key.pubKey;
 
       if (this._bech32Address) {
-        this._customSequence = new Int(0);
+        const savedTxnNonce = yield* toGenerator(
+          this.kvStore.get<any>(
+            `extension_txn_nonce-${this.bech32Address}-${this.chainId}`
+          )
+        ) || 0;
+        this._customSequence = new Int(savedTxnNonce);
       }
 
       // Set the wallet status as loaded after getting all necessary infos.
@@ -400,11 +406,21 @@ export class AccountSetBase {
       newNonce = this._customSequence;
     }
     this._customSequence = newNonce;
+    this.saveNonce();
   }
 
   @action
   increaseCustomSequence(): void {
     this._customSequence = this._customSequence.add(new Int(1));
+    this.saveNonce();
+  }
+
+  @flow
+  *saveNonce() {
+    yield this.kvStore.set<any>(
+      `extension_txn_nonce-${this._bech32Address}-${this.chainId}`,
+      JSON.parse(JSON.stringify(this._customSequence.toString()))
+    );
   }
 }
 

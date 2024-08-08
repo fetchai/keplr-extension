@@ -78,6 +78,7 @@ export class RootStore {
   public readonly proposalStore: ProposalStore;
   public readonly activityStore: ActivityStore;
   public readonly tokenGraphStore: TokenGraphStore;
+  public readonly accountBaseStore: ExtensionKVStore;
 
   protected readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
@@ -249,11 +250,14 @@ export class RootStore {
       this.chainStore
     );
 
+    this.accountBaseStore = new ExtensionKVStore("store_account_config");
+
     this.accountStore = new AccountStore(
       window,
       this.chainStore,
       this.activityStore,
       this.tokenGraphStore,
+      this.accountBaseStore,
       () => {
         return {
           suggestChain: false,
