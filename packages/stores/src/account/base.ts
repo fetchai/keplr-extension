@@ -422,6 +422,12 @@ export class AccountSetBase {
       JSON.parse(JSON.stringify(this._customSequence.toString()))
     );
   }
+
+  @action
+  resetCustomNonce(nonce: Int): void {
+    this._customSequence = nonce;
+    this.saveNonce();
+  }
 }
 
 export class AccountSetBaseSuper extends AccountSetBase {

@@ -449,6 +449,14 @@ export class CosmosAccountImpl {
       this.base.setTxTypeInProgress("");
       this.activityStore.setPendingTxnTypes(type, false);
 
+      // resetting custom nonce here
+      const account = await BaseAccount.fetchFromRest(
+        this.chainGetter.getChain(this.chainId).rest,
+        this.base.bech32Address,
+        true
+      );
+      this.base.resetCustomNonce(account.getSequence());
+
       if (this.txOpts.preTxEvents?.onBroadcastFailed) {
         this.txOpts.preTxEvents.onBroadcastFailed(this.chainId, e);
       }
