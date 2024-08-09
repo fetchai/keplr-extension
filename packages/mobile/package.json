@@ -12,8 +12,8 @@
   },
   "scripts": {
     "clean": "sh ./scripts/clean.sh",
-    "android": "yarn build:background && yarn build:provider && echo 'Building Android' && expo run:android",
-    "ios": "yarn build:background && yarn build:provider && echo 'Building iOS' && expo run:ios",
+    "android": "yarn build && echo 'Building Android' && expo run:android",
+    "ios": "yarn build && echo 'Building iOS' && expo run:ios",
     "android:connect": "adb reverse tcp:8081 tcp:8081",
     "typecheck": "tsc",
     "build": "yarn build:background && yarn build:provider",
@@ -25,7 +25,7 @@
     "pod-install": "pod-install",
     "lint-test": "eslint ./src --ext .js,.jsx,.ts,.tsx && prettier --check ./src app.json firebase.json metro.config.js --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx && prettier --write ./src app.json firebase.json metro.config.js --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "sh ./scripts/fix-android-splash-screen-flash.sh && sh ./scripts/fix-ios-blur-view.sh && sh ./scripts/force-export-ble-manager-from-ledger.sh && sh ./scripts/fix-android-legacy-dependency.sh"
+    "postinstall": "sh ./scripts/fix-android-splash-screen-flash.sh && sh ./scripts/fix-ios-blur-view.sh && sh ./scripts/force-export-ble-manager-from-ledger.sh && sh ./scripts/fix-android-legacy-dependency.sh && sh ./scripts/fix-ios-legacy-pods.sh"
   },
   "dependencies": {
     "@amplitude/react-native": "^2.17.2",
@@ -118,7 +118,7 @@
     "react": "18.2.0",
     "react-hook-form": "^7.43.1",
     "react-intl": "^6.2.8",
-    "react-native": "^0.72.3",
+    "react-native": "^0.72.12",
     "react-native-ble-plx": "^2.0.3",
     "react-native-code-push": "^8.0.2",
     "react-native-crypto-polyfill": "file:./crypto-polyfill",
@@ -162,7 +162,6 @@
     "@types/babel__core": "^7",
     "@types/d3-shape": "^3",
     "@types/js-yaml": "^4",
-    "@types/react-native": "^0.72.2",
     "@types/react-native-svg-charts": "5.0.13",
     "@types/react-test-renderer": "^18.0.0",
     "@types/sha.js": "^2.4.0",
