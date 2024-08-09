@@ -207,11 +207,12 @@ export class AccountSetBase {
       this._pubKey = key.pubKey;
 
       if (this._bech32Address) {
-        const savedTxnNonce = yield* toGenerator(
-          this.kvStore.get<any>(
-            `extension_txn_nonce-${this.bech32Address}-${this.chainId}`
-          )
-        ) || 0;
+        const savedTxnNonce =
+          (yield* toGenerator(
+            this.kvStore.get<any>(
+              `extension_txn_nonce-${this.bech32Address}-${this.chainId}`
+            )
+          )) || 0;
         this._customSequence = new Int(savedTxnNonce);
       }
 
