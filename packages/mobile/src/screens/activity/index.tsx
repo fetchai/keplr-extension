@@ -80,8 +80,8 @@ export const ActivityScreen = observer(() => {
             backgroundBlur={false}
             onPress={() => {
               setIsOpenModal(true);
-              analyticsStore.logEvent("filter_click", {
-                tabName: "Transactions",
+              analyticsStore.logEvent("activity_filter_click", {
+                tabName: selectedId.toString(),
                 pageName: "Activity",
               });
             }}
