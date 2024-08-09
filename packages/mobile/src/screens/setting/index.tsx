@@ -155,6 +155,9 @@ export const SettingScreen: FunctionComponent = observer(() => {
             navigation.navigate("Setting", {
               screen: "Governance",
             });
+            analyticsStore.logEvent("proposal_view_click", {
+              pageName: "More",
+            });
           }}
         />
       )}
@@ -189,7 +192,12 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingItem
         label="Sign out"
         left={<SignOutIcon size={16} />}
-        onPress={() => setConfirmModel(true)}
+        onPress={() => {
+          setConfirmModel(true);
+          analyticsStore.logEvent("sign_out_click", {
+            pageName: "More",
+          });
+        }}
       />
       {/* Mock element for padding bottom */}
       <View style={style.get("height-32") as ViewStyle} />

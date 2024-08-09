@@ -144,7 +144,7 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
   containerStyle?: ViewStyle;
   proposalId: string;
 }> = observer(({ proposalId, containerStyle }) => {
-  const { chainStore, queriesStore, accountStore } = useStore();
+  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
 
   const style = useStyle();
 
@@ -285,14 +285,20 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
               cardStyle={
                 style.flatten(["padding-y-18", "margin-bottom-16"]) as ViewStyle
               }
-              onPress={() =>
+              onPress={() => {
+                analyticsStore.logEvent(
+                  "proposal_view_in_block_explorer_click",
+                  {
+                    pageName: "Proposals Detail",
+                  }
+                );
                 navigation.navigate("Others", {
                   screen: "WebView",
                   params: {
                     url: `${chainStore.current.govUrl}${proposalId}`,
                   },
-                })
-              }
+                });
+              }}
             />
           )}
           <View style={style.flatten(["margin-bottom-16"]) as ViewStyle}>
@@ -439,7 +445,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
   const onSubmit = async () => {
     if (vote !== "Unspecified" && account.isReadyToSendTx) {
       const tx = account.cosmos.makeGovVoteTx(proposalId, vote);
-
+      analyticsStore.logEvent("vote_txn_click");
       setIsSendingTx(true);
 
       try {

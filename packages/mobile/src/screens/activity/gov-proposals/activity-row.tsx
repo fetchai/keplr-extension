@@ -20,7 +20,7 @@ const getHash = (proposal: any) => {
 export const GovActivityRow: FunctionComponent<{
   node: any;
 }> = ({ node }) => {
-  const { queriesStore, chainStore } = useStore();
+  const { queriesStore, chainStore, analyticsStore } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -53,14 +53,17 @@ export const GovActivityRow: FunctionComponent<{
   return (
     <TouchableOpacity
       style={style.flatten(["flex-row", "items-center"]) as ViewStyle}
-      onPress={() =>
+      onPress={() => {
+        analyticsStore.logEvent("proposal_view_in_block_explorer_click", {
+          pageName: "Activity detail",
+        });
         navigation.navigate("Others", {
           screen: "WebView",
           params: {
             url: `https://www.mintscan.io/fetchai/tx/${id}`,
           },
-        })
-      }
+        });
+      }}
     >
       <View style={style.flatten(["flex-1", "margin-left-16"]) as ViewStyle}>
         <Text

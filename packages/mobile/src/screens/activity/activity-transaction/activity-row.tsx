@@ -44,7 +44,7 @@ export const ActivityRow: FunctionComponent<{
             id: node.id,
           },
         });
-        analyticsStore.logEvent("activity_transactions_click", {
+        analyticsStore.logEvent("activity_filter_click", {
           tabName: "Transactions",
           pageName: "Activity",
         });
