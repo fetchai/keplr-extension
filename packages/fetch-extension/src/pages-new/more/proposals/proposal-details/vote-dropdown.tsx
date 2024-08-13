@@ -8,13 +8,13 @@ import { useNavigate } from "react-router";
 import { useStore } from "../../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 
-interface VoteDropdown {
+interface VoteDropdownProps {
   proposal: ObservableQueryProposal | undefined;
 }
 
 const voteArr = ["Unspecified", "Yes", "No", "NoWithVeto", "Abstain"];
 
-export const VoteDropdown = ({ proposal }: VoteDropdown) => {
+export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
   const navigate = useNavigate();
   const notification = useNotification();
 
