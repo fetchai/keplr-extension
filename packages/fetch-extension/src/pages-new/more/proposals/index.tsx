@@ -28,6 +28,9 @@ export const proposalOptions = {
 
 export const Proposals = observer(() => {
   const [filter, setFilter] = useState<"Active" | "Voted" | "Closed" | "">("");
+  const [appliedFilter, setAppliedFilter] = useState<
+    "Active" | "Voted" | "Closed" | ""
+  >("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { chainStore, accountStore, proposalStore } = useStore();
@@ -110,6 +113,7 @@ export const Proposals = observer(() => {
       newProposal = storedProposals.allProposals;
     }
 
+    setAppliedFilter(filter);
     setProposals(newProposal);
   };
 
@@ -167,6 +171,7 @@ export const Proposals = observer(() => {
         setIsOpen={setIsDropdownOpen}
         setSelectedFilter={setFilter}
         selectedFilter={filter}
+        appliedFilter={appliedFilter}
         handleFilterChange={handleFilterChange}
       />
     </HeaderLayout>
@@ -215,6 +220,7 @@ const GovtProposalFilterDropdown = ({
   setIsOpen,
   selectedFilter,
   setSelectedFilter,
+  appliedFilter,
   handleFilterChange,
 }: {
   isOpen: boolean;
@@ -223,13 +229,21 @@ const GovtProposalFilterDropdown = ({
   setSelectedFilter: React.Dispatch<
     React.SetStateAction<"" | "Active" | "Voted" | "Closed">
   >;
+  appliedFilter: "Active" | "Voted" | "Closed" | "";
   handleFilterChange: () => Promise<void>;
 }) => {
   const filters = ["Active", "Voted", "Closed"];
 
+  useEffect(() => {
+    setSelectedFilter(appliedFilter);
+  }, [isOpen]);
+
   return (
     <Dropdown
-      closeClicked={() => setIsOpen(false)}
+      closeClicked={() => {
+        setIsOpen(false);
+        setSelectedFilter("");
+      }}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       title="Filter"
@@ -260,10 +274,11 @@ const GovtProposalFilterDropdown = ({
 
         <ButtonV2
           text=""
+          disabled={selectedFilter === appliedFilter}
           styleProps={{
             border: "1px solid rgba(255,255,255,0.4)",
-            background: "transparent",
-            color: "white",
+            background: selectedFilter === appliedFilter ? "transparent" : "",
+            color: selectedFilter === appliedFilter ? "white" : "",
             height: "56px",
             display: "flex",
             alignItems: "center",
