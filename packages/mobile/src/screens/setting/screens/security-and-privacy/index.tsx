@@ -7,9 +7,15 @@ import { SettingBiometricLockItem } from "screens/setting/items/biometric-lock";
 import { useStore } from "stores/index";
 import { canShowPrivateData } from "screens/setting/screens/view-private-data";
 import { useStyle } from "styles/index";
+import { SettingItem } from "screens/setting/components";
+import { useSmartNavigation } from "navigation/smart-navigation";
+import { EndPointIcon } from "components/new/icon/endpoint";
 import { AutoLockScreen } from "screens/setting/screens/security-and-privacy/auto-lock";
+
 export const SecurityAndPrivacyScreen: FunctionComponent = observer(() => {
-  const { keychainStore, keyRingStore } = useStore();
+  const { keychainStore, keyRingStore, chainStore } = useStore();
+
+  const smartNavigation = useSmartNavigation();
 
   const showPrivateData = canShowPrivateData(keyRingStore.keyRingType);
 
@@ -27,6 +33,16 @@ export const SecurityAndPrivacyScreen: FunctionComponent = observer(() => {
         <SettingBiometricLockItem />
       ) : null}
       <AutoLockScreen />
+      {chainStore.current.chainId === "dorado-1" && (
+        <SettingItem
+          label="Endpoints"
+          style={style.flatten(["height-72", "padding-18"]) as ViewStyle}
+          left={<EndPointIcon size={18} />}
+          onPress={() => {
+            smartNavigation.navigateSmart("Setting.Endpoint", {});
+          }}
+        />
+      )}
     </PageWithScrollView>
   );
 });

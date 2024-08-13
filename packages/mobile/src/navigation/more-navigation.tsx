@@ -25,6 +25,7 @@ import { ViewPrivateDataScreen } from "screens/setting/screens/view-private-data
 import { FetchVersionScreen } from "screens/setting/screens/version";
 import { CurrencyScreen } from "screens/setting/screens/currency";
 import { GovernanceDetailsScreen, GovernanceScreen } from "screens/governance";
+import { SettingEndpointsPage } from "screens/setting/screens/endpoints";
 
 export const MoreNavigation: FunctionComponent = () => {
   const style = useStyle();
@@ -128,6 +129,14 @@ export const MoreNavigation: FunctionComponent = () => {
         }}
         name="Governance.Details"
         component={GovernanceDetailsScreen}
+      />
+      <Stack.Screen
+        options={{
+          ...TransparentHeaderOptionsPreset,
+          title: "Endpoint",
+        }}
+        name="Setting.Endpoint"
+        component={SettingEndpointsPage}
       />
     </Stack.Navigator>
   );
