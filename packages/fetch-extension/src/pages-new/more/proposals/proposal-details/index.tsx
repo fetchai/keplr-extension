@@ -91,7 +91,7 @@ export const ProposalDetail = observer(() => {
       case Governance.ProposalStatus.DEPOSIT_PERIOD:
         return "Vote Not Started";
       case Governance.ProposalStatus.VOTING_PERIOD:
-        return voted ? "Change your vote" : "Vote";
+        return voted !== "Unspecified" ? "Change your vote" : "Vote";
       default:
         return "Voting closed";
     }
@@ -201,8 +201,8 @@ export const ProposalDetail = observer(() => {
               width: "336px",
               padding: "12px",
               height: "56px",
-              background: voted != undefined ? "transparent" : "",
-              color: voted != undefined ? "white" : "",
+              background: voted !== "Unspecified" ? "transparent" : "",
+              color: voted !== "Unspecified" ? "white" : "",
               border: "1px solid rgba(255,255,255,0.4)",
             }}
             disabled={!voteEnabled || !accountInfo.isReadyToSendTx}
