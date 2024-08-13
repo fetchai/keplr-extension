@@ -55,6 +55,19 @@ export const ActivityScreen = observer(() => {
     setSelectedId(tabId);
   }, [route?.params, chainStore.current.chainId, accountInfo.bech32Address]);
 
+  const logTabChange = (tabName: ActivityEnum) => {
+    const eventName =
+      tabName === ActivityEnum.Transactions
+        ? "activity_transaction_tab_click"
+        : "activity_gov_proposal_tab_click";
+    analyticsStore.logEvent(eventName, {
+      pageName: "Activity",
+    });
+  };
+  useEffect(() => {
+    logTabChange(selectedId);
+  }, [selectedId]);
+
   return (
     <PageWithViewInBottomTabView
       backgroundMode={"image"}

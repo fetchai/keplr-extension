@@ -55,6 +55,7 @@ export const GovActivityRow: FunctionComponent<{
       style={style.flatten(["flex-row", "items-center"]) as ViewStyle}
       onPress={() => {
         analyticsStore.logEvent("proposal_view_in_block_explorer_click", {
+          tabName: "Gov proposal",
           pageName: "Activity detail",
         });
         navigation.navigate("Others", {
