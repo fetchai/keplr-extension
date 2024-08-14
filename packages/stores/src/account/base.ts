@@ -6,9 +6,10 @@ import {
   StdFee,
 } from "@keplr-wallet/types";
 import { ChainGetter } from "../common";
-import { DenomHelper, toGenerator } from "@keplr-wallet/common";
+import { KVStore, DenomHelper, toGenerator } from "@keplr-wallet/common";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { MakeTxResponse } from "./types";
+import { Int } from "@keplr-wallet/unit";
 
 export enum WalletStatus {
   NotInit = "NotInit",
@@ -48,6 +49,10 @@ export class AccountSetBase {
 
   @observable
   protected _bech32Address: string = "";
+
+  @observable
+  protected _customSequence: Int = new Int(0);
+
   @observable
   protected _isNanoLedger: boolean = false;
   @observable
@@ -89,7 +94,8 @@ export class AccountSetBase {
     },
     protected readonly chainGetter: ChainGetter,
     protected readonly chainId: string,
-    protected readonly opts: AccountSetOpts
+    protected readonly opts: AccountSetOpts,
+    protected readonly kvStore: KVStore
   ) {
     makeObservable(this);
 
@@ -199,6 +205,16 @@ export class AccountSetBase {
       this._isKeystone = key.isKeystone;
       this._name = key.name;
       this._pubKey = key.pubKey;
+
+      if (this._bech32Address) {
+        const savedTxnNonce =
+          (yield* toGenerator(
+            this.kvStore.get<any>(
+              `extension_txn_nonce-${this.bech32Address}-${this.chainId}`
+            )
+          )) || 0;
+        this._customSequence = new Int(savedTxnNonce);
+      }
 
       // Set the wallet status as loaded after getting all necessary infos.
       this._walletStatus = WalletStatus.Loaded;
@@ -331,6 +347,10 @@ export class AccountSetBase {
     return this._bech32Address;
   }
 
+  get customSequence(): Int {
+    return this._customSequence;
+  }
+
   get pubKey(): Uint8Array {
     return this._pubKey.slice();
   }
@@ -376,6 +396,38 @@ export class AccountSetBase {
       this.bech32Address,
       this.chainGetter.getChain(this.chainId).bech32Config.bech32PrefixAccAddr
     ).toHex(true);
+  }
+
+  @action
+  setCustomNonce(nonce: Int): void {
+    let newNonce = new Int(0);
+    if (nonce.gt(this._customSequence)) {
+      newNonce = nonce;
+    } else {
+      newNonce = this._customSequence;
+    }
+    this._customSequence = newNonce;
+    this.saveNonce();
+  }
+
+  @action
+  increaseCustomSequence(): void {
+    this._customSequence = this._customSequence.add(new Int(1));
+    this.saveNonce();
+  }
+
+  @flow
+  *saveNonce() {
+    yield this.kvStore.set<any>(
+      `extension_txn_nonce-${this._bech32Address}-${this.chainId}`,
+      JSON.parse(JSON.stringify(this._customSequence.toString()))
+    );
+  }
+
+  @action
+  resetCustomNonce(nonce: Int): void {
+    this._customSequence = nonce;
+    this.saveNonce();
   }
 }
 

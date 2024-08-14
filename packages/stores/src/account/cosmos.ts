@@ -449,6 +449,14 @@ export class CosmosAccountImpl {
       this.base.setTxTypeInProgress("");
       this.activityStore.setPendingTxnTypes(type, false);
 
+      // resetting custom nonce here
+      const account = await BaseAccount.fetchFromRest(
+        this.chainGetter.getChain(this.chainId).rest,
+        this.base.bech32Address,
+        true
+      );
+      this.base.resetCustomNonce(account.getSequence());
+
       if (this.txOpts.preTxEvents?.onBroadcastFailed) {
         this.txOpts.preTxEvents.onBroadcastFailed(this.chainId, e);
       }
@@ -584,10 +592,12 @@ export class CosmosAccountImpl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keplr = (await this.base.getKeplr())!;
 
+    this.base.setCustomNonce(account.getSequence());
+
     const signDocRaw: StdSignDoc = {
       chain_id: this.chainId,
       account_number: account.getAccountNumber().toString(),
-      sequence: account.getSequence().toString(),
+      sequence: this.base.customSequence.toString(),
       fee: fee,
       msgs: aminoMsgs,
       memo: escapeHTML(memo),
@@ -717,6 +727,8 @@ export class CosmosAccountImpl {
           ? [Buffer.from(signResponse.signature.signature, "base64")]
           : [new Uint8Array(0)],
     }).finish();
+
+    this.base.increaseCustomSequence();
 
     return {
       txHash: await keplr.sendTx(this.chainId, signedTx, mode as BroadcastMode),
