@@ -140,13 +140,19 @@ export const ActivityScreen = observer(() => {
           </View>
         )}
         {selectedId === ActivityEnum.GovProposals && (
-          <GovProposalsTab
-            isOpenModal={isOpenModal}
-            setIsOpenModal={setIsOpenModal}
-            latestBlock={latestBlock}
-            nodes={govProposalsNodes}
-            setNodes={setGovProposalsNodes}
-          />
+          <View
+            style={
+              style.flatten(["height-full", "justify-center"]) as ViewStyle
+            }
+          >
+            <GovProposalsTab
+              isOpenModal={isOpenModal}
+              setIsOpenModal={setIsOpenModal}
+              latestBlock={latestBlock}
+              nodes={govProposalsNodes}
+              setNodes={setGovProposalsNodes}
+            />
+          </View>
         )}
       </ScrollView>
     </PageWithViewInBottomTabView>
