@@ -52,7 +52,12 @@ export const Proposals = observer(() => {
         setIsLoading(true);
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
-        const allProposals = response.proposals.reverse();
+        const allProposals = response.proposals
+          .reverse()
+          .filter(
+            (proposal: any) =>
+              proposal.status !== "PROPOSAL_STATUS_DEPOSIT_PERIOD"
+          );
         let activeProposals = allProposals.filter((proposal: ProposalType) => {
           return proposal.status === proposalOptions.ProposalActive;
         });
@@ -148,7 +153,8 @@ export const Proposals = observer(() => {
       }
     >
       {current.chainId === CHAIN_ID_FETCHHUB ||
-      current.chainId === CHAIN_ID_DORADO ? (
+      current.chainId === CHAIN_ID_DORADO ||
+      current.chainId === "test" ? (
         isError ? (
           <ErrorActivity />
         ) : proposals && Object.keys(proposals).length > 0 ? (
