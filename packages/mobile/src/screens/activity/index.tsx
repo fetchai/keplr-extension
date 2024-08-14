@@ -127,24 +127,16 @@ export const ActivityScreen = observer(() => {
           style.flatten(["margin-y-16", "flex-grow-1"]) as ViewStyle
         }
       >
-        {selectedId === ActivityEnum.Transactions && (
-          <View
-            style={
-              style.flatten(["height-full", "justify-center"]) as ViewStyle
-            }
-          >
+        <View
+          style={style.flatten(["height-full", "justify-center"]) as ViewStyle}
+        >
+          {selectedId === ActivityEnum.Transactions && (
             <ActivityNativeTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
             />
-          </View>
-        )}
-        {selectedId === ActivityEnum.GovProposals && (
-          <View
-            style={
-              style.flatten(["height-full", "justify-center"]) as ViewStyle
-            }
-          >
+          )}
+          {selectedId === ActivityEnum.GovProposals && (
             <GovProposalsTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
@@ -152,8 +144,8 @@ export const ActivityScreen = observer(() => {
               nodes={govProposalsNodes}
               setNodes={setGovProposalsNodes}
             />
-          </View>
-        )}
+          )}
+        </View>
       </ScrollView>
     </PageWithViewInBottomTabView>
   );

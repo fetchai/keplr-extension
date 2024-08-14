@@ -33,7 +33,7 @@ export const SecurityAndPrivacyScreen: FunctionComponent = observer(() => {
         <SettingBiometricLockItem />
       ) : null}
       <AutoLockScreen />
-      {chainStore.current.chainId === "dorado-1" && (
+      {chainStore.current.chainId === "test" && (
         <SettingItem
           label="Endpoints"
           style={style.flatten(["height-72", "padding-18"]) as ViewStyle}
