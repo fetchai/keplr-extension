@@ -70,7 +70,7 @@ export const NewMnemonicIntro: FunctionComponent<{
             backgroundClip: "text",
           }}
         >
-          ASI Wallet
+          ASI Alliance Wallet
         </div>
       </div>
       <div className={style["titleText"]}>Choose how you want to proceed</div>
