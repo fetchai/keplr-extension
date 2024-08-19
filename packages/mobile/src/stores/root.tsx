@@ -57,6 +57,7 @@ export class RootStore {
   public readonly chainSuggestStore: ChainSuggestStore;
   public readonly activityStore: ActivityStore;
   public readonly tokenGraphStore: TokenGraphStore;
+  public readonly accountBaseStore: AsyncKVStore;
 
   public readonly queriesStore: QueriesStore<
     [CosmosQueries, CosmwasmQueries, SecretQueries, KeplrETCQueries]
@@ -183,6 +184,7 @@ export class RootStore {
       new AsyncKVStore("store_token_graph_config"),
       this.chainStore
     );
+    this.accountBaseStore = new AsyncKVStore("store_account_config");
 
     this.accountStore = new AccountStore(
       {
@@ -196,6 +198,7 @@ export class RootStore {
       this.chainStore,
       this.activityStore,
       this.tokenGraphStore,
+      this.accountBaseStore,
       () => {
         return {
           suggestChain: false,
