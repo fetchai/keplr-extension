@@ -1,12 +1,12 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { useStore } from "../../../stores";
-import { FilterDropdown, FilterActivities } from "../filter";
-import { ActivityRow } from "./activity-row";
-import { NoActivity } from "../no-activity";
-import { govOptions } from "../utils";
-import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
-import { UnsupportedNetwork } from "../unsupported-network";
 import { observer } from "mobx-react-lite";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../../config.ui.var";
+import { useStore } from "../../../stores";
+import { FilterActivities, FilterDropdown } from "../filter";
+import { NoActivity } from "../no-activity";
+import { UnsupportedNetwork } from "../unsupported-network";
+import { govOptions } from "../utils";
+import { ActivityRow } from "./activity-row";
 
 export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
   observer(({}) => {
@@ -22,7 +22,6 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
     const [isSaveChangesButtonDisabled, setIsSaveChangesButtonDisabled] =
       useState(true);
     const proposalNodes = activityStore.sortedNodesProposals;
-
     const accountOrChainChanged =
       activityStore.getAddress !== accountInfo.bech32Address ||
       activityStore.getChainId !== current.chainId;
