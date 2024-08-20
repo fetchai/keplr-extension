@@ -13,6 +13,12 @@ export const fetchProposals = async (chainId: string) => {
       .then((response) => response.data)
       .catch((e) => console.log(e));
 
+  if (chainId === "test")
+    return await axios
+      .get("http://34.34.58.246:1317/cosmos/gov/v1beta1/proposals")
+      .then((response) => response.data)
+      .catch((e) => console.log(e));
+
   return await axios
     .get("https://rest-dorado.fetch.ai/cosmos/gov/v1beta1/proposals")
     .then((response) => response.data)
