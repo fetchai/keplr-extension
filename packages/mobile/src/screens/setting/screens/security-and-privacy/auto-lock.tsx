@@ -6,7 +6,7 @@ import { AutoLockTimer } from "components/new/icon/timer-icon";
 import { useStyle } from "styles/index";
 import { useStore } from "stores/index";
 export const AutoLockScreen: FunctionComponent = observer(() => {
-  const { keychainStore } = useStore();
+  const { keychainStore, analyticsStore } = useStore();
   const [isAutoLockOn, setIsAutoLockOn] = useState(false);
   const style = useStyle();
 
@@ -16,6 +16,10 @@ export const AutoLockScreen: FunctionComponent = observer(() => {
 
   const handleAutoLockToggle = async (value: boolean) => {
     await keychainStore.toggleAutoLock(value);
+    analyticsStore.logEvent("auto_lock_timer_click", {
+      pageName: "Security & Privacy",
+      action: value.toString(),
+    });
   };
 
   return (
