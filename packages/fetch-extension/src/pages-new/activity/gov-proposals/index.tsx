@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Button } from "reactstrap";
 import { useStore } from "../../../stores";
 import { FilterDropdown, FilterActivities } from "../filter";
 import { ActivityRow } from "./activity-row";
@@ -18,9 +17,9 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
     // const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    const [loadingRequest, setLoadingRequest] = useState(false);
+    // const [loadingRequest, setLoadingRequest] = useState(false);
     // const [nodes, setNodes] = useState<any>({});
-    const [pageInfo, setPageInfo] = useState<any>();
+    // const [pageInfo, setPageInfo] = useState<any>();
     const [filter, setFilter] = useState<string[]>(
       govOptions.map((option) => option.value)
     );
@@ -84,17 +83,17 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
     //   fetchNodes("");
     // }, [filter, latestBlock]);
 
-    const handleClick = async () => {
-      analyticsStore.logEvent("activity_transactions_click", {
-        pageName: "Transaction Tab",
-      });
-      setLoadingRequest(true);
-      // await fetchNodes(pageInfo.endCursor);
-      setLoadingRequest(false);
-    };
+    // const handleClick = async () => {
+    //   analyticsStore.logEvent("activity_transactions_click", {
+    //     pageName: "Transaction Tab",
+    //   });
+    //   setLoadingRequest(true);
+    //   // await fetchNodes(pageInfo.endCursor);
+    //   setLoadingRequest(false);
+    // };
 
     const handleFilterChange = (selectedFilter: string[]) => {
-      setPageInfo(undefined);
+      // setPageInfo(undefined);
       // setNodes({});
       setFilter(selectedFilter);
       analyticsStore.logEvent("activity_filter_click", {
@@ -170,7 +169,7 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
                 .map((node: any, index: any) => (
                   <ActivityRow node={node} key={index} />
                 ))}
-              {pageInfo?.hasNextPage && (
+              {/* {pageInfo?.hasNextPage && (
                 <Button
                   outline
                   color="primary"
@@ -185,7 +184,7 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
                     <i className="fas fa-spinner fa-spin ml-2" />
                   )}
                 </Button>
-              )}
+              )} */}
             </React.Fragment>
           ) : (
             // : isLoading ? (
