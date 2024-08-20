@@ -50,44 +50,16 @@ const cardStatusTitle = (details: string) => {
 //   return null;
 // };
 
-const getProposalIdFromLogs = (logs: string) => {
-  let proposalId = "";
-  const parsedLogs = JSON.parse(logs);
-  let log = [];
-
-  if (Array.isArray(parsedLogs) && parsedLogs.length) {
-    log = parsedLogs?.[0]?.events || [];
-  }
-
-  const attributes =
-    log
-      .map((item: any) => {
-        if (item.type && item.type === "proposal_vote") {
-          return item?.attributes;
-        }
-      })
-      .find((item: any) => item) || [];
-
-  if (Array.isArray(attributes) && attributes.length) {
-    proposalId = attributes.find(
-      (item: any) => item.key === "proposal_id"
-    ).value;
-  }
-
-  return proposalId;
-};
-
 export const ActivityRow = observer(({ node }: { node: any }) => {
   const details = node.option;
   // const hash = getHash(node);
-  const { status, id, log } = node.transaction;
-  const proposalId = getProposalIdFromLogs(log);
+  const { proposalId, transaction, id } = node;
+  const { status } = transaction;
   const { queriesStore, chainStore } = useStore();
 
   const current = chainStore.current;
   const queries = queriesStore.get(current.chainId);
   const proposal = queries.cosmos.queryGovernance.getProposal(proposalId || "");
-
   return (
     <React.Fragment>
       <a
@@ -103,7 +75,13 @@ export const ActivityRow = observer(({ node }: { node: any }) => {
             <div className={style["rowSubtitle"]}>
               <div>PROPOSAL #{proposalId}</div>
               <div style={{ fontSize: "14px" }}>●</div>
-              <div>{status === "Success" ? "Confirmed" : "Failed"}</div>
+              <div>
+                {status === "Success"
+                  ? "Confirmed"
+                  : status
+                  ? status
+                  : "Failed"}
+              </div>
             </div>
           </div>
           <div
