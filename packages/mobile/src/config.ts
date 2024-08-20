@@ -2545,7 +2545,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     rpc: "http://34.34.58.246:26657",
     rest: "http://34.34.58.246:1317",
     chainId: "test",
-    chainName: "Local Test Network.",
+    chainName: "Local Test Network",
     hideInUI: true,
     isTestnet: true,
     stakeCurrency: {
