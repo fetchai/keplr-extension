@@ -583,33 +583,20 @@ PODS:
     - React-Core
   - RNLocalize (3.0.2):
     - React-Core
-  - RNReanimated (3.5.4):
-    - DoubleConversion
-    - FBLazyVector
-    - glog
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React-callinvoker
+  - RNReanimated (3.15.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - React-Core/DevSupport
-    - React-Core/RCTWebSocket
-    - React-CoreModules
-    - React-cxxreact
-    - React-jsi
-    - React-jsiexecutor
-    - React-jsinspector
-    - React-RCTActionSheet
-    - React-RCTAnimation
-    - React-RCTAppDelegate
-    - React-RCTBlob
-    - React-RCTImage
-    - React-RCTLinking
-    - React-RCTNetwork
-    - React-RCTSettings
-    - React-RCTText
     - ReactCommon/turbomodule/core
-    - Yoga
+    - RNReanimated/reanimated (= 3.15.0)
+    - RNReanimated/worklets (= 3.15.0)
+  - RNReanimated/reanimated (3.15.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+  - RNReanimated/worklets (3.15.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
   - RNScreens (3.23.0):
     - React-Core
     - React-RCTImage
@@ -1031,7 +1018,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNLocalize: dbea38dcb344bf80ff18a1757b1becf11f70cae4
-  RNReanimated: bdadbf5322d7894bb6016985d8ae5c9ed5fc83d0
+  RNReanimated: ac8334b8dabe2a236412b66e613f66648a72eb4d
   RNScreens: 6a8a3c6b808aa48dca1780df7b73ea524f602c63
   RNScrypt: 95fdef077b482e9fdf8a761120cb69d129ef4016
   RNSentry: 601e5dbb9b3fbec6bf6a6e8c8bcc249835494744
