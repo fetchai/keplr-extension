@@ -182,7 +182,7 @@ export const RegisterIntroScreen: FunctionComponent = () => {
                 Welcome to your
               </Text>
               <LinearGradientText
-                text="ASI Wallet"
+                text="ASI Alliance Wallet"
                 color1="#CF447B"
                 color2="#F9774B"
                 textCenter={false}
@@ -422,7 +422,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
       close={() => close()}
     >
       <TokenCardView
-        title="Import from ASI Web extension"
+        title="Import from ASI Alliance Web extension"
         leadingIcon={<FetchIcon size={30} />}
         containerStyle={
           style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle

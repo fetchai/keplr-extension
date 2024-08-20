@@ -69,7 +69,7 @@ export const RegisterEndScreen: FunctionComponent = observer(() => {
             ]) as ViewStyle
           }
         >
-          Your ASI journey now begins.
+          Your ASI Alliance journey now begins.
         </Text>
       </View>
       {password && keychainStore.isBiometrySupported ? (

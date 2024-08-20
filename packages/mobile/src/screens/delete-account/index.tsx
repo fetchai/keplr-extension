@@ -65,7 +65,7 @@ export const DeleteWalletScreen: FunctionComponent = () => {
           icon={<DeleteWalletIcon />}
           title={"Delete wallet"}
           subtitle={
-            "You will no longer have access to\nyour wallet on ASI Wallet"
+            "You will no longer have access to\nyour wallet on ASI Alliance Wallet"
           }
           titleStyle={style.flatten(["h3", "font-normal"]) as ViewStyle}
           subtitleStyle={style.flatten(["body3"]) as ViewStyle}

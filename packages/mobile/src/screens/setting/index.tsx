@@ -166,7 +166,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
         }}
       />
       <SettingItem
-        label="ASI Wallet version"
+        label="ASI Alliance Wallet version"
         left={<BranchIcon size={16} />}
         onPress={() => {
           navigation.navigate("Setting", {
