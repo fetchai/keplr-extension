@@ -75,6 +75,9 @@ export const govProposals = `query govFilters($after: Cursor, $address: String!,
     }
 
     nodes {
+      block {
+        timestamp
+      }
       transaction {
         status
         log
