@@ -3,6 +3,7 @@ import { shortenNumber } from "@utils/format";
 import sendIcon from "@assets/svg/wireframe/activity-send.svg";
 import recieveIcon from "@assets/svg/wireframe/activity-recieve.svg";
 import stakeIcon from "@assets/svg/wireframe/activity-stake.svg";
+import { fetchGovProposalTransactions } from "@graphQL/activity-api";
 
 const getAmount = (denom: string, amount: string, chainStore: any) => {
   const amountCurrency = chainStore.current.currencies.find(
@@ -177,4 +178,63 @@ export const calculatePercentages = (
     noPercentage: noPercentage.toFixed(2),
     noWithVetoPercentage: noWithVetoPercentage.toFixed(2),
   };
+};
+
+export const getProposalIdFromLogs = (logs: string) => {
+  let proposalId = "";
+  const parsedLogs = JSON.parse(logs);
+  let log = [];
+
+  if (Array.isArray(parsedLogs) && parsedLogs.length) {
+    log = parsedLogs?.[0]?.events || [];
+  }
+
+  const attributes =
+    log
+      .map((item: any) => {
+        if (item.type && item.type === "proposal_vote") {
+          return item?.attributes;
+        }
+      })
+      .find((item: any) => item) || [];
+
+  if (Array.isArray(attributes) && attributes.length) {
+    proposalId = attributes.find(
+      (item: any) => item.key === "proposal_id"
+    ).value;
+  }
+
+  return proposalId;
+};
+
+export const fetchProposalNodes = async (
+  cursor: any,
+  chainId: string,
+  bech32Address: string
+) => {
+  try {
+    let parsedNodes: any = [];
+    // avoid fetching for local test network
+    if (chainId && chainId !== "test" && bech32Address) {
+      const fetchedData = await fetchGovProposalTransactions(
+        chainId,
+        cursor,
+        bech32Address,
+        govOptions.map((option) => option.value)
+      );
+      if (fetchedData) {
+        parsedNodes = fetchedData.nodes.map((node: any) => ({
+          ...node,
+          proposalId: getProposalIdFromLogs(node.transaction.log),
+        }));
+        return parsedNodes;
+      } else {
+        return parsedNodes;
+      }
+    } else {
+      return parsedNodes;
+    }
+  } catch (error) {
+    return [];
+  }
 };
