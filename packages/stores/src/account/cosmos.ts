@@ -48,8 +48,10 @@ import { MakeTxResponse, ProtoMsgsOrWithAminoMsgs } from "./types";
 import {
   getEip712TypedDataBasedOnChainId,
   getNodes,
+  getProposalNode,
   txEventsWithPreOnFulfill,
   updateNodeOnTxnCompleted,
+  updateProposalNodeOnTxnCompleted,
 } from "./utils";
 import { ExtensionOptionsWeb3Tx } from "@keplr-wallet/proto-types/ethermint/types/v1/web3";
 import { MsgRevoke } from "@keplr-wallet/proto-types/cosmos/authz/v1beta1/tx";
@@ -86,6 +88,33 @@ export interface Node {
     status: string;
     timeoutHeight: "0";
   };
+}
+
+export interface ProposalNode {
+  type: string;
+  block: {
+    timestamp: string;
+    __typename: string;
+  };
+  transaction: {
+    status: string;
+    id: string;
+    log: [];
+    __typename: string;
+    fees: string;
+    gasUsed: string;
+    chainId: string;
+    memo: string;
+  };
+  messages: {
+    json: string;
+    typeUrl: string;
+    __typename: string;
+  };
+  proposalId: string;
+  option: string | undefined;
+  id: string;
+  __typename: string;
 }
 
 export const CosmosAccount = {
@@ -400,6 +429,7 @@ export class CosmosAccountImpl {
     let txHash: Uint8Array;
     let signDoc: StdSignDoc;
     let txId: string;
+    let proposalNode: ProposalNode;
 
     try {
       if (typeof msgs === "function") {
@@ -443,6 +473,17 @@ export class CosmosAccountImpl {
         },
       };
 
+      if (type === "govVote") {
+        proposalNode = getProposalNode({
+          txId,
+          signDoc,
+          type,
+          fee,
+          memo,
+          nodes,
+        });
+        this.activityStore.addProposalNode(proposalNode);
+      }
       this.activityStore.addNode(newNode);
       this.activityStore.addPendingTxn({ id: txId, type });
     } catch (e: any) {
@@ -494,6 +535,13 @@ export class CosmosAccountImpl {
       .traceTx(txHash)
       .then((tx) => {
         txTracer.close();
+        if (type === "govVote") {
+          updateProposalNodeOnTxnCompleted(
+            tx,
+            proposalNode,
+            this.activityStore
+          );
+        }
         //update node's gas, amount and status on completed
         updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
         this.activityStore.removePendingTxn(txId);
@@ -529,6 +577,9 @@ export class CosmosAccountImpl {
       .catch(() => {
         this.activityStore.removePendingTxn(txId);
         this.activityStore.setTxnStatus(txId, "Unconfirmed");
+        if (type === "govVote") {
+          this.activityStore.setProposalTxnStatus(txId, "Unconfirmed");
+        }
         this.base.setTxTypeInProgress("");
         this.activityStore.setIsNodeUpdated(true);
       });

@@ -1,5 +1,6 @@
 import { EthermintChainIdHelper } from "@keplr-wallet/cosmos";
 import { ProtoMsgsOrWithAminoMsgs } from "./types";
+import { ProposalNode } from "./cosmos";
 
 export function txEventsWithPreOnFulfill(
   onTxEvents:
@@ -293,4 +294,84 @@ export const updateNodeOnTxnCompleted = (
   }
 
   activityStore.setIsNodeUpdated(true);
+};
+
+export const updateProposalNodeOnTxnCompleted = (
+  tx: any,
+  proposalNode: ProposalNode,
+  activityStore: any
+) => {
+  const txId = proposalNode.id;
+
+  const updatedProposalNode = {
+    ...proposalNode,
+    transaction: {
+      ...proposalNode.transaction,
+      log: tx.log,
+    },
+  };
+
+  activityStore.setProposalNode(txId, updatedProposalNode);
+
+  // if txn fails, it will have tx.code.
+  if (tx.code) {
+    activityStore.setProposalTxnStatus(txId, "Failed");
+  } else {
+    activityStore.setProposalTxnStatus(txId, "Success");
+  }
+};
+
+export const getProposalNode = ({
+  txId,
+  signDoc,
+  type,
+  fee,
+  memo,
+  nodes,
+}: {
+  txId: string;
+  signDoc: any;
+  type: string;
+  fee: any;
+  memo: string;
+  nodes: Array<any>;
+}): ProposalNode => {
+  const option = Number(signDoc.msgs[0].value.option);
+  const optionText = (() => {
+    switch (option) {
+      case 1:
+        return "YES";
+      case 2:
+        return "ABSTAIN";
+      case 3:
+        return "NO";
+      case 4:
+        return "NO_WITH_VETO";
+    }
+  })();
+
+  const proposalNode: ProposalNode = {
+    type,
+    block: {
+      timestamp: new Date().toJSON(),
+      __typename: "Block",
+    },
+    transaction: {
+      status: "Pending",
+      id: txId,
+      log: [],
+      fees: JSON.stringify(signDoc.fee.amount),
+      chainId: signDoc.chain_id,
+      gasUsed: fee.gas,
+      memo: memo,
+      __typename: "Transaction",
+    },
+    messages: nodes[0],
+    proposalId: signDoc.msgs[0].value.proposal_id,
+    option: optionText,
+    id: `${txId}-0`,
+    __typename: "GovProposalVote",
+  };
+
+  return proposalNode;
 };
