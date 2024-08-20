@@ -79,7 +79,7 @@ export const HomeScreen: FunctionComponent = observer(() => {
     activityStore.getAddress !== account.bech32Address ||
     activityStore.getChainId !== chainStore.current.chainId;
 
-  async function fetchData(): Promise<UpdateData | undefined> {
+  async function fetchAppVersion(): Promise<UpdateData | undefined> {
     try {
       const apiUrl = `https://raw.githubusercontent.com/fetchai/fetch-wallet/master/packages/mobile/update.json`;
       const response = await axios.get(apiUrl);
@@ -208,7 +208,7 @@ export const HomeScreen: FunctionComponent = observer(() => {
 
   useEffect(() => {
     async function updateApp() {
-      const data = await fetchData();
+      const data = await fetchAppVersion();
       if (data) {
         if (data.isForceUpdate) {
           if (Platform.OS === "ios") {
@@ -227,7 +227,7 @@ export const HomeScreen: FunctionComponent = observer(() => {
       }
     }
     updateApp();
-  }, []);
+  }, [appVersion, buildNumber]);
 
   return (
     <PageWithScrollViewInBottomTabView
