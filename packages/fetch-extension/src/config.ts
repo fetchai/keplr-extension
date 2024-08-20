@@ -1,11 +1,55 @@
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ChainInfo } from "@keplr-wallet/types";
 
-const TEST_NETWORK_CONFIG: ChainInfo = {
+const LOCAL_TEST_NETWORK_CONFIG: ChainInfo = {
+  rpc: "http://localhost:26657",
+  rest: "http://localhost:1317",
+  chainId: "test-local",
+  chainName: "Local Test Network",
+  hideInUI: true,
+  stakeCurrency: {
+    coinDenom: "stake",
+    coinMinimalDenom: "stake",
+    coinDecimals: 18,
+    coinGeckoId: "fetch-ai",
+  },
+  bip44: {
+    coinType: 118,
+  },
+  bech32Config: Bech32Address.defaultBech32Config("fetch"),
+  type: "testnet",
+  currencies: [
+    {
+      coinDenom: "stake",
+      coinMinimalDenom: "stake",
+      coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
+    },
+  ],
+  feeCurrencies: [
+    {
+      coinDenom: "stake",
+      coinMinimalDenom: "stake",
+      coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
+      gasPriceStep: {
+        low: 0,
+        average: 5000000000,
+        high: 6250000000,
+      },
+    },
+  ],
+  features: ["cosmwasm"],
+  walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
+  govUrl: "http://localhost:1317/cosmos/gov/v1beta1/proposals",
+  chainSymbolImageUrl: require("./public/assets/svg/wireframe/dorado.svg"),
+};
+
+const REMOTE_TEST_NETWORK_CONFIG: ChainInfo = {
   rpc: "http://34.34.58.246:26657",
   rest: "http://34.34.58.246:1317",
   chainId: "test",
-  chainName: "Local Test Network",
+  chainName: "Remote Test Network",
   hideInUI: true,
   stakeCurrency: {
     coinDenom: "stake",
@@ -2991,7 +3035,7 @@ export enum TXNTYPE {
 }
 
 if (process.env.NODE_ENV !== "production") {
-  EmbedChainInfos.push(TEST_NETWORK_CONFIG);
+  EmbedChainInfos.push(LOCAL_TEST_NETWORK_CONFIG, REMOTE_TEST_NETWORK_CONFIG);
 }
 
 export { EmbedChainInfos };

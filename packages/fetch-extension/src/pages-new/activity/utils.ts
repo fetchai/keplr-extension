@@ -214,8 +214,13 @@ export const fetchProposalNodes = async (
 ) => {
   try {
     let parsedNodes: any = [];
-    // avoid fetching for local test network
-    if (chainId && chainId !== "test" && bech32Address) {
+    // avoid fetching for test networks (remote and local)
+    if (
+      chainId &&
+      chainId !== "test" &&
+      chainId !== "test-local" &&
+      bech32Address
+    ) {
       const fetchedData = await fetchGovProposalTransactions(
         chainId,
         cursor,

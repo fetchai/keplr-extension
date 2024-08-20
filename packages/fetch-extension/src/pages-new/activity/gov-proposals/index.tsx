@@ -156,7 +156,8 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
         />
         {current.chainId === CHAIN_ID_FETCHHUB ||
         current.chainId === CHAIN_ID_DORADO ||
-        current.chainId === "test" ? (
+        current.chainId === "test" ||
+        current.chainId === "test-local" ? (
           // isError ? (
           //   <ErrorActivity />
           // ) :
