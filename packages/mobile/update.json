@@ -1,0 +1,11 @@
+{
+  "isForceUpdate": false,
+  "iOS": {
+    "version": "1.0.1",
+    "code": "15"
+  },
+  "android": {
+    "version": "1.0.1",
+    "code": "15"
+  }
+}
