@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
 import { ClockIcon } from "components/new/icon/clock-icon";
 import { MoreIcon } from "components/new/icon/more-icon";
-import { BackHandler, View, ViewStyle } from "react-native";
+import { AppState, BackHandler, View, ViewStyle } from "react-native";
 import { IconButton } from "components/new/button/icon";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { BlurredBottomTabBar } from "components/bottom-tabbar";
@@ -33,14 +33,24 @@ import { StakingDashboardScreen } from "screens/stake";
 import { HomeIcon } from "components/new/icon/home-icon";
 import { ActivityScreen } from "screens/activity";
 import { SettingScreen } from "screens/setting";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+enum screenNames {
+  Home = "Home",
+  Stake = "Stake",
+  Inbox = "Inbox",
+  Activity = "Activity",
+  More = "More",
+}
 export const MainTabNavigation: FunctionComponent = () => {
   const style = useStyle();
-  const { chainStore, analyticsStore } = useStore();
+  const { chainStore, keychainStore, keyRingStore, analyticsStore } =
+    useStore();
   const chainId = chainStore.current.chainId;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const smartNavigation = useSmartNavigation();
 
   const [isQuickOptionEnable, setQuickOptionEnable] = React.useState(false);
   const backClickCountRef = useRef(0);
@@ -48,6 +58,34 @@ export const MainTabNavigation: FunctionComponent = () => {
   const focusedScreen = useFocusedScreen();
   const isDrawerOpen = useDrawerStatus() === "open";
   const insets = useSafeAreaInsets();
+
+  /// Auto lock app if app in bg
+  useEffect(() => {
+    const handleAppStateChange = async (nextAppState: string) => {
+      if (nextAppState === "active" && keychainStore.isAutoLockOn) {
+        try {
+          await keyRingStore.lock();
+          smartNavigation.reset({
+            index: 0,
+            routes: [{ name: "Unlock" }],
+          });
+        } catch (error) {
+          console.error("Failed to lock key ring", error);
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [keychainStore.isAutoLockOn]);
+
+  /// Back button handling
   useEffect(() => {
     // When the focused screen is not "Home" screen and the drawer is open,
     // try to close the drawer forcely.
@@ -104,14 +142,6 @@ export const MainTabNavigation: FunctionComponent = () => {
 
     return false;
   };
-
-  enum screenNames {
-    Home = "Home",
-    Stake = "Stake",
-    Inbox = "Inbox",
-    Activity = "Activity",
-    More = "More",
-  }
 
   return (
     <React.Fragment>

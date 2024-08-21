@@ -1,14 +1,13 @@
 import React, { FunctionComponent } from "react";
+import { ViewStyle } from "react-native";
 import { observer } from "mobx-react-lite";
 import { PageWithScrollView } from "components/page";
-import { useStyle } from "styles/index";
-
-import { useStore } from "stores/index";
-import { canShowPrivateData } from "../view-private-data";
 import { SettingViewPrivateDataItem } from "screens/setting/items/view-private-data";
 import { SettingBiometricLockItem } from "screens/setting/items/biometric-lock";
-import { ViewStyle } from "react-native";
-
+import { useStore } from "stores/index";
+import { canShowPrivateData } from "screens/setting/screens/view-private-data";
+import { useStyle } from "styles/index";
+import { AutoLockScreen } from "screens/setting/screens/security-and-privacy/auto-lock";
 export const SecurityAndPrivacyScreen: FunctionComponent = observer(() => {
   const { keychainStore, keyRingStore } = useStore();
 
@@ -27,6 +26,7 @@ export const SecurityAndPrivacyScreen: FunctionComponent = observer(() => {
       {keychainStore.isBiometrySupported || keychainStore.isBiometryOn ? (
         <SettingBiometricLockItem />
       ) : null}
+      <AutoLockScreen />
     </PageWithScrollView>
   );
 });
