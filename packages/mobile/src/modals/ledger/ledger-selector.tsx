@@ -45,7 +45,7 @@ export const LedgerNanoBLESelector: FunctionComponent<{
         "Cosmos"
       );
       setMainContent(
-        "Open Cosmos app on your ledger and pair with Fetch wallet"
+        "Open Cosmos app on your ledger and pair with ASI Alliance Wallet"
       );
       setBluetoothMode(BluetoothMode.Pairing);
       setIsPairingText("Waiting to pair...");
@@ -71,7 +71,7 @@ export const LedgerNanoBLESelector: FunctionComponent<{
         if (initErrorOn === LedgerInitErrorOn.App) {
           setBluetoothMode(BluetoothMode.Device);
           setMainContent(
-            "Open Cosmos app on your ledger and pair with Fetch wallet"
+            "Open Cosmos app on your ledger and pair with ASI Alliance Wallet"
           );
           setIsConnecting(false);
         } else if (initErrorOn === LedgerInitErrorOn.Transport) {
