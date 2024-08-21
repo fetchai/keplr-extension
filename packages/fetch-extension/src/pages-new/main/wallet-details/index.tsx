@@ -128,8 +128,8 @@ export const WalletDetailsView = observer(
 
     useEffect(() => {
       /*  this is required because accountInit sets the nodes on reload, 
-          so we wait for accountInit to set the node and then setActivities
-          else activityStore.getProposalNodes will be empty */
+          so we wait for accountInit to set the proposal nodes and then we 
+          store the proposal votes from api in activity store */
       const timeout = setTimeout(async () => {
         const nodes = activityStore.sortedNodesProposals;
         if (nodes.length === 0) {

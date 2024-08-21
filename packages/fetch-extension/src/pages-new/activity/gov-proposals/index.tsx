@@ -14,20 +14,13 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
       useStore();
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
-    // const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-
-    // const [loadingRequest, setLoadingRequest] = useState(false);
-    // const [nodes, setNodes] = useState<any>({});
-    // const [pageInfo, setPageInfo] = useState<any>();
     const [filter, setFilter] = useState<string[]>(
       govOptions.map((option) => option.value)
     );
     const [isSelectAll, setIsSelectAll] = useState(true);
     const [isSaveChangesButtonDisabled, setIsSaveChangesButtonDisabled] =
       useState(true);
-    // const [isError, setIsError] = useState(false);
-
     const proposalNodes = activityStore.sortedNodesProposals;
 
     const accountOrChainChanged =
@@ -40,7 +33,8 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
         activityStore.setChainId(current.chainId);
       }
 
-      //accountInit is required because in case of a reload, this.proposalNodes becomes empty and should be updated with KVstore's saved nodes
+      /* accountInit is required because in case of a reload, proposalNodes 
+        becomes empty and should be updated with KVstore's saved nodes */
       if (accountInfo.bech32Address !== "") {
         activityStore.accountInit();
       }
@@ -51,50 +45,7 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
       activityStore,
     ]);
 
-    // const fetchNodes = async (cursor: any) => {
-    //   setIsLoading(true);
-    //   try {
-    //     const fetchedData = await fetchGovProposalTransactions(
-    //       current.chainId,
-    //       cursor,
-    //       accountInfo.bech32Address,
-    //       filter
-    //     );
-    //     if (fetchedData) {
-    //       const nodeMap: any = {};
-    //       fetchedData.nodes.map((node: any) => {
-    //         nodeMap[node.id] = node;
-    //       });
-    //       setPageInfo(fetchedData.pageInfo);
-    //       setNodes({ ...nodes, ...nodeMap });
-    //     }
-    //   } catch (error) {
-    //     setIsError(true);
-    //   }
-
-    //   setIsLoading(false);
-    // };
-
-    // useEffect(() => {
-    //   fetchNodes("");
-    // }, []);
-
-    // useEffect(() => {
-    //   fetchNodes("");
-    // }, [filter, latestBlock]);
-
-    // const handleClick = async () => {
-    //   analyticsStore.logEvent("activity_transactions_click", {
-    //     pageName: "Transaction Tab",
-    //   });
-    //   setLoadingRequest(true);
-    //   // await fetchNodes(pageInfo.endCursor);
-    //   setLoadingRequest(false);
-    // };
-
     const handleFilterChange = (selectedFilter: string[]) => {
-      // setPageInfo(undefined);
-      // setNodes({});
       setFilter(selectedFilter);
       analyticsStore.logEvent("activity_filter_click", {
         pageName: "Transaction Tab",
@@ -128,7 +79,6 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
     const handleSaveChanges = () => {
       setIsSaveChangesButtonDisabled(true);
       handleFilterChange(filter);
-      // fetchNodes(pageInfo.endCursor);
       setIsOpen(false);
     };
 
@@ -157,9 +107,6 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
         current.chainId === CHAIN_ID_DORADO ||
         current.chainId === "test" ||
         current.chainId === "test-local" ? (
-          // isError ? (
-          //   <ErrorActivity />
-          // ) :
           proposalNodes.length > 0 &&
           proposalNodes.filter((node: any) => filter.includes(node.option))
             .length > 0 ? (
@@ -169,29 +116,8 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
                 .map((node: any, index: any) => (
                   <ActivityRow node={node} key={index} />
                 ))}
-              {/* {pageInfo?.hasNextPage && (
-                <Button
-                  outline
-                  color="primary"
-                  size="sm"
-                  block
-                  disabled={!pageInfo?.hasNextPage || loadingRequest}
-                  onClick={handleClick}
-                  className="mt-2"
-                >
-                  Load more{" "}
-                  {loadingRequest && (
-                    <i className="fas fa-spinner fa-spin ml-2" />
-                  )}
-                </Button>
-              )} */}
             </React.Fragment>
           ) : (
-            // : isLoading ? (
-            //   <div className={style["activityMessage"]}>
-            //     Loading Activities...
-            //   </div>
-            // )
             <NoActivity />
           )
         ) : (

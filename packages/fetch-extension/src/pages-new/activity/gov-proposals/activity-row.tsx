@@ -1,4 +1,3 @@
-// import { formatActivityHash } from "@utils/format";
 import React from "react";
 import style from "./style.module.scss";
 import { observer } from "mobx-react-lite";
@@ -43,16 +42,8 @@ const cardStatusTitle = (details: string) => {
   }
 };
 
-// const getHash = (proposal: any) => {
-//   if (proposal && proposal.id) {
-//     return formatActivityHash(proposal.id);
-//   }
-//   return null;
-// };
-
 export const ActivityRow = observer(({ node }: { node: any }) => {
   const details = node.option;
-  // const hash = getHash(node);
   const { proposalId, transaction, id } = node;
   const { status } = transaction;
   const { queriesStore, chainStore } = useStore();
