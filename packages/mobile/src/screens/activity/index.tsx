@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageWithViewInBottomTabView } from "components/page";
 import { Platform, ScrollView, Text, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
@@ -13,13 +13,6 @@ import { isFeatureAvailable } from "utils/index";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { GovProposalsTab } from "screens/activity/gov-proposals";
-
-export interface FilterItem {
-  icon: ReactElement | null;
-  isSelected: boolean;
-  title: string;
-  value: string;
-}
 
 export enum ActivityEnum {
   Transactions = "Transactions",

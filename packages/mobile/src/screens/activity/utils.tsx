@@ -6,21 +6,19 @@ import { LeftRightCrossIcon } from "components/new/icon/left-right-cross";
 import { ClaimIcon } from "components/new/icon/claim-icon";
 import { IbcUpDownIcon } from "components/new/icon/ibc-up-down";
 import React from "react";
-import { FilterItem } from "screens/activity/index";
+import { FilterItem } from "components/filter";
 
 export const govOptions: FilterItem[] = [
-  { icon: null, value: "YES", title: "Voted Yes", isSelected: true },
-  { icon: null, value: "NO", title: "Voted No", isSelected: true },
+  { title: "Voted Yes", value: "YES", isSelected: true },
+  { title: "Voted No", value: "NO", isSelected: true },
   {
-    icon: null,
-    value: "ABSTAIN",
     title: "Voted Abstain",
+    value: "ABSTAIN",
     isSelected: true,
   },
   {
-    icon: null,
-    value: "NO_WITH_VETO",
     title: "Voted No With Veto",
+    value: "NO_WITH_VETO",
     isSelected: true,
   },
 ];

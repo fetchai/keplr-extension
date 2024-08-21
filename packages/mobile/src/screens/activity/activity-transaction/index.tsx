@@ -10,13 +10,12 @@ import moment from "moment";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
 import { CardDivider } from "components/card";
-import { FilterItem } from "screens/activity";
 import { ActivityRow } from "./activity-row";
 import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
-import { isFeatureAvailable } from "utils/index";
-import { ActivityFilterView } from "../filter/activity-filter";
 import { processFilters, txOptions } from "screens/activity/utils";
+import { FilterItem, FilterView } from "components/filter";
+import { isFeatureAvailable } from "utils/index";
 
 export const ActivityNativeTab: FunctionComponent<{
   isOpenModal: boolean;
@@ -154,12 +153,12 @@ export const ActivityNativeTab: FunctionComponent<{
       ) : (
         <NoActivityView />
       )}
-      <ActivityFilterView
+      <FilterView
         isOpen={isOpenModal}
         filters={filters}
         handleFilterChange={handleFilterChange}
         close={() => setIsOpenModal(false)}
-        activityFilterOptions={txOptions}
+        options={txOptions}
       />
     </React.Fragment>
   );

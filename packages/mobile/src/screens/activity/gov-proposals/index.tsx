@@ -3,14 +3,13 @@ import { View, ViewStyle, FlatList, ActivityIndicator } from "react-native";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
 import { CardDivider } from "components/card";
-import { FilterItem } from "screens/activity";
-import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
-import { isFeatureAvailable } from "utils/index";
-import { ActivityFilterView } from "../filter/activity-filter";
+import { observer } from "mobx-react-lite";
 import { GovActivityRow } from "screens/activity/gov-proposals/activity-row";
-import { fetchGovProposalTransactions } from "src/graphQL/activity-api";
 import { govOptions, processFilters } from "screens/activity/utils";
+import { FilterItem, FilterView } from "components/filter";
+import { fetchGovProposalTransactions } from "../../../graphQL/activity-api";
+import { isFeatureAvailable } from "utils/index";
 
 export const GovProposalsTab: FunctionComponent<{
   isOpenModal: boolean;
@@ -32,7 +31,6 @@ export const GovProposalsTab: FunctionComponent<{
     const [filters, setFilters] = useState<FilterItem[]>(govOptions);
     const [isLoading, setIsLoading] = useState(true);
 
-    // const [nodes, setNodes] = useState<any>({});
     const [pageInfo, setPageInfo] = useState<any>();
     const [loadingRequest, setLoadingRequest] = useState(true);
     const [fetchedData, setFetchedData] = useState<any>();
@@ -63,9 +61,9 @@ export const GovProposalsTab: FunctionComponent<{
         }
       } catch (error) {
         console.log("Error:", error);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     };
 
     useEffect(() => {
@@ -101,7 +99,7 @@ export const GovProposalsTab: FunctionComponent<{
 
     const handleFilterChange = (selectedFilters: FilterItem[]) => {
       setFilters(selectedFilters);
-      fetchNodes(pageInfo.endCursor);
+      fetchNodes(pageInfo?.endCursor);
       setIsOpenModal(false);
     };
 
@@ -149,12 +147,12 @@ export const GovProposalsTab: FunctionComponent<{
         ) : (
           <NoActivityView />
         )}
-        <ActivityFilterView
+        <FilterView
           isOpen={isOpenModal}
           filters={filters}
           handleFilterChange={handleFilterChange}
           close={() => setIsOpenModal(false)}
-          activityFilterOptions={govOptions}
+          options={govOptions}
         />
       </React.Fragment>
     );

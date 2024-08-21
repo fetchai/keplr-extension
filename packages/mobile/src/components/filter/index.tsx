@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
@@ -7,22 +12,22 @@ import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { Button } from "components/button";
 import { CheckIcon } from "components/icon";
-import { FilterItem } from "screens/activity";
 import { useStore } from "stores/index";
 
-export const ActivityFilterView: FunctionComponent<{
+export interface FilterItem {
+  icon?: ReactElement;
+  isSelected: boolean;
+  title: string;
+  value: string;
+}
+
+export const FilterView: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   filters: FilterItem[];
   handleFilterChange: (selectedFilters: FilterItem[]) => void;
-  activityFilterOptions: FilterItem[];
-}> = ({
-  isOpen,
-  close,
-  filters,
-  handleFilterChange,
-  activityFilterOptions,
-}) => {
+  options: FilterItem[];
+}> = ({ isOpen, close, filters, handleFilterChange, options }) => {
   const style = useStyle();
   const { chainStore, activityStore, accountStore } = useStore();
   const current = chainStore.current;
@@ -35,7 +40,7 @@ export const ActivityFilterView: FunctionComponent<{
     activityStore.getChainId !== current.chainId;
 
   useEffect(() => {
-    setSelectedFilter(activityFilterOptions);
+    setSelectedFilter(options);
   }, [accountOrChainChanged]);
 
   useEffect(() => {
@@ -85,7 +90,7 @@ export const ActivityFilterView: FunctionComponent<{
           style.flatten(["margin-top-24", "margin-bottom-18"]) as ViewStyle
         }
       >
-        {activityFilterOptions.map((item: FilterItem, index: number) => (
+        {options.map((item: FilterItem, index: number) => (
           <BlurBackground
             key={index}
             borderRadius={12}
@@ -136,7 +141,6 @@ export const ActivityFilterView: FunctionComponent<{
                         "justify-center",
                       ]) as ViewStyle
                     }
-                    containerStyle={style.flatten([]) as ViewStyle}
                   />
                 )}
                 <Text
