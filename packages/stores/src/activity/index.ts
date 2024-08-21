@@ -249,7 +249,7 @@ export class ActivityStore {
       const txHash = Uint8Array.from(Buffer.from(txId, "hex"));
       txTracer.traceTx(txHash).then(async (tx) => {
         updateProposalNodeOnTxnCompleted(tx, this.proposalNodes[node.id], this);
-        this.removePendingTxn(node.id);
+        this.removePendingTxn(txId);
       });
     });
 
