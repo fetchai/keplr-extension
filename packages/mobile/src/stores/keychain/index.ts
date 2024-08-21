@@ -10,6 +10,9 @@ export class KeychainStore {
   @observable
   protected _isBiometryOn: boolean = false;
 
+  @observable
+  protected _isAutoLockOn: boolean = false;
+
   protected static defaultOptions: Keychain.Options = {
     authenticationPrompt: {
       title: "Biometric Authentication",
@@ -33,6 +36,10 @@ export class KeychainStore {
 
   get isBiometryOn(): boolean {
     return this._isBiometryOn;
+  }
+
+  get isAutoLockOn(): boolean {
+    return this._isAutoLockOn;
   }
 
   @flow
@@ -135,6 +142,7 @@ export class KeychainStore {
   protected *init() {
     // No need to await.
     this.restore();
+    this.restoreAutoLock();
 
     const type = yield* toGenerator(
       Keychain.getSupportedBiometryType(KeychainStore.defaultOptions)
@@ -148,7 +156,23 @@ export class KeychainStore {
     this._isBiometryOn = saved === true;
   }
 
+  @flow
+  protected *restoreAutoLock() {
+    const saved = yield* toGenerator(this.kvStore.get<boolean>("isAutoLockOn"));
+    this._isAutoLockOn = saved === true;
+  }
+
+  @flow
+  *toggleAutoLock(isAutoLockOn: boolean) {
+    this._isAutoLockOn = isAutoLockOn;
+    yield this.saveAutoLock();
+  }
+
   protected async save() {
     await this.kvStore.set("isBiometryOn", this.isBiometryOn);
+  }
+
+  protected async saveAutoLock() {
+    await this.kvStore.set<boolean>("isAutoLockOn", this.isAutoLockOn);
   }
 }
