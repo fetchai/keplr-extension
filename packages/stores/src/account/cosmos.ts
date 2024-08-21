@@ -578,7 +578,10 @@ export class CosmosAccountImpl {
         this.activityStore.removePendingTxn(txId);
         this.activityStore.setTxnStatus(txId, "Unconfirmed");
         if (type === "govVote") {
-          this.activityStore.setProposalTxnStatus(txId, "Unconfirmed");
+          this.activityStore.setProposalTxnStatus(
+            proposalNode.id,
+            "Unconfirmed"
+          );
         }
         this.base.setTxTypeInProgress("");
         this.activityStore.setIsNodeUpdated(true);
