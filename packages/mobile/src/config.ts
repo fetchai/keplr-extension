@@ -58,7 +58,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-fetchhub.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/mainnet/governance/",
+    govUrl: "https://www.mintscan.io/fetchai/proposals/",
   },
   {
     rpc: "https://rpc-cosmoshub.keplr.app",
@@ -2495,7 +2495,7 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
-    govUrl: "https://fetchstation.azoyalabs.com/dorado/governance/",
+    govUrl: "https://explore-dorado.fetch.ai/proposals/",
   },
   {
     rpc: "https://rpc-eridanus-1.fetch.ai",
@@ -2539,7 +2539,51 @@ export const EmbedChainInfos: ChainInfo[] = [
     ],
     features: ["cosmwasm"],
     walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
-    govUrl: "https://explore-eridanus-1.fetch.ai/proposals",
+    govUrl: "https://explore-eridanus-1.fetch.ai/proposals/",
+  },
+  {
+    rpc: "http://34.34.58.246:26657",
+    rest: "http://34.34.58.246:1317",
+    chainId: "test",
+    chainName: "Local Test Network",
+    hideInUI: true,
+    isTestnet: true,
+    stakeCurrency: {
+      coinDenom: "TESTSTAKE",
+      coinMinimalDenom: "stake",
+      coinDecimals: 18,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("fetch"),
+    currencies: [
+      {
+        coinDenom: "TESTSTAKE",
+        coinMinimalDenom: "stake",
+        coinDecimals: 18,
+      },
+      {
+        coinDenom: "MOBX",
+        coinMinimalDenom: "nanomobx",
+        coinDecimals: 9,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "TESTSTAKE",
+        coinMinimalDenom: "stake",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 0,
+          average: 5000000000,
+          high: 6250000000,
+        },
+      },
+    ],
+    features: ["cosmwasm"],
+    walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
+    govUrl: "https://explore-dorado.fetch.ai/proposals/",
   },
 ];
 

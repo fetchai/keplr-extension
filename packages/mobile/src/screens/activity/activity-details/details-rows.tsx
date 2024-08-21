@@ -39,7 +39,6 @@ export const DetailRows = ({ details }: { details: any }) => {
   const fees = JSON.parse(details.fees);
   const mintScanURL = `https://www.mintscan.io/fetchai/tx/${details.hash}/`;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  // const smartNavigation = useSmartNavigation();
 
   const currency: AppCurrency = {
     coinDenom: "FET",
