@@ -100,7 +100,7 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
           },
         });
         navigate(-2);
-        navigate(`/activity`, { replace: true });
+        navigate(`/activity?tab=Proposals`, { replace: true });
       } finally {
         setIsSendingTx(false);
       }
