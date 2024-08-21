@@ -10,22 +10,12 @@ import moment from "moment";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
 import { CardDivider } from "components/card";
-import { FilterItem } from "screens/activity";
-import { activityFilterOptions, ActivityFilterView } from "./activity-filter";
 import { ActivityRow } from "./activity-row";
 import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
+import { processFilters, txOptions } from "screens/activity/utils";
+import { FilterItem, FilterView } from "components/filter";
 import { isFeatureAvailable } from "utils/index";
-
-const processFilters = (filters: FilterItem[]) => {
-  let result: any[] = [];
-  filters
-    .filter((filter) => filter.isSelected)
-    .map((data) => {
-      result = result.concat(data.value.split(","));
-    });
-  return result;
-};
 
 export const ActivityNativeTab: FunctionComponent<{
   isOpenModal: boolean;
@@ -39,7 +29,7 @@ export const ActivityNativeTab: FunctionComponent<{
   const [_date, setDate] = useState("");
   const [activities, setActivities] = useState<unknown[]>([]);
 
-  const [filters, setFilters] = useState<FilterItem[]>(activityFilterOptions);
+  const [filters, setFilters] = useState<FilterItem[]>(txOptions);
   const [isLoading, setIsLoading] = useState(true);
 
   const accountOrChainChanged =
@@ -61,7 +51,7 @@ export const ActivityNativeTab: FunctionComponent<{
   }, [activityStore.sortedNodes]);
 
   useEffect(() => {
-    setFilters(activityFilterOptions);
+    setFilters(txOptions);
   }, [accountOrChainChanged]);
 
   useEffect(() => {
@@ -163,11 +153,12 @@ export const ActivityNativeTab: FunctionComponent<{
       ) : (
         <NoActivityView />
       )}
-      <ActivityFilterView
+      <FilterView
         isOpen={isOpenModal}
         filters={filters}
         handleFilterChange={handleFilterChange}
         close={() => setIsOpenModal(false)}
+        options={txOptions}
       />
     </React.Fragment>
   );

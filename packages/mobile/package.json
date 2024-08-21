@@ -42,6 +42,7 @@
     "@formatjs/intl-relativetimeformat": "^11.2.4",
     "@keplr-wallet/analytics": "0.12.12",
     "@keplr-wallet/background": "0.12.12",
+    "@keplr-wallet/chain-validator": "0.12.12",
     "@keplr-wallet/common": "0.12.12",
     "@keplr-wallet/cosmos": "0.12.12",
     "@keplr-wallet/crypto": "0.12.12",
