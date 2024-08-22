@@ -1,7 +1,7 @@
 import React from "react";
 import { ButtonV2 } from "../button";
 import { IAmountConfig } from "@keplr-wallet/hooks";
-import { useStore } from "../../../stores";
+import { useLanguage } from "../../../languages";
 
 export const UseMaxButton = ({
   amountConfig,
@@ -12,7 +12,8 @@ export const UseMaxButton = ({
   isToggleClicked: boolean;
   setIsToggleClicked: any;
 }) => {
-  const { priceStore } = useStore();
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   const ChangeButtonElement = () => {
     return (
@@ -35,7 +36,7 @@ export const UseMaxButton = ({
         />
         <div>{`Change to ${
           !isToggleClicked
-            ? priceStore.defaultVsCurrency.toUpperCase()
+            ? fiatCurrency.toUpperCase()
             : amountConfig.sendCurrency.coinDenom
         }`}</div>
       </div>

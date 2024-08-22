@@ -12,6 +12,7 @@ import { MyStakes } from "./my-stake/my-stakes";
 import { observer } from "mobx-react-lite";
 import { WalletStatus } from "@keplr-wallet/stores";
 import { Skeleton } from "@components-v2/skeleton-loader";
+import { useLanguage } from "../../../languages";
 
 export const Dashboard = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore } = useStore();
@@ -23,6 +24,8 @@ export const Dashboard = observer(() => {
     accountInfo.bech32Address
   );
   const balanceStakableQuery = balanceQuery.stakable;
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   const queryDelegations =
     queries.cosmos.queryDelegations.getQueryBech32Address(
@@ -79,9 +82,15 @@ export const Dashboard = observer(() => {
   const stakedPercentage = total ? (stakedBalInUI / total) * 100 : 0;
   const rewardsPercentage = total ? (rewardsBalInUI / total) * 100 : 0;
 
-  const stakableInUSD = priceStore.calculatePrice(stakable)?.toString();
-  const stakedInUSD = priceStore.calculatePrice(stakedSum)?.toString();
-  const rewardsInUSD = priceStore.calculatePrice(stakableReward)?.toString();
+  const stakableInFiatCurrency = priceStore
+    .calculatePrice(stakable, fiatCurrency)
+    ?.toString();
+  const stakedInFiatCurrency = priceStore
+    .calculatePrice(stakedSum, fiatCurrency)
+    ?.toString();
+  const rewardsInFiatCurrency = priceStore
+    .calculatePrice(stakableReward, fiatCurrency)
+    ?.toString();
 
   const isLoaded =
     accountInfo.walletStatus === WalletStatus.Loaded &&
@@ -118,7 +127,8 @@ export const Dashboard = observer(() => {
             <div className={style["legend"]}>
               <img
                 src={
-                  stakableInUSD !== undefined && stakableInUSD > "$0"
+                  stakableInFiatCurrency !== undefined &&
+                  stakableInFiatCurrency > "$0"
                     ? require("@assets/svg/wireframe/legend-light-purple-long.svg")
                     : require("@assets/svg/wireframe/legend-light-purple.svg")
                 }
@@ -143,7 +153,8 @@ export const Dashboard = observer(() => {
                   <Skeleton height="17.5px" />
                 )}
                 {isLoaded ? (
-                  stakableInUSD !== undefined && stakableInUSD > "$0" ? (
+                  stakableInFiatCurrency !== undefined &&
+                  stakableInFiatCurrency > "$0" ? (
                     <div
                       style={{
                         fontSize: "14px",
@@ -151,7 +162,7 @@ export const Dashboard = observer(() => {
                         color: "rgba(255,255,255,0.6)",
                       }}
                     >
-                      {stakableInUSD}
+                      {stakableInFiatCurrency}
                     </div>
                   ) : null
                 ) : (
@@ -162,7 +173,8 @@ export const Dashboard = observer(() => {
             <div className={style["legend"]}>
               <img
                 src={
-                  stakedInUSD !== undefined && stakedInUSD > "$0"
+                  stakedInFiatCurrency !== undefined &&
+                  stakedInFiatCurrency > "$0"
                     ? require("@assets/svg/wireframe/legend-purple-long.svg")
                     : require("@assets/svg/wireframe/legend-purple.svg")
                 }
@@ -188,7 +200,8 @@ export const Dashboard = observer(() => {
                   <Skeleton height="17.5px" />
                 )}
                 {isLoaded ? (
-                  stakedInUSD !== undefined && stakedInUSD > "$0" ? (
+                  stakedInFiatCurrency !== undefined &&
+                  stakedInFiatCurrency > "$0" ? (
                     <div
                       style={{
                         fontSize: "14px",
@@ -196,7 +209,7 @@ export const Dashboard = observer(() => {
                         color: "rgba(255,255,255,0.6)",
                       }}
                     >
-                      {stakedInUSD}
+                      {stakedInFiatCurrency}
                     </div>
                   ) : null
                 ) : (
@@ -207,7 +220,8 @@ export const Dashboard = observer(() => {
             <div className={style["legend"]}>
               <img
                 src={
-                  rewardsInUSD !== undefined && rewardsInUSD > "$0"
+                  rewardsInFiatCurrency !== undefined &&
+                  rewardsInFiatCurrency > "$0"
                     ? require("@assets/svg/wireframe/legend-orange-long.svg")
                     : require("@assets/svg/wireframe/legend-orange.svg")
                 }
@@ -232,7 +246,8 @@ export const Dashboard = observer(() => {
                   <Skeleton height="17.5px" />
                 )}
                 {isLoaded ? (
-                  rewardsInUSD !== undefined && rewardsInUSD > "$0" ? (
+                  rewardsInFiatCurrency !== undefined &&
+                  rewardsInFiatCurrency > "$0" ? (
                     <div
                       style={{
                         fontSize: "14px",
@@ -240,7 +255,7 @@ export const Dashboard = observer(() => {
                         color: "rgba(255,255,255,0.6)",
                       }}
                     >
-                      {rewardsInUSD}
+                      {rewardsInFiatCurrency}
                     </div>
                   ) : null
                 ) : (
