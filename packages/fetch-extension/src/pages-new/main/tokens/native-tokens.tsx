@@ -131,7 +131,7 @@ export const NativeTokens = observer(() => {
                     color: "rgba(255,255,255,0.4)",
                   }}
                 >
-                  USD
+                  {fiatCurrency.toUpperCase()}
                 </span>
               </div>
             )
