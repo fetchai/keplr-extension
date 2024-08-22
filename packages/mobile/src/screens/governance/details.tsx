@@ -407,7 +407,6 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
   const [txnHash, setTxnHash] = useState<string>("");
   const [openTxStateModal, setTxStateModal] = useState(false);
   const [isSendingTx, setIsSendingTx] = useState(false);
-  const [vote, setVote] = useState<VoteType>("Unspecified");
   const [openGovModel, setGovModalOpen] = useState(false);
 
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -428,6 +427,9 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
       account.bech32Address
     ).vote;
   })();
+  const [vote, setVote] = useState<VoteType>(
+    voted !== undefined ? voted : "Unspecified"
+  );
   const voteText = (() => {
     if (!proposal) {
       return "Loading...";
@@ -478,6 +480,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
           }
         );
       } catch (e) {
+        setVote(voted !== undefined ? voted : "Unspecified");
         if (
           e?.message === "Request rejected" ||
           e?.message === "Transaction rejected"
@@ -518,8 +521,12 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
       <Button
         text={voteText}
         size="large"
+        mode={voteText === "Change your vote" ? "outline" : "fill"}
         containerStyle={
-          style.flatten(["border-radius-64", "margin-top-16"]) as ViewStyle
+          style.flatten(
+            ["border-radius-64", "margin-top-16"],
+            [voteText === "Change your vote" && "border-color-white@20%"]
+          ) as ViewStyle
         }
         textStyle={style.flatten(["body2"]) as ViewStyle}
         rippleColor="black@50%"
@@ -541,6 +548,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
         close={() => setGovModalOpen(false)}
         vote={vote}
         setVote={setVote}
+        prevVote={voted}
         isSendingTx={isSendingTx}
         onPress={onSubmit}
       />

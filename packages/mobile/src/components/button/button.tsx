@@ -99,7 +99,7 @@ export const Button: FunctionComponent<{
   })();
 
   const textColorDefinition: string[] = (() => {
-    const baseColor = color === "primary" ? "blue" : "red";
+    const baseColor = color === "primary" ? "white" : "red";
 
     switch (mode) {
       case "fill":
@@ -133,10 +133,10 @@ export const Button: FunctionComponent<{
         ];
       case "outline":
         if (disabled) {
-          return [`color-${baseColor}-200`];
+          return [`color-${baseColor}@20%`];
         }
 
-        return [`color-${baseColor}-400`];
+        return [`color-${baseColor}`];
       case "text":
         if (disabled) {
           if (color === "primary") {
@@ -232,16 +232,16 @@ export const Button: FunctionComponent<{
       return [];
     }
 
-    const baseColor = color === "primary" ? "blue" : "red";
+    const baseColor = color === "primary" ? "white" : "red";
 
     if (disabled) {
       return [
-        `border-color-${baseColor}-200`,
+        `border-color-${baseColor}@20%`,
         `dark:border-color-${baseColor}-600`,
       ];
     }
 
-    return [`border-color-${baseColor}-400`];
+    return [`border-color-${baseColor}@40%`];
   })();
 
   return (

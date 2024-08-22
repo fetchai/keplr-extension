@@ -62,7 +62,11 @@ export const MainTabNavigation: FunctionComponent = () => {
   /// Auto lock app if app in bg
   useEffect(() => {
     const handleAppStateChange = async (nextAppState: string) => {
-      if (nextAppState === "active" && keychainStore.isAutoLockOn) {
+      if (
+        nextAppState === "active" &&
+        keychainStore.isAutoLockOn &&
+        !focusedScreen.name?.startsWith("Register")
+      ) {
         try {
           await keyRingStore.lock();
           smartNavigation.reset({

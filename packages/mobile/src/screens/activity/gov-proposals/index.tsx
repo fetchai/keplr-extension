@@ -17,27 +17,31 @@ export const GovProposalsTab: FunctionComponent<{
   latestBlock: any;
   nodes: any;
   setNodes: any;
+  govFilters: FilterItem[];
+  setGovFilters: any;
 }> = observer(
-  ({ isOpenModal, setIsOpenModal, latestBlock, nodes, setNodes }) => {
+  ({
+    isOpenModal,
+    setIsOpenModal,
+    latestBlock,
+    nodes,
+    setNodes,
+    govFilters,
+    setGovFilters,
+  }) => {
     const style = useStyle();
-    const { chainStore, accountStore, activityStore, queriesStore } =
-      useStore();
+    const { chainStore, accountStore, queriesStore } = useStore();
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
 
     const queries = queriesStore.get(chainStore.current.chainId);
     const proposalLoading = queries.cosmos.queryGovernance.isFetching;
 
-    const [filters, setFilters] = useState<FilterItem[]>(govOptions);
     const [isLoading, setIsLoading] = useState(true);
 
     const [pageInfo, setPageInfo] = useState<any>();
     const [loadingRequest, setLoadingRequest] = useState(true);
     const [fetchedData, setFetchedData] = useState<any>();
-
-    const accountOrChainChanged =
-      activityStore.getAddress !== accountInfo.bech32Address ||
-      activityStore.getChainId !== current.chainId;
 
     const fetchNodes = async (cursor: any) => {
       setIsLoading(true);
@@ -46,7 +50,7 @@ export const GovProposalsTab: FunctionComponent<{
           current.chainId,
           cursor,
           accountInfo.bech32Address,
-          filters.map((option) => option.value)
+          govFilters.map((option) => option.value)
         );
         setFetchedData(fetchedData?.nodes);
 
@@ -72,7 +76,7 @@ export const GovProposalsTab: FunctionComponent<{
 
     useEffect(() => {
       fetchNodes("");
-    }, [filters, latestBlock]);
+    }, [govFilters, latestBlock]);
 
     useEffect(() => {
       if (fetchedData) {
@@ -93,12 +97,8 @@ export const GovProposalsTab: FunctionComponent<{
       }
     };
 
-    useEffect(() => {
-      setFilters(govOptions);
-    }, [accountOrChainChanged]);
-
     const handleFilterChange = (selectedFilters: FilterItem[]) => {
-      setFilters(selectedFilters);
+      setGovFilters(selectedFilters);
       fetchNodes(pageInfo?.endCursor);
       setIsOpenModal(false);
     };
@@ -129,7 +129,7 @@ export const GovProposalsTab: FunctionComponent<{
     };
 
     const data = Object.values(nodes).filter((node: any) =>
-      processFilters(filters).includes(node.option)
+      processFilters(govFilters).includes(node.option)
     );
 
     return (
@@ -149,7 +149,7 @@ export const GovProposalsTab: FunctionComponent<{
         )}
         <FilterView
           isOpen={isOpenModal}
-          filters={filters}
+          filters={govFilters}
           handleFilterChange={handleFilterChange}
           close={() => setIsOpenModal(false)}
           options={govOptions}
