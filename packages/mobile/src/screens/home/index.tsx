@@ -28,6 +28,7 @@ import { useFocusedScreen } from "providers/focused-screen";
 import { AppUpdateModal } from "./app-update-modal";
 import DeviceInfo from "react-native-device-info";
 import axios from "axios";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 interface OS {
   version: string;
@@ -41,6 +42,8 @@ interface UpdateData {
 
 export const HomeScreen: FunctionComponent = observer(() => {
   const safeAreaInsets = useSafeAreaInsets();
+  const netInfo = useNetInfo();
+
   const style = useStyle();
   const windowHeight = Dimensions.get("window").height;
 
@@ -227,7 +230,7 @@ export const HomeScreen: FunctionComponent = observer(() => {
       }
     }
     updateApp();
-  }, [appVersion, buildNumber]);
+  }, [appVersion, buildNumber, netInfo.isConnected]);
 
   return (
     <PageWithScrollViewInBottomTabView

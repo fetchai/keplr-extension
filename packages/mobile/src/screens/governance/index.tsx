@@ -132,7 +132,7 @@ export const GovernanceScreen: FunctionComponent = observer(() => {
         <EmptyView
           containerStyle={style.flatten(["flex-1"])}
           text={
-            search.trim().length == 0 ? "Empty proposals" : "No search data"
+            search.trim().length == 0 ? "No proposals found" : "No search data"
           }
         />
       )}

@@ -1,5 +1,5 @@
 {
-  "isForceUpdate": true,
+  "isForceUpdate": false,
   "iOS": {
     "version": "1.0.2",
     "code": "17"

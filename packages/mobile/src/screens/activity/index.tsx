@@ -13,6 +13,8 @@ import { isFeatureAvailable } from "utils/index";
 import { TabBarView } from "components/new/tab-bar/tab-bar";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { GovProposalsTab } from "screens/activity/gov-proposals";
+import { FilterItem } from "components/filter";
+import { govOptions, txOptions } from "./utils";
 
 export enum ActivityEnum {
   Transactions = "Transactions",
@@ -40,9 +42,17 @@ export const ActivityScreen = observer(() => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [latestBlock, _setLatestBlock] = useState<string>();
   const [govProposalsNodes, setGovProposalsNodes] = useState<any>({});
+  const [activities, setActivities] = useState<unknown[]>([]);
+  const [govFilters, setGovFilters] = useState<FilterItem[]>(govOptions);
+  const [txnFilters, setTxnFilters] = useState<FilterItem[]>(txOptions);
 
-  const { analyticsStore, chainStore, accountStore } = useStore();
+  const { analyticsStore, chainStore, accountStore, activityStore } =
+    useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
+
+  const accountOrChainChanged =
+    activityStore.getAddress !== accountInfo.bech32Address ||
+    activityStore.getChainId !== chainStore.current.chainId;
 
   useEffect(() => {
     setSelectedId(tabId);
@@ -60,6 +70,11 @@ export const ActivityScreen = observer(() => {
   useEffect(() => {
     logTabChange(selectedId);
   }, [selectedId]);
+
+  useEffect(() => {
+    setTxnFilters(txOptions);
+    setGovFilters(govOptions);
+  }, [accountOrChainChanged]);
 
   return (
     <PageWithViewInBottomTabView
@@ -127,6 +142,10 @@ export const ActivityScreen = observer(() => {
             <ActivityNativeTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
+              activities={activities}
+              setActivities={setActivities}
+              txnFilters={txnFilters}
+              setTxnFilters={setTxnFilters}
             />
           )}
           {selectedId === ActivityEnum.GovProposals && (
@@ -136,6 +155,8 @@ export const ActivityScreen = observer(() => {
               latestBlock={latestBlock}
               nodes={govProposalsNodes}
               setNodes={setGovProposalsNodes}
+              govFilters={govFilters}
+              setGovFilters={setGovFilters}
             />
           )}
         </View>

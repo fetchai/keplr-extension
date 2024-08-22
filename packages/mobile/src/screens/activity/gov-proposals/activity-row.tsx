@@ -37,16 +37,16 @@ export const GovActivityRow: FunctionComponent<{
     switch (vote.toUpperCase()) {
       default:
       case "Yes":
-        return "yes";
+        return "Yes";
 
       case "NO":
-        return "no";
+        return "No";
 
       case "ABSTAIN":
-        return "abstain";
+        return "Abstain";
 
       case "NO_WITH_VETO":
-        return "no with veto";
+        return "No with veto";
     }
   }
 
@@ -71,7 +71,7 @@ export const GovActivityRow: FunctionComponent<{
           style={
             style.flatten([
               "body3",
-              "padding-4",
+              "padding-y-6",
               "color-white",
               "font-medium",
             ]) as ViewStyle
@@ -83,13 +83,12 @@ export const GovActivityRow: FunctionComponent<{
           style={
             style.flatten([
               "body3",
-              "padding-2",
               "color-white@60%",
               "font-medium",
             ]) as ViewStyle
           }
         >
-          {`PROPOSAL #${proposalId} . ${
+          {`PROPOSAL #${proposalId} • ${
             status === "Success" ? "Confirmed" : "Failed"
           }`}
         </Text>
