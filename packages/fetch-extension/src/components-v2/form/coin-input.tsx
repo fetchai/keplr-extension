@@ -22,6 +22,7 @@ import { useLanguage } from "../../languages";
 import { useStore } from "../../stores";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
+import { SUPPORTED_LOCALE_FIAT_CURRENCIES } from "../../config.ui";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -141,9 +142,10 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 )}
                 id={`input-${randomId}`}
                 type="number"
+                step="any"
                 value={
                   isToggleClicked === true
-                    ? parseDollarAmount(inputInFiatCurrency)
+                    ? parseDollarAmount(inputInFiatCurrency).toString()
                     : parseExponential(
                         amountConfig.amount,
                         amountConfig.sendCurrency.coinDecimals
@@ -195,7 +197,9 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
               onClick={isClicked}
-              disabled
+              disabled={
+                !SUPPORTED_LOCALE_FIAT_CURRENCIES.includes(fiatCurrency)
+              }
             >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
               {`Change to ${
