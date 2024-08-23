@@ -73,7 +73,7 @@ export const FiatCurrencies: FiatCurrency[] = [
     currency: "rub",
     symbol: "₽",
     maxDecimals: 0,
-    locale: "ru",
+    locale: "ru-RU",
   },
   {
     currency: "krw",
@@ -327,6 +327,27 @@ export const FiatCurrencies: FiatCurrency[] = [
     maxDecimals: 2,
     locale: "en-US",
   },
+];
+
+export const SUPPORTED_LOCALE_FIAT_CURRENCIES = [
+  "usd",
+  "eur",
+  "gbp",
+  "cad",
+  "aud",
+  "hkd",
+  "jpy",
+  "cny",
+  "inr",
+  "krw",
+  "btc",
+  "eth",
+  "nzd",
+  "pkr",
+  "myr",
+  "sgd",
+  "thb",
+  "mxn",
 ];
 
 export const LanguageToFiatCurrency: TypeLanguageToFiatCurrency = {
