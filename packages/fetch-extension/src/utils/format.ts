@@ -131,9 +131,18 @@ export const separateNumericAndDenom = (value: any) => {
 };
 
 export const parseDollarAmount = (dollarString: any) => {
-  const match = dollarString.match(/[0-9.]+/);
+  const match = dollarString.match(
+    /(?<=\D|\b)(\d{1,2}(?:,\d{2})*(?:,\d{3})*)(?:\.\d+)?(?=\b|\D)/g
+  );
+  let cleanedMatches = [];
+
   if (match) {
-    return parseFloat(match[0]);
+    // removes commas from matched result
+    cleanedMatches = match.map((match: any) => match.replace(/,/g, ""));
+  }
+
+  if (cleanedMatches && cleanedMatches.length > 0) {
+    return parseFloat(cleanedMatches[0]);
   }
   return NaN;
 };
