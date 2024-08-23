@@ -106,28 +106,10 @@ export const FiatCurrencies: FiatCurrency[] = [
     locale: "en-IN",
   },
   {
-    currency: "aed",
-    symbol: "د.إ",
-    maxDecimals: 2,
-    locale: "ar-AE",
-  },
-  {
     currency: "ars",
     symbol: "$",
     maxDecimals: 2,
     locale: "es-AR",
-  },
-  {
-    currency: "bdt",
-    symbol: "৳",
-    maxDecimals: 2,
-    locale: "bn-BD",
-  },
-  {
-    currency: "bhd",
-    symbol: "ب.د",
-    maxDecimals: 3,
-    locale: "ar-BH",
   },
   {
     currency: "bmd",
@@ -315,18 +297,6 @@ export const FiatCurrencies: FiatCurrency[] = [
     maxDecimals: 2,
     locale: "en-ZA",
   },
-  {
-    currency: "btc",
-    symbol: "BTC",
-    maxDecimals: 2,
-    locale: "en-US",
-  },
-  {
-    currency: "eth",
-    symbol: "ETH",
-    maxDecimals: 2,
-    locale: "en-US",
-  },
 ];
 
 export const SUPPORTED_LOCALE_FIAT_CURRENCIES = [
@@ -340,8 +310,6 @@ export const SUPPORTED_LOCALE_FIAT_CURRENCIES = [
   "cny",
   "inr",
   "krw",
-  "btc",
-  "eth",
   "nzd",
   "pkr",
   "myr",
