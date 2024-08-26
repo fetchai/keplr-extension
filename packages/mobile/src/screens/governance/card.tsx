@@ -132,7 +132,7 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
 export const GovernanceCardBody: FunctionComponent<{
   proposalId: string;
 }> = observer(({ proposalId }) => {
-  const { chainStore, queriesStore } = useStore();
+  const { chainStore, queriesStore, analyticsStore } = useStore();
 
   const navigation = useSmartNavigation();
 
@@ -177,6 +177,9 @@ export const GovernanceCardBody: FunctionComponent<{
         onPress={() => {
           navigation.navigateSmart("Governance.Details", {
             proposalId: proposal?.id,
+          });
+          analyticsStore.logEvent("proposal_item_click", {
+            pageName: "More",
           });
         }}
       >

@@ -392,7 +392,9 @@ export const CreateAccountScreen: FunctionComponent = () => {
         loading={isCreating}
         onPress={() => {
           submit();
-          analyticsStore.logEvent("confirm_click", { pageName: "Register" });
+          analyticsStore.logEvent("register_done_click", {
+            pageName: "Register",
+          });
         }}
       />
     </PageWithScrollView>

@@ -308,7 +308,7 @@ const ValidatorItem: FunctionComponent<{
                   });
                 } else {
                   analyticsStore.logEvent("stake_validator_click", {
-                    pageName: "Validator Detail",
+                    pageName: "Validator Details",
                   });
                   smartNavigation.navigateSmart("Validator.Details", {
                     validatorAddress,

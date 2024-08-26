@@ -10,7 +10,6 @@ import { NewMnemonicConfig } from "./hook";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { RectButton } from "components/rect-button";
 import { BIP44AdvancedButton, useBIP44Option } from "screens/register/bip44";
-import { useStore } from "stores/index";
 import { BipButtons } from "screens/register/bip-button";
 
 export const VerifyMnemonicScreen: FunctionComponent = () => {
@@ -30,7 +29,6 @@ export const VerifyMnemonicScreen: FunctionComponent = () => {
   const style = useStyle();
 
   const smartNavigation = useSmartNavigation();
-  const { analyticsStore } = useStore();
   const registerConfig = route.params.registerConfig;
   const newMnemonicConfig = route.params.newMnemonicConfig;
 
@@ -186,7 +184,6 @@ export const VerifyMnemonicScreen: FunctionComponent = () => {
           textStyle={style.flatten(["body2"]) as ViewStyle}
           onPress={async () => {
             setIsCreating(true);
-            analyticsStore.logEvent("continue_click", { pageName: "More" });
             smartNavigation.navigateSmart("Register.CreateAccount", {
               registerConfig: registerConfig,
               mnemonic: encodeURIComponent(
