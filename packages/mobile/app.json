@@ -10,7 +10,6 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.fetchai.wallet",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "permissions": [
         "CAMERA",
         "BLUETOOTH_ADMIN",
@@ -23,7 +22,6 @@
     },
     "android": {
       "package": "com.fetchai.wallet",
-      "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
         "BLUETOOTH_ADMIN",
