@@ -22,16 +22,19 @@ export const GovActivityRow: FunctionComponent<{
 }> = ({ node }) => {
   const { queriesStore, chainStore, analyticsStore } = useStore();
 
+  const { proposalId, transaction, id } = node;
+  const { status } = transaction;
+
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const queries = queriesStore.get(chainStore.current.chainId);
-  const proposalId = JSON.parse(node.message.json).proposalId.low;
+  // const proposalId = JSON.parse(node.message.json).proposalId.low;
   const proposal = queries.cosmos.queryGovernance.getProposal(
     proposalId.toString()
   );
   const vote = node.option;
-  const { status, id } = node.transaction;
+  // const { status, id } = node.transaction;
 
   function getVote(vote: string) {
     switch (vote.toUpperCase()) {
@@ -89,7 +92,7 @@ export const GovActivityRow: FunctionComponent<{
           }
         >
           {`PROPOSAL #${proposalId} • ${
-            status === "Success" ? "Confirmed" : "Failed"
+            status === "Success" ? "Confirmed" : status ? status : "Failed"
           }`}
         </Text>
       </View>

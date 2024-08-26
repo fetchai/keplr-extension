@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import { View, ViewStyle, FlatList, ActivityIndicator } from "react-native";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
@@ -8,13 +8,11 @@ import { observer } from "mobx-react-lite";
 import { GovActivityRow } from "screens/activity/gov-proposals/activity-row";
 import { govOptions, processFilters } from "screens/activity/utils";
 import { FilterItem, FilterView } from "components/filter";
-import { fetchGovProposalTransactions } from "../../../graphQL/activity-api";
 import { isFeatureAvailable } from "utils/index";
 
 export const GovProposalsTab: FunctionComponent<{
   isOpenModal: boolean;
   setIsOpenModal: any;
-  latestBlock: any;
   nodes: any;
   setNodes: any;
   govFilters: FilterItem[];
@@ -23,83 +21,49 @@ export const GovProposalsTab: FunctionComponent<{
   ({
     isOpenModal,
     setIsOpenModal,
-    latestBlock,
     nodes,
     setNodes,
     govFilters,
     setGovFilters,
   }) => {
     const style = useStyle();
-    const { chainStore, accountStore, queriesStore } = useStore();
+    const { chainStore, queriesStore, activityStore, accountStore } =
+      useStore();
     const current = chainStore.current;
     const accountInfo = accountStore.getAccount(current.chainId);
 
     const queries = queriesStore.get(chainStore.current.chainId);
     const proposalLoading = queries.cosmos.queryGovernance.isFetching;
 
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [pageInfo, setPageInfo] = useState<any>();
-    const [loadingRequest, setLoadingRequest] = useState(true);
-    const [fetchedData, setFetchedData] = useState<any>();
-
-    const fetchNodes = async (cursor: any) => {
-      setIsLoading(true);
-      try {
-        const fetchedData = await fetchGovProposalTransactions(
-          current.chainId,
-          cursor,
-          accountInfo.bech32Address,
-          govFilters.map((option) => option.value)
-        );
-        setFetchedData(fetchedData?.nodes);
-
-        if (fetchedData) {
-          const nodeMap: any = {};
-          fetchedData.nodes.map((node: any) => {
-            nodeMap[node.id] = node;
-          });
-
-          setPageInfo(fetchedData.pageInfo);
-          setNodes({ ...nodes, ...nodeMap });
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    const proposalNodes = activityStore.sortedNodesProposals;
 
     useEffect(() => {
-      fetchNodes("");
-    }, []);
+      /* accountInit is required because in case of a reload, proposalNodes 
+        becomes empty and should be updated with KVstore's saved nodes */
+      if (accountInfo.bech32Address !== "") {
+        activityStore.accountInit();
+      }
+    }, [accountInfo.bech32Address, activityStore]);
 
     useEffect(() => {
-      fetchNodes("");
-    }, [govFilters, latestBlock]);
+      const timeout = setTimeout(() => {
+        setNodes(proposalNodes);
+      }, 3000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }, [proposalNodes]);
 
     useEffect(() => {
-      if (fetchedData) {
-        const nodeMap: any = {};
-        fetchedData.map((node: any) => {
-          nodeMap[node.id] = node;
-        });
-        setNodes({ ...nodes, ...nodeMap });
-        setIsLoading(false);
-        setLoadingRequest(false);
-      }
-    }, [fetchedData]);
-
-    const handleLoadMore = () => {
-      if (!loadingRequest) {
-        setLoadingRequest(true);
-        fetchNodes(pageInfo?.endCursor);
-      }
-    };
+      setNodes(
+        proposalNodes.filter((node: any) =>
+          processFilters(govFilters).includes(node.option)
+        )
+      );
+    }, [govFilters]);
 
     const handleFilterChange = (selectedFilters: FilterItem[]) => {
       setGovFilters(selectedFilters);
-      fetchNodes(pageInfo?.endCursor);
       setIsOpenModal(false);
     };
 
@@ -123,23 +87,18 @@ export const GovProposalsTab: FunctionComponent<{
           ItemSeparatorComponent={() => (
             <CardDivider style={style.flatten(["margin-y-16"]) as ViewStyle} />
           )}
-          onEndReached={() => handleLoadMore()}
+          // onEndReached={() => handleLoadMore()}
         />
       );
     };
 
-    const data = Object.values(nodes).filter((node: any) =>
-      processFilters(govFilters).includes(node.option)
-    );
-
     return (
       <React.Fragment>
         {isFeatureAvailable(current.chainId) &&
-        data.length > 0 &&
-        Object.values(nodes).length > 0 &&
+        nodes.length > 0 &&
         !proposalLoading ? (
-          renderList(data)
-        ) : Object.values(nodes).length == 0 && isLoading ? (
+          renderList(nodes)
+        ) : proposalLoading ? (
           <ActivityIndicator
             size="large"
             color={style.get("color-white").color}

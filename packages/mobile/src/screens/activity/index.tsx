@@ -40,7 +40,6 @@ export const ActivityScreen = observer(() => {
   const [selectedId, setSelectedId] = useState(tabId);
   const safeAreaInsets = useSafeAreaInsets();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [latestBlock, _setLatestBlock] = useState<string>();
   const [govProposalsNodes, setGovProposalsNodes] = useState<any>({});
   const [activities, setActivities] = useState<unknown[]>([]);
   const [govFilters, setGovFilters] = useState<FilterItem[]>(govOptions);
@@ -152,7 +151,6 @@ export const ActivityScreen = observer(() => {
             <GovProposalsTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
-              latestBlock={latestBlock}
               nodes={govProposalsNodes}
               setNodes={setGovProposalsNodes}
               govFilters={govFilters}
