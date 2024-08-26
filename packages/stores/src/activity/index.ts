@@ -1,7 +1,10 @@
 import { KVStore, toGenerator } from "@keplr-wallet/common";
 import { TendermintTxTracer } from "@keplr-wallet/cosmos";
 import { action, flow, makeObservable, observable } from "mobx";
-import { updateNodeOnTxnCompleted } from "../account";
+import {
+  updateNodeOnTxnCompleted,
+  updateProposalNodeOnTxnCompleted,
+} from "../account";
 import { ChainGetter } from "src/common";
 
 enum TXNTYPE {
@@ -19,6 +22,9 @@ enum TXNTYPE {
 export class ActivityStore {
   @observable
   protected nodes: any = {};
+
+  @observable
+  protected proposalNodes: any = {};
 
   @observable
   protected address: string = "";
@@ -54,6 +60,14 @@ export class ActivityStore {
     this.saveNodes();
   }
 
+  // updates or adds new nodes to the proposal list
+  updateProposalNodes(nodes: any) {
+    const updatedNodes = { ...this.proposalNodes, ...nodes };
+    this.setProposalNodes(updatedNodes);
+
+    this.saveProposalNodes();
+  }
+
   getSortedNodesByTimeStamps() {
     const sortedNodes = Object.values(this.nodes).sort((a: any, b: any) => {
       if (a.block.timestamp < b.block.timestamp) {
@@ -64,6 +78,22 @@ export class ActivityStore {
         return 0;
       }
     });
+
+    return sortedNodes;
+  }
+
+  getSortedProposalNodesByTimeStamps() {
+    const sortedNodes = Object.values(this.proposalNodes).sort(
+      (a: any, b: any) => {
+        if (a.block.timestamp < b.block.timestamp) {
+          return 1;
+        } else if (a.block.timestamp > b.block.timestamp) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    );
 
     return sortedNodes;
   }
@@ -84,6 +114,27 @@ export class ActivityStore {
     if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
       yield this.kvStore.set<any>(
         `extension_activity_nodes-${this.address}-${this.chainId}`,
+        JSON.parse(JSON.stringify(currNodes))
+      );
+    }
+  }
+
+  @flow
+  *saveProposalNodes() {
+    const currNodes =
+      Object.keys(this.proposalNodes).length > 0 ? this.proposalNodes : {};
+    let oldNodes = yield* toGenerator(
+      this.kvStore.get<any>(
+        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`
+      )
+    );
+    if (oldNodes === undefined || oldNodes === null) {
+      oldNodes = {};
+    }
+
+    if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
+      yield this.kvStore.set<any>(
+        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`,
         JSON.parse(JSON.stringify(currNodes))
       );
     }
@@ -152,6 +203,14 @@ export class ActivityStore {
     );
     this.nodes = savedNodes !== undefined ? savedNodes : {};
 
+    const savedProposalNodes = yield* toGenerator(
+      this.kvStore.get<any>(
+        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`
+      )
+    );
+    this.proposalNodes =
+      savedProposalNodes !== undefined ? savedProposalNodes : {};
+
     const savedPendingTxn = yield* toGenerator(
       this.kvStore.get<any>(
         `extension_pending_txn-${this.address}-${this.chainId}`
@@ -185,6 +244,15 @@ export class ActivityStore {
       });
     });
 
+    Object.values(this.proposalNodes).map((node: any) => {
+      const txId = node.transaction.id;
+      const txHash = Uint8Array.from(Buffer.from(txId, "hex"));
+      txTracer.traceTx(txHash).then(async (tx) => {
+        updateProposalNodeOnTxnCompleted(tx, this.proposalNodes[node.id], this);
+        this.removePendingTxn(txId);
+      });
+    });
+
     if (Object.keys(this.pendingTxn).length === 0) {
       this.resetPendingTxnTypes();
     }
@@ -193,6 +261,11 @@ export class ActivityStore {
   @action
   addNode(node: any) {
     this.updateNodes({ [node.id]: node });
+  }
+
+  @action
+  addProposalNode(node: any) {
+    this.updateProposalNodes({ [node.id]: node });
   }
 
   @action
@@ -257,6 +330,15 @@ export class ActivityStore {
   }
 
   @action
+  setProposalTxnStatus(
+    nodeId: any,
+    status: "Pending" | "Success" | "Failed" | "Unconfirmed"
+  ) {
+    this.proposalNodes[nodeId].transaction.status = status;
+    this.saveProposalNodes();
+  }
+
+  @action
   updateTxnBalance(nodeId: any, amount: number) {
     this.nodes[nodeId].balanceOffset = amount;
     this.saveNodes();
@@ -298,6 +380,11 @@ export class ActivityStore {
   }
 
   @action
+  setProposalNodes(nodes: any) {
+    this.proposalNodes = nodes;
+  }
+
+  @action
   setPendingTxn(nodes: any) {
     this.pendingTxn = nodes;
     this.savePendingTxn();
@@ -312,6 +399,11 @@ export class ActivityStore {
   @action
   setNode(id: any, node: any) {
     this.nodes[id] = node;
+  }
+
+  @action
+  setProposalNode(id: any, node: any) {
+    this.proposalNodes[id] = node;
   }
 
   @action
@@ -333,6 +425,10 @@ export class ActivityStore {
 
   get getNodes() {
     return this.nodes;
+  }
+
+  get getProposalNodes() {
+    return this.proposalNodes;
   }
 
   get checkIsNodeUpdated() {
@@ -357,5 +453,9 @@ export class ActivityStore {
 
   get sortedNodes() {
     return this.getSortedNodesByTimeStamps();
+  }
+
+  get sortedNodesProposals() {
+    return this.getSortedProposalNodesByTimeStamps();
   }
 }

@@ -7,6 +7,7 @@ import { ClaimIcon } from "components/new/icon/claim-icon";
 import { IbcUpDownIcon } from "components/new/icon/ibc-up-down";
 import React from "react";
 import { FilterItem } from "components/filter";
+import { fetchGovProposalTransactions } from "../../graphQL/activity-api";
 
 export const govOptions: FilterItem[] = [
   { title: "Voted Yes", value: "YES", isSelected: true },
@@ -84,4 +85,68 @@ export const processFilters = (filters: FilterItem[]) => {
       result = result.concat(data.value.split(","));
     });
   return result;
+};
+
+export const getProposalIdFromLogs = (logs: string) => {
+  let proposalId = "";
+  const parsedLogs = JSON.parse(logs);
+  let log = [];
+
+  if (Array.isArray(parsedLogs) && parsedLogs.length) {
+    log = parsedLogs?.[0]?.events || [];
+  }
+
+  const attributes =
+    log
+      .map((item: any) => {
+        if (item.type && item.type === "proposal_vote") {
+          return item?.attributes;
+        }
+      })
+      .find((item: any) => item) || [];
+
+  if (Array.isArray(attributes) && attributes.length) {
+    proposalId = attributes.find(
+      (item: any) => item.key === "proposal_id"
+    ).value;
+  }
+
+  return proposalId;
+};
+
+export const fetchProposalNodes = async (
+  cursor: any,
+  chainId: string,
+  bech32Address: string
+) => {
+  try {
+    let parsedNodes: any = [];
+    // avoid fetching for test networks (remote and local)
+    if (
+      chainId &&
+      chainId !== "test" &&
+      chainId !== "test-local" &&
+      bech32Address
+    ) {
+      const fetchedData = await fetchGovProposalTransactions(
+        chainId,
+        cursor,
+        bech32Address,
+        govOptions.map((option) => option.value)
+      );
+      if (fetchedData) {
+        parsedNodes = fetchedData.nodes.map((node: any) => ({
+          ...node,
+          proposalId: getProposalIdFromLogs(node.transaction.log),
+        }));
+        return parsedNodes;
+      } else {
+        return parsedNodes;
+      }
+    } else {
+      return parsedNodes;
+    }
+  } catch (error) {
+    return [];
+  }
 };

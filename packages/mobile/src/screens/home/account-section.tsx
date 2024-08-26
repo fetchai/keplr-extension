@@ -42,6 +42,7 @@ import { TxnStatus, txType } from "components/new/txn-status.tsx";
 import { BalanceCard } from "./balance-card";
 import { ClaimCard } from "./claim-card";
 import { observer } from "mobx-react-lite";
+import { fetchProposalNodes } from "screens/activity/utils";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -119,6 +120,10 @@ export const AccountSection: FunctionComponent<{
     tokenState.type === "positive"
       ? (parseFloat(totalNumber) * tokenState.diff) / 100
       : -(parseFloat(totalNumber) * tokenState.diff) / 100;
+
+  const accountOrChainChanged =
+    activityStore.getAddress !== account.bech32Address ||
+    activityStore.getChainId !== chainStore.current.chainId;
 
   async function onSubmit() {
     const validatorAddresses =
@@ -210,6 +215,34 @@ export const AccountSection: FunctionComponent<{
   useEffect(() => {
     setGraphHeight(isShowClaimOption() ? 4.5 : 4.2);
   }, [isShowClaimOption]);
+
+  useEffect(() => {
+    /*  this is required because accountInit sets the nodes on reload, 
+        so we wait for accountInit to set the proposal nodes and then we 
+        store the proposal votes from api in activity store */
+    const timeout = setTimeout(async () => {
+      const nodes = activityStore.sortedNodesProposals;
+      if (nodes.length === 0) {
+        const nodes = await fetchProposalNodes(
+          "",
+          chainStore.current.chainId,
+          account.bech32Address
+        );
+        if (nodes.length) {
+          nodes.forEach((node: any) => activityStore.addProposalNode(node));
+        }
+      }
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [
+    account.bech32Address,
+    chainStore.current.chainId,
+    accountOrChainChanged,
+    activityStore,
+  ]);
 
   useEffect(() => {
     if (Object.values(activityStore.getPendingTxn).length > 0) {
