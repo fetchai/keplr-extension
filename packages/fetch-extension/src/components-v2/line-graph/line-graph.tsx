@@ -11,6 +11,7 @@ interface LineGraphProps {
   setTokenState: any;
   loading: boolean;
   setLoading: any;
+  vsCurrency: string;
 }
 
 interface PriceData {
@@ -24,12 +25,13 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   setTokenState,
   loading,
   setLoading,
+  vsCurrency,
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const cacheKey = useMemo(
-    () => `${tokenName}_${duration}`,
-    [tokenName, duration]
+    () => `${tokenName}_${duration}_${vsCurrency}`,
+    [tokenName, duration, vsCurrency]
   );
 
   const cachedPrices = useMemo(() => {
@@ -58,7 +60,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           newPrices = cachedPrices.newPrices;
         } else {
           const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-          const params = { vs_currency: "usd", days: duration };
+          const params = { vs_currency: vsCurrency, days: duration };
 
           const response = await axios.get(apiUrl, { params });
           newPrices = response.data.prices.map((price: number[]) => ({
@@ -108,7 +110,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
     };
 
     fetchPrices();
-  }, [duration, tokenName, cacheKey, cachedPrices, setTokenState]);
+  }, [duration, tokenName, vsCurrency, cacheKey, cachedPrices, setTokenState]);
 
   const chartData = {
     labels: prices.map((priceData: any) => {
@@ -129,6 +131,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           priceData.price.toFixed(3).toString()
         ),
         fill: false,
+        vsCurrency,
         borderColor: (context: any) => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;

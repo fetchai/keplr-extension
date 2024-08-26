@@ -22,6 +22,7 @@ import { separateNumericAndDenom } from "@utils/format";
 import { Dec } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../../config";
 import { useDropdown } from "@components-v2/dropdown/dropdown-context";
+import { useLanguage } from "../../../../languages";
 
 export const MyStakes = observer(
   ({
@@ -37,6 +38,9 @@ export const MyStakes = observer(
   }) => {
     const navigate = useNavigate();
     const notification = useNotification();
+    const language = useLanguage();
+
+    const fiatCurrency = language.fiatCurrency;
 
     const [_isWithdrawingRewards, setIsWithdrawingRewards] = useState(false);
     const {
@@ -73,7 +77,8 @@ export const MyStakes = observer(
       ).stakableReward;
 
     const pendingStakableRewardUSD = priceStore.calculatePrice(
-      pendingStakableReward.shrink(true).maxDecimals(6).trim(true)
+      pendingStakableReward.shrink(true).maxDecimals(6).trim(true),
+      fiatCurrency
     );
 
     const { numericPart: totalNumber } = separateNumericAndDenom(
@@ -207,7 +212,9 @@ export const MyStakes = observer(
                         .trim(true)
                         .toString()
                     : totalNumber}{" "}
-                  <span style={{ color: "#556578" }}>USD</span>
+                  <span style={{ color: "#556578" }}>
+                    {fiatCurrency.toUpperCase()}
+                  </span>
                 </span>
               </div>
 

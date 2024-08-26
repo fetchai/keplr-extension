@@ -21,10 +21,13 @@ import { Alert, FormGroup } from "reactstrap";
 import { TXNTYPE } from "../../../config";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
+import { useLanguage } from "../../../languages";
 
 export const Unstake = observer(() => {
   const location = useLocation();
   const validatorAddress = location.pathname.split("/")[2];
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
   const navigate = useNavigate();
   const {
     chainStore,
@@ -47,7 +50,9 @@ export const Unstake = observer(() => {
   const { amountConfig, memoConfig, feeConfig } = sendConfigs;
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
-  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+    string | undefined
+  >("");
 
   const intl = useIntl();
   const error = amountConfig.error;
@@ -58,7 +63,7 @@ export const Unstake = observer(() => {
     .getDelegationTo(validatorAddress);
 
   const convertToUsd = (currency: any) => {
-    const value = priceStore.calculatePrice(currency);
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
     return value && value.shrink(true).maxDecimals(6).toString();
   };
 
@@ -77,18 +82,18 @@ export const Unstake = observer(() => {
 
   useEffect(() => {
     const inputValueInUsd = convertToUsd(balance);
-    setInputInUsd(inputValueInUsd);
+    setInputInFiatCurrency(inputValueInUsd);
   }, [sendConfigs.amountConfig.amount]);
 
-  const Usd = inputInUsd
-    ? ` (${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()})`
+  const FiatCurrency = inputInFiatCurrency
+    ? ` (${inputInFiatCurrency} ${fiatCurrency.toUpperCase()})`
     : "";
 
   const availableBalance = `${balance
     .trim(true)
     .shrink(true)
     .maxDecimals(6)
-    .toString()}${Usd}`;
+    .toString()}${FiatCurrency}`;
 
   const errorText: string | undefined = useMemo(() => {
     if (error) {

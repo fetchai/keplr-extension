@@ -182,7 +182,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                       new Int(0)
                     )
               )}{" "}
-              USD
+              {fiatCurrency.toUpperCase()}
             </div>
             <div className={style["amount"]}>
               {parseFloat(sendConfigs.amountConfig.amount)

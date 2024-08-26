@@ -22,6 +22,7 @@ import { useLanguage } from "../../languages";
 import { useStore } from "../../stores";
 import { Card } from "../card";
 import { Dropdown } from "../dropdown";
+import { SUPPORTED_LOCALE_FIAT_CURRENCIES } from "../../config.ui";
 
 export interface CoinInputProps {
   amountConfig: IAmountConfig;
@@ -36,14 +37,16 @@ export interface CoinInputProps {
 export const CoinInput: FunctionComponent<CoinInputProps> = observer(
   ({ amountConfig, disableAllBalance }) => {
     const intl = useIntl();
-    const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+    const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+      string | undefined
+    >("");
     const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
 
     const { priceStore } = useStore();
 
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
-    const convertToUsd = (currency: any) => {
+    const convertToFiatCurrency = (currency: any) => {
       const value = priceStore.calculatePrice(currency, fiatCurrency);
       const inUsd = value && value.shrink(true).maxDecimals(6).toString();
       return inUsd;
@@ -59,8 +62,8 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
         amountConfig.sendCurrency,
         new Int(amountInNumber)
       );
-      const inputValueInUsd = convertToUsd(inputValue);
-      setInputInUsd(inputValueInUsd);
+      const inputValueInUsd = convertToFiatCurrency(inputValue);
+      setInputInFiatCurrency(inputValueInUsd);
     }, [amountConfig.amount]);
 
     const [randomId] = useState(() => {
@@ -121,7 +124,6 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
     const isClicked = () => {
       setIsToggleClicked(!isToggleClicked);
     };
-    console.log(inputInUsd, isToggleClicked);
 
     return (
       <React.Fragment>
@@ -140,9 +142,10 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                 )}
                 id={`input-${randomId}`}
                 type="number"
+                step="any"
                 value={
                   isToggleClicked === true
-                    ? parseDollarAmount(inputInUsd)
+                    ? parseDollarAmount(inputInFiatCurrency).toString()
                     : parseExponential(
                         amountConfig.amount,
                         amountConfig.sendCurrency.coinDecimals
@@ -166,7 +169,7 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
                       return;
                     }
                     isToggleClicked === true
-                      ? parseDollarAmount(inputInUsd)
+                      ? parseDollarAmount(inputInFiatCurrency)
                       : amountConfig.setAmount(e.target.value);
                   }
                 }}
@@ -176,14 +179,14 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
 
               <span>
                 {isToggleClicked === true
-                  ? "USD"
+                  ? fiatCurrency.toUpperCase()
                   : amountConfig.sendCurrency.coinDenom.split(" ")[0]}
               </span>
             </div>
             <div className={styleCoinInput["amount-usd"]}>
               {isToggleClicked === true
                 ? `${amountConfig.amount} ${amountConfig.sendCurrency.coinDenom}`
-                : inputInUsd}
+                : inputInFiatCurrency}
             </div>
             {errorText != null ? (
               <div className={styleCoinInput["errorText"]}>{errorText}</div>
@@ -194,10 +197,16 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
               style={{ margin: "0px" }}
               className={styleCoinInput["widgetButton"]}
               onClick={isClicked}
-              disabled
+              disabled={
+                !SUPPORTED_LOCALE_FIAT_CURRENCIES.includes(fiatCurrency)
+              }
             >
               <img src={require("@assets/svg/wireframe/chevron.svg")} alt="" />
-              Change to USD
+              {`Change to ${
+                !isToggleClicked
+                  ? fiatCurrency.toUpperCase()
+                  : amountConfig.sendCurrency.coinDenom
+              }`}
             </button>
             {!disableAllBalance ? (
               <button
@@ -228,7 +237,9 @@ export const TokenSelectorDropdown: React.FC<TokenDropdownProps> = ({
   overrideSelectableCurrencies,
 }) => {
   const [isOpenTokenSelector, setIsOpenTokenSelector] = useState(false);
-  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+    string | undefined
+  >("");
 
   const { queriesStore, priceStore } = useStore();
   const queryBalances = queriesStore
@@ -257,14 +268,14 @@ export const TokenSelectorDropdown: React.FC<TokenDropdownProps> = ({
 
   const language = useLanguage();
   const fiatCurrency = language.fiatCurrency;
-  const convertToUsd = (currency: any) => {
+  const convertToFiatCurrency = (currency: any) => {
     const value = priceStore.calculatePrice(currency, fiatCurrency);
     const inUsd = value && value.shrink(true).maxDecimals(6).toString();
     return inUsd;
   };
   useEffect(() => {
-    const valueInUsd = convertToUsd(balance);
-    setInputInUsd(valueInUsd);
+    const valueInUsd = convertToFiatCurrency(balance);
+    setInputInFiatCurrency(valueInUsd);
   }, [amountConfig.sendCurrency]);
 
   const balancesMap = new Map(
@@ -296,7 +307,8 @@ export const TokenSelectorDropdown: React.FC<TokenDropdownProps> = ({
           >
             {" "}
             {`Available: ${balance.shrink(true).maxDecimals(6).toString()} `}
-            {inputInUsd && `(${inputInUsd} USD)`}
+            {inputInFiatCurrency &&
+              `(${inputInFiatCurrency} ${fiatCurrency.toUpperCase()})`}
           </div>
         }
       />

@@ -21,12 +21,16 @@ import style from "./style.module.scss";
 import { RedelegateValidatorDetail } from "./validator-detail";
 import { TXNTYPE } from "../../../config";
 import { useIntl } from "react-intl";
+import { useLanguage } from "../../../languages";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
 export const Redelegate = observer(() => {
   const location = useLocation();
   const validatorAddress = location.pathname.split("/")[2];
+
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   const navigate = useNavigate();
   const {
@@ -103,7 +107,9 @@ export const Redelegate = observer(() => {
   const { amountConfig, memoConfig, feeConfig } = sendConfigs;
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
-  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+    string | undefined
+  >("");
 
   const stakedAmount = queriesStore
     .get(amountConfig.chainId)
@@ -138,24 +144,24 @@ export const Redelegate = observer(() => {
     : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0));
 
   const convertToUsd = (currency: any) => {
-    const value = priceStore.calculatePrice(currency);
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
     return value && value.shrink(true).maxDecimals(6).toString();
   };
 
   useEffect(() => {
     const inputValueInUsd = convertToUsd(balance);
-    setInputInUsd(inputValueInUsd);
+    setInputInFiatCurrency(inputValueInUsd);
   }, [sendConfigs.amountConfig.amount]);
 
-  const Usd = inputInUsd
-    ? ` (${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()})`
+  const FiatCurrency = inputInFiatCurrency
+    ? ` (${inputInFiatCurrency} ${fiatCurrency.toUpperCase()})`
     : "";
 
   const availableBalance = `${balance
     .trim(true)
     .shrink(true)
     .maxDecimals(6)
-    .toString()}${Usd}`;
+    .toString()}${FiatCurrency}`;
 
   const notification = useNotification();
 

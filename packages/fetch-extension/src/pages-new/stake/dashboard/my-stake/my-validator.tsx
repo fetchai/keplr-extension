@@ -6,10 +6,14 @@ import { Staking } from "@keplr-wallet/stores";
 import { useStore } from "../../../../stores";
 import { useNavigate } from "react-router";
 import { Dec } from "@keplr-wallet/unit";
+import { useLanguage } from "../../../../languages";
 
 export const MyValidator = observer(() => {
   const { chainStore, accountStore, queriesStore, priceStore, analyticsStore } =
     useStore();
+  const language = useLanguage();
+
+  const fiatCurrency = language.fiatCurrency;
 
   const navigate = useNavigate();
 
@@ -66,8 +70,9 @@ export const MyValidator = observer(() => {
             unbondedValidators.getValidatorThumbnail(val.operator_address);
 
           const amount = queryDelegations.getDelegationTo(val.operator_address);
-          const amountUSD = priceStore.calculatePrice(
-            amount.maxDecimals(5).trim(true).shrink(true)
+          const amountFiatCurrency = priceStore.calculatePrice(
+            amount.maxDecimals(5).trim(true).shrink(true),
+            fiatCurrency
           );
 
           const reward = queries.cosmos.queryRewards
@@ -132,10 +137,10 @@ export const MyValidator = observer(() => {
                       </div>
                     </div>
 
-                    {amountUSD && (
+                    {amountFiatCurrency && (
                       <div className={styles["right-col"]}>
                         <span>
-                          {amountUSD
+                          {amountFiatCurrency
                             .shrink(true)
                             .maxDecimals(6)
                             .trim(true)
@@ -143,7 +148,7 @@ export const MyValidator = observer(() => {
                         </span>
                         <span className={styles["validator-currency"]}>
                           {" "}
-                          {priceStore.defaultVsCurrency.toUpperCase()}
+                          {fiatCurrency.toUpperCase()}
                         </span>
                       </div>
                     )}

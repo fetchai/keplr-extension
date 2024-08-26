@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router";
 import { Alert, FormGroup } from "reactstrap";
 import { TXNTYPE } from "../../../config";
 import { useStore } from "../../../stores";
+import { useLanguage } from "../../../languages";
 import style from "./style.module.scss";
 
 export const Delegate: FunctionComponent = observer(() => {
@@ -22,6 +23,8 @@ export const Delegate: FunctionComponent = observer(() => {
   const validatorAddress = location.pathname.split("/")[2];
 
   const navigate = useNavigate();
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   const {
     chainStore,
@@ -34,7 +37,9 @@ export const Delegate: FunctionComponent = observer(() => {
 
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
 
-  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+    string | undefined
+  >("");
 
   const account = accountStore.getAccount(chainStore.current.chainId);
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -73,23 +78,23 @@ export const Delegate: FunctionComponent = observer(() => {
     : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0));
 
   const convertToUsd = (currency: any) => {
-    const value = priceStore.calculatePrice(currency);
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
     return value && value.shrink(true).maxDecimals(6).toString();
   };
   useEffect(() => {
     const inputValueInUsd = convertToUsd(balance);
-    setInputInUsd(inputValueInUsd);
+    setInputInFiatCurrency(inputValueInUsd);
   }, [sendConfigs.amountConfig.amount]);
 
-  const Usd = inputInUsd
-    ? ` (${inputInUsd} ${priceStore.defaultVsCurrency.toUpperCase()})`
+  const FiatCurrency = inputInFiatCurrency
+    ? ` (${inputInFiatCurrency} ${fiatCurrency.toUpperCase()})`
     : "";
 
   const availableBalance = `${balance
     .trim(true)
     .shrink(true)
     .maxDecimals(6)
-    .toString()}${Usd}`;
+    .toString()}${FiatCurrency}`;
 
   const bondedValidators = queries.cosmos.queryValidators.getQueryStatus(
     Staking.BondStatus.Bonded
