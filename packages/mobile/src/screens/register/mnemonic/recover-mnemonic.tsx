@@ -348,7 +348,10 @@ export const RecoverMnemonicScreen: FunctionComponent = () => {
               const encodeSeedWords = encodeURIComponent(
                 JSON.stringify(seedWords.join(" ").trim())
               );
-              analyticsStore.logEvent("next_click", { pageName: "Register" });
+              analyticsStore.logEvent("register_next_click", {
+                pageName: "Register",
+                registerType: "seed",
+              });
               smartNavigation.navigateSmart("Register.CreateAccount", {
                 registerConfig: registerConfig,
                 mnemonic: encodeSeedWords,

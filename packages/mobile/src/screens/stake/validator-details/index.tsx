@@ -89,7 +89,7 @@ export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
               textStyle={style.flatten(["body2", "color-white"]) as ViewStyle}
               onPress={() => {
                 analyticsStore.logEvent("redelegate_click", {
-                  pageName: "Validator Detail",
+                  pageName: "Validator Details",
                 });
                 if (
                   account.txTypeInProgress === "undelegate" ||
@@ -116,7 +116,7 @@ export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
               text="Stake more"
               onPress={() => {
                 analyticsStore.logEvent("stake_more_click", {
-                  pageName: "Validator Detail",
+                  pageName: "Validator Details",
                 });
                 if (
                   account.txTypeInProgress === "undelegate" ||
@@ -152,7 +152,7 @@ export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
               textStyle={style.flatten(["body2"]) as ViewStyle}
               onPress={() => {
                 analyticsStore.logEvent("choose_validator_click", {
-                  pageName: "Validator Detail",
+                  pageName: "Validator Details",
                 });
                 smartNavigation.navigateSmart("Redelegate", {
                   validatorAddress: validatorSelector,
@@ -167,7 +167,7 @@ export const ValidatorDetailsScreen: FunctionComponent = observer(() => {
               textStyle={style.flatten(["body2"]) as ViewStyle}
               onPress={() => {
                 analyticsStore.logEvent("stake_with_validator_click", {
-                  pageName: "Validator Detail",
+                  pageName: "Validator Details",
                 });
                 if (
                   account.txTypeInProgress === "undelegate" ||

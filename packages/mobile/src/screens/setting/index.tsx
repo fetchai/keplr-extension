@@ -149,7 +149,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingSectionTitle title="Others" />
       {chainStore.current.govUrl && (
         <SettingItem
-          label="Proposals  "
+          label="Proposals"
           left={<ProposalIcon />}
           onPress={() => {
             navigation.navigate("Setting", {

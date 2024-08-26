@@ -256,7 +256,11 @@ export const MnemonicScreen: FunctionComponent = observer(() => {
             registerConfig,
             newMnemonicConfig,
           });
-          analyticsStore.logEvent("continue_click", { pageName: "Register" });
+          analyticsStore.logEvent("register_next_click", {
+            pageName: "Register",
+            registerType: "seed",
+            accountType: "mnemonic",
+          });
         }}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

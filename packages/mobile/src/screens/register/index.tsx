@@ -293,10 +293,13 @@ export const RegisterIntroScreen: FunctionComponent = () => {
                     registerConfig,
                   }
                 );
-                analyticsStore.logEvent("import_from_fetch_extension_click", {
-                  registerType: "qr",
-                  pageName: "Register",
-                });
+                analyticsStore.logEvent(
+                  "import_from_asi_alliance_web_extension_click",
+                  {
+                    registerType: "qr",
+                    pageName: "Register",
+                  }
+                );
               }}
               onConnectLedger={() => {
                 setImportWalletModalOpen(false);

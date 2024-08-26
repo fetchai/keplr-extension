@@ -176,7 +176,11 @@ export const MigrateETHScreen: FunctionComponent = observer(() => {
         rippleColor="black@10%"
         onPress={() => {
           submit();
-          analyticsStore.logEvent("next_click", { pageName: "Register" });
+          analyticsStore.logEvent("register_next_click", {
+            registerType: "seed",
+            accountType: "mnemonic",
+            pageName: "Register",
+          });
         }}
       />
     </PageWithScrollView>

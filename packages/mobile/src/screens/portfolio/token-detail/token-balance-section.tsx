@@ -175,7 +175,7 @@ export const TokenBalanceSection: FunctionComponent<{
           analyticsStore.logEvent("stake_click", {
             chainId: chainStore.current.chainId,
             chainName: chainStore.current.chainName,
-            pageName: "Portfolio",
+            pageName: "Token Detail",
           });
           navigation.navigate("Stake", {
             screen: "Staking.Dashboard",
