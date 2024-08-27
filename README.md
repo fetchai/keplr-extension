@@ -3,7 +3,7 @@
 [![Official Website](https://img.shields.io/badge/Official%20Website-fetch.ai-blue?style=flat&logo=world&logoColor=white)](https://fetch.ai) [![Twitter Follow](https://img.shields.io/twitter/follow/fetch_ai?style=social)](https://twitter.com/fetch_ai)
 
 
-This is the code repository of the Fetch Wallet, a generic wallet for blockchains built using the [Cosmos-SDK](https://github.com/cosmos/cosmos-sdk) with support for EVM-based chains and the inter-blockchain communication (IBC) protocol. 
+This is the code repository of the ASI Alliance Wallet, a generic wallet for blockchains built using the [Cosmos-SDK](https://github.com/cosmos/cosmos-sdk) with support for EVM-based chains and the inter-blockchain communication (IBC) protocol. 
 
 This is a fork of the Keplr wallet by [chainapsis](https://github.com/chainapsis).
 
