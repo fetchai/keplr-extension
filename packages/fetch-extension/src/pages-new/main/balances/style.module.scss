@@ -14,6 +14,7 @@
 .balance-field {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 .priceChangesGreen {
   color: var(--green-green-500-vibrant-green, #2de376);

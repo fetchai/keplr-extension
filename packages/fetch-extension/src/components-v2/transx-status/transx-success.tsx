@@ -28,6 +28,17 @@ export const TransxSuccess = () => {
         onClick={() => navigate("/")}
         text={"Go to homescreen"}
       />
+      <ButtonV2
+        styleProps={{
+          color: "white",
+          background: "transparent",
+          border: "1px solid rgba(255,255,255,0.6)",
+          height: "56px",
+          marginTop: 0,
+        }}
+        onClick={() => navigate("/activity")}
+        text={"View Details"}
+      />
     </div>
   );
 };

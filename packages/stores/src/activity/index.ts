@@ -84,7 +84,7 @@ export class ActivityStore {
     if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
       yield this.kvStore.set<any>(
         `extension_activity_nodes-${this.address}-${this.chainId}`,
-        currNodes
+        JSON.parse(JSON.stringify(currNodes))
       );
     }
   }
@@ -105,7 +105,7 @@ export class ActivityStore {
       Object.keys(this.pendingTxn).length > 0 ? this.pendingTxn : {};
     yield this.kvStore.set<any>(
       `extension_pending_txn-${this.address}-${this.chainId}`,
-      currNodes
+      JSON.parse(JSON.stringify(currNodes))
     );
   }
 
@@ -113,7 +113,7 @@ export class ActivityStore {
   *savePendingTxnTypes() {
     yield this.kvStore.set<any>(
       `extension_pending_txn_types-${this.address}-${this.chainId}`,
-      this.pendingTxnTypes
+      JSON.parse(JSON.stringify(this.pendingTxnTypes))
     );
   }
 

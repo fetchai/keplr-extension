@@ -2,6 +2,30 @@ import { AccountSetBase, WalletStatus } from "./base";
 import { ChainStore } from "../chain";
 import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
 import { MockKeplr } from "@keplr-wallet/provider-mock";
+import { KVStore } from "@keplr-wallet/common";
+
+class MockKVStore implements KVStore {
+  private store: Map<string, any> = new Map();
+  private prefixValue: string = "mock-prefix";
+
+  async get<T = unknown>(key: string): Promise<T | undefined> {
+    return this.store.get(key) as T | undefined;
+  }
+
+  async set<T = unknown>(key: string, data: T | null): Promise<void> {
+    if (data === null) {
+      this.store.delete(key);
+    } else {
+      this.store.set(key, data);
+    }
+  }
+
+  prefix(): string {
+    return this.prefixValue;
+  }
+}
+
+const accountBaseKVStore = new MockKVStore();
 
 describe("Test Account set base", () => {
   test("Account set base should be inited automatically if `autoInit` is true", async () => {
@@ -43,7 +67,8 @@ describe("Test Account set base", () => {
             "curious kitchen brief change imitate open close knock cause romance trim offer"
           );
         },
-      }
+      },
+      accountBaseKVStore
     );
 
     expect(accountSetBase.walletStatus).toBe(WalletStatus.Loading);
@@ -101,7 +126,8 @@ describe("Test Account set base", () => {
             "curious kitchen brief change imitate open close knock cause romance trim offer"
           );
         },
-      }
+      },
+      accountBaseKVStore
     );
 
     expect(accountSetBase.walletStatus).toBe(WalletStatus.NotInit);

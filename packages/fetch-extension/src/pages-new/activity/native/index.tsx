@@ -76,6 +76,10 @@ export const NativeTab = observer(() => {
     options.map((option) => option.value)
   );
 
+  const [selectedFilter, setSelectedFilter] = useState<string[]>(
+    options.map((option) => option.value)
+  );
+
   // const [isError, setIsError] = useState(false);
 
   const accountOrChainChanged =
@@ -128,6 +132,7 @@ export const NativeTab = observer(() => {
 
   const handleFilterChange = (selectedFilter: string[]) => {
     setFilter(selectedFilter);
+    setSelectedFilter(selectedFilter);
     analyticsStore.logEvent("activity_filter_click", {
       pageName: "Transaction Tab",
     });
@@ -165,13 +170,11 @@ export const NativeTab = observer(() => {
   const renderNodes = (nodes: any) => {
     const renderedNodes: JSX.Element[] = [];
     Object.values(nodes).forEach(async (node: any, index) => {
-      const currentDate = moment(node.block.timestamp).format(
-        "ddd, DD MMM YYYY"
-      );
+      const currentDate = moment(node.block.timestamp).format("MMMM DD, YYYY");
       const previousNode: any =
         index > 0 ? Object.values(nodes)[index - 1] : null;
       const previousDate = previousNode
-        ? moment(previousNode.block.timestamp).format("ddd, DD MMM YYYY")
+        ? moment(previousNode.block.timestamp).format("MMMM DD, YYYY")
         : null;
       const shouldDisplayDate = currentDate !== previousDate;
       renderedNodes.push(
@@ -205,6 +208,10 @@ export const NativeTab = observer(() => {
         handleSelectClicks={handleSelectClicks}
         handleDeselectClicks={handleDeselectClicks}
         isSaveChangesButtonDisabled={isSaveChangesButtonDisabled}
+        closeClicked={() => {
+          setFilter(selectedFilter);
+          setIsOpen(false);
+        }}
       />
       <div className={style["filter"]}>
         <FilterActivities
@@ -224,14 +231,14 @@ export const NativeTab = observer(() => {
         // ) :
         activities.length > 0 &&
         activities.filter((node: any) =>
-          processFilters(filter).includes(
+          processFilters(selectedFilter).includes(
             node.transaction.messages.nodes[0].typeUrl
           )
         ).length > 0 ? (
           <React.Fragment>
             {renderNodes(
               activities.filter((node: any) =>
-                processFilters(filter).includes(
+                processFilters(selectedFilter).includes(
                   node.transaction.messages.nodes[0].typeUrl
                 )
               )

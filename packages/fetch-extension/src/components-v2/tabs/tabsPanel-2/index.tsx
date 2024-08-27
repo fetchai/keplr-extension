@@ -14,6 +14,8 @@ export interface TabsProps {
   setActiveTab?: any;
   onTabChange?: any;
   styleProps?: React.CSSProperties;
+  tabHeight?: string;
+  tabStyle?: React.CSSProperties;
 }
 
 export const TabsPanel: React.FC<TabsProps> = ({
@@ -22,6 +24,8 @@ export const TabsPanel: React.FC<TabsProps> = ({
   setActiveTab,
   onTabChange,
   styleProps,
+  tabHeight,
+  tabStyle,
 }) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(tabs[0].id);
 
@@ -44,7 +48,10 @@ export const TabsPanel: React.FC<TabsProps> = ({
       style={styleProps ? { ...styleProps } : {}}
     >
       {!showTabsOnBottom && (
-        <div className={style["tab-bar"]}>
+        <div
+          style={tabStyle ? { ...tabStyle } : {}}
+          className={style["tab-bar"]}
+        >
           {tabs.map((tab) => (
             <button
               className={`${style["tab"]} ${
@@ -73,7 +80,12 @@ export const TabsPanel: React.FC<TabsProps> = ({
           ))}
         </div>
       )}
-      <div>
+      <div
+        style={{
+          height: tabHeight ? tabHeight : "",
+          overflowY: tabHeight ? "scroll" : "inherit",
+        }}
+      >
         {tabs.map((tab) => (
           <div
             key={tab.id}

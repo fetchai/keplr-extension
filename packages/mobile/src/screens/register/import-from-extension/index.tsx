@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { FullScreenCameraView } from "components/camera";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import {
@@ -41,7 +40,7 @@ export interface WCExportKeyRingDatasResponse {
   addressBooks: { [chainId: string]: AddressBookData[] | undefined };
 }
 
-export const ImportFromExtensionScreen: FunctionComponent = observer(() => {
+export const ImportFromExtensionScreen: FunctionComponent = () => {
   const { chainStore, keyRingStore, analyticsStore } = useStore();
 
   const [addressBookConfigMap] = useState(
@@ -132,7 +131,10 @@ export const ImportFromExtensionScreen: FunctionComponent = observer(() => {
         barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
       }}
       onBarCodeScanned={onBarCodeScanned}
+      scannerBottomText={
+        "Connect to ASI Alliance Wallet\nbrowser extension by scanning a QR code"
+      }
       isLoading={isLoading}
     />
   );
-});
+};

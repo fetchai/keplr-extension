@@ -11,27 +11,30 @@ import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { formatAddress } from "utils/format/format";
 import { LeftRightCrossIcon } from "components/new/icon/left-right-cross";
 import { IconButton } from "components/new/button/icon";
-import { getActivityIcon } from "utils/stable-sort";
+import { getActivityIcon, getDetails } from "utils/stable-sort";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { TimelineView } from "components/new/timeline";
 import { BlurButton } from "components/new/button/blur-button";
+import { observer } from "mobx-react-lite";
 
-export const ActivityDetails = () => {
+export const ActivityDetails = observer(() => {
   const route = useRoute<
     RouteProp<
       Record<
         string,
         {
-          details: any;
+          id: any;
         }
       >,
       any
     >
   >();
 
-  const details = route.params.details;
+  const nodeId = route.params.id;
   const style = useStyle();
-  const { priceStore } = useStore();
+  const { priceStore, chainStore, activityStore } = useStore();
+  const node = activityStore.getNode(nodeId);
+  const details = getDetails(node, chainStore);
   const [usdValue, setUsdValue] = useState<any>("$0");
   const fiatCurrency = details.fiatCurrency;
   const currency = {
@@ -249,4 +252,4 @@ export const ActivityDetails = () => {
       <DetailRows details={details} />
     </PageWithScrollView>
   );
-};
+});

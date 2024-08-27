@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import { CardModal } from "modals/card";
 import { Text, View, ViewStyle } from "react-native";
 import { useStyle } from "styles/index";
@@ -7,92 +12,40 @@ import { RectButton } from "components/rect-button";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { Button } from "components/button";
 import { CheckIcon } from "components/icon";
-import { StakeIcon } from "components/new/icon/stake-icon";
-import { UnstakedIcon } from "components/new/icon/unstaked";
-import { EditIcon } from "components/new/icon/edit";
-import { LeftRightCrossIcon } from "components/new/icon/left-right-cross";
-import { ClaimIcon } from "components/new/icon/claim-icon";
-import { IbcUpDownIcon } from "components/new/icon/ibc-up-down";
-import { FilterItem } from "screens/activity";
-import { UpDownArrowIcon } from "components/new/icon/up-down-arrow";
-import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 
-export const activityFilterOptions: FilterItem[] = [
-  {
-    icon: (
-      <UpDownArrowIcon
-        size={14}
-        color1={"white"}
-        color2={"white"}
-        color3={"white"}
-      />
-    ),
-    title: "Funds transfers",
-    value: "/cosmos.bank.v1beta1.MsgSend",
-    isSelected: true,
-  },
-  {
-    icon: <StakeIcon size={14} />,
-    title: "Staked Funds",
-    value: "/cosmos.staking.v1beta1.MsgDelegate",
-    isSelected: true,
-  },
-  {
-    icon: <UnstakedIcon />,
-    title: "Unstaked Funds",
-    value: "/cosmos.staking.v1beta1.MsgUndelegate",
-    isSelected: true,
-  },
-  {
-    icon: <EditIcon />,
-    title: "Redelegate Funds",
-    value: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-    isSelected: true,
-  },
-  {
-    icon: <LeftRightCrossIcon size={20} />,
-    title: "Contract Interactions",
-    value:
-      "/cosmos.authz.v1beta1.MsgExec,/cosmwasm.wasm.v1.MsgExecuteContract,/cosmos.authz.v1beta1.MsgRevoke",
-    isSelected: true,
-  },
-  {
-    icon: <ClaimIcon />,
-    title: "Claim Rewards",
-    value: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-    isSelected: true,
-  },
-  {
-    icon: <IbcUpDownIcon size={20} />,
-    title: "IBC transfers",
-    value: "/ibc.applications.transfer.v1.MsgTransfer",
-    isSelected: true,
-  },
-];
+export interface FilterItem {
+  icon?: ReactElement;
+  isSelected: boolean;
+  title: string;
+  value: string;
+}
 
-export const ActivityFilterView: FunctionComponent<{
+export const FilterView: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   filters: FilterItem[];
   handleFilterChange: (selectedFilters: FilterItem[]) => void;
-}> = observer(({ isOpen, close, filters, handleFilterChange }) => {
+  options: FilterItem[];
+}> = ({ isOpen, close, filters, handleFilterChange, options }) => {
   const style = useStyle();
   const { chainStore, activityStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
-  const [selectedFilter, setSelectedFilter] = useState<FilterItem[]>([
-    ...filters,
-  ]);
+  const [selectedFilter, setSelectedFilter] = useState<FilterItem[]>([]);
 
   const accountOrChainChanged =
     activityStore.getAddress !== accountInfo.bech32Address ||
     activityStore.getChainId !== current.chainId;
 
   useEffect(() => {
-    setSelectedFilter(activityFilterOptions);
+    setSelectedFilter(options);
   }, [accountOrChainChanged]);
+
+  useEffect(() => {
+    setSelectedFilter(filters);
+  }, [isOpen]);
 
   const handleClicks = () => {
     const anyUnselected = selectedFilter.some(
@@ -104,7 +57,7 @@ export const ActivityFilterView: FunctionComponent<{
         isSelected: anyUnselected,
       })
     );
-    setSelectedFilter([...updatedFilters]);
+    setSelectedFilter(updatedFilters);
   };
 
   const allSelected = selectedFilter.every(
@@ -137,7 +90,7 @@ export const ActivityFilterView: FunctionComponent<{
           style.flatten(["margin-top-24", "margin-bottom-18"]) as ViewStyle
         }
       >
-        {activityFilterOptions.map((item: FilterItem, index: number) => (
+        {options.map((item: FilterItem, index: number) => (
           <BlurBackground
             key={index}
             borderRadius={12}
@@ -153,9 +106,15 @@ export const ActivityFilterView: FunctionComponent<{
           >
             <RectButton
               onPress={() => {
-                const updatedFilters = [...selectedFilter];
-                updatedFilters[index].isSelected =
-                  !updatedFilters[index].isSelected;
+                const updatedFilters: FilterItem[] = selectedFilter.map(
+                  (filter: FilterItem, tempIndex) => ({
+                    ...filter,
+                    isSelected:
+                      index === tempIndex
+                        ? !filter.isSelected
+                        : filter.isSelected,
+                  })
+                );
                 setSelectedFilter(updatedFilters);
               }}
               activeOpacity={0.5}
@@ -170,19 +129,20 @@ export const ActivityFilterView: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                <IconButton
-                  backgroundBlur={false}
-                  icon={item.icon}
-                  iconStyle={
-                    style.flatten([
-                      "width-32",
-                      "height-32",
-                      "items-center",
-                      "justify-center",
-                    ]) as ViewStyle
-                  }
-                  containerStyle={style.flatten([]) as ViewStyle}
-                />
+                {item.icon && (
+                  <IconButton
+                    backgroundBlur={false}
+                    icon={item.icon}
+                    iconStyle={
+                      style.flatten([
+                        "width-32",
+                        "height-32",
+                        "items-center",
+                        "justify-center",
+                      ]) as ViewStyle
+                    }
+                  />
+                )}
                 <Text
                   style={
                     style.flatten([
@@ -217,4 +177,4 @@ export const ActivityFilterView: FunctionComponent<{
       />
     </CardModal>
   );
-});
+};

@@ -41,6 +41,8 @@ export const AssetView = observer(() => {
   }, [location.search]);
   useEffect(() => {
     const fetchTokenImage = async () => {
+      if (!!tokenIcon || !tokenInfo) return;
+
       const tokenImage = await getTokenIcon(tokenInfo?.coinGeckoId);
       setTokenIcon(tokenImage);
     };
@@ -179,7 +181,7 @@ export const AssetView = observer(() => {
               justifyContent: "center",
               marginBottom: "48px",
             }}
-            onClick={() => navigate("/validators/validator")}
+            onClick={() => navigate("/validator/validator-list")}
             text={"Stake"}
           >
             <img

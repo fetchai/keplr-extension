@@ -187,8 +187,20 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           }
         );
       } catch (e) {
-        if (e?.message === "Request rejected") {
+        if (
+          e?.message === "Request rejected" ||
+          e?.message === "Transaction rejected"
+        ) {
+          Toast.show({
+            type: "error",
+            text1: "Transaction rejected",
+          });
           return;
+        } else {
+          Toast.show({
+            type: "error",
+            text1: e?.message,
+          });
         }
         console.log(e);
         analyticsStore.logEvent("redelegate_txn_broadcasted_fail", {
@@ -197,7 +209,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           feeType: sendConfigs.feeConfig.feeType,
           message: e?.message ?? "",
         });
-        smartNavigation.navigateSmart("Home", {});
+        navigation.navigate("Home", {});
       }
     }
   };
@@ -265,13 +277,22 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         heading={
           dstValidator ? dstValidator.description.moniker : "Choose validator"
         }
-        trailingIcon={<ChevronRightIcon color="white" />}
+        trailingIcon={
+          <ChevronRightIcon
+            color={
+              account.txTypeInProgress === "redelegate"
+                ? style.get("color-white@20%").color
+                : "white"
+            }
+          />
+        }
         onPress={() => {
           smartNavigation.navigateSmart("Validator.List", {
             prevSelectedValidator: srcValidator?.operator_address,
             selectedValidator: dstValidator?.operator_address,
           });
         }}
+        disable={account.txTypeInProgress === "redelegate"}
       />
       <StakeAmountInput
         label="Amount"
@@ -285,6 +306,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
+        editable={!(account.txTypeInProgress === "redelegate")}
       />
       <Text
         style={
@@ -299,6 +321,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
+        disable={account.txTypeInProgress === "redelegate"}
       />
       <MemoInputView
         label="Memo"
@@ -312,6 +335,8 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           ]) as ViewStyle
         }
         memoConfig={sendConfigs.memoConfig}
+        error={sendConfigs.memoConfig.error?.message}
+        editable={!(account.txTypeInProgress === "redelegate")}
         containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
       />
       <View
@@ -341,7 +366,15 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
           </Text>
           <IconButton
             backgroundBlur={false}
-            icon={<GearIcon />}
+            icon={
+              <GearIcon
+                color={
+                  account.txTypeInProgress === "redelegate"
+                    ? style.get("color-white@20%").color
+                    : "white"
+                }
+              />
+            }
             iconStyle={
               style.flatten([
                 "width-32",
@@ -349,13 +382,31 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                "border-color-white@40%",
+                account.txTypeInProgress === "redelegate"
+                  ? "border-color-white@20%"
+                  : "border-color-white@40%",
               ]) as ViewStyle
             }
+            disable={account.txTypeInProgress === "redelegate"}
             onPress={() => setFeeModal(true)}
           />
         </View>
       </View>
+      {sendConfigs.feeConfig.error ? (
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-red-250",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
+        >
+          {sendConfigs.feeConfig.error.message == "insufficient fee"
+            ? "Insufficient available balance for transaction fee"
+            : sendConfigs.feeConfig.error.message}
+        </Text>
+      ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"

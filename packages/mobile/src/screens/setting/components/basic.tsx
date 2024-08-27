@@ -65,7 +65,7 @@ export const SettingItem: FunctionComponent<{
             {left}
           </View>
         ) : null}
-        <View>
+        <View style={style.flatten(["flex-4"])}>
           <Text
             style={
               StyleSheet.flatten([
@@ -76,7 +76,7 @@ export const SettingItem: FunctionComponent<{
           >
             {label}
           </Text>
-          {paragraph ? (
+          {paragraph && (
             <Text
               style={
                 StyleSheet.flatten([
@@ -87,7 +87,7 @@ export const SettingItem: FunctionComponent<{
             >
               {paragraph}
             </Text>
-          ) : null}
+          )}
         </View>
         {right ? (
           <React.Fragment>

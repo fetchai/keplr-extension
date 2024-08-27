@@ -81,6 +81,10 @@ export const UseMaxButton = ({
           border: "1px solid rgba(255,255,255,0.4)",
           fontSize: "14px",
         }}
+        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          e.preventDefault();
+          amountConfig.toggleIsMax();
+        }}
       />
     </div>
   );

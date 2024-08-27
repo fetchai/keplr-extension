@@ -398,7 +398,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   }
                 />
                 <PasswordValidateView
-                  text="Minumum 1 special character"
+                  text="Minimum 1 special character"
                   icon={
                     checkPasswordValidity(password).includes(
                       "special character"
@@ -422,7 +422,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   }
                 />
                 <PasswordValidateView
-                  text="Minumum 1 lowercase character"
+                  text="Minimum 1 lowercase character"
                   icon={
                     checkPasswordValidity(password).includes("lowercase") ? (
                       <XmarkIcon size={6} color="black" />
@@ -442,7 +442,7 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
                   }
                 />
                 <PasswordValidateView
-                  text="Minumum 1 uppercase character"
+                  text="Minimum 1 uppercase character"
                   icon={
                     checkPasswordValidity(password).includes("uppercase") ? (
                       <XmarkIcon size={6} color="black" />
@@ -465,9 +465,9 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
             ) : (
               <React.Fragment>
                 <PasswordValidateView text="At least 8 characters" />
-                <PasswordValidateView text="Minumum 1 special character" />
-                <PasswordValidateView text="Minumum 1 lowercase character" />
-                <PasswordValidateView text="Minumum 1 uppercase character" />
+                <PasswordValidateView text="Minimum 1 special character" />
+                <PasswordValidateView text="Minimum 1 lowercase character" />
+                <PasswordValidateView text="Minimum 1 uppercase character" />
               </React.Fragment>
             )}
           </View>

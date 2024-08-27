@@ -89,7 +89,7 @@ export const LockPage: FunctionComponent = observer(() => {
         })}
       >
         <div className={style["banner"]}>
-          <img src={require("@assets/svg/wireframe/LogoV2.svg")} alt="" />
+          <img src={require("@assets/png/ASI-Logo-Icon-white.png")} alt="" />
         </div>
 
         <div className={style["password-field"]}>
@@ -107,8 +107,12 @@ export const LockPage: FunctionComponent = observer(() => {
             />
           </div>
 
-          <Button className={style["sign-in"]} block data-loading={loading}>
-            Sign in
+          <Button className={style["sign-in"]} block>
+            {loading ? (
+              <i className="fas fa-spinner fa-spin ml-2 mr-2" />
+            ) : (
+              <div>Sign in</div>
+            )}
           </Button>
         </div>
       </Form>

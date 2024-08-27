@@ -72,6 +72,14 @@ export const MorePage: FunctionComponent = () => {
         onClick={() => navigate("/more/security-privacy")}
       />
 
+      <Card
+        leftImageStyle={{ background: "transparent" }}
+        style={{ background: "rgba(255,255,255,0.1)", marginBottom: "6px" }}
+        leftImage={require("@assets/svg/wireframe/chain-list-access.svg")}
+        heading={"Link ASI Mobile Wallet"}
+        onClick={() => navigate("/more/export-to-mobile")}
+      />
+
       <div
         style={{
           marginTop: "12px",
@@ -113,7 +121,7 @@ export const MorePage: FunctionComponent = () => {
         heading={"Guide"}
         onClick={() =>
           window.open(
-            "https://fetch.ai/docs/guides/fetch-network/fetch-wallet/fetch-wallet-getting-started",
+            "https://fetch.ai/docs/guides/fetch-network/fetch-wallet/web-wallet/get-started",
             "_blank"
           )
         }
@@ -146,7 +154,7 @@ export const MorePage: FunctionComponent = () => {
         leftImageStyle={{ background: "transparent" }}
         style={{ background: "rgba(255,255,255,0.1)", marginBottom: "5px" }}
         leftImage={require("@assets/svg/wireframe/wallet-version.svg")}
-        heading={"Fetch Wallet version"}
+        heading={"ASI Alliance Wallet version"}
         onClick={() => navigate("/app-version")}
       /> */}
 

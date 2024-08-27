@@ -50,11 +50,29 @@ export const NewMnemonicIntro: FunctionComponent<{
   return (
     <React.Fragment>
       {" "}
-      <img
-        style={{ width: "450px" }}
-        src={require("@assets/svg/wireframe/Title.svg")}
-        alt="logo"
-      />
+      <div className="flex flex-col">
+        <div
+          style={{
+            fontSize: "36px",
+            color: "white",
+            fontWeight: 400,
+          }}
+        >
+          Welcome to your
+        </div>
+        <div
+          style={{
+            fontSize: "36px",
+            color: "transparent",
+            fontWeight: 400,
+            background:
+              "linear-gradient(270deg, #F9774B 5.16%, #CF447B 86.63%)",
+            backgroundClip: "text",
+          }}
+        >
+          ASI Alliance Wallet
+        </div>
+      </div>
       <div className={style["titleText"]}>Choose how you want to proceed</div>
       <div
         className={style["card"]}
@@ -171,6 +189,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
         register,
         handleSubmit,
         getValues,
+        setValue,
         formState: { errors },
       } = useForm<FormData>({
         defaultValues: {
@@ -342,6 +361,10 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                       id: "register.name.error.required",
                     }),
                   })}
+                  onChange={(event) => {
+                    const trimmedValue = event.target.value.trimStart();
+                    setValue(event.target.name as keyof FormData, trimmedValue);
+                  }}
                   // error={errors.name && errors.name.message}
                   maxLength={20}
                   style={{
@@ -354,7 +377,7 @@ export const GenerateMnemonicModePage: React.FC<GenerateMnemonicModePageProps> =
                   </div>
                 )}
                 {registerConfig.mode === "create" ? (
-                  <div style={{ marginTop: "-27px" }}>
+                  <div style={{ marginTop: "-20px" }}>
                     <PasswordInput
                       {...register("password", {
                         required: intl.formatMessage({

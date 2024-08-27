@@ -26,6 +26,11 @@
   flex-direction: column;
   gap: 6px;
 }
+.rightSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .leftImage {
   width: 24px;
   height: 24px;

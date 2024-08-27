@@ -1,8 +1,8 @@
 import { AppCurrency } from "@keplr-wallet/types";
 import { shortenNumber } from "@utils/format";
-import sendIcon from "@assets/svg/wireframe/activity-send.svg";
+import sendIcon from "@assets/svg/wireframe/asi-send.svg";
 import recieveIcon from "@assets/svg/wireframe/activity-recieve.svg";
-import stakeIcon from "@assets/svg/wireframe/activity-stake.svg";
+import stakeIcon from "@assets/svg/wireframe/asi-staked.svg";
 
 const getAmount = (denom: string, amount: string, chainStore: any) => {
   const amountCurrency = chainStore.current.currencies.find(
@@ -121,13 +121,10 @@ export const getDetails = (node: any, chainStore: any): any => {
   };
 };
 
-export const getActivityIcon = (
-  type: string,
-  isAmountDeducted: boolean | undefined
-): string => {
+export const getActivityIcon = (type: string, verb: string): string => {
   switch (type) {
     case "/cosmos.bank.v1beta1.MsgSend":
-      return isAmountDeducted ? sendIcon : recieveIcon;
+      return verb === "Sent" ? sendIcon : recieveIcon;
     case "/cosmos.staking.v1beta1.MsgDelegate":
     case "/cosmos.staking.v1beta1.MsgUndelegate":
     case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
@@ -146,3 +143,38 @@ export const govOptions = [
   { value: "ABSTAIN", label: "Voted Abstain" },
   { value: "NO_WITH_VETO", label: "Voted No With Veto" },
 ];
+
+export const calculatePercentages = (
+  yes: string,
+  abstain: string,
+  no: string,
+  noWithVeto: string
+) => {
+  const yesVotes = BigInt(yes);
+  const abstainVotes = BigInt(abstain);
+  const noVotes = BigInt(no);
+  const noWithVetoVotes = BigInt(noWithVeto);
+
+  const totalVotes = yesVotes + abstainVotes + noVotes + noWithVetoVotes;
+  if (totalVotes === BigInt(0)) {
+    return {
+      yesPercentage: "0",
+      abstainPercentage: "0",
+      noPercentage: "0",
+      noWithVetoPercentage: "0",
+    };
+  }
+
+  const yesPercentage = (Number(yesVotes) / Number(totalVotes)) * 100;
+  const abstainPercentage = (Number(abstainVotes) / Number(totalVotes)) * 100;
+  const noPercentage = (Number(noVotes) / Number(totalVotes)) * 100;
+  const noWithVetoPercentage =
+    (Number(noWithVetoVotes) / Number(totalVotes)) * 100;
+
+  return {
+    yesPercentage: yesPercentage.toFixed(2),
+    abstainPercentage: abstainPercentage.toFixed(2),
+    noPercentage: noPercentage.toFixed(2),
+    noWithVetoPercentage: noWithVetoPercentage.toFixed(2),
+  };
+};

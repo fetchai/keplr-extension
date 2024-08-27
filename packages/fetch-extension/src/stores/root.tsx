@@ -45,6 +45,7 @@ import {
   ChatStore,
   ProposalStore,
   ActivityStore,
+  TokenGraphStore,
 } from "@keplr-wallet/stores";
 import {
   KeplrETCQueries,
@@ -76,6 +77,8 @@ export class RootStore {
   public readonly chatStore: ChatStore;
   public readonly proposalStore: ProposalStore;
   public readonly activityStore: ActivityStore;
+  public readonly tokenGraphStore: TokenGraphStore;
+  public readonly accountBaseStore: ExtensionKVStore;
 
   protected readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
@@ -242,10 +245,19 @@ export class RootStore {
       this.chainStore
     );
 
+    this.tokenGraphStore = new TokenGraphStore(
+      new ExtensionKVStore("store_token_graph_config"),
+      this.chainStore
+    );
+
+    this.accountBaseStore = new ExtensionKVStore("store_account_config");
+
     this.accountStore = new AccountStore(
       window,
       this.chainStore,
       this.activityStore,
+      this.tokenGraphStore,
+      this.accountBaseStore,
       () => {
         return {
           suggestChain: false,

@@ -15,7 +15,6 @@ import { Text, View, ViewStyle } from "react-native";
 import { Button } from "components/button";
 import { Staking } from "@keplr-wallet/stores";
 import { Buffer } from "buffer/";
-import { useSmartNavigation } from "navigation/smart-navigation";
 import { StakeAmountInput } from "components/new/input/stake-amount";
 import { UseMaxButton } from "components/new/button/use-max-button";
 import { MemoInputView } from "components/new/card-view/memo-input";
@@ -46,7 +45,6 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
     useStore();
 
   const style = useStyle();
-  const smartNavigation = useSmartNavigation();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const netInfo = useNetInfo();
@@ -169,8 +167,20 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           }
         );
       } catch (e) {
-        if (e?.message === "Request rejected") {
+        if (
+          e?.message === "Request rejected" ||
+          e?.message === "Transaction rejected"
+        ) {
+          Toast.show({
+            type: "error",
+            text1: "Transaction rejected",
+          });
           return;
+        } else {
+          Toast.show({
+            type: "error",
+            text1: e?.message,
+          });
         }
         console.log(e);
         analyticsStore.logEvent("unstake_txn_broadcasted_fail", {
@@ -179,7 +189,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           feeType: sendConfigs.feeConfig.feeType,
           message: e?.message ?? "",
         });
-        smartNavigation.navigateSmart("Home", {});
+        navigation.navigate("Home", {});
       }
     }
   };
@@ -226,6 +236,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
+        editable={!(account.txTypeInProgress === "undelegate")}
       />
       <Text
         style={
@@ -240,6 +251,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
+        disable={account.txTypeInProgress === "undelegate"}
       />
       <MemoInputView
         label="Memo"
@@ -253,6 +265,8 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           ]) as ViewStyle
         }
         memoConfig={sendConfigs.memoConfig}
+        error={sendConfigs.memoConfig.error?.message}
+        editable={!(account.txTypeInProgress === "undelegate")}
       />
       <View
         style={
@@ -305,7 +319,15 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           </Text>
           <IconButton
             backgroundBlur={false}
-            icon={<GearIcon />}
+            icon={
+              <GearIcon
+                color={
+                  account.txTypeInProgress === "undelegate"
+                    ? style.get("color-white@20%").color
+                    : "white"
+                }
+              />
+            }
             iconStyle={
               style.flatten([
                 "width-32",
@@ -313,13 +335,31 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                "border-color-white@40%",
+                account.txTypeInProgress === "undelegate"
+                  ? "border-color-white@20%"
+                  : "border-color-white@40%",
               ]) as ViewStyle
             }
+            disable={account.txTypeInProgress === "undelegate"}
             onPress={() => setFeeModal(true)}
           />
         </View>
       </View>
+      {sendConfigs.feeConfig.error ? (
+        <Text
+          style={
+            style.flatten([
+              "text-caption1",
+              "color-red-250",
+              "margin-top-8",
+            ]) as ViewStyle
+          }
+        >
+          {sendConfigs.feeConfig.error.message == "insufficient fee"
+            ? "Insufficient available balance for transaction fee"
+            : sendConfigs.feeConfig.error.message}
+        </Text>
+      ) : null}
       <View style={style.flatten(["flex-1"])} />
       <Button
         text="Confirm"

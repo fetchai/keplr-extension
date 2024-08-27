@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import { observer } from "mobx-react-lite";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { BIP44AdvancedButton, useBIP44Option } from "../bip44";
@@ -24,7 +23,7 @@ enum SeedType {
   PRIVATE_KEY = "Private key",
 }
 
-export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
+export const RecoverMnemonicScreen: FunctionComponent = () => {
   const route = useRoute<
     RouteProp<
       Record<
@@ -193,6 +192,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
   };
 
   const handleOnChangeText = async (content: string, index: number) => {
+    setSeedWordsError(undefined);
     const isPasted = content.trim().includes(clipboardContent.current.trim());
     if (isPasted) {
       handlePaste(content);
@@ -326,7 +326,7 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
             }
             onPress={async () => {
               const text = await Clipboard.getStringAsync();
-              if (text) {
+              if (text.length > 0) {
                 handlePaste(text);
               }
             }}
@@ -362,4 +362,4 @@ export const RecoverMnemonicScreen: FunctionComponent = observer(() => {
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
     </PageWithScrollView>
   );
-});
+};

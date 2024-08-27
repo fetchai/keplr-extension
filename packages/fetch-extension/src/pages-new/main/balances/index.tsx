@@ -7,13 +7,16 @@ import { AppCurrency } from "@keplr-wallet/types";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { separateNumericAndDenom } from "@utils/format";
+import { Skeleton } from "@components-v2/skeleton-loader";
+import { WalletStatus } from "@keplr-wallet/stores";
 
 interface Props {
   tokenState: any;
 }
 
 export const Balances: React.FC<Props> = observer(({ tokenState }) => {
-  const { chainStore, accountStore, queriesStore, priceStore } = useStore();
+  const { chainStore, accountStore, queriesStore, priceStore, keyRingStore } =
+    useStore();
   const navigate = useNavigate();
   const language = useLanguage();
 
@@ -114,17 +117,31 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
       ) : (
         <div className={style["balance-field"]}>
           <div className={style["balance"]}>
-            {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
+            {accountInfo.walletStatus === WalletStatus.Loading ||
+            keyRingStore.status === 0 ||
+            rewards.isFetching ? (
+              <Skeleton height="37.5px" />
+            ) : (
+              <React.Fragment>
+                {totalNumber} <div className={style["denom"]}>{totalDenom}</div>
+              </React.Fragment>
+            )}
           </div>
           <div className={style["inUsd"]}>
-            {totalPrice
-              ? ` ${totalPrice.toString()} `
-              : ` ${total
-                  .shrink(true)
-                  .trim(true)
-                  .hideDenom(true)
-                  .maxDecimals(6)
-                  .toString()} USD`}
+            {accountInfo.walletStatus === WalletStatus.Loading ||
+            keyRingStore.status === 0 ||
+            rewards.isFetching ? (
+              <Skeleton height="21px" />
+            ) : totalPrice ? (
+              ` ${totalPrice.toString()} `
+            ) : (
+              ` ${total
+                .shrink(true)
+                .trim(true)
+                .hideDenom(true)
+                .maxDecimals(6)
+                .toString()} USD`
+            )}
           </div>
           {tokenState?.diff && (
             <div

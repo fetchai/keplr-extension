@@ -39,7 +39,6 @@ export const DetailRows = ({ details }: { details: any }) => {
   const fees = JSON.parse(details.fees);
   const mintScanURL = `https://www.mintscan.io/fetchai/tx/${details.hash}/`;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  // const smartNavigation = useSmartNavigation();
 
   const currency: AppCurrency = {
     coinDenom: "FET",
@@ -47,7 +46,6 @@ export const DetailRows = ({ details }: { details: any }) => {
     coinDecimals: 18,
     coinGeckoId: "fetch-ai",
   };
-
   const handleValidatorClicked = () => {
     analyticsStore.logEvent("stake_click", {
       chainId: chainStore.current.chainId,
@@ -72,6 +70,7 @@ export const DetailRows = ({ details }: { details: any }) => {
         currency: currency,
         state: {
           isNext: true,
+          noChangeAccount: true,
           configs: {
             amount: details.amt.amount
               ? clearDecimals(
@@ -163,7 +162,7 @@ export const DetailRows = ({ details }: { details: any }) => {
     },
     {
       title: "Chain ID",
-      value: "fetchhub-4",
+      value: details.chainId,
     },
     ...decideDynamicData(),
     {
@@ -220,10 +219,11 @@ export const DetailRows = ({ details }: { details: any }) => {
             <Button
               text={decideButton().title ?? ""}
               size="default"
+              mode="outline"
               leftIcon={decideButton().icon}
               textStyle={
                 style.flatten([
-                  "h7",
+                  "body3",
                   "color-white",
                   "margin-left-8",
                 ]) as ViewStyle
@@ -232,10 +232,7 @@ export const DetailRows = ({ details }: { details: any }) => {
                 style.flatten([
                   "border-radius-32",
                   "margin-right-6",
-                  "border-color-gray-400",
-                  "background-color-transparent",
-                  "border-width-1",
-                  "border-color-platinum-400",
+                  "border-color-white@40%",
                 ]) as ViewStyle
               }
               onPress={() => {
@@ -250,18 +247,26 @@ export const DetailRows = ({ details }: { details: any }) => {
           <Button
             text="View on Mintscan"
             size="default"
+            mode="outline"
             textStyle={
-              style.flatten(["h7", "color-white", "items-center"]) as ViewStyle
+              style.flatten(
+                ["body3", "items-center"],
+                [
+                  details.status === "Pending"
+                    ? "color-white@20%"
+                    : "color-white",
+                ]
+              ) as ViewStyle
             }
             containerStyle={
-              style.flatten([
-                "border-radius-32",
-                "margin-left-6",
-                "border-color-gray-400",
-                "background-color-transparent",
-                "border-width-1",
-                "border-color-platinum-400",
-              ]) as ViewStyle
+              style.flatten(
+                ["border-radius-32", "margin-left-6"],
+                [
+                  details.status === "Pending"
+                    ? "border-color-white@20%"
+                    : "border-color-white@40%",
+                ]
+              ) as ViewStyle
             }
             onPress={() => {
               if (!networkIsConnected) {
@@ -273,6 +278,7 @@ export const DetailRows = ({ details }: { details: any }) => {
               }
               openURL();
             }}
+            disabled={details.status === "Pending"}
           />
         </View>
       </View>

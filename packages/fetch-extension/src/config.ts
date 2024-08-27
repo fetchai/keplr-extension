@@ -1,7 +1,51 @@
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { ChainInfo } from "@keplr-wallet/types";
 
-export const EmbedChainInfos: ChainInfo[] = [
+const TEST_NETWORK_CONFIG: ChainInfo = {
+  rpc: "http://34.34.58.246:26657",
+  rest: "http://34.34.58.246:1317",
+  chainId: "test",
+  chainName: "Local Test Network",
+  hideInUI: true,
+  stakeCurrency: {
+    coinDenom: "stake",
+    coinMinimalDenom: "stake",
+    coinDecimals: 18,
+    coinGeckoId: "fetch-ai",
+  },
+  bip44: {
+    coinType: 118,
+  },
+  bech32Config: Bech32Address.defaultBech32Config("fetch"),
+  type: "testnet",
+  currencies: [
+    {
+      coinDenom: "stake",
+      coinMinimalDenom: "stake",
+      coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
+    },
+  ],
+  feeCurrencies: [
+    {
+      coinDenom: "stake",
+      coinMinimalDenom: "stake",
+      coinDecimals: 18,
+      coinGeckoId: "fetch-ai",
+      gasPriceStep: {
+        low: 0,
+        average: 5000000000,
+        high: 6250000000,
+      },
+    },
+  ],
+  features: ["cosmwasm"],
+  walletUrlForStaking: "https://browse-dorado.fetch.ai/validators",
+  govUrl: "http://34.34.58.246:1317/cosmos/gov/v1beta1/proposals",
+  chainSymbolImageUrl: require("./public/assets/svg/wireframe/dorado.svg"),
+};
+
+const EmbedChainInfos: ChainInfo[] = [
   {
     rpc: "https://rpc-fetchhub.fetch-ai.com",
     rest: "https://rest-fetchhub.fetch-ai.com",
@@ -12,6 +56,8 @@ export const EmbedChainInfos: ChainInfo[] = [
       coinMinimalDenom: "afet",
       coinDecimals: 18,
       coinGeckoId: "fetch-ai",
+      coinImageUrl:
+        "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
     },
     bip44: {
       coinType: 118,
@@ -23,6 +69,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "afet",
         coinDecimals: 18,
         coinGeckoId: "fetch-ai",
+        coinImageUrl:
+          "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
       },
       {
         coinDenom: "MOBX",
@@ -46,6 +94,8 @@ export const EmbedChainInfos: ChainInfo[] = [
         coinMinimalDenom: "afet",
         coinDecimals: 18,
         coinGeckoId: "fetch-ai",
+        coinImageUrl:
+          "https://assets.coingecko.com/coins/images/5681/thumb/Fetch.jpg?1572098136",
         gasPriceStep: {
           low: 0,
           average: 5000000000,
@@ -2909,6 +2959,7 @@ export const EmbedChainInfos: ChainInfo[] = [
       },
     ],
     features: ["cosmwasm"],
+    chainSymbolImageUrl: require("./public/assets/png/Black-white-circle.png"),
     walletUrlForStaking: "https://explore-eridanus-1.fetch.ai/validators",
     govUrl: "https://explore-eridanus-1.fetch.ai/proposals/",
   },
@@ -2939,3 +2990,9 @@ export enum TXNTYPE {
   approval = "approval",
   createSecret20ViewingKey = "createSecret20ViewingKey",
 }
+
+if (process.env.NODE_ENV !== "production") {
+  EmbedChainInfos.push(TEST_NETWORK_CONFIG);
+}
+
+export { EmbedChainInfos };

@@ -47,17 +47,30 @@ export const ClaimRewardsModal: FunctionComponent<{
             "border-color-white@20%",
             "border-radius-12",
             "padding-12",
-            "justify-between",
             "margin-y-24",
           ]) as ViewStyle
         }
       >
-        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
+        <Text
+          style={
+            style.flatten(["body3", "color-white@60%", "flex-2"]) as ViewStyle
+          }
+        >
           You’ve earned
         </Text>
-        <Text style={style.flatten(["subtitle3", "color-white"]) as ViewStyle}>
-          {earnedAmount}
-        </Text>
+        <View style={style.flatten(["flex-4", "items-end"])}>
+          <Text
+            style={
+              style.flatten([
+                "subtitle3",
+                "color-white",
+                "text-right",
+              ]) as ViewStyle
+            }
+          >
+            {earnedAmount}
+          </Text>
+        </View>
       </View>
       <GradientButton
         containerStyle={style.flatten(["border-radius-32"]) as ViewStyle}

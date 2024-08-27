@@ -11,11 +11,13 @@ export const UseMaxButton: FunctionComponent<{
   isToggleClicked: boolean;
   setIsToggleClicked: any;
   containerStyle?: ViewStyle;
+  disable?: boolean;
 }> = ({
   amountConfig,
   isToggleClicked,
   setIsToggleClicked,
   containerStyle,
+  disable = false,
 }) => {
   const style = useStyle();
   const { priceStore } = useStore();
@@ -42,12 +44,14 @@ export const UseMaxButton: FunctionComponent<{
               <ReloadIcon
                 size={21}
                 color={
-                  amountConfig.sendCurrency["coinGeckoId"] ? "white" : "#323C4A"
+                  !amountConfig.sendCurrency["coinGeckoId"] || disable
+                    ? style.get("color-white@20%").color
+                    : "white"
                 }
               />
             </View>
           }
-          disable={!amountConfig.sendCurrency["coinGeckoId"]}
+          disable={!amountConfig.sendCurrency["coinGeckoId"] || disable}
           borderRadius={32}
           onPress={() => {
             setIsToggleClicked(!isToggleClicked);
@@ -58,19 +62,12 @@ export const UseMaxButton: FunctionComponent<{
               "margin-4",
               "padding-6",
               "justify-center",
-              amountConfig.sendCurrency["coinGeckoId"]
-                ? "border-color-gray-300"
-                : "border-color-platinum-400",
+              !amountConfig.sendCurrency["coinGeckoId"] || disable
+                ? "border-color-white@20%"
+                : "border-color-white@40%",
             ]) as ViewStyle
           }
-          textStyle={
-            style.flatten([
-              "body3",
-              amountConfig.sendCurrency["coinGeckoId"]
-                ? "color-white"
-                : "color-platinum-400",
-            ]) as ViewStyle
-          }
+          textStyle={style.flatten(["body3"]) as ViewStyle}
         />
       </View>
       <View style={style.flatten(["flex-1"]) as ViewStyle}>
@@ -78,19 +75,20 @@ export const UseMaxButton: FunctionComponent<{
           text="Use max available"
           backgroundBlur={false}
           borderRadius={32}
+          disable={disable}
           onPress={() => {
             amountConfig.toggleIsMax();
           }}
           containerStyle={
             style.flatten([
               "border-width-1",
-              "border-color-gray-300",
+              disable ? "border-color-white@20%" : "border-color-white@40%",
               "padding-6",
               "margin-4",
               "justify-center",
             ]) as ViewStyle
           }
-          textStyle={style.flatten(["body3", "color-white"]) as ViewStyle}
+          textStyle={style.flatten(["body3"]) as ViewStyle}
         />
       </View>
     </View>

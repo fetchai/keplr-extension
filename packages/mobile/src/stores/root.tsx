@@ -24,6 +24,8 @@ import {
   ObservableQueryBase,
   DeferInitialQueryController,
   ActivityStore,
+  ProposalStore,
+  TokenGraphStore,
 } from "@keplr-wallet/stores";
 import { AsyncKVStore } from "../common";
 import { APP_PORT } from "@keplr-wallet/router";
@@ -54,7 +56,10 @@ export class RootStore {
   public readonly ledgerInitStore: LedgerInitStore;
   public readonly signInteractionStore: SignInteractionStore;
   public readonly chainSuggestStore: ChainSuggestStore;
+  public readonly proposalStore: ProposalStore;
   public readonly activityStore: ActivityStore;
+  public readonly tokenGraphStore: TokenGraphStore;
+  public readonly accountBaseStore: AsyncKVStore;
 
   public readonly queriesStore: QueriesStore<
     [CosmosQueries, CosmwasmQueries, SecretQueries, KeplrETCQueries]
@@ -108,6 +113,7 @@ export class RootStore {
     const router = new RNRouterUI(RNEnv.produceEnv);
 
     const eventEmitter = new EventEmitter();
+    this.proposalStore = new ProposalStore();
 
     // Order is important.
     this.interactionStore = new InteractionStore(
@@ -177,6 +183,12 @@ export class RootStore {
       this.chainStore
     );
 
+    this.tokenGraphStore = new TokenGraphStore(
+      new AsyncKVStore("store_token_graph_config"),
+      this.chainStore
+    );
+    this.accountBaseStore = new AsyncKVStore("store_account_config");
+
     this.accountStore = new AccountStore(
       {
         addEventListener: (type: string, fn: () => void) => {
@@ -188,6 +200,8 @@ export class RootStore {
       },
       this.chainStore,
       this.activityStore,
+      this.tokenGraphStore,
+      this.accountBaseStore,
       () => {
         return {
           suggestChain: false,

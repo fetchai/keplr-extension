@@ -146,17 +146,12 @@ const ChatTab = () => {
 };
 
 const ActivityTab = () => {
-  const { keyRingStore, chainStore } = useStore();
+  const { chainStore } = useStore();
   const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
   const [activityDisabled, setActivityDisabled] = useState(false);
 
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      setActivityTooltip("Coming soon for ledger");
-      setActivityDisabled(true);
-      return;
-    }
     if (![CHAIN_ID_FETCHHUB].includes(current.chainId)) {
       setActivityTooltip("Feature not available on this network");
       setActivityDisabled(true);
@@ -164,7 +159,7 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
-  }, [current.chainId, keyRingStore.keyRingType]);
+  }, [current.chainId]);
 
   return (
     <Tab

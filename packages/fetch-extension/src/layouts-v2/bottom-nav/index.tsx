@@ -6,7 +6,7 @@ import moreTabIcon from "@assets/svg/wireframe/new-more.svg";
 import selectedHomeTabIcon from "@assets/svg/wireframe/new-home.svg";
 import selectedMoreTabIcon from "@assets/svg/wireframe/selected-more.svg";
 import selectedStakeTabIcon from "@assets/svg/wireframe/selected-stake.svg";
-import stakeTabIcon from "@assets/svg/wireframe/stake-tab.svg";
+import stakeTabIcon from "@assets/svg/wireframe/stake-bottom-icon-new.svg";
 import React, { useEffect, useState } from "react";
 import {
   CHAIN_ID_DORADO,
@@ -59,29 +59,24 @@ export const BottomNav = () => {
 
 const HomeTab = () => <Tab {...bottomNav[0]} />;
 const StakeTab = () => {
-  const { keyRingStore, chainStore } = useStore();
+  const { chainStore } = useStore();
   const current = chainStore.current;
 
   const [stakingTooltip, setStakingTooltip] = useState("");
   const [stakingDisabled, setStakingDisabled] = useState(false);
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      setStakingDisabled(true);
-      setStakingTooltip("Coming soon for ledger");
-      return;
-    }
     if (
-      current.chainId != CHAIN_ID_DORADO &&
-      current.chainId != CHAIN_ID_FETCHHUB &&
-      current.chainId != CHAIN_ID_ERIDANUS
+      current.chainId == CHAIN_ID_DORADO ||
+      current.chainId == CHAIN_ID_FETCHHUB ||
+      current.chainId == CHAIN_ID_ERIDANUS
     ) {
-      setStakingDisabled(true);
-      setStakingTooltip("Feature not available on this network");
-    } else {
       setStakingDisabled(false);
       setStakingTooltip("");
+    } else {
+      setStakingDisabled(true);
+      setStakingTooltip("Feature not available on this network");
     }
-  }, [current.chainId, keyRingStore.keyRingType]);
+  }, [current.chainId]);
 
   return (
     <React.Fragment>
@@ -98,17 +93,12 @@ const StakeTab = () => {
 };
 
 const ActivityTab = () => {
-  const { keyRingStore, chainStore } = useStore();
+  const { chainStore } = useStore();
   const current = chainStore.current;
   const [activityTooltip, setActivityTooltip] = useState("");
   const [activityDisabled, setActivityDisabled] = useState(false);
   const isEvm = current.features?.includes("evm") ?? false;
   useEffect(() => {
-    if (keyRingStore.keyRingType === "ledger") {
-      setActivityTooltip("Coming soon for ledger");
-      setActivityDisabled(true);
-      return;
-    }
     if (isEvm) {
       setActivityTooltip("Feature not available on this network");
       setActivityDisabled(true);
@@ -116,7 +106,7 @@ const ActivityTab = () => {
       setActivityTooltip("");
       setActivityDisabled(false);
     }
-  }, [current.chainId, keyRingStore.keyRingType]);
+  }, [current.chainId]);
 
   return (
     <Tab

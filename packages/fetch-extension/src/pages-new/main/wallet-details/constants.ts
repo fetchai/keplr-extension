@@ -5,7 +5,7 @@ interface txTypes {
 export const txType: txTypes = {
   ibcTransfer: "IBC Transfer",
   send: "Send Transaction",
-  withdrawRewards: "Rewards withdrawl",
+  withdrawRewards: "Rewards withdrawal",
   delegate: "Delegation",
   undelegate: "Undelegation",
   redelegate: "Redelegation",

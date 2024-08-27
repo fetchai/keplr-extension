@@ -1,9 +1,4 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,20 +10,12 @@ import moment from "moment";
 import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
 import { CardDivider } from "components/card";
-import { FilterItem } from "screens/activity";
-import { activityFilterOptions, ActivityFilterView } from "./activity-filter";
 import { ActivityRow } from "./activity-row";
 import { observer } from "mobx-react-lite";
 import { NoActivityView } from "screens/activity/activity-transaction/no-activity-view";
-import { CHAIN_ID_FETCHHUB, CHAIN_ID_DORADO } from "../../../config";
-
-const processFilters = (filters: string[]) => {
-  let result: any[] = [];
-  filters.map((value) => {
-    result = result.concat(value.split(","));
-  });
-  return result;
-};
+import { processFilters, txOptions } from "screens/activity/utils";
+import { FilterItem, FilterView } from "components/filter";
+import { isFeatureAvailable } from "utils/index";
 
 export const ActivityNativeTab: FunctionComponent<{
   isOpenModal: boolean;
@@ -42,16 +29,8 @@ export const ActivityNativeTab: FunctionComponent<{
   const [_date, setDate] = useState("");
   const [activities, setActivities] = useState<unknown[]>([]);
 
-  const [filters, setFilters] = useState<FilterItem[]>(activityFilterOptions);
+  const [filters, setFilters] = useState<FilterItem[]>(txOptions);
   const [isLoading, setIsLoading] = useState(true);
-
-  const filter = useCallback(
-    () =>
-      filters
-        .filter((filter) => filter.isSelected)
-        .map((option) => option.value),
-    [filters]
-  )();
 
   const accountOrChainChanged =
     activityStore.getAddress !== accountInfo.bech32Address ||
@@ -63,7 +42,7 @@ export const ActivityNativeTab: FunctionComponent<{
     setIsLoading(true);
     const timeout = setTimeout(() => {
       setActivities(activityStore.sortedNodes);
-    }, 100);
+    }, 3000);
     setIsLoading(false);
 
     return () => {
@@ -72,7 +51,7 @@ export const ActivityNativeTab: FunctionComponent<{
   }, [activityStore.sortedNodes]);
 
   useEffect(() => {
-    setFilters(activityFilterOptions);
+    setFilters(txOptions);
   }, [accountOrChainChanged]);
 
   useEffect(() => {
@@ -157,13 +136,12 @@ export const ActivityNativeTab: FunctionComponent<{
   };
 
   const data = activities.filter((node: any) =>
-    processFilters(filter).includes(node.transaction.messages.nodes[0].typeUrl)
+    processFilters(filters).includes(node.transaction.messages.nodes[0].typeUrl)
   );
 
   return (
     <React.Fragment>
-      {(current.chainId === CHAIN_ID_FETCHHUB ||
-        current.chainId === CHAIN_ID_DORADO) &&
+      {isFeatureAvailable(current.chainId) &&
       data.length > 0 &&
       activities.length > 0 ? (
         renderList(data)
@@ -175,11 +153,12 @@ export const ActivityNativeTab: FunctionComponent<{
       ) : (
         <NoActivityView />
       )}
-      <ActivityFilterView
+      <FilterView
         isOpen={isOpenModal}
         filters={filters}
         handleFilterChange={handleFilterChange}
         close={() => setIsOpenModal(false)}
+        options={txOptions}
       />
     </React.Fragment>
   );
