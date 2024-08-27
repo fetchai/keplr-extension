@@ -15,6 +15,8 @@ import { ActivityNativeTab } from "screens/activity/activity-transaction";
 import { ChipButton } from "components/new/chip";
 import { FilterIcon } from "components/new/icon/filter-icon";
 import { isFeatureAvailable } from "utils/index";
+import { FilterItem } from "components/filter";
+import { txOptions } from "screens/activity/utils";
 
 export const TokenDetail: FunctionComponent = observer(() => {
   const size = 56;
@@ -69,6 +71,8 @@ export const TokenDetail: FunctionComponent = observer(() => {
       total.shrink(true).trim(true).maxDecimals(6).toString()
     );
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [activities, setActivities] = useState<unknown[]>([]);
+  const [txnFilters, setTxnFilters] = useState<FilterItem[]>(txOptions);
 
   useEffect(() => {
     if (tokenInfo?.coinGeckoId) {
@@ -220,6 +224,10 @@ export const TokenDetail: FunctionComponent = observer(() => {
           <ActivityNativeTab
             isOpenModal={isOpenModal}
             setIsOpenModal={setIsOpenModal}
+            activities={activities}
+            setActivities={setActivities}
+            txnFilters={txnFilters}
+            setTxnFilters={setTxnFilters}
           />
           <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
         </React.Fragment>

@@ -154,25 +154,20 @@ export const AccountSection: FunctionComponent<{
         type: "success",
         text1: "claim in process",
       });
-      await tx.send(
-        { amount: [], gas: gas.toString() },
-        "",
-        {},
-        {
-          onBroadcasted: (txHash) => {
-            setLoadingClaimButton(false);
-            analyticsStore.logEvent("claim_txn_broadcasted", {
-              chainId: chainStore.current.chainId,
-              chainName: chainStore.current.chainName,
-              pageName: "Home",
-            });
-            setTxnObj({
-              txnHash: Buffer.from(txHash).toString("hex"),
-              txnStatusModal: true,
-            });
-          },
-        }
-      );
+      await tx.send({ amount: [], gas: gas.toString() }, "", undefined, {
+        onBroadcasted: (txHash) => {
+          setLoadingClaimButton(false);
+          analyticsStore.logEvent("claim_txn_broadcasted", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Home",
+          });
+          setTxnObj({
+            txnHash: Buffer.from(txHash).toString("hex"),
+            txnStatusModal: true,
+          });
+        },
+      });
     } catch (e) {
       if (
         e?.message === "Request rejected" ||
