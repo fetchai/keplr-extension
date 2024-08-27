@@ -8,17 +8,18 @@ import {Any} from "../proto-types-gen/src/google/protobuf/any";
 import Long from "long";
 import {Buffer} from "buffer";
 import {TendermintTxTracer} from "@keplr-wallet/cosmos";
+import { FetchBrowserWallet, NetworkConfig, WalletApi } from "@fetchai/wallet-types";
 
 export const sendMsgs = async (
-  keplr:Keplr,
-  chainInfo: ChainInfo,
+  wallet: WalletApi,
+  network: NetworkConfig,
   sender: string,
   proto: Any[],
   fee: StdFee,
   memo: string = ""
 ) => {
-  const account = await fetchAccountInfo(chainInfo, sender);
-  const { pubKey } = await keplr.getKey(chainInfo.chainId);
+  const account = await fetchAccountInfo(network, sender);
+  const { pubKey } = await wallet.accounts.currentAccount();
 
   if(account) {
     const signDoc = {
@@ -56,12 +57,12 @@ export const sendMsgs = async (
           gasLimit: fee.gas,
         }),
       }).finish(),
-      chainId: chainInfo.chainId,
+      chainId: network.chainId,
       accountNumber: Long.fromString(account.account_number)
     }
 
-    const signed = await keplr.signDirect(
-      chainInfo.chainId,
+    const signed = await wallet.signing.signDirect(
+      network.chainId,
       sender,
       signDoc,
     )
@@ -75,8 +76,8 @@ export const sendMsgs = async (
       signDoc: signed.signed,
     }
 
-    const txHash = await broadcastTxSync(keplr, chainInfo.chainId, signedTx.tx);
-    const txTracer = new TendermintTxTracer(chainInfo.rpc, "/websocket");
+    const txHash = await broadcastTxSync(network, signedTx.tx);
+    const txTracer = new TendermintTxTracer(network.rpcUrl, "/websocket");
     txTracer.traceTx(txHash).then((tx) => {
       alert("Transaction commit successfully");
     });
@@ -84,9 +85,9 @@ export const sendMsgs = async (
   }
 }
 
-export const fetchAccountInfo = async (chainInfo: ChainInfo, address: string) => {
+export const fetchAccountInfo = async (network: NetworkConfig, address: string) => {
   try {
-    const uri = `${chainInfo.rest}/cosmos/auth/v1beta1/accounts/${address}`;
+    const uri = `${network.restUrl}/cosmos/auth/v1beta1/accounts/${address}`;
     const response = await api<AccountResponse>(uri);
 
     return response.account;
@@ -97,9 +98,34 @@ export const fetchAccountInfo = async (chainInfo: ChainInfo, address: string) =>
 }
 
 export const broadcastTxSync = async (
-  keplr:Keplr,
-  chainId: string,
+  network: NetworkConfig,
   tx: Uint8Array,
 ): Promise<Uint8Array> => {
-  return keplr.sendTx(chainId,  tx, "sync" as BroadcastMode)
+  try {
+    const params = {
+      tx_bytes: Buffer.from(tx as any).toString("base64"),
+      mode: "BROADCAST_MODE_SYNC",
+    }
+
+    const uri = `${network.restUrl}/txs`;
+    const response = await api<any>(uri, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+
+    console.log("@@@@", response)
+    const txResponse = response.data["tx_response"];
+    
+    if (txResponse.code != null && txResponse.code !== 0) {
+      throw new Error(txResponse["raw_log"]);
+    }
+
+    return Buffer.from(txResponse.txhash, "hex");
+  } catch (e) {
+    console.error(`Error broadcasting transaction: ${e}`);
+    throw new Error("Error broadcasting transaction");
+  }
 }

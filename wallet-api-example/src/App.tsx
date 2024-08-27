@@ -10,6 +10,7 @@ import { MsgSend } from "./proto-types-gen/src/cosmos/bank/v1beta1/tx";
 import "./styles/container.css";
 import "./styles/button.css";
 import "./styles/item.css";
+import "./styles/modal.css";
 import { getFetchWalletFromWindow } from "./util/getKeplrFromWindow";
 import { Account, NetworkConfig, WalletApi, WalletStatus } from "@fetchai/wallet-types";
 
@@ -36,100 +37,125 @@ function App() {
   const [status, setStatus] = React.useState<WalletStatus>(WalletStatus.NOTLOADED)
   const [account, setAccount] = React.useState<Account>();
   const [network, setNetwork] = React.useState<NetworkConfig>();
-  const [networks, setNetworks] = React.useState<NetworkConfig[]>();
+  const [selectedNetwork, setSelectedNetwork] = React.useState<string | null>(null);
+  const [selectedAccount, setSelectedAccount] = React.useState<string | null>(null);
+
+  const [accounts, setAccounts] = React.useState<Account[] | null>(null);
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = React.useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = React.useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = React.useState(false);
+  const [isNetworkModalOpen, setIsNetworkModalOpen] = React.useState(false);
+  const [detailsLoading, setDetailsLoading] = React.useState(false);
+
+  const handleOpenAccountModal = () => {
+    setIsAccountModalOpen(true);
+  };
+
+  const handleCloseAccountModal = () => {
+    setIsAccountModalOpen(false);
+  };
+
+  const handleOpenNetworkModal = () => {
+    setIsNetworkModalOpen(true);
+  };
+
+  const handleCloseNetworkModal = () => {
+    setIsNetworkModalOpen(false);
+  };
 
   useEffect(() => {
     init();
+    window.addEventListener("fetchwallet_walletstatuschange", getStatus);
+    window.addEventListener("fetchwallet_keystorechange", getAccountAndNetworkDetails);
 
-    // window.addEventListener("fetchwallet_walletstatuschange", getStatus);
-    // window.addEventListener("fetchwallet_networkchange", getNetwork);
-    // window.addEventListener("fetchwallet_keystorechange", getAccount);
-
-    // return () => {
-    //   // window.removeEventListener("fetchwallet_walletstatuschange", getStatus);
-    //   // window.removeEventListener("fetchwallet_networkchange", getNetwork);
-    //   // window.removeEventListener("fetchwallet_keystorechange", getAccount);
-    // }
+    return () => {
+      window.removeEventListener("fetchwallet_walletstatuschange", getStatus);
+      window.removeEventListener("fetchwallet_keystorechange", getAccountAndNetworkDetails);
+    }
   }, []);
 
+  useEffect(() => {
+    const getAllDetails = async () => {
+      if (status === WalletStatus.UNLOCKED) {
+        await getAccountAndNetworkDetails();
+     }
+    }
+    getAllDetails();
+  }, [wallet, status])
+
   const init = async () => {
-    console.log("@#!#@#init")
     const fetchBrowserWallet = await getFetchWalletFromWindow();
 
     if (fetchBrowserWallet) {
       setWallet(fetchBrowserWallet.wallet);
       const status = await fetchBrowserWallet.wallet.status();
       setStatus(status);
-
-      if (status === WalletStatus.UNLOCKED) {
-        // TODO: should have networks permission for this
-        await fetchBrowserWallet.wallet.enable("fetchhub-4")
-        // TODO: Add check for permissions for chain enabled because this shows request rejected when approved.
-        await fetchBrowserWallet.wallet.networks.switchToNetworkByChainId("fetchhub-4");
-        const network = await fetchBrowserWallet.wallet.networks.getNetwork();
-        setNetwork(network)
-        const networks = await fetchBrowserWallet.wallet.networks.listNetworks();
-        setNetworks(networks)
-      }
-    }
-  };
-
-  const getAccount = async () => {
-    const account = await wallet?.accounts.currentAccount();
-    if (account) {
-      setAccount(account);
     }
   };
 
   const getStatus = async () => {
-    const status = await wallet?.status();
-    if (status) {
-      setStatus(status);
+    const currentStatus = await window.fetchBrowserWallet?.wallet.status();
+    if (!status || (currentStatus && status !== currentStatus)) {
+      setStatus(currentStatus ?? WalletStatus.NOTLOADED);
     }
   };
 
-  const getNetwork = async () => {
-    const network = await wallet?.networks.getNetwork();
-    if (network) {
-      setNetwork(network);
+  const getAccountAndNetworkDetails = async () => {
+    setDetailsLoading(true);
+    const status = await window.fetchBrowserWallet?.wallet.status();
+    if (!status || status !== WalletStatus.UNLOCKED) {
+      setDetailsLoading(false);
+      return;
     }
-  };
+    
+    const currentAccount = await window.fetchBrowserWallet?.wallet.accounts.currentAccount();
 
-  const getBalance = async () => {
-    const key = await window.fetchBrowserWallet?.keplr?.getKey(OsmosisChainInfo.chainId);
+    if (!account || (currentAccount && account.bech32Address !== currentAccount.bech32Address)) {
+      setAccount(currentAccount);
+    }
 
-    if (key) {
-      const uri = `${OsmosisChainInfo.rest}/cosmos/bank/v1beta1/balances/${key.bech32Address}?pagination.limit=1000`;
+    const currentNetwork = await window.fetchBrowserWallet?.wallet.networks.getNetwork();
+    if (!network || (currentNetwork && network.chainId !== currentNetwork.chainId)) {
+      setNetwork(currentNetwork);
+    }
+
+    if (currentAccount && currentNetwork) {
+      const uri = `${currentNetwork.restUrl}/cosmos/bank/v1beta1/balances/${currentAccount.bech32Address}?pagination.limit=1000`;
 
       const data = await api<Balances>(uri);
+      const decimal = currentNetwork.currencies[0].decimals
+      const minimalDenom = currentNetwork.currencies[0].denomUnits.find(d => d.exponent === 0)?.name ?? "";
+      const denom = currentNetwork.currencies[0].denomUnits.find(d => d.exponent === decimal)?.name ?? "";
       const balance = data.balances.find(
-        (balance) => balance.denom === "uosmo"
+        (balance) => balance.denom === minimalDenom
       );
-      const osmoDecimal = OsmosisChainInfo.currencies.find(
-        (currency) => currency.coinMinimalDenom === "uosmo"
-      )?.coinDecimals;
 
       if (balance) {
-        const amount = new Dec(balance.amount, osmoDecimal);
-        setBalance(`${amount.toString(osmoDecimal)} OSMO`);
+        const amount = new Dec(balance.amount, decimal);
+        setBalance(`${amount.toString(decimal)} ${denom.toUpperCase()}`);
       } else {
-        setBalance(`0 OSMO`);
+        setBalance(`0 ${denom.toUpperCase()}`);
       }
     }
+
+    setDetailsLoading(false);
   };
 
   const sendBalance = async () => {
-    if (window.fetchBrowserWallet) {
-      const key = await window.fetchBrowserWallet?.keplr?.getKey(OsmosisChainInfo.chainId);
+    if (account && network && wallet) {
+      const decimal = network.currencies[0].decimals
+      const minimalDenom = network.currencies[0].denomUnits.find(d => d.exponent === 0)?.name ?? "";
+      const denom = network.currencies[0].denomUnits.find(d => d.exponent === decimal)?.name ?? "";
+
       const protoMsgs = {
         typeUrl: "/cosmos.bank.v1beta1.MsgSend",
         value: MsgSend.encode({
-          fromAddress: key.bech32Address,
+          fromAddress: account.bech32Address,
           toAddress: recipient,
           amount: [
             {
-              denom: "uosmo",
-              amount: DecUtils.getTenExponentN(6)
+              denom: minimalDenom,
+              amount: DecUtils.getTenExponentN(decimal)
                 .mul(new Dec(amount))
                 .truncate()
                 .toString(),
@@ -139,25 +165,25 @@ function App() {
       };
 
       try {
-        // const gasUsed = await simulateMsgs(
-        //   OsmosisChainInfo,
-        //   key?.bech32Address ?? "",
-        //   [protoMsgs],
-        //   [{ denom: "uosmo", amount: "236" }]
-        // );
+        const gasUsed = await simulateMsgs(
+          network,
+          account.bech32Address,
+          [protoMsgs],
+          [{ denom: minimalDenom, amount: "236" }]
+        );
 
-        // if (gasUsed) {
-        //   await sendMsgs(
-        //     window.fetchBrowserWallet?.keplr,
-        //     OsmosisChainInfo,
-        //     key?.bech32Address,
-        //     [protoMsgs],
-        //     {
-        //       amount: [{ denom: "uosmo", amount: "236" }],
-        //       gas: Math.floor(gasUsed * 1.5).toString(),
-        //     }
-        //   );
-        // }
+        if (gasUsed) {
+          await sendMsgs(
+            wallet,
+            network,
+            account.bech32Address,
+            [protoMsgs],
+            {
+              amount: [{ denom: minimalDenom, amount: "236" }],
+              gas: Math.floor(gasUsed * 1.5).toString(),
+            }
+          );
+        }
       } catch (e) {
         if (e instanceof Error) {
           console.log(e.message);
@@ -167,7 +193,7 @@ function App() {
   };
 
   if (status === WalletStatus.NOTLOADED) {
-    return <h1>Loading...</h1>
+    return <h1>Wallet Initialising...</h1>
   }
 
   if (status === WalletStatus.LOCKED) {
@@ -196,101 +222,221 @@ function App() {
     return <h1>Wallet Empty. Please create an account in the wallet</h1>
   }
 
-  // if (!network) {
-  //   return (
-  //     <div className="item">
-  //       <div className="item-title">Wallet Locked</div>
-
-  //       <div className="item-content">
-  //         <div>
-  //           <button
-  //             className="keplr-button"
-  //             disabled={!wallet}
-  //             onClick={async () => {
-  //               await wallet?.unlockWallet();
-  //             }}
-  //           >
-  //             Connect
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
-      <h2 style={{ marginTop: "30px" }}>
-        Request to Eridanus Testnet via Fetch Wallet Provider
-      </h2>
+      <div style={{ display: "flex", gap: "50px" }}>
+        <button className="keplr-button" onClick={handleOpenAccountModal}>
+          Change Account
+        </button>
+        <button className="keplr-button" onClick={handleOpenNetworkModal}>
+          Change Network
+        </button>
+        <button
+          className="keplr-button"
+          onClick={() => {
+            window.fetchBrowserWallet?.wallet.lockWallet();
+          }}
+        >
+          Sign Out
+        </button>
+      </div>
+      <br />
+      <div className="item">
+        <div className="item-content">
+          <div><b>Network:</b> {network?.chainId}</div>
+          <div><b>Account:</b> {account?.bech32Address}</div>
+          <div><b>Usable Balance:</b> {balance}</div>
 
-      <div className="item-container">
-        <div className="item">
-          <div className="item-title">Get address</div>
-
-          <div className="item-content">
-            <div>Network: {network?.chainName}</div>
-            <div>
-              <button className="keplr-button" onClick={getAccount}>
-                Get Address
-              </button>
-            </div>
-            <div>Address: {account?.address}</div>
+          <h3>Send:</h3>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "-25px"
+            }}
+          >
+            Recipient:
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+            />
           </div>
-        </div>
 
-        <div className="item">
-          <div className="item-title">Get balance</div>
-
-          <div className="item-content">
-            <button className="keplr-button" onClick={getBalance}>
-              Get Balance
-            </button>
-
-            <div>Balance: {balance}</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            Amount:
+            <input
+              type="text"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
           </div>
-        </div>
 
-        <div className="item">
-          <div className="item-title">Send OSMO</div>
-
-          <div className="item-content">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              Recipient:
-              <input
-                type="text"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-              />
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              Amount:
-              <input
-                type="text"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-
-            <button className="keplr-button" onClick={sendBalance}>
-              Send
-            </button>
-          </div>
+          <button className="keplr-button" onClick={sendBalance}>
+            Send
+          </button>
         </div>
       </div>
+
+      {account && (
+        <AccountSwitchModal
+          isOpen={isAccountModalOpen}
+          onClose={handleCloseAccountModal}
+          currentAddress={account.bech32Address}
+        />
+      )}
+      {network && (
+        <NetworkSwitchModal
+          isOpen={isNetworkModalOpen}
+          onClose={handleCloseNetworkModal}
+          currentNetworkId={network.chainId}
+        />
+      )}
+
+      {detailsLoading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
     </div>
   );
 }
+
+const NetworkSwitchModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  currentNetworkId: string;
+}> = ({ isOpen, onClose, currentNetworkId }) => {
+  const [selectedNetwork, setSelectedNetwork] = React.useState<string>("");
+  const [networks, setNetworks] = React.useState<NetworkConfig[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const getNetworks = async () => {
+      setIsLoading(true);
+      const networks = await window.fetchBrowserWallet?.wallet.networks.listNetworks();
+      if (networks) {
+        setNetworks(networks);
+      }
+      setIsLoading(false);
+    }
+    getNetworks();
+  }, [isOpen])
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <div className="close" onClick={onClose}>
+          Close
+        </div>
+        {isLoading ? (
+          <div className="spinner"></div>
+        ) : (
+          <>
+            <p>Switch network:</p>
+            <select value={selectedNetwork ?? ""} onChange={(e) => setSelectedNetwork(e.target.value)}>
+              <option value="">Select Network</option>
+              {networks?.filter((network) => {
+                return network.chainId !== currentNetworkId;
+              }).map(network => (
+                <option key={network.chainId} value={network.chainId}>
+                  {network.chainName}
+                </option>
+              ))}
+            </select>
+            <button
+              className="keplr-button"
+              onClick={async () => {
+                if (selectedNetwork && selectedNetwork !== currentNetworkId) {
+                  await window.fetchBrowserWallet?.wallet.networks.switchToNetworkByChainId(selectedNetwork);
+                  onClose();
+                }
+              }}
+            >Submit</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const AccountSwitchModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  currentAddress: string;
+}> = ({ isOpen, onClose, currentAddress }) => {
+  const [selectedAccount, setSelectedAccount] = React.useState<string>("");
+  const [accounts, setAccounts] = React.useState<Account[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const getAccounts = async () => {
+      setIsLoading(true);
+      const accounts = await window.fetchBrowserWallet?.wallet.accounts.listAccounts();
+      if (accounts) {
+        setAccounts(accounts);
+      }
+      setIsLoading(false);
+    }
+    getAccounts();
+  }, [isOpen])
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <div className="close" onClick={onClose}>
+          Close
+        </div>
+        {isLoading ? (
+          <div className="spinner"></div>
+        ) : (
+          <>
+            <p>Switch account:</p>
+            <select value={selectedAccount ?? ""} onChange={(e) => setSelectedAccount(e.target.value)}>
+              <option value="">Select Account</option>
+              {accounts?.filter((account) => {
+                return account.bech32Address !== currentAddress;
+              }).map(account => (
+                <option key={account.bech32Address} value={account.bech32Address}>
+                  {account.bech32Address}
+                </option>
+              ))}
+            </select>
+            <button
+              className="keplr-button"
+              onClick={async () => {
+                if (selectedAccount && selectedAccount !== currentAddress) {
+                  await window.fetchBrowserWallet?.wallet.accounts.switchAccount(selectedAccount);
+                  onClose();
+                }
+              }}
+            >Submit</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default App;

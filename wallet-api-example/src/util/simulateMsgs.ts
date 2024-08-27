@@ -1,14 +1,13 @@
-import {ChainInfo} from "@keplr-wallet/types";
 import {Any} from "../proto-types-gen/src/google/protobuf/any";
 import {AuthInfo, Fee, SignerInfo, TxBody, TxRaw} from "../proto-types-gen/src/cosmos/tx/v1beta1/tx";
 import {SignMode} from "../proto-types-gen/src/cosmos/tx/signing/v1beta1/signing";
 import {fetchAccountInfo} from "./sendMsgs";
 import {api} from "./api";
 import {GasSimulateResponse} from "../types/simulate";
-import {OsmosisChainInfo} from "../constants";
+import { NetworkConfig } from "@fetchai/wallet-types";
 
 export const simulateMsgs = async (
-  chainInfo: ChainInfo,
+  network: NetworkConfig,
   sender: string,
   proto: Any[],
   fee:  [{
@@ -17,7 +16,7 @@ export const simulateMsgs = async (
   }],
   memo: string = ""
 ) => {
-  const account = await fetchAccountInfo(chainInfo, sender);
+  const account = await fetchAccountInfo(network, sender);
 
   if(account) {
     const unsignedTx =TxRaw.encode( {
@@ -56,7 +55,7 @@ export const simulateMsgs = async (
       signatures: [new Uint8Array(64)],
     }).finish()
 
-    const simulatedResult = await api<GasSimulateResponse>(`${OsmosisChainInfo.rest}/cosmos/tx/v1beta1/simulate`, {
+    const simulatedResult = await api<GasSimulateResponse>(`${network.restUrl}/cosmos/tx/v1beta1/simulate`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

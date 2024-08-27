@@ -634,6 +634,11 @@ export class ChainsService {
         origin,
       }
     )) as string;
+    await this.permissionService.addPermission(
+      [chainId],
+      getBasicAccessPermissionType(),
+      [origin]
+    );
     console.log(`Switched to chain with chainId ${receivedChainId}`);
   }
 
