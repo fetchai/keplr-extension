@@ -47,7 +47,11 @@ export const ActivityDetails = observer(() => {
   useEffect(() => {
     if (details.amt) {
       const amountInNumber = parseFloat(
-        details.amt.amount ? details.amt.amount : details.amt[0].amount
+        details.amt.amount
+          ? details.amt.amount
+          : details.amt[0]?.amount
+          ? details.amt[0].amount
+          : "0"
       );
       const inputValue = new CoinPretty(currency, new Int(amountInNumber));
       const inputValueInUsd = convertTofiatCurrency(inputValue);

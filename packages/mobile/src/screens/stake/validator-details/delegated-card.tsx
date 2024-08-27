@@ -59,9 +59,6 @@ export const DelegatedCard: FunctionComponent<{
       });
       return;
     }
-    const tx = account.cosmos.makeWithdrawDelegationRewardTx([
-      validatorAddress,
-    ]);
 
     setIsSendingTx(true);
 
@@ -69,28 +66,17 @@ export const DelegatedCard: FunctionComponent<{
       analyticsStore.logEvent("claim_click", {
         pageName: "Validator Details",
       });
-      let gas =
-        account.cosmos.msgOpts.withdrawRewards.gas * validatorAddress.length;
 
-      // Gas adjustment is 1.5
-      // Since there is currently no convenient way to adjust the gas adjustment on the UI,
-      // Use high gas adjustment to prevent failure.
-      try {
-        gas = (await tx.simulate()).gasUsed * 1.5;
-      } catch (e) {
-        // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
-        // Therefore, the failure is expected. If the simulation fails, simply use the default value.
-        console.log(e);
-      }
       setClaimModel(false);
       Toast.show({
         type: "success",
         text1: "claim in process",
       });
-      await tx.send(
-        { amount: [], gas: gas.toString() },
+      await account.cosmos.sendWithdrawDelegationRewardMsgs(
+        [validatorAddress],
         "",
-        {},
+        undefined,
+        undefined,
         {
           onBroadcasted: (txHash) => {
             analyticsStore.logEvent("claim_txn_broadcasted", {

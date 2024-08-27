@@ -464,21 +464,16 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
           console.log(e);
         }
         setGovModalOpen(false);
-        await tx.send(
-          { amount: [], gas: gas.toString() },
-          "",
-          {},
-          {
-            onBroadcasted: (txHash) => {
-              setTxnHash(Buffer.from(txHash).toString("hex"));
-              setTxStateModal(true);
-              analyticsStore.logEvent("vote_txn_broadcasted", {
-                chainId: chainStore.current.chainId,
-                chainName: chainStore.current.chainName,
-              });
-            },
-          }
-        );
+        await tx.send({ amount: [], gas: gas.toString() }, "", undefined, {
+          onBroadcasted: (txHash) => {
+            setTxnHash(Buffer.from(txHash).toString("hex"));
+            setTxStateModal(true);
+            analyticsStore.logEvent("vote_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+            });
+          },
+        });
       } catch (e) {
         setVote(voted !== undefined ? voted : "Unspecified");
         if (
