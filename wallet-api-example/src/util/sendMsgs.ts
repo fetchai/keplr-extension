@@ -1,4 +1,4 @@
-import {BroadcastMode, ChainInfo, Keplr, StdFee} from "@keplr-wallet/types";
+import {StdFee} from "@keplr-wallet/types";
 import {AccountResponse} from "../types/account";
 import {api} from "./api";
 import {AuthInfo, Fee, TxBody, TxRaw} from "../proto-types-gen/src/cosmos/tx/v1beta1/tx";
@@ -8,7 +8,7 @@ import {Any} from "../proto-types-gen/src/google/protobuf/any";
 import Long from "long";
 import {Buffer} from "buffer";
 import {TendermintTxTracer} from "@keplr-wallet/cosmos";
-import { FetchBrowserWallet, NetworkConfig, WalletApi } from "@fetchai/wallet-types";
+import { NetworkConfig, WalletApi } from "@fetchai/wallet-types";
 
 export const sendMsgs = async (
   wallet: WalletApi,
@@ -107,7 +107,7 @@ export const broadcastTxSync = async (
       mode: "BROADCAST_MODE_SYNC",
     }
 
-    const uri = `${network.restUrl}/txs`;
+    const uri = `${network.restUrl}/cosmos/tx/v1beta1/txs`;
     const response = await api<any>(uri, {
       method: "POST",
       headers: {
@@ -116,8 +116,7 @@ export const broadcastTxSync = async (
       body: JSON.stringify(params),
     });
 
-    console.log("@@@@", response)
-    const txResponse = response.data["tx_response"];
+    const txResponse = response["tx_response"];
     
     if (txResponse.code != null && txResponse.code !== 0) {
       throw new Error(txResponse["raw_log"]);
@@ -125,7 +124,7 @@ export const broadcastTxSync = async (
 
     return Buffer.from(txResponse.txhash, "hex");
   } catch (e) {
-    console.error(`Error broadcasting transaction: ${e}`);
+    console.error(e);
     throw new Error("Error broadcasting transaction");
   }
 }

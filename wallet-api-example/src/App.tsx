@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import { OsmosisChainInfo } from "./constants";
 import { Balances } from "./types/balance";
 import { Dec, DecUtils } from "@keplr-wallet/unit";
-import { isAddress } from "@ethersproject/address";
 import { sendMsgs } from "./util/sendMsgs";
 import { api } from "./util/api";
 import { simulateMsgs } from "./util/simulateMsgs";
@@ -11,41 +9,21 @@ import "./styles/container.css";
 import "./styles/button.css";
 import "./styles/item.css";
 import "./styles/modal.css";
-import { getFetchWalletFromWindow } from "./util/getKeplrFromWindow";
+import { getFetchWalletFromWindow } from "./util/getWalletFromWindow";
 import { Account, NetworkConfig, WalletApi, WalletStatus } from "@fetchai/wallet-types";
 
 function App() {
-  const [address, setAddress] = React.useState<string>("");
   const [balance, setBalance] = React.useState<string>("");
   const [recipient, setRecipient] = React.useState<string>("");
   const [amount, setAmount] = React.useState<string>("");
-
-  const [evmResult1, setEvmResult1] = React.useState<string>("");
-
-  const [evmResult2, setEvmResult2] = React.useState<string>("");
-
-  const [evmResult3, setEvmResult3] = React.useState<string>("");
-
-  const [evmRecipient, setEvmRecipient] = React.useState<string>("");
-  const [evmAmount, setEvmAmount] = React.useState<string>("");
-  const [evmResult4, setEvmResult4] = React.useState<string>("");
-
-  const [evmChainId, setEvmChainId] = React.useState<string>("");
-
-  const [evmTokenAddress, setEvmTokenAddress] = React.useState<string>("");
   const [wallet, setWallet] = React.useState<WalletApi>();
   const [status, setStatus] = React.useState<WalletStatus>(WalletStatus.NOTLOADED)
   const [account, setAccount] = React.useState<Account>();
   const [network, setNetwork] = React.useState<NetworkConfig>();
-  const [selectedNetwork, setSelectedNetwork] = React.useState<string | null>(null);
-  const [selectedAccount, setSelectedAccount] = React.useState<string | null>(null);
-
-  const [accounts, setAccounts] = React.useState<Account[] | null>(null);
-  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = React.useState(false);
-  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = React.useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = React.useState(false);
   const [isNetworkModalOpen, setIsNetworkModalOpen] = React.useState(false);
   const [detailsLoading, setDetailsLoading] = React.useState(false);
+  const [sendLoading, setSendLoading] = React.useState(false);
 
   const handleOpenAccountModal = () => {
     setIsAccountModalOpen(true);
@@ -145,7 +123,6 @@ function App() {
     if (account && network && wallet) {
       const decimal = network.currencies[0].decimals
       const minimalDenom = network.currencies[0].denomUnits.find(d => d.exponent === 0)?.name ?? "";
-      const denom = network.currencies[0].denomUnits.find(d => d.exponent === decimal)?.name ?? "";
 
       const protoMsgs = {
         typeUrl: "/cosmos.bank.v1beta1.MsgSend",
@@ -165,6 +142,7 @@ function App() {
       };
 
       try {
+        setSendLoading(true);
         const gasUsed = await simulateMsgs(
           network,
           account.bech32Address,
@@ -188,6 +166,8 @@ function App() {
         if (e instanceof Error) {
           console.log(e.message);
         }
+      } finally {
+        setSendLoading(false);
       }
     }
   };
@@ -278,7 +258,7 @@ function App() {
           </div>
 
           <button className="keplr-button" onClick={sendBalance}>
-            Send
+            {sendLoading ? "Sending, please wait..." : "Send"}
           </button>
         </div>
       </div>
@@ -340,14 +320,14 @@ const NetworkSwitchModal: React.FC<{
     <div className="modal">
       <div className="modal-content">
         <div className="close" onClick={onClose}>
-          Close
+          <span>&times;</span>
         </div>
         {isLoading ? (
           <div className="spinner"></div>
         ) : (
           <>
             <p>Switch network:</p>
-            <select value={selectedNetwork ?? ""} onChange={(e) => setSelectedNetwork(e.target.value)}>
+            <select style={{ "marginBottom": "15px" }} value={selectedNetwork ?? ""} onChange={(e) => setSelectedNetwork(e.target.value)}>
               <option value="">Select Network</option>
               {networks?.filter((network) => {
                 return network.chainId !== currentNetworkId;
@@ -406,14 +386,14 @@ const AccountSwitchModal: React.FC<{
     <div className="modal">
       <div className="modal-content">
         <div className="close" onClick={onClose}>
-          Close
+          <span>&times;</span>
         </div>
         {isLoading ? (
           <div className="spinner"></div>
         ) : (
           <>
             <p>Switch account:</p>
-            <select value={selectedAccount ?? ""} onChange={(e) => setSelectedAccount(e.target.value)}>
+            <select style={{ "marginBottom": "15px" }} value={selectedAccount ?? ""} onChange={(e) => setSelectedAccount(e.target.value)}>
               <option value="">Select Account</option>
               {accounts?.filter((account) => {
                 return account.bech32Address !== currentAddress;
