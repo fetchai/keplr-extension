@@ -1,4 +1,4 @@
-.keplr-button {
+.asi-button {
     width: 100%;
     height: 2.75rem;
 
@@ -28,6 +28,6 @@
     background-color: #2C4BE2;
 }
 
-.keplr-button:hover {
+.asi-button:hover {
     opacity: 0.9;
 }

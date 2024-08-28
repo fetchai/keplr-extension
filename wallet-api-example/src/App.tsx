@@ -184,7 +184,7 @@ function App() {
         <div className="item-content">
           <div>
             <button
-              className="keplr-button"
+              className="asi-button"
               disabled={!wallet}
               onClick={async () => {
                 await wallet?.unlockWallet();
@@ -205,14 +205,14 @@ function App() {
   return (
     <div>
       <div style={{ display: "flex", gap: "50px" }}>
-        <button className="keplr-button" onClick={handleOpenAccountModal}>
+        <button className="asi-button" onClick={handleOpenAccountModal}>
           Change Account
         </button>
-        <button className="keplr-button" onClick={handleOpenNetworkModal}>
+        <button className="asi-button" onClick={handleOpenNetworkModal}>
           Change Network
         </button>
         <button
-          className="keplr-button"
+          className="asi-button"
           onClick={() => {
             window.fetchBrowserWallet?.wallet.lockWallet();
           }}
@@ -257,7 +257,7 @@ function App() {
             />
           </div>
 
-          <button className="keplr-button" onClick={sendBalance}>
+          <button className="asi-button" onClick={sendBalance}>
             {sendLoading ? "Sending, please wait..." : "Send"}
           </button>
         </div>
@@ -338,7 +338,7 @@ const NetworkSwitchModal: React.FC<{
               ))}
             </select>
             <button
-              className="keplr-button"
+              className="asi-button"
               onClick={async () => {
                 if (selectedNetwork && selectedNetwork !== currentNetworkId) {
                   await window.fetchBrowserWallet?.wallet.networks.switchToNetworkByChainId(selectedNetwork);
@@ -404,7 +404,7 @@ const AccountSwitchModal: React.FC<{
               ))}
             </select>
             <button
-              className="keplr-button"
+              className="asi-button"
               onClick={async () => {
                 if (selectedAccount && selectedAccount !== currentAddress) {
                   await window.fetchBrowserWallet?.wallet.accounts.switchAccount(selectedAccount);
