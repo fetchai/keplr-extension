@@ -7,6 +7,19 @@ interface txTypes {
   [key: string]: string;
 }
 
+export enum txnTypeKey {
+  ibcTransfer = "ibcTransfer",
+  send = "send",
+  withdrawRewards = "withdrawRewards",
+  delegate = "delegate",
+  undelegate = "undelegate",
+  redelegate = "redelegate",
+  govVote = "govVote",
+  nativeBridgeSend = "nativeBridgeSend",
+  approval = "approval",
+  createSecret20ViewingKey = "createSecret20ViewingKey",
+}
+
 export const txType: txTypes = {
   ibcTransfer: "IBC Transfer",
   send: "Send Transaction",

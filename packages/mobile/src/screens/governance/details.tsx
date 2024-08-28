@@ -30,7 +30,7 @@ import { Buffer } from "buffer";
 import { ActivityEnum } from "screens/activity";
 import Toast from "react-native-toast-message";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 
 export type VoteType = "Yes" | "No" | "NoWithVeto" | "Abstain" | "Unspecified";
 export const TallyVoteInfoView: FunctionComponent<{
@@ -384,7 +384,13 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
 });
 
 export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
-  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    queriesStore,
+    accountStore,
+    analyticsStore,
+    activityStore,
+  } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -527,10 +533,10 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
         rippleColor="black@50%"
         disabled={!voteEnabled || !account.isReadyToSendTx}
         onPress={() => {
-          if (account.txTypeInProgress === "govVote") {
+          if (activityStore.getPendingTxnTypes[txnTypeKey.govVote]) {
             Toast.show({
               type: "error",
-              text1: `${txType[account.txTypeInProgress]} in progress`,
+              text1: `${txType[txnTypeKey.govVote]} in progress`,
             });
             return;
           }
