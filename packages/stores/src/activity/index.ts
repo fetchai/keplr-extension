@@ -248,12 +248,8 @@ export class ActivityStore {
       Object.values(this.proposalNodes).map((node: any) => {
         const txId = node.transaction.id;
         const txHash = Uint8Array.from(Buffer.from(txId, "hex"));
-        txTracer.traceTx(txHash).then(async (tx) => {
-          updateProposalNodeOnTxnCompleted(
-            tx,
-            this.proposalNodes[node.id],
-            this
-          );
+        txTracer.traceTx(txHash).then((tx) => {
+          updateProposalNodeOnTxnCompleted(tx, node.id, this);
           this.removePendingTxn(txId);
         });
       });
@@ -393,6 +389,29 @@ export class ActivityStore {
         gasWanted,
       };
       this.saveNodes();
+    }
+  }
+
+  @action
+  updateProposalTxnGas(nodeId: string, gasUsed: string, gasWanted: string) {
+    if (this.proposalNodes[nodeId]?.transaction) {
+      this.proposalNodes[nodeId].transaction = {
+        ...this.proposalNodes[nodeId].transaction,
+        gasUsed: gasUsed,
+        gasWanted,
+      };
+      this.saveProposalNodes();
+    }
+  }
+
+  @action
+  setProposalTxnLogs(nodeId: string, log: string) {
+    if (this.proposalNodes[nodeId]?.transaction) {
+      this.proposalNodes[nodeId].transaction = {
+        ...this.proposalNodes[nodeId].transaction,
+        log,
+      };
+      this.saveProposalNodes();
     }
   }
 

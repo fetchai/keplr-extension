@@ -99,7 +99,7 @@ export interface ProposalNode {
   transaction: {
     status: string;
     id: string;
-    log: [];
+    log: string;
     __typename: string;
     fees: string;
     gasUsed: string;
@@ -546,7 +546,7 @@ export class CosmosAccountImpl {
         if (type === "govVote") {
           updateProposalNodeOnTxnCompleted(
             tx,
-            proposalNode,
+            proposalNode.id,
             this.activityStore
           );
         }

@@ -1,6 +1,7 @@
 import { EthermintChainIdHelper } from "@keplr-wallet/cosmos";
 import { ProtoMsgsOrWithAminoMsgs } from "./types";
 import { ProposalNode } from "./cosmos";
+import { ActivityStore } from "src/activity";
 
 export function txEventsWithPreOnFulfill(
   onTxEvents:
@@ -272,7 +273,7 @@ export const updateNodeOnTxnCompleted = (
   type: string,
   tx: any,
   txId: string,
-  activityStore: any
+  activityStore: ActivityStore
 ) => {
   if (type === "withdrawRewards") {
     let sum = 0;
@@ -298,20 +299,11 @@ export const updateNodeOnTxnCompleted = (
 
 export const updateProposalNodeOnTxnCompleted = (
   tx: any,
-  proposalNode: ProposalNode,
-  activityStore: any
+  txId: string,
+  activityStore: ActivityStore
 ) => {
-  const txId = proposalNode.id;
-
-  const updatedProposalNode = {
-    ...proposalNode,
-    transaction: {
-      ...proposalNode.transaction,
-      log: tx.log,
-    },
-  };
-
-  activityStore.setProposalNode(txId, updatedProposalNode);
+  activityStore.setProposalTxnLogs(txId, tx.log);
+  activityStore.updateProposalTxnGas(txId, tx.gas_used, tx.gas_wanted);
 
   // if txn fails, it will have tx.code.
   if (tx.code) {
@@ -359,7 +351,7 @@ export const getProposalNode = ({
     transaction: {
       status: "Pending",
       id: txId,
-      log: [],
+      log: "",
       fees: JSON.stringify(signDoc.fee.amount),
       chainId: signDoc.chain_id,
       gasUsed: fee.gas,
