@@ -1,5 +1,5 @@
-# Keplr Example
-This is a simple example if how to use Keplr extension. 
+# Wallet Api Example
+This is a simple example if how to use Fetch Wallet extension. 
 
 ## Requirements
  - Node.js v18+
