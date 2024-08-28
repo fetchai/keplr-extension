@@ -370,7 +370,6 @@ export const AccountSection: FunctionComponent<{
         />
       </BlurBackground>
       <ClaimCard
-        account={account}
         setClaimModel={setClaimModel}
         loadingClaimButton={loadingClaimButton}
         isShowClaimOption={isShowClaimOption()}

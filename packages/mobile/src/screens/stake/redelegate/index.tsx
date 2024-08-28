@@ -26,6 +26,7 @@ import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
+import { txnTypeKey } from "components/new/txn-status.tsx";
 
 export const RedelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -53,8 +54,14 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
   const networkIsConnected =
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
 
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
 
   const style = useStyle();
 
@@ -280,7 +287,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         trailingIcon={
           <ChevronRightIcon
             color={
-              account.txTypeInProgress === "redelegate"
+              activityStore.getPendingTxnTypes[txnTypeKey.redelegate]
                 ? style.get("color-white@20%").color
                 : "white"
             }
@@ -292,7 +299,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
             selectedValidator: dstValidator?.operator_address,
           });
         }}
-        disable={account.txTypeInProgress === "redelegate"}
+        disable={activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
       />
       <StakeAmountInput
         label="Amount"
@@ -306,7 +313,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
-        editable={!(account.txTypeInProgress === "redelegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
       />
       <Text
         style={
@@ -321,7 +328,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
-        disable={account.txTypeInProgress === "redelegate"}
+        disable={activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
       />
       <MemoInputView
         label="Memo"
@@ -336,7 +343,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
         }
         memoConfig={sendConfigs.memoConfig}
         error={sendConfigs.memoConfig.error?.message}
-        editable={!(account.txTypeInProgress === "redelegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
         containerStyle={style.flatten(["margin-bottom-16"]) as ViewStyle}
       />
       <View
@@ -369,7 +376,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
             icon={
               <GearIcon
                 color={
-                  account.txTypeInProgress === "redelegate"
+                  activityStore.getPendingTxnTypes[txnTypeKey.redelegate]
                     ? style.get("color-white@20%").color
                     : "white"
                 }
@@ -382,12 +389,12 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                account.txTypeInProgress === "redelegate"
+                activityStore.getPendingTxnTypes[txnTypeKey.redelegate]
                   ? "border-color-white@20%"
                   : "border-color-white@40%",
               ]) as ViewStyle
             }
-            disable={account.txTypeInProgress === "redelegate"}
+            disable={activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
             onPress={() => setFeeModal(true)}
           />
         </View>
@@ -411,7 +418,7 @@ export const RedelegateScreen: FunctionComponent = observer(() => {
       <Button
         text="Confirm"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
-        loading={account.txTypeInProgress === "redelegate"}
+        loading={activityStore.getPendingTxnTypes[txnTypeKey.redelegate]}
         containerStyle={
           style.flatten(["margin-top-16", "border-radius-32"]) as ViewStyle
         }

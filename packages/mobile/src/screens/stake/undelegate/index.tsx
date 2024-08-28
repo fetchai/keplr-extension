@@ -25,6 +25,7 @@ import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import Toast from "react-native-toast-message";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { txnTypeKey } from "components/new/txn-status.tsx";
 
 export const UndelegateScreen: FunctionComponent = observer(() => {
   const route = useRoute<
@@ -41,8 +42,14 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
 
   const validatorAddress = route.params.validatorAddress;
 
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -236,7 +243,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
-        editable={!(account.txTypeInProgress === "undelegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.undelegate]}
       />
       <Text
         style={
@@ -251,7 +258,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
-        disable={account.txTypeInProgress === "undelegate"}
+        disable={activityStore.getPendingTxnTypes[txnTypeKey.undelegate]}
       />
       <MemoInputView
         label="Memo"
@@ -266,7 +273,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
         }
         memoConfig={sendConfigs.memoConfig}
         error={sendConfigs.memoConfig.error?.message}
-        editable={!(account.txTypeInProgress === "undelegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.undelegate]}
       />
       <View
         style={
@@ -322,7 +329,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
             icon={
               <GearIcon
                 color={
-                  account.txTypeInProgress === "undelegate"
+                  activityStore.getPendingTxnTypes[txnTypeKey.undelegate]
                     ? style.get("color-white@20%").color
                     : "white"
                 }
@@ -335,12 +342,12 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                account.txTypeInProgress === "undelegate"
+                activityStore.getPendingTxnTypes[txnTypeKey.undelegate]
                   ? "border-color-white@20%"
                   : "border-color-white@40%",
               ]) as ViewStyle
             }
-            disable={account.txTypeInProgress === "undelegate"}
+            disable={activityStore.getPendingTxnTypes[txnTypeKey.undelegate]}
             onPress={() => setFeeModal(true)}
           />
         </View>
@@ -364,7 +371,7 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
       <Button
         text="Confirm"
         disabled={!account.isReadyToSendTx || !txStateIsValid}
-        loading={account.txTypeInProgress === "undelegate"}
+        loading={activityStore.getPendingTxnTypes[txnTypeKey.undelegate]}
         textStyle={style.flatten(["body2"]) as ViewStyle}
         containerStyle={
           style.flatten(["margin-top-16", "border-radius-32"]) as ViewStyle

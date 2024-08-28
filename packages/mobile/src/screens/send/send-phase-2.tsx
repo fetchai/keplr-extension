@@ -27,7 +27,7 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Toast from "react-native-toast-message";
 import { TransactionModal } from "modals/transaction";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import { GearIcon } from "components/new/icon/gear-icon";
 import { IconButton } from "components/new/button/icon";
@@ -45,7 +45,13 @@ export const SendPhase2: FunctionComponent<{
   sendConfigs: SendConfigs;
   setIsNext: any;
 }> = observer(({ sendConfigs, setIsNext }) => {
-  const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    priceStore,
+    analyticsStore,
+    activityStore,
+  } = useStore();
 
   const [txnHash, setTxnHash] = useState<string>("");
   const [openModal, setOpenModal] = useState(false);
@@ -156,10 +162,10 @@ export const SendPhase2: FunctionComponent<{
       });
       return;
     }
-    if (account.txTypeInProgress === "send") {
+    if (activityStore.getPendingTxnTypes[txnTypeKey.send]) {
       Toast.show({
         type: "error",
-        text1: `${txType[account.txTypeInProgress]} in progress`,
+        text1: `${txType[txnTypeKey.send]} in progress`,
       });
       return;
     }
@@ -258,13 +264,13 @@ export const SendPhase2: FunctionComponent<{
           containerStyle={
             style.flatten([
               "border-width-1",
-              account.txTypeInProgress === "send"
+              activityStore.getPendingTxnTypes[txnTypeKey.send]
                 ? "border-color-white@20%"
                 : "border-color-white@40%",
             ]) as ViewStyle
           }
           textStyle={style.flatten(["padding-x-14", "body3"]) as ViewStyle}
-          disable={account.txTypeInProgress === "send"}
+          disable={activityStore.getPendingTxnTypes[txnTypeKey.send]}
           onPress={() => setIsNext(false)}
         />
       </View>
@@ -279,15 +285,15 @@ export const SendPhase2: FunctionComponent<{
           recipientConfig={sendConfigs.recipientConfig}
           memoConfig={sendConfigs.memoConfig}
           pageName="Send"
-          buttonDisable={account.txTypeInProgress === "send"}
-          editable={!(account.txTypeInProgress === "send")}
+          buttonDisable={activityStore.getPendingTxnTypes[txnTypeKey.send]}
+          editable={!activityStore.getPendingTxnTypes[txnTypeKey.send]}
         />
         <MemoInputView
           label="Memo"
           placeholderText="Optional"
           memoConfig={sendConfigs.memoConfig}
           error={sendConfigs.memoConfig.error?.message}
-          editable={!(account.txTypeInProgress === "send")}
+          editable={!activityStore.getPendingTxnTypes[txnTypeKey.send]}
         />
       </View>
       <View
@@ -320,7 +326,7 @@ export const SendPhase2: FunctionComponent<{
             icon={
               <GearIcon
                 color={
-                  account.txTypeInProgress === "send"
+                  activityStore.getPendingTxnTypes[txnTypeKey.send]
                     ? style.get("color-white@20%").color
                     : "white"
                 }
@@ -333,12 +339,12 @@ export const SendPhase2: FunctionComponent<{
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                account.txTypeInProgress === "send"
+                activityStore.getPendingTxnTypes[txnTypeKey.send]
                   ? "border-color-white@20%"
                   : "border-color-white@40%",
               ]) as ViewStyle
             }
-            disable={account.txTypeInProgress === "send"}
+            disable={activityStore.getPendingTxnTypes[txnTypeKey.send]}
             onPress={() => setFeeModal(true)}
           />
         </View>
@@ -378,7 +384,7 @@ export const SendPhase2: FunctionComponent<{
           !txStateIsValid ||
           account.bech32Address == sendConfigs.recipientConfig.recipient
         }
-        loading={account.txTypeInProgress === "send"}
+        loading={activityStore.getPendingTxnTypes[txnTypeKey.send]}
         onPress={onSubmit}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

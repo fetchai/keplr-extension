@@ -8,6 +8,7 @@ import { Button } from "components/button";
 import { CardModal } from "modals/card";
 import { BlurBackground } from "components/new/blur-background/blur-background";
 import { VoteType } from "./details";
+import { txnTypeKey } from "components/new/txn-status.tsx";
 
 export const GovernanceVoteModal: FunctionComponent<{
   isOpen: boolean;
@@ -22,7 +23,7 @@ export const GovernanceVoteModal: FunctionComponent<{
   // So need to get the props from the parent.
 }> = observer(
   ({ close, isOpen, vote, setVote, onPress, isSendingTx, prevVote }) => {
-    const { chainStore, accountStore } = useStore();
+    const { chainStore, accountStore, activityStore } = useStore();
 
     const account = accountStore.getAccount(chainStore.current.chainId);
     const style = useStyle();
@@ -73,7 +74,9 @@ export const GovernanceVoteModal: FunctionComponent<{
             !account.isReadyToSendTx ||
             prevVote === vote
           }
-          loading={isSendingTx || account.txTypeInProgress === "govVote"}
+          loading={
+            isSendingTx || activityStore.getPendingTxnTypes[txnTypeKey.govVote]
+          }
           onPress={onPress}
         />
       </CardModal>

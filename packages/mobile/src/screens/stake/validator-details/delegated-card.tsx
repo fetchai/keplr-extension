@@ -17,14 +17,20 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 
 export const DelegatedCard: FunctionComponent<{
   containerStyle?: ViewStyle;
 
   validatorAddress: string;
 }> = ({ containerStyle, validatorAddress }) => {
-  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    queriesStore,
+    accountStore,
+    analyticsStore,
+    activityStore,
+  } = useStore();
 
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [showTransectionModal, setTransectionModal] = useState(false);
@@ -116,6 +122,17 @@ export const DelegatedCard: FunctionComponent<{
       setClaimModel(false);
       setIsSendingTx(false);
     }
+  };
+  const txnInProgressMessage = () => {
+    if (activityStore.getPendingTxnTypes[txnTypeKey.undelegate]) {
+      return txType[txnTypeKey.undelegate];
+    } else if (activityStore.getPendingTxnTypes[txnTypeKey.redelegate]) {
+      return txType[txnTypeKey.redelegate];
+    } else if (activityStore.getPendingTxnTypes[txnTypeKey.delegate]) {
+      return txType[txnTypeKey.delegate];
+    }
+
+    return "Transaction";
   };
 
   return (
@@ -234,13 +251,13 @@ export const DelegatedCard: FunctionComponent<{
                 pageName: "Validator Detail",
               });
               if (
-                account.txTypeInProgress === "undelegate" ||
-                account.txTypeInProgress === "redelegate" ||
-                account.txTypeInProgress === "delegate"
+                activityStore.getPendingTxnTypes[txnTypeKey.undelegate] ||
+                activityStore.getPendingTxnTypes[txnTypeKey.redelegate] ||
+                activityStore.getPendingTxnTypes[txnTypeKey.delegate]
               ) {
                 Toast.show({
                   type: "error",
-                  text1: `${txType[account.txTypeInProgress]} in progress`,
+                  text1: `${txnInProgressMessage()} in progress`,
                 });
                 return;
               }
@@ -265,10 +282,12 @@ export const DelegatedCard: FunctionComponent<{
               }
               textStyle={style.flatten(["body3"]) as ViewStyle}
               onPress={() => {
-                if (account.txTypeInProgress === "withdrawRewards") {
+                if (
+                  activityStore.getPendingTxnTypes[txnTypeKey.withdrawRewards]
+                ) {
                   Toast.show({
                     type: "error",
-                    text1: `${txType[account.txTypeInProgress]} in progress`,
+                    text1: `${txType[txnTypeKey.withdrawRewards]} in progress`,
                   });
                   return;
                 }
@@ -299,7 +318,8 @@ export const DelegatedCard: FunctionComponent<{
         earnedAmount={stakableReward.trim(true).shrink(true).toString()}
         onPress={handleClaim}
         buttonLoading={
-          isSendingTx || account.txTypeInProgress === "withdrawRewards"
+          isSendingTx ||
+          activityStore.getPendingTxnTypes[txnTypeKey.withdrawRewards]
         }
       />
     </React.Fragment>

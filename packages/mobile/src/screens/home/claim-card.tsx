@@ -1,8 +1,7 @@
-import { AccountSetBase } from "@keplr-wallet/stores";
 import { SimpleCardView } from "components/new/card-view/simple-card";
 import { ChevronRightIcon } from "components/new/icon/chevron-right";
 import { StakeIcon } from "components/new/icon/stake-icon";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 import React, { FunctionComponent } from "react";
 import { ActivityIndicator, TouchableOpacity, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
@@ -11,21 +10,21 @@ import { useStore } from "stores/index";
 import { useStyle } from "styles/index";
 
 export const ClaimCard: FunctionComponent<{
-  account: AccountSetBase;
   setClaimModel: any;
   loadingClaimButton: boolean;
   isShowClaimOption: boolean;
-}> = ({ account, setClaimModel, loadingClaimButton, isShowClaimOption }) => {
+}> = ({ setClaimModel, loadingClaimButton, isShowClaimOption }) => {
   const style = useStyle();
-  const { analyticsStore } = useStore();
+  const { analyticsStore, activityStore } = useStore();
+
   return isShowClaimOption ? (
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() => {
-        if (account.txTypeInProgress === "withdrawRewards") {
+        if (activityStore.getPendingTxnTypes[txnTypeKey.withdrawRewards]) {
           Toast.show({
             type: "error",
-            text1: `${txType[account.txTypeInProgress]} in progress`,
+            text1: `${txType[txnTypeKey.withdrawRewards]} in progress`,
           });
           return;
         }
