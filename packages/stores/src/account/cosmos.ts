@@ -46,6 +46,7 @@ import deepmerge from "deepmerge";
 import { Buffer } from "buffer/";
 import { MakeTxResponse, ProtoMsgsOrWithAminoMsgs } from "./types";
 import {
+  getActivityNode,
   getEip712TypedDataBasedOnChainId,
   getNodes,
   getProposalNode,
@@ -450,29 +451,6 @@ export class CosmosAccountImpl {
 
       const { nodes, balanceOffset, signerAddress } = getNodes(msgs, type);
 
-      const newNode: Node = {
-        balanceOffset,
-        type,
-        block: {
-          timestamp: new Date().toJSON(),
-          __typename: "Block",
-        },
-        id: txId,
-        transaction: {
-          fees: JSON.stringify(signDoc.fee.amount),
-          chainId: signDoc.chain_id,
-          gasUsed: fee.gas,
-          id: txId,
-          memo: memo,
-          signerAddress,
-          status: "Pending",
-          timeoutHeight: "0",
-          messages: {
-            nodes,
-          },
-        },
-      };
-
       if (type === "govVote") {
         proposalNode = getProposalNode({
           txId,
@@ -483,8 +461,19 @@ export class CosmosAccountImpl {
           nodes,
         });
         this.activityStore.addProposalNode(proposalNode);
+      } else {
+        const newNode: Node = getActivityNode({
+          balanceOffset,
+          signerAddress,
+          txId,
+          signDoc,
+          type,
+          fee,
+          memo,
+          nodes,
+        });
+        this.activityStore.addNode(newNode);
       }
-      this.activityStore.addNode(newNode);
       this.activityStore.addPendingTxn({ id: txId, type });
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
@@ -549,9 +538,10 @@ export class CosmosAccountImpl {
             proposalNode.id,
             this.activityStore
           );
+        } else {
+          //update node's gas, amount and status on completed
+          updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
         }
-        //update node's gas, amount and status on completed
-        updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
         this.activityStore.removePendingTxn(txId);
 
         this.base.setTxTypeInProgress("");
@@ -584,12 +574,13 @@ export class CosmosAccountImpl {
       })
       .catch(() => {
         this.activityStore.removePendingTxn(txId);
-        this.activityStore.setTxnStatus(txId, "Unconfirmed");
         if (type === "govVote") {
           this.activityStore.setProposalTxnStatus(
             proposalNode.id,
             "Unconfirmed"
           );
+        } else {
+          this.activityStore.setTxnStatus(txId, "Unconfirmed");
         }
         this.base.setTxTypeInProgress("");
         this.activityStore.setIsNodeUpdated(true);

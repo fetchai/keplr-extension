@@ -1,6 +1,7 @@
 import { EthermintChainIdHelper } from "@keplr-wallet/cosmos";
 import { ProtoMsgsOrWithAminoMsgs } from "./types";
 import { ProposalNode } from "./cosmos";
+import { Node } from "./cosmos";
 import { ActivityStore } from "src/activity";
 
 export function txEventsWithPreOnFulfill(
@@ -327,7 +328,7 @@ export const getProposalNode = ({
   fee: any;
   memo: string;
   nodes: Array<any>;
-}): ProposalNode => {
+}) => {
   const option = Number(signDoc.msgs[0].value.option);
   const optionText = (() => {
     switch (option) {
@@ -366,4 +367,55 @@ export const getProposalNode = ({
   };
 
   return proposalNode;
+};
+
+export const getActivityNode = ({
+  balanceOffset,
+  signerAddress,
+  txId,
+  signDoc,
+  type,
+  fee,
+  memo,
+  nodes,
+}: {
+  balanceOffset: string;
+  signerAddress: string;
+  txId: string;
+  signDoc: any;
+  type: string;
+  fee: any;
+  memo: string;
+  nodes: [
+    {
+      json: string;
+      typeUrl: string;
+      __typename: string;
+    }
+  ];
+}) => {
+  const newNode: Node = {
+    balanceOffset,
+    type,
+    block: {
+      timestamp: new Date().toJSON(),
+      __typename: "Block",
+    },
+    id: txId,
+    transaction: {
+      fees: JSON.stringify(signDoc.fee.amount),
+      chainId: signDoc.chain_id,
+      gasUsed: fee.gas,
+      id: txId,
+      memo: memo,
+      signerAddress,
+      status: "Pending",
+      timeoutHeight: "0",
+      messages: {
+        nodes,
+      },
+    },
+  };
+
+  return newNode;
 };
