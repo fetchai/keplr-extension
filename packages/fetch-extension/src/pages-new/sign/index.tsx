@@ -290,15 +290,15 @@ export const SignPageV2: FunctionComponent = observer(() => {
                       }
                       btnBgEnabled={true}
                       text={
-                        signInteractionStore.isLoading ? (
-                          <i className="fas fa-spinner fa-spin ml-2" />
-                        ) : accountInfo.broadcastInProgress ? (
+                        accountInfo.broadcastInProgress ? (
                           <span>
                             <i className="fas fa-spinner fa-spin ml-2" />{" "}
                             {approveButtonClicked
-                              ? "Transaction in Progress"
-                              : "Previous Transaction in Progress"}
+                              ? "Transaction in progress"
+                              : "Previous transaction in progress"}
                           </span>
+                        ) : signInteractionStore.isLoading ? (
+                          <i className="fas fa-spinner fa-spin ml-2" />
                         ) : (
                           "Approve transaction"
                         )
@@ -306,6 +306,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                       data-loading={signInteractionStore.isLoading}
                       onClick={async (e: any) => {
                         e.preventDefault();
+                        setApproveButtonClicked(true);
 
                         if (needSetIsProcessing) {
                           setIsProcessing(true);
@@ -315,7 +316,6 @@ export const SignPageV2: FunctionComponent = observer(() => {
                           await signInteractionStore.approveAndWaitEnd(
                             signDocHelper.signDocWrapper
                           );
-                          setApproveButtonClicked(true);
                         }
 
                         if (
