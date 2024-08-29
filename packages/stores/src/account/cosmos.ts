@@ -697,6 +697,7 @@ export class CosmosAccountImpl {
       );
     })();
 
+    this.base.setBroadcastInProgress(true);
     const signedTx = TxRaw.encode({
       bodyBytes: TxBody.encode(
         TxBody.fromPartial({
@@ -785,7 +786,16 @@ export class CosmosAccountImpl {
     this.base.increaseCustomSequence();
 
     return {
-      txHash: await keplr.sendTx(this.chainId, signedTx, mode as BroadcastMode),
+      txHash: await keplr
+        .sendTx(this.chainId, signedTx, mode as BroadcastMode)
+        .then((res) => {
+          this.base.setBroadcastInProgress(false);
+          return res;
+        })
+        .catch((err) => {
+          this.base.setBroadcastInProgress(false);
+          throw err;
+        }),
       signDoc: signResponse.signed,
     };
   }
