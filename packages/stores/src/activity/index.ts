@@ -348,7 +348,7 @@ export class ActivityStore {
 
   @action
   updateTxnBalance(nodeId: any, amount: number) {
-    if (this.nodes[nodeId]?.balanceOffset) {
+    if (this.nodes[nodeId]) {
       this.nodes[nodeId].balanceOffset = amount;
       this.saveNodes();
     }
