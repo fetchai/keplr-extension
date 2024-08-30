@@ -7,7 +7,8 @@ import { useStyle } from "styles/index";
 export const IOSLineChart: FunctionComponent<{
   data: any;
   height?: number;
-}> = ({ data, height }) => {
+  currencySymbol: string | undefined;
+}> = ({ data, height, currencySymbol }) => {
   const style = useStyle();
 
   const maxValue = Number(
@@ -98,7 +99,7 @@ export const IOSLineChart: FunctionComponent<{
                   ]) as ViewStyle
                 }
               >
-                {"$" + (items[0].value + minValue).toFixed(2)}
+                {`${currencySymbol}${(items[0].value + minValue).toFixed(2)}`}
               </Text>
 
               <Text

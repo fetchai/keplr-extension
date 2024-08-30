@@ -17,7 +17,8 @@ import { PanResponder, Dimensions, View } from "react-native";
 export const AndroidLineChart: FunctionComponent<{
   data: any;
   height?: number;
-}> = ({ data, height }) => {
+  currencySymbol: string | undefined;
+}> = ({ data, height, currencySymbol }) => {
   const valueList = data.map((d: { value: any }) => d.value);
   const dateList = data.map((d: { date: any }) => d.date);
 
@@ -126,7 +127,7 @@ export const AndroidLineChart: FunctionComponent<{
             fontWeight="bold"
             fill="#FFFFFF"
           >
-            ${valueList[positionX]}
+            {`${currencySymbol}${valueList[positionX]}`}
           </SvgText>
           <SvgText
             x={apx(20)}

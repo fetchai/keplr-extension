@@ -81,12 +81,13 @@ export const SendPhase1: FunctionComponent<{
     ? queryBalance.balance
     : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0));
 
-  const convertToUsd = (currency: any) => {
+  const convertToCurrency = (currency: any) => {
     const value = priceStore.calculatePrice(currency);
     return value && value.shrink(true).maxDecimals(6).toString();
   };
+
   useEffect(() => {
-    const valueInUsd = convertToUsd(balance);
+    const valueInUsd = convertToCurrency(balance);
     setInputInUsd(valueInUsd);
   }, [sendConfigs.amountConfig.sendCurrency]);
 

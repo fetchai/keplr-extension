@@ -10,9 +10,11 @@ export const separateNumericAndDenom = (value: any) => {
 };
 
 export const parseDollarAmount = (dollarString: any) => {
-  const match = dollarString.match(/[0-9.]+/);
-  if (match) {
-    return parseFloat(match[0]);
+  if (dollarString) {
+    const match = dollarString.match(/[0-9.]+/);
+    if (match) {
+      return parseFloat(match[0]);
+    }
   }
   return 0;
 };
