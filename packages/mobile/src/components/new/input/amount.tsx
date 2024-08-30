@@ -16,10 +16,11 @@ import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { useStore } from "stores/index";
 import { parseDollarAmount } from "utils/format/format";
 import { UseMaxButton } from "../button/use-max-button";
+import { observer } from "mobx-react-lite";
 
 export const AmountInputSection: FunctionComponent<{
   amountConfig: IAmountConfig;
-}> = ({ amountConfig }) => {
+}> = observer(({ amountConfig }) => {
   const style = useStyle();
   const { priceStore } = useStore();
   const [isToggleClicked, setIsToggleClicked] = useState<boolean>(false);
@@ -66,7 +67,6 @@ export const AmountInputSection: FunctionComponent<{
       }
     }
   }, [error]);
-
   const validateDecimalNumber = (input: string) => {
     // Use the match() method with a regular expression
     const isDecimal = input.match(/^\d*\.?\d*$/);
@@ -112,14 +112,14 @@ export const AmountInputSection: FunctionComponent<{
               ]) as ViewStyle
             }
           >
-            {isToggleClicked
+            {isToggleClicked && amountConfig.sendCurrency["coinGeckoId"]
               ? priceStore.defaultVsCurrency.toUpperCase()
               : amountConfig.sendCurrency.coinDenom}
           </Text>
         }
         placeholderTextColor={errorText ? "red" : "white"}
         value={
-          isToggleClicked
+          isToggleClicked && amountConfig.sendCurrency["coinGeckoId"]
             ? parseDollarAmount(inputInUsd).toString()
             : amountConfig.amount
         }
@@ -135,7 +135,7 @@ export const AmountInputSection: FunctionComponent<{
                 }
               }
             }
-            isToggleClicked
+            isToggleClicked && amountConfig.sendCurrency["coinGeckoId"]
               ? parseDollarAmount(inputInUsd)
               : amountConfig.setAmount(value);
           }
@@ -203,4 +203,4 @@ export const AmountInputSection: FunctionComponent<{
       />
     </React.Fragment>
   );
-};
+});

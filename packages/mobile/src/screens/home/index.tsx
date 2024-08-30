@@ -84,7 +84,8 @@ export const HomeScreen: FunctionComponent = observer(() => {
 
   async function fetchAppVersion(): Promise<UpdateData | undefined> {
     try {
-      const apiUrl = `https://raw.githubusercontent.com/fetchai/fetch-wallet/master/packages/mobile/update.json`;
+      const apiUrl =
+        "https://raw.githubusercontent.com/fetchai/asi-alliance-wallet/main/packages/mobile/update.json";
       const response = await axios.get(apiUrl);
       return response.data;
     } catch {

@@ -21,6 +21,7 @@ export const UseMaxButton: FunctionComponent<{
 }) => {
   const style = useStyle();
   const { priceStore } = useStore();
+  const disableCurrency = ["mmk", "sar", "kwd"];
 
   return (
     <View
@@ -34,7 +35,7 @@ export const UseMaxButton: FunctionComponent<{
       <View style={style.flatten(["flex-1"]) as ViewStyle}>
         <BlurButton
           text={`Change to ${
-            !isToggleClicked
+            !isToggleClicked || !amountConfig.sendCurrency["coinGeckoId"]
               ? priceStore.defaultVsCurrency.toUpperCase()
               : amountConfig.sendCurrency.coinDenom
           }`}
@@ -44,14 +45,20 @@ export const UseMaxButton: FunctionComponent<{
               <ReloadIcon
                 size={21}
                 color={
-                  !amountConfig.sendCurrency["coinGeckoId"] || disable
+                  !amountConfig.sendCurrency["coinGeckoId"] ||
+                  disable ||
+                  disableCurrency.includes(priceStore.defaultVsCurrency)
                     ? style.get("color-white@20%").color
                     : "white"
                 }
               />
             </View>
           }
-          disable={!amountConfig.sendCurrency["coinGeckoId"] || disable}
+          disable={
+            !amountConfig.sendCurrency["coinGeckoId"] ||
+            disable ||
+            disableCurrency.includes(priceStore.defaultVsCurrency)
+          }
           borderRadius={32}
           onPress={() => {
             setIsToggleClicked(!isToggleClicked);
@@ -62,7 +69,9 @@ export const UseMaxButton: FunctionComponent<{
               "margin-4",
               "padding-6",
               "justify-center",
-              !amountConfig.sendCurrency["coinGeckoId"] || disable
+              !amountConfig.sendCurrency["coinGeckoId"] ||
+              disable ||
+              disableCurrency.includes(priceStore.defaultVsCurrency)
                 ? "border-color-white@20%"
                 : "border-color-white@40%",
             ]) as ViewStyle
