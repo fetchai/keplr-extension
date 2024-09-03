@@ -23,6 +23,7 @@ import { Dec } from "@keplr-wallet/unit";
 import { TXNTYPE } from "../../../../config";
 import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 import { useLanguage } from "../../../../languages";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 export const MyStakes = observer(
   ({
@@ -154,7 +155,14 @@ export const MyStakes = observer(
             }
           );
         } catch (e) {
-          navigate("/stake", { replace: true });
+          const txnNavigationOptions = {
+            redirect: () => {
+              navigate("/stake", { replace: true });
+            },
+            txType: TXNTYPE.withdrawRewards,
+            txInProgress: account.txInProgress,
+          };
+          navigateOnTxnEvents(txnNavigationOptions);
           notification.push({
             type: "warning",
             placement: "top-center",
@@ -167,9 +175,18 @@ export const MyStakes = observer(
           });
         } finally {
           setIsWithdrawingRewards(false);
+
+          const txnNavigationOptions = {
+            redirect: () => {
+              navigate("/activity", { replace: true });
+            },
+            txType: TXNTYPE.withdrawRewards,
+            txInProgress: account.txInProgress,
+          };
           setTimeout(() => {
-            navigate("/activity", { replace: true });
+            navigateOnTxnEvents(txnNavigationOptions);
           }, 200);
+
           setIsDropdownOpen(false);
         }
       }
@@ -434,7 +451,14 @@ const DelegateReward: FunctionComponent = observer(() => {
       }
     } finally {
       setIsWithdrawingRewards(false);
-      navigate("/stake");
+      const txnNavigationOptions = {
+        redirect: () => {
+          navigate("/stake");
+        },
+        txType: TXNTYPE.withdrawRewards,
+        txInProgress: account.txInProgress,
+      };
+      navigateOnTxnEvents(txnNavigationOptions);
     }
   };
 

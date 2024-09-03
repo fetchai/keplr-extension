@@ -22,6 +22,7 @@ import { RedelegateValidatorDetail } from "./validator-detail";
 import { TXNTYPE } from "../../../config";
 import { useIntl } from "react-intl";
 import { useLanguage } from "../../../languages";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 type Sort = "APR" | "Voting Power" | "Name";
 
@@ -221,8 +222,15 @@ export const Redelegate = observer(() => {
         },
       });
     } finally {
+      const txnNavigationOptions = {
+        redirect: () => {
+          navigate("/activity", { replace: true });
+        },
+        txType: TXNTYPE.redelegate,
+        txInProgress: account.txInProgress,
+      };
       setTimeout(() => {
-        navigate("/activity", { replace: true });
+        navigateOnTxnEvents(txnNavigationOptions);
       }, 200);
     }
   };
