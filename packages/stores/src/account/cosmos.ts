@@ -426,6 +426,7 @@ export class CosmosAccountImpl {
   ) {
     this.base.setTxTypeInProgress(type);
     this.activityStore.setPendingTxnTypes(type, true);
+    this.base.setTxInProgress(type);
 
     let txHash: Uint8Array;
     let signDoc: StdSignDoc;
