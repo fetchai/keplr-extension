@@ -10,6 +10,7 @@ import { observer } from "mobx-react-lite";
 import { separateNumericAndDenom } from "@utils/format";
 import { useStore } from "../../stores";
 import { TXNTYPE } from "../../config";
+import { useLanguage } from "../../languages";
 
 export const AssetView = observer(() => {
   const { activityStore } = useStore();
@@ -20,6 +21,8 @@ export const AssetView = observer(() => {
   const [balances, setBalances] = useState<any>();
   const [assetValues, setAssetValues] = useState<any>();
   const navigate = useNavigate();
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -81,7 +84,9 @@ export const AssetView = observer(() => {
         )}
         <div className={style["name"]}>{tokenInfo?.coinDenom}</div>
         <div className={style["price-in-usd"]}>
-          {balances?.balanceInUsd ? `${balances?.balanceInUsd} USD` : "0 USD"}
+          {balances?.balanceInUsd
+            ? `${balances?.balanceInUsd} ${fiatCurrency.toUpperCase()}`
+            : `0 ${fiatCurrency.toUpperCase()}`}
         </div>
 
         {assetValues?.diff && (
@@ -122,8 +127,8 @@ export const AssetView = observer(() => {
             </div>
             <div className={style["inUsd"]}>
               {balances?.balanceInUsd
-                ? `${balances?.balanceInUsd} USD`
-                : "0 USD"}{" "}
+                ? `${balances?.balanceInUsd} ${fiatCurrency.toUpperCase()}`
+                : `0 ${fiatCurrency.toUpperCase()}`}{" "}
             </div>
           </div>
         </div>

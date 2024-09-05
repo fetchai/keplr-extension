@@ -15,6 +15,7 @@ import { WalletConfig } from "@keplr-wallet/stores/build/chat/user-details";
 import { observer } from "mobx-react-lite";
 import { txType } from "./constants";
 import { Skeleton } from "@components-v2/skeleton-loader";
+import { fetchProposalNodes } from "../../activity/utils";
 
 export const WalletDetailsView = observer(
   ({
@@ -124,6 +125,34 @@ export const WalletDetailsView = observer(
     const accountOrChainChanged =
       activityStore.getAddress !== accountInfo.bech32Address ||
       activityStore.getChainId !== current.chainId;
+
+    useEffect(() => {
+      /*  this is required because accountInit sets the nodes on reload, 
+          so we wait for accountInit to set the proposal nodes and then we 
+          store the proposal votes from api in activity store */
+      const timeout = setTimeout(async () => {
+        const nodes = activityStore.sortedNodesProposals;
+        if (nodes.length === 0) {
+          const nodes = await fetchProposalNodes(
+            "",
+            current.chainId,
+            accountInfo.bech32Address
+          );
+          if (nodes.length) {
+            nodes.forEach((node: any) => activityStore.addProposalNode(node));
+          }
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }, [
+      accountInfo.bech32Address,
+      current.chainId,
+      accountOrChainChanged,
+      activityStore,
+    ]);
 
     useEffect(() => {
       if (accountOrChainChanged) {

@@ -140,7 +140,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                 .trim(true)
                 .hideDenom(true)
                 .maxDecimals(6)
-                .toString()} USD`
+                .toString()} ${fiatCurrency.toUpperCase()}`
             )}
           </div>
           {tokenState?.diff && (

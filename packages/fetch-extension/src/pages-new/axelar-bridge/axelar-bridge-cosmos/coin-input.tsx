@@ -11,6 +11,7 @@ interface CoinInputProps {
   inputInUsd: any;
   amountError: any;
   tokenBal: any;
+  currencySymbol: string;
 }
 export const CoinInput: React.FC<CoinInputProps> = ({
   amount,
@@ -21,6 +22,7 @@ export const CoinInput: React.FC<CoinInputProps> = ({
   inputInUsd,
   amountError,
   tokenBal,
+  currencySymbol,
 }) => {
   return (
     <div>
@@ -37,7 +39,7 @@ export const CoinInput: React.FC<CoinInputProps> = ({
             disabled={!transferToken || depositAddress}
           />
           <div className={style["amountInUsd"]}>
-            {inputInUsd && `(${inputInUsd} USD)`}
+            {inputInUsd && `(${inputInUsd} ${currencySymbol})`}
           </div>
         </div>
 

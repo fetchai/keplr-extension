@@ -67,7 +67,7 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
           }
         );
 
-        navigate(`/gov-proposal/details/${proposal.id}`, { replace: true });
+        navigate(`/activity?tab=Proposals`, { replace: true });
       } catch (e: any) {
         analyticsStore.logEvent("vote_txn_broadcasted_fail", {
           chainId: chainStore.current.chainId,
@@ -100,7 +100,7 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
           },
         });
         navigate(-2);
-        navigate(`/activity`, { replace: true });
+        navigate(`/activity?tab=Proposals`, { replace: true });
       } finally {
         setIsSendingTx(false);
       }

@@ -10,6 +10,7 @@ interface Tab {
 
 export interface TabsProps {
   tabs: Tab[];
+  activeTabId?: string;
   showTabsOnBottom?: boolean;
   setActiveTab?: any;
   onTabChange?: any;
@@ -20,6 +21,7 @@ export interface TabsProps {
 
 export const TabsPanel: React.FC<TabsProps> = ({
   tabs,
+  activeTabId,
   showTabsOnBottom,
   setActiveTab,
   onTabChange,
@@ -27,7 +29,15 @@ export const TabsPanel: React.FC<TabsProps> = ({
   tabHeight,
   tabStyle,
 }) => {
-  const [selectedTab, setSelectedTab] = useState<string | null>(tabs[0].id);
+  const [selectedTab, setSelectedTab] = useState<string | null>(
+    activeTabId || tabs[0].id
+  );
+
+  useEffect(() => {
+    if (activeTabId) {
+      setSelectedTab(activeTabId);
+    }
+  }, [activeTabId]);
 
   useEffect(() => {
     if (setActiveTab) {

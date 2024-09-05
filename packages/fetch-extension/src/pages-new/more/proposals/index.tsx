@@ -154,7 +154,8 @@ export const Proposals = observer(() => {
     >
       {current.chainId === CHAIN_ID_FETCHHUB ||
       current.chainId === CHAIN_ID_DORADO ||
-      current.chainId === "test" ? (
+      current.chainId === "test" ||
+      current.chainId === "test-local" ? (
         isError ? (
           <ErrorActivity />
         ) : proposals && Object.keys(proposals).length > 0 ? (

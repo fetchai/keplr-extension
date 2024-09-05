@@ -1,7 +1,8 @@
 import React from "react";
 import { ButtonV2 } from "../button";
 import { IAmountConfig } from "@keplr-wallet/hooks";
-import { useStore } from "../../../stores";
+import { useLanguage } from "../../../languages";
+import { SUPPORTED_LOCALE_FIAT_CURRENCIES } from "../../../config.ui";
 
 export const UseMaxButton = ({
   amountConfig,
@@ -12,7 +13,10 @@ export const UseMaxButton = ({
   isToggleClicked: boolean;
   setIsToggleClicked: any;
 }) => {
-  const { priceStore } = useStore();
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
+  const disableToggleCurrency =
+    !SUPPORTED_LOCALE_FIAT_CURRENCIES.includes(fiatCurrency);
 
   const ChangeButtonElement = () => {
     return (
@@ -35,7 +39,7 @@ export const UseMaxButton = ({
         />
         <div>{`Change to ${
           !isToggleClicked
-            ? priceStore.defaultVsCurrency.toUpperCase()
+            ? fiatCurrency.toUpperCase()
             : amountConfig.sendCurrency.coinDenom
         }`}</div>
       </div>
@@ -62,7 +66,9 @@ export const UseMaxButton = ({
           border: "1px solid rgba(255,255,255,0.4)",
           fontSize: "14px",
         }}
-        disabled={!amountConfig.sendCurrency["coinGeckoId"]}
+        disabled={
+          !amountConfig.sendCurrency["coinGeckoId"] || disableToggleCurrency
+        }
         text={<ChangeButtonElement />}
         onClick={() => {
           setIsToggleClicked(!isToggleClicked);

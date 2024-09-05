@@ -60,7 +60,7 @@ export const blocks = `query LatestBlock {
 
 export const govProposals = `query govFilters($after: Cursor, $address: String!, $filter: [GovProposalVoteOption!]){
   govProposalVotes(after: $after
-    first: 30
+    first: 9999
     filter: {
       option: { in: $filter }
       voterAddress: { equalTo: $address }
@@ -75,6 +75,9 @@ export const govProposals = `query govFilters($after: Cursor, $address: String!,
     }
 
     nodes {
+      block {
+        timestamp
+      }
       transaction {
         status
         log

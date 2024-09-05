@@ -2,6 +2,7 @@ import { TabsPanel } from "@components-v2/tabs/tabsPanel-1";
 import React, { useState } from "react";
 import { LineGraph } from "./line-graph";
 import style from "./style.module.scss";
+import { useLanguage } from "../../languages";
 
 interface LineGraphViewProps {
   tokenName: string | undefined;
@@ -39,6 +40,9 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<any>(tabs[0]);
   const [loading, setLoading] = useState<boolean>(true);
+  const language = useLanguage();
+
+  const fiatCurrency = language.fiatCurrency;
 
   return (
     <div className={style["graph-container"]}>
@@ -51,6 +55,7 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
         setTokenState={setTokenState}
         loading={loading}
         setLoading={setLoading}
+        vsCurrency={fiatCurrency}
       />
       {tokenState?.diff && (
         <div style={{ marginBottom: "-18px" }}>

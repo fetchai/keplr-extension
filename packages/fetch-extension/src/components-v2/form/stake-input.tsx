@@ -13,6 +13,7 @@ import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { InputField } from "@components-v2/input-field";
 import { parseDollarAmount } from "@utils/format";
 import { useIntl } from "react-intl";
+import { useLanguage } from "../../languages";
 
 export const StakeInput: FunctionComponent<{
   label: string;
@@ -20,7 +21,11 @@ export const StakeInput: FunctionComponent<{
   amountConfig: IAmountConfig;
 }> = observer(({ label, amountConfig, isToggleClicked }) => {
   const { priceStore } = useStore();
-  const [inputInUsd, setInputInUsd] = useState<string | undefined>("");
+  const [inputInFiatCurrency, setInputInFiatCurrency] = useState<
+    string | undefined
+  >("");
+  const language = useLanguage();
+  const fiatCurrency = language.fiatCurrency;
 
   const intl = useIntl();
   const error = amountConfig.error;
@@ -61,8 +66,8 @@ export const StakeInput: FunctionComponent<{
     return isDecimal !== null;
   };
 
-  const convertToUsd = (currency: any) => {
-    const value = priceStore.calculatePrice(currency);
+  const convertToFiatCurrency = (currency: any) => {
+    const value = priceStore.calculatePrice(currency, fiatCurrency);
     return value && value.shrink(true).maxDecimals(6).toString();
   };
 
@@ -76,8 +81,8 @@ export const StakeInput: FunctionComponent<{
       amountConfig.sendCurrency,
       new Int(amountInNumber)
     );
-    const inputValueInUsd = convertToUsd(inputValue);
-    setInputInUsd(inputValueInUsd);
+    const inputValueInUsd = convertToFiatCurrency(inputValue);
+    setInputInFiatCurrency(inputValueInUsd);
   }, [amountConfig.amount]);
 
   return (
@@ -86,7 +91,7 @@ export const StakeInput: FunctionComponent<{
         label={label}
         value={
           isToggleClicked
-            ? parseDollarAmount(inputInUsd).toString()
+            ? parseDollarAmount(inputInFiatCurrency).toString()
             : amountConfig.amount
         }
         placeholder={`0`}
@@ -99,7 +104,7 @@ export const StakeInput: FunctionComponent<{
             }}
           >
             {isToggleClicked
-              ? priceStore.defaultVsCurrency.toUpperCase()
+              ? fiatCurrency.toUpperCase()
               : amountConfig.sendCurrency.coinDenom}
           </div>
         }
@@ -117,7 +122,7 @@ export const StakeInput: FunctionComponent<{
               }
             }
             isToggleClicked
-              ? parseDollarAmount(inputInUsd)
+              ? parseDollarAmount(inputInFiatCurrency)
               : amountConfig.setAmount(value);
           }
         }}
