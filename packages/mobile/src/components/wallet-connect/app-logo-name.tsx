@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from "react";
-import WalletConnect from "@walletconnect/client";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { ImageStyle } from "react-native-fast-image";
 import { useStyle } from "styles/index";
@@ -10,7 +9,13 @@ export const WCAppLogoAndName: FunctionComponent<{
   logoStyle?: ImageStyle;
   altLogoStyle?: ViewStyle;
 
-  peerMeta: WalletConnect["peerMeta"];
+  peerMeta:
+    | {
+        name?: string | undefined;
+        url?: string | undefined;
+        icons?: string[] | undefined;
+      }
+    | undefined;
 }> = ({ containerStyle, logoStyle, altLogoStyle, peerMeta }) => {
   const style = useStyle();
 

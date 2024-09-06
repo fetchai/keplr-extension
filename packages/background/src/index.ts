@@ -12,7 +12,7 @@ import * as Tokens from "./tokens/internal";
 import * as Interaction from "./interaction/internal";
 import * as Permission from "./permission/internal";
 import * as PhishingList from "./phishing-list/internal";
-import * as AutoLocker from "./auto-lock-account/internal";
+// import * as AutoLocker from "./auto-lock-account/internal";
 import * as Analytics from "./analytics/internal";
 import * as Messaging from "./messaging/internal";
 import * as AddressBook from "./address-book/internal";
@@ -120,9 +120,9 @@ export function init(
     commonCrypto
   );
 
-  const autoLockAccountService = new AutoLocker.AutoLockAccountService(
-    storeCreator("auto-lock-account")
-  );
+  //  const autoLockAccountService = new AutoLocker.AutoLockAccountService(
+  //    storeCreator("auto-lock-account")
+  //  );
 
   const chainUpdaterService = new Updater.ChainUpdaterService(
     storeCreator("updator"),
@@ -151,7 +151,7 @@ export function init(
   AddressBook.init(router, addressBookService);
   BackgroundTx.init(router, backgroundTxService);
   PhishingList.init(router, phishingListService);
-  AutoLocker.init(router, autoLockAccountService);
+  // AutoLocker.init(router, autoLockAccountService);
   Analytics.init(router, analyticsService);
   KeyRing.init(router, keyRingService);
   SecretWasm.init(router, secretWasmService);
@@ -190,7 +190,7 @@ export function init(
       backgroundTxService.init(chainsService, permissionService);
       phishingListService.init();
       // No need to wait because user can't interact with app right after launch.
-      await autoLockAccountService.init(keyRingService);
+      // await autoLockAccountService.init(keyRingService);
       // No need to wait because user can't interact with app right after launch.
       await analyticsService.init();
       await messagingService.init(keyRingService);

@@ -3,8 +3,6 @@ import {
   AddressBookData,
   RegisterConfig,
 } from "@keplr-wallet/hooks";
-import WalletConnect from "@walletconnect/client";
-import AES, { Counter } from "aes-js";
 import { Buffer } from "buffer/";
 import { ExportKeyRingData } from "@keplr-wallet/background";
 import { KeyRingStore } from "@keplr-wallet/stores";
@@ -39,6 +37,7 @@ export function parseQRCodeDataForImportFromExtension(
   return sharedData;
 }
 
+//Todo
 export async function importFromExtension(
   sharedData: QRCodeSharedData,
   chainIdsForAddressBook: string[]
@@ -46,56 +45,61 @@ export async function importFromExtension(
   KeyRingDatas: ExportKeyRingData[];
   addressBooks: { [chainId: string]: AddressBookData[] | undefined };
 }> {
-  const connector = new WalletConnect({
-    uri: sharedData.wcURI,
-  });
-
-  if (connector.connected) {
-    await connector.killSession();
-  }
-
-  await new Promise<void>((resolve, reject) => {
-    connector.on("session_request", (error) => {
-      if (error) {
-        reject(error);
-      } else {
-        connector.approveSession({ accounts: [], chainId: 77777 });
-
-        resolve();
-      }
-    });
-  });
-
-  const result = (
-    await connector.sendCustomRequest({
-      id: Math.floor(Math.random() * 100000),
-      method: "keplr_request_export_keyring_datas_wallet_connect_v1",
-      params: [
-        {
-          addressBookChainIds: chainIdsForAddressBook,
-        },
-      ],
-    })
-  )[0] as WCExportKeyRingDatasResponse;
-
-  const counter = new Counter(0);
-  counter.setBytes(Buffer.from(result.encrypted.iv, "hex"));
-  const aesCtr = new AES.ModeOfOperation.ctr(
-    Buffer.from(sharedData.sharedPassword, "hex"),
-    counter
-  );
-
-  const decrypted = aesCtr.decrypt(
-    Buffer.from(result.encrypted.ciphertext, "hex")
-  );
-
-  const exportedKeyRingDatas = JSON.parse(
-    Buffer.from(decrypted).toString()
-  ) as ExportKeyRingData[];
+  // const connector = new WalletConnect({
+  //   uri: sharedData.wcURI,
+  // });
+  //
+  // if (connector.connected) {
+  //   await connector.killSession();
+  // }
+  //
+  // await new Promise<void>((resolve, reject) => {
+  //   connector.on("session_request", (error) => {
+  //     if (error) {
+  //       reject(error);
+  //     } else {
+  //       connector.approveSession({ accounts: [], chainId: 77777 });
+  //
+  //       resolve();
+  //     }
+  //   });
+  // });
+  //
+  // const result = (
+  //   await connector.sendCustomRequest({
+  //     id: Math.floor(Math.random() * 100000),
+  //     method: "keplr_request_export_keyring_datas_wallet_connect_v1",
+  //     params: [
+  //       {
+  //         addressBookChainIds: chainIdsForAddressBook,
+  //       },
+  //     ],
+  //   })
+  // )[0] as WCExportKeyRingDatasResponse;
+  //
+  // const counter = new Counter(0);
+  // counter.setBytes(Buffer.from(result.encrypted.iv, "hex"));
+  // const aesCtr = new AES.ModeOfOperation.ctr(
+  //   Buffer.from(sharedData.sharedPassword, "hex"),
+  //   counter
+  // );
+  //
+  // const decrypted = aesCtr.decrypt(
+  //   Buffer.from(result.encrypted.ciphertext, "hex")
+  // );
+  //
+  // const exportedKeyRingDatas = JSON.parse(
+  //   Buffer.from(decrypted).toString()
+  // ) as ExportKeyRingData[];
+  //
+  // return {
+  //   KeyRingDatas: exportedKeyRingDatas,
+  //   addressBooks: result.addressBooks,
+  // };
 
   return {
-    KeyRingDatas: exportedKeyRingDatas,
-    addressBooks: result.addressBooks,
+    KeyRingDatas: [],
+    addressBooks: { undefined },
   };
 }
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DIR="$( cd "$( dirname "$0" )" && pwd -P )"
-file_path=${DIR}/../node_modules/react-native/scripts/react_native_pods.rb
+file_path=${DIR}/../../node_modules/react-native/scripts/react_native_pods.rb
 # Check if the file exists
 if [ ! -f "$file_path" ]; then
   echo "iOS Error: File '$file_path' not found."

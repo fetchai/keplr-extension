@@ -3,14 +3,14 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "stores/index";
 import { SignModal } from "modals/sign";
 import { LedgerGranterModal } from "modals/ledger";
-import { WalletConnectApprovalModal } from "modals/wallet-connect-approval";
 import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
 import { WCGoBackToBrowserModal } from "modals/wc-go-back-to-browser";
-import { BackHandler, Platform } from "react-native";
+import { AppState, BackHandler, Platform } from "react-native";
 import { KeyRingStatus } from "@keplr-wallet/background";
 import { NetworkErrorModal } from "modals/network";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { LoadingScreenModal } from "providers/loading-screen/modal";
+import { WalletConnectApprovalModal } from "modals/wallet-connect-approval";
 
 export const InteractionModalsProvider: FunctionComponent = observer(
   ({ children }) => {
@@ -39,13 +39,25 @@ export const InteractionModalsProvider: FunctionComponent = observer(
     }, [walletConnectStore.needGoBackToBrowser]);
 
     useEffect(() => {
+      const listener = AppState.addEventListener("change", (e) => {
+        if (e === "background" || e === "inactive") {
+          walletConnectStore.clearNeedGoBackToBrowser();
+        }
+      });
+
+      return () => {
+        listener.remove();
+      };
+    }, [walletConnectStore]);
+
+    useEffect(() => {
       for (const data of permissionStore.waitingDatas) {
         // Currently, there is no modal to permit the permission of external apps.
         // All apps should be embedded explicitly.
         // If such apps need the permissions, add these origins to the privileged origins.
         if (
           data.data.origins.length !== 1 ||
-          !WCMessageRequester.isVirtualSessionURL(data.data.origins[0])
+          !WCMessageRequester.isVirtualURL(data.data.origins[0])
         ) {
           permissionStore.reject(data.id);
         }
@@ -61,7 +73,10 @@ export const InteractionModalsProvider: FunctionComponent = observer(
          */}
         {keyRingStore.status === KeyRingStatus.UNLOCKED && (
           <LoadingScreenModal
-            isOpen={walletConnectStore.isPendingClientFromDeepLink}
+            isOpen={
+              walletConnectStore.isPendingClientFromDeepLink ||
+              walletConnectStore.isPendingWcCallFromDeepLinkClient
+            }
           />
         )}
         {walletConnectStore.needGoBackToBrowser && Platform.OS === "ios" ? (
@@ -84,11 +99,9 @@ export const InteractionModalsProvider: FunctionComponent = observer(
         {permissionStore.waitingDatas.map((data) => {
           if (data.data.origins.length === 1) {
             if (
-              WCMessageRequester.isVirtualSessionURL(data.data.origins[0]) &&
+              WCMessageRequester.isVirtualURL(data.data.origins[0]) &&
               walletConnectStore.getSession(
-                WCMessageRequester.getSessionIdFromVirtualURL(
-                  data.data.origins[0]
-                )
+                WCMessageRequester.getIdFromVirtualURL(data.data.origins[0])
               )
             ) {
               return (

@@ -15,11 +15,12 @@
     "lint-fix": "eslint --fix \"src/**/*\" && prettier --write \"src/**/*\""
   },
   "dependencies": {
-    "@walletconnect/browser-utils": "^1.6.5",
-    "@walletconnect/types": "^1.6.5",
-    "qrcode.react": "^1.0.1"
+    "detect-browser": "^5.3.0",
+    "qrcode.react": "^3.1.0"
   },
   "peerDependencies": {
+    "@walletconnect/sign-client": "^2",
+    "@walletconnect/types": "^2",
     "react": "^18",
     "react-dom": "^18"
   }

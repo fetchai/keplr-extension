@@ -105,7 +105,9 @@ export const CameraScreen: FunctionComponent = () => {
 
             try {
               if (data.startsWith("wc:")) {
-                await walletConnectStore.initClient(data);
+                if (data.includes("@2")) {
+                  await walletConnectStore.pair(data);
+                }
 
                 smartNavigation.navigateSmart("Home", {});
               } else {

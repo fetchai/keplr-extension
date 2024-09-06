@@ -23,7 +23,7 @@ export const App: FunctionComponent = observer(() => {
             <p>
               {queries.queryBalances
                 .getQueryBech32Address(account.bech32Address)
-                .stakable.balance.trim(true)
+                .stakable?.balance.trim(true)
                 .toString()}
             </p>
           </div>
@@ -31,6 +31,8 @@ export const App: FunctionComponent = observer(() => {
       })}
       <button
         onClick={() => {
+          (window as any).keplr.enable(["cosmoshub-4", "osmosis-1"]);
+
           const chainInfo = chainStore.chainInfos[0];
           const account = accountStore.getAccount(chainInfo.chainId);
           const counterpartyAccount = accountStore.getAccount(
@@ -44,7 +46,7 @@ export const App: FunctionComponent = observer(() => {
               counterpartyChainId: chainStore.chainInfos[1].chainId,
             },
             "1",
-            chainInfo.stakeCurrency,
+            chainInfo.currencies[0],
             counterpartyAccount.bech32Address
           );
         }}
@@ -66,7 +68,7 @@ export const App: FunctionComponent = observer(() => {
               counterpartyChainId: chainStore.chainInfos[0].chainId,
             },
             "1",
-            chainInfo.stakeCurrency,
+            chainInfo.currencies[0],
             counterpartyAccount.bech32Address
           );
         }}

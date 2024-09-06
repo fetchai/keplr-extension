@@ -22,11 +22,12 @@ export const WalletConnectApprovalModal: FunctionComponent<{
     }
 
     return walletConnectStore.getSession(
-      WCMessageRequester.getSessionIdFromVirtualURL(data.origins[0])
+      WCMessageRequester.getIdFromVirtualURL(data.origins[0])
     )!;
   }, [data.origins, walletConnectStore]);
 
-  const appName = session.peerMeta?.name || session.peerMeta?.url || "unknown";
+  const appName =
+    session.peer.metadata?.name || session.peer.metadata?.url || "unknown";
 
   const style = useStyle();
 
@@ -38,7 +39,7 @@ export const WalletConnectApprovalModal: FunctionComponent<{
     <CardModal isOpen={isOpen} title="Wallet Connect">
       <WCAppLogoAndName
         containerStyle={style.flatten(["margin-y-20"]) as ViewStyle}
-        peerMeta={session.peerMeta}
+        peerMeta={session.peer.metadata}
       />
       <Text
         style={style.flatten(["margin-bottom-40", "text-center"]) as ViewStyle}

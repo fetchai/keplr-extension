@@ -5,14 +5,8 @@ import React, {
   useMemo,
   useState,
 } from "react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import QRCode from "qrcode.react";
-import {
-  isMobile,
-  isAndroid,
-  saveMobileLinkInfo,
-} from "@walletconnect/browser-utils";
+import { isAndroid, isMobile } from "./util";
 
 export type ModalUIOptions = {
   backdrop?: {
@@ -54,24 +48,28 @@ export const Modal: FunctionComponent<{
   const [checkMobile] = useState(() => isMobile());
   const [checkAndroid] = useState(() => isAndroid());
 
+  const saveMobileLinkInfo = (info: { name: string; href: string }) => {
+    localStorage.setItem("wallet-connect-v2-mobile-link", JSON.stringify(info));
+  };
+
   const navigateToAppURL = useMemo(() => {
     if (checkMobile) {
       if (checkAndroid) {
         // Save the mobile link.
         saveMobileLinkInfo({
           name: "Fetch",
-          href: "intent://wcV1#Intent;package=com.fetchai.fetchwallet;scheme=fetchwallet;end;",
+          href: "intent://wcV2#Intent;package=com.fetchai.fetchwallet;scheme=fetchwallet;end;",
         });
 
-        return `intent://wcV1?${uri}#Intent;package=com.fetchai.fetchwallet;scheme=fetchwallet;end;`;
+        return `intent://wcV2?${uri}#Intent;package=com.fetchai.fetchwallet;scheme=fetchwallet;end;`;
       } else {
         // Save the mobile link.
         saveMobileLinkInfo({
           name: "Fetch",
-          href: "fetchwallet://wcV1",
+          href: "fetchwallet://wcV2",
         });
 
-        return `fetchwallet://wcV1?${uri}`;
+        return `fetchwallet://wcV2?${uri}`;
       }
     }
   }, [checkAndroid, checkMobile, uri]);

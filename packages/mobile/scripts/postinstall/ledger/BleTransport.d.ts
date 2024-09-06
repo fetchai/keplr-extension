@@ -29,18 +29,14 @@ export default class BluetoothTransport extends Transport {
    * observe event with { available: bool, string } // available is generic, type is specific
    * an event is emit once and then listened
    */
-  static observeState(
-    observer: any
-  ): {
+  static observeState(observer: any): {
     unsubscribe: () => void;
   };
   static list: () => any;
   /**
    * Scan for bluetooth Ledger devices
    */
-  static listen(
-    observer: any
-  ): {
+  static listen(observer: any): {
     unsubscribe: () => void;
   };
   /**

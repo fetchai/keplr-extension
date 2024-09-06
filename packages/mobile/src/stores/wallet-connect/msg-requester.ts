@@ -3,29 +3,31 @@ import {
   MessageRequester,
   Result,
   JSONUint8Array,
+  KeplrError,
+  EthereumProviderRpcError,
 } from "@keplr-wallet/router";
 import EventEmitter from "eventemitter3";
 
 export class WCMessageRequester implements MessageRequester {
   constructor(
     protected readonly eventEmitter: EventEmitter,
-    protected readonly sessionId: string
+    protected readonly topic: string
   ) {}
 
-  static getVirtualSessionURL = (sessionId: string): string => {
-    return `https://keplr_wc_virtual.${sessionId}`;
+  static getVirtualURL = (id: string): string => {
+    return `https://keplr_wc_virtual@2.${id}`;
   };
 
-  static isVirtualSessionURL = (url: string): boolean => {
-    return url.startsWith("https://keplr_wc_virtual.");
+  static isVirtualURL = (url: string): boolean => {
+    return url.startsWith("https://keplr_wc_virtual@2.");
   };
 
-  static getSessionIdFromVirtualURL = (url: string): string => {
-    if (!WCMessageRequester.isVirtualSessionURL(url)) {
-      throw new Error("URL is not for wallet connect");
+  static getIdFromVirtualURL = (url: string): string => {
+    if (!WCMessageRequester.isVirtualURL(url)) {
+      throw new Error("URL is not for wallet connect v2");
     }
 
-    return url.replace("https://keplr_wc_virtual.", "").replace("/", "");
+    return url.replace("https://keplr_wc_virtual@2.", "").replace("/", "");
   };
 
   async sendMessage<M extends Message<unknown>>(
@@ -37,7 +39,7 @@ export class WCMessageRequester implements MessageRequester {
     // In the router and background, the origin should be formed as proper URL.
     // But, actually there is no expilicit and reliable URL in the wallet connect system.
     // Rather than handling the wallet connect with different logic, just set the URL as virtually formed URL with session id.
-    const url = WCMessageRequester.getVirtualSessionURL(this.sessionId);
+    const url = WCMessageRequester.getVirtualURL(this.topic);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -72,7 +74,21 @@ export class WCMessageRequester implements MessageRequester {
       if (typeof result.error === "string") {
         throw new Error(result.error);
       } else {
-        throw new Error(result.error.message);
+        if ("module" in result.error) {
+          if (typeof result.error.module === "string") {
+            throw new KeplrError(
+              result.error.module,
+              result.error.code,
+              result.error.message
+            );
+          }
+        } else {
+          throw new EthereumProviderRpcError(
+            result.error.code,
+            result.error.message,
+            result.error.data
+          );
+        }
       }
     }
 

@@ -16,7 +16,6 @@ import { Msg } from "./msg";
 import { observer } from "mobx-react-lite";
 import { WCMessageRequester } from "stores/wallet-connect/msg-requester";
 import { WCAppLogoAndName } from "components/wallet-connect";
-import WalletConnect from "@walletconnect/client";
 import { renderAminoMessage } from "./amino";
 import { renderDirectMessage } from "./direct";
 import { AnyWithUnpacked } from "@keplr-wallet/cosmos";
@@ -54,7 +53,27 @@ export const SignModal: FunctionComponent<{
   // Check that the request is from the wallet connect.
   // If this is undefiend, the request is not from the wallet connect.
   const [wcSession, setWCSession] = useState<
-    WalletConnect["session"] | undefined
+    | {
+        topic: string;
+        namespaces: Record<
+          string,
+          | {
+              accounts: string[];
+              methods: string[];
+              events: string[];
+            }
+          | undefined
+        >;
+        peer: {
+          metadata: {
+            name?: string;
+            description?: string;
+            url?: string;
+            icons?: string[];
+          };
+        };
+      }
+    | undefined
   >();
 
   const style = useStyle();
@@ -124,9 +143,9 @@ export const SignModal: FunctionComponent<{
 
       if (
         data.data.msgOrigin &&
-        WCMessageRequester.isVirtualSessionURL(data.data.msgOrigin)
+        WCMessageRequester.isVirtualURL(data.data.msgOrigin)
       ) {
-        const sessionId = WCMessageRequester.getSessionIdFromVirtualURL(
+        const sessionId = WCMessageRequester.getIdFromVirtualURL(
           data.data.msgOrigin
         );
         setWCSession(walletConnectStore.getSession(sessionId));
@@ -267,7 +286,7 @@ export const SignModal: FunctionComponent<{
       {wcSession ? (
         <WCAppLogoAndName
           containerStyle={style.flatten(["margin-y-14"]) as ViewStyle}
-          peerMeta={wcSession.peerMeta}
+          peerMeta={wcSession.peer.metadata}
         />
       ) : null}
       {selectedId === TransactionTabEnum.Details ? (

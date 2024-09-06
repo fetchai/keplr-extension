@@ -29,7 +29,10 @@ import {
 } from "@keplr-wallet/stores";
 import { AsyncKVStore } from "../common";
 import { APP_PORT } from "@keplr-wallet/router";
-import { ChainInfoWithCoreTypes } from "@keplr-wallet/background";
+import {
+  ChainInfoWithCoreTypes,
+  PermissionService,
+} from "@keplr-wallet/background";
 import { RNEnv, RNRouterUI, RNMessageRequesterInternal } from "../router";
 import { ChainStore } from "./chain";
 import EventEmitter from "eventemitter3";
@@ -53,6 +56,7 @@ export class RootStore {
 
   protected readonly interactionStore: InteractionStore;
   public readonly permissionStore: PermissionStore;
+  public readonly permissionService: PermissionService;
   public readonly ledgerInitStore: LedgerInitStore;
   public readonly signInteractionStore: SignInteractionStore;
   public readonly chainSuggestStore: ChainSuggestStore;
@@ -566,6 +570,15 @@ export class RootStore {
       this.keyRingStore
     );
 
+    this.permissionService = new PermissionService(
+      new AsyncKVStore("permission"),
+      [
+        "https://wallet.keplr.app",
+        "https://validator.keplr.app",
+        "https://chains.keplr.app",
+      ]
+    );
+
     this.walletConnectStore = new WalletConnectStore(
       new AsyncKVStore("store_wallet_connect"),
       {
@@ -578,7 +591,8 @@ export class RootStore {
       },
       this.chainStore,
       this.keyRingStore,
-      this.permissionStore
+      this.permissionStore,
+      this.permissionService
     );
 
     this.analyticsStore = new AnalyticsStore(

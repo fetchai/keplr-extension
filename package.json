@@ -136,7 +136,8 @@
     "libsodium": "file:./etc/noop",
     "libsodium-wrappers": "file:./etc/noop",
     "node-sass": "file:./etc/noop",
-    "@ethereumjs/common": "2.6.2"
+    "@ethereumjs/common": "2.6.2",
+    "@walletconnect/jsonrpc-types": "^1.0.4"
   },
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.13.6",
