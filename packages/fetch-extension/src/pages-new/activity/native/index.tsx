@@ -262,7 +262,7 @@ export const NativeTab = observer(() => {
             )} */}
           </React.Fragment>
         ) : (
-          <NoActivity />
+          <NoActivity label="No Activity Yet" />
         )
       ) : (
         <UnsupportedNetwork chainID={current.chainName} />
