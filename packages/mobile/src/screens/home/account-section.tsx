@@ -42,6 +42,7 @@ import { TxnStatus, txType } from "components/new/txn-status.tsx";
 import { BalanceCard } from "./balance-card";
 import { ClaimCard } from "./claim-card";
 import { observer } from "mobx-react-lite";
+import { fetchProposalNodes } from "screens/activity/utils";
 
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
@@ -120,6 +121,10 @@ export const AccountSection: FunctionComponent<{
       ? (parseFloat(totalNumber) * tokenState.diff) / 100
       : -(parseFloat(totalNumber) * tokenState.diff) / 100;
 
+  const accountOrChainChanged =
+    activityStore.getAddress !== account.bech32Address ||
+    activityStore.getChainId !== chainStore.current.chainId;
+
   async function onSubmit() {
     const validatorAddresses =
       rewards.getDescendingPendingRewardValidatorAddresses(8);
@@ -149,25 +154,20 @@ export const AccountSection: FunctionComponent<{
         type: "success",
         text1: "claim in process",
       });
-      await tx.send(
-        { amount: [], gas: gas.toString() },
-        "",
-        {},
-        {
-          onBroadcasted: (txHash) => {
-            setLoadingClaimButton(false);
-            analyticsStore.logEvent("claim_txn_broadcasted", {
-              chainId: chainStore.current.chainId,
-              chainName: chainStore.current.chainName,
-              pageName: "Home",
-            });
-            setTxnObj({
-              txnHash: Buffer.from(txHash).toString("hex"),
-              txnStatusModal: true,
-            });
-          },
-        }
-      );
+      await tx.send({ amount: [], gas: gas.toString() }, "", undefined, {
+        onBroadcasted: (txHash) => {
+          setLoadingClaimButton(false);
+          analyticsStore.logEvent("claim_txn_broadcasted", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Home",
+          });
+          setTxnObj({
+            txnHash: Buffer.from(txHash).toString("hex"),
+            txnStatusModal: true,
+          });
+        },
+      });
     } catch (e) {
       if (
         e?.message === "Request rejected" ||
@@ -210,6 +210,34 @@ export const AccountSection: FunctionComponent<{
   useEffect(() => {
     setGraphHeight(isShowClaimOption() ? 4.5 : 4.2);
   }, [isShowClaimOption]);
+
+  useEffect(() => {
+    /*  this is required because accountInit sets the nodes on reload, 
+        so we wait for accountInit to set the proposal nodes and then we 
+        store the proposal votes from api in activity store */
+    const timeout = setTimeout(async () => {
+      const nodes = activityStore.sortedNodesProposals;
+      if (nodes.length === 0) {
+        const nodes = await fetchProposalNodes(
+          "",
+          chainStore.current.chainId,
+          account.bech32Address
+        );
+        if (nodes.length) {
+          nodes.forEach((node: any) => activityStore.addProposalNode(node));
+        }
+      }
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [
+    account.bech32Address,
+    chainStore.current.chainId,
+    accountOrChainChanged,
+    activityStore,
+  ]);
 
   useEffect(() => {
     if (Object.values(activityStore.getPendingTxn).length > 0) {
@@ -342,7 +370,6 @@ export const AccountSection: FunctionComponent<{
         />
       </BlurBackground>
       <ClaimCard
-        account={account}
         setClaimModel={setClaimModel}
         loadingClaimButton={loadingClaimButton}
         isShowClaimOption={isShowClaimOption()}

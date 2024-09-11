@@ -51,7 +51,7 @@ export const SelectorValidatorDetailsScreen: FunctionComponent = observer(
           text="Choose this validator"
           onPress={() => {
             analyticsStore.logEvent("choose_validator_click", {
-              pageName: "Validator Detail",
+              pageName: "Validator Details",
             });
             smartNavigation.navigateSmart("Redelegate", {
               validatorAddress: prevSelectValidator,

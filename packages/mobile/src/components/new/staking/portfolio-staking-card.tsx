@@ -96,22 +96,17 @@ export const PortfolioStakingCard: FunctionComponent<{
         type: "success",
         text1: "claim in process",
       });
-      await tx.send(
-        { amount: [], gas: gas.toString() },
-        "",
-        {},
-        {
-          onBroadcasted: (txHash) => {
-            analyticsStore.logEvent("claim_txn_broadcasted", {
-              chainId: chainStore.current.chainId,
-              chainName: chainStore.current.chainName,
-              pageName: "Portfolio",
-            });
-            setTxnHash(Buffer.from(txHash).toString("hex"));
-            setOpenModal(true);
-          },
-        }
-      );
+      await tx.send({ amount: [], gas: gas.toString() }, "", undefined, {
+        onBroadcasted: (txHash) => {
+          analyticsStore.logEvent("claim_txn_broadcasted", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Portfolio",
+          });
+          setTxnHash(Buffer.from(txHash).toString("hex"));
+          setOpenModal(true);
+        },
+      });
     } catch (e) {
       if (
         e?.message === "Request rejected" ||

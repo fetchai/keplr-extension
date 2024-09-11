@@ -574,7 +574,11 @@ export const LedgerScreen: FunctionComponent = () => {
         loading={isCreating}
         onPress={() => {
           submit();
-          analyticsStore.logEvent("continue_click", { pageName: "Register" });
+          analyticsStore.logEvent("register_next_click", {
+            registerType: "ledger",
+            accountType: "ledger",
+            pageName: "Register",
+          });
         }}
         disabled={!isBLEAvailable}
       />

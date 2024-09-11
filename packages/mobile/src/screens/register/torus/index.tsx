@@ -490,7 +490,10 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         loading={isCreating}
         onPress={() => {
           submit();
-          analyticsStore.logEvent("next_click", { pageName: title });
+          analyticsStore.logEvent("register_done_click", {
+            pageName: title,
+            registerType: "apple",
+          });
         }}
         disabled={!privateKey || !email}
       />

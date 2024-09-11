@@ -32,8 +32,8 @@ export const LineGraph: FunctionComponent<{
     typeof netInfo.isConnected !== "boolean" || netInfo.isConnected;
   let fetValue;
   const cacheKey = useMemo(
-    () => `${tokenName}_${duration}`,
-    [tokenName, duration]
+    () => `${tokenName}_${duration}_${priceStore.defaultVsCurrency}`,
+    [tokenName, duration, priceStore.defaultVsCurrency]
   );
 
   function getTimeLabel() {
@@ -192,15 +192,34 @@ export const LineGraph: FunctionComponent<{
           ]) as ViewStyle
         }
       >
-        {`${chainStore.current.currencies[0].coinDenom}/USD `}
-        <Text
-          style={style.flatten(["color-white@60%"]) as ViewStyle}
-        >{`$${fetValue.toFixed(2)}`}</Text>
+        {`${
+          chainStore.current.currencies[0].coinDenom
+        }/${priceStore.defaultVsCurrency.toUpperCase()} `}
+        <Text style={style.flatten(["color-white@60%"]) as ViewStyle}>
+          {`${
+            priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
+              ?.symbol
+          }${fetValue.toFixed(2)}`}
+        </Text>
       </Text>
       {Platform.OS == "ios" ? (
-        <IOSLineChart data={chartsData} height={height} />
+        <IOSLineChart
+          data={chartsData}
+          height={height}
+          currencySymbol={
+            priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
+              ?.symbol
+          }
+        />
       ) : (
-        <AndroidLineChart data={chartsData} height={height} />
+        <AndroidLineChart
+          data={chartsData}
+          height={height}
+          currencySymbol={
+            priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
+              ?.symbol
+          }
+        />
       )}
     </View>
   );

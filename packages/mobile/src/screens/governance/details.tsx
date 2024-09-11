@@ -30,7 +30,7 @@ import { Buffer } from "buffer";
 import { ActivityEnum } from "screens/activity";
 import Toast from "react-native-toast-message";
 import { useSmartNavigation } from "navigation/smart-navigation";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 
 export type VoteType = "Yes" | "No" | "NoWithVeto" | "Abstain" | "Unspecified";
 export const TallyVoteInfoView: FunctionComponent<{
@@ -384,7 +384,13 @@ export const GovernanceDetailsCardBody: FunctionComponent<{
 });
 
 export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
-  const { chainStore, queriesStore, accountStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    queriesStore,
+    accountStore,
+    analyticsStore,
+    activityStore,
+  } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -407,7 +413,6 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
   const [txnHash, setTxnHash] = useState<string>("");
   const [openTxStateModal, setTxStateModal] = useState(false);
   const [isSendingTx, setIsSendingTx] = useState(false);
-  const [vote, setVote] = useState<VoteType>("Unspecified");
   const [openGovModel, setGovModalOpen] = useState(false);
 
   const queries = queriesStore.get(chainStore.current.chainId);
@@ -428,6 +433,9 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
       account.bech32Address
     ).vote;
   })();
+  const [vote, setVote] = useState<VoteType>(
+    voted !== undefined ? voted : "Unspecified"
+  );
   const voteText = (() => {
     if (!proposal) {
       return "Loading...";
@@ -462,22 +470,18 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
           console.log(e);
         }
         setGovModalOpen(false);
-        await tx.send(
-          { amount: [], gas: gas.toString() },
-          "",
-          {},
-          {
-            onBroadcasted: (txHash) => {
-              setTxnHash(Buffer.from(txHash).toString("hex"));
-              setTxStateModal(true);
-              analyticsStore.logEvent("vote_txn_broadcasted", {
-                chainId: chainStore.current.chainId,
-                chainName: chainStore.current.chainName,
-              });
-            },
-          }
-        );
+        await tx.send({ amount: [], gas: gas.toString() }, "", undefined, {
+          onBroadcasted: (txHash) => {
+            setTxnHash(Buffer.from(txHash).toString("hex"));
+            setTxStateModal(true);
+            analyticsStore.logEvent("vote_txn_broadcasted", {
+              chainId: chainStore.current.chainId,
+              chainName: chainStore.current.chainName,
+            });
+          },
+        });
       } catch (e) {
+        setVote(voted !== undefined ? voted : "Unspecified");
         if (
           e?.message === "Request rejected" ||
           e?.message === "Transaction rejected"
@@ -518,17 +522,21 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
       <Button
         text={voteText}
         size="large"
+        mode={voteText === "Change your vote" ? "outline" : "fill"}
         containerStyle={
-          style.flatten(["border-radius-64", "margin-top-16"]) as ViewStyle
+          style.flatten(
+            ["border-radius-64", "margin-top-16"],
+            [voteText === "Change your vote" && "border-color-white@20%"]
+          ) as ViewStyle
         }
         textStyle={style.flatten(["body2"]) as ViewStyle}
         rippleColor="black@50%"
         disabled={!voteEnabled || !account.isReadyToSendTx}
         onPress={() => {
-          if (account.txTypeInProgress === "govVote") {
+          if (activityStore.getPendingTxnTypes[txnTypeKey.govVote]) {
             Toast.show({
               type: "error",
-              text1: `${txType[account.txTypeInProgress]} in progress`,
+              text1: `${txType[txnTypeKey.govVote]} in progress`,
             });
             return;
           }
@@ -541,6 +549,7 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
         close={() => setGovModalOpen(false)}
         vote={vote}
         setVote={setVote}
+        prevVote={voted}
         isSendingTx={isSendingTx}
         onPress={onSubmit}
       />

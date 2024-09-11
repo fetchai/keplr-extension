@@ -149,7 +149,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
       <SettingSectionTitle title="Others" />
       {chainStore.current.govUrl && (
         <SettingItem
-          label="Proposals  "
+          label="Proposals"
           left={<ProposalIcon />}
           onPress={() => {
             navigation.navigate("Setting", {
@@ -181,7 +181,7 @@ export const SettingScreen: FunctionComponent = observer(() => {
         }}
       />
       <SettingItem
-        label="ASI Alliance Wallet version"
+        label="Version"
         left={<BranchIcon size={16} />}
         onPress={() => {
           navigation.navigate("Setting", {

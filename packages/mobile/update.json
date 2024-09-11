@@ -1,11 +1,11 @@
 {
-  "isForceUpdate": true,
+  "isForceUpdate": false,
   "iOS": {
     "version": "1.0.2",
-    "code": "17"
+    "code": "19"
   },
   "android": {
     "version": "1.0.2",
-    "code": "17"
+    "code": "19"
   }
 }

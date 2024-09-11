@@ -30,7 +30,7 @@ import {
 } from "@react-navigation/native";
 import { SlideDownAnimation } from "components/new/animations/slide-down";
 import { AnimatedNumber } from "components/new/animations/animated-number";
-import { txType } from "components/new/txn-status.tsx";
+import { txnTypeKey, txType } from "components/new/txn-status.tsx";
 import { VectorCharacter } from "components/vector-character";
 import { KeplrETCQueriesImpl } from "@keplr-wallet/stores-etc";
 import Skeleton from "react-native-reanimated-skeleton";
@@ -55,7 +55,13 @@ export const MyRewardCard: FunctionComponent<{
 }> = ({ containerStyle, queries, queryDelegations }) => {
   const style = useStyle();
 
-  const { chainStore, accountStore, priceStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    priceStore,
+    analyticsStore,
+    activityStore,
+  } = useStore();
 
   const account = accountStore.getAccount(chainStore.current.chainId);
 
@@ -296,10 +302,12 @@ export const MyRewardCard: FunctionComponent<{
                 });
                 return;
               }
-              if (account.txTypeInProgress === "withdrawRewards") {
+              if (
+                activityStore.getPendingTxnTypes[txnTypeKey.withdrawRewards]
+              ) {
                 Toast.show({
                   type: "error",
-                  text1: `${txType[account.txTypeInProgress]} in progress`,
+                  text1: `${txType[txnTypeKey.withdrawRewards]} in progress`,
                 });
                 return;
               }
@@ -367,7 +375,8 @@ export const MyRewardCard: FunctionComponent<{
         earnedAmount={pendingStakableReward.shrink(true).trim(true).toString()}
         onPress={handleAllClaim}
         buttonLoading={
-          isSendingTx || account.txTypeInProgress === "withdrawRewards"
+          isSendingTx ||
+          activityStore.getPendingTxnTypes[txnTypeKey.withdrawRewards]
         }
       />
       <TransactionModal
@@ -391,7 +400,8 @@ const DelegateReward: FunctionComponent<{
 }> = ({ queries, queryDelegations }) => {
   const style = useStyle();
 
-  const { chainStore, accountStore, analyticsStore } = useStore();
+  const { chainStore, accountStore, analyticsStore, activityStore } =
+    useStore();
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -442,7 +452,7 @@ const DelegateReward: FunctionComponent<{
     return map;
   }, [validators]);
 
-  const handleClaim = async (operatorAddress: string) => {
+  const handleClaim = async (validatorAddress: string) => {
     if (!networkIsConnected) {
       Toast.show({
         type: "error",
@@ -450,36 +460,23 @@ const DelegateReward: FunctionComponent<{
       });
       return;
     }
-    const tx = account.cosmos.makeWithdrawDelegationRewardTx([operatorAddress]);
-
-    setIsSendingTx(operatorAddress);
+    setIsSendingTx(validatorAddress);
 
     try {
       analyticsStore.logEvent("claim_click", {
         pageName: "Stake",
       });
-      let gas =
-        account.cosmos.msgOpts.withdrawRewards.gas * operatorAddress.length;
 
-      // Gas adjustment is 1.5
-      // Since there is currently no convenient way to adjust the gas adjustment on the UI,
-      // Use high gas adjustment to prevent failure.
-      try {
-        gas = (await tx.simulate()).gasUsed * 1.5;
-      } catch (e) {
-        // Some chain with older version of cosmos sdk (below @0.43 version) can't handle the simulation.
-        // Therefore, the failure is expected. If the simulation fails, simply use the default value.
-        console.log(e);
-      }
       setClaimModel(false);
       Toast.show({
         type: "success",
         text1: "claim in process",
       });
-      await tx.send(
-        { amount: [], gas: gas.toString() },
+      await account.cosmos.sendWithdrawDelegationRewardMsgs(
+        [validatorAddress],
         "",
-        {},
+        undefined,
+        undefined,
         {
           onBroadcasted: (txHash) => {
             analyticsStore.logEvent("claim_txn_broadcasted", {
@@ -639,11 +636,15 @@ const DelegateReward: FunctionComponent<{
                       });
                       return;
                     }
-                    if (account.txTypeInProgress === "withdrawRewards") {
+                    if (
+                      activityStore.getPendingTxnTypes[
+                        txnTypeKey.withdrawRewards
+                      ]
+                    ) {
                       Toast.show({
                         type: "error",
                         text1: `${
-                          txType[account.txTypeInProgress]
+                          txType[txnTypeKey.withdrawRewards]
                         } in progress`,
                       });
                       return;

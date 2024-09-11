@@ -28,6 +28,7 @@ import { GearIcon } from "components/new/icon/gear-icon";
 import { TransactionFeeModel } from "components/new/fee-modal/transection-fee-modal";
 import Toast from "react-native-toast-message";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { txnTypeKey } from "components/new/txn-status.tsx";
 
 interface ItemData {
   title: string;
@@ -49,8 +50,14 @@ export const DelegateScreen: FunctionComponent = observer(() => {
 
   const validatorAddress = route.params.validatorAddress;
 
-  const { chainStore, accountStore, queriesStore, analyticsStore, priceStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    analyticsStore,
+    priceStore,
+    activityStore,
+  } = useStore();
 
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -344,7 +351,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
         }
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
-        editable={!(account.txTypeInProgress === "delegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.delegate]}
       />
       <Text
         style={
@@ -359,7 +366,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
         amountConfig={sendConfigs.amountConfig}
         isToggleClicked={isToggleClicked}
         setIsToggleClicked={setIsToggleClicked}
-        disable={account.txTypeInProgress === "delegate"}
+        disable={activityStore.getPendingTxnTypes[txnTypeKey.delegate]}
       />
       <MemoInputView
         label="Memo"
@@ -374,7 +381,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
         }
         memoConfig={sendConfigs.memoConfig}
         error={sendConfigs.memoConfig.error?.message}
-        editable={!(account.txTypeInProgress === "delegate")}
+        editable={!activityStore.getPendingTxnTypes[txnTypeKey.delegate]}
       />
       <View
         style={
@@ -431,7 +438,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
             icon={
               <GearIcon
                 color={
-                  account.txTypeInProgress === "delegate"
+                  activityStore.getPendingTxnTypes[txnTypeKey.delegate]
                     ? style.get("color-white@20%").color
                     : "white"
                 }
@@ -444,12 +451,12 @@ export const DelegateScreen: FunctionComponent = observer(() => {
                 "items-center",
                 "justify-center",
                 "border-width-1",
-                account.txTypeInProgress === "delegate"
+                activityStore.getPendingTxnTypes[txnTypeKey.delegate]
                   ? "border-color-white@20%"
                   : "border-color-white@40%",
               ]) as ViewStyle
             }
-            disable={account.txTypeInProgress === "delegate"}
+            disable={activityStore.getPendingTxnTypes[txnTypeKey.delegate]}
             onPress={() => setFeeModal(true)}
           />
         </View>
@@ -477,7 +484,7 @@ export const DelegateScreen: FunctionComponent = observer(() => {
           style.flatten(["margin-top-16", "border-radius-32"]) as ViewStyle
         }
         disabled={!account.isReadyToSendTx || !txStateIsValid}
-        loading={account.txTypeInProgress === "delegate"}
+        loading={activityStore.getPendingTxnTypes[txnTypeKey.delegate]}
         onPress={stakeAmount}
       />
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />

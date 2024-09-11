@@ -28,7 +28,14 @@ export const ProposalFilterModal: FunctionComponent<{
   };
 
   return (
-    <CardModal isOpen={isOpen} close={close} title="Filter">
+    <CardModal
+      isOpen={isOpen}
+      close={() => {
+        setSelect(selectedIndex);
+        close();
+      }}
+      title="Filter"
+    >
       <ProposalStatusButton
         text="Active"
         id={1}
@@ -61,7 +68,7 @@ export const ProposalFilterModal: FunctionComponent<{
         }
         textStyle={style.flatten(["body2"]) as ViewStyle}
         rippleColor="black@50%"
-        // disabled={filters == selectedFilter}
+        disabled={select === selectedIndex}
         onPress={() => {
           setSelectedIndex(select);
           close();

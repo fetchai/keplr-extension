@@ -7,73 +7,82 @@ import { RectButton } from "components/rect-button";
 import { Button } from "components/button";
 import { CardModal } from "modals/card";
 import { BlurBackground } from "components/new/blur-background/blur-background";
-
-type VoteType = "Yes" | "No" | "NoWithVeto" | "Abstain" | "Unspecified";
+import { VoteType } from "./details";
+import { txnTypeKey } from "components/new/txn-status.tsx";
 
 export const GovernanceVoteModal: FunctionComponent<{
   isOpen: boolean;
   close: () => void;
   onPress: () => void;
   vote: VoteType;
+  prevVote: VoteType | undefined;
   setVote: any;
   isSendingTx: boolean;
 
   // Modal can't use the `useSmartNavigation` hook directly.
   // So need to get the props from the parent.
-}> = observer(({ close, isOpen, vote, setVote, onPress, isSendingTx }) => {
-  const { chainStore, accountStore } = useStore();
+}> = observer(
+  ({ close, isOpen, vote, setVote, onPress, isSendingTx, prevVote }) => {
+    const { chainStore, accountStore, activityStore } = useStore();
 
-  const account = accountStore.getAccount(chainStore.current.chainId);
-  const style = useStyle();
+    const account = accountStore.getAccount(chainStore.current.chainId);
+    const style = useStyle();
 
-  if (!isOpen) {
-    return null;
+    if (!isOpen) {
+      return null;
+    }
+
+    return (
+      <CardModal
+        isOpen={isOpen}
+        close={() => {
+          setVote(prevVote);
+          close();
+        }}
+        title="Vote"
+      >
+        <VoteButton
+          text={"Yes"}
+          select={vote === "Yes"}
+          onPress={() => setVote("Yes")}
+        />
+        <VoteButton
+          text={"No"}
+          select={vote === "No"}
+          onPress={() => setVote("No")}
+        />
+        <VoteButton
+          text={"No with veto"}
+          select={vote === "NoWithVeto"}
+          onPress={() => setVote("NoWithVeto")}
+        />
+        <VoteButton
+          text={"Abstain"}
+          select={vote === "Abstain"}
+          onPress={() => setVote("Abstain")}
+        />
+
+        <Button
+          text="Submit"
+          size="large"
+          containerStyle={
+            style.flatten(["border-radius-64", "margin-top-18"]) as ViewStyle
+          }
+          textStyle={style.flatten(["body2"]) as ViewStyle}
+          disabled={
+            vote === "Unspecified" ||
+            !account.isReadyToSendTx ||
+            prevVote === vote
+          }
+          loading={
+            isSendingTx || activityStore.getPendingTxnTypes[txnTypeKey.govVote]
+          }
+          onPress={onPress}
+        />
+      </CardModal>
+    );
   }
-
-  return (
-    <CardModal
-      isOpen={isOpen}
-      close={() => {
-        setVote("Unspecified");
-        close();
-      }}
-      title="Vote"
-    >
-      <VoteButton
-        text={"Yes"}
-        select={vote === "Yes"}
-        onPress={() => setVote("Yes")}
-      />
-      <VoteButton
-        text={"No"}
-        select={vote === "No"}
-        onPress={() => setVote("No")}
-      />
-      <VoteButton
-        text={"No with veto"}
-        select={vote === "NoWithVeto"}
-        onPress={() => setVote("NoWithVeto")}
-      />
-      <VoteButton
-        text={"Abstain"}
-        select={vote === "Abstain"}
-        onPress={() => setVote("Abstain")}
-      />
-
-      <Button
-        text="Submit"
-        size="large"
-        containerStyle={
-          style.flatten(["border-radius-64", "margin-top-18"]) as ViewStyle
-        }
-        textStyle={style.flatten(["body2"]) as ViewStyle}
-        disabled={vote === "Unspecified" || !account.isReadyToSendTx}
-        loading={isSendingTx || account.txTypeInProgress === "govVote"}
-        onPress={onPress}
-      />
-    </CardModal>
-  );
-});
+);
 
 const VoteButton: FunctionComponent<{
   text: string;

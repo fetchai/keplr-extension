@@ -22,31 +22,34 @@ export const GovActivityRow: FunctionComponent<{
 }> = ({ node }) => {
   const { queriesStore, chainStore, analyticsStore } = useStore();
 
+  const { proposalId, transaction, id } = node;
+  const { status } = transaction;
+
   const style = useStyle();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const queries = queriesStore.get(chainStore.current.chainId);
-  const proposalId = JSON.parse(node.message.json).proposalId.low;
+  // const proposalId = JSON.parse(node.message.json).proposalId.low;
   const proposal = queries.cosmos.queryGovernance.getProposal(
     proposalId.toString()
   );
   const vote = node.option;
-  const { status, id } = node.transaction;
+  // const { status, id } = node.transaction;
 
   function getVote(vote: string) {
     switch (vote.toUpperCase()) {
       default:
       case "Yes":
-        return "yes";
+        return "Yes";
 
       case "NO":
-        return "no";
+        return "No";
 
       case "ABSTAIN":
-        return "abstain";
+        return "Abstain";
 
       case "NO_WITH_VETO":
-        return "no with veto";
+        return "No with veto";
     }
   }
 
@@ -71,7 +74,7 @@ export const GovActivityRow: FunctionComponent<{
           style={
             style.flatten([
               "body3",
-              "padding-4",
+              "padding-y-6",
               "color-white",
               "font-medium",
             ]) as ViewStyle
@@ -83,14 +86,13 @@ export const GovActivityRow: FunctionComponent<{
           style={
             style.flatten([
               "body3",
-              "padding-2",
               "color-white@60%",
               "font-medium",
             ]) as ViewStyle
           }
         >
-          {`PROPOSAL #${proposalId} . ${
-            status === "Success" ? "Confirmed" : "Failed"
+          {`PROPOSAL #${proposalId} • ${
+            status === "Success" ? "Confirmed" : status ? status : "Failed"
           }`}
         </Text>
       </View>
