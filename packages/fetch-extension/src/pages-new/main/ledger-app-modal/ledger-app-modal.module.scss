@@ -22,9 +22,11 @@
 .ledgerModalBackdrop {
   background: rgba(39, 14, 141, 0.8);
   backdrop-filter: blur(3px);
+  opacity: 1 !important;
 }
 
 .ledgerModalBody {
   background-color: #000d3d;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   background-image: url("../../../public/assets/svg/wireframe/bg.svg");
 }
