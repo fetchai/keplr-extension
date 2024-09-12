@@ -4,8 +4,7 @@
   line-height: 28px;
 
   letter-spacing: 0.3px;
-
-  color: #32325d;
+  color: white;
 
   margin-bottom: 16px;
 }
@@ -15,7 +14,17 @@
   font-size: 15px;
   line-height: 20px;
 
-  color: #566172;
+  color: white;
 
   margin-bottom: 28px;
+}
+
+.ledgerModalBackdrop {
+  background: rgba(39, 14, 141, 0.8);
+  backdrop-filter: blur(3px);
+}
+
+.ledgerModalBody {
+  background-color: #000d3d;
+  background-image: url("../../../public/assets/svg/wireframe/bg.svg");
 }

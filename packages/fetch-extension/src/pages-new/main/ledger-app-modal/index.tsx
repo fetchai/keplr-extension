@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Button, Modal, ModalBody } from "reactstrap";
+import { Modal, ModalBody } from "reactstrap";
+import { ButtonV2 } from "@components-v2/buttons/button";
 import style from "./ledger-app-modal.module.scss";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
@@ -43,8 +44,12 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
   })();
 
   return (
-    <Modal isOpen={isOpen} centered>
-      <ModalBody>
+    <Modal
+      isOpen={isOpen}
+      centered
+      backdropClassName={style["ledgerModalBackdrop"]}
+    >
+      <ModalBody className={style["ledgerModalBody"]}>
         <div className={style["title"]}>Please Connect your Ledger device</div>
         <div className={style["paragraph"]}>
           For making address of {chainStore.current.chainName}, you need to
@@ -53,16 +58,21 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
         <div
           style={{
             display: "flex",
+            alignItems: "flex-end",
+            gap: "5px",
           }}
         >
-          <Button
-            type="button"
-            color="primary"
-            outline
-            block
-            style={{ margin: 0 }}
-            data-loading={isLoading}
-            onClick={(e) => {
+          <ButtonV2
+            text="Cancel"
+            styleProps={{
+              padding: "12px",
+              height: "50px",
+              background: "transparent",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.4)",
+            }}
+            dataLoading={isLoading}
+            onClick={(e: any) => {
               e.preventDefault();
 
               if (prevChainId[0]) {
@@ -72,16 +82,15 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
               }
               chainStore.saveLastViewChainId();
             }}
-          >
-            Cancel
-          </Button>
-          <div style={{ width: "32px" }} />
-          <Button
-            type="button"
-            color="primary"
-            block
-            style={{ margin: 0 }}
-            data-loading={isLoading}
+          />
+          <ButtonV2
+            text="Connect"
+            styleProps={{
+              padding: "12px",
+              height: "50px",
+              margin: 0,
+            }}
+            dataLoading={isLoading}
             onClick={async () => {
               setIsLoading(true);
 
@@ -100,9 +109,7 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
                 setIsLoading(false);
               }
             }}
-          >
-            Connect
-          </Button>
+          />
         </div>
       </ModalBody>
     </Modal>
