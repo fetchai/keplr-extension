@@ -269,66 +269,6 @@ export class RootStore {
           maxDecimals: 2,
           locale: "en-US",
         },
-        eur: {
-          currency: "eur",
-          symbol: "€",
-          maxDecimals: 2,
-          locale: "en-IE",
-        },
-        gbp: {
-          currency: "gbp",
-          symbol: "£",
-          maxDecimals: 2,
-          locale: "en-GB",
-        },
-        cad: {
-          currency: "cad",
-          symbol: "CA$",
-          maxDecimals: 2,
-          locale: "en-CA",
-        },
-        aud: {
-          currency: "aud",
-          symbol: "AU$",
-          maxDecimals: 2,
-          locale: "en-AU",
-        },
-        rub: {
-          currency: "rub",
-          symbol: "₽",
-          maxDecimals: 0,
-          locale: "ru-RU",
-        },
-        krw: {
-          currency: "krw",
-          symbol: "₩",
-          maxDecimals: 0,
-          locale: "ko-KR",
-        },
-        hkd: {
-          currency: "hkd",
-          symbol: "HK$",
-          maxDecimals: 1,
-          locale: "en-HK",
-        },
-        cny: {
-          currency: "cny",
-          symbol: "¥",
-          maxDecimals: 1,
-          locale: "zh-CN",
-        },
-        jpy: {
-          currency: "jpy",
-          symbol: "¥",
-          maxDecimals: 0,
-          locale: "ja-JP",
-        },
-        inr: {
-          currency: "inr",
-          symbol: "₹",
-          maxDecimals: 1,
-          locale: "en-IN",
-        },
         aed: {
           currency: "aed",
           symbol: "د.إ",
@@ -340,6 +280,12 @@ export class RootStore {
           symbol: "$",
           maxDecimals: 2,
           locale: "es-AR",
+        },
+        aud: {
+          currency: "aud",
+          symbol: "AU$",
+          maxDecimals: 2,
+          locale: "en-AU",
         },
         bdt: {
           currency: "bdt",
@@ -365,6 +311,12 @@ export class RootStore {
           maxDecimals: 2,
           locale: "pt-BR",
         },
+        cad: {
+          currency: "cad",
+          symbol: "CA$",
+          maxDecimals: 2,
+          locale: "en-CA",
+        },
         chf: {
           currency: "chf",
           symbol: "CHF",
@@ -374,8 +326,14 @@ export class RootStore {
         clp: {
           currency: "clp",
           symbol: "$",
-          maxDecimals: 0,
+          maxDecimals: 2,
           locale: "es-CL",
+        },
+        cny: {
+          currency: "cny",
+          symbol: "¥",
+          maxDecimals: 1,
+          locale: "zh-CN",
         },
         czk: {
           currency: "czk",
@@ -389,11 +347,29 @@ export class RootStore {
           maxDecimals: 2,
           locale: "da-DK",
         },
+        eur: {
+          currency: "eur",
+          symbol: "€",
+          maxDecimals: 2,
+          locale: "en-IE",
+        },
+        gbp: {
+          currency: "gbp",
+          symbol: "£",
+          maxDecimals: 2,
+          locale: "en-GB",
+        },
         gel: {
           currency: "gel",
           symbol: "₾",
           maxDecimals: 2,
           locale: "ka-GE",
+        },
+        hkd: {
+          currency: "hkd",
+          symbol: "HK$",
+          maxDecimals: 1,
+          locale: "en-HK",
         },
         huf: {
           currency: "huf",
@@ -412,6 +388,24 @@ export class RootStore {
           symbol: "₪",
           maxDecimals: 2,
           locale: "he-IL",
+        },
+        inr: {
+          currency: "inr",
+          symbol: "₹",
+          maxDecimals: 1,
+          locale: "en-IN",
+        },
+        jpy: {
+          currency: "jpy",
+          symbol: "¥",
+          maxDecimals: 2,
+          locale: "ja-JP",
+        },
+        krw: {
+          currency: "krw",
+          symbol: "₩",
+          maxDecimals: 2,
+          locale: "ko-KR",
         },
         kwd: {
           currency: "kwd",
@@ -479,6 +473,12 @@ export class RootStore {
           maxDecimals: 2,
           locale: "pl-PL",
         },
+        rub: {
+          currency: "rub",
+          symbol: "₽",
+          maxDecimals: 2,
+          locale: "ru-RU",
+        },
         sar: {
           currency: "sar",
           symbol: "ر.س",
@@ -530,7 +530,7 @@ export class RootStore {
         vnd: {
           currency: "vnd",
           symbol: "₫",
-          maxDecimals: 0,
+          maxDecimals: 2,
           locale: "vi-VN",
         },
         zar: {
