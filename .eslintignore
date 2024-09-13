@@ -17,6 +17,7 @@ dist/*
 prod/*
 build/*
 packages/extension/noop-keplr-wallet-private/build
+packages/mobile/scripts
 
 yarn.lock
 Podfile.lock
