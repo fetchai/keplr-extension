@@ -94,6 +94,7 @@ export interface FiatCurrency {
   readonly symbol: string;
   readonly maxDecimals: number;
   readonly locale: string;
+  readonly name?: string;
 }
 
 export type WithGasPriceStep<T> = T & {
