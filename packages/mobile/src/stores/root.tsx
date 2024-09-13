@@ -329,11 +329,29 @@ export class RootStore {
           maxDecimals: 1,
           locale: "en-IN",
         },
+        aed: {
+          currency: "aed",
+          symbol: "د.إ",
+          maxDecimals: 2,
+          locale: "ar-AE",
+        },
         ars: {
           currency: "ars",
           symbol: "$",
           maxDecimals: 2,
           locale: "es-AR",
+        },
+        bdt: {
+          currency: "bdt",
+          symbol: "৳",
+          maxDecimals: 2,
+          locale: "bn-BD",
+        },
+        bhd: {
+          currency: "bhd",
+          symbol: ".د.ب",
+          maxDecimals: 3,
+          locale: "ar-BH",
         },
         bmd: {
           currency: "bmd",
