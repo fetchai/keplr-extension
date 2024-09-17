@@ -106,6 +106,7 @@ export interface ProposalNode {
     gasUsed: string;
     chainId: string;
     memo: string;
+    signerAddress: string;
   };
   messages: {
     json: string;
@@ -456,6 +457,7 @@ export class CosmosAccountImpl {
         proposalNode = getProposalNode({
           txId,
           signDoc,
+          signerAddress,
           type,
           fee,
           memo,
@@ -475,7 +477,12 @@ export class CosmosAccountImpl {
         });
         this.activityStore.addNode(newNode);
       }
-      this.activityStore.addPendingTxn({ id: txId, type });
+      this.activityStore.addPendingTxn({
+        id: txId,
+        type,
+        chainId: this.chainId,
+        signerAddress,
+      });
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
       this.activityStore.setPendingTxnTypes(type, false);

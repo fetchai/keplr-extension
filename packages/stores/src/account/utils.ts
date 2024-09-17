@@ -224,6 +224,19 @@ export const getJson = (addresses: any, type: string) => {
   return JSON.stringify(json);
 };
 
+export enum TXNTYPE {
+  ibcTransfer = "ibcTransfer",
+  send = "send",
+  withdrawRewards = "withdrawRewards",
+  delegate = "delegate",
+  undelegate = "undelegate",
+  redelegate = "redelegate",
+  govVote = "govVote",
+  nativeBridgeSend = "nativeBridgeSend",
+  approval = "approval",
+  createSecret20ViewingKey = "createSecret20ViewingKey",
+}
+
 export const getNodes = (msgs: any, type: string) => {
   const nodes = msgs.protoMsgs.map((node: any, index: number) => {
     return {
@@ -236,23 +249,35 @@ export const getNodes = (msgs: any, type: string) => {
   let balanceOffset = "";
   let signerAddress = "";
 
-  if (type === "send") {
+  if (type === TXNTYPE.send) {
     balanceOffset = `-${msgs.aminoMsgs[0].value.amount[0].amount}`;
     signerAddress = msgs.aminoMsgs[0].value.from_address;
   }
 
-  if (type === "withdrawRewards") {
+  if (type === TXNTYPE.withdrawRewards) {
     balanceOffset = "";
     signerAddress = msgs.aminoMsgs[0].value.delegator_address;
   }
 
-  if (type === "delegate" || type === "redelegate" || type === "undelegate") {
+  if (
+    type === TXNTYPE.delegate ||
+    type === TXNTYPE.redelegate ||
+    type === TXNTYPE.undelegate
+  ) {
     balanceOffset = `${msgs.aminoMsgs[0].value.amount.amount}`;
     signerAddress = msgs.aminoMsgs[0].value.delegator_address;
   }
 
-  if (type === "ibcTransfer") {
+  if (type === TXNTYPE.ibcTransfer) {
     balanceOffset = `${msgs.aminoMsgs[0].value.token.amount}`;
+    signerAddress = msgs.aminoMsgs[0].value.sender;
+  }
+
+  if (type === TXNTYPE.govVote) {
+    signerAddress = msgs.aminoMsgs[0].value.voter;
+  }
+
+  if (type === TXNTYPE.nativeBridgeSend) {
     signerAddress = msgs.aminoMsgs[0].value.sender;
   }
 
@@ -317,6 +342,7 @@ export const updateProposalNodeOnTxnCompleted = (
 export const getProposalNode = ({
   txId,
   signDoc,
+  signerAddress,
   type,
   fee,
   memo,
@@ -324,6 +350,7 @@ export const getProposalNode = ({
 }: {
   txId: string;
   signDoc: any;
+  signerAddress: string;
   type: string;
   fee: any;
   memo: string;
@@ -354,6 +381,7 @@ export const getProposalNode = ({
       id: txId,
       log: "",
       fees: JSON.stringify(signDoc.fee.amount),
+      signerAddress,
       chainId: signDoc.chain_id,
       gasUsed: fee.gas,
       memo: memo,
