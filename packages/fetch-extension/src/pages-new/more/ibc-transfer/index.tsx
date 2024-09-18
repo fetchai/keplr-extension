@@ -34,6 +34,7 @@ import { Card } from "@components-v2/card";
 import { Dropdown } from "@components-v2/dropdown";
 import { SetKeyRingPage } from "../../keyring-dev";
 import { TXNTYPE } from "../../../config";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 export const IBCTransferPage: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -169,7 +170,14 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
                   }
                 );
 
-                navigate("/");
+                const txnNavigationOptions = {
+                  redirect: () => {
+                    navigate("/");
+                  },
+                  txInProgress: accountInfo.txInProgress,
+                  txType: TXNTYPE.ibcTransfer,
+                };
+                navigateOnTxnEvents(txnNavigationOptions);
               } catch (e) {
                 analyticsStore.logEvent("ibc_txn_broadcasted_fail", {
                   chainId: chainStore.current.chainId,
@@ -179,7 +187,14 @@ export const IBCTransferPage: FunctionComponent = observer(() => {
                   toChainName,
                   message: e?.message ?? "",
                 });
-                navigate("/", { replace: true });
+                const txnNavigationOptions = {
+                  redirect: () => {
+                    navigate("/", { replace: true });
+                  },
+                  txInProgress: accountInfo.txInProgress,
+                  txType: TXNTYPE.ibcTransfer,
+                };
+                navigateOnTxnEvents(txnNavigationOptions);
                 notification.push({
                   type: "warning",
                   placement: "top-center",

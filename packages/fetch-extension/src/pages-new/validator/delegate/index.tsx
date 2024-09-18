@@ -17,6 +17,7 @@ import { TXNTYPE } from "../../../config";
 import { useStore } from "../../../stores";
 import { useLanguage } from "../../../languages";
 import style from "./style.module.scss";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 export const Delegate: FunctionComponent = observer(() => {
   const location = useLocation();
@@ -170,8 +171,16 @@ export const Delegate: FunctionComponent = observer(() => {
         },
       });
     } finally {
+      const txnNavigationOptions = {
+        redirect: () => {
+          navigate("/activity", { replace: true });
+        },
+        txType: TXNTYPE.delegate,
+        txInProgress: account.txInProgress,
+      };
+
       setTimeout(() => {
-        navigate("/activity", { replace: true });
+        navigateOnTxnEvents(txnNavigationOptions);
       }, 200);
     }
   };

@@ -38,12 +38,14 @@ export const SignPageV2: FunctionComponent = observer(() => {
     queriesStore,
   } = useStore();
 
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const [signer, setSigner] = useState("");
   const [origin, setOrigin] = useState<string | undefined>();
   const [isADR36WithString, setIsADR36WithString] = useState<
     boolean | undefined
   >();
   const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
+  const [approveButtonClicked, setApproveButtonClicked] = useState(false);
 
   const current = chainStore.current;
   // There are services that sometimes use invalid tx to sign arbitrary data on the sign page.
@@ -282,11 +284,20 @@ export const SignPageV2: FunctionComponent = observer(() => {
                         height: "56px",
                       }}
                       disabled={
-                        approveIsDisabled || signInteractionStore.isLoading
+                        approveIsDisabled ||
+                        signInteractionStore.isLoading ||
+                        accountInfo.broadcastInProgress
                       }
                       btnBgEnabled={true}
                       text={
-                        signInteractionStore.isLoading ? (
+                        accountInfo.broadcastInProgress ? (
+                          <span>
+                            <i className="fas fa-spinner fa-spin ml-2" />{" "}
+                            {approveButtonClicked
+                              ? "Transaction in progress"
+                              : "Previous transaction in progress"}
+                          </span>
+                        ) : signInteractionStore.isLoading ? (
                           <i className="fas fa-spinner fa-spin ml-2" />
                         ) : (
                           "Approve transaction"
@@ -295,6 +306,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                       data-loading={signInteractionStore.isLoading}
                       onClick={async (e: any) => {
                         e.preventDefault();
+                        setApproveButtonClicked(true);
 
                         if (needSetIsProcessing) {
                           setIsProcessing(true);

@@ -22,6 +22,7 @@ import { TXNTYPE } from "../../../config";
 import { useStore } from "../../../stores";
 import style from "./style.module.scss";
 import { useLanguage } from "../../../languages";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 export const Unstake = observer(() => {
   const location = useLocation();
@@ -177,8 +178,15 @@ export const Unstake = observer(() => {
         },
       });
     } finally {
+      const txnNavigationOptions = {
+        redirect: () => {
+          navigate("/activity", { replace: true });
+        },
+        txType: TXNTYPE.undelegate,
+        txInProgress: account.txInProgress,
+      };
       setTimeout(() => {
-        navigate("/activity", { replace: true });
+        navigateOnTxnEvents(txnNavigationOptions);
       }, 200);
     }
   };

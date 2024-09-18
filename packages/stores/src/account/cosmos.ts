@@ -46,6 +46,7 @@ import deepmerge from "deepmerge";
 import { Buffer } from "buffer/";
 import { MakeTxResponse, ProtoMsgsOrWithAminoMsgs } from "./types";
 import {
+  getActivityNode,
   getEip712TypedDataBasedOnChainId,
   getNodes,
   getProposalNode,
@@ -99,12 +100,13 @@ export interface ProposalNode {
   transaction: {
     status: string;
     id: string;
-    log: [];
+    log: string;
     __typename: string;
     fees: string;
     gasUsed: string;
     chainId: string;
     memo: string;
+    signerAddress: string;
   };
   messages: {
     json: string;
@@ -425,6 +427,7 @@ export class CosmosAccountImpl {
   ) {
     this.base.setTxTypeInProgress(type);
     this.activityStore.setPendingTxnTypes(type, true);
+    this.base.setTxInProgress(type);
 
     let txHash: Uint8Array;
     let signDoc: StdSignDoc;
@@ -450,31 +453,21 @@ export class CosmosAccountImpl {
 
       const { nodes, balanceOffset, signerAddress } = getNodes(msgs, type);
 
-      const newNode: Node = {
-        balanceOffset,
-        type,
-        block: {
-          timestamp: new Date().toJSON(),
-          __typename: "Block",
-        },
-        id: txId,
-        transaction: {
-          fees: JSON.stringify(signDoc.fee.amount),
-          chainId: signDoc.chain_id,
-          gasUsed: fee.gas,
-          id: txId,
-          memo: memo,
-          signerAddress,
-          status: "Pending",
-          timeoutHeight: "0",
-          messages: {
-            nodes,
-          },
-        },
-      };
-
       if (type === "govVote") {
         proposalNode = getProposalNode({
+          txId,
+          signDoc,
+          signerAddress,
+          type,
+          fee,
+          memo,
+          nodes,
+        });
+        this.activityStore.addProposalNode(proposalNode);
+      } else {
+        const newNode: Node = getActivityNode({
+          balanceOffset,
+          signerAddress,
           txId,
           signDoc,
           type,
@@ -482,10 +475,14 @@ export class CosmosAccountImpl {
           memo,
           nodes,
         });
-        this.activityStore.addProposalNode(proposalNode);
+        this.activityStore.addNode(newNode);
       }
-      this.activityStore.addNode(newNode);
-      this.activityStore.addPendingTxn({ id: txId, type });
+      this.activityStore.addPendingTxn({
+        id: txId,
+        type,
+        chainId: this.chainId,
+        signerAddress,
+      });
     } catch (e: any) {
       this.base.setTxTypeInProgress("");
       this.activityStore.setPendingTxnTypes(type, false);
@@ -546,12 +543,13 @@ export class CosmosAccountImpl {
         if (type === "govVote") {
           updateProposalNodeOnTxnCompleted(
             tx,
-            proposalNode,
+            proposalNode.id,
             this.activityStore
           );
+        } else {
+          //update node's gas, amount and status on completed
+          updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
         }
-        //update node's gas, amount and status on completed
-        updateNodeOnTxnCompleted(type, tx, txId, this.activityStore);
         this.activityStore.removePendingTxn(txId);
 
         this.base.setTxTypeInProgress("");
@@ -584,12 +582,13 @@ export class CosmosAccountImpl {
       })
       .catch(() => {
         this.activityStore.removePendingTxn(txId);
-        this.activityStore.setTxnStatus(txId, "Unconfirmed");
         if (type === "govVote") {
           this.activityStore.setProposalTxnStatus(
             proposalNode.id,
             "Unconfirmed"
           );
+        } else {
+          this.activityStore.setTxnStatus(txId, "Unconfirmed");
         }
         this.base.setTxTypeInProgress("");
         this.activityStore.setIsNodeUpdated(true);
@@ -697,6 +696,7 @@ export class CosmosAccountImpl {
       );
     })();
 
+    this.base.setBroadcastInProgress(true);
     const signedTx = TxRaw.encode({
       bodyBytes: TxBody.encode(
         TxBody.fromPartial({
@@ -785,7 +785,16 @@ export class CosmosAccountImpl {
     this.base.increaseCustomSequence();
 
     return {
-      txHash: await keplr.sendTx(this.chainId, signedTx, mode as BroadcastMode),
+      txHash: await keplr
+        .sendTx(this.chainId, signedTx, mode as BroadcastMode)
+        .then((res) => {
+          this.base.setBroadcastInProgress(false);
+          return res;
+        })
+        .catch((err) => {
+          this.base.setBroadcastInProgress(false);
+          throw err;
+        }),
       signDoc: signResponse.signed,
     };
   }

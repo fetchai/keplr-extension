@@ -230,6 +230,11 @@ export const fetchProposalNodes = async (
       if (fetchedData) {
         parsedNodes = fetchedData.nodes.map((node: any) => ({
           ...node,
+          transaction: {
+            ...node.transaction,
+            chainId,
+            signerAddress: bech32Address,
+          },
           proposalId: getProposalIdFromLogs(node.transaction.log),
         }));
         return parsedNodes;
