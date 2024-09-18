@@ -127,3 +127,52 @@
     }
   }
 }
+
+.ledgerCheckbox {
+  margin-left: 15px;
+  margin-top: 6px;
+
+  &:checked {
+    accent-color: #010d3e !important;
+    background: transparent !important;
+    opacity: 1;
+    border-color: white !important;
+  }
+
+  &:not(:disabled):active {
+    ~ .ledgerCheckboxLabel {
+      &::before {
+        background-color: transparent !important;
+        border-color: white !important;
+      }
+    }
+  }
+
+  &:checked ~ .ledgerCheckboxLabel::before {
+    border-color: white !important;
+    background-color: transparent !important;
+  }
+
+  &:focus:not(:checked) ~ .ledgerCheckboxLabel {
+    &::before {
+      border-color: white !important;
+    }
+  }
+}
+
+.ledgerCheckboxLabel {
+  &::before {
+    margin-left: 15px;
+    margin-top: 5px;
+    border-radius: 0.25rem !important;
+    border: 1px solid white;
+    background: transparent !important;
+  }
+
+  &::after {
+    border: 1px solid white;
+    border-radius: 0.25rem !important;
+    margin-left: 15px;
+    margin-top: 5px;
+  }
+}

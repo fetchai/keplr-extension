@@ -300,14 +300,14 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
           ) : null}
           <div className="custom-control custom-checkbox mb-2">
             <input
-              className="custom-control-input"
+              className={`custom-control-input ${style["ledgerCheckbox"]}`}
               id="use-webhid"
               type="checkbox"
               checked={ledgerInitStore.isWebHID}
               onChange={toggleWebHIDFlag}
             />
             <label
-              className="custom-control-label"
+              className={`custom-control-label ${style["ledgerCheckboxLabel"]}`}
               htmlFor="use-webhid"
               style={{ color: "white", paddingTop: "1px" }}
             >
