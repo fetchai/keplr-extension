@@ -23,9 +23,16 @@ import * as Sentry from "@sentry/react-native";
 const App = require("./src/app").App;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const appName = require("./app.json").name;
+export const routingInstrumentation =
+  new Sentry.ReactNavigationInstrumentation();
 
 Sentry.init({
   dsn: process.env["SENTRY_DSN"] || "",
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      routingInstrumentation,
+    }),
+  ],
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
