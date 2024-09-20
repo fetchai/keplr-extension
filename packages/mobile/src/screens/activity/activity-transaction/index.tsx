@@ -47,13 +47,18 @@ export const ActivityNativeTab: FunctionComponent<{
         clearInterval(intervalRef.current);
       }
       if (activities.length == 0) {
-        setIsLoading(true);
-        setActivities(activityStore.sortedNodes);
+        if (activityStore.sortedNodes.length > 0) {
+          setIsLoading(true);
+          setActivities(activityStore.sortedNodes);
+        } else {
+          setIsLoading(false);
+        }
       }
 
       intervalRef.current = setInterval(() => {
-        setActivities(activityStore.sortedNodes);
-        setIsLoading(false);
+        if (activityStore.sortedNodes.length > 0) {
+          setActivities(activityStore.sortedNodes);
+        }
       }, 3000);
       // Clean up the interval on component unmount
       return () => {
