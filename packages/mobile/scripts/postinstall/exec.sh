@@ -15,10 +15,10 @@ cp ${DIR}/ledger/BleTransport.js ${DIR}/../../node_modules/@ledgerhq/react-nativ
 # 적절해보이는 방법은 아니지만... 이게 아니면 해결법을 찾을 수가 없다...
 cp ${DIR}/restart-fix/JSCRuntime.cpp ${DIR}/../../node_modules/react-native/ReactCommon/jsc/JSCRuntime.cpp
 
-cp ${DIR}/wc/index.js ${DIR}/../../node_modules/@walletconnect/react-native-compat/index.js
+#cp ${DIR}/wc/index.js ${DIR}/../../node_modules/@walletconnect/react-native-compat/index.js
 
-source ${DIR}/android/fix-android-legacy-dependency.sh
-source ${DIR}/android/fix-android-splash-screen-flash.sh
+. ${DIR}/android/fix-android-legacy-dependency.sh
+. ${DIR}/android/fix-android-splash-screen-flash.sh
 
-source ${DIR}/ios/fix-ios-blur-view.sh
-source ${DIR}/ios/fix-ios-legacy-pods.sh
+. ${DIR}/ios/fix-ios-blur-view.sh
+. ${DIR}/ios/fix-ios-legacy-pods.sh
