@@ -56,10 +56,6 @@ export const RecoverMnemonicScreen: FunctionComponent = () => {
   const clipboardContent = useRef<string>("");
 
   useEffect(() => {
-    (async function fetchClipboardContent() {
-      clipboardContent.current = await Clipboard.getStringAsync();
-    })();
-
     // Listen for changes in the clipboard content
     Clipboard.addClipboardListener(({ content }) => {
       clipboardContent.current = content;
@@ -192,8 +188,15 @@ export const RecoverMnemonicScreen: FunctionComponent = () => {
   };
 
   const handleOnChangeText = async (content: string, index: number) => {
-    setSeedWordsError(undefined);
-    const isPasted = content.trim().includes(clipboardContent.current.trim());
+    if (seedWordsError) {
+      setSeedWordsError(undefined);
+    }
+
+    let isPasted = false;
+    if (clipboardContent.current.trim().length > 0) {
+      isPasted = content.trim().includes(clipboardContent.current.trim());
+    }
+
     if (isPasted) {
       handlePaste(content);
     } else {
