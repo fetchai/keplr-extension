@@ -41,8 +41,8 @@ export const DetailRow = ({
             : undefined
         }
         rippleColor={style.flatten(["color-white-transparent-100"]).color}
-        underlayColor={style.flatten(["color-gray-300"]).color}
-        activeOpacity={0.2}
+        underlayColor={style.flatten(["color-white-transparent-100"]).color}
+        activeOpacity={1}
       >
         {hash && (
           <View

@@ -329,7 +329,7 @@ export const RecoverMnemonicScreen: FunctionComponent = () => {
             }
             onPress={async () => {
               const text = await Clipboard.getStringAsync();
-              if (text.length > 0) {
+              if (text.trim().length > 0) {
                 handlePaste(text);
               }
             }}
