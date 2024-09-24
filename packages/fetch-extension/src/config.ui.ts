@@ -297,6 +297,12 @@ export const FiatCurrencies: FiatCurrency[] = [
     maxDecimals: 2,
     locale: "en-ZA",
   },
+  {
+    currency: "aed",
+    symbol: "د.إ",
+    maxDecimals: 2,
+    locale: "ar-AE",
+  },
 ];
 
 export const SUPPORTED_LOCALE_FIAT_CURRENCIES = [

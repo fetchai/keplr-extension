@@ -11,6 +11,7 @@ import { App, AppCoinType } from "@keplr-wallet/ledger-cosmos";
 import { useIntl } from "react-intl";
 import { useNavigate } from "react-router";
 import { formatAddress } from "@utils/format";
+import style from "./style.module.scss";
 
 interface SetKeyRingProps {
   navigateTo?: any;
@@ -30,6 +31,32 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
 
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const loadingIndicator = useLoadingIndicator();
+
+    const getOptionIcon = (keyStore: any) => {
+      if (keyStore.type === "ledger") {
+        return require("@assets/svg/wireframe/ledger-indicator.svg");
+      }
+
+      if (keyStore.type === "privateKey") {
+        if (
+          keyStore.meta &&
+          keyStore.meta?.["email"] &&
+          keyStore.meta?.["socialType"] === "apple"
+        ) {
+          return require("@assets/svg/wireframe/apple-logo.svg");
+        }
+
+        if (
+          keyStore.meta &&
+          keyStore.meta?.["email"] &&
+          keyStore.meta?.["socialType"] === "google"
+        ) {
+          return require("@assets/svg/wireframe/google-logo.svg");
+        }
+      }
+      return;
+    };
+
     return (
       <div>
         {keyRingStore.multiKeyStoreInfo.map((keyStore, i) => {
@@ -81,11 +108,22 @@ export const SetKeyRingPage: FunctionComponent<SetKeyRingProps> = observer(
             <Card
               key={i}
               heading={
-                keyStore.meta?.["name"]
-                  ? keyStore.meta["name"]
-                  : intl.formatMessage({
-                      id: "setting.keyring.unnamed-account",
-                    })
+                <React.Fragment>
+                  {keyStore.meta?.["name"]
+                    ? keyStore.meta["name"]
+                    : intl.formatMessage({
+                        id: "setting.keyring.unnamed-account",
+                      })}
+                  {getOptionIcon(keyStore) && (
+                    <span className={style["rightIconContainer"]}>
+                      <img
+                        src={getOptionIcon(keyStore)}
+                        alt="Right Section"
+                        className={style["rightIcon"]}
+                      />
+                    </span>
+                  )}
+                </React.Fragment>
               }
               rightContent={
                 keyStore.selected

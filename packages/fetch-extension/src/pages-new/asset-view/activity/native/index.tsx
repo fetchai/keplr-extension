@@ -256,7 +256,7 @@ export const NativeTab = observer(({ filterTop }: { filterTop?: string }) => {
             )} */}
           </React.Fragment>
         ) : (
-          <NoActivity />
+          <NoActivity label="No Activity Yet" />
         )
       ) : (
         <UnsupportedNetwork chainID={current.chainName} />

@@ -168,7 +168,7 @@ export const Proposals = observer(() => {
         ) : isLoading ? (
           <div className={style["activity-loading"]}>Loading Proposals...</div>
         ) : (
-          <NoActivity />
+          <NoActivity label="No Activity Yet" />
         )
       ) : (
         <UnsupportedNetwork chainID={current.chainName} />

@@ -117,13 +117,15 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
                 ))}
             </React.Fragment>
           ) : (
-            <NoActivity />
+            <NoActivity label="No Gov Proposal Activity Yet" />
           )
         ) : (
           <UnsupportedNetwork chainID={current.chainName} />
         )}
 
-        {filter.length === 0 && <NoActivity />}
+        {filter.length === 0 && (
+          <NoActivity label="No Gov Proposal Activity Yet" />
+        )}
       </React.Fragment>
     );
   });

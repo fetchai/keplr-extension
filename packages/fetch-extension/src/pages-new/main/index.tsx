@@ -15,6 +15,8 @@ import { useStore } from "../../stores";
 import { SetKeyRingPage } from "../keyring-dev";
 import { WalletDetailsView } from "./wallet-details";
 import { WalletOptions } from "./wallet-options";
+import { LedgerAppModal } from "./ledger-app-modal";
+
 export const MainPage: FunctionComponent = observer(() => {
   const [isSelectNetOpen, setIsSelectNetOpen] = useState(false);
   const [isSelectWalletOpen, setIsSelectWalletOpen] = useState(false);
@@ -80,6 +82,7 @@ export const MainPage: FunctionComponent = observer(() => {
         marginBottom: "0px",
       }}
     >
+      <LedgerAppModal />
       <WalletDetailsView
         setIsSelectNetOpen={setIsSelectNetOpen}
         setIsSelectWalletOpen={setIsSelectWalletOpen}
