@@ -193,8 +193,9 @@ export const RecoverMnemonicScreen: FunctionComponent = () => {
     }
 
     let isPasted = false;
-    if (clipboardContent.current.trim().length > 0) {
-      isPasted = content.trim().includes(clipboardContent.current.trim());
+    const clipboardData = clipboardContent.current.trim();
+    if (clipboardData.length > 0) {
+      isPasted = content.trim().includes(clipboardData);
     }
 
     if (isPasted) {
