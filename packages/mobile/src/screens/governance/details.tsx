@@ -531,7 +531,9 @@ export const GovernanceDetailsScreen: FunctionComponent = observer(() => {
         }
         textStyle={style.flatten(["body2"]) as ViewStyle}
         rippleColor="black@50%"
-        disabled={!voteEnabled || !account.isReadyToSendTx}
+        loading={isSendingTx}
+        showLoadingSpinner={true}
+        disabled={!voteEnabled || !account.isReadyToSendTx || isSendingTx}
         onPress={() => {
           if (activityStore.getPendingTxnTypes[txnTypeKey.govVote]) {
             Toast.show({
