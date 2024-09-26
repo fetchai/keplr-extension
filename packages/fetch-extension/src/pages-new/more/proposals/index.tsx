@@ -53,6 +53,11 @@ export const Proposals = observer(() => {
   useEffect(() => {
     (async () => {
       try {
+        // if proposals are available don't fetch from api
+        if (storedProposals?.allProposals?.length > 0) {
+          setProposals(storedProposals.allProposals);
+          return;
+        }
         setIsLoading(true);
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
