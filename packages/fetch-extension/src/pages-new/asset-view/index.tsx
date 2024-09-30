@@ -1,28 +1,46 @@
 import { HeaderLayout } from "@layouts-v2/header-layout";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import style from "./style.module.scss";
-import { LineGraphView } from "../../components-v2/line-graph";
+import { LineGraphView } from "@components-v2/line-graph";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { getTokenIcon } from "@utils/get-token-icon";
 import { Activity } from "./activity";
 import { observer } from "mobx-react-lite";
-import { separateNumericAndDenom } from "@utils/format";
+import {
+  convertEpochToDate,
+  getEnumKeyByEnumValue,
+  isVestingExpired,
+  removeTrailingZeros,
+  separateNumericAndDenom,
+} from "@utils/format";
 import { useStore } from "../../stores";
 import { TXNTYPE } from "../../config";
 import { useLanguage } from "../../languages";
+import { Alert } from "reactstrap";
+import { VestingType } from "@keplr-wallet/stores";
+import { clearDecimals } from "../sign/decimals";
 
 export const AssetView = observer(() => {
-  const { activityStore } = useStore();
+  const { activityStore, accountStore, queriesStore, chainStore } = useStore();
   const location = useLocation();
   const [tokenInfo, setTokenInfo] = useState<any>();
   const [tokenIcon, setTokenIcon] = useState<string>("");
+  const [showCalendar, setShowCalendar] = useState<boolean>(false);
 
   const [balances, setBalances] = useState<any>();
   const [assetValues, setAssetValues] = useState<any>();
   const navigate = useNavigate();
   const language = useLanguage();
   const fiatCurrency = language.fiatCurrency;
+
+  const current = chainStore.current;
+  const queries = queriesStore.get(current.chainId);
+  const accountInfo = accountStore.getAccount(current.chainId);
+
+  const isVesting = queries.cosmos.queryAccount.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).isVestingAccount;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -69,6 +87,59 @@ export const AssetView = observer(() => {
         ? (parseFloat(totalNumber) * assetValues.diff) / 100
         : -(parseFloat(totalNumber) * assetValues.diff) / 100;
   }
+
+  const vestingInfo = queries.cosmos.queryAccount.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).vestingAccount;
+  const latestBlockTime = queries.cosmos.queryRPCStatus.latestBlockTime;
+
+  const vestingEndTimeStamp = Number(
+    vestingInfo.base_vesting_account?.end_time
+  );
+  const vestingStartTimeStamp = Number(vestingInfo.start_time);
+
+  const spendableBalances =
+    queries.cosmos.querySpendableBalances.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
+
+  const { numericPart: spendableNumber, denomPart: _spendableDenom } =
+    separateNumericAndDenom(
+      spendableBalances.balances.toString().length > 0
+        ? spendableBalances.balances.toString()
+        : "0"
+    );
+
+  function getVestingBalance(balance: number) {
+    return clearDecimals((balance / 10 ** 18).toFixed(20).toString());
+  }
+  const vestingBalance = () => {
+    if (vestingInfo["@type"] == VestingType.Continuous.toString()) {
+      if (totalNumber > spendableNumber) {
+        return (Number(totalNumber) - Number(spendableNumber)).toString();
+      } else if (
+        latestBlockTime &&
+        vestingEndTimeStamp > latestBlockTime &&
+        spendableNumber === totalNumber
+      ) {
+        const ov = Number(
+          vestingInfo.base_vesting_account?.original_vesting[0].amount
+        );
+        const vested =
+          ov *
+          ((latestBlockTime - vestingStartTimeStamp) /
+            (vestingEndTimeStamp - vestingStartTimeStamp));
+        return getVestingBalance(ov - vested);
+      }
+
+      return "0";
+    }
+    return vestingInfo.base_vesting_account
+      ? getVestingBalance(
+          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
+        )
+      : "0";
+  };
 
   const isSendDisabled = activityStore.getPendingTxnTypes[TXNTYPE.send];
 
@@ -134,6 +205,99 @@ export const AssetView = observer(() => {
         </div>
         <div />
       </div>
+      {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
+        <Alert className={style["alert"]}>
+          <div className={style["topContent"]}>
+            <img src={require("@assets/svg/wireframe/lock.svg")} alt="" />
+            <div>
+              <p className={style["lightText"]}>
+                {`Your balance includes ${removeTrailingZeros(
+                  vestingBalance()
+                )} ${totalDenom} that are still vested.`}
+              </p>
+              <div className={style["link-row"]}>
+                <div
+                  onClick={() => setShowCalendar((prev) => !prev)}
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <span>{showCalendar ? "Hide" : "View"} calendar</span>
+                  {showCalendar ? (
+                    <img
+                      src={require("@assets/svg/chevron-up.svg")}
+                      alt="up icon"
+                    />
+                  ) : (
+                    <img
+                      src={require("@assets/svg/wireframe/chevron-down-rewards.svg")}
+                      alt="down icon"
+                    />
+                  )}
+                </div>
+                <div
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <span>Learn more</span>
+                  <img
+                    src={require("@assets/svg/wireframe/external-link-vesting.svg")}
+                    alt="edit icon"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {showCalendar && (
+            <div
+              style={{
+                display: "flex",
+                marginTop: "28px",
+                marginBottom: "16px",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div
+                  className={style["show-calendar-text"]}
+                  style={{
+                    color: "rgba(255,255,255,0.6)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {`${getEnumKeyByEnumValue(
+                    vestingInfo["@type"] ?? VestingType.Continuous.toString(),
+                    VestingType
+                  )} Vesting`}
+                </div>
+                <div className={style["show-calendar-text"]}>
+                  {convertEpochToDate(vestingEndTimeStamp)}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "2px",
+                  flex: 1,
+                  justifyContent: "end",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span className={style["show-calendar-text"]}>
+                  {vestingBalance}
+                </span>
+                <span
+                  className={style["show-calendar-text"]}
+                  style={{ color: "rgba(255,255,255,0.6)" }}
+                >
+                  {totalDenom}
+                </span>
+              </div>
+            </div>
+          )}
+        </Alert>
+      )}
       <div>
         <div style={{ display: "flex", gap: "12px" }}>
           <ButtonV2

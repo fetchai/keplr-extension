@@ -164,7 +164,7 @@ export const UnlockScreen: FunctionComponent = observer(() => {
     if (keyRingStore.status === KeyRingStatus.LOCKED) hideSplashScreen();
   }, [keyRingStore.status]);
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("Test@1234");
   const [isLoading, setIsLoading] = useState(false);
   const [isBiometricLoading, setIsBiometricLoading] = useState(false);
   const [isFailed, setIsFailed] = useState(false);

@@ -6,9 +6,11 @@ import { CardDivider } from "components/card";
 import { ChainIdHelper } from "@keplr-wallet/cosmos";
 import { AppCurrency } from "@keplr-wallet/types";
 import { useStore } from "stores/index";
-import { separateNumericAndDenom } from "utils/format/format";
+import { isVestingExpired, separateNumericAndDenom } from "utils/format/format";
 import { AnimatedNumber } from "components/new/animations/animated-number";
 import Skeleton from "react-native-reanimated-skeleton";
+import { VestingType } from "@keplr-wallet/stores";
+import { clearDecimals } from "modals/sign/messages";
 
 export const StakeCard: FunctionComponent = () => {
   const style = useStyle();
@@ -65,6 +67,56 @@ export const StakeCard: FunctionComponent = () => {
   const { numericPart: rewardsBalNumber, denomPart: rewardDenom } =
     separateNumericAndDenom(rewardsBal);
 
+  const vestingInfo = queries.cosmos.queryAccount.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).vestingAccount;
+  const latestBlockTime = queries.cosmos.queryRPCStatus.latestBlockTime;
+
+  const vestingEndTimeStamp = Number(
+    vestingInfo.base_vesting_account?.end_time
+  );
+  const vestingStartTimeStamp = Number(vestingInfo.start_time);
+
+  const spendableBalances =
+    queries.cosmos.querySpendableBalances.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
+
+  const { numericPart: spendableNumber, denomPart: _spendableDenom } =
+    separateNumericAndDenom(spendableBalances.balances.toString());
+
+  function getVestingBalance(balance: number) {
+    return clearDecimals((balance / 10 ** 18).toFixed(20).toString());
+  }
+
+  const vestingBalance = () => {
+    if (vestingInfo["@type"] == VestingType.Continuous.toString()) {
+      if (stakableBalNumber > spendableNumber) {
+        return (Number(stakableBalNumber) - Number(spendableNumber)).toString();
+      } else if (
+        latestBlockTime &&
+        vestingEndTimeStamp > latestBlockTime &&
+        spendableNumber === stakableBalNumber
+      ) {
+        const ov = Number(
+          vestingInfo.base_vesting_account?.original_vesting[0].amount
+        );
+        const vested =
+          ov *
+          ((latestBlockTime - vestingStartTimeStamp) /
+            (vestingEndTimeStamp - vestingStartTimeStamp));
+        return getVestingBalance(ov - vested);
+      }
+
+      return "0";
+    }
+    return vestingInfo.base_vesting_account
+      ? getVestingBalance(
+          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
+        )
+      : "0";
+  };
+
   const total =
     parseFloat(stakableBalNumber) +
     parseFloat(stakedBalNumber) +
@@ -79,7 +131,7 @@ export const StakeCard: FunctionComponent = () => {
     stakedPercentage = (parseFloat(stakedBalNumber) / total) * 100;
     rewardsPercentage = (parseFloat(rewardsBalNumber) / total) * 100;
     vestingPercentage = isVesting
-      ? (parseFloat(vestingPercentage.toString()) / total) * 100
+      ? (parseFloat(vestingBalance()) / total) * 100
       : 0;
   }
 
@@ -415,7 +467,7 @@ export const StakeCard: FunctionComponent = () => {
             </Skeleton>
           </View>
         </View>
-        {isVesting && (
+        {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
           <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
             {renderLine("#9F88FD")}
             <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
@@ -455,7 +507,9 @@ export const StakeCard: FunctionComponent = () => {
                   style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
                 >
                   <AnimatedNumber
-                    numberForAnimated={parseFloat(parseFloat("0").toFixed(2))}
+                    numberForAnimated={parseFloat(
+                      parseFloat(vestingBalance()).toFixed(2)
+                    )}
                     includeComma={true}
                     decimalAmount={2}
                     gap={0}
@@ -485,16 +539,16 @@ export const StakeCard: FunctionComponent = () => {
                   >
                     {`${rewardDenom}`}
                   </Text>
-                  <Text
-                    style={
-                      [
-                        style.flatten(["color-white@60%", "subtitle2"]),
-                        { lineHeight: 18 },
-                      ] as ViewStyle
-                    }
-                  >
-                    {`(${vestingPercentage.toFixed(2)}%)`}
-                  </Text>
+                  {/*<Text*/}
+                  {/*  style={*/}
+                  {/*    [*/}
+                  {/*      style.flatten(["color-white@60%", "subtitle2"]),*/}
+                  {/*      { lineHeight: 18 },*/}
+                  {/*    ] as ViewStyle*/}
+                  {/*  }*/}
+                  {/*>*/}
+                  {/*  {`(${vestingPercentage.toFixed(2)}%)`}*/}
+                  {/*</Text>*/}
                 </View>
                 {priceStore.calculatePrice(stakableReward)?.toString() ? (
                   <Text

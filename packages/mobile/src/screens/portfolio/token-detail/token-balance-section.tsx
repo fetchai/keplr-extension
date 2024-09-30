@@ -18,6 +18,15 @@ import { ChevronDownIcon } from "components/new/icon/chevron-down";
 import { ChevronUpIcon } from "components/new/icon/chevron-up";
 import { ExternalLinkIcon } from "components/new/icon/external-link";
 import { SlideDownAnimation } from "components/new/animations/slide-down";
+import {
+  isVestingExpired,
+  getEnumKeyByEnumValue,
+  removeTrailingZeros,
+  separateNumericAndDenom,
+} from "utils/format/format";
+import { VestingType } from "@keplr-wallet/stores";
+import { convertEpochToDate } from "utils/format/date";
+import { clearDecimals } from "modals/sign/messages";
 
 export const TokenBalanceSection: FunctionComponent<{
   totalNumber: string;
@@ -37,7 +46,57 @@ export const TokenBalanceSection: FunctionComponent<{
     accountInfo.bech32Address
   ).isVestingAccount;
 
-  const [showRewars, setShowRewards] = useState(false);
+  const vestingInfo = queries.cosmos.queryAccount.getQueryBech32Address(
+    accountInfo.bech32Address
+  ).vestingAccount;
+  const latestBlockTime = queries.cosmos.queryRPCStatus.latestBlockTime;
+
+  const vestingEndTimeStamp = Number(
+    vestingInfo.base_vesting_account?.end_time
+  );
+  const vestingStartTimeStamp = Number(vestingInfo.start_time);
+
+  const spendableBalances =
+    queries.cosmos.querySpendableBalances.getQueryBech32Address(
+      accountInfo.bech32Address
+    );
+
+  const { numericPart: spendableNumber, denomPart: _spendableDenom } =
+    separateNumericAndDenom(spendableBalances.balances.toString());
+
+  function getVestingBalance(balance: number) {
+    return clearDecimals((balance / 10 ** 18).toFixed(20).toString());
+  }
+
+  const vestingBalance = () => {
+    if (vestingInfo["@type"] == VestingType.Continuous.toString()) {
+      if (totalNumber > spendableNumber) {
+        return (Number(totalNumber) - Number(spendableNumber)).toString();
+      } else if (
+        latestBlockTime &&
+        vestingEndTimeStamp > latestBlockTime &&
+        spendableNumber === totalNumber
+      ) {
+        const ov = Number(
+          vestingInfo.base_vesting_account?.original_vesting[0].amount
+        );
+        const vested =
+          ov *
+          ((latestBlockTime - vestingStartTimeStamp) /
+            (vestingEndTimeStamp - vestingStartTimeStamp));
+        return getVestingBalance(ov - vested);
+      }
+
+      return "0";
+    }
+    return vestingInfo.base_vesting_account
+      ? getVestingBalance(
+          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
+        )
+      : "0";
+  };
+
+  const [showCalendar, setShowCalendar] = useState(false);
 
   return (
     <View style={style.flatten(["flex-column", "margin-x-page"]) as ViewStyle}>
@@ -53,7 +112,15 @@ export const TokenBalanceSection: FunctionComponent<{
         >
           {"YOUR BALANCE"}
         </Text>
-        <View style={style.flatten(["flex-row", "margin-top-6"]) as ViewStyle}>
+        <View
+          style={
+            style.flatten([
+              "flex-row",
+              "margin-top-6",
+              "flex-wrap",
+            ]) as ViewStyle
+          }
+        >
           <Text
             style={
               style.flatten([
@@ -64,7 +131,7 @@ export const TokenBalanceSection: FunctionComponent<{
               ]) as ViewStyle
             }
           >
-            {totalNumber}
+            {removeTrailingZeros(totalNumber)}
           </Text>
           <Text
             style={
@@ -110,7 +177,7 @@ export const TokenBalanceSection: FunctionComponent<{
       </View>
       {/* banner */}
 
-      {isVesting && (
+      {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
         <BlurBackground
           borderRadius={12}
           blurIntensity={16}
@@ -126,7 +193,9 @@ export const TokenBalanceSection: FunctionComponent<{
               <Text
                 style={style.flatten(["body2", "color-white"]) as ViewStyle}
               >
-                Your balance includes 1,489.00 FET that are still vested.
+                {`Your balance includes ${removeTrailingZeros(
+                  vestingBalance()
+                )} ${totalDenom} that are still vested.`}
               </Text>
               <View
                 style={
@@ -134,7 +203,7 @@ export const TokenBalanceSection: FunctionComponent<{
                 }
               >
                 <TouchableOpacity
-                  onPress={() => setShowRewards(!showRewars)}
+                  onPress={() => setShowCalendar(!showCalendar)}
                   style={
                     style.flatten(["flex-row", "items-center"]) as ViewStyle
                   }
@@ -147,10 +216,10 @@ export const TokenBalanceSection: FunctionComponent<{
                       ] as ViewStyle
                     }
                   >
-                    {!showRewars ? "View calendar" : "Hide calendar"}
+                    {!showCalendar ? "View calendar" : "Hide calendar"}
                   </Text>
                   <View style={style.flatten(["margin-left-6"]) as ViewStyle}>
-                    {!showRewars ? (
+                    {!showCalendar ? (
                       <ChevronDownIcon color="#BFAFFD" size={12} />
                     ) : (
                       <ChevronUpIcon color="#BFAFFD" size={12} />
@@ -184,7 +253,7 @@ export const TokenBalanceSection: FunctionComponent<{
               </View>
             </View>
           </View>
-          {showRewars && (
+          {showCalendar && (
             <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
               <SlideDownAnimation>
                 <View
@@ -206,31 +275,40 @@ export const TokenBalanceSection: FunctionComponent<{
                         ]) as ViewStyle
                       }
                     >
-                      Round 10/12
+                      {`${getEnumKeyByEnumValue(
+                        vestingInfo["@type"] ??
+                          VestingType.Continuous.toString(),
+                        VestingType
+                      )} Vesting`}
                     </Text>
                     <Text
                       style={
                         style.flatten(["color-white", "body3"]) as ViewStyle
                       }
                     >
-                      10 Oct 2024
+                      {convertEpochToDate(vestingEndTimeStamp, "DD MMM YYYY")}
                     </Text>
                   </View>
                   <View
                     style={
                       style.flatten([
-                        "flex-1",
+                        "flex-2",
                         "flex-row",
                         "justify-end",
+                        "flex-wrap",
                       ]) as ViewStyle
                     }
                   >
                     <Text
                       style={
-                        style.flatten(["color-white", "body3"]) as ViewStyle
+                        style.flatten([
+                          "color-white",
+                          "body3",
+                          "text-right",
+                        ]) as ViewStyle
                       }
                     >
-                      496.33
+                      {vestingBalance}
                     </Text>
                     <Text
                       style={
@@ -241,7 +319,7 @@ export const TokenBalanceSection: FunctionComponent<{
                         ]) as ViewStyle
                       }
                     >
-                      FET
+                      {totalDenom}
                     </Text>
                   </View>
                 </View>

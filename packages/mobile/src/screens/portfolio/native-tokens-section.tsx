@@ -51,9 +51,7 @@ export const NativeTokensSection: FunctionComponent = observer(() => {
 
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { numericPart: totalNumber, denomPart: totalDenom } =
-    separateNumericAndDenom(
-      stakable.shrink(true).trim(true).maxDecimals(6).toString()
-    );
+    separateNumericAndDenom(stakable.shrink(true).trim(true).toString());
   const totalPrice = priceStore.calculatePrice(stakable);
 
   const NativeTokenDetailsString = encodeURIComponent(

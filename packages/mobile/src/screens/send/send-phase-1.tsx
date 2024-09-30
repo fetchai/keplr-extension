@@ -67,18 +67,18 @@ export const SendPhase1: FunctionComponent<{
     : chainStore.current.chainId;
 
   const account = accountStore.getAccount(chainId);
+  const queries = queriesStore.get(chainId);
 
-  const queryBalances = queriesStore
-    .get(sendConfigs.amountConfig.chainId)
-    .queryBalances.getQueryBech32Address(sendConfigs.amountConfig.sender);
+  const spendableBalances = queries.cosmos.querySpendableBalances
+    .getQueryBech32Address(account.bech32Address)
+    .balances?.find(
+      (bal) =>
+        sendConfigs.amountConfig.sendCurrency.coinMinimalDenom ===
+        bal.currency.coinMinimalDenom
+    );
 
-  const queryBalance = queryBalances.balances.find(
-    (bal) =>
-      sendConfigs.amountConfig.sendCurrency.coinMinimalDenom ===
-      bal.currency.coinMinimalDenom
-  );
-  const balance = queryBalance
-    ? queryBalance.balance
+  const balance = spendableBalances
+    ? spendableBalances
     : new CoinPretty(sendConfigs.amountConfig.sendCurrency, new Int(0));
 
   const convertToCurrency = (currency: any) => {
