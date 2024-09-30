@@ -1,8 +1,9 @@
-import { HeaderLayout } from "@layouts/header-layout";
+import { HeaderLayout } from "@layouts-v2/header-layout";
+import { Input } from "@components-v2/form/input";
 import React, { FunctionComponent, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, Button } from "reactstrap";
-import { Input } from "@components/form";
+import { Form } from "reactstrap";
+import { ButtonV2 } from "@components-v2/buttons/button";
 import style from "./style.module.scss";
 import { useStore } from "../../../stores";
 import { Bech32Address } from "@keplr-wallet/cosmos";
@@ -255,8 +256,11 @@ export const AddEvmChain: FunctionComponent = () => {
 
   return (
     <HeaderLayout
+      showBottomMenu={false}
+      showTopMenu={true}
       showChainName={false}
       canChangeChainInfo={false}
+      smallTitle={true}
       alternativeTitle={"Add new EVM chain"}
       onBackButton={() => {
         navigate(-1);
@@ -267,6 +271,7 @@ export const AddEvmChain: FunctionComponent = () => {
     >
       <Form onSubmit={handleSubmit} className={style["container"]}>
         <Input
+          className={style["inputField"]}
           label="RPC URL"
           type="text"
           name="rpc"
@@ -277,15 +282,17 @@ export const AddEvmChain: FunctionComponent = () => {
         {info && (
           <p
             style={{
-              color: "#567965",
+              color: "rgba(255, 255, 255, 0.6)",
               fontSize: "12px",
-              marginTop: "-22px",
+              marginTop: "4px",
+              marginBottom: "0px",
             }}
           >
             {info}
           </p>
         )}
         <Input
+          className={style["inputField"]}
           label="Chain id"
           type="text"
           name="chainId"
@@ -294,6 +301,7 @@ export const AddEvmChain: FunctionComponent = () => {
           required
         />
         <Input
+          className={style["inputField"]}
           label="Network Name"
           type="text"
           name="chainName"
@@ -302,6 +310,7 @@ export const AddEvmChain: FunctionComponent = () => {
           required
         />
         <Input
+          className={style["inputField"]}
           label="Symbol"
           type="text"
           name="symbol"
@@ -310,6 +319,7 @@ export const AddEvmChain: FunctionComponent = () => {
           required
         />
         <Input
+          className={style["inputField"]}
           label="Decimal"
           type="number"
           name="decimal"
@@ -318,21 +328,28 @@ export const AddEvmChain: FunctionComponent = () => {
           required
         />
         <Input
+          className={style["inputField"]}
           label="Explorer Url"
           type="text"
           name="explorerUrl"
           value={newChainInfo.explorerUrl}
           onChange={handleChange}
         />
-        <Button
-          text="Add Chain"
-          color="primary"
-          block
+        <ButtonV2
+          styleProps={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "transparent",
+            border: "1px solid rgba(255,255,255,0.4)",
+            color: "white",
+            height: "48px",
+            fontSize: "14px",
+            fontWeight: 400,
+          }}
           disabled={!isValid}
-          type="submit"
-        >
-          Add Chain
-        </Button>
+          text={"Add Chain"}
+        />
       </Form>
     </HeaderLayout>
   );

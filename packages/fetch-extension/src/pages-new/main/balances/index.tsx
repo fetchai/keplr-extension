@@ -9,14 +9,22 @@ import { useNavigate } from "react-router";
 import { separateNumericAndDenom } from "@utils/format";
 import { Skeleton } from "@components-v2/skeleton-loader";
 import { WalletStatus } from "@keplr-wallet/stores";
+import { useQuery } from "@tanstack/react-query";
+import { CoinPretty, Int } from "@keplr-wallet/unit";
 
 interface Props {
   tokenState: any;
 }
 
 export const Balances: React.FC<Props> = observer(({ tokenState }) => {
-  const { chainStore, accountStore, queriesStore, priceStore, keyRingStore } =
-    useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    priceStore,
+    keyRingStore,
+    activityStore,
+  } = useStore();
   const navigate = useNavigate();
   const language = useLanguage();
 
@@ -56,11 +64,30 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
     .getQueryBech32Address(accountInfo.bech32Address)
     .total.upperCase(true);
 
-  const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
-    accountInfo.bech32Address
-  );
+  const accountOrChainChanged =
+    activityStore.getAddress !== accountInfo.bech32Address ||
+    activityStore.getChainId !== current.chainId;
 
-  const stakableReward = rewards.stakableReward;
+  const rewards = useQuery({
+    queryKey: ["rewards", accountInfo.bech32Address, current.chainId],
+    queryFn: async () => {
+      if (accountInfo.bech32Address && current.chainId) {
+        const rewards = queries.cosmos.queryRewards.getQueryBech32Address(
+          accountInfo.bech32Address
+        );
+        await rewards.waitFreshResponse();
+        const stakableRewards = rewards.stakableReward;
+        return stakableRewards;
+      }
+      return null;
+    },
+    refetchInterval: 3600 * 1000,
+    refetchOnMount: false,
+    staleTime: accountOrChainChanged ? 0 : 3600 * 1000,
+  });
+
+  const currency = current.feeCurrencies?.[0];
+  const stakableReward = rewards?.data || new CoinPretty(currency, new Int(0));
   const stakedSum = delegated.add(unbonding);
   const total = stakable.add(stakedSum).add(stakableReward);
 

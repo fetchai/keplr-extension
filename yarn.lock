@@ -11249,6 +11249,7 @@ __metadata:
     "@react-spring/web": ^9.6.1
     "@solana/web3.js": ^1.31.0
     "@storybook/react": ^6.5.12
+    "@tanstack/react-query": ^5.56.2
     "@toruslabs/fetch-node-details": =11.0.1
     "@toruslabs/torus.js": =8.0.1
     "@types/chart.js": ^2.9.25
@@ -17422,6 +17423,24 @@ __metadata:
     "@svgr/plugin-svgo": ^5.4.0
     loader-utils: ^2.0.0
   checksum: f814b0eb4106ce7e9f0df3ed07969f11d435e82a331d76a1bfde6de7614b78591d2e9dce4683e5c7a121d427c2ce9bade542d2256aee33a62aa14581e243f556
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:5.56.2":
+  version: 5.56.2
+  resolution: "@tanstack/query-core@npm:5.56.2"
+  checksum: e78430464de89fd2543155449391415983c7cdcd1ff2bb86da019414204b6800e2405e341db88000b36a101d3619ee7e94e90da1fa5497b2e021c5765924a64c
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.56.2":
+  version: 5.56.2
+  resolution: "@tanstack/react-query@npm:5.56.2"
+  dependencies:
+    "@tanstack/query-core": 5.56.2
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 7819a3a316c95df41844bd6e3435511594c3762320c21ee1ef2205ede18a87faae4556ff84d52b36ba17c99540b9554e72a5acf0c225481bdaf107ea79ace815
   languageName: node
   linkType: hard
 

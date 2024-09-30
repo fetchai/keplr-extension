@@ -1,14 +1,14 @@
 @import "../../../styles/var";
-
 .container {
   display: flex;
   flex-direction: column;
-
+  height: 100%;
+  label {
+    color: rgba(255, 255, 255, 0.6);
+  }
   input:read-only {
-    box-shadow: none !important;
-    background: transparent;
-    padding: 0;
-    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
   }
 }
 
@@ -18,4 +18,15 @@
 
 .info {
   color: green;
+}
+
+.inputField,
+.inputField:focus {
+  display: flex;
+  padding: 12px 18px;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
