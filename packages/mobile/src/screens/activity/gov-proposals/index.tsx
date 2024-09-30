@@ -27,23 +27,13 @@ export const GovProposalsTab: FunctionComponent<{
     setGovFilters,
   }) => {
     const style = useStyle();
-    const { chainStore, queriesStore, activityStore, accountStore } =
-      useStore();
+    const { chainStore, queriesStore, activityStore } = useStore();
     const current = chainStore.current;
-    const accountInfo = accountStore.getAccount(current.chainId);
 
     const queries = queriesStore.get(chainStore.current.chainId);
     const proposalLoading = queries.cosmos.queryGovernance.isFetching;
 
     const proposalNodes = activityStore.sortedNodesProposals;
-
-    useEffect(() => {
-      /* accountInit is required because in case of a reload, proposalNodes 
-        becomes empty and should be updated with KVstore's saved nodes */
-      if (accountInfo.bech32Address !== "") {
-        activityStore.accountInit();
-      }
-    }, [accountInfo.bech32Address, activityStore]);
 
     useEffect(() => {
       const timeout = setTimeout(() => {

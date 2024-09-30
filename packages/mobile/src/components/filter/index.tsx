@@ -98,7 +98,7 @@ export const FilterView: FunctionComponent<{
             containerStyle={
               style.flatten([
                 "margin-bottom-6",
-                selectedFilter[index].isSelected
+                selectedFilter[index]?.isSelected ?? false
                   ? "background-color-indigo"
                   : "background-color-transparent",
               ]) as ViewStyle

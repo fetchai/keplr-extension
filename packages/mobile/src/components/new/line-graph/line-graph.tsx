@@ -15,6 +15,7 @@ import { useStore } from "stores/index";
 import { ChartData, TokenStateData } from "@keplr-wallet/stores";
 import { formatTimestamp } from "utils/format/date";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { BlurButton } from "../button/blur-button";
 
 export const LineGraph: FunctionComponent<{
   tokenName: string | undefined;
@@ -22,7 +23,9 @@ export const LineGraph: FunctionComponent<{
   setTokenState: any;
   tokenState?: any;
   height?: number;
-}> = ({ tokenName, duration, setTokenState, height }) => {
+  loading: boolean;
+  setLoading: any;
+}> = ({ tokenName, duration, setTokenState, height, loading, setLoading }) => {
   const style = useStyle();
   const { priceStore, chainStore, tokenGraphStore } = useStore();
   const [chartsData, setChartData] = useState<ChartData[]>([]);
@@ -35,6 +38,11 @@ export const LineGraph: FunctionComponent<{
     () => `${tokenName}_${duration}_${priceStore.defaultVsCurrency}`,
     [tokenName, duration, priceStore.defaultVsCurrency]
   );
+
+  /// For loading the graph on chain changed and duration
+  useEffect(() => {
+    setLoading(true);
+  }, [cacheKey]);
 
   function getTimeLabel() {
     switch (duration) {
@@ -101,17 +109,20 @@ export const LineGraph: FunctionComponent<{
           lastValue = lastValue > 0 ? lastValue : 1;
           const percentageDiff = (diff / lastValue) * 100;
           const type = diff >= 0 ? "positive" : "negative";
+          const timestamp = new Date().getTime();
 
           tokenState = {
             diff: Math.abs(percentageDiff),
             time: getTimeLabel(),
-            timestamp: new Date().getTime(),
+            timestamp,
             type,
           } as TokenStateData;
         }
         resolve({ chartDataList, tokenState });
       } catch (error) {
         reject(error);
+      } finally {
+        setLoading(false);
       }
     });
   }
@@ -153,6 +164,7 @@ export const LineGraph: FunctionComponent<{
     } else {
       setTokenState(durationData[cacheKey].tokenState);
       setChartData(durationData[cacheKey].chartData);
+      setLoading(false);
     }
   }, [cacheKey]);
 
@@ -202,25 +214,49 @@ export const LineGraph: FunctionComponent<{
           }${fetValue.toFixed(2)}`}
         </Text>
       </Text>
-      {Platform.OS == "ios" ? (
-        <IOSLineChart
-          data={chartsData}
-          height={height}
-          currencySymbol={
-            priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
-              ?.symbol
-          }
-        />
-      ) : (
-        <AndroidLineChart
-          data={chartsData}
-          height={height}
-          currencySymbol={
-            priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
-              ?.symbol
-          }
-        />
-      )}
+      <View
+        style={
+          style.flatten(
+            loading ? ["items-center", "justify-center"] : []
+          ) as ViewStyle
+        }
+      >
+        {Platform.OS == "ios" ? (
+          <IOSLineChart
+            data={chartsData}
+            height={height}
+            currencySymbol={
+              priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
+                ?.symbol
+            }
+            loading={loading}
+          />
+        ) : (
+          <AndroidLineChart
+            data={chartsData}
+            height={height}
+            currencySymbol={
+              priceStore.supportedVsCurrencies[priceStore.defaultVsCurrency]
+                ?.symbol
+            }
+            loading={loading}
+          />
+        )}
+        {loading && (
+          <BlurButton
+            text={"Updating the chart"}
+            backgroundBlur={false}
+            textStyle={style.flatten(["body3"]) as ViewStyle}
+            containerStyle={
+              style.flatten([
+                "padding-x-12",
+                "background-color-indigo-800",
+                "absolute",
+              ]) as ViewStyle
+            }
+          />
+        )}
+      </View>
     </View>
   );
 };

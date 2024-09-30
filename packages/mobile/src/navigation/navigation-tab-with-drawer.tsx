@@ -62,8 +62,12 @@ export const MainTabNavigation: FunctionComponent = () => {
   /// Auto lock app if app in bg
   useEffect(() => {
     const handleAppStateChange = async (nextAppState: string) => {
+      /// iOS: inactive, Android: background
+      const isBg = nextAppState === "inactive" || nextAppState === "background";
+
+      /// Avoiding screen-lock on register pages
       if (
-        nextAppState === "active" &&
+        isBg &&
         keychainStore.isAutoLockOn &&
         !focusedScreen.name?.startsWith("Register")
       ) {
@@ -87,7 +91,7 @@ export const MainTabNavigation: FunctionComponent = () => {
     return () => {
       subscription.remove();
     };
-  }, [keychainStore.isAutoLockOn]);
+  }, [keychainStore.isAutoLockOn, focusedScreen.name]);
 
   /// Back button handling
   useEffect(() => {

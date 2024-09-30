@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -34,57 +34,43 @@ export const ActivityNativeTab: FunctionComponent<{
     setTxnFilters,
   }) => {
     const style = useStyle();
-    const { chainStore, accountStore, activityStore } = useStore();
+    const { chainStore, activityStore } = useStore();
     const current = chainStore.current;
-    const accountInfo = accountStore.getAccount(current.chainId);
 
     const [_date, setDate] = useState("");
 
     const [isLoading, setIsLoading] = useState(true);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    const accountOrChainChanged =
-      activityStore.getAddress !== accountInfo.bech32Address ||
-      activityStore.getChainId !== current.chainId;
+    function autoRefreshActivities() {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (activities.length == 0) {
+        if (activityStore.sortedNodes.length > 0) {
+          setIsLoading(true);
+          setActivities(activityStore.sortedNodes);
+        } else {
+          setIsLoading(false);
+        }
+      }
 
-    useEffect(() => {
-      // this is required because accountInit sets the nodes on reload, so we wait for accountInit to set the node and then setActivities
-      // else activityStore.getNodes will be empty
-      setIsLoading(true);
-      const timeout = setTimeout(() => {
-        setActivities(activityStore.sortedNodes);
+      intervalRef.current = setInterval(() => {
+        if (activityStore.sortedNodes.length > 0) {
+          setActivities(activityStore.sortedNodes);
+        }
       }, 3000);
-      setIsLoading(false);
-
+      // Clean up the interval on component unmount
       return () => {
-        clearTimeout(timeout);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
       };
+    }
+
+    useEffect(() => {
+      autoRefreshActivities();
     }, [activityStore.sortedNodes]);
-
-    useEffect(() => {
-      setIsLoading(true);
-      if (activityStore.checkIsNodeUpdated) {
-        setActivities(activityStore.sortedNodes);
-        activityStore.setIsNodeUpdated(false);
-        setIsLoading(false);
-      }
-    }, [activityStore.checkIsNodeUpdated]);
-
-    useEffect(() => {
-      if (accountOrChainChanged) {
-        activityStore.setAddress(accountInfo.bech32Address);
-        activityStore.setChainId(current.chainId);
-      }
-
-      //accountInit is required because in case of a reload, this.nodes becomes empty and should be updated with KVstore's saved nodes
-      if (accountInfo.bech32Address !== "") {
-        activityStore.accountInit();
-      }
-    }, [
-      accountInfo.bech32Address,
-      accountOrChainChanged,
-      activityStore,
-      current.chainId,
-    ]);
 
     const handleFilterChange = (selectedFilters: FilterItem[]) => {
       setTxnFilters(selectedFilters);

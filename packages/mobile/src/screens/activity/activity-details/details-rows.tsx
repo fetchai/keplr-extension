@@ -21,6 +21,7 @@ import Toast from "react-native-toast-message";
 interface ItemData {
   title: string;
   value: string;
+  hash?: string | undefined;
 }
 
 interface ButtonData {
@@ -159,6 +160,7 @@ export const DetailRows = ({ details }: { details: any }) => {
     {
       title: "Transaction hash",
       value: formatActivityHash(details.hash),
+      hash: details.hash.toString(),
     },
     {
       title: "Chain ID",
@@ -189,7 +191,12 @@ export const DetailRows = ({ details }: { details: any }) => {
         )}
         renderItem={({ item, index }: { item: ItemData; index: number }) => {
           return (
-            <DetailRow key={index} label={item.title} value={item.value} />
+            <DetailRow
+              key={index}
+              label={item.title}
+              value={item.value}
+              hash={item?.hash}
+            />
           );
         }}
         keyExtractor={(_item, index) => index.toString()}
@@ -252,9 +259,10 @@ export const DetailRows = ({ details }: { details: any }) => {
               style.flatten(
                 ["body3", "items-center"],
                 [
-                  details.status === "Pending"
-                    ? "color-white@20%"
-                    : "color-white",
+                  // details.status === "Pending"
+                  //   ? "color-white@20%"
+                  //   :
+                  "color-white",
                 ]
               ) as ViewStyle
             }
@@ -262,9 +270,10 @@ export const DetailRows = ({ details }: { details: any }) => {
               style.flatten(
                 ["border-radius-32", "margin-left-6"],
                 [
-                  details.status === "Pending"
-                    ? "border-color-white@20%"
-                    : "border-color-white@40%",
+                  // details.status === "Pending"
+                  //   ? "border-color-white@20%"
+                  //   :
+                  "border-color-white@40%",
                 ]
               ) as ViewStyle
             }
@@ -278,7 +287,7 @@ export const DetailRows = ({ details }: { details: any }) => {
               }
               openURL();
             }}
-            disabled={details.status === "Pending"}
+            // disabled={details.status === "Pending"}
           />
         </View>
       </View>

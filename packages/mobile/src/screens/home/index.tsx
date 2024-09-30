@@ -208,7 +208,12 @@ export const HomeScreen: FunctionComponent = observer(() => {
     if (account.bech32Address !== "") {
       activityStore.accountInit();
     }
-  }, [account.bech32Address]);
+  }, [
+    account.bech32Address,
+    accountOrChainChanged,
+    activityStore,
+    chainStore.current.chainId,
+  ]);
 
   useEffect(() => {
     async function updateApp() {
@@ -256,7 +261,11 @@ export const HomeScreen: FunctionComponent = observer(() => {
       containerStyle={style.flatten(["overflow-scroll"]) as ViewStyle}
       ref={scrollViewRef}
     >
-      <AccountSection tokenState={tokenState} setGraphHeight={setGraphHeight} />
+      <AccountSection
+        tokenState={tokenState}
+        graphHeight={graphHeight}
+        setGraphHeight={setGraphHeight}
+      />
       <View style={style.flatten(["flex-2"])} />
       <LineGraphView
         setTokenState={setTokenState}

@@ -11,6 +11,9 @@ rm -rf "$DIR/../android/.gradle"
 rm -rf "$DIR/../android/build"
 rm -rf "$DIR/../android/app/build"
 
+ROOT=${DIR//\/packages\/mobile\/scripts/}
+watchman watch-del "${ROOT}" ; watchman watch-project "${ROOT}"
+
 cd "$DIR/../ios"
 
 if [ "$(which xcodebuild 2>/dev/null)" == "" ]; then

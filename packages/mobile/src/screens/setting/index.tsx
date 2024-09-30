@@ -209,15 +209,15 @@ export const SettingScreen: FunctionComponent = observer(() => {
         confirmButtonText="Confirm"
         select={async (confirm: boolean) => {
           if (confirm) {
-            await keyRingStore.lock();
-            smartNavigation.reset({
-              index: 0,
-              routes: [
-                {
-                  name: "Unlock",
-                },
-              ],
-            });
+            try {
+              await keyRingStore.lock();
+              smartNavigation.reset({
+                index: 0,
+                routes: [{ name: "Unlock" }],
+              });
+            } catch (error) {
+              console.error("Failed to lock key ring", error);
+            }
           }
         }}
       />
