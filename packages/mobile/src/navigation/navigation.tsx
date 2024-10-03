@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useRef } from "react";
 import { KeyRingStatus } from "@keplr-wallet/background";
 import { NavigationContainer } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
@@ -28,6 +28,7 @@ import { MainTabNavigationWithDrawer } from "navigation/navigation-tab-with-draw
 import { ViewStyle } from "react-native";
 import { StakeNavigation } from "./stake-navigation";
 import { MoreNavigation } from "./more-navigation";
+import { routingInstrumentation } from "../../index";
 
 export const Stack = createStackNavigator();
 
@@ -96,12 +97,18 @@ export const ChainListStackScreen: FunctionComponent = () => {
 
 export const AppNavigation: FunctionComponent = observer(() => {
   const { keyRingStore } = useStore();
+  const navigation = useRef(null);
 
   return (
     <PageScrollPositionProvider>
       <FocusedScreenProvider>
         <SmartNavigatorProvider>
-          <NavigationContainer>
+          <NavigationContainer
+            ref={navigation}
+            onReady={() => {
+              routingInstrumentation.registerNavigationContainer(navigation);
+            }}
+          >
             <Stack.Navigator
               initialRouteName={
                 keyRingStore.status !== KeyRingStatus.UNLOCKED

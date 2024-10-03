@@ -125,6 +125,17 @@ export const CoinInput: FunctionComponent<CoinInputProps> = observer(
       setIsToggleClicked(!isToggleClicked);
     };
 
+    useEffect(() => {
+      const inputElement = document.getElementById(`input-${randomId}`);
+      const charWidth = 17.7;
+      const resize = (el: any) => {
+        el.style.width = `${(el.value.length + 1) * charWidth}px`;
+      };
+      if (inputElement) {
+        resize(inputElement);
+      }
+    }, [inputInFiatCurrency, isToggleClicked]);
+
     return (
       <React.Fragment>
         <FormGroup className={styleCoinInput["input-size"]}>

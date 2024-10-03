@@ -42,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "@fetchai/wallet-types": "^0.2.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "https-browserify": "^1.0.0",

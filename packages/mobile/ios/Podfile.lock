@@ -50,7 +50,7 @@ PODS:
     - ExpoModulesCore
   - Expo (49.0.5):
     - ExpoModulesCore
-  - ExpoAppleAuthentication (6.1.0):
+  - ExpoAppleAuthentication (6.4.2):
     - ExpoModulesCore
   - ExpoBlur (12.8.0):
     - ExpoModulesCore
@@ -533,9 +533,10 @@ PODS:
     - React-RCTImage
   - RNScrypt (1.2.1):
     - React
-  - RNSentry (5.26.0):
+  - RNSentry (5.32.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - Sentry/HybridSDK (= 8.31.1)
+    - Sentry/HybridSDK (= 8.36.0)
   - RNSVG (13.10.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -544,7 +545,7 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry/HybridSDK (8.31.1)
+  - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.6.1)
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
@@ -850,7 +851,7 @@ SPEC CHECKSUMS:
   EXImageLoader: 34b214f9387e98f3c73989f15d8d5b399c9ab3f7
   EXLocation: e5dd52bdf61ccb6153c9e46ad4cb2686c96a35f9
   Expo: f2485e8fab9988e5dcee34159df5e475c9c3730c
-  ExpoAppleAuthentication: 7bdf1a2962ebfe9b00eb4183a17b78d736e57185
+  ExpoAppleAuthentication: 265219fa0ba1110872079f55f56686b9737b0065
   ExpoBlur: 2e733ec3aa76653040b29a833984f128a293295a
   ExpoClipboard: ddd3ecf4af93c003667dab75a0f2ed3ae4f73d85
   ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
@@ -918,11 +919,11 @@ SPEC CHECKSUMS:
   RNReanimated: c2027c397233801d4aceb7375e000ac87ec2e67d
   RNScreens: 6a8a3c6b808aa48dca1780df7b73ea524f602c63
   RNScrypt: 95fdef077b482e9fdf8a761120cb69d129ef4016
-  RNSentry: 601e5dbb9b3fbec6bf6a6e8c8bcc249835494744
+  RNSentry: bec881f5b16c6b4df4d6f554326ca979e08d6ba2
   RNSVG: 80584470ff1ffc7994923ea135a3e5ad825546b9
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: 9c1188876ea1291d1a9db4b38c3f17ebd8e6985e
+  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: 6f5ab94cd8b1ecd04b6e973d0bc583ede2a598cc

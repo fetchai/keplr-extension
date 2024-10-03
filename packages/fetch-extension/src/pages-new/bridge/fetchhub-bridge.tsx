@@ -13,6 +13,7 @@ import { ButtonV2 } from "@components-v2/buttons/button";
 import { Card } from "@components-v2/card";
 import { TXNTYPE } from "../../config";
 import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 export const FetchhubBridge: FunctionComponent<{
   limit: string;
@@ -105,7 +106,14 @@ export const FetchhubBridge: FunctionComponent<{
         },
         {
           onBroadcasted() {
-            navigate("/bridge");
+            const txnNavigationOptions = {
+              redirect: () => {
+                navigate("/bridge");
+              },
+              txInProgress: accountInfo.txInProgress,
+              txType: TXNTYPE.nativeBridgeSend,
+            };
+            navigateOnTxnEvents(txnNavigationOptions);
             analyticsStore.logEvent("Bridge token tx broadcasted", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
@@ -135,12 +143,26 @@ export const FetchhubBridge: FunctionComponent<{
                 },
               });
             }
-            navigate("/");
+            const txnNavigationOptions = {
+              redirect: () => {
+                navigate("/");
+              },
+              txInProgress: accountInfo.txInProgress,
+              txType: TXNTYPE.nativeBridgeSend,
+            };
+            navigateOnTxnEvents(txnNavigationOptions);
           },
         }
       );
     } catch (e) {
-      navigate("/", { replace: true });
+      const txnNavigationOptions = {
+        redirect: () => {
+          navigate("/");
+        },
+        txInProgress: accountInfo.txInProgress,
+        txType: TXNTYPE.nativeBridgeSend,
+      };
+      navigateOnTxnEvents(txnNavigationOptions);
       notification.push({
         type: "warning",
         placement: "top-center",

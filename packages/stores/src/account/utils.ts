@@ -1,6 +1,8 @@
 import { EthermintChainIdHelper } from "@keplr-wallet/cosmos";
 import { ProtoMsgsOrWithAminoMsgs } from "./types";
 import { ProposalNode } from "./cosmos";
+import { Node } from "./cosmos";
+import { ActivityStore } from "src/activity";
 
 export function txEventsWithPreOnFulfill(
   onTxEvents:
@@ -222,6 +224,19 @@ export const getJson = (addresses: any, type: string) => {
   return JSON.stringify(json);
 };
 
+export enum TXNTYPE {
+  ibcTransfer = "ibcTransfer",
+  send = "send",
+  withdrawRewards = "withdrawRewards",
+  delegate = "delegate",
+  undelegate = "undelegate",
+  redelegate = "redelegate",
+  govVote = "govVote",
+  nativeBridgeSend = "nativeBridgeSend",
+  approval = "approval",
+  createSecret20ViewingKey = "createSecret20ViewingKey",
+}
+
 export const getNodes = (msgs: any, type: string) => {
   const nodes = msgs.protoMsgs.map((node: any, index: number) => {
     return {
@@ -234,23 +249,35 @@ export const getNodes = (msgs: any, type: string) => {
   let balanceOffset = "";
   let signerAddress = "";
 
-  if (type === "send") {
+  if (type === TXNTYPE.send) {
     balanceOffset = `-${msgs.aminoMsgs[0].value.amount[0].amount}`;
     signerAddress = msgs.aminoMsgs[0].value.from_address;
   }
 
-  if (type === "withdrawRewards") {
+  if (type === TXNTYPE.withdrawRewards) {
     balanceOffset = "";
     signerAddress = msgs.aminoMsgs[0].value.delegator_address;
   }
 
-  if (type === "delegate" || type === "redelegate" || type === "undelegate") {
+  if (
+    type === TXNTYPE.delegate ||
+    type === TXNTYPE.redelegate ||
+    type === TXNTYPE.undelegate
+  ) {
     balanceOffset = `${msgs.aminoMsgs[0].value.amount.amount}`;
     signerAddress = msgs.aminoMsgs[0].value.delegator_address;
   }
 
-  if (type === "ibcTransfer") {
+  if (type === TXNTYPE.ibcTransfer) {
     balanceOffset = `${msgs.aminoMsgs[0].value.token.amount}`;
+    signerAddress = msgs.aminoMsgs[0].value.sender;
+  }
+
+  if (type === TXNTYPE.govVote) {
+    signerAddress = msgs.aminoMsgs[0].value.voter;
+  }
+
+  if (type === TXNTYPE.nativeBridgeSend) {
     signerAddress = msgs.aminoMsgs[0].value.sender;
   }
 
@@ -272,7 +299,7 @@ export const updateNodeOnTxnCompleted = (
   type: string,
   tx: any,
   txId: string,
-  activityStore: any
+  activityStore: ActivityStore
 ) => {
   if (type === "withdrawRewards") {
     let sum = 0;
@@ -298,20 +325,11 @@ export const updateNodeOnTxnCompleted = (
 
 export const updateProposalNodeOnTxnCompleted = (
   tx: any,
-  proposalNode: ProposalNode,
-  activityStore: any
+  txId: string,
+  activityStore: ActivityStore
 ) => {
-  const txId = proposalNode.id;
-
-  const updatedProposalNode = {
-    ...proposalNode,
-    transaction: {
-      ...proposalNode.transaction,
-      log: tx.log,
-    },
-  };
-
-  activityStore.setProposalNode(txId, updatedProposalNode);
+  activityStore.setProposalTxnLogs(txId, tx.log);
+  activityStore.updateProposalTxnGas(txId, tx.gas_used, tx.gas_wanted);
 
   // if txn fails, it will have tx.code.
   if (tx.code) {
@@ -324,6 +342,7 @@ export const updateProposalNodeOnTxnCompleted = (
 export const getProposalNode = ({
   txId,
   signDoc,
+  signerAddress,
   type,
   fee,
   memo,
@@ -331,11 +350,12 @@ export const getProposalNode = ({
 }: {
   txId: string;
   signDoc: any;
+  signerAddress: string;
   type: string;
   fee: any;
   memo: string;
   nodes: Array<any>;
-}): ProposalNode => {
+}) => {
   const option = Number(signDoc.msgs[0].value.option);
   const optionText = (() => {
     switch (option) {
@@ -359,8 +379,9 @@ export const getProposalNode = ({
     transaction: {
       status: "Pending",
       id: txId,
-      log: [],
+      log: "",
       fees: JSON.stringify(signDoc.fee.amount),
+      signerAddress,
       chainId: signDoc.chain_id,
       gasUsed: fee.gas,
       memo: memo,
@@ -374,4 +395,55 @@ export const getProposalNode = ({
   };
 
   return proposalNode;
+};
+
+export const getActivityNode = ({
+  balanceOffset,
+  signerAddress,
+  txId,
+  signDoc,
+  type,
+  fee,
+  memo,
+  nodes,
+}: {
+  balanceOffset: string;
+  signerAddress: string;
+  txId: string;
+  signDoc: any;
+  type: string;
+  fee: any;
+  memo: string;
+  nodes: [
+    {
+      json: string;
+      typeUrl: string;
+      __typename: string;
+    }
+  ];
+}) => {
+  const newNode: Node = {
+    balanceOffset,
+    type,
+    block: {
+      timestamp: new Date().toJSON(),
+      __typename: "Block",
+    },
+    id: txId,
+    transaction: {
+      fees: JSON.stringify(signDoc.fee.amount),
+      chainId: signDoc.chain_id,
+      gasUsed: fee.gas,
+      id: txId,
+      memo: memo,
+      signerAddress,
+      status: "Pending",
+      timeoutHeight: "0",
+      messages: {
+        nodes,
+      },
+    },
+  };
+
+  return newNode;
 };

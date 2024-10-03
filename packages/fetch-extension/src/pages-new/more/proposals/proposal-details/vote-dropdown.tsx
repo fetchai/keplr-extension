@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useStore } from "../../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { TXNTYPE } from "../../../../config";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 
 interface VoteDropdownProps {
   proposal: ObservableQueryProposal | undefined;
@@ -66,8 +68,6 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
             },
           }
         );
-
-        navigate(`/activity?tab=Proposals`, { replace: true });
       } catch (e: any) {
         analyticsStore.logEvent("vote_txn_broadcasted_fail", {
           chainId: chainStore.current.chainId,
@@ -99,10 +99,16 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
             duration: 0.25,
           },
         });
-        navigate(-2);
-        navigate(`/activity?tab=Proposals`, { replace: true });
       } finally {
         setIsSendingTx(false);
+        const txnNavigationOptions = {
+          redirect: () => {
+            navigate(`/activity?tab=Proposals`, { replace: true });
+          },
+          txType: TXNTYPE.govVote,
+          txInProgress: accountInfo.txInProgress,
+        };
+        navigateOnTxnEvents(txnNavigationOptions);
       }
     }
   };

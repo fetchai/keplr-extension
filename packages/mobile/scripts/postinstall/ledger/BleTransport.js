@@ -581,9 +581,9 @@ function open(deviceOrId, needsReconnect) {
           // necessary time for the bonding workaround
           return [
             4 /*yield*/,
-            BluetoothTransport.disconnect(transport.id)[
-              "catch"
-            ](function () {}),
+            BluetoothTransport.disconnect(transport.id)["catch"](
+              function () {}
+            ),
           ];
         case 39:
           // necessary time for the bonding workaround
@@ -783,9 +783,9 @@ var BluetoothTransport = /** @class */ (function (_super) {
                 4 /*yield*/,
                 Promise.all(
                   devices.map(function (d) {
-                    return BluetoothTransport.disconnect(d.id)[
-                      "catch"
-                    ](function () {});
+                    return BluetoothTransport.disconnect(d.id)["catch"](
+                      function () {}
+                    );
                   })
                 ),
               ];
@@ -870,7 +870,8 @@ var BluetoothTransport = /** @class */ (function (_super) {
                             ),
                             (0, rxjs_1.defer)(function () {
                               return (0,
-                              rxjs_1.from)(_this.write(Buffer.from([0x08, 0, 0, 0, 0])));
+                              rxjs_1.from)(_this.write(Buffer.from([0x08, 0, 0,
+                                    0, 0])));
                             }).pipe((0, operators_1.ignoreElements)())
                           ).toPromise(),
                         ];

@@ -4,21 +4,10 @@ import { action, flow, makeObservable, observable } from "mobx";
 import {
   updateNodeOnTxnCompleted,
   updateProposalNodeOnTxnCompleted,
+  TXNTYPE,
 } from "../account";
 import { ChainGetter } from "src/common";
 
-enum TXNTYPE {
-  ibcTransfer = "ibcTransfer",
-  send = "send",
-  withdrawRewards = "withdrawRewards",
-  delegate = "delegate",
-  undelegate = "undelegate",
-  redelegate = "redelegate",
-  govVote = "govVote",
-  nativeBridgeSend = "nativeBridgeSend",
-  approval = "approval",
-  createSecret20ViewingKey = "createSecret20ViewingKey",
-}
 export class ActivityStore {
   @observable
   protected nodes: any = {};
@@ -99,11 +88,15 @@ export class ActivityStore {
   }
 
   @flow
-  *saveNodes() {
-    const currNodes = Object.keys(this.nodes).length > 0 ? this.nodes : {};
+  *saveNodes(chainId?: string, address?: string, newNode?: any) {
+    const nodeChainId = chainId || this.chainId;
+    const nodeAddress = address || this.address;
+
+    let currNodes = Object.keys(this.nodes).length > 0 ? this.nodes : {};
+
     let oldNodes = yield* toGenerator(
       this.kvStore.get<any>(
-        `extension_activity_nodes-${this.address}-${this.chainId}`
+        `extension_activity_nodes-${nodeAddress}-${nodeChainId}`
       )
     );
 
@@ -111,30 +104,48 @@ export class ActivityStore {
       oldNodes = {};
     }
 
+    if (
+      (this.address !== nodeAddress || this.chainId !== nodeChainId) &&
+      newNode
+    ) {
+      currNodes = { ...newNode, ...oldNodes };
+    }
+
     if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
       yield this.kvStore.set<any>(
-        `extension_activity_nodes-${this.address}-${this.chainId}`,
+        `extension_activity_nodes-${nodeAddress}-${nodeChainId}`,
         JSON.parse(JSON.stringify(currNodes))
       );
     }
   }
 
   @flow
-  *saveProposalNodes() {
-    const currNodes =
+  *saveProposalNodes(chainId?: string, address?: string, newNode?: any) {
+    const nodeChainId = chainId || this.chainId;
+    const nodeAddress = address || this.address;
+
+    let currNodes =
       Object.keys(this.proposalNodes).length > 0 ? this.proposalNodes : {};
+
     let oldNodes = yield* toGenerator(
       this.kvStore.get<any>(
-        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`
+        `extension_gov_proposal_nodes-${nodeAddress}-${nodeChainId}`
       )
     );
     if (oldNodes === undefined || oldNodes === null) {
       oldNodes = {};
     }
 
+    if (
+      (this.address !== nodeAddress || this.chainId !== nodeChainId) &&
+      newNode
+    ) {
+      currNodes = { ...newNode, ...oldNodes };
+    }
+
     if (Object.values(currNodes).length >= Object.values(oldNodes).length) {
       yield this.kvStore.set<any>(
-        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`,
+        `extension_gov_proposal_nodes-${nodeAddress}-${nodeChainId}`,
         JSON.parse(JSON.stringify(currNodes))
       );
     }
@@ -151,11 +162,29 @@ export class ActivityStore {
   }
 
   @flow
-  *savePendingTxn() {
-    const currNodes =
+  *savePendingTxn(chainId?: string, address?: string, node?: any) {
+    const nodeChainId = chainId || this.chainId;
+    const nodeAddress = address || this.address;
+    let currNodes =
       Object.keys(this.pendingTxn).length > 0 ? this.pendingTxn : {};
+
+    if (
+      (this.address !== nodeAddress || this.chainId !== nodeChainId) &&
+      node
+    ) {
+      let oldNodes = yield* toGenerator(
+        this.kvStore.get<any>(
+          `extension_pending_txn-${nodeAddress}-${nodeChainId}`
+        )
+      );
+      if (oldNodes === undefined || oldNodes === null) {
+        oldNodes = {};
+      }
+      currNodes = { ...node, ...oldNodes };
+    }
+
     yield this.kvStore.set<any>(
-      `extension_pending_txn-${this.address}-${this.chainId}`,
+      `extension_pending_txn-${nodeAddress}-${nodeChainId}`,
       JSON.parse(JSON.stringify(currNodes))
     );
   }
@@ -196,86 +225,109 @@ export class ActivityStore {
 
   @flow
   *accountInit() {
-    const savedNodes = yield* toGenerator(
-      this.kvStore.get<any>(
-        `extension_activity_nodes-${this.address}-${this.chainId}`
-      )
-    );
-    this.nodes = savedNodes !== undefined ? savedNodes : {};
+    try {
+      const savedNodes = yield* toGenerator(
+        this.kvStore.get<any>(
+          `extension_activity_nodes-${this.address}-${this.chainId}`
+        )
+      );
+      this.nodes = savedNodes !== undefined ? savedNodes : {};
 
-    const savedProposalNodes = yield* toGenerator(
-      this.kvStore.get<any>(
-        `extension_gov_proposal_nodes-${this.address}-${this.chainId}`
-      )
-    );
-    this.proposalNodes =
-      savedProposalNodes !== undefined ? savedProposalNodes : {};
+      const savedProposalNodes = yield* toGenerator(
+        this.kvStore.get<any>(
+          `extension_gov_proposal_nodes-${this.address}-${this.chainId}`
+        )
+      );
+      this.proposalNodes =
+        savedProposalNodes !== undefined ? savedProposalNodes : {};
 
-    const savedPendingTxn = yield* toGenerator(
-      this.kvStore.get<any>(
-        `extension_pending_txn-${this.address}-${this.chainId}`
-      )
-    );
+      const savedPendingTxn = yield* toGenerator(
+        this.kvStore.get<any>(
+          `extension_pending_txn-${this.address}-${this.chainId}`
+        )
+      );
 
-    this.pendingTxn = savedPendingTxn !== undefined ? savedPendingTxn : {};
+      this.pendingTxn = savedPendingTxn !== undefined ? savedPendingTxn : {};
 
-    const savedPendingTxnTypes = yield* toGenerator(
-      this.kvStore.get<any>(
-        `extension_pending_txn_types-${this.address}-${this.chainId}`
-      )
-    );
+      const savedPendingTxnTypes = yield* toGenerator(
+        this.kvStore.get<any>(
+          `extension_pending_txn_types-${this.address}-${this.chainId}`
+        )
+      );
 
-    this.pendingTxnTypes =
-      savedPendingTxnTypes !== undefined
-        ? savedPendingTxnTypes
-        : this.pendingTxnTypes;
+      this.pendingTxnTypes =
+        savedPendingTxnTypes !== undefined
+          ? savedPendingTxnTypes
+          : this.pendingTxnTypes;
 
-    const txTracer = new TendermintTxTracer(
-      this.chainGetter.getChain(this.chainId).rpc,
-      "/websocket",
-      {}
-    );
+      const txTracer = new TendermintTxTracer(
+        this.chainGetter.getChain(this.chainId).rpc,
+        "/websocket",
+        {}
+      );
 
-    Object.values(this.nodes).map((node: any) => {
-      const txHash = Uint8Array.from(Buffer.from(node.id, "hex"));
-      txTracer.traceTx(txHash).then((tx) => {
-        updateNodeOnTxnCompleted(node.type, tx, node.id, this);
-        this.removePendingTxn(node.id);
+      Object.values(this.nodes).map((node: any) => {
+        const txHash = Uint8Array.from(Buffer.from(node.id, "hex"));
+        txTracer.traceTx(txHash).then((tx) => {
+          updateNodeOnTxnCompleted(node.type, tx, node.id, this);
+          this.removePendingTxn(node.id);
+        });
       });
-    });
 
-    Object.values(this.proposalNodes).map((node: any) => {
-      const txId = node.transaction.id;
-      const txHash = Uint8Array.from(Buffer.from(txId, "hex"));
-      txTracer.traceTx(txHash).then(async (tx) => {
-        updateProposalNodeOnTxnCompleted(tx, this.proposalNodes[node.id], this);
-        this.removePendingTxn(txId);
+      Object.values(this.proposalNodes).map((node: any) => {
+        const txId = node.transaction.id;
+        const txHash = Uint8Array.from(Buffer.from(txId, "hex"));
+        txTracer.traceTx(txHash).then((tx) => {
+          updateProposalNodeOnTxnCompleted(tx, node.id, this);
+          this.removePendingTxn(txId);
+        });
       });
-    });
 
-    if (Object.keys(this.pendingTxn).length === 0) {
-      this.resetPendingTxnTypes();
+      if (Object.keys(this.pendingTxn).length === 0) {
+        this.resetPendingTxnTypes();
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
   @action
   addNode(node: any) {
-    this.updateNodes({ [node.id]: node });
+    const { chainId, signerAddress } = node.transaction;
+    const newNode = { [node.id]: node };
+
+    if (chainId === this.chainId && signerAddress === this.address) {
+      this.updateNodes(newNode);
+    } else {
+      this.saveNodes(chainId, signerAddress, newNode);
+    }
   }
 
   @action
   addProposalNode(node: any) {
-    this.updateProposalNodes({ [node.id]: node });
+    const { chainId, signerAddress } = node.transaction;
+    const newNode = { [node.id]: node };
+
+    if (chainId === this.chainId && signerAddress === this.address) {
+      this.updateProposalNodes(newNode);
+    } else {
+      this.saveProposalNodes(chainId, signerAddress, newNode);
+    }
   }
 
   @action
   addPendingTxn(node: any) {
+    const { chainId, signerAddress } = node;
     const newNode = {
       [node.id]: node,
     };
-    const updatedNodes = { ...this.pendingTxn, ...newNode };
 
-    this.setPendingTxn(updatedNodes);
+    if (chainId === this.chainId && signerAddress === this.address) {
+      const updatedNodes = { ...this.pendingTxn, ...newNode };
+      this.setPendingTxn(updatedNodes);
+    } else {
+      this.savePendingTxn(chainId, signerAddress, newNode);
+    }
   }
 
   @action
@@ -325,8 +377,10 @@ export class ActivityStore {
     nodeId: any,
     status: "Pending" | "Success" | "Failed" | "Unconfirmed"
   ) {
-    this.nodes[nodeId].transaction.status = status;
-    this.saveNodes();
+    if (this.nodes[nodeId]?.transaction) {
+      this.nodes[nodeId].transaction.status = status;
+      this.saveNodes();
+    }
   }
 
   @action
@@ -334,44 +388,79 @@ export class ActivityStore {
     nodeId: any,
     status: "Pending" | "Success" | "Failed" | "Unconfirmed"
   ) {
-    this.proposalNodes[nodeId].transaction.status = status;
-    this.saveProposalNodes();
+    if (this.proposalNodes[nodeId]?.transaction) {
+      this.proposalNodes[nodeId].transaction.status = status;
+      this.saveProposalNodes();
+    }
   }
 
   @action
   updateTxnBalance(nodeId: any, amount: number) {
-    this.nodes[nodeId].balanceOffset = amount;
-    this.saveNodes();
+    if (this.nodes[nodeId]) {
+      this.nodes[nodeId].balanceOffset = amount;
+      this.saveNodes();
+    }
   }
 
   @action
   updateTxnJson(nodeId: any, index: number, json: string[]) {
-    const currentJson = JSON.parse(
-      this.nodes[nodeId].transaction.messages.nodes[index].json
-    );
+    try {
+      if (this.nodes[nodeId]?.transaction?.messages?.nodes[index]?.json) {
+        const currentJson = JSON.parse(
+          this.nodes[nodeId].transaction.messages.nodes[index].json
+        );
 
-    const newJson = {
-      delegatorAddress: currentJson.delegatorAddress,
-      validatorAddress: currentJson.validatorAddress,
-      amount: {
-        denom: json[1],
-        amount: json[0],
-      },
-    };
+        const newJson = {
+          delegatorAddress: currentJson.delegatorAddress,
+          validatorAddress: currentJson.validatorAddress,
+          amount: {
+            denom: json[1],
+            amount: json[0],
+          },
+        };
 
-    this.nodes[nodeId].transaction.messages.nodes[index].json =
-      JSON.stringify(newJson);
-    this.saveNodes();
+        this.nodes[nodeId].transaction.messages.nodes[index].json =
+          JSON.stringify(newJson);
+        this.saveNodes();
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @action
   updateTxnGas(nodeId: any, gasUsed: any, gasWanted: any) {
-    this.nodes[nodeId].transaction = {
-      ...this.nodes[nodeId].transaction,
-      gasUsed: gasUsed,
-      gasWanted,
-    };
-    this.saveNodes();
+    if (this.nodes[nodeId]?.transaction) {
+      this.nodes[nodeId].transaction = {
+        ...this.nodes[nodeId].transaction,
+        gasUsed: gasUsed,
+        gasWanted,
+      };
+      this.saveNodes();
+    }
+  }
+
+  @action
+  updateProposalTxnGas(nodeId: string, gasUsed: string, gasWanted: string) {
+    if (this.proposalNodes[nodeId]?.transaction) {
+      this.proposalNodes[nodeId].transaction = {
+        ...this.proposalNodes[nodeId].transaction,
+        gasUsed: gasUsed,
+        gasWanted,
+      };
+      this.saveProposalNodes();
+    }
+  }
+
+  @action
+  setProposalTxnLogs(nodeId: string, log: string) {
+    if (this.proposalNodes[nodeId]?.transaction) {
+      this.proposalNodes[nodeId].transaction = {
+        ...this.proposalNodes[nodeId].transaction,
+        log,
+      };
+      this.saveProposalNodes();
+    }
   }
 
   @action

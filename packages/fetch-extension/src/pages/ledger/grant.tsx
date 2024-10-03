@@ -7,8 +7,6 @@ import React, {
   useState,
 } from "react";
 
-import { Button } from "reactstrap";
-
 import {
   Ledger,
   LedgerApp,
@@ -29,6 +27,7 @@ import { useStore } from "../../stores";
 import { CosmosApp } from "@keplr-wallet/ledger-cosmos";
 import { ledgerUSBVendorId } from "@ledgerhq/devices";
 import { Buffer } from "buffer/";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const LedgerGrantPage: FunctionComponent = observer(() => {
   useLayoutEffect(() => {
@@ -265,7 +264,7 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
                 fontSize: "13px",
                 lineHeight: "120%",
                 letterSpacing: "0.15px",
-                color: "#172B4D",
+                color: "white",
                 marginBottom: "0.5rem",
               }}
             >
@@ -301,16 +300,16 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
           ) : null}
           <div className="custom-control custom-checkbox mb-2">
             <input
-              className="custom-control-input"
+              className={`custom-control-input ${style["ledgerCheckbox"]}`}
               id="use-webhid"
               type="checkbox"
               checked={ledgerInitStore.isWebHID}
               onChange={toggleWebHIDFlag}
             />
             <label
-              className="custom-control-label"
+              className={`custom-control-label ${style["ledgerCheckboxLabel"]}`}
               htmlFor="use-webhid"
-              style={{ color: "#666666", paddingTop: "1px" }}
+              style={{ color: "white", paddingTop: "1px" }}
             >
               <FormattedMessage id="ledger.option.webhid.checkbox" />
             </label>
@@ -320,7 +319,7 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
               style={{
                 fontSize: "14px",
                 marginBottom: "20px",
-                color: "#777777",
+                color: "white",
               }}
             >
               <FormattedMessage
@@ -360,29 +359,33 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
             </div>
           ) : null}
           <div className={style["buttons"]}>
-            <Button
-              color="primary"
-              className={style["button"]}
-              onClick={async (e) => {
+            <ButtonV2
+              styleProps={{
+                padding: "12px",
+                height: "56px",
+              }}
+              text={<FormattedMessage id="ledger.button.next" />}
+              onClick={async (e: any) => {
                 e.preventDefault();
                 await tryInit();
               }}
-              data-loading={tryInitializing}
-            >
-              <FormattedMessage id="ledger.button.next" />
-            </Button>
-            <Button
-              color="danger"
-              className={style["button"]}
-              onClick={async (e) => {
+              dataLoading={tryInitializing}
+            />
+            <ButtonV2
+              text="Cancel"
+              styleProps={{
+                padding: "12px",
+                height: "56px",
+                background: "transparent",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.4)",
+              }}
+              onClick={async (e: any) => {
                 e.preventDefault();
                 ledgerInitStore.abortAll();
               }}
-              data-loading={ledgerInitStore.isLoading}
-              outline
-            >
-              Cancel
-            </Button>
+              dataLoading={ledgerInitStore.isLoading}
+            />
           </div>
         </div>
       )}

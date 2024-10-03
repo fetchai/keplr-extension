@@ -3,7 +3,7 @@
 # Update android gradle config of outdated react-native-scrypt lib
 
 DIR="$( cd "$( dirname "$0" )" && pwd -P )"
-file_path=${DIR}/../node_modules/react-native-scrypt/android/build.gradle
+file_path=${DIR}/../../node_modules/react-native-scrypt/android/build.gradle
 # Check if the file exists
 if [ ! -f "$file_path" ]; then
   echo "Android Error: File '$file_path' not found."

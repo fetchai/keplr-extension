@@ -14,6 +14,10 @@ import { TransxStatus } from "@components-v2/transx-status";
 import { useLocation } from "react-router";
 import { TXNTYPE } from "../../config";
 import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
+import { getPathname } from "@utils/pathname";
+import { useNotification } from "@components/notification";
+import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
+
 interface SendPhase2Props {
   sendConfigs?: any;
   setIsNext?: any;
@@ -43,6 +47,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     } = useStore();
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
+    const notification = useNotification();
     const location = useLocation();
     const { isFromPhase1 } = location.state || {};
     const language = useLanguage();
@@ -264,10 +269,29 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                   {
                     onBroadcastFailed: (e: any) => {
                       console.log(e);
-                      navigate("/send", {
-                        replace: true,
-                        state: { trnsxStatus: "failed", isNext: true },
-                      });
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "failed", isNext: true },
+                          });
+                        },
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: "warning",
+                            placement: "top-center",
+                            duration: 5,
+                            content: `Transaction Failed`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
                     },
                     onBroadcasted: () => {
                       analyticsStore.logEvent("Send token tx broadcasted", {
@@ -275,27 +299,73 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         chainName: chainStore.current.chainName,
                         feeType: sendConfigs.feeConfig.feeType,
                       });
-                      navigate("/send", {
-                        replace: true,
-                        state: { trnsxStatus: "pending", isNext: true },
-                      });
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "pending", isNext: true },
+                          });
+                        },
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: "primary",
+                            placement: "top-center",
+                            duration: 2,
+                            content: `Transaction broadcasted`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
                     },
-                    onFulfill: () => {
-                      navigate("/send", {
-                        replace: true,
-                        state: { trnsxStatus: "success", isNext: true },
-                      });
+                    onFulfill: (tx: any) => {
+                      const istxnSuccess = tx.code ? false : true;
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "success", isNext: true },
+                          });
+                        },
+                        pagePathname: "send",
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: istxnSuccess ? "success" : "danger",
+                            placement: "top-center",
+                            duration: 5,
+                            content: istxnSuccess
+                              ? `Transaction Completed`
+                              : `Transaction Failed`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
                     },
                   }
                 );
                 if (!isDetachedPage) {
-                  navigate("/send", {
-                    replace: true,
-                    state: { trnsxStatus: "pending", isNext: true },
-                  });
+                  const currentPathName = getPathname();
+                  if (currentPathName === "send") {
+                    navigate("/send", {
+                      replace: true,
+                      state: { trnsxStatus: "pending", isNext: true },
+                    });
+                  }
                 }
               } catch (e) {
-                if (!isDetachedPage) {
+                const currentPathName = getPathname();
+                if (!isDetachedPage && currentPathName === "send") {
                   navigate("/send", {
                     replace: true,
                     state: {
@@ -307,6 +377,17 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                         recipient: sendConfigs.recipientConfig.recipient,
                         memo: sendConfigs.memoConfig.memo,
                       },
+                    },
+                  });
+                } else {
+                  notification.push({
+                    type: "warning",
+                    placement: "top-center",
+                    duration: 5,
+                    content: `Transaction Failed`,
+                    canDelete: true,
+                    transition: {
+                      duration: 0.25,
                     },
                   });
                 }

@@ -132,7 +132,7 @@ export const separateNumericAndDenom = (value: any) => {
 
 export const parseDollarAmount = (dollarString: any) => {
   const match = dollarString.match(
-    /(?<=\D|\b)(\d{1,2}(?:,\d{2})*(?:,\d{3})*)(?:\.\d+)?(?=\b|\D)/g
+    /(?<=\D|\b)(\d{1,2}(?:,\d{2})*(?:,\d{3})*|\d{1,3}(?:,\d{3})*)(?:\.\d+)?(?=\b|\D)/g
   );
   let cleanedMatches = [];
 

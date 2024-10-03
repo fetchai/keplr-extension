@@ -21,7 +21,7 @@ export const UseMaxButton: FunctionComponent<{
 }) => {
   const style = useStyle();
   const { priceStore } = useStore();
-  const disableCurrency = ["mmk", "sar", "kwd"];
+  const disableCurrency = ["mmk", "sar", "kwd", "aed", "bdt", "bhd"];
 
   return (
     <View

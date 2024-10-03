@@ -352,7 +352,10 @@ export const WalletDetailsView = observer(
                       </Address>
                     </div>
                     <img
-                      onClick={() => copyAddress(accountInfo.bech32Address)}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        copyAddress(accountInfo.ethereumHexAddress)
+                      }
                       src={require("@assets/svg/wireframe/copy.svg")}
                       alt=""
                     />

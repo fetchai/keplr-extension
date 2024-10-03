@@ -61,6 +61,12 @@ export class AccountSetBase {
   @observable
   protected _txTypeInProgress: string = "";
 
+  @observable
+  protected _broadcastInProgress: boolean = false;
+
+  @observable
+  protected _txInProgress: string = "";
+
   protected _pubKey: Uint8Array;
 
   protected hasInited = false;
@@ -371,6 +377,14 @@ export class AccountSetBase {
     return this._txTypeInProgress;
   }
 
+  get txInProgress(): string {
+    return this._txInProgress;
+  }
+
+  get broadcastInProgress(): boolean {
+    return this._broadcastInProgress;
+  }
+
   /**
    * @deprecated Use `txTypeInProgress`
    */
@@ -441,5 +455,15 @@ export class AccountSetBaseSuper extends AccountSetBase {
   @action
   setTxTypeInProgress(type: string): void {
     this._txTypeInProgress = type;
+  }
+
+  @action
+  setBroadcastInProgress(value: boolean): void {
+    this._broadcastInProgress = value;
+  }
+
+  @action
+  setTxInProgress(type: string): void {
+    this._txInProgress = type;
   }
 }

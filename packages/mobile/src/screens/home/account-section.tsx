@@ -47,8 +47,9 @@ import { fetchProposalNodes } from "screens/activity/utils";
 export const AccountSection: FunctionComponent<{
   containerStyle?: ViewStyle;
   tokenState: any;
+  graphHeight: number;
   setGraphHeight: any;
-}> = observer(({ containerStyle, tokenState, setGraphHeight }) => {
+}> = observer(({ containerStyle, tokenState, graphHeight, setGraphHeight }) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const smartNavigation = useSmartNavigation();
   const loadingScreen = useLoadingScreen();
@@ -208,11 +209,16 @@ export const AccountSection: FunctionComponent<{
   }
 
   useEffect(() => {
-    setGraphHeight(isShowClaimOption() ? 4.5 : 4.2);
+    const isHeightChanged = isShowClaimOption();
+    if (isHeightChanged && graphHeight == 4.2) {
+      setGraphHeight(4.5);
+    } else if (!isHeightChanged && graphHeight == 4.5) {
+      setGraphHeight(4.2);
+    }
   }, [isShowClaimOption]);
 
   useEffect(() => {
-    /*  this is required because accountInit sets the nodes on reload, 
+    /*  this is required because accountInit sets the nodes on reload,
         so we wait for accountInit to set the proposal nodes and then we 
         store the proposal votes from api in activity store */
     const timeout = setTimeout(async () => {
@@ -242,7 +248,9 @@ export const AccountSection: FunctionComponent<{
   useEffect(() => {
     if (Object.values(activityStore.getPendingTxn).length > 0) {
       const txns: any = Object.values(activityStore.getPendingTxn);
-      setCurrentTxnType(txns[0].type);
+      if (currentTxnType != txns[0].type) {
+        setCurrentTxnType(txns[0].type);
+      }
     }
   }, [activityStore.getPendingTxn]);
 

@@ -53,10 +53,6 @@ export const ActivityScreen = observer(() => {
     activityStore.getAddress !== accountInfo.bech32Address ||
     activityStore.getChainId !== chainStore.current.chainId;
 
-  useEffect(() => {
-    setSelectedId(tabId);
-  }, [route?.params, chainStore.current.chainId, accountInfo.bech32Address]);
-
   const logTabChange = (tabName: ActivityEnum) => {
     const eventName =
       tabName === ActivityEnum.Transactions
@@ -66,6 +62,11 @@ export const ActivityScreen = observer(() => {
       pageName: "Activity",
     });
   };
+
+  useEffect(() => {
+    setSelectedId(tabId);
+  }, [route?.params, chainStore.current.chainId, accountInfo.bech32Address]);
+
   useEffect(() => {
     logTabChange(selectedId);
   }, [selectedId]);
@@ -137,7 +138,7 @@ export const ActivityScreen = observer(() => {
         <View
           style={style.flatten(["height-full", "justify-center"]) as ViewStyle}
         >
-          {selectedId === ActivityEnum.Transactions && (
+          {selectedId === ActivityEnum.Transactions ? (
             <ActivityNativeTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
@@ -146,8 +147,7 @@ export const ActivityScreen = observer(() => {
               txnFilters={txnFilters}
               setTxnFilters={setTxnFilters}
             />
-          )}
-          {selectedId === ActivityEnum.GovProposals && (
+          ) : (
             <GovProposalsTab
               isOpenModal={isOpenModal}
               setIsOpenModal={setIsOpenModal}
