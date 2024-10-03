@@ -103,6 +103,11 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
                 accountInfo.disconnect();
 
                 await accountInfo.init();
+
+                const url = browser.runtime.getURL("popup.html#/ledger-grant");
+                browser.tabs.create({
+                  url,
+                });
               } catch (e) {
                 console.log(e);
               } finally {
