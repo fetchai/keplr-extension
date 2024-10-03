@@ -10,6 +10,7 @@ import {
   InitNonDefaultLedgerAppMsg,
   LedgerApp,
 } from "@keplr-wallet/background";
+import { useNavigate } from "react-router";
 
 export const LedgerAppModal: FunctionComponent = observer(() => {
   const { chainStore, accountStore } = useStore();
@@ -30,7 +31,7 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
   }, [chainStore, chainStore.current.chainId]);
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate = useNavigate();
   const isOpen = (() => {
     if (
       accountInfo.rejectionReason &&
@@ -103,15 +104,11 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
                 accountInfo.disconnect();
 
                 await accountInfo.init();
-
-                const url = browser.runtime.getURL("popup.html#/ledger-grant");
-                browser.tabs.create({
-                  url,
-                });
               } catch (e) {
                 console.log(e);
               } finally {
                 setIsLoading(false);
+                navigate("/", { replace: true });
               }
             }}
           />
