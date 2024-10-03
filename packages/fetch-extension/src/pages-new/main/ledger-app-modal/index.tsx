@@ -100,9 +100,7 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
                   BACKGROUND_PORT,
                   new InitNonDefaultLedgerAppMsg(LedgerApp.Ethereum)
                 );
-
                 accountInfo.disconnect();
-
                 await accountInfo.init();
               } catch (e) {
                 console.log(e);
