@@ -127,14 +127,17 @@ export const StakeCard: FunctionComponent = () => {
   let rewardsPercentage = 0;
   let vestingPercentage = 0;
   if (total > 0) {
-    stakablePercentage = (parseFloat(stakableBalNumber) / total) * 100;
+    stakablePercentage =
+      total >= spendableNumber
+        ? (parseFloat(clearDecimals(spendableNumber)) / total) * 100
+        : 100;
     stakedPercentage = (parseFloat(stakedBalNumber) / total) * 100;
     rewardsPercentage = (parseFloat(rewardsBalNumber) / total) * 100;
-    vestingPercentage = isVesting
-      ? (parseFloat(vestingBalance()) / total) * 100
-      : 0;
+    vestingPercentage =
+      isVesting && !isVestingExpired(vestingEndTimeStamp)
+        ? (parseFloat(vestingBalance()) / total) * 100
+        : 0;
   }
-
   const pieData = [
     {
       color: "#F9774B",
@@ -155,6 +158,7 @@ export const StakeCard: FunctionComponent = () => {
       focused:
         Math.round(rewardsPercentage) == 0 &&
         Math.round(stakedPercentage) == 0 &&
+        Math.round(stakablePercentage) == 0 &&
         Math.round(stakablePercentage) > 0,
     },
     {
@@ -224,7 +228,7 @@ export const StakeCard: FunctionComponent = () => {
               >
                 <AnimatedNumber
                   numberForAnimated={parseFloat(
-                    parseFloat(stakableBalNumber).toFixed(2)
+                    parseFloat(spendableNumber).toFixed(2)
                   )}
                   includeComma={true}
                   decimalAmount={2}
@@ -539,24 +543,28 @@ export const StakeCard: FunctionComponent = () => {
                   >
                     {`${rewardDenom}`}
                   </Text>
-                  {/*<Text*/}
-                  {/*  style={*/}
-                  {/*    [*/}
-                  {/*      style.flatten(["color-white@60%", "subtitle2"]),*/}
-                  {/*      { lineHeight: 18 },*/}
-                  {/*    ] as ViewStyle*/}
-                  {/*  }*/}
-                  {/*>*/}
-                  {/*  {`(${vestingPercentage.toFixed(2)}%)`}*/}
-                  {/*</Text>*/}
+                  <Text
+                    style={
+                      [
+                        style.flatten(["color-white@60%", "subtitle2"]),
+                        { lineHeight: 18 },
+                      ] as ViewStyle
+                    }
+                  >
+                    {`(${vestingPercentage.toFixed(2)}%)`}
+                  </Text>
                 </View>
-                {priceStore.calculatePrice(stakableReward)?.toString() ? (
+                {priceStore
+                  .calculatePrice(spendableBalances.balances[0])
+                  ?.toString() ? (
                   <Text
                     style={
                       style.flatten(["color-white@60%", "body3"]) as ViewStyle
                     }
                   >
-                    $0
+                    {priceStore
+                      .calculatePrice(spendableBalances.balances[0])
+                      ?.toString()}
                   </Text>
                 ) : null}
               </Skeleton>

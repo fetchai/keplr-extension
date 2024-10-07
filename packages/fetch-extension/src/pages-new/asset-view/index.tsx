@@ -20,6 +20,7 @@ import { useLanguage } from "../../languages";
 import { Alert } from "reactstrap";
 import { VestingType } from "@keplr-wallet/stores";
 import { clearDecimals } from "../sign/decimals";
+import { Link } from "react-router-dom";
 
 export const AssetView = observer(() => {
   const { activityStore, accountStore, queriesStore, chainStore } = useStore();
@@ -113,14 +114,26 @@ export const AssetView = observer(() => {
   function getVestingBalance(balance: number) {
     return clearDecimals((balance / 10 ** 18).toFixed(20).toString());
   }
+
+  const getOriginalVestingBalance = () =>
+    vestingInfo.base_vesting_account
+      ? getVestingBalance(
+          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
+        )
+      : "0";
+
+  const getVestedBalance = () =>
+    (Number(getOriginalVestingBalance()) - Number(vestingBalance())).toString();
   const vestingBalance = () => {
     if (vestingInfo["@type"] == VestingType.Continuous.toString()) {
-      if (totalNumber > spendableNumber) {
-        return (Number(totalNumber) - Number(spendableNumber)).toString();
+      if (totalNumber > clearDecimals(spendableNumber)) {
+        return (
+          Number(totalNumber) - Number(clearDecimals(spendableNumber))
+        ).toString();
       } else if (
         latestBlockTime &&
         vestingEndTimeStamp > latestBlockTime &&
-        spendableNumber === totalNumber
+        clearDecimals(spendableNumber) === totalNumber
       ) {
         const ov = Number(
           vestingInfo.base_vesting_account?.original_vesting[0].amount
@@ -134,11 +147,7 @@ export const AssetView = observer(() => {
 
       return "0";
     }
-    return vestingInfo.base_vesting_account
-      ? getVestingBalance(
-          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
-        )
-      : "0";
+    return getOriginalVestingBalance();
   };
 
   const isSendDisabled = activityStore.getPendingTxnTypes[TXNTYPE.send];
@@ -213,7 +222,7 @@ export const AssetView = observer(() => {
               <p className={style["lightText"]}>
                 {`Your balance includes ${removeTrailingZeros(
                   vestingBalance()
-                )} ${totalDenom} that are still vested.`}
+                )} ${totalDenom} that are still locked due to your vesting schedule`}
               </p>
               <div className={style["link-row"]}>
                 <div
@@ -235,65 +244,172 @@ export const AssetView = observer(() => {
                     />
                   )}
                 </div>
-                <div
-                  style={{
-                    cursor: "pointer",
+                <Link
+                  onClick={(e) => {
+                    e.stopPropagation();
                   }}
+                  to={"https://fetch.ai/"}
+                  target="_blank"
                 >
-                  <span>Learn more</span>
-                  <img
-                    src={require("@assets/svg/wireframe/external-link-vesting.svg")}
-                    alt="edit icon"
-                  />
-                </div>
+                  <div
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span>Learn more</span>
+                    <img
+                      src={require("@assets/svg/wireframe/external-link-vesting.svg")}
+                      alt="edit icon"
+                    />
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
           {showCalendar && (
-            <div
-              style={{
-                display: "flex",
-                marginTop: "28px",
-                marginBottom: "16px",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ flex: 1 }}>
-                <div
-                  className={style["show-calendar-text"]}
-                  style={{
-                    color: "rgba(255,255,255,0.6)",
-                    marginBottom: "6px",
-                  }}
-                >
-                  {`${getEnumKeyByEnumValue(
-                    vestingInfo["@type"] ?? VestingType.Continuous.toString(),
-                    VestingType
-                  )} Vesting`}
+            <div className={style["calendar-container"]}>
+              <div className={style["row"]}>
+                <div className={style["box-1"]}>
+                  <div
+                    className={style["show-calendar-text"]}
+                    style={{
+                      color: "rgba(255,255,255,0.6)",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    Vesting type
+                  </div>
                 </div>
-                <div className={style["show-calendar-text"]}>
-                  {convertEpochToDate(vestingEndTimeStamp)}
+                <div className={style["box-2"]}>
+                  <div className={style["show-calendar-text"]}>
+                    {`${getEnumKeyByEnumValue(
+                      vestingInfo["@type"] ?? VestingType.Continuous.toString(),
+                      VestingType
+                    )} Vesting`}
+                  </div>
+                </div>
+              </div>
+              {vestingInfo["@type"] == VestingType.Continuous.toString() && (
+                <div className={style["row"]}>
+                  <div className={style["box-1"]}>
+                    <div
+                      className={style["show-calendar-text"]}
+                      style={{
+                        color: "rgba(255,255,255,0.6)",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Start time
+                    </div>
+                  </div>
+                  <div className={style["box-2"]}>
+                    <div className={style["show-calendar-text"]}>
+                      {convertEpochToDate(vestingStartTimeStamp)}
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className={style["row"]}>
+                <div className={style["box-1"]}>
+                  <div
+                    className={style["show-calendar-text"]}
+                    style={{
+                      color: "rgba(255,255,255,0.6)",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    End time
+                  </div>
+                </div>
+                <div className={style["box-2"]}>
+                  <div className={style["show-calendar-text"]}>
+                    {convertEpochToDate(vestingEndTimeStamp)}
+                  </div>
                 </div>
               </div>
               <div
-                style={{
-                  display: "flex",
-                  gap: "2px",
-                  flex: 1,
-                  justifyContent: "end",
-                  flexWrap: "wrap",
-                }}
+                className={style["row"]}
+                style={
+                  !(vestingInfo["@type"] == VestingType.Continuous.toString())
+                    ? { marginBottom: "0px" }
+                    : {}
+                }
               >
-                <span className={style["show-calendar-text"]}>
-                  {vestingBalance}
-                </span>
-                <span
-                  className={style["show-calendar-text"]}
-                  style={{ color: "rgba(255,255,255,0.6)" }}
-                >
-                  {totalDenom}
-                </span>
+                <div className={style["box-1"]}>
+                  <div
+                    className={style["show-calendar-text"]}
+                    style={{
+                      color: "rgba(255,255,255,0.6)",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    Originally locked
+                  </div>
+                </div>
+                <div className={style["box-2"]}>
+                  <span className={style["show-calendar-text"]}>
+                    {getOriginalVestingBalance()}
+                  </span>
+                  <span
+                    className={style["show-calendar-text"]}
+                    style={{ color: "rgba(255,255,255,0.6)" }}
+                  >
+                    {totalDenom}
+                  </span>
+                </div>
               </div>
+              {vestingInfo["@type"] == VestingType.Continuous.toString() && (
+                <React.Fragment>
+                  <div className={style["row"]}>
+                    <div className={style["box-1"]}>
+                      <div
+                        className={style["show-calendar-text"]}
+                        style={{
+                          color: "rgba(255,255,255,0.6)",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        Currently locked
+                      </div>
+                    </div>
+                    <div className={style["box-2"]}>
+                      <span className={style["show-calendar-text"]}>
+                        {vestingBalance().toString()}
+                      </span>
+                      <span
+                        className={style["show-calendar-text"]}
+                        style={{ color: "rgba(255,255,255,0.6)" }}
+                      >
+                        {totalDenom}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={style["row"]} style={{ marginBottom: "0px" }}>
+                    <div className={style["box-1"]}>
+                      <div
+                        className={style["show-calendar-text"]}
+                        style={{
+                          color: "rgba(255,255,255,0.6)",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        Already unlocked
+                      </div>
+                    </div>
+                    <div className={style["box-2"]}>
+                      <span className={style["show-calendar-text"]}>
+                        {getVestedBalance()}
+                      </span>
+                      <span
+                        className={style["show-calendar-text"]}
+                        style={{ color: "rgba(255,255,255,0.6)" }}
+                      >
+                        {totalDenom}
+                      </span>
+                    </div>
+                  </div>
+                </React.Fragment>
+              )}
             </div>
           )}
         </Alert>

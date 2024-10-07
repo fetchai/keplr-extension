@@ -111,7 +111,10 @@ export const SendPhase1: FunctionComponent<{
   return (
     <React.Fragment>
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
-      <AmountInputSection amountConfig={sendConfigs.amountConfig} />
+      <AmountInputSection
+        amountConfig={sendConfigs.amountConfig}
+        spendableBalance={balance.shrink(true).hideDenom(true).toString()}
+      />
       {/* This is a send component */}
       <View style={style.flatten(["margin-y-20"]) as ViewStyle}>
         <DropDownCardView

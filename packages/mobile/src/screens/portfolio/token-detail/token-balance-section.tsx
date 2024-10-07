@@ -19,14 +19,15 @@ import { ChevronUpIcon } from "components/new/icon/chevron-up";
 import { ExternalLinkIcon } from "components/new/icon/external-link";
 import { SlideDownAnimation } from "components/new/animations/slide-down";
 import {
-  isVestingExpired,
   getEnumKeyByEnumValue,
+  isVestingExpired,
   removeTrailingZeros,
   separateNumericAndDenom,
 } from "utils/format/format";
 import { VestingType } from "@keplr-wallet/stores";
 import { convertEpochToDate } from "utils/format/date";
 import { clearDecimals } from "modals/sign/messages";
+import { useSmartNavigation } from "navigation/smart-navigation";
 
 export const TokenBalanceSection: FunctionComponent<{
   totalNumber: string;
@@ -34,6 +35,7 @@ export const TokenBalanceSection: FunctionComponent<{
   totalPrice: string;
 }> = observer(({ totalNumber, totalDenom, totalPrice }) => {
   const style = useStyle();
+  const smartNavigation = useSmartNavigation();
   const { accountStore, chainStore, priceStore, analyticsStore, queriesStore } =
     useStore();
   const chainId = chainStore.current.chainId;
@@ -68,14 +70,25 @@ export const TokenBalanceSection: FunctionComponent<{
     return clearDecimals((balance / 10 ** 18).toFixed(20).toString());
   }
 
+  const getOriginalVestingBalance = () =>
+    vestingInfo.base_vesting_account
+      ? getVestingBalance(
+          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
+        )
+      : "0";
+
+  const getVestedBalance = () =>
+    (Number(getOriginalVestingBalance()) - Number(vestingBalance())).toString();
   const vestingBalance = () => {
     if (vestingInfo["@type"] == VestingType.Continuous.toString()) {
-      if (totalNumber > spendableNumber) {
-        return (Number(totalNumber) - Number(spendableNumber)).toString();
+      if (totalNumber > clearDecimals(spendableNumber)) {
+        return (
+          Number(totalNumber) - Number(clearDecimals(spendableNumber))
+        ).toString();
       } else if (
         latestBlockTime &&
         vestingEndTimeStamp > latestBlockTime &&
-        spendableNumber === totalNumber
+        clearDecimals(spendableNumber) === totalNumber
       ) {
         const ov = Number(
           vestingInfo.base_vesting_account?.original_vesting[0].amount
@@ -89,11 +102,7 @@ export const TokenBalanceSection: FunctionComponent<{
 
       return "0";
     }
-    return vestingInfo.base_vesting_account
-      ? getVestingBalance(
-          Number(vestingInfo.base_vesting_account?.original_vesting[0].amount)
-        )
-      : "0";
+    return getOriginalVestingBalance();
   };
 
   const [showCalendar, setShowCalendar] = useState(false);
@@ -195,7 +204,7 @@ export const TokenBalanceSection: FunctionComponent<{
               >
                 {`Your balance includes ${removeTrailingZeros(
                   vestingBalance()
-                )} ${totalDenom} that are still vested.`}
+                )} ${totalDenom} that are still locked due to your vesting schedule`}
               </Text>
               <View
                 style={
@@ -227,7 +236,11 @@ export const TokenBalanceSection: FunctionComponent<{
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={}
+                  onPress={() =>
+                    smartNavigation.navigateSmart("WebView", {
+                      url: "https://fetch.ai/",
+                    })
+                  }
                   style={
                     style.flatten([
                       "flex-row",
@@ -254,45 +267,135 @@ export const TokenBalanceSection: FunctionComponent<{
             </View>
           </View>
           {showCalendar && (
-            <View style={style.flatten(["margin-top-16"]) as ViewStyle}>
+            <View style={style.flatten(["margin-top-32"]) as ViewStyle}>
               <SlideDownAnimation>
                 <View
                   style={
-                    style.flatten([
-                      "flex-row",
-                      "items-center",
-                      "margin-y-16",
-                    ]) as ViewStyle
+                    style.flatten(["flex-row", "margin-bottom-12"]) as ViewStyle
                   }
                 >
-                  <View style={style.flatten(["flex-3"]) as ViewStyle}>
+                  <Text
+                    style={
+                      style.flatten([
+                        "color-white@60%",
+                        "body3",
+                        "margin-bottom-4",
+                        "flex-2",
+                      ]) as ViewStyle
+                    }
+                  >
+                    Vesting type
+                  </Text>
+                  <Text
+                    style={
+                      style.flatten([
+                        "color-white",
+                        "body3",
+                        "flex-3",
+                        "text-right",
+                      ]) as ViewStyle
+                    }
+                  >
+                    {`${getEnumKeyByEnumValue(
+                      vestingInfo["@type"] ?? VestingType.Continuous.toString(),
+                      VestingType
+                    )} Vesting`}
+                  </Text>
+                </View>
+                {vestingInfo["@type"] == VestingType.Continuous.toString() && (
+                  <View
+                    style={
+                      style.flatten([
+                        "flex-row",
+                        "margin-bottom-12",
+                      ]) as ViewStyle
+                    }
+                  >
                     <Text
                       style={
                         style.flatten([
                           "color-white@60%",
                           "body3",
-                          "margin-bottom-6",
+                          "margin-bottom-4",
+                          "flex-2",
                         ]) as ViewStyle
                       }
                     >
-                      {`${getEnumKeyByEnumValue(
-                        vestingInfo["@type"] ??
-                          VestingType.Continuous.toString(),
-                        VestingType
-                      )} Vesting`}
+                      Start time
                     </Text>
                     <Text
                       style={
-                        style.flatten(["color-white", "body3"]) as ViewStyle
+                        style.flatten([
+                          "color-white",
+                          "body3",
+                          "flex-3",
+                          "text-right",
+                        ]) as ViewStyle
                       }
                     >
-                      {convertEpochToDate(vestingEndTimeStamp, "DD MMM YYYY")}
+                      {convertEpochToDate(vestingStartTimeStamp, "DD MMM YYYY")}
+                    </Text>
+                  </View>
+                )}
+                <View
+                  style={
+                    style.flatten(["flex-row", "margin-bottom-12"]) as ViewStyle
+                  }
+                >
+                  <Text
+                    style={
+                      style.flatten([
+                        "color-white@60%",
+                        "body3",
+                        "margin-bottom-4",
+                        "flex-2",
+                      ]) as ViewStyle
+                    }
+                  >
+                    End time
+                  </Text>
+                  <Text
+                    style={
+                      style.flatten([
+                        "color-white",
+                        "body3",
+                        "flex-3",
+                        "text-right",
+                      ]) as ViewStyle
+                    }
+                  >
+                    {convertEpochToDate(vestingEndTimeStamp, "DD MMM YYYY")}
+                  </Text>
+                </View>
+                <View
+                  style={
+                    style.flatten(
+                      ["flex-row", "items-center"],
+                      [
+                        vestingInfo["@type"] ==
+                          VestingType.Continuous.toString() &&
+                          "margin-bottom-12",
+                      ]
+                    ) as ViewStyle
+                  }
+                >
+                  <View style={style.flatten(["flex-2"]) as ViewStyle}>
+                    <Text
+                      style={
+                        style.flatten([
+                          "color-white@60%",
+                          "body3",
+                          "margin-bottom-4",
+                        ]) as ViewStyle
+                      }
+                    >
+                      {"Originally\nlocked"}
                     </Text>
                   </View>
                   <View
                     style={
                       style.flatten([
-                        "flex-2",
+                        "flex-3",
                         "flex-row",
                         "justify-end",
                         "flex-wrap",
@@ -308,7 +411,7 @@ export const TokenBalanceSection: FunctionComponent<{
                         ]) as ViewStyle
                       }
                     >
-                      {vestingBalance}
+                      {getOriginalVestingBalance()}
                     </Text>
                     <Text
                       style={
@@ -323,6 +426,118 @@ export const TokenBalanceSection: FunctionComponent<{
                     </Text>
                   </View>
                 </View>
+                {vestingInfo["@type"] == VestingType.Continuous.toString() && (
+                  <React.Fragment>
+                    <View
+                      style={
+                        style.flatten([
+                          "flex-row",
+                          "items-center",
+                          "margin-bottom-12",
+                        ]) as ViewStyle
+                      }
+                    >
+                      <View style={style.flatten(["flex-2"]) as ViewStyle}>
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white@60%",
+                              "body3",
+                              "margin-bottom-4",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {"Currently\nlocked"}
+                        </Text>
+                      </View>
+                      <View
+                        style={
+                          style.flatten([
+                            "flex-3",
+                            "flex-row",
+                            "justify-end",
+                            "flex-wrap",
+                          ]) as ViewStyle
+                        }
+                      >
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white",
+                              "body3",
+                              "text-right",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {vestingBalance().toString()}
+                        </Text>
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white@60%",
+                              "body3",
+                              "margin-left-4",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {totalDenom}
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={
+                        style.flatten(["flex-row", "items-center"]) as ViewStyle
+                      }
+                    >
+                      <View style={style.flatten(["flex-2"]) as ViewStyle}>
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white@60%",
+                              "body3",
+                              "margin-bottom-4",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {"Already\nunlocked"}
+                        </Text>
+                      </View>
+                      <View
+                        style={
+                          style.flatten([
+                            "flex-3",
+                            "flex-row",
+                            "justify-end",
+                            "flex-wrap",
+                          ]) as ViewStyle
+                        }
+                      >
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white",
+                              "body3",
+                              "text-right",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {getVestedBalance()}
+                        </Text>
+                        <Text
+                          style={
+                            style.flatten([
+                              "color-white@60%",
+                              "body3",
+                              "margin-left-4",
+                            ]) as ViewStyle
+                          }
+                        >
+                          {totalDenom}
+                        </Text>
+                      </View>
+                    </View>
+                  </React.Fragment>
+                )}
               </SlideDownAnimation>
             </View>
           )}

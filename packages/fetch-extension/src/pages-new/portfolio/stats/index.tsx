@@ -149,12 +149,13 @@ export const Stats = observer(
 
     const total = stakableBalInUI + stakedBalInUI + rewardsBalInUI;
 
-    const stakablePercentage = total ? (stakableBalInUI / total) * 100 : 0;
+    const stakablePercentage = total ? (spendableNumber / total) * 100 : 0;
     const stakedPercentage = total ? (stakedBalInUI / total) * 100 : 0;
     const rewardsPercentage = total ? (rewardsBalInUI / total) * 100 : 0;
-    const vestingPercentage = isVesting
-      ? (Number(vestingBalance()) / total) * 100
-      : 0;
+    const vestingPercentage =
+      isVesting && !isVestingExpired(vestingEndTimeStamp)
+        ? (Number(vestingBalance()) / total) * 100
+        : 0;
 
     const stakableInFiatCurrency = priceStore
       .calculatePrice(stakable, fiatCurrency)
@@ -167,14 +168,16 @@ export const Stats = observer(
       ?.toString();
 
     const doughnutData = {
-      labels: ["Balance", "Staked", "Rewards"],
+      labels: ["Balance", "Staked", "Rewards", "vesting"],
       datasets: [
         {
           data: [
-            parseFloat(stakableBalNumber),
+            parseFloat(spendableNumber),
             parseFloat(stakedBalNumber),
             parseFloat(rewardsBalNumber),
-            parseFloat(vestingPercentage.toString()),
+            isVesting && !isVestingExpired(vestingEndTimeStamp)
+              ? parseFloat(vestingBalance().toString())
+              : 0,
           ],
           backgroundColor: ["#CFC3FE", "#5F38FB", "#F9774B", "#FAB29B"],
           hoverBackgroundColor: ["#CFC3FE", "#5F38FB", "#F9774B", "#FAB29B"],
@@ -450,34 +453,18 @@ export const Stats = observer(
                       gap: "3px",
                     }}
                   >
-                    <div className={style["label"]}>Staking rewards</div>
+                    <div className={style["label"]}>Vesting</div>
                     {isLoaded ? (
                       <div className={style["value"]}>
                         {Number(vestingBalance()).toFixed(2)}{" "}
                         {` ${spendableDenom} `}
-                        {/*<span className={style["label"]}>*/}
-                        {/*  ({vestingPercentage.toFixed(1)}%)*/}
-                        {/*</span>*/}
+                        <span className={style["label"]}>
+                          ({vestingPercentage.toFixed(1)}%)
+                        </span>
                       </div>
                     ) : (
                       <Skeleton height="17.5px" />
                     )}
-                    {/*{isLoaded ? (*/}
-                    {/*  rewardsInFiatCurrency !== undefined &&*/}
-                    {/*  rewardsInFiatCurrency > "$0" ? (*/}
-                    {/*    <div*/}
-                    {/*      style={{*/}
-                    {/*        fontSize: "14px",*/}
-                    {/*        fontWeight: 400,*/}
-                    {/*        color: "rgba(255,255,255,0.6)",*/}
-                    {/*      }}*/}
-                    {/*    >*/}
-                    {/*      {rewardsInFiatCurrency}*/}
-                    {/*    </div>*/}
-                    {/*  ) : null*/}
-                    {/*) : (*/}
-                    {/*  <Skeleton height="21px" />*/}
-                    {/*)}*/}
                   </div>
                 </div>
               )}

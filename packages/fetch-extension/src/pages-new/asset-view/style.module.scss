@@ -165,4 +165,28 @@
     font-weight: 400;
     line-height: 17.5px;
   }
+
+  .calendar-container {
+    margin-top: 28px;
+    .row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+
+      .box-1 {
+        flex: 1;
+        overflow-wrap: anywhere;
+      }
+
+      .box-2 {
+        display: flex;
+        gap: 2px;
+        flex: 2;
+        text-align: end;
+        justify-content: end;
+        flex-wrap: wrap;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
 }
