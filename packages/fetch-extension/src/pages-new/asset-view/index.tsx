@@ -21,6 +21,7 @@ import { Alert } from "reactstrap";
 import { VestingType } from "@keplr-wallet/stores";
 import { clearDecimals } from "../sign/decimals";
 import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 
 export const AssetView = observer(() => {
   const { activityStore, accountStore, queriesStore, chainStore } = useStore();
@@ -220,9 +221,13 @@ export const AssetView = observer(() => {
             <img src={require("@assets/svg/wireframe/lock.svg")} alt="" />
             <div>
               <p className={style["lightText"]}>
-                {`Your balance includes ${removeTrailingZeros(
-                  vestingBalance()
-                )} ${totalDenom} that are still locked due to your vesting schedule`}
+                <FormattedMessage
+                  id="portfolio.detail.vesting-card.paragraph"
+                  values={{
+                    vestingBalance: removeTrailingZeros(vestingBalance()),
+                    balanceDenom: totalDenom,
+                  }}
+                />
               </p>
               <div className={style["link-row"]}>
                 <div
@@ -277,7 +282,7 @@ export const AssetView = observer(() => {
                       marginBottom: "6px",
                     }}
                   >
-                    Vesting type
+                    <FormattedMessage id="portfolio.detail.vesting-card.calendar.vesting.type" />
                   </div>
                 </div>
                 <div className={style["box-2"]}>
@@ -299,7 +304,7 @@ export const AssetView = observer(() => {
                         marginBottom: "6px",
                       }}
                     >
-                      Start time
+                      <FormattedMessage id="portfolio.detail.vesting-card.calendar.start.time" />
                     </div>
                   </div>
                   <div className={style["box-2"]}>
@@ -318,7 +323,7 @@ export const AssetView = observer(() => {
                       marginBottom: "6px",
                     }}
                   >
-                    End time
+                    <FormattedMessage id="portfolio.detail.vesting-card.calendar.end.time" />
                   </div>
                 </div>
                 <div className={style["box-2"]}>
@@ -343,7 +348,7 @@ export const AssetView = observer(() => {
                       marginBottom: "6px",
                     }}
                   >
-                    Originally locked
+                    <FormattedMessage id="portfolio.detail.vesting-card.calendar.originally.locked" />
                   </div>
                 </div>
                 <div className={style["box-2"]}>
@@ -369,7 +374,7 @@ export const AssetView = observer(() => {
                           marginBottom: "6px",
                         }}
                       >
-                        Currently locked
+                        <FormattedMessage id="portfolio.detail.vesting-card.calendar.currently.locked" />
                       </div>
                     </div>
                     <div className={style["box-2"]}>
@@ -393,7 +398,7 @@ export const AssetView = observer(() => {
                           marginBottom: "6px",
                         }}
                       >
-                        Already unlocked
+                        <FormattedMessage id="portfolio.detail.vesting-card.calendar.already.unlocked" />
                       </div>
                     </div>
                     <div className={style["box-2"]}>

@@ -2542,8 +2542,8 @@ export const EmbedChainInfos: ChainInfo[] = [
     govUrl: "https://explore-eridanus-1.fetch.ai/proposals/",
   },
   {
-    rpc: "http://127.0.0.1:26657",
-    rest: "http://127.0.0.1:1317",
+    rpc: "http://34.34.58.246:26657",
+    rest: "http://34.34.58.246:1317",
     chainId: "test",
     chainName: "Local Test Network",
     hideInUI: true,

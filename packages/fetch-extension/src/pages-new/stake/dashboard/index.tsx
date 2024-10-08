@@ -145,8 +145,6 @@ export const Dashboard = observer(() => {
       ? (Number(vestingBalance()) / total) * 100
       : 0;
 
-  console.log("hey:", isVesting && !isVestingExpired(vestingEndTimeStamp));
-
   const stakableInFiatCurrency = priceStore
     .calculatePrice(stakable, fiatCurrency)
     ?.toString();
@@ -358,22 +356,6 @@ export const Dashboard = observer(() => {
                   ) : (
                     <Skeleton height="17.5px" />
                   )}
-                  {/*{isLoaded ? (*/}
-                  {/*  rewardsInFiatCurrency !== undefined &&*/}
-                  {/*  rewardsInFiatCurrency > "$0" ? (*/}
-                  {/*    <div*/}
-                  {/*      style={{*/}
-                  {/*        fontSize: "14px",*/}
-                  {/*        fontWeight: 400,*/}
-                  {/*        color: "rgba(255,255,255,0.6)",*/}
-                  {/*      }}*/}
-                  {/*    >*/}
-                  {/*      {rewardsInFiatCurrency}*/}
-                  {/*    </div>*/}
-                  {/*  ) : null*/}
-                  {/*) : (*/}
-                  {/*  <Skeleton height="21px" />*/}
-                  {/*)}*/}
                 </div>
               </div>
             )}
