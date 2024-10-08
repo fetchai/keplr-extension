@@ -10,6 +10,7 @@ import {
   InitNonDefaultLedgerAppMsg,
   LedgerApp,
 } from "@keplr-wallet/background";
+import { useNavigate } from "react-router";
 
 export const LedgerAppModal: FunctionComponent = observer(() => {
   const { chainStore, accountStore } = useStore();
@@ -30,7 +31,7 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
   }, [chainStore, chainStore.current.chainId]);
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate = useNavigate();
   const isOpen = (() => {
     if (
       accountInfo.rejectionReason &&
@@ -99,14 +100,13 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
                   BACKGROUND_PORT,
                   new InitNonDefaultLedgerAppMsg(LedgerApp.Ethereum)
                 );
-
                 accountInfo.disconnect();
-
                 await accountInfo.init();
               } catch (e) {
                 console.log(e);
               } finally {
                 setIsLoading(false);
+                navigate("/", { replace: true });
               }
             }}
           />
