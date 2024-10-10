@@ -236,7 +236,14 @@ export const AssetView = observer(() => {
                     cursor: "pointer",
                   }}
                 >
-                  <span>{showCalendar ? "Hide" : "View"} calendar</span>
+                  <span>
+                    <FormattedMessage
+                      id="portfolio.detail.vesting-card.calendar.show/hide.calendar"
+                      values={{
+                        calendarType: showCalendar ? "Hide" : "View",
+                      }}
+                    />
+                  </span>
                   {showCalendar ? (
                     <img
                       src={require("@assets/svg/chevron-up.svg")}
@@ -253,7 +260,9 @@ export const AssetView = observer(() => {
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  to={"https://fetch.ai/"}
+                  to={
+                    "https://docs.cosmos.network/v0.45/modules/auth/05_vesting.html"
+                  }
                   target="_blank"
                 >
                   <div
@@ -261,7 +270,9 @@ export const AssetView = observer(() => {
                       cursor: "pointer",
                     }}
                   >
-                    <span>Learn more</span>
+                    <span>
+                      <FormattedMessage id="portfolio.detail.vesting-card.calendar.learn.more" />
+                    </span>
                     <img
                       src={require("@assets/svg/wireframe/external-link-vesting.svg")}
                       alt="edit icon"

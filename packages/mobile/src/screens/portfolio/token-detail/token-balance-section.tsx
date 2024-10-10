@@ -238,7 +238,7 @@ export const TokenBalanceSection: FunctionComponent<{
                 <TouchableOpacity
                   onPress={() =>
                     smartNavigation.navigateSmart("WebView", {
-                      url: "https://fetch.ai/",
+                      url: "https://docs.cosmos.network/v0.45/modules/auth/05_vesting.html",
                     })
                   }
                   style={

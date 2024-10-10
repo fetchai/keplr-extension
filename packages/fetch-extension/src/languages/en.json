@@ -459,5 +459,7 @@
   "portfolio.detail.vesting-card.calendar.end.time": "End time",
   "portfolio.detail.vesting-card.calendar.originally.locked": "Originally locked",
   "portfolio.detail.vesting-card.calendar.currently.locked": "Currently locked",
-  "portfolio.detail.vesting-card.calendar.already.unlocked": "Already unlocked"
+  "portfolio.detail.vesting-card.calendar.already.unlocked": "Already unlocked",
+  "portfolio.detail.vesting-card.calendar.learn.more": "Learn more",
+  "portfolio.detail.vesting-card.calendar.show/hide.calendar": "{calendarType} calendar"
 }
