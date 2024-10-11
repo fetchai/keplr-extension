@@ -279,6 +279,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     const result = yield* toGenerator(
       this.requester.sendMessage(BACKGROUND_PORT, msg)
     );
+    console.log("ChainsData", result.chainInfos);
     this.setChainInfos(result.chainInfos);
   }
 
@@ -294,8 +295,10 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
 
   @flow
   *addEVMChainInfo(chainInfo: ChainInfo) {
+    console.log("EVM:1", chainInfo);
     const msg = new SuggestChainInfoMsg(chainInfo);
     yield* toGenerator(this.requester.sendMessage(BACKGROUND_PORT, msg));
+    console.log("EVM:2");
 
     yield this.getChainInfosFromBackground();
   }

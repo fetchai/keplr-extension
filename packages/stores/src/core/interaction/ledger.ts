@@ -2,6 +2,7 @@ import { InteractionStore } from "./interaction";
 import { computed, flow, makeObservable, observable } from "mobx";
 import { BACKGROUND_PORT, MessageRequester } from "@keplr-wallet/router";
 import {
+  InitNonDefaultLedgerAppMsg,
   LedgerApp,
   LedgerGetWebHIDFlagMsg,
   LedgerSetWebHIDFlagMsg,
@@ -281,6 +282,16 @@ export class LedgerInitStore {
     } finally {
       this._isLoading = false;
     }
+  }
+
+  @flow
+  *tryNonDefaultLedgerAppOpen() {
+    yield* toGenerator(
+      this.msgRequester.sendMessage(
+        BACKGROUND_PORT,
+        new InitNonDefaultLedgerAppMsg(LedgerApp.Ethereum)
+      )
+    );
   }
 
   get isLoading(): boolean {

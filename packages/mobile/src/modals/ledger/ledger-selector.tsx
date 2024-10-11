@@ -5,6 +5,7 @@ import { BluetoothMode } from ".";
 import { ViewStyle } from "react-native";
 import { BlurButton } from "components/new/button/blur-button";
 import TransportBLE from "@ledgerhq/react-native-hw-transport-ble";
+import { useStore } from "stores/index";
 
 export const LedgerNanoBLESelector: FunctionComponent<{
   deviceId: string;
@@ -25,12 +26,24 @@ export const LedgerNanoBLESelector: FunctionComponent<{
   setIsPaired,
 }) => {
   const style = useStyle();
-
+  const { chainStore } = useStore();
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
   // const [pairingText, setIsPairingText] = useState<string>("");
   const [isConnecting, setIsConnecting] = useState(false);
 
   const testLedgerConnection = async () => {
     let initErrorOn: LedgerInitErrorOn | undefined;
+    let app: LedgerApp = LedgerApp.Cosmos;
+    let cosmosLikeApp: string = "Cosmos";
+    let content: string =
+      "Open Cosmos app on your ledger and pair with ASI Alliance Wallet";
+
+    if (isEvm) {
+      app = LedgerApp.Ethereum;
+      cosmosLikeApp = "Ethereum";
+      content =
+        "Open Ethereum app on your ledger and pair with ASI Alliance Wallet";
+    }
 
     try {
       setIsPaired(false);
@@ -41,12 +54,10 @@ export const LedgerNanoBLESelector: FunctionComponent<{
       const ledger = await Ledger.init(
         () => TransportBLE.open(deviceId),
         undefined,
-        LedgerApp.Cosmos,
-        "Cosmos"
+        app,
+        cosmosLikeApp
       );
-      setMainContent(
-        "Open Cosmos app on your ledger and pair with ASI Alliance Wallet"
-      );
+      setMainContent(content);
       setBluetoothMode(BluetoothMode.Pairing);
       setIsPairingText("Waiting to pair...");
       setTimeout(function () {
@@ -70,9 +81,7 @@ export const LedgerNanoBLESelector: FunctionComponent<{
         initErrorOn = e.errorOn;
         if (initErrorOn === LedgerInitErrorOn.App) {
           setBluetoothMode(BluetoothMode.Device);
-          setMainContent(
-            "Open Cosmos app on your ledger and pair with ASI Alliance Wallet"
-          );
+          setMainContent(content);
           setIsConnecting(false);
         } else if (initErrorOn === LedgerInitErrorOn.Transport) {
           setMainContent("Please unlock ledger nano X");

@@ -201,15 +201,16 @@ export const AddEvmChain: FunctionComponent = () => {
   };
 
   const handleChange = async (name: string, value: string) => {
+    const rpcUrl = value.trim();
     setInfo("");
     setHasErrors(false);
     analyticsStore.logEvent("add_evm_chain_click");
 
     if (name === "rpc") {
-      setNewChainInfo({ ...newChainInfo, rpc: value, chainId: "" });
+      setNewChainInfo({ ...newChainInfo, rpc: rpcUrl, chainId: "" });
 
-      if (isUrlValid(value)) {
-        await getChainInfo(value);
+      if (isUrlValid(rpcUrl)) {
+        await getChainInfo(rpcUrl);
       }
     } else if (name === "decimal") {
       setNewChainInfo({
@@ -217,19 +218,19 @@ export const AddEvmChain: FunctionComponent = () => {
         currencies: [
           {
             ...newChainInfo.currencies[0],
-            coinDecimals: parseInt(value),
+            coinDecimals: parseInt(rpcUrl),
           },
         ],
         stakeCurrency: {
           ...newChainInfo.stakeCurrency,
-          coinDenom: value,
-          coinMinimalDenom: value,
+          coinDenom: rpcUrl,
+          coinMinimalDenom: rpcUrl,
         },
         feeCurrencies: [
           {
             ...newChainInfo.feeCurrencies[0],
-            coinDenom: value,
-            coinMinimalDenom: value,
+            coinDenom: rpcUrl,
+            coinMinimalDenom: rpcUrl,
           },
         ],
       });
@@ -239,35 +240,35 @@ export const AddEvmChain: FunctionComponent = () => {
         currencies: [
           {
             ...newChainInfo.currencies[0],
-            coinDenom: value,
-            coinMinimalDenom: value,
+            coinDenom: rpcUrl,
+            coinMinimalDenom: rpcUrl,
           },
         ],
         stakeCurrency: {
           ...newChainInfo.stakeCurrency,
-          coinDenom: value,
-          coinMinimalDenom: value,
+          coinDenom: rpcUrl,
+          coinMinimalDenom: rpcUrl,
         },
         feeCurrencies: [
           {
             ...newChainInfo.feeCurrencies[0],
-            coinDenom: value,
-            coinMinimalDenom: value,
+            coinDenom: rpcUrl,
+            coinMinimalDenom: rpcUrl,
           },
         ],
       });
     } else {
       setNewChainInfo({
         ...newChainInfo,
-        [name]: value,
+        [name]: rpcUrl,
       });
     }
   };
 
   const isValid = !hasErrors && newChainInfo.rpc && newChainInfo.chainId;
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      chainStore.addEVMChainInfo(newChainInfo);
+      await chainStore.addEVMChainInfo(newChainInfo);
       chainStore.selectChain(newChainInfo.chainId);
       navigation.goBack();
 
@@ -315,8 +316,8 @@ export const AddEvmChain: FunctionComponent = () => {
               style={
                 style.flatten([
                   "text-caption1",
-                  "color-red-250",
                   "margin-top-8",
+                  hasErrors ? "color-red-250" : "color-gray-400",
                 ]) as ViewStyle
               }
             >

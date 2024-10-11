@@ -11,9 +11,16 @@ import { useSmartNavigation } from "navigation/smart-navigation";
 import { observer } from "mobx-react-lite";
 
 export const SettingAddTokenScreen: FunctionComponent = observer(() => {
-  const { chainStore, queriesStore, tokensStore, analyticsStore } = useStore();
+  const {
+    chainStore,
+    accountStore,
+    queriesStore,
+    tokensStore,
+    analyticsStore,
+  } = useStore();
   const [loading, setIsLoading] = useState(false);
-
+  const isEvm = chainStore.current.features?.includes("evm") ?? false;
+  const accountInfo = accountStore.getAccount(chainStore.current.chainId);
   const smartNavigation = useSmartNavigation();
 
   const style = useStyle();
@@ -65,13 +72,17 @@ export const SettingAddTokenScreen: FunctionComponent = observer(() => {
           style.flatten(["border-radius-32", "margin-top-20"]) as ViewStyle
         }
         textStyle={style.flatten(["body2", "font-normal"]) as ViewStyle}
-        disabled={!queryTokenInfo.tokenInfo || queryTokenInfo.error != null}
+        disabled={
+          queryTokenInfo.error !== undefined ||
+          queryTokenInfo.tokenInfo == null ||
+          !accountInfo.isReadyToSendTx
+        }
         loading={!queryTokenInfo.tokenInfo && loading}
         onPress={async () => {
           setIsLoading(true);
           if (queryTokenInfo.tokenInfo) {
             await tokensStore.getTokensOf(chainStore.current.chainId).addToken({
-              type: "cw20",
+              type: isEvm ? "erc20" : "cw20",
               contractAddress: recipientConfig.recipient,
               coinMinimalDenom: queryTokenInfo.tokenInfo.name,
               coinDenom: queryTokenInfo.tokenInfo.symbol,
