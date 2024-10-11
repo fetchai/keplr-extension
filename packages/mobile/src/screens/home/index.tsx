@@ -29,6 +29,7 @@ import { AppUpdateModal } from "./app-update-modal";
 import DeviceInfo from "react-native-device-info";
 import axios from "axios";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { LedgerEvmModel } from "modals/ledger/ledger-evm-model";
 
 interface OS {
   version: string;
@@ -272,6 +273,7 @@ export const HomeScreen: FunctionComponent = observer(() => {
         tokenName={chainStore.current.feeCurrencies[0].coinGeckoId}
         height={windowHeight / graphHeight}
       />
+      <LedgerEvmModel />
       <AppUpdateModal isOpen={appUpdate} />
     </PageWithScrollViewInBottomTabView>
   );

@@ -15,6 +15,8 @@ import {
   TryUpdateChainMsg,
   SetChainEndpointsMsg,
   ResetChainEndpointsMsg,
+  SuggestChainInfoMsg,
+  SetSelectedChainMsg,
 } from "@keplr-wallet/background";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
 
@@ -197,12 +199,21 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     return this._selectedChainId;
   }
 
+  // @action
+  // selectChain(chainId: string) {
+  //   if (this._isInitializing) {
+  //     this.deferChainIdSelect = chainId;
+  //   }
+  //   this._selectedChainId = chainId;
+  // }
   @action
   selectChain(chainId: string) {
     if (this._isInitializing) {
       this.deferChainIdSelect = chainId;
     }
     this._selectedChainId = chainId;
+    const msg = new SetSelectedChainMsg(this._selectedChainId);
+    this.requester.sendMessage(BACKGROUND_PORT, msg);
   }
 
   @computed
@@ -268,6 +279,7 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     const result = yield* toGenerator(
       this.requester.sendMessage(BACKGROUND_PORT, msg)
     );
+    console.log("ChainsData", result.chainInfos);
     this.setChainInfos(result.chainInfos);
   }
 
@@ -279,6 +291,16 @@ export class ChainStore extends BaseChainStore<ChainInfoWithCoreTypes> {
     );
 
     this.setChainInfos(chainInfos);
+  }
+
+  @flow
+  *addEVMChainInfo(chainInfo: ChainInfo) {
+    console.log("EVM:1", chainInfo);
+    const msg = new SuggestChainInfoMsg(chainInfo);
+    yield* toGenerator(this.requester.sendMessage(BACKGROUND_PORT, msg));
+    console.log("EVM:2");
+
+    yield this.getChainInfosFromBackground();
   }
 
   @flow
