@@ -30,6 +30,10 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: #030e3b;
+  background-size: cover;
+  background-image: url("../../public/assets/svg/wireframe/bg.svg");
+  background-repeat: no-repeat;
   overflow-y: hidden;
   overflow-x: hidden;
 }
