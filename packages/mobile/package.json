@@ -76,6 +76,7 @@
     "appcenter": "^4.4.5",
     "appcenter-analytics": "^4.4.5",
     "axios": "^0.27.2",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "bip39": "^3.0.2",
     "buffer": "^6.0.3",
     "color-alpha": "^1.1.3",
