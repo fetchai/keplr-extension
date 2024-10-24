@@ -62,7 +62,6 @@ export function AnimatedNumber({
       const newArray = AddComma(numberForAnimated, numberArray, decimalAmount);
       numberArray = [...newArray];
     }
-    // console.log(numberArray)
   }
   const heightContainer = fontSizeValue! || 70;
 
