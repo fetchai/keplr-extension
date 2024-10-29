@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Button } from "reactstrap";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 import style from "./style.module.scss";
 import { EmptyLayout } from "@layouts/empty-layout";
@@ -48,7 +48,7 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
   }
 
   return (
-    <EmptyLayout style={{ height: "100%" }}>
+    <EmptyLayout className={style["emptyLayout"]} style={{ height: "100%" }}>
       {isLoadingPlaceholder ? (
         <div className={style["container"]}>
           <div className={style["content"]}>
@@ -144,7 +144,7 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   <div className={style["imageBackground"]} />
                   <img
                     className={style["logoImage"]}
-                    src={require("@assets/logo-256.svg")}
+                    src={require("@assets/png/Black-white-circle.png")}
                     alt="chain logo"
                   />
                 </div>
@@ -157,7 +157,7 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   <div className={style["imageBackground"]} />
                   <img
                     className={style["logoImage"]}
-                    src={require("../../public/assets/logo-256.svg")}
+                    src={require("@assets/png/Black-white-circle.png")}
                     alt="keplr logo"
                   />
                 </div>
@@ -211,12 +211,17 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
             </div>
           }
           <div className={style["buttons"]}>
-            <Button
-              className={style["button"]}
-              color="danger"
-              outline
+            <ButtonV2
+              styleProps={{
+                padding: "10px",
+                height: "40px",
+                fontSize: "0.9rem",
+                background: "transparent",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.4)",
+              }}
               disabled={!chainSwitchStore.waitingSuggestedChainId}
-              data-loading={chainSwitchStore.isLoading}
+              dataLoading={chainSwitchStore.isLoading}
               onClick={async (e: any) => {
                 e.preventDefault();
 
@@ -231,14 +236,19 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   navigate("/");
                 }
               }}
-            >
-              <FormattedMessage id="chain.suggested.button.reject" />
-            </Button>
-            <Button
-              className={style["button"]}
-              color="primary"
+              text={<FormattedMessage id="chain.suggested.button.reject" />}
+            />
+            <ButtonV2
+              styleProps={{
+                padding: "10px",
+                height: "40px",
+                fontSize: "0.9rem",
+                background: "white",
+                color: "black",
+                border: "1px solid rgba(255,255,255,0.4)",
+              }}
               disabled={!chainSwitchStore.waitingSuggestedChainId}
-              data-loading={chainSwitchStore.isLoading}
+              dataLoading={chainSwitchStore.isLoading}
               onClick={async (e: any) => {
                 e.preventDefault();
 
@@ -264,9 +274,8 @@ export const ApproveSwitchChainPage: FunctionComponent = observer(() => {
                   navigate("/");
                 }
               }}
-            >
-              <FormattedMessage id="chain.suggested.button.approve" />
-            </Button>
+              text={<FormattedMessage id="chain.suggested.button.approve" />}
+            />
           </div>
         </div>
       )}

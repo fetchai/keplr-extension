@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from "react";
 
 import { useInteractionInfo } from "@keplr-wallet/hooks";
-import { Button } from "reactstrap";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
@@ -57,12 +57,15 @@ export const AccessPage: FunctionComponent = observer(() => {
   }, [waitingPermission]);
 
   return (
-    <EmptyLayout style={{ height: "100%", paddingTop: "80px" }}>
+    <EmptyLayout
+      className={style["emptyLayout"]}
+      style={{ height: "100%", paddingTop: "80px" }}
+    >
       <div className={style["container"]}>
         <img
-          src={require("@assets/logo-256.svg")}
+          src={require("@assets/png/ASI-Logo-Icon-white.png")}
           alt="logo"
-          style={{ width: "92px", height: "92px", margin: "0 auto" }}
+          style={{ width: "180px", height: "40px", margin: "0 auto" }}
         />
         <h1 className={style["header"]}>
           <FormattedMessage id="access.title" />
@@ -96,11 +99,16 @@ export const AccessPage: FunctionComponent = observer(() => {
         </ul>
         <div style={{ flex: 1 }} />
         <div className={style["buttons"]}>
-          <Button
-            className={style["button"]}
-            color="danger"
-            outline
-            onClick={async (e) => {
+          <ButtonV2
+            styleProps={{
+              padding: "10px",
+              height: "40px",
+              fontSize: "0.9rem",
+              background: "transparent",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.4)",
+            }}
+            onClick={async (e: any) => {
               e.preventDefault();
 
               if (waitingPermission) {
@@ -117,14 +125,19 @@ export const AccessPage: FunctionComponent = observer(() => {
                 }
               }
             }}
-            data-loading={permissionStore.isLoading}
-          >
-            <FormattedMessage id="access.button.reject" />
-          </Button>
-          <Button
-            className={style["button"]}
-            color="primary"
-            onClick={async (e) => {
+            dataLoading={permissionStore.isLoading}
+            text={<FormattedMessage id="access.button.reject" />}
+          />
+          <ButtonV2
+            styleProps={{
+              padding: "10px",
+              height: "40px",
+              fontSize: "0.9rem",
+              background: "white",
+              color: "black",
+              border: "1px solid rgba(255,255,255,0.4)",
+            }}
+            onClick={async (e: any) => {
               e.preventDefault();
 
               if (waitingPermission) {
@@ -142,10 +155,9 @@ export const AccessPage: FunctionComponent = observer(() => {
               }
             }}
             disabled={!waitingPermission}
-            data-loading={permissionStore.isLoading}
-          >
-            <FormattedMessage id="access.button.approve" />
-          </Button>
+            dataLoading={permissionStore.isLoading}
+            text={<FormattedMessage id="access.button.approve" />}
+          />
         </div>
       </div>
     </EmptyLayout>
