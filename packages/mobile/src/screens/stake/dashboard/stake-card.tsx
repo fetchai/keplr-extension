@@ -232,18 +232,12 @@ export const StakeCard: FunctionComponent = () => {
                   )}
                   includeComma={true}
                   decimalAmount={2}
-                  gap={0}
-                  colorValue={"white"}
                   fontSizeValue={16}
-                  fontWeight="500"
                   hookName={"withTiming"}
                   withTimingProps={{
                     durationValue: 1000,
                     easingValue: "linear",
                   }}
-                  containerStyle={
-                    style.flatten(["margin-right-4"]) as ViewStyle
-                  }
                 />
                 <Text
                   style={
@@ -251,9 +245,9 @@ export const StakeCard: FunctionComponent = () => {
                       style.flatten([
                         "color-white",
                         "subtitle2",
-                        "margin-right-4",
+                        "padding-left-4",
                       ]),
-                      { lineHeight: 18 },
+                      { lineHeight: 16 },
                     ] as ViewStyle
                   }
                 >
@@ -326,18 +320,12 @@ export const StakeCard: FunctionComponent = () => {
                   )}
                   includeComma={true}
                   decimalAmount={2}
-                  gap={0}
-                  colorValue={"white"}
                   fontSizeValue={16}
-                  fontWeight="500"
                   hookName={"withTiming"}
                   withTimingProps={{
                     durationValue: 1000,
                     easingValue: "linear",
                   }}
-                  containerStyle={
-                    style.flatten(["margin-right-4"]) as ViewStyle
-                  }
                 />
                 <Text
                   style={
@@ -345,9 +333,9 @@ export const StakeCard: FunctionComponent = () => {
                       style.flatten([
                         "color-white",
                         "subtitle2",
-                        "margin-right-4",
+                        "padding-left-4",
                       ]),
-                      { lineHeight: 18 },
+                      { lineHeight: 16 },
                     ] as ViewStyle
                   }
                 >
@@ -421,18 +409,12 @@ export const StakeCard: FunctionComponent = () => {
                   )}
                   includeComma={true}
                   decimalAmount={2}
-                  gap={0}
-                  colorValue={"white"}
                   fontSizeValue={16}
-                  fontWeight="500"
                   hookName={"withTiming"}
                   withTimingProps={{
                     durationValue: 1000,
                     easingValue: "linear",
                   }}
-                  containerStyle={
-                    style.flatten(["margin-right-4"]) as ViewStyle
-                  }
                 />
                 <Text
                   style={
@@ -440,9 +422,9 @@ export const StakeCard: FunctionComponent = () => {
                       style.flatten([
                         "color-white",
                         "subtitle2",
-                        "margin-right-4",
+                        "padding-left-4",
                       ]),
-                      { lineHeight: 18 },
+                      { lineHeight: 16 },
                     ] as ViewStyle
                   }
                 >
@@ -516,10 +498,7 @@ export const StakeCard: FunctionComponent = () => {
                     )}
                     includeComma={true}
                     decimalAmount={2}
-                    gap={0}
-                    colorValue={"white"}
                     fontSizeValue={16}
-                    fontWeight="500"
                     hookName={"withTiming"}
                     withTimingProps={{
                       durationValue: 1000,
@@ -535,9 +514,9 @@ export const StakeCard: FunctionComponent = () => {
                         style.flatten([
                           "color-white",
                           "subtitle2",
-                          "margin-right-4",
+                          "padding-left-4",
                         ]),
-                        { lineHeight: 18 },
+                        { lineHeight: 16 },
                       ] as ViewStyle
                     }
                   >
@@ -547,7 +526,7 @@ export const StakeCard: FunctionComponent = () => {
                     style={
                       [
                         style.flatten(["color-white@60%", "subtitle2"]),
-                        { lineHeight: 18 },
+                        { lineHeight: 16 },
                       ] as ViewStyle
                     }
                   >

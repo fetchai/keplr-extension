@@ -248,8 +248,6 @@ export const MyRewardCard: FunctionComponent<{
                 }
                 includeComma={true}
                 decimalAmount={2}
-                gap={0}
-                colorValue={"white"}
                 fontSizeValue={14}
                 hookName={"withTiming"}
                 withTimingProps={{
@@ -265,7 +263,7 @@ export const MyRewardCard: FunctionComponent<{
                       "padding-left-4",
                       "color-gray-300",
                     ]),
-                    { lineHeight: 16 },
+                    { lineHeight: 14 },
                   ] as ViewStyle
                 }
               >

@@ -58,8 +58,6 @@ export const BalanceCard: FunctionComponent<{
           numberForAnimated={parseFloat(totalNumber)}
           includeComma={true}
           decimalAmount={2}
-          gap={0}
-          colorValue={"white"}
           fontSizeValue={32}
           hookName={"withTiming"}
           withTimingProps={{
