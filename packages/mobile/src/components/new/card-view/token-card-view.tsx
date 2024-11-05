@@ -55,21 +55,25 @@ export const TokenCardView: FunctionComponent<{
               style.flatten(["flex-row", "items-center", "flex-3"]) as ViewStyle
             }
           >
-            {leadingIcon ? (
+            {leadingIcon && (
               <IconButton icon={leadingIcon} backgroundBlur={false} />
-            ) : null}
+            )}
             <View style={style.flatten(["margin-left-10"]) as ViewStyle}>
-              <Text
-                style={
-                  [
-                    style.flatten(["body3", "padding-2", "color-white"]),
-                    titleStyle,
-                  ] as ViewStyle
-                }
+              <View
+                style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
               >
-                {title}
-              </Text>
-              {subtitle ? (
+                <Text
+                  style={
+                    [
+                      style.flatten(["body3", "padding-2", "color-white"]),
+                      titleStyle,
+                    ] as ViewStyle
+                  }
+                >
+                  {title}
+                </Text>
+              </View>
+              {subtitle && (
                 <Text
                   style={
                     style.flatten([
@@ -81,47 +85,49 @@ export const TokenCardView: FunctionComponent<{
                 >
                   {subtitle}
                 </Text>
-              ) : null}
+              )}
             </View>
           </View>
-          <View
-            style={
-              style.flatten([
-                "flex-row",
-                "justify-end",
-                "flex-wrap",
-                "flex-2",
-              ]) as ViewStyle
-            }
-          >
-            {trailingStart ? (
-              <Text
-                style={
-                  style.flatten([
-                    "body3",
-                    "color-white",
-                    "font-medium",
-                  ]) as ViewStyle
-                }
-              >
-                {trailingStart}
-              </Text>
-            ) : null}
-            {trailingEnd ? (
-              <Text
-                style={
-                  style.flatten([
-                    "body3",
-                    "color-gray-300",
-                    "font-medium",
-                    "margin-left-4",
-                  ]) as ViewStyle
-                }
-              >
-                {trailingEnd}
-              </Text>
-            ) : null}
-          </View>
+          {(trailingStart || trailingEnd) && (
+            <View
+              style={
+                style.flatten([
+                  "flex-row",
+                  "justify-end",
+                  "flex-wrap",
+                  "flex-2",
+                ]) as ViewStyle
+              }
+            >
+              {trailingStart && (
+                <Text
+                  style={
+                    style.flatten([
+                      "body3",
+                      "color-white",
+                      "font-medium",
+                    ]) as ViewStyle
+                  }
+                >
+                  {trailingStart}
+                </Text>
+              )}
+              {trailingEnd && (
+                <Text
+                  style={
+                    style.flatten([
+                      "body3",
+                      "color-gray-300",
+                      "font-medium",
+                      "margin-left-4",
+                    ]) as ViewStyle
+                  }
+                >
+                  {trailingEnd}
+                </Text>
+              )}
+            </View>
+          )}
         </View>
         {bottomContent && (
           <View
