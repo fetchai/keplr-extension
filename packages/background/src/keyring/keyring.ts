@@ -288,6 +288,10 @@ export class KeyRing {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    if (this.status === KeyRingStatus.NOTLOADED) {
+      await this.restore();
+    }
+
     if (this.status !== KeyRingStatus.EMPTY) {
       throw new Error("Key ring is not loaded or not empty");
     }
@@ -324,6 +328,10 @@ export class KeyRing {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    if (this.status === KeyRingStatus.NOTLOADED) {
+      await this.restore();
+    }
+
     if (this.status !== KeyRingStatus.EMPTY) {
       throw new Error("Key ring is not loaded or not empty");
     }
@@ -359,6 +367,10 @@ export class KeyRing {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    if (this.status === KeyRingStatus.NOTLOADED) {
+      await this.restore();
+    }
+
     if (this.status !== KeyRingStatus.EMPTY) {
       throw new Error("Key ring is not loaded or not empty");
     }
@@ -403,6 +415,10 @@ export class KeyRing {
     status: KeyRingStatus;
     multiKeyStoreInfo: MultiKeyStoreInfoWithSelected;
   }> {
+    if (this.status === KeyRingStatus.NOTLOADED) {
+      await this.restore();
+    }
+
     if (this.status !== KeyRingStatus.EMPTY) {
       throw new Error("Key ring is not loaded or not empty");
     }
