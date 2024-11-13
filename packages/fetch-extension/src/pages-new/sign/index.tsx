@@ -254,7 +254,11 @@ export const SignPageV2: FunctionComponent = observer(() => {
               styleProp={{ height: "579px" }}
               title={"Confirm transaction"}
               closeClicked={() => {
-                navigate(-1);
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate("/");
+                }
               }}
               setIsOpen={setIsOpen}
               isOpen={isOpen}
