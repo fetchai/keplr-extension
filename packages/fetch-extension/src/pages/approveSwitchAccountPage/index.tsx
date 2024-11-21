@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Button } from "reactstrap";
 
 import style from "./style.module.scss";
 import { EmptyLayout } from "@layouts/empty-layout";
@@ -13,6 +12,7 @@ import { messageAndGroupListenerUnsubscribe } from "@graphQL/messages-api";
 import { InExtensionMessageRequester } from "@keplr-wallet/router-extension";
 import { ListAccountsMsg } from "@keplr-wallet/background";
 import { BACKGROUND_PORT } from "@keplr-wallet/router";
+import { ButtonV2 } from "@components-v2/buttons/button";
 
 export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
   () => {
@@ -85,7 +85,7 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
     }
 
     return (
-      <EmptyLayout style={{ height: "100%" }}>
+      <EmptyLayout className={style["emptyLayout"]} style={{ height: "100%" }}>
         {isLoadingPlaceholder ? (
           <div className={style["container"]}>
             <div className={style["content"]}>
@@ -181,7 +181,7 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     <div className={style["imageBackground"]} />
                     <img
                       className={style["logoImage"]}
-                      src={require("@assets/logo-256.svg")}
+                      src={require("@assets/png/Black-white-circle.png")}
                       alt="chain logo"
                     />
                   </div>
@@ -194,7 +194,7 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     <div className={style["imageBackground"]} />
                     <img
                       className={style["logoImage"]}
-                      src={require("../../public/assets/logo-256.svg")}
+                      src={require("@assets/png/Black-white-circle.png")}
                       alt="keplr logo"
                     />
                   </div>
@@ -234,12 +234,17 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
               </div>
             }
             <div className={style["buttons"]}>
-              <Button
-                className={style["button"]}
-                color="danger"
-                outline
+              <ButtonV2
+                styleProps={{
+                  padding: "10px",
+                  height: "40px",
+                  fontSize: "0.9rem",
+                  background: "transparent",
+                  color: "white",
+                  border: "1px solid rgba(255,255,255,0.4)",
+                }}
                 disabled={!accountSwitchStore.waitingSuggestedAccount}
-                data-loading={accountSwitchStore.isLoading}
+                dataLoading={accountSwitchStore.isLoading}
                 onClick={async (e: any) => {
                   e.preventDefault();
 
@@ -254,17 +259,22 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     navigate("/");
                   }
                 }}
-              >
-                <FormattedMessage id="chain.suggested.button.reject" />
-              </Button>
-              <Button
-                className={style["button"]}
-                color="primary"
+                text={<FormattedMessage id="chain.suggested.button.reject" />}
+              />
+              <ButtonV2
+                styleProps={{
+                  padding: "10px",
+                  height: "40px",
+                  fontSize: "0.9rem",
+                  background: "white",
+                  color: "black",
+                  border: "1px solid rgba(255,255,255,0.4)",
+                }}
                 disabled={
                   !accountSwitchStore.waitingSuggestedAccount ||
                   addressIndex === -1
                 }
-                data-loading={accountSwitchStore.isLoading}
+                dataLoading={accountSwitchStore.isLoading}
                 onClick={async (e: any) => {
                   e.preventDefault();
 
@@ -299,9 +309,8 @@ export const ApproveSwitchAccountByAddressPage: FunctionComponent = observer(
                     navigate("/");
                   }
                 }}
-              >
-                <FormattedMessage id="chain.suggested.button.approve" />
-              </Button>
+                text={<FormattedMessage id="chain.suggested.button.approve" />}
+              />
             </div>
           </div>
         )}
