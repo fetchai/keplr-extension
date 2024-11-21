@@ -11,6 +11,7 @@ import { Label } from "reactstrap";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { removeComma } from "@utils/format";
 
 interface SendPhase1Props {
   sendConfigs: any;
@@ -57,7 +58,7 @@ export const SendPhase1: React.FC<SendPhase1Props> = observer(
         <CoinInput
           onPress={() =>
             sendConfigs.amountConfig.setAmount(
-              balance.shrink(true).hideDenom(true).toString()
+              removeComma(balance.shrink(true).hideDenom(true).toString())
             )
           }
           amountConfig={sendConfigs.amountConfig}
