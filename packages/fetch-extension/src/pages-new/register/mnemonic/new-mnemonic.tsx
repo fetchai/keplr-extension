@@ -28,7 +28,7 @@ import {
 import { useStore } from "../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNotification } from "@components/notification";
-import { AuthIntro } from "../auth";
+import { AuthIntro, AuthPage } from "../auth";
 import { Card } from "@components-v2/card";
 import keyIcon from "@assets/svg/wireframe/key-icon.png";
 import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
@@ -106,6 +106,37 @@ export const NewMnemonicPage: FunctionComponent<{
   const [isMainPage, setIsMainPage] = useState(true);
   const { analyticsStore } = useStore();
   const [continueClicked, setContinueClicked] = useState(false);
+  const [authClicked, setAuthClicked] = useState(false);
+
+  function decideView() {
+    if (authClicked) {
+      return <AuthPage registerConfig={registerConfig} />;
+    }
+
+    if (!isMainPage) {
+      if (newMnemonicConfig.mode === "generate") {
+        return (
+          <GenerateMnemonicModePage
+            registerConfig={registerConfig}
+            newMnemonicConfig={newMnemonicConfig}
+            bip44Option={bip44Option}
+            isMainPage={isMainPage}
+            continueClicked={continueClicked}
+            setContinueClicked={setContinueClicked}
+          />
+        );
+      } else if (newMnemonicConfig.mode === "verify") {
+        return (
+          <VerifyMnemonicModePage
+            registerConfig={registerConfig}
+            newMnemonicConfig={newMnemonicConfig}
+            bip44Option={bip44Option}
+            setContinueClicked={setContinueClicked}
+          />
+        );
+      }
+    }
+  }
 
   return (
     <React.Fragment>
@@ -120,7 +151,13 @@ export const NewMnemonicPage: FunctionComponent<{
           {/* <div className={style["newMnemonicText"]}>
             Enter your password to sign in
           </div> */}
-          <AuthIntro registerConfig={registerConfig} />
+          <AuthIntro
+            registerConfig={registerConfig}
+            onClick={() => {
+              setAuthClicked(true);
+              setIsMainPage(false);
+            }}
+          />
           <Card
             leftImageStyle={{ height: "32px", width: "32px" }}
             style={{
@@ -144,24 +181,7 @@ export const NewMnemonicPage: FunctionComponent<{
           <div onClick={() => setIsMainPage(false)} />
         </React.Fragment>
       )}
-      {!isMainPage && newMnemonicConfig.mode === "generate" ? (
-        <GenerateMnemonicModePage
-          registerConfig={registerConfig}
-          newMnemonicConfig={newMnemonicConfig}
-          bip44Option={bip44Option}
-          isMainPage={isMainPage}
-          continueClicked={continueClicked}
-          setContinueClicked={setContinueClicked}
-        />
-      ) : null}
-      {!isMainPage && newMnemonicConfig.mode === "verify" ? (
-        <VerifyMnemonicModePage
-          registerConfig={registerConfig}
-          newMnemonicConfig={newMnemonicConfig}
-          bip44Option={bip44Option}
-          setContinueClicked={setContinueClicked}
-        />
-      ) : null}
+      {decideView()}
     </React.Fragment>
   );
 });
