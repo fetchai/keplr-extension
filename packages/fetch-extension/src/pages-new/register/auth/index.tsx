@@ -24,7 +24,8 @@ import { Card } from "@components-v2/card";
 
 export const AuthIntro: FunctionComponent<{
   registerConfig: RegisterConfig;
-}> = observer(({ registerConfig }) => {
+  onClick?: () => void;
+}> = observer(({ registerConfig, onClick }) => {
   const { analyticsStore } = useStore();
 
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
@@ -121,11 +122,13 @@ export const AuthIntro: FunctionComponent<{
               const data = await login();
               const privateKey = await getPrivateKey(data);
               if (!privateKey) return;
-              registerConfig.setType("auth");
               registerConfig.setPrivateKey(privateKey);
               const email = await getUserInfo();
               registerConfig.setEmail(email || "");
               await logout();
+              if (onClick) {
+                onClick();
+              }
             } catch (e) {
             } finally {
               analyticsStore.logEvent("Create/Import account started", {
