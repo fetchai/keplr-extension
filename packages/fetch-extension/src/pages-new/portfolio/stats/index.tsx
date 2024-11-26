@@ -196,6 +196,9 @@ export const Stats = observer(
     const handleClaimRewards = async () => {
       if (accountInfo.isReadyToSendTx) {
         try {
+          analyticsStore.logEvent("claim_click", {
+            pageName: "Portfolio",
+          });
           setIsWithdrawingRewards(true);
 
           // When the user delegated too many validators,
@@ -240,9 +243,10 @@ export const Stats = observer(
                   },
                 });
 
-                analyticsStore.logEvent("Claim reward tx broadcasted", {
+                analyticsStore.logEvent("claim_txn_broadcasted", {
                   chainId: chainStore.current.chainId,
                   chainName: chainStore.current.chainName,
+                  pageName: "Portfolio",
                 });
               },
               onFulfill: () => {
@@ -263,6 +267,11 @@ export const Stats = observer(
             navigate("/activity", { replace: true });
           }, 200);
         } catch (e) {
+          analyticsStore.logEvent("claim_txn_broadcasted_fail", {
+            chainId: chainStore.current.chainId,
+            chainName: chainStore.current.chainName,
+            pageName: "Portfolio",
+          });
           navigate("/portfolio", { replace: true });
           notification.push({
             type: "warning",

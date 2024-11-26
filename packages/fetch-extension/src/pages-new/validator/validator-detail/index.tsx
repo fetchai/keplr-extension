@@ -12,8 +12,13 @@ export const ValidatorDetails = observer(
   ({ validatorAddress }: { validatorAddress: string }) => {
     const navigate = useNavigate();
 
-    const { chainStore, accountStore, queriesStore, activityStore } =
-      useStore();
+    const {
+      chainStore,
+      accountStore,
+      queriesStore,
+      activityStore,
+      analyticsStore,
+    } = useStore();
     const account = accountStore.getAccount(chainStore.current.chainId);
     const queries = queriesStore.get(chainStore.current.chainId);
 
@@ -116,6 +121,9 @@ export const ValidatorDetails = observer(
             onClick={() => {
               if (activityStore.getPendingTxnTypes[TXNTYPE.delegate]) return;
               navigate(`/validator/${validatorAddress}/delegate`);
+              analyticsStore.logEvent("stake_with_validator_click", {
+                pageName: "Validator Details",
+              });
             }}
           >
             {activityStore.getPendingTxnTypes[TXNTYPE.delegate] && (
