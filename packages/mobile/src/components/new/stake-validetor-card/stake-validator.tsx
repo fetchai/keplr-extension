@@ -145,11 +145,7 @@ export const StakeValidatorCardView: FunctionComponent<{
           scrollEnabled={false}
           horizontal={true}
           contentContainerStyle={
-            style.flatten([
-              "width-full",
-              "justify-between",
-              "flex-wrap",
-            ]) as ViewStyle
+            style.flatten(["width-full", "justify-between"]) as ViewStyle
           }
           renderItem={({ item, index }: { item: ItemData; index: number }) => {
             return (

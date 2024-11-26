@@ -66,11 +66,10 @@ const useWeb3AuthSignIn = (
     try {
       loadingScreen.setIsLoading(true);
       if (!web3auth) {
-        console.log("Web3auth not initialized");
+        console.error("Web3auth not initialized");
         return;
       }
 
-      console.log("Logging in");
       await web3auth.login({
         loginProvider: type,
         redirectUrl: resolvedRedirectUrl,
@@ -78,7 +77,6 @@ const useWeb3AuthSignIn = (
         curve: "secp256k1",
       });
 
-      console.log(`Logged in ${web3auth.privKey}`);
       if (web3auth.privKey) {
         setEmail(web3auth.userInfo()?.email);
         setPrivateKey(Buffer.from(web3auth.privKey, "hex"));
@@ -124,7 +122,6 @@ const logoutWeb3Auth = async () => {
     return;
   }
 
-  console.log("Logging out");
   await web3auth.logout();
 };
 

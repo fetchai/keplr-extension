@@ -2600,6 +2600,7 @@ export const AuthApiKey =
   process.env["NODE_ENV"] === "production"
     ? PROD_AUTH_CLIENT_ID
     : DEV_AUTH_CLIENT_ID;
+
 export const CommunityChainInfoRepo = {
   organizationName: "chainapsis",
   repoName: "keplr-chain-registry",

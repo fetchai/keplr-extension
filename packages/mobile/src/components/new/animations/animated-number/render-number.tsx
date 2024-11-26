@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
 import Animated, {
   withSpring,
   withTiming,
@@ -8,14 +8,13 @@ import Animated, {
   Easing,
   ReduceMotion,
 } from "react-native-reanimated";
+import { useStyle } from "styles/index";
 
 interface RenderNumberProps {
   numberSymbol: number;
-  gap: number;
-  colorValue?: string;
   fontSizeValue?: number;
   hookName: string;
-  fontWeight?: string;
+  containerStyle?: ViewStyle;
   listProperties: {
     durationValue?: number;
     easingValue?: string;
@@ -36,23 +35,22 @@ const easingLists = {
   circle: Easing.circle,
   bezier: Easing.bezier(0.25, 0.1, 0.25, 1),
 };
+
 const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
 export function RenderNumber({
   numberSymbol,
-  gap,
   hookName,
   listProperties,
-  colorValue,
-  fontSizeValue,
-  fontWeight,
+  fontSizeValue = 50,
+  containerStyle,
 }: RenderNumberProps) {
-  const heightChange = fontSizeValue || 50;
+  const heightChange = fontSizeValue;
   const initialY = useSharedValue(0);
   const negativeTranslateY = -(initialY.value + numberSymbol * heightChange);
-  const easingValue =
-    listProperties.easingValue !== undefined
-      ? listProperties.easingValue
-      : "linear";
+  const easingValue = listProperties.easingValue || "linear";
+  const style = useStyle();
+
   const animatedStylesTiming = useAnimatedStyle(() => {
     return {
       transform: [
@@ -65,6 +63,7 @@ export function RenderNumber({
       ],
     };
   });
+
   const animatedStylesSpring = useAnimatedStyle(() => ({
     transform: [
       {
@@ -82,7 +81,15 @@ export function RenderNumber({
   }));
 
   return (
-    <View style={styles.container}>
+    <View
+      style={
+        [
+          style.flatten(["flex-row", "justify-center", "overflow-hidden"]),
+          { height: fontSizeValue * 1.0 },
+          containerStyle,
+        ] as ViewStyle
+      }
+    >
       <Animated.View
         style={
           hookName === "withSpring"
@@ -95,15 +102,17 @@ export function RenderNumber({
             <Text
               key={i}
               style={
-                {
-                  color: colorValue,
-                  fontSize: fontSizeValue,
-                  height: fontSizeValue,
-                  marginHorizontal: gap,
-                  fontWeight: fontWeight ? fontWeight : "normal",
-                  // includeFontPadding: false,
-                  lineHeight: fontSizeValue! * 1.1,
-                } as ViewStyle
+                [
+                  style.flatten([
+                    "color-white",
+                    "font-normal",
+                    "overflow-hidden",
+                  ]),
+                  {
+                    lineHeight: fontSizeValue * 1.0,
+                    fontSize: fontSizeValue,
+                  },
+                ] as ViewStyle
               }
             >
               {numberCharacter}
@@ -114,7 +123,3 @@ export function RenderNumber({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {},
-});
