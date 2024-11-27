@@ -160,7 +160,14 @@ export const StakeDetails = observer(
                 marginTop: "0px",
               }}
               text="Unstake"
-              onClick={() => navigate(`/validator/${validatorAddress}/unstake`)}
+              onClick={() => {
+                analyticsStore.logEvent("unstake_click", {
+                  chainId: chainStore.current.chainId,
+                  chainName: chainStore.current.chainName,
+                  pageName: "Validator Detail",
+                });
+                navigate(`/validator/${validatorAddress}/unstake`);
+              }}
             />
 
             <ButtonV2

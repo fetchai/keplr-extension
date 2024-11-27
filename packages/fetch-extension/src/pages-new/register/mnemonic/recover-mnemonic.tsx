@@ -139,9 +139,7 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
               registerConfig.setType(TypeRecoverMnemonic);
               analyticsStore.logEvent(
                 "use_a_seed_phrase_or_a_private_key_click",
-                {
-                  registerType: "seed",
-                }
+                { pageName: "Register", registerType: "seed" }
               );
             }}
             leftImage={keyIcon}
@@ -165,7 +163,9 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
                 setSelectedCard(AccountSetupType.CONNECT_HARDWARE);
                 registerConfig.setType(TypeRecoverMnemonic);
                 analyticsStore.logEvent("connect_hardware_wallet_click", {
-                  registerType: "seed",
+                  registerType: "ledger",
+                  accountType: "ledger",
+                  pageName: "Register",
                 });
               }}
               leftImage={require("@assets/svg/wireframe/hardware.svg")}
@@ -195,6 +195,8 @@ export const RecoverMnemonicMainPage: FunctionComponent<{
               registerConfig.setType(TypeRecoverMnemonic);
               analyticsStore.logEvent("migrate_from_eth_click", {
                 registerType: "seed",
+                pageName: "Register",
+                accountType: "mnemonic",
               });
             }}
             leftImage={require("@assets/svg/wireframe/metamask-icon.svg")}

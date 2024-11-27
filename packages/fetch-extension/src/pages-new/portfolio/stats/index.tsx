@@ -484,7 +484,12 @@ export const Stats = observer(
           </div>
         </div>
         <ButtonV2
-          onClick={() => setIsClaimRewardsOpen(true)}
+          onClick={() => {
+            setIsClaimRewardsOpen(true);
+            analyticsStore.logEvent("claim_all_staking_reward_click", {
+              pageName: "Portfolio",
+            });
+          }}
           styleProps={{
             background: "linear-gradient(269deg, #F9774B 0%, #CF447B 99.29%)",
             color: "white",

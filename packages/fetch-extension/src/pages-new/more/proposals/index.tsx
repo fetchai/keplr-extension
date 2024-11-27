@@ -37,8 +37,7 @@ export const Proposals = observer(() => {
   >("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { chainStore, accountStore, proposalStore, analyticsStore } =
-    useStore();
+  const { chainStore, accountStore, proposalStore } = useStore();
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
 
   const current = chainStore.current;
@@ -59,9 +58,6 @@ export const Proposals = observer(() => {
           setProposals(storedProposals.allProposals);
           return;
         }
-        analyticsStore.logEvent("proposal_item_click", {
-          pageName: "More",
-        });
         setIsLoading(true);
         const response = await fetchProposals(chainStore.current.chainId);
         const votedProposals: ProposalType[] = [];
@@ -205,7 +201,7 @@ const GovtProposal = ({
   onSearchTermChange: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const navigate = useNavigate();
-
+  const { analyticsStore } = useStore();
   return (
     <SearchBar
       valuesArray={proposals}
@@ -224,6 +220,9 @@ const GovtProposal = ({
           }}
           onClick={() => {
             navigate(`/proposal-detail/${proposal.proposal_id}`);
+            analyticsStore.logEvent("proposal_item_click", {
+              pageName: "More",
+            });
           }}
         >
           <GovtProposalRow key={index} proposal={proposal} />
@@ -251,7 +250,6 @@ const GovtProposalFilterDropdown = ({
   handleFilterChange: () => Promise<void>;
 }) => {
   const filters = ["Active", "Voted", "Closed"];
-  const { analyticsStore } = useStore();
   useEffect(() => {
     setSelectedFilter(appliedFilter);
   }, [isOpen]);
@@ -305,9 +303,6 @@ const GovtProposalFilterDropdown = ({
           }}
           onClick={() => {
             handleFilterChange();
-            analyticsStore.logEvent(
-              `${selectedFilter.toLocaleLowerCase()}_filter_click`
-            );
             setIsOpen(false);
           }}
         >

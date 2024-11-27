@@ -31,8 +31,9 @@ export const WalletOptions = observer(
           }}
           onClick={(e: any) => {
             e.preventDefault();
-            analyticsStore.logEvent("add_account_click");
-
+            analyticsStore.logEvent("add_new_wallet_click", {
+              pageName: "Home",
+            });
             browser.tabs.create({
               url: "/popup.html#/register",
             });

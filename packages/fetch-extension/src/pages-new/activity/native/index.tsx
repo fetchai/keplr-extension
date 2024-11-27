@@ -132,6 +132,7 @@ export const NativeTab = observer(() => {
     setSelectedFilter(selectedFilter);
     analyticsStore.logEvent("activity_filter_click", {
       tabName: "Transactions",
+      pageName: "Activity",
     });
   };
 

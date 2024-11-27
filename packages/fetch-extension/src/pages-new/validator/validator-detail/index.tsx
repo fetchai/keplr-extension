@@ -40,6 +40,14 @@ export const ValidatorDetails = observer(
       };
     }, [queryDelegations, validatorAddress]);
 
+    function isStake() {
+      return (
+        amount &&
+        parseFloat(amount?.maxDecimals(4).trim(true).toString().split(" ")[0]) >
+          0.00001
+      );
+    }
+
     return (
       <div
         className={style["validator-details-container"]}
@@ -90,6 +98,9 @@ export const ValidatorDetails = observer(
                 disabled={activityStore.getPendingTxnTypes[TXNTYPE.redelegate]}
                 text="Redelegate"
                 onClick={() => {
+                  analyticsStore.logEvent("redelegate_click", {
+                    pageName: "Validator Details",
+                  });
                   if (activityStore.getPendingTxnTypes[TXNTYPE.redelegate])
                     return;
                   navigate(`/validator/${validatorAddress}/redelegate`);
@@ -109,21 +120,17 @@ export const ValidatorDetails = observer(
               justifyContent: "center",
               marginTop: "0px",
             }}
-            text={`${
-              amount &&
-              parseFloat(
-                amount?.maxDecimals(4).trim(true).toString().split(" ")[0]
-              ) > 0.00001
-                ? "Stake"
-                : "Stake with this validator"
-            }`}
+            text={`${isStake() ? "Stake" : "Stake with this validator"}`}
             disabled={activityStore.getPendingTxnTypes[TXNTYPE.delegate]}
             onClick={() => {
               if (activityStore.getPendingTxnTypes[TXNTYPE.delegate]) return;
               navigate(`/validator/${validatorAddress}/delegate`);
-              analyticsStore.logEvent("stake_with_validator_click", {
-                pageName: "Validator Details",
-              });
+              analyticsStore.logEvent(
+                isStake() ? "stake_more_click" : "stake_with_validator_click",
+                {
+                  pageName: "Validator Details",
+                }
+              );
             }}
           >
             {activityStore.getPendingTxnTypes[TXNTYPE.delegate] && (

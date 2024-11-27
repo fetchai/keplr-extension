@@ -147,9 +147,6 @@ export const StakeValidatorCard = ({
       <Link
         onClick={(e) => {
           e.stopPropagation();
-          analyticsStore.logEvent("view_in_explorer_click", {
-            pageName: "Stake",
-          });
         }}
         to={`${VALIDATOR_URL[chainID]}/${validatorAddress}`}
         target="_blank"

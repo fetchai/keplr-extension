@@ -208,7 +208,7 @@ export const MyStakes = observer(
         <ButtonV2
           text="Stake more"
           onClick={() => {
-            analyticsStore.logEvent("stake_more_click", {
+            analyticsStore.logEvent("stake_click", {
               chainId: chainStore.current.chainId,
               chainName: chainStore.current.chainName,
               pageName: "Stake",

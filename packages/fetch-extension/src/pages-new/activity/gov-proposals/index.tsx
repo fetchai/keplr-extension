@@ -48,6 +48,7 @@ export const GovProposalsTab: FunctionComponent<{ latestBlock: any }> =
       setFilter(selectedFilter);
       analyticsStore.logEvent("activity_filter_click", {
         tabName: "Gov Proposal",
+        pageName: "Activity",
       });
     };
 

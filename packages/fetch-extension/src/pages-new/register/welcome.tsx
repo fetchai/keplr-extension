@@ -31,7 +31,7 @@ export const WelcomePage: FunctionComponent = () => {
         }}
         onClick={() => {
           analyticsStore.logEvent("start_using_your_wallet_click", {
-            registerType: "seed",
+            pageName: "Register",
           });
           if (typeof browser !== "undefined") {
             browser.tabs.getCurrent().then((tab) => {
