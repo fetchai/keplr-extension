@@ -93,7 +93,7 @@
   "setting.address-book.confirm.delete-address.paragraph": "Are you sure you want to delete this address?",
   "setting.address-book.button.save": "Save",
 
-  "setting.export-to-mobile": "Link Fetch Mobile Wallet",
+  "setting.export-to-mobile": "Link ASI Alliance Mobile Wallet",
   "setting.export-to-mobile.input.password": "Password",
   "setting.export-to-mobile.input.password.error.required": "Password is required",
   "setting.export-to-mobile.input.password.error.invalid": "Invalid password",
@@ -119,7 +119,7 @@
 
   "setting.keyring": "Select Account",
   "setting.keyring.button.add": "Add Account",
-  "setting.keyring.unnamed-account": "Fetch Wallet Account",
+  "setting.keyring.unnamed-account": "ASI Alliance Wallet Account",
   "setting.keyring.selected-account": "(Selected)",
 
   "setting.keyring.change.password": "Reset Password",
@@ -142,7 +142,7 @@
   "setting.clear": "Delete Wallet",
   "setting.clear.alert": "Make sure you’ve backed up your mnemonic seed before proceeding.",
   "setting.clear.button.back-up": "Back up mnemonic seed",
-  "setting.clear.warning": "You will no longer have access to your wallet on Fetch Wallet",
+  "setting.clear.warning": "You will no longer have access to your wallet on ASI Alliance Wallet",
   "setting.clear.input.password": "Password",
   "setting.clear.input.password.error.required": "Password is required",
   "setting.clear.input.password.error.invalid": "Invalid password",
@@ -249,7 +249,7 @@
   "chain.suggested.tooltip": "Chain info being added is from this web",
   "chain.switch.tooltip": "ChainId to switch is from this web",
   "chain.suggested.developer.checkbox": "Use this as the preferred code string and override info registered on the community repo",
-  "chain.suggested.paragraph": "<b>{host}</b> would like to add blockchain <b>{chainId}</b> to Fetch Wallet.",
+  "chain.suggested.paragraph": "<b>{host}</b> would like to add blockchain <b>{chainId}</b> to ASI Alliance Wallet.",
   "chain.switch.paragraph": "<b>{host}</b> would like to switch to blockchain <b>{chainId}</b>",
   "chain.suggested.approve-info.title": "Before You Approve",
   "chain.suggested.approve-info.content": "Keplr recommends that ‘suggest chain’ info be managed by the community. At this time, this chain’s info has not been registered.",
@@ -279,7 +279,7 @@
   "addressBook.delete.title": "Delete entry from Address-Book",
 
   "access.title": "Requesting Connection",
-  "access.paragraph": "<b>{host}</b> is requesting to connect to your Fetch Wallet account on <b>{chainId}</b>.",
+  "access.paragraph": "<b>{host}</b> is requesting to connect to your ASI Alliance Wallet account on <b>{chainId}</b>.",
   "access.permission.title": "By approving this request, the website will:",
   "access.permission.account": "Know your wallet address",
   "access.permission.tx-request": "Be able to request signatures for txs",
@@ -375,7 +375,7 @@
   "sign.list.message.wasm/MsgExecuteContract.title": "Execute Contract",
   "sign.list.message.wasm/MsgExecuteContract.content": "Execute contract <b>{address}</b><only-sent-exist> by sending <b>{sent}</b></only-sent-exist>",
   "sign.list.message.wasm/MsgExecuteContract.content.badge.secret-wasm": "Encrypted",
-  "sign.list.message.wasm/MsgExecuteContract.content.warning.secret-wasm.failed-decryption": "Failed to decrypt Secret message. This may be due to Fetch Wallet viewing key not matching the transaction viewing key.",
+  "sign.list.message.wasm/MsgExecuteContract.content.warning.secret-wasm.failed-decryption": "Failed to decrypt Secret message. This may be due to ASI Alliance Wallet viewing key not matching the transaction viewing key.",
 
   "sign.list.message.cyber/Link.title": "Cyberlink",
   "sign.list.message.cyber/Link.content": "<b>{neuron}</b> create link {br}<b>{link}</b>",
