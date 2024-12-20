@@ -350,6 +350,22 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                 duration: 0.25,
               },
             });
+
+            if (keyRingStore.keyRingType === "ledger") {
+              navigate("/send", {
+                replace: true,
+                state: {
+                  isNext: true,
+                  isFromPhase1: false,
+                  configs: {
+                    amount: sendConfigs.amountConfig.amount,
+                    sendCurr: sendConfigs.amountConfig.sendCurrency,
+                    recipient: sendConfigs.recipientConfig.recipient,
+                    memo: sendConfigs.memoConfig.memo,
+                  },
+                },
+              });
+            }
           }
         } finally {
           // XXX: If the page is in detached state,
