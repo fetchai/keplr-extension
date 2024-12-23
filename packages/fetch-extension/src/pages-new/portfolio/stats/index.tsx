@@ -193,6 +193,10 @@ export const Stats = observer(
         tooltips: {
           enabled: false,
         },
+        responsive: true,
+        maintainAspectRatio: false,
+        width: "240px",
+        height: "120px",
       },
     };
     const handleClaimRewards = async () => {
@@ -312,110 +316,157 @@ export const Stats = observer(
           style={{
             display: "flex",
             position: "relative",
+            alignItems: "center",
           }}
         >
-          <div>
-            <div className={style["legends"]}>
-              <div className={style["legend"]}>
-                <img
-                  src={
-                    stakableInFiatCurrency !== undefined &&
-                    stakableInFiatCurrency > "$0"
-                      ? require("@assets/svg/wireframe/legend-light-purple-long.svg")
-                      : require("@assets/svg/wireframe/legend-light-purple.svg")
-                  }
-                  alt=""
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "3px",
-                  }}
-                >
-                  <div className={style["label"]}>Available</div>
-                  {isLoaded ? (
-                    <div className={style["value"]}>
-                      {stakableBalInUI.toFixed(2)} {` ${stakableDenom} `}
-                      <span className={style["label"]}>
-                        ({stakablePercentage.toFixed(1)}%)
-                      </span>
+          <div className={style["legends"]}>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  stakableInFiatCurrency !== undefined &&
+                  stakableInFiatCurrency > "$0"
+                    ? require("@assets/svg/wireframe/legend-light-purple-long.svg")
+                    : require("@assets/svg/wireframe/legend-light-purple.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Available</div>
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {stakableBalInUI.toFixed(2)} {` ${stakableDenom} `}
+                    <span className={style["label"]}>
+                      ({stakablePercentage.toFixed(1)}%)
+                    </span>
+                  </div>
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  stakableInFiatCurrency !== undefined &&
+                  stakableInFiatCurrency > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {stakableInFiatCurrency}
                     </div>
-                  ) : (
-                    <Skeleton height="17.5px" />
-                  )}
-                  {isLoaded ? (
-                    stakableInFiatCurrency !== undefined &&
-                    stakableInFiatCurrency > "$0" ? (
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: 400,
-                          color: "rgba(255,255,255,0.6)",
-                        }}
-                      >
-                        {stakableInFiatCurrency}
-                      </div>
-                    ) : null
-                  ) : (
-                    <Skeleton height="21px" />
-                  )}
-                </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
               </div>
-              <div className={style["legend"]}>
-                <img
-                  src={
-                    stakedInFiatCurrency !== undefined &&
-                    stakedInFiatCurrency > "$0"
-                      ? require("@assets/svg/wireframe/legend-purple-long.svg")
-                      : require("@assets/svg/wireframe/legend-purple.svg")
-                  }
-                  alt=""
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "3px",
-                  }}
-                >
-                  <div className={style["label"]}>Staked</div>
-                  {isLoaded ? (
-                    <div className={style["value"]}>
-                      {stakedBalInUI.toFixed(2)} {` ${stakedDenom} `}
-                      <span className={style["label"]}>
-                        ({stakedPercentage.toFixed(1)}
-                        %)
-                      </span>
+            </div>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  stakedInFiatCurrency !== undefined &&
+                  stakedInFiatCurrency > "$0"
+                    ? require("@assets/svg/wireframe/legend-purple-long.svg")
+                    : require("@assets/svg/wireframe/legend-purple.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Staked</div>
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {stakedBalInUI.toFixed(2)} {` ${stakedDenom} `}
+                    <span className={style["label"]}>
+                      ({stakedPercentage.toFixed(1)}
+                      %)
+                    </span>
+                  </div>
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  stakedInFiatCurrency !== undefined &&
+                  stakedInFiatCurrency > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {stakedInFiatCurrency}
                     </div>
-                  ) : (
-                    <Skeleton height="17.5px" />
-                  )}
-                  {isLoaded ? (
-                    stakedInFiatCurrency !== undefined &&
-                    stakedInFiatCurrency > "$0" ? (
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: 400,
-                          color: "rgba(255,255,255,0.6)",
-                        }}
-                      >
-                        {stakedInFiatCurrency}
-                      </div>
-                    ) : null
-                  ) : (
-                    <Skeleton height="21px" />
-                  )}
-                </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
               </div>
+            </div>
+            <div className={style["legend"]}>
+              <img
+                src={
+                  rewardsInFiatCurrency !== undefined &&
+                  rewardsInFiatCurrency > "$0"
+                    ? require("@assets/svg/wireframe/legend-orange-long.svg")
+                    : require("@assets/svg/wireframe/legend-orange.svg")
+                }
+                alt=""
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "3px",
+                }}
+              >
+                <div className={style["label"]}>Staking rewards</div>
+                {isLoaded ? (
+                  <div className={style["value"]}>
+                    {rewardsBalInUI.toFixed(2)} {` ${rewardDenom} `}
+                    <span className={style["label"]}>
+                      ({rewardsPercentage.toFixed(1)}%)
+                    </span>
+                  </div>
+                ) : (
+                  <Skeleton height="17.5px" />
+                )}
+                {isLoaded ? (
+                  rewardsInFiatCurrency !== undefined &&
+                  rewardsInFiatCurrency > "$0" ? (
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {rewardsInFiatCurrency}
+                    </div>
+                  ) : null
+                ) : (
+                  <Skeleton height="21px" />
+                )}
+              </div>
+            </div>
+            {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
               <div className={style["legend"]}>
                 <img
                   src={
                     rewardsInFiatCurrency !== undefined &&
                     rewardsInFiatCurrency > "$0"
-                      ? require("@assets/svg/wireframe/legend-orange-long.svg")
-                      : require("@assets/svg/wireframe/legend-orange.svg")
+                      ? require("@assets/svg/wireframe/legend-light-orange.svg")
+                      : require("@assets/svg/wireframe/legend-light-orange.svg")
                   }
                   alt=""
                 />
@@ -426,69 +477,21 @@ export const Stats = observer(
                     gap: "3px",
                   }}
                 >
-                  <div className={style["label"]}>Staking rewards</div>
+                  <div className={style["label"]}>Vesting</div>
                   {isLoaded ? (
                     <div className={style["value"]}>
-                      {rewardsBalInUI.toFixed(2)} {` ${rewardDenom} `}
+                      {Number(vestingBalance()).toFixed(2)}{" "}
+                      {` ${spendableDenom} `}
                       <span className={style["label"]}>
-                        ({rewardsPercentage.toFixed(1)}%)
+                        ({vestingPercentage.toFixed(1)}%)
                       </span>
                     </div>
                   ) : (
                     <Skeleton height="17.5px" />
                   )}
-                  {isLoaded ? (
-                    rewardsInFiatCurrency !== undefined &&
-                    rewardsInFiatCurrency > "$0" ? (
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: 400,
-                          color: "rgba(255,255,255,0.6)",
-                        }}
-                      >
-                        {rewardsInFiatCurrency}
-                      </div>
-                    ) : null
-                  ) : (
-                    <Skeleton height="21px" />
-                  )}
                 </div>
               </div>
-              {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
-                <div className={style["legend"]}>
-                  <img
-                    src={
-                      rewardsInFiatCurrency !== undefined &&
-                      rewardsInFiatCurrency > "$0"
-                        ? require("@assets/svg/wireframe/legend-light-orange.svg")
-                        : require("@assets/svg/wireframe/legend-light-orange.svg")
-                    }
-                    alt=""
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "3px",
-                    }}
-                  >
-                    <div className={style["label"]}>Vesting</div>
-                    {isLoaded ? (
-                      <div className={style["value"]}>
-                        {Number(vestingBalance()).toFixed(2)}{" "}
-                        {` ${spendableDenom} `}
-                        <span className={style["label"]}>
-                          ({vestingPercentage.toFixed(1)}%)
-                        </span>
-                      </div>
-                    ) : (
-                      <Skeleton height="17.5px" />
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
           <div className={style["doughnut-graph"]}>
             <Doughnut data={doughnutData} options={doughnutData.options} />
