@@ -23,13 +23,11 @@
 }
 .doughnut-graph {
   display: block;
+  flex: 2;
   height: 120px;
   width: 240px;
-  position: absolute;
-  right: -68px;
-  top: 50%;
-  transform: translateY(-50%);
 }
+
 .legend {
   display: flex;
   gap: 10px;
@@ -37,6 +35,7 @@
 
 .legends {
   display: flex;
+  flex: 3;
   justify-content: center;
   flex-direction: column;
   gap: 12px;

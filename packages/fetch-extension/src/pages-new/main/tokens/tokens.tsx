@@ -149,7 +149,6 @@ export const Tokens = observer(() => {
               rightContent={tokenInUsd ? tokenInUsd : ""}
               style={{
                 background: "rgba(255, 255, 255, 0.12)",
-                height: "78px",
                 marginBottom: "6px",
                 padding: "18px",
               }}
