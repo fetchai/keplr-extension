@@ -5,7 +5,6 @@ import { DetailRows } from "screens/activity/activity-details/details-rows";
 import { useStyle } from "styles/index";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { PageWithScrollView } from "components/page";
-import { FetchAiIcon } from "components/new/icon/fetchai-icon";
 import { useStore } from "stores/index";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
 import { formatAddress } from "utils/format/format";
@@ -16,6 +15,7 @@ import { BlurBackground } from "components/new/blur-background/blur-background";
 import { TimelineView } from "components/new/timeline";
 import { BlurButton } from "components/new/button/blur-button";
 import { observer } from "mobx-react-lite";
+import { AsiIcon } from "components/new/icon/asi-icon";
 
 export const ActivityDetails = observer(() => {
   const route = useRoute<
@@ -93,11 +93,11 @@ export const ActivityDetails = observer(() => {
             style.flatten([
               "padding-16",
               "border-radius-64",
-              "background-color-indigo-900",
+              "background-color-white",
             ]) as ViewStyle
           }
         >
-          <FetchAiIcon size={20} />
+          <AsiIcon size={25} />
         </View>
         <Text
           style={
