@@ -276,7 +276,9 @@ export const LedgerScreen: FunctionComponent = () => {
         registerType: "ledger",
         accountType: "ledger",
       });
-
+      analyticsStore.logEvent("register_done_click", {
+        pageName: "Register",
+      });
       smartNavigation.reset({
         index: 0,
         routes: [

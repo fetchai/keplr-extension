@@ -19,6 +19,7 @@ import { AssetCardModel } from "components/new/asset-card-model/asset-card-model
 import { ChangeWalletCardModel } from "components/new/wallet-card/change-wallet";
 import { useLoadingScreen } from "providers/loading-screen";
 import { CoinPretty, Int } from "@keplr-wallet/unit";
+import { removeComma } from "utils/format/format";
 
 interface SendConfigs {
   amountConfig: AmountConfig;
@@ -113,7 +114,9 @@ export const SendPhase1: FunctionComponent<{
       <View style={style.flatten(["height-page-pad"]) as ViewStyle} />
       <AmountInputSection
         amountConfig={sendConfigs.amountConfig}
-        spendableBalance={balance.shrink(true).hideDenom(true).toString()}
+        spendableBalance={removeComma(
+          balance.shrink(true).hideDenom(true).toString().trim()
+        )}
       />
       {/* This is a send component */}
       <View style={style.flatten(["margin-y-20"]) as ViewStyle}>

@@ -117,6 +117,7 @@ export const ImportFromExtensionIntroScreen: FunctionComponent = () => {
                   pageName: "Register",
                   registerType: "qr",
                 });
+
                 smartNavigation.navigateSmart("Register.ImportFromExtension", {
                   registerConfig: route.params.registerConfig,
                 });

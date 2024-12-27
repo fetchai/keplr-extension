@@ -82,6 +82,10 @@ export const ImportFromExtensionScreen: FunctionComponent = () => {
         accountType: imported.KeyRingDatas[0].type,
       });
 
+      analyticsStore.logEvent("register_done_click", {
+        pageName: "Register",
+      });
+
       if (keyRingStore.multiKeyStoreInfo.length > 0) {
         // If already has accounts,
         await registerExportedKeyRingDatas(

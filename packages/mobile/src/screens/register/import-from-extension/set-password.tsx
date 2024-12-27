@@ -32,7 +32,7 @@ interface FormData {
 }
 
 export const ImportFromExtensionSetPasswordScreen: FunctionComponent = () => {
-  const { chainStore, keyRingStore } = useStore();
+  const { chainStore, keyRingStore, analyticsStore } = useStore();
 
   const [addressBookConfigMap] = useState(
     () => new AddressBookConfigMap(new AsyncKVStore("address_book"), chainStore)
@@ -85,7 +85,9 @@ export const ImportFromExtensionSetPasswordScreen: FunctionComponent = () => {
         addressBookConfigMap,
         route.params.addressBooks
       );
-
+      analyticsStore.logEvent("register_done_click", {
+        pageName: "Register",
+      });
       smartNavigation.reset({
         index: 0,
         routes: [
