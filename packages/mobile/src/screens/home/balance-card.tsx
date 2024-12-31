@@ -74,7 +74,7 @@ export const BalanceCard: FunctionComponent<{
                 "margin-left-8",
                 "font-normal",
               ]),
-              { lineHeight: 35 },
+              { lineHeight: 32 },
             ] as ViewStyle
           }
         >

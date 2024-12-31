@@ -111,6 +111,7 @@ export function RenderNumber({
                   {
                     lineHeight: fontSizeValue * 1.0,
                     fontSize: fontSizeValue,
+                    height: fontSizeValue,
                   },
                 ] as ViewStyle
               }
