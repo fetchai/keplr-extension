@@ -192,7 +192,10 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         registerType: route.params.type,
         accountType: "privateKey",
       });
-
+      analyticsStore.logEvent("register_done_click", {
+        pageName: title,
+        registerType: "apple",
+      });
       smartNavigation.reset({
         index: 0,
         routes: [
@@ -487,10 +490,6 @@ export const TorusSignInScreen: FunctionComponent = observer(() => {
         loading={isCreating}
         onPress={() => {
           submit();
-          analyticsStore.logEvent("register_done_click", {
-            pageName: title,
-            registerType: "apple",
-          });
         }}
         disabled={!privateKey || !email}
       />

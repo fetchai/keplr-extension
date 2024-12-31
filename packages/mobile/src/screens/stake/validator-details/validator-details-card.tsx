@@ -216,7 +216,12 @@ export const ValidatorDetailsCard: FunctionComponent<{
                     </Text>
                     <Text
                       style={
-                        style.flatten(["color-white", "subtitle3"]) as ViewStyle
+                        style.flatten([
+                          "color-white",
+                          "subtitle3",
+                          "flex-1",
+                          "text-right",
+                        ]) as ViewStyle
                       }
                     >
                       {item.value}

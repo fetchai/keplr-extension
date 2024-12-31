@@ -31,7 +31,7 @@ export const TabBarView: FunctionComponent<{
         text={item}
         textStyle={
           style.flatten(
-            ["text-caption1"],
+            ["text-caption1", "padding-x-4"],
             [select && "color-indigo-900"]
           ) as ViewStyle
         }
@@ -63,11 +63,11 @@ export const TabBarView: FunctionComponent<{
       Object.values(listItem).indexOf(item.leadingItem) === prevSelected;
 
     return (
-      <View>
+      <View style={style.flatten(["justify-center"])}>
         {!select && !prevSelect ? (
           <CardDivider
             vertical={true}
-            style={style.flatten(["height-12", "margin-top-10"]) as ViewStyle}
+            style={style.flatten(["height-12"]) as ViewStyle}
           />
         ) : null}
       </View>
@@ -90,7 +90,10 @@ export const TabBarView: FunctionComponent<{
         horizontal={true}
         extraData={selected}
         ItemSeparatorComponent={renderSeparator}
-        contentContainerStyle={contentContainerStyle}
+        contentContainerStyle={[
+          style.flatten(["justify-center", "items-center"]),
+          contentContainerStyle,
+        ]}
         scrollEnabled={false}
       />
     </BlurBackground>

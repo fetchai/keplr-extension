@@ -170,12 +170,25 @@ export const DelegatedCard: FunctionComponent<{
             }
           >
             <Text
-              style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "body3",
+                  "color-white@60%",
+                  "flex-1",
+                ]) as ViewStyle
+              }
             >
               Staked amount
             </Text>
             <Text
-              style={style.flatten(["color-white", "subtitle3"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "color-white",
+                  "subtitle3",
+                  "flex-1",
+                  "text-right",
+                ]) as ViewStyle
+              }
             >
               {`${
                 staked
@@ -197,12 +210,25 @@ export const DelegatedCard: FunctionComponent<{
             }
           >
             <Text
-              style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "body3",
+                  "color-white@60%",
+                  "flex-1",
+                ]) as ViewStyle
+              }
             >
               Earned rewards
             </Text>
             <Text
-              style={style.flatten(["color-white", "subtitle3"]) as ViewStyle}
+              style={
+                style.flatten([
+                  "color-white",
+                  "subtitle3",
+                  "flex-1",
+                  "text-right",
+                ]) as ViewStyle
+              }
             >
               {`${
                 stakableReward

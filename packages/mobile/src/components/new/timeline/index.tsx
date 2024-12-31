@@ -52,10 +52,11 @@ export const TimelineView: FunctionComponent<{
           )}
           {!lastIndex && <View style={[styles.connector]} />}
         </View>
-        <View style={style.flatten(["flex-1", "flex-row"]) as ViewStyle}>
+        {(item.leadingTitle || item.leadingSubtitle) && (
           <View
             style={
               style.flatten([
+                "flex-1",
                 "items-start",
                 "flex-column",
                 "justify-center",
@@ -73,10 +74,12 @@ export const TimelineView: FunctionComponent<{
               </Text>
             )}
           </View>
-          <View style={style.flatten(["flex-1"]) as ViewStyle} />
+        )}
+        {(item.trailingTitle || item.trailingSubtitle) && (
           <View
             style={
               style.flatten([
+                "flex-1",
                 "items-end",
                 "flex-column",
                 "justify-center",
@@ -100,7 +103,7 @@ export const TimelineView: FunctionComponent<{
               </Text>
             )}
           </View>
-        </View>
+        )}
       </View>
     );
   };

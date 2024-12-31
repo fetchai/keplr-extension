@@ -223,10 +223,23 @@ export const UndelegateScreen: FunctionComponent = observer(() => {
           ] as ViewStyle
         }
       >
-        <Text style={style.flatten(["body3", "color-white@60%"]) as ViewStyle}>
+        <Text
+          style={
+            style.flatten(["body3", "color-white@60%", "flex-1"]) as ViewStyle
+          }
+        >
           Current staked amount
         </Text>
-        <Text style={style.flatten(["subtitle3", "color-white"]) as ViewStyle}>
+        <Text
+          style={
+            style.flatten([
+              "subtitle3",
+              "color-white",
+              "flex-1",
+              "text-right",
+            ]) as ViewStyle
+          }
+        >
           {staked.trim(true).shrink(true).maxDecimals(6).toString()}
         </Text>
       </View>

@@ -31,7 +31,12 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
               "text-center",
             ]) as ViewStyle
           }
-          containerStyle={style.flatten(["background-color-white"])}
+          containerStyle={
+            style.flatten([
+              "background-color-white",
+              "margin-top-16",
+            ]) as ViewStyle
+          }
         />
       );
     case Governance.ProposalStatus.VOTING_PERIOD:
@@ -49,7 +54,12 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
               "margin-x-8",
             ]) as ViewStyle
           }
-          containerStyle={style.flatten(["background-color-white"])}
+          containerStyle={
+            style.flatten([
+              "background-color-white",
+              "margin-top-16",
+            ]) as ViewStyle
+          }
         />
       );
     case Governance.ProposalStatus.PASSED:
@@ -68,7 +78,10 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
             ]) as ViewStyle
           }
           containerStyle={
-            style.flatten(["background-color-vibrant-green-500"]) as ViewStyle
+            style.flatten([
+              "background-color-vibrant-green-500",
+              "margin-top-16",
+            ]) as ViewStyle
           }
         />
       );
@@ -87,7 +100,12 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
               "margin-x-8",
             ]) as ViewStyle
           }
-          containerStyle={style.flatten(["background-color-vibrant-red-500"])}
+          containerStyle={
+            style.flatten([
+              "background-color-vibrant-red-500",
+              "margin-top-16",
+            ]) as ViewStyle
+          }
         />
       );
     case Governance.ProposalStatus.FAILED:
@@ -105,7 +123,12 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
               "margin-x-8",
             ]) as ViewStyle
           }
-          containerStyle={style.flatten(["background-color-vibrant-red-500"])}
+          containerStyle={
+            style.flatten([
+              "background-color-vibrant-red-500",
+              "margin-top-16",
+            ]) as ViewStyle
+          }
         />
       );
     default:
@@ -123,7 +146,12 @@ export const GovernanceProposalStatusChip: FunctionComponent<{
               "margin-x-8",
             ]) as ViewStyle
           }
-          containerStyle={style.flatten(["background-color-vibrant-red-500"])}
+          containerStyle={
+            style.flatten([
+              "background-color-vibrant-red-500",
+              "margin-top-16",
+            ]) as ViewStyle
+          }
         />
       );
   }

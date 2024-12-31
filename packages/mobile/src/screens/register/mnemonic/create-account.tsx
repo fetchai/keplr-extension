@@ -100,6 +100,9 @@ export const CreateAccountScreen: FunctionComponent = () => {
       });
     }
 
+    analyticsStore.logEvent("register_done_click", {
+      pageName: "Register",
+    });
     smartNavigation.reset({
       index: 0,
       routes: [
@@ -392,9 +395,6 @@ export const CreateAccountScreen: FunctionComponent = () => {
         loading={isCreating}
         onPress={() => {
           submit();
-          analyticsStore.logEvent("register_done_click", {
-            pageName: "Register",
-          });
         }}
       />
     </PageWithScrollView>

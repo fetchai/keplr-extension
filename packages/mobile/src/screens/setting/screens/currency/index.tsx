@@ -60,11 +60,18 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
                   "flex-1",
                   "flex-row",
                   "items-center",
+                  "flex-wrap",
                 ]) as ViewStyle
               }
             >
               <Text
-                style={style.flatten(["body3", "color-white"]) as ViewStyle}
+                style={
+                  style.flatten([
+                    "body3",
+                    "color-white",
+                    "margin-right-8",
+                  ]) as ViewStyle
+                }
               >
                 {item.label}
               </Text>
@@ -73,7 +80,7 @@ export const CurrencyScreen: FunctionComponent = observer(() => {
                   style.flatten([
                     "body3",
                     "color-white@60%",
-                    "margin-x-8",
+                    "margin-right-8",
                   ]) as ViewStyle
                 }
               >

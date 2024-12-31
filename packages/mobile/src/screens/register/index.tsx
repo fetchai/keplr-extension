@@ -24,7 +24,6 @@ import { BluetoothIcon } from "components/new/icon/bluetooth-icon";
 import { MetaMaskIcon } from "components/new/icon/metamask-icon";
 import { TokenCardView } from "components/new/card-view/token-card-view";
 import { AppleIcon } from "components/new/icon/apple";
-import { FetchIcon } from "components/new/icon/fetch-icon";
 import {
   NavigationProp,
   ParamListBase,
@@ -33,6 +32,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { KeyIconLarge } from "components/new/icon/key";
+import { AsiIcon } from "components/new/icon/asi-icon";
 
 const SelectWalletOptionCard: FunctionComponent<{
   img: any;
@@ -426,7 +426,7 @@ export const ImportExistingWalletModal: FunctionComponent<{
     >
       <TokenCardView
         title="Import from ASI Alliance Web extension"
-        leadingIcon={<FetchIcon size={30} />}
+        leadingIcon={<AsiIcon size={22} />}
         containerStyle={
           style.flatten(["margin-bottom-6", "height-80"]) as ViewStyle
         }

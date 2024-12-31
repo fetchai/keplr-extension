@@ -67,9 +67,11 @@ export const UseMaxButton: FunctionComponent<{
           }}
           containerStyle={
             style.flatten([
+              "flex-wrap",
               "border-width-1",
               "margin-4",
-              "padding-6",
+              "padding-y-4",
+              "padding-x-8",
               "justify-center",
               !amountConfig.sendCurrency["coinGeckoId"] ||
               disable ||
@@ -92,9 +94,11 @@ export const UseMaxButton: FunctionComponent<{
           }}
           containerStyle={
             style.flatten([
+              "flex-wrap",
               "border-width-1",
               disable ? "border-color-white@20%" : "border-color-white@40%",
-              "padding-6",
+              "padding-y-4",
+              "padding-x-8",
               "margin-4",
               "justify-center",
             ]) as ViewStyle

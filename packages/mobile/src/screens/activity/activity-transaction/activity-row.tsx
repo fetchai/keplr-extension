@@ -10,7 +10,7 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
-import { FetchAiIcon } from "components/new/icon/fetchai-icon";
+import { AsiIcon } from "components/new/icon/asi-icon";
 
 export const ActivityRow: FunctionComponent<{
   node: any;
@@ -66,13 +66,11 @@ export const ActivityRow: FunctionComponent<{
               "height-32",
               "items-center",
               "justify-center",
-              "border-radius-64",
-              "background-color-indigo-900",
               "absolute",
             ]) as ViewStyle
           }
         >
-          <FetchAiIcon size={14} />
+          <AsiIcon size={25} />
         </View>
         <View
           style={
@@ -97,7 +95,7 @@ export const ActivityRow: FunctionComponent<{
           />
         </View>
       </View>
-      <View style={style.flatten(["flex-1"]) as ViewStyle}>
+      <View style={style.flatten(["flex-4"]) as ViewStyle}>
         <Text
           style={
             style.flatten([
@@ -136,7 +134,17 @@ export const ActivityRow: FunctionComponent<{
         </Text>
       </View>
 
-      <View style={style.flatten(["flex-row", "margin-right-16"]) as ViewStyle}>
+      <View
+        style={
+          style.flatten([
+            "flex-3",
+            "flex-row",
+            "flex-wrap",
+            "margin-right-16",
+            "justify-end",
+          ]) as ViewStyle
+        }
+      >
         <Text
           style={
             style.flatten([
