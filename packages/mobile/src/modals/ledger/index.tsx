@@ -4,6 +4,7 @@ import {
   AppState,
   AppStateStatus,
   Image,
+  Linking,
   Platform,
   Text,
   View,
@@ -22,9 +23,9 @@ import LottieView from "lottie-react-native";
 import { Button } from "components/button";
 import { BlurButton } from "components/new/button/blur-button";
 import { CheckIcon } from "components/new/icon/check";
-import Toast from "react-native-toast-message";
 import { LedgerErrorView } from "./ledger-error-view";
 import { LedgerNanoBLESelector } from "./ledger-selector";
+import Toast from "react-native-toast-message";
 
 enum BLEPermissionGrantStatus {
   NotInit = "notInit",
@@ -379,9 +380,19 @@ export const LedgerGranterModal: FunctionComponent<{
               }
               textStyle={style.flatten(["color-white", "body3"]) as ViewStyle}
               onPress={() =>
-                Toast.show({
-                  type: "error",
-                  text1: "Under development",
+                Linking.canOpenURL(
+                  "https://fetch.ai/docs/guides/fetch-network/asi-wallet/mobile-wallet/get-started#connect-ledger"
+                ).then((supported) => {
+                  if (supported) {
+                    Linking.openURL(
+                      "https://fetch.ai/docs/guides/fetch-network/asi-wallet/mobile-wallet/get-started#connect-ledger"
+                    );
+                  } else {
+                    Toast.show({
+                      type: "error",
+                      text1: "Unable to open browser",
+                    });
+                  }
                 })
               }
             />
