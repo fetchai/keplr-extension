@@ -266,6 +266,7 @@ export class RootStore {
         usd: {
           currency: "usd",
           symbol: "$",
+          symbolName: "$",
           maxDecimals: 2,
           locale: "en-US",
           name: "United States Dollar",
@@ -273,6 +274,7 @@ export class RootStore {
         aed: {
           currency: "aed",
           symbol: "د.إ",
+          symbolName: "AED",
           maxDecimals: 2,
           locale: "ar-AE",
           name: "United Arab Emirates Dirham",
@@ -280,6 +282,7 @@ export class RootStore {
         ars: {
           currency: "ars",
           symbol: "$",
+          symbolName: "ARS",
           maxDecimals: 2,
           locale: "es-AR",
           name: "Argentine Peso",
@@ -287,6 +290,7 @@ export class RootStore {
         aud: {
           currency: "aud",
           symbol: "AU$",
+          symbolName: "AU$",
           maxDecimals: 2,
           locale: "en-AU",
           name: "Australian Dollar",
@@ -294,6 +298,7 @@ export class RootStore {
         bdt: {
           currency: "bdt",
           symbol: "৳",
+          symbolName: "BDT",
           maxDecimals: 2,
           locale: "bn-BD",
           name: "Bangladeshi Taka",
@@ -301,6 +306,7 @@ export class RootStore {
         bhd: {
           currency: "bhd",
           symbol: ".د.ب",
+          symbolName: "BHD",
           maxDecimals: 3,
           locale: "ar-BH",
           name: "Bahraini Dinar",
@@ -308,6 +314,7 @@ export class RootStore {
         bmd: {
           currency: "bmd",
           symbol: "BD$",
+          symbolName: "BD$",
           maxDecimals: 2,
           locale: "en-BM",
           name: "Bermudian Dollar",
@@ -315,6 +322,7 @@ export class RootStore {
         brl: {
           currency: "brl",
           symbol: "R$",
+          symbolName: "R$",
           maxDecimals: 2,
           locale: "pt-BR",
           name: "Brazilian Real",
@@ -322,6 +330,7 @@ export class RootStore {
         cad: {
           currency: "cad",
           symbol: "CA$",
+          symbolName: "CA$",
           maxDecimals: 2,
           locale: "en-CA",
           name: "Canadian Dollar",
@@ -329,6 +338,7 @@ export class RootStore {
         chf: {
           currency: "chf",
           symbol: "CHF",
+          symbolName: "CHF",
           maxDecimals: 2,
           locale: "de-CH",
           name: "Swiss Franc",
@@ -336,6 +346,7 @@ export class RootStore {
         clp: {
           currency: "clp",
           symbol: "$",
+          symbolName: "CLP",
           maxDecimals: 2,
           locale: "es-CL",
           name: "Chilean Peso",
@@ -343,6 +354,7 @@ export class RootStore {
         cny: {
           currency: "cny",
           symbol: "¥",
+          symbolName: "CN¥",
           maxDecimals: 1,
           locale: "zh-CN",
           name: "Chinese Yuan",
@@ -350,6 +362,7 @@ export class RootStore {
         czk: {
           currency: "czk",
           symbol: "Kč",
+          symbolName: "CZK",
           maxDecimals: 2,
           locale: "cs-CZ",
           name: "Czech Koruna",
@@ -357,6 +370,7 @@ export class RootStore {
         dkk: {
           currency: "dkk",
           symbol: "kr",
+          symbolName: "DKK",
           maxDecimals: 2,
           locale: "da-DK",
           name: "Danish Krone",
@@ -364,6 +378,7 @@ export class RootStore {
         eur: {
           currency: "eur",
           symbol: "€",
+          symbolName: "€",
           maxDecimals: 2,
           locale: "en-IE",
           name: "Euro",
@@ -371,6 +386,7 @@ export class RootStore {
         gbp: {
           currency: "gbp",
           symbol: "£",
+          symbolName: "£",
           maxDecimals: 2,
           locale: "en-GB",
           name: "British Pound Sterling",
@@ -378,6 +394,7 @@ export class RootStore {
         gel: {
           currency: "gel",
           symbol: "₾",
+          symbolName: "GEL",
           maxDecimals: 2,
           locale: "ka-GE",
           name: "Georgian Lari",
@@ -385,6 +402,7 @@ export class RootStore {
         hkd: {
           currency: "hkd",
           symbol: "HK$",
+          symbolName: "HK$",
           maxDecimals: 1,
           locale: "en-HK",
           name: "Hong Kong Dollar",
@@ -392,6 +410,7 @@ export class RootStore {
         huf: {
           currency: "huf",
           symbol: "Ft",
+          symbolName: "HUF",
           maxDecimals: 2,
           locale: "hu-HU",
           name: "Hungarian Forint",
@@ -399,6 +418,7 @@ export class RootStore {
         idr: {
           currency: "idr",
           symbol: "Rp",
+          symbolName: "IDR",
           maxDecimals: 2,
           locale: "id-ID",
           name: "Indonesian Rupiah",
@@ -406,6 +426,7 @@ export class RootStore {
         ils: {
           currency: "ils",
           symbol: "₪",
+          symbolName: "₪",
           maxDecimals: 2,
           locale: "he-IL",
           name: "Israeli New Shekel",
@@ -413,6 +434,7 @@ export class RootStore {
         inr: {
           currency: "inr",
           symbol: "₹",
+          symbolName: "₹",
           maxDecimals: 1,
           locale: "en-IN",
           name: "Indian Rupee",
@@ -420,6 +442,7 @@ export class RootStore {
         jpy: {
           currency: "jpy",
           symbol: "¥",
+          symbolName: "¥",
           maxDecimals: 2,
           locale: "ja-JP",
           name: "Japanese Yen",
@@ -427,6 +450,7 @@ export class RootStore {
         krw: {
           currency: "krw",
           symbol: "₩",
+          symbolName: "₩",
           maxDecimals: 2,
           locale: "ko-KR",
           name: "South Korean Won",
@@ -434,6 +458,7 @@ export class RootStore {
         kwd: {
           currency: "kwd",
           symbol: "د.ك",
+          symbolName: "KWD",
           maxDecimals: 3,
           locale: "ar-KW",
           name: "Kuwaiti Dinar",
@@ -441,6 +466,7 @@ export class RootStore {
         lkr: {
           currency: "lkr",
           symbol: "Rs",
+          symbolName: "LKR",
           maxDecimals: 2,
           locale: "si-LK",
           name: "Sri Lankan Rupee",
@@ -448,6 +474,7 @@ export class RootStore {
         mmk: {
           currency: "mmk",
           symbol: "K",
+          symbolName: "MMK",
           maxDecimals: 0,
           locale: "my-MM",
           name: "Myanmar Kyat",
@@ -455,6 +482,7 @@ export class RootStore {
         mxn: {
           currency: "mxn",
           symbol: "MX$",
+          symbolName: "MX$",
           maxDecimals: 2,
           locale: "es-MX",
           name: "Mexican Peso",
@@ -462,6 +490,7 @@ export class RootStore {
         myr: {
           currency: "myr",
           symbol: "RM",
+          symbolName: "RM",
           maxDecimals: 2,
           locale: "ms-MY",
           name: "Malaysian Ringgit",
@@ -469,6 +498,7 @@ export class RootStore {
         ngn: {
           currency: "ngn",
           symbol: "₦",
+          symbolName: "NGN",
           maxDecimals: 2,
           locale: "en-NG",
           name: "Nigerian Naira",
@@ -476,6 +506,7 @@ export class RootStore {
         nok: {
           currency: "nok",
           symbol: "kr",
+          symbolName: "NOK",
           maxDecimals: 2,
           locale: "nb-NO",
           name: "Norwegian Krone",
@@ -483,6 +514,7 @@ export class RootStore {
         nzd: {
           currency: "nzd",
           symbol: "NZ$",
+          symbolName: "NZ$",
           maxDecimals: 2,
           locale: "en-NZ",
           name: "New Zealand Dollar",
@@ -490,6 +522,7 @@ export class RootStore {
         php: {
           currency: "php",
           symbol: "₱",
+          symbolName: "₱",
           maxDecimals: 2,
           locale: "en-PH",
           name: "Philippine Peso",
@@ -497,6 +530,7 @@ export class RootStore {
         pkr: {
           currency: "pkr",
           symbol: "₨",
+          symbolName: "PKR",
           maxDecimals: 2,
           locale: "en-PK",
           name: "Pakistani Rupee",
@@ -504,6 +538,7 @@ export class RootStore {
         pln: {
           currency: "pln",
           symbol: "zł",
+          symbolName: "PLN",
           maxDecimals: 2,
           locale: "pl-PL",
           name: "Polish Zloty",
@@ -511,6 +546,7 @@ export class RootStore {
         rub: {
           currency: "rub",
           symbol: "₽",
+          symbolName: "RUB",
           maxDecimals: 2,
           locale: "ru-RU",
           name: "Russian Ruble",
@@ -518,6 +554,7 @@ export class RootStore {
         sar: {
           currency: "sar",
           symbol: "ر.س",
+          symbolName: "SAR",
           maxDecimals: 2,
           locale: "ar-SA",
           name: "Saudi Riyal",
@@ -525,6 +562,7 @@ export class RootStore {
         sek: {
           currency: "sek",
           symbol: "kr",
+          symbolName: "SEK",
           maxDecimals: 2,
           locale: "sv-SE",
           name: "Swedish Krona",
@@ -532,6 +570,7 @@ export class RootStore {
         sgd: {
           currency: "sgd",
           symbol: "S$",
+          symbolName: "S$",
           maxDecimals: 2,
           locale: "en-SG",
           name: "Singapore Dollar",
@@ -539,6 +578,7 @@ export class RootStore {
         thb: {
           currency: "thb",
           symbol: "฿",
+          symbolName: "THB",
           maxDecimals: 2,
           locale: "th-TH",
           name: "Thai Baht",
@@ -546,6 +586,7 @@ export class RootStore {
         try: {
           currency: "try",
           symbol: "₺",
+          symbolName: "TRY",
           maxDecimals: 2,
           locale: "tr-TR",
           name: "Turkish Lira",
@@ -553,6 +594,7 @@ export class RootStore {
         twd: {
           currency: "twd",
           symbol: "NT$",
+          symbolName: "NT$",
           maxDecimals: 2,
           locale: "zh-TW",
           name: "New Taiwan Dollar",
@@ -560,6 +602,7 @@ export class RootStore {
         uah: {
           currency: "uah",
           symbol: "₴",
+          symbolName: "UAH",
           maxDecimals: 2,
           locale: "uk-UA",
           name: "Ukrainian Hryvnia",
@@ -567,6 +610,7 @@ export class RootStore {
         vef: {
           currency: "vef",
           symbol: "Bs",
+          symbolName: "VEF",
           maxDecimals: 2,
           locale: "es-VE",
           name: "Venezuelan Bolívar",
@@ -574,6 +618,7 @@ export class RootStore {
         vnd: {
           currency: "vnd",
           symbol: "₫",
+          symbolName: "VND",
           maxDecimals: 2,
           locale: "vi-VN",
           name: "Vietnamese Dong",
@@ -581,6 +626,7 @@ export class RootStore {
         zar: {
           currency: "zar",
           symbol: "R",
+          symbolName: "ZAR",
           maxDecimals: 2,
           locale: "en-ZA",
           name: "South African Rand",
