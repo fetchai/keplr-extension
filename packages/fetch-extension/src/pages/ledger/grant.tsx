@@ -28,6 +28,7 @@ import { CosmosApp } from "@keplr-wallet/ledger-cosmos";
 import { ledgerUSBVendorId } from "@ledgerhq/devices";
 import { Buffer } from "buffer/";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { Button } from "reactstrap";
 
 export const LedgerGrantPage: FunctionComponent = observer(() => {
   useLayoutEffect(() => {
@@ -199,12 +200,34 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
 
   return (
     <EmptyLayout className={style["container"]}>
+      <div className={classnames(style["logoInnerContainer"])}>
+        <img
+          className={style["icon"]}
+          src={require("@assets/png/ASI-Logo-Icon-white.png")}
+          alt="logo"
+        />
+      </div>
       {ledgerInitStore.isSignCompleted ? (
         <SignCompleteDialog rejected={ledgerInitStore.isSignRejected} />
       ) : initSucceed ? (
         <ConfirmLedgerDialog />
       ) : (
-        <div className={style["instructions"]}>
+        <div
+          className={style["instructions"]}
+          style={{ paddingBottom: "41px" }}
+        >
+          <div className={style["backButton"]}>
+            <Button
+              style={{ padding: "0px" }}
+              color="link"
+              // onClick={}
+            >
+              <img
+                src={require("@assets/svg/wireframe/back-button.svg")}
+                alt=""
+              />
+            </Button>
+          </div>
           <Instruction
             icon={
               <img
@@ -309,7 +332,7 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
             <label
               className={`custom-control-label ${style["ledgerCheckboxLabel"]}`}
               htmlFor="use-webhid"
-              style={{ color: "white", paddingTop: "1px" }}
+              style={{ color: "white", paddingTop: "6px" }}
             >
               <FormattedMessage id="ledger.option.webhid.checkbox" />
             </label>
@@ -370,21 +393,6 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
                 await tryInit();
               }}
               dataLoading={tryInitializing}
-            />
-            <ButtonV2
-              text="Cancel"
-              styleProps={{
-                padding: "12px",
-                height: "56px",
-                background: "transparent",
-                color: "white",
-                border: "1px solid rgba(255,255,255,0.4)",
-              }}
-              onClick={async (e: any) => {
-                e.preventDefault();
-                ledgerInitStore.abortAll();
-              }}
-              dataLoading={ledgerInitStore.isLoading}
             />
           </div>
         </div>

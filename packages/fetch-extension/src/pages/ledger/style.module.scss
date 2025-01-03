@@ -7,6 +7,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  padding: 0;
 }
 
 .confirmLedgerDialog {
@@ -75,22 +76,48 @@
   }
 }
 
-.instructions {
-  padding-top: 20px;
-
-  height: 100%;
+.logoInnerContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin: 32px 0;
+
+  &.justify-center {
+    justify-content: center;
+  }
+
+  .icon {
+    width: 215px;
+  }
+}
+
+.instructions {
+  width: 390px;
+  margin: 0px auto;
+  height: 720px;
+  // border-radius: 25px;
+  // background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+
+  .backButton {
+    display: flex;
+    text-align: left;
+    padding: 0px;
+    margin-bottom: 26px;
+  }
 }
 
 .instruction {
   margin-bottom: 30px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
 
   color: white;
 
   display: flex;
+  align-items: center;
 
   .icon {
     img {
@@ -99,7 +126,6 @@
     min-width: 50px;
     display: flex;
     justify-content: center;
-    margin-top: 6px;
     margin-right: 20px;
   }
 
