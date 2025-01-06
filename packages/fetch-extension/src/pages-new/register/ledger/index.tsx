@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { RegisterConfig } from "@keplr-wallet/hooks";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Form, Label } from "reactstrap";
@@ -11,6 +11,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../../../stores";
 import { ledgerUSBVendorId } from "@ledgerhq/devices";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { LedgerGrantView } from "../../../pages/ledger";
 
 export const TypeImportLedger = "import-ledger";
 
@@ -44,8 +45,9 @@ export const ImportLedgerPage: FunctionComponent<{
   setSelectedCard: any;
 }> = observer(({ registerConfig, setSelectedCard }) => {
   const intl = useIntl();
-
   const bip44Option = useBIP44Option(118);
+  const [isShowLedgerSetup, setShowLedgerSetup] = useState<boolean>(false);
+  const { analyticsStore, ledgerInitStore } = useStore();
 
   const {
     register,
@@ -59,8 +61,6 @@ export const ImportLedgerPage: FunctionComponent<{
       confirmPassword: "",
     },
   });
-
-  const { analyticsStore, ledgerInitStore } = useStore();
 
   const ensureUSBPermission = async () => {
     const anyNavigator = navigator as any;
@@ -90,7 +90,39 @@ export const ImportLedgerPage: FunctionComponent<{
     }
   };
 
-  return (
+  async function createLedger(
+    name: string,
+    password: string,
+    isShowUSBPermission?: boolean
+  ) {
+    try {
+      if (isShowUSBPermission) {
+        await ensureUSBPermission();
+      }
+      await registerConfig.createLedger(
+        name,
+        password,
+        bip44Option.bip44HDPath,
+        "Cosmos"
+      );
+      analyticsStore.setUserProperties({
+        registerType: "ledger",
+        accountType: "ledger",
+      });
+      setShowLedgerSetup(false);
+    } catch (e) {
+      setShowLedgerSetup(true);
+    }
+  }
+
+  return isShowLedgerSetup ? (
+    <LedgerGrantView
+      onBackPress={() => setShowLedgerSetup(false)}
+      onInitSucceed={async () =>
+        createLedger(getValues()["name"], getValues()["password"])
+      }
+    />
+  ) : (
     <div
       style={{
         width: "100%",
@@ -122,23 +154,7 @@ export const ImportLedgerPage: FunctionComponent<{
           <Form
             className={style["formContainer"]}
             onSubmit={handleSubmit(async (data: FormData) => {
-              try {
-                await ensureUSBPermission();
-
-                await registerConfig.createLedger(
-                  data.name,
-                  data.password,
-                  bip44Option.bip44HDPath,
-                  "Cosmos"
-                );
-                analyticsStore.setUserProperties({
-                  registerType: "ledger",
-                  accountType: "ledger",
-                });
-              } catch (e) {
-                alert(e.message ? e.message : e.toString());
-                registerConfig.clear();
-              }
+              await createLedger(data.name, data.password, true);
             })}
           >
             <Label
