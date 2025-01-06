@@ -47,7 +47,6 @@ import {
 } from "./pages-new/more/security-privacy/connections";
 import { AddTokenPage } from "./pages-new/more/token/add";
 import { ManageTokenPage } from "./pages-new/more/token/manage";
-import { LedgerGrantPage } from "./pages/ledger";
 import { SettingPage } from "./pages/setting";
 import { StoreProvider, useStore } from "./stores";
 
@@ -265,10 +264,6 @@ ReactDOM.render(
                             element={<KeystoneSignPage />}
                           />
                           <Route path="/app-version" element={<AppVersion />} />
-                          <Route
-                            path="/ledger-grant"
-                            element={<LedgerGrantPage />}
-                          />
                           <Route path="/more" element={<MorePage />} />
                           <Route
                             path="/more/language"

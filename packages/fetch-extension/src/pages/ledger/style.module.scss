@@ -10,6 +10,10 @@
   padding: 0;
 }
 
+.ledgerContainer {
+  width: 390px;
+}
+
 .confirmLedgerDialog {
   height: 100%;
   display: flex;
@@ -108,10 +112,17 @@
   }
 }
 
+.pageTitle {
+  font-size: 32px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
 .instruction {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
 
   color: white;
@@ -127,6 +138,10 @@
     display: flex;
     justify-content: center;
     margin-right: 20px;
+  }
+
+  &.selected {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   &.pass {

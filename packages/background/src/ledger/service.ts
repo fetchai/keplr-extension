@@ -5,19 +5,21 @@ import {
   LedgerWebUSBIniter,
 } from "./ledger";
 
-import delay from "delay";
-
-import { APP_PORT, Env } from "@keplr-wallet/router";
+import { APP_PORT, Env, KeplrError } from "@keplr-wallet/router";
 import { BIP44HDPath } from "../keyring";
 import { KVStore } from "@keplr-wallet/common";
 import { InteractionService } from "../interaction";
 import { LedgerOptions } from "./options";
 import { Buffer } from "buffer/";
 import { EthSignType } from "@keplr-wallet/types";
+import {
+  ErrFailedGetPublicKey,
+  ErrFailedInit,
+  ErrFailedSign,
+  ErrModuleLedgerSign,
+} from "./types";
 
 export class LedgerService {
-  private previousInitAborter: ((e: Error) => void) | undefined;
-
   protected options: LedgerOptions;
 
   protected interactionService!: InteractionService;
@@ -69,18 +71,17 @@ export class LedgerService {
     return await this.useLedger(
       env,
       ledgerApp,
-      async (ledger, retryCount) => {
+      async (ledger) => {
         try {
           // Specific apps only support each coin type for app.
           return await ledger.getPublicKey(ledgerApp, bip44HDPath);
-        } finally {
-          // Notify UI Ledger pubkey derivation succeeded only when Ledger initialization is tried again.
-          if (retryCount > 0) {
-            this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-              event: "get-pubkey",
-              success: true,
-            });
-          }
+        } catch (e) {
+          console.log(e);
+          throw new KeplrError(
+            ErrModuleLedgerSign,
+            ErrFailedGetPublicKey,
+            "Testing:getPublicKey"
+          );
         }
       },
       cosmosLikeApp
@@ -99,7 +100,7 @@ export class LedgerService {
     return await this.useLedger(
       env,
       ledgerApp,
-      async (ledger, retryCount: number) => {
+      async (ledger) => {
         try {
           this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
             event: "sign-txn-guide",
@@ -119,26 +120,18 @@ export class LedgerService {
             event: "sign-txn-guide",
             isShow: false,
           });
-          if (retryCount > 0) {
-            this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-              event: "sign",
-              success: true,
-            });
-          }
           return signature;
         } catch (e) {
           this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
             event: "sign-txn-guide",
             isShow: false,
           });
-          // Notify UI Ledger signing failed only when Ledger initialization is tried again.
-          if (retryCount > 0) {
-            this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-              event: "sign",
-              success: false,
-            });
-          }
-          throw e;
+
+          throw new KeplrError(
+            ErrModuleLedgerSign,
+            ErrFailedSign,
+            "Testing:sign"
+          );
         }
       },
       cosmosLikeApp
@@ -154,67 +147,50 @@ export class LedgerService {
   ): Promise<Uint8Array> {
     const ledgerApp = LedgerApp.Ethereum;
 
-    return await this.useLedger(
-      env,
-      ledgerApp,
-      async (ledger, retryCount: number) => {
-        try {
-          this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
-            event: "sign-txn-guide",
-            isShow: true,
-          });
-          const pubKey = await ledger.getPublicKey(ledgerApp, bip44HDPath);
-          if (
-            Buffer.from(expectedPubKey).toString("hex") !==
-            Buffer.from(pubKey).toString("hex")
-          ) {
-            throw new Error("Unmatched public key");
-          }
-          const signature = await ledger.signEthereum(
-            bip44HDPath,
-            type,
-            message
-          );
-          // Notify UI Ledger signing succeeded only when Ledger initialization is tried again.
-          this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
-            event: "sign-txn-guide",
-            isShow: false,
-          });
-          if (retryCount > 0) {
-            this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-              event: "sign",
-              success: true,
-            });
-          }
-          return signature;
-        } catch (e) {
-          this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
-            event: "sign-txn-guide",
-            isShow: false,
-          });
-          // Notify UI Ledger signing failed only when Ledger initialization is tried again.
-          if (retryCount > 0) {
-            this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-              event: "sign",
-              success: false,
-            });
-          }
-          throw e;
+    return await this.useLedger(env, ledgerApp, async (ledger) => {
+      try {
+        this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
+          event: "sign-txn-guide",
+          isShow: true,
+        });
+        const pubKey = await ledger.getPublicKey(ledgerApp, bip44HDPath);
+        if (
+          Buffer.from(expectedPubKey).toString("hex") !==
+          Buffer.from(pubKey).toString("hex")
+        ) {
+          throw new Error("Unmatched public key");
         }
+        const signature = await ledger.signEthereum(bip44HDPath, type, message);
+        // Notify UI Ledger signing succeeded only when Ledger initialization is tried again.
+        this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
+          event: "sign-txn-guide",
+          isShow: false,
+        });
+        return signature;
+      } catch (e) {
+        this.interactionService.dispatchEvent(APP_PORT, "ledger-sign", {
+          event: "sign-txn-guide",
+          isShow: false,
+        });
+        throw new KeplrError(
+          ErrModuleLedgerSign,
+          ErrFailedSign,
+          "Testing:sign"
+        );
       }
-    );
+    });
   }
 
   async useLedger<T>(
     env: Env,
     ledgerApp: LedgerApp,
-    fn: (ledger: Ledger, retryCount: number) => Promise<T>,
+    fn: (ledger: Ledger) => Promise<T>,
     cosmosLikeApp: string = "Cosmos"
   ): Promise<T> {
-    let ledger: { ledger: Ledger; retryCount: number } | undefined;
+    let ledger: { ledger: Ledger } | undefined;
     try {
       ledger = await this.initLedger(env, ledgerApp, cosmosLikeApp);
-      return await fn(ledger.ledger, ledger.retryCount);
+      return await fn(ledger.ledger);
     } finally {
       if (ledger) {
         await ledger.ledger.close();
@@ -223,41 +199,17 @@ export class LedgerService {
   }
 
   async initLedger(
-    env: Env,
+    _env: Env,
     ledgerApp: LedgerApp,
     cosmosLikeApp: string = "Cosmos"
-  ): Promise<{ ledger: Ledger; retryCount: number }> {
-    if (this.previousInitAborter) {
-      this.previousInitAborter(
-        new Error(
-          "New ledger request occurred before the ledger was initialized"
-        )
-      );
-    }
+  ): Promise<{ ledger: Ledger }> {
+    const initArgs: any[] = [];
+    this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
+      event: "init-failed",
+      ledgerApp,
+      cosmosLikeApp,
+    });
 
-    const aborter = (() => {
-      let _reject: (reason?: any) => void | undefined;
-
-      return {
-        wait: () => {
-          return new Promise((_, reject) => {
-            _reject = reject;
-          });
-        },
-        abort: (e: Error) => {
-          if (_reject) {
-            _reject(e);
-          }
-        },
-      };
-    })();
-
-    // This ensures that the ledger connection is not executed concurrently.
-    // Without this, the prior signing request can be delivered to the ledger and possibly make a user take a mistake.
-    this.previousInitAborter = aborter.abort;
-
-    let retryCount = 0;
-    let initArgs: any[] = [];
     while (true) {
       const mode = await this.getMode();
       try {
@@ -272,112 +224,17 @@ export class LedgerService {
           ledgerApp,
           cosmosLikeApp
         );
-        this.previousInitAborter = undefined;
         return {
           ledger,
-          retryCount,
         };
       } catch (e) {
-        console.log(e);
-
-        const timeoutAbortController = new AbortController();
-
-        try {
-          const promises: Promise<unknown>[] = [
-            (async () => {
-              const response = (await this.interactionService.waitApprove(
-                env,
-                "/ledger-grant",
-                "ledger-init",
-                {
-                  event: "init-failed",
-                  ledgerApp,
-                  mode,
-                  cosmosLikeApp,
-                },
-                {
-                  forceOpenWindow: false,
-                  channel: "ledger",
-                }
-              )) as
-                | {
-                    abort?: boolean;
-                    initArgs?: any[];
-                  }
-                | undefined;
-
-              if (response?.abort) {
-                throw new Error("Ledger init aborted");
-              }
-
-              if (response?.initArgs) {
-                initArgs = response.initArgs;
-              }
-            })(),
-          ];
-
-          promises.push(
-            (async () => {
-              let timeoutAborted = false;
-              // If ledger is not inited in 5 minutes, abort it.
-              try {
-                await delay(5 * 60 * 1000, {
-                  signal: timeoutAbortController.signal,
-                });
-              } catch (e) {
-                if (e.name === "AbortError") {
-                  timeoutAborted = true;
-                } else {
-                  throw e;
-                }
-              }
-              if (!timeoutAborted) {
-                this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-                  event: "init-aborted",
-                  mode,
-                });
-                throw new Error("Ledger init timeout");
-              }
-            })()
-          );
-
-          promises.push(aborter.wait());
-
-          // Check that the Ledger Popup is opened only if the environment is extension.
-          if (typeof browser !== "undefined") {
-            promises.push(this.testLedgerGrantUIOpened());
-          }
-
-          await Promise.race(promises);
-        } finally {
-          timeoutAbortController.abort();
-        }
+        throw new KeplrError(
+          ErrModuleLedgerSign,
+          ErrFailedInit,
+          "Testing:init"
+        );
       }
-
-      retryCount++;
     }
-  }
-
-  // Test that the exntesion's granting ledger page is opened.
-  async testLedgerGrantUIOpened() {
-    // Introduce a delay before starting the check loop
-    await delay(1000);
-
-    while (true) {
-      // Check if the element representing the Ledger grant UI exists on the page
-      const ledgerGrantUI = document.querySelector(
-        "div[data-role='ledger-grant']"
-      );
-
-      if (!ledgerGrantUI) {
-        throw new Error("Ledger init aborted");
-      }
-
-      // If found, break out of the loop
-      console.log("Ledger grant UI detected.");
-      break;
-    }
-    await delay(1000);
   }
 
   /**

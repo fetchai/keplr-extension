@@ -165,6 +165,7 @@ export class LedgerInitStore {
 
   // Return the requested ledger app if init needed
   @computed
+  //Todo check this
   get requestedLedgerApp(): LedgerApp | undefined {
     if (!this.isInitNeeded) {
       return;
