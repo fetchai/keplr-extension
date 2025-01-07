@@ -40,6 +40,34 @@ export class InteractionService {
     });
   }
 
+  async dispatchEventAndData(
+    env: Env,
+    port: string,
+    type: string,
+    data: unknown
+  ) {
+    if (!type) {
+      throw new Error("Type should not be empty");
+    }
+    const interactionWaitingData = await this.addDataToMap(
+      type,
+      env.isInternalMsg,
+      data
+    );
+
+    const msgInteraction = new PushInteractionDataMsg(interactionWaitingData);
+    this.eventMsgRequester.sendMessage(port, msgInteraction).catch((e) => {
+      console.log(
+        `Failed to send the Interaction data event to ${port}: ${e.message}`
+      );
+    });
+
+    const msgPushEvent = new PushEventDataMsg(interactionWaitingData);
+    this.eventMsgRequester.sendMessage(port, msgPushEvent).catch((e) => {
+      console.log(`Failed to send the event to ${port}: ${e.message}`);
+    });
+  }
+
   async waitApprove(
     env: Env,
     url: string,

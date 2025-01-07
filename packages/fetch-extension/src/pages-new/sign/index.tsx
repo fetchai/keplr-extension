@@ -26,6 +26,7 @@ import { EthSignType } from "@keplr-wallet/types";
 import { Dropdown } from "@components-v2/dropdown";
 import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { LedgerApp } from "@keplr-wallet/background";
 
 export const SignPageV2: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
     signInteractionStore,
     accountStore,
     queriesStore,
+    ledgerInitStore,
   } = useStore();
 
   const accountInfo = accountStore.getAccount(chainStore.current.chainId);
@@ -309,24 +311,40 @@ export const SignPageV2: FunctionComponent = observer(() => {
                       }
                       data-loading={signInteractionStore.isLoading}
                       onClick={async (e: any) => {
-                        e.preventDefault();
-                        setApproveButtonClicked(true);
+                        try {
+                          e.preventDefault();
+                          setApproveButtonClicked(true);
 
-                        if (needSetIsProcessing) {
-                          setIsProcessing(true);
-                        }
+                          if (
+                            keyRingStore.keyRingType === "ledger" ||
+                            !ledgerInitStore.isInitNeeded
+                          ) {
+                            await ledgerInitStore.tryLedgerInit(
+                              ethSignType
+                                ? LedgerApp.Ethereum
+                                : LedgerApp.Cosmos,
+                              ethSignType ? "Ethereum" : "Cosmos"
+                            );
+                          }
 
-                        if (signDocHelper.signDocWrapper) {
-                          await signInteractionStore.approveAndWaitEnd(
-                            signDocHelper.signDocWrapper
-                          );
-                        }
+                          if (needSetIsProcessing) {
+                            setIsProcessing(true);
+                          }
 
-                        if (
-                          interactionInfo.interaction &&
-                          !interactionInfo.interactionInternal
-                        ) {
-                          window.close();
+                          if (signDocHelper.signDocWrapper) {
+                            await signInteractionStore.approveAndWaitEnd(
+                              signDocHelper.signDocWrapper
+                            );
+                          }
+
+                          if (
+                            interactionInfo.interaction &&
+                            !interactionInfo.interactionInternal
+                          ) {
+                            window.close();
+                          }
+                        } catch (e) {
+                          console.log("Signing:2", e.message);
                         }
                       }}
                     />

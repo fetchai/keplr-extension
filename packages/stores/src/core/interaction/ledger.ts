@@ -5,6 +5,7 @@ import {
   LedgerApp,
   LedgerGetWebHIDFlagMsg,
   LedgerSetWebHIDFlagMsg,
+  TryLedgerInitMsg,
 } from "@keplr-wallet/background";
 import { toGenerator } from "@keplr-wallet/common";
 
@@ -48,6 +49,14 @@ export class LedgerInitStore {
     makeObservable(this);
 
     this.fetchIsWebHID();
+  }
+
+  @flow
+  *tryLedgerInit(ledgerApp: LedgerApp, cosmosLikeApp: string) {
+    yield this.msgRequester.sendMessage(
+      BACKGROUND_PORT,
+      new TryLedgerInitMsg(ledgerApp, cosmosLikeApp)
+    );
   }
 
   @flow
@@ -165,7 +174,6 @@ export class LedgerInitStore {
 
   // Return the requested ledger app if init needed
   @computed
-  //Todo check this
   get requestedLedgerApp(): LedgerApp | undefined {
     if (!this.isInitNeeded) {
       return;

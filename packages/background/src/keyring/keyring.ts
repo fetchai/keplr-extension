@@ -1584,7 +1584,7 @@ export class KeyRing {
     }
 
     throw new Error(
-      "No Ethereum public key. Initialize Ethereum app on Ledger by selecting the chain in the extension"
+      `No ${ledgerApp} public key. Initialize ${ledgerApp} app on Ledger by selecting the chain in the extension`
     );
   }
 
