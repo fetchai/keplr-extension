@@ -1,23 +1,20 @@
 import {
   Ledger,
   LedgerApp,
+  LedgerInitError,
+  LedgerInitErrorOn,
   LedgerWebHIDIniter,
   LedgerWebUSBIniter,
 } from "./ledger";
 
-import { APP_PORT, Env, KeplrError } from "@keplr-wallet/router";
+import { APP_PORT, Env } from "@keplr-wallet/router";
 import { BIP44HDPath } from "../keyring";
 import { KVStore } from "@keplr-wallet/common";
 import { InteractionService } from "../interaction";
 import { LedgerOptions } from "./options";
 import { Buffer } from "buffer/";
 import { EthSignType } from "@keplr-wallet/types";
-import {
-  ErrFailedGetPublicKey,
-  ErrFailedInit,
-  ErrFailedSign,
-  ErrModuleLedgerSign,
-} from "./types";
+import { ErrFailedInit, ErrPublicKeyUnmatched } from "./types";
 
 export class LedgerService {
   protected options: LedgerOptions;
@@ -77,11 +74,7 @@ export class LedgerService {
           return await ledger.getPublicKey(ledgerApp, bip44HDPath);
         } catch (e) {
           console.log(e);
-          throw new KeplrError(
-            ErrModuleLedgerSign,
-            ErrFailedGetPublicKey,
-            "Testing:getPublicKey"
-          );
+          throw e;
         }
       },
       cosmosLikeApp
@@ -111,7 +104,11 @@ export class LedgerService {
             Buffer.from(expectedPubKey).toString("hex") !==
             Buffer.from(pubKey).toString("hex")
           ) {
-            throw new Error("Unmatched public key");
+            throw new LedgerInitError(
+              LedgerInitErrorOn.App,
+              ErrPublicKeyUnmatched,
+              "Unmatched public key"
+            );
           }
           // Cosmos App on Ledger doesn't support the coin type other than 118.
           const signature: Uint8Array = await ledger.sign(bip44HDPath, message);
@@ -127,11 +124,7 @@ export class LedgerService {
             isShow: false,
           });
 
-          throw new KeplrError(
-            ErrModuleLedgerSign,
-            ErrFailedSign,
-            "Testing:sign"
-          );
+          throw e;
         }
       },
       cosmosLikeApp
@@ -158,7 +151,11 @@ export class LedgerService {
           Buffer.from(expectedPubKey).toString("hex") !==
           Buffer.from(pubKey).toString("hex")
         ) {
-          throw new Error("Unmatched public key");
+          throw new LedgerInitError(
+            LedgerInitErrorOn.App,
+            ErrPublicKeyUnmatched,
+            "Unmatched public key"
+          );
         }
         const signature = await ledger.signEthereum(bip44HDPath, type, message);
         // Notify UI Ledger signing succeeded only when Ledger initialization is tried again.
@@ -172,11 +169,7 @@ export class LedgerService {
           event: "sign-txn-guide",
           isShow: false,
         });
-        throw new KeplrError(
-          ErrModuleLedgerSign,
-          ErrFailedSign,
-          "Testing:sign"
-        );
+        throw e;
       }
     });
   }
@@ -199,23 +192,22 @@ export class LedgerService {
   }
 
   async initLedger(
-    _env: Env,
+    env: Env,
     ledgerApp: LedgerApp,
     cosmosLikeApp: string = "Cosmos"
   ): Promise<{ ledger: Ledger }> {
     const initArgs: any[] = [];
-    this.interactionService.dispatchEvent(APP_PORT, "ledger-init", {
-      event: "init-failed",
-      ledgerApp,
-      cosmosLikeApp,
-    });
 
     while (true) {
       const mode = await this.getMode();
       try {
         const transportIniter = this.options.transportIniters[mode];
         if (!transportIniter) {
-          throw new Error(`Unknown mode: ${mode}`);
+          throw new LedgerInitError(
+            LedgerInitErrorOn.App,
+            ErrFailedInit,
+            `Unknown mode: ${mode}`
+          );
         }
 
         const ledger = await Ledger.init(
@@ -228,11 +220,18 @@ export class LedgerService {
           ledger,
         };
       } catch (e) {
-        throw new KeplrError(
-          ErrModuleLedgerSign,
-          ErrFailedInit,
-          "Testing:init"
+        this.interactionService.dispatchEventAndData(
+          env,
+          APP_PORT,
+          "ledger-init",
+          {
+            event: "init-failed",
+            ledgerApp,
+            cosmosLikeApp,
+          }
         );
+
+        throw e;
       }
     }
   }

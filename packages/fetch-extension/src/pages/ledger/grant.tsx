@@ -331,12 +331,19 @@ export const LedgerGrantView: FunctionComponent<{
               padding: "12px",
               height: "56px",
             }}
-            text={<FormattedMessage id="ledger.button.next" />}
+            text={
+              tryInitializing ? (
+                <i className="fas fa-spinner fa-spin ml-2" />
+              ) : (
+                <FormattedMessage id="ledger.button.next" />
+              )
+            }
             onClick={async (e: any) => {
               e.preventDefault();
               await tryInit();
             }}
             dataLoading={tryInitializing}
+            disabled={tryInitializing}
           />
         </div>
       </div>
