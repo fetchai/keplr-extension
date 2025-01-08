@@ -35,8 +35,9 @@ export const LedgerAppModal: FunctionComponent = observer(() => {
   const isOpen = (() => {
     if (
       accountInfo.rejectionReason &&
-      accountInfo.rejectionReason.message ===
-        "No Ethereum public key. Initialize Ethereum app on Ledger by selecting the chain in the extension"
+      accountInfo.rejectionReason.message.includes(
+        "No ethereum public key. Initialize ethereum app on Ledger by selecting the chain in the extension"
+      )
     ) {
       return true;
     }

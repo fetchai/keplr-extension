@@ -280,7 +280,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
         isLoaded ? (
           <div>
             <Dropdown
-              styleProp={{ height: "579px" }}
+              styleProp={{ height: "579px", marginBottom: "50px" }}
               title={"Confirm transaction"}
               closeClicked={() => {
                 if (window.history.length > 1) {
@@ -294,16 +294,24 @@ export const SignPageV2: FunctionComponent = observer(() => {
             >
               <div
                 style={{
-                  marginBottom: "50px",
+                  marginBottom: "70px",
                 }}
               >
                 <TabsPanel tabs={tabs} />
                 {ledgerInfo ? (
-                  <LedgerBox
-                    title={ledgerInfo.title}
-                    isWarning={ledgerInfo.isWarning}
-                    message={ledgerInfo.subtitle}
-                  />
+                  <div
+                    style={{
+                      position: "fixed",
+                      bottom: "80px",
+                      width: "94%",
+                    }}
+                  >
+                    <LedgerBox
+                      title={ledgerInfo.title}
+                      isWarning={ledgerInfo.isWarning}
+                      message={ledgerInfo.subtitle}
+                    />
+                  </div>
                 ) : null}
               </div>
               <div className={style["buttons"]}>
@@ -360,7 +368,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                         setApproveButtonClicked(true);
 
                         if (
-                          keyRingStore.keyRingType === "ledger" ||
+                          keyRingStore.keyRingType === "ledger" &&
                           !ledgerInitStore.isInitNeeded
                         ) {
                           await ledgerInitStore.tryLedgerInit(
@@ -395,6 +403,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
                         let subtitle = e.message;
 
                         if (
+                          keyRingStore.keyRingType === "ledger" &&
                           e.message.includes(
                             "A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received"
                           )
