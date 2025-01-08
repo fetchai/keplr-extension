@@ -122,7 +122,8 @@ export class Ledger {
       if (transport) {
         await transport.close();
       }
-      console.log("Testing1::", e);
+      console.log("Testing1::", e.message);
+
       if (
         e.message === "Device is on screen saver" ||
         e.message?.includes("Unknown Status Code: 21781")
