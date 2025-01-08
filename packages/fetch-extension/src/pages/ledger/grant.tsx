@@ -218,8 +218,10 @@ export const LedgerGrantView: FunctionComponent<{
           title={intl.formatMessage({ id: "ledger.step1" })}
           paragraph={intl.formatMessage({ id: "ledger.step1.paragraph" })}
           selected={
-            initErrorOn === undefined ||
-            initErrorOn == LedgerInitErrorOn.Unknown
+            !(
+              initErrorOn === LedgerInitErrorOn.App ||
+              (initTryCount > 0 && initErrorOn == null)
+            )
           }
           pass={initTryCount > 0 && initErrorOn === LedgerInitErrorOn.App}
         />
@@ -261,7 +263,10 @@ export const LedgerGrantView: FunctionComponent<{
               })(),
             }
           )}
-          selected={initErrorOn === LedgerInitErrorOn.App}
+          selected={
+            initErrorOn === LedgerInitErrorOn.App ||
+            (initTryCount > 0 && initErrorOn == null)
+          }
           pass={initTryCount > 0 && initErrorOn == null}
         />
         <div style={{ flex: 1 }} />
