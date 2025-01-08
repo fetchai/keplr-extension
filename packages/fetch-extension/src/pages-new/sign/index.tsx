@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { Button } from "reactstrap";
 
 import style from "./style.module.scss";
 
@@ -27,6 +26,13 @@ import { Dropdown } from "@components-v2/dropdown";
 import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { LedgerApp } from "@keplr-wallet/background";
+import { LedgerBox } from "./ledger-guide-box";
+
+interface LedgerGuideBoxInfo {
+  title: string;
+  subtitle: string;
+  isWarning: boolean;
+}
 
 export const SignPageV2: FunctionComponent = observer(() => {
   const navigate = useNavigate();
@@ -48,6 +54,9 @@ export const SignPageV2: FunctionComponent = observer(() => {
   >();
   const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
   const [approveButtonClicked, setApproveButtonClicked] = useState(false);
+  const [ledgerInfo, setLedgerInfo] = useState<
+    LedgerGuideBoxInfo | undefined
+  >();
 
   const current = chainStore.current;
   // There are services that sometimes use invalid tx to sign arbitrary data on the sign page.
@@ -71,6 +80,21 @@ export const SignPageV2: FunctionComponent = observer(() => {
 
   const signDocHelper = useSignDocHelper(feeConfig, memoConfig);
   amountConfig.setSignDocHelper(signDocHelper);
+
+  // Events are failing in manifest v3
+  // useEffect(() => {
+  //   const data = ledgerInitStore.isShowSignTxnGuide;
+  //   if (data) {
+  //     setLedgerInfo({
+  //       title: "Sign on Ledger",
+  //       subtitle:
+  //         "To proceed, please review and approve the transaction on your Ledger device.",
+  //       isWarning: false,
+  //     });
+  //   } else {
+  //     setLedgerInfo(undefined);
+  //   }
+  // }, [ledgerInitStore.isShowSignTxnGuide]);
 
   useEffect(() => {
     if (signInteractionStore.waitingData) {
@@ -205,9 +229,11 @@ export const SignPageV2: FunctionComponent = observer(() => {
 
     return memoConfig.error != null || feeConfig.error != null;
   })();
+
   const [isOpen, setIsOpen] = useState(true);
   const isADR36SignDoc =
     signDocHelper.signDocWrapper && signDocHelper.signDocWrapper.isADR36SignDoc;
+
   const tabs = [
     {
       id: "Details",
@@ -243,6 +269,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
       ),
     },
   ];
+
   return (
     <div>
       {
@@ -265,90 +292,124 @@ export const SignPageV2: FunctionComponent = observer(() => {
               setIsOpen={setIsOpen}
               isOpen={isOpen}
             >
-              <div style={{ marginBottom: "50px" }}>
+              <div
+                style={{
+                  marginBottom: "50px",
+                }}
+              >
                 <TabsPanel tabs={tabs} />
+                {ledgerInfo ? (
+                  <LedgerBox
+                    title={ledgerInfo.title}
+                    isWarning={ledgerInfo.isWarning}
+                    message={ledgerInfo.subtitle}
+                  />
+                ) : null}
               </div>
               <div className={style["buttons"]}>
                 {keyRingStore.keyRingType === "ledger" &&
-                signInteractionStore.isLoading ? (
-                  <Button
-                    className={style["button"]}
-                    color="primary"
-                    disabled={true}
-                    outline
-                  >
-                    <FormattedMessage id="sign.button.confirm-ledger" />{" "}
-                    <i className="fa fa-spinner fa-spin fa-fw" />
-                  </Button>
+                approveButtonClicked ? (
+                  <ButtonV2
+                    styleProps={{
+                      position: "fixed",
+                      bottom: "12px",
+                      width: "94%",
+                      height: "56px",
+                    }}
+                    disabled={approveButtonClicked}
+                    btnBgEnabled={true}
+                    text={
+                      <div>
+                        <FormattedMessage id="sign.button.confirm-ledger" />{" "}
+                        <i className="fa fa-spinner fa-spin fa-fw" />
+                      </div>
+                    }
+                  />
                 ) : (
-                  <React.Fragment>
-                    <ButtonV2
-                      styleProps={{
-                        position: "fixed",
-                        bottom: "12px",
-                        width: "94%",
-                        height: "56px",
-                      }}
-                      disabled={
-                        approveIsDisabled ||
-                        signInteractionStore.isLoading ||
-                        accountInfo.broadcastInProgress
-                      }
-                      btnBgEnabled={true}
-                      text={
-                        accountInfo.broadcastInProgress ? (
-                          <span>
-                            <i className="fas fa-spinner fa-spin ml-2" />{" "}
-                            {approveButtonClicked
-                              ? "Transaction in progress"
-                              : "Previous transaction in progress"}
-                          </span>
-                        ) : signInteractionStore.isLoading ? (
-                          <i className="fas fa-spinner fa-spin ml-2" />
-                        ) : (
-                          "Approve transaction"
-                        )
-                      }
-                      data-loading={signInteractionStore.isLoading}
-                      onClick={async (e: any) => {
-                        try {
-                          e.preventDefault();
-                          setApproveButtonClicked(true);
+                  <ButtonV2
+                    styleProps={{
+                      position: "fixed",
+                      bottom: "12px",
+                      width: "94%",
+                      height: "56px",
+                    }}
+                    disabled={
+                      approveIsDisabled ||
+                      signInteractionStore.isLoading ||
+                      accountInfo.broadcastInProgress
+                    }
+                    btnBgEnabled={true}
+                    text={
+                      accountInfo.broadcastInProgress ? (
+                        <span>
+                          <i className="fas fa-spinner fa-spin ml-2" />{" "}
+                          {approveButtonClicked
+                            ? "Transaction in progress"
+                            : "Previous transaction in progress"}
+                        </span>
+                      ) : signInteractionStore.isLoading ? (
+                        <i className="fas fa-spinner fa-spin ml-2" />
+                      ) : (
+                        "Approve transaction"
+                      )
+                    }
+                    data-loading={signInteractionStore.isLoading}
+                    onClick={async (e: any) => {
+                      try {
+                        e.preventDefault();
+                        setApproveButtonClicked(true);
 
-                          if (
-                            keyRingStore.keyRingType === "ledger" ||
-                            !ledgerInitStore.isInitNeeded
-                          ) {
-                            await ledgerInitStore.tryLedgerInit(
-                              ethSignType
-                                ? LedgerApp.Ethereum
-                                : LedgerApp.Cosmos,
-                              ethSignType ? "Ethereum" : "Cosmos"
-                            );
-                          }
-
-                          if (needSetIsProcessing) {
-                            setIsProcessing(true);
-                          }
-
-                          if (signDocHelper.signDocWrapper) {
-                            await signInteractionStore.approveAndWaitEnd(
-                              signDocHelper.signDocWrapper
-                            );
-                          }
-
-                          if (
-                            interactionInfo.interaction &&
-                            !interactionInfo.interactionInternal
-                          ) {
-                            window.close();
-                          }
-                        } catch (e) {
-                          console.log("Signing:2", e.message);
+                        if (
+                          keyRingStore.keyRingType === "ledger" ||
+                          !ledgerInitStore.isInitNeeded
+                        ) {
+                          await ledgerInitStore.tryLedgerInit(
+                            ethSignType ? LedgerApp.Ethereum : LedgerApp.Cosmos,
+                            ethSignType ? "Ethereum" : "Cosmos"
+                          );
                         }
-                      }}
-                    />
-                  </React.Fragment>
+
+                        /// Remove error view
+                        if (ledgerInfo) {
+                          setLedgerInfo(undefined);
+                        }
+
+                        if (needSetIsProcessing) {
+                          setIsProcessing(true);
+                        }
+
+                        if (signDocHelper.signDocWrapper) {
+                          await signInteractionStore.approveAndWaitEnd(
+                            signDocHelper.signDocWrapper
+                          );
+                        }
+
+                        if (
+                          interactionInfo.interaction &&
+                          !interactionInfo.interactionInternal
+                        ) {
+                          window.close();
+                        }
+                      } catch (e) {
+                        setApproveButtonClicked(false);
+                        let subtitle = e.message;
+
+                        if (
+                          e.message.includes(
+                            "A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received"
+                          )
+                        ) {
+                          subtitle = "Connect and unlock your Ledger device.";
+                        }
+
+                        setLedgerInfo({
+                          title: "Error",
+                          subtitle: subtitle,
+                          isWarning: true,
+                        });
+                      }
+                    }}
+                  />
                 )}
               </div>
             </Dropdown>
