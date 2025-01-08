@@ -22,7 +22,6 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 
 import { SendPhase1 } from "./send-phase-1";
 import { SendPhase2 } from "./send-phase-2";
-import { handleLedgerResign } from "@utils/index";
 export const SendPage: FunctionComponent = observer(() => {
   const [isNext, setIsNext] = useState(false);
   const [fromPhase1, setFromPhase1] = useState(true);
@@ -55,7 +54,6 @@ export const SendPage: FunctionComponent = observer(() => {
     queriesStore,
     analyticsStore,
     uiConfigStore,
-    ledgerInitStore,
   } = useStore();
   const current = chainStore.current;
 
@@ -212,81 +210,13 @@ export const SendPage: FunctionComponent = observer(() => {
   const txStateIsValid = sendConfigError == null;
   const location = useLocation();
   const { trnsxStatus, isNext: next, configs } = location.state || {};
-
   useEffect(() => {
     if (next) {
       setIsNext(next);
     }
   }, [trnsxStatus, next]);
 
-  async function processTxn() {
-    if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
-      try {
-        const stdFee = sendConfigs.feeConfig.toStdFee();
-
-        const tx = accountInfo.makeSendTokenTx(
-          sendConfigs.amountConfig.amount,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          sendConfigs.amountConfig.sendCurrency!,
-          sendConfigs.recipientConfig.recipient
-        );
-
-        await tx.send(
-          stdFee,
-          sendConfigs.memoConfig.memo,
-          {
-            preferNoSetFee: true,
-            preferNoSetMemo: true,
-          },
-          {
-            onBroadcastFailed: (e: any) => {
-              console.log(e);
-            },
-            onBroadcasted: () => {
-              analyticsStore.logEvent("Send token tx broadcasted", {
-                chainId: chainStore.current.chainId,
-                chainName: chainStore.current.chainName,
-                feeType: sendConfigs.feeConfig.feeType,
-              });
-            },
-          }
-        );
-
-        if (!isDetachedPage) {
-          navigate("/", { replace: true });
-        }
-      } catch (e) {
-        /// Handling ledger resign issue if ledger is not connected
-        if (e.toString().includes("Error: document is not defined")) {
-          await handleLedgerResign(ledgerInitStore, () => {
-            processTxn();
-          });
-
-          return;
-        }
-
-        if (!isDetachedPage) {
-          navigate("/", { replace: true });
-        }
-        notification.push({
-          type: "warning",
-          placement: "top-center",
-          duration: 5,
-          content: `Fail to send token: ${e.message}`,
-          canDelete: true,
-          transition: {
-            duration: 0.25,
-          },
-        });
-      } finally {
-        // XXX: If the page is in detached state,
-        // close the window without waiting for tx to commit. analytics won't work.
-        if (isDetachedPage) {
-          window.close();
-        }
-      }
-    }
-  }
+  console.log("index fromPhase1:", fromPhase1);
 
   return (
     <HeaderLayout
@@ -360,7 +290,63 @@ export const SendPage: FunctionComponent = observer(() => {
         onSubmit={async (e) => {
           e.preventDefault();
 
-          await processTxn();
+          if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
+            try {
+              const stdFee = sendConfigs.feeConfig.toStdFee();
+
+              const tx = accountInfo.makeSendTokenTx(
+                sendConfigs.amountConfig.amount,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                sendConfigs.amountConfig.sendCurrency!,
+                sendConfigs.recipientConfig.recipient
+              );
+
+              await tx.send(
+                stdFee,
+                sendConfigs.memoConfig.memo,
+                {
+                  preferNoSetFee: true,
+                  preferNoSetMemo: true,
+                },
+                {
+                  onBroadcastFailed: (e: any) => {
+                    console.log(e);
+                  },
+                  onBroadcasted: () => {
+                    analyticsStore.logEvent("Send token tx broadcasted", {
+                      chainId: chainStore.current.chainId,
+                      chainName: chainStore.current.chainName,
+                      feeType: sendConfigs.feeConfig.feeType,
+                    });
+                  },
+                }
+              );
+
+              if (!isDetachedPage) {
+                navigate("/", { replace: true });
+              }
+            } catch (e) {
+              if (!isDetachedPage) {
+                navigate("/", { replace: true });
+              }
+              notification.push({
+                type: "warning",
+                placement: "top-center",
+                duration: 5,
+                content: `Fail to send token: ${e.message}`,
+                canDelete: true,
+                transition: {
+                  duration: 0.25,
+                },
+              });
+            } finally {
+              // XXX: If the page is in detached state,
+              // close the window without waiting for tx to commit. analytics won't work.
+              if (isDetachedPage) {
+                window.close();
+              }
+            }
+          }
         }}
       >
         <div className={style["formInnerContainer"]}>

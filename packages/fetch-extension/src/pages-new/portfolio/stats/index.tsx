@@ -16,7 +16,6 @@ import { VestingType, WalletStatus } from "@keplr-wallet/stores";
 import { Skeleton } from "@components-v2/skeleton-loader";
 import { useLanguage } from "../../../languages";
 import { clearDecimals } from "../../sign/decimals";
-import { handleLedgerResign } from "@utils/index";
 
 export const Stats = observer(
   ({
@@ -40,7 +39,6 @@ export const Stats = observer(
       analyticsStore,
       priceStore,
       activityStore,
-      ledgerInitStore,
     } = useStore();
     const current = chainStore.current;
     const queries = queriesStore.get(current.chainId);
@@ -273,15 +271,6 @@ export const Stats = observer(
             navigate("/activity", { replace: true });
           }, 200);
         } catch (e) {
-          /// Handling ledger resign issue if ledger is not connected
-          if (e.toString().includes("Error: document is not defined")) {
-            await handleLedgerResign(ledgerInitStore, () => {
-              handleClaimRewards();
-            });
-
-            return;
-          }
-
           analyticsStore.logEvent("claim_txn_broadcasted_fail", {
             chainId: chainStore.current.chainId,
             chainName: chainStore.current.chainName,
