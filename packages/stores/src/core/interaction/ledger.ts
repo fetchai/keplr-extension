@@ -39,9 +39,6 @@ export class LedgerInitStore {
   @observable
   protected _isWebHID: boolean = false;
 
-  @observable
-  protected _isLedgerResign: boolean = false;
-
   constructor(
     protected readonly interactionStore: InteractionStore,
     protected readonly msgRequester: MessageRequester
@@ -297,14 +294,5 @@ export class LedgerInitStore {
 
   get isLoading(): boolean {
     return this._isLoading;
-  }
-
-  @flow
-  *setLedgerReSign(flag: boolean) {
-    this._isLedgerResign = flag;
-  }
-
-  get isLedgerReSign(): boolean {
-    return this._isLedgerResign;
   }
 }

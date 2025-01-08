@@ -175,7 +175,6 @@ export const LedgerGrantView: FunctionComponent<{
 
     if (initErrorOn === undefined) {
       onInitSucceed();
-      ledgerInitStore.setLedgerReSign(true);
       await ledgerInitStore.resume();
     }
   };

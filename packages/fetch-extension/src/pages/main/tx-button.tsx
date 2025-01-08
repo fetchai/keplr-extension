@@ -27,16 +27,9 @@ import { DepositModal } from "./qr-code";
 import { Link } from "react-router-dom";
 import { CHAIN_ID_DORADO, CHAIN_ID_FETCHHUB } from "../../config.ui.var";
 import { TXNTYPE } from "../../config";
-import { handleLedgerResign } from "@utils/index";
 
 export const TxButtonView: FunctionComponent = observer(() => {
-  const {
-    accountStore,
-    chainStore,
-    queriesStore,
-    analyticsStore,
-    ledgerInitStore,
-  } = useStore();
+  const { accountStore, chainStore, queriesStore, analyticsStore } = useStore();
 
   const [isActiveSend, setIsActiveSend] = useState(false);
   const [isActiveStake, setIsActiveStake] = useState(false);
@@ -103,15 +96,6 @@ export const TxButtonView: FunctionComponent = observer(() => {
 
         navigate("/", { replace: true });
       } catch (e: any) {
-        /// Handling ledger resign issue if ledger is not connected
-        if (e.toString().includes("Error: document is not defined")) {
-          await handleLedgerResign(ledgerInitStore, () => {
-            withdrawAllRewards();
-          });
-
-          return;
-        }
-
         navigate("/", { replace: true });
         notification.push({
           type: "warning",

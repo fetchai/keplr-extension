@@ -24,7 +24,6 @@ import style from "./style.module.scss";
 import { useLanguage } from "../../../languages";
 import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
 import { Staking } from "@keplr-wallet/stores";
-import { handleLedgerResign } from "@utils/index";
 
 export const Unstake = observer(() => {
   const location = useLocation();
@@ -39,7 +38,6 @@ export const Unstake = observer(() => {
     analyticsStore,
     priceStore,
     activityStore,
-    ledgerInitStore,
   } = useStore();
   const account = accountStore.getAccount(chainStore.current.chainId);
 
@@ -184,15 +182,6 @@ export const Unstake = observer(() => {
         .makeUndelegateTx(amountConfig.amount, validatorAddress)
         .send(feeConfig.toStdFee(), memoConfig.memo, undefined, txnResult);
     } catch (e) {
-      /// Handling ledger resign issue if ledger is not connected
-      if (e.toString().includes("Error: document is not defined")) {
-        await handleLedgerResign(ledgerInitStore, () => {
-          unstakeClicked();
-        });
-
-        return;
-      }
-
       notification.push({
         type: "danger",
         placement: "top-center",
