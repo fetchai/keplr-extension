@@ -1,7 +1,6 @@
 import React, {
   ChangeEvent,
   FunctionComponent,
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -22,11 +21,11 @@ import delay from "delay";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { CosmosApp } from "@keplr-wallet/ledger-cosmos";
-import { ledgerUSBVendorId } from "@ledgerhq/devices";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useNavigate } from "react-router";
 import { BackButton } from "../../pages-new/register";
 import classnames from "classnames";
+import { useUSBDevices } from "@utils/ledger";
 
 export const LedgerGrantView: FunctionComponent<{
   onBackPress?: () => void;
@@ -40,21 +39,6 @@ export const LedgerGrantView: FunctionComponent<{
   const notification = useNotification();
 
   const [showWebHIDWarning, setShowWebHIDWarning] = useState(false);
-
-  const testUSBDevices = useCallback(async (isWebHID: boolean) => {
-    const anyNavigator = navigator as any;
-    let protocol: any;
-    if (isWebHID) {
-      protocol = anyNavigator.hid;
-    } else {
-      protocol = anyNavigator.usb;
-    }
-
-    const devices = await protocol.getDevices();
-
-    const exist = devices.find((d: any) => d.vendorId === ledgerUSBVendorId);
-    return !!exist;
-  }, []);
 
   const toggleWebHIDFlag = async (e: ChangeEvent) => {
     e.preventDefault();
@@ -94,6 +78,7 @@ export const LedgerGrantView: FunctionComponent<{
     undefined
   );
   const [tryInitializing, setTryInitializing] = useState(false);
+  const { testUSBDevices } = useUSBDevices();
 
   const tryInit = async () => {
     setTryInitializing(true);
