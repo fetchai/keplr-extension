@@ -415,9 +415,8 @@ export const Redelegate = observer(() => {
           isOpen={showValidatorDropdown}
           setIsOpen={setShowValidatorDropdown}
           styleProp={{
-            maxHeight: "600px",
+            maxHeight: "100%",
             top: 0,
-            justifyContent: "center",
           }}
         >
           <RedelegateValidatorDetail

@@ -18,19 +18,20 @@ export const RedelegateValidatorDetail = ({
         flexDirection: "column",
         gap: "16px",
         height: "520px",
-        position: "relative",
       }}
     >
       <ValidatorData validatorAddress={validatorAddress} />
       <ButtonV2
         styleProps={{
+          width: "94%",
           height: "56px",
+          margin: "0px auto",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           marginTop: "0px",
           position: "absolute",
-          bottom: "10px",
+          bottom: "15px",
         }}
         text="Choose this validator"
         onClick={() => {
