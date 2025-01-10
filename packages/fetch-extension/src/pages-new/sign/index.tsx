@@ -27,6 +27,7 @@ import { TabsPanel } from "@components-v2/tabs/tabsPanel-2";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { LedgerApp } from "@keplr-wallet/background";
 import { LedgerBox } from "./ledger-guide-box";
+import { useUSBDevices } from "@utils/ledger";
 
 interface LedgerGuideBoxInfo {
   title: string;
@@ -54,6 +55,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
   >();
   const [ethSignType, setEthSignType] = useState<EthSignType | undefined>();
   const [approveButtonClicked, setApproveButtonClicked] = useState(false);
+  const { testUSBDevices } = useUSBDevices();
   const [ledgerInfo, setLedgerInfo] = useState<
     LedgerGuideBoxInfo | undefined
   >();
@@ -371,10 +373,20 @@ export const SignPageV2: FunctionComponent = observer(() => {
                           keyRingStore.keyRingType === "ledger" &&
                           !ledgerInitStore.isInitNeeded
                         ) {
-                          await ledgerInitStore.tryLedgerInit(
-                            ethSignType ? LedgerApp.Ethereum : LedgerApp.Cosmos,
-                            ethSignType ? "Ethereum" : "Cosmos"
-                          );
+                          if (
+                            !(await testUSBDevices(ledgerInitStore.isWebHID))
+                          ) {
+                            throw new Error(
+                              "Connect and unlock your Ledger device."
+                            );
+                          } else {
+                            await ledgerInitStore.tryLedgerInit(
+                              ethSignType
+                                ? LedgerApp.Ethereum
+                                : LedgerApp.Cosmos,
+                              ethSignType ? "Ethereum" : "Cosmos"
+                            );
+                          }
                         }
 
                         /// Remove error view
