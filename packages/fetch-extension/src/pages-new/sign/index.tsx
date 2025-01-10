@@ -282,7 +282,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
         isLoaded ? (
           <div>
             <Dropdown
-              styleProp={{ height: "579px", marginBottom: "50px" }}
+              styleProp={{ height: "579px", paddingBottom: "50px" }}
               title={"Confirm transaction"}
               closeClicked={() => {
                 if (window.history.length > 1) {
