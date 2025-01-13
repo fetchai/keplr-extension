@@ -6,17 +6,16 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useGasSimulator } from "@keplr-wallet/hooks";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useLanguage } from "../../languages";
-import { CoinPretty, Int, Dec, DecUtils } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
-import { useLocation } from "react-router";
 import { TXNTYPE } from "../../config";
 import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
-import { getPathname } from "@utils/pathname";
 import { useNotification } from "@components/notification";
 import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
+import { getPathname } from "@utils/pathname";
 
 interface SendPhase2Props {
   sendConfigs?: any;
@@ -53,16 +52,16 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     const { isFromPhase1 } = location.state || {};
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
+    const isEvm = chainStore.current.features?.includes("evm") ?? false;
     const convertToUsd = (currency: any) => {
       const value = priceStore.calculatePrice(currency, fiatCurrency);
-      const inUsd = value && value.shrink(true).maxDecimals(6).toString();
-      return inUsd;
+      return value && value.shrink(true).maxDecimals(6).toString();
     };
     const intl = useIntl();
 
     useEffect(() => {
       if (isFromPhase1 !== undefined) setFromPhase1(isFromPhase1);
-      if (configs?.amount && fromPhase1 == false && sendConfigs) {
+      if (configs?.amount && !fromPhase1 && sendConfigs) {
         sendConfigs.amountConfig.setAmount(configs.amount);
         sendConfigs.amountConfig.setSendCurrency(configs.sendCurr);
       }
@@ -181,8 +180,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
         .truncate()
         .toString();
 
-      const parsedAmount = BigInt(scaledAmount);
-      return parsedAmount;
+      return BigInt(scaledAmount);
     };
 
     return (
@@ -306,6 +304,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                             },
                           });
                         },
+                        isEVM: isEvm,
                       };
                       navigateOnTxnEvents(txnNavigationOptions);
                     },
@@ -336,6 +335,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                             },
                           });
                         },
+                        isEVM: isEvm,
                       };
                       navigateOnTxnEvents(txnNavigationOptions);
                       if (keyRingStore.keyRingType === "ledger") {
@@ -343,7 +343,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                       }
                     },
                     onFulfill: (tx: any) => {
-                      const istxnSuccess = tx.code ? false : true;
+                      const istxnSuccess = !tx.code;
                       const txnNavigationOptions = {
                         redirect: () => {
                           navigate("/send", {
@@ -368,6 +368,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                             },
                           });
                         },
+                        isEVM: isEvm,
                       };
                       navigateOnTxnEvents(txnNavigationOptions);
                     },
@@ -375,7 +376,10 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                 );
                 if (!isDetachedPage) {
                   const currentPathName = getPathname();
-                  if (currentPathName === "send") {
+                  if (
+                    currentPathName === "send" ||
+                    currentPathName === "sign"
+                  ) {
                     navigate("/send", {
                       replace: true,
                       state: { trnsxStatus: "pending", isNext: true },
@@ -383,8 +387,18 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                   }
                 }
               } catch (e) {
+                analyticsStore.logEvent("send_txn_broadcasted_fail", {
+                  chainId: chainStore.current.chainId,
+                  chainName: chainStore.current.chainName,
+                  feeType: sendConfigs.feeConfig.feeType,
+                  message: e?.message ?? "",
+                });
+
                 const currentPathName = getPathname();
-                if (!isDetachedPage && currentPathName === "send") {
+                if (
+                  !isDetachedPage &&
+                  (currentPathName === "send" || currentPathName === "sign")
+                ) {
                   navigate("/send", {
                     replace: true,
                     state: {
@@ -399,12 +413,6 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
                     },
                   });
                 } else {
-                  analyticsStore.logEvent("send_txn_broadcasted_fail", {
-                    chainId: chainStore.current.chainId,
-                    chainName: chainStore.current.chainName,
-                    feeType: sendConfigs.feeConfig.feeType,
-                    message: e?.message ?? "",
-                  });
                   notification.push({
                     type: "warning",
                     placement: "top-center",

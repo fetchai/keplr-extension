@@ -282,7 +282,7 @@ export const SignPageV2: FunctionComponent = observer(() => {
         isLoaded ? (
           <div>
             <Dropdown
-              styleProp={{ height: "579px", paddingBottom: "50px" }}
+              styleProp={{ height: "579px" }}
               title={"Confirm transaction"}
               closeClicked={() => {
                 if (window.history.length > 1) {
@@ -294,28 +294,25 @@ export const SignPageV2: FunctionComponent = observer(() => {
               setIsOpen={setIsOpen}
               isOpen={isOpen}
             >
-              <div
-                style={{
-                  marginBottom: "70px",
-                }}
-              >
-                <TabsPanel tabs={tabs} />
-                {ledgerInfo ? (
-                  <div
-                    style={{
-                      position: "fixed",
-                      bottom: "80px",
-                      width: "94%",
-                    }}
-                  >
-                    <LedgerBox
-                      title={ledgerInfo.title}
-                      isWarning={ledgerInfo.isWarning}
-                      message={ledgerInfo.subtitle}
-                    />
-                  </div>
-                ) : null}
-              </div>
+              <TabsPanel
+                tabs={tabs}
+                tabHeight={ledgerInfo ? "255px" : "320px"}
+              />
+              {ledgerInfo ? (
+                <div
+                  style={{
+                    position: "fixed",
+                    bottom: "80px",
+                    width: "94%",
+                  }}
+                >
+                  <LedgerBox
+                    isWarning={ledgerInfo.isWarning}
+                    title={ledgerInfo.title}
+                    message={ledgerInfo.subtitle}
+                  />
+                </div>
+              ) : null}
               <div className={style["buttons"]}>
                 {keyRingStore.keyRingType === "ledger" &&
                 approveButtonClicked ? (
@@ -389,9 +386,13 @@ export const SignPageV2: FunctionComponent = observer(() => {
                           }
                         }
 
-                        /// Remove error view
-                        if (ledgerInfo) {
-                          setLedgerInfo(undefined);
+                        if (keyRingStore.keyRingType === "ledger") {
+                          setLedgerInfo({
+                            title: "Sign on Ledger",
+                            subtitle:
+                              "To proceed, please review and approve the transaction on your Ledger device.",
+                            isWarning: false,
+                          });
                         }
 
                         if (needSetIsProcessing) {
@@ -412,20 +413,10 @@ export const SignPageV2: FunctionComponent = observer(() => {
                         }
                       } catch (e) {
                         setApproveButtonClicked(false);
-                        let subtitle = e.message;
-
-                        if (
-                          keyRingStore.keyRingType === "ledger" &&
-                          e.message.includes(
-                            "A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received"
-                          )
-                        ) {
-                          subtitle = "Connect and unlock your Ledger device.";
-                        }
 
                         setLedgerInfo({
                           title: "Error",
-                          subtitle: subtitle,
+                          subtitle: e.message,
                           isWarning: true,
                         });
                       }

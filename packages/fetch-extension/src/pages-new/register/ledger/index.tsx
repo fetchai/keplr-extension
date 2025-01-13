@@ -64,29 +64,23 @@ export const ImportLedgerPage: FunctionComponent<{
 
   const ensureUSBPermission = async () => {
     const anyNavigator = navigator as any;
+    let protocol: any;
     if (ledgerInitStore.isWebHID) {
-      const device = await anyNavigator.hid.requestDevice({
-        filters: [
-          {
-            vendorId: ledgerUSBVendorId,
-          },
-        ],
-      });
-      if (!device || (Array.isArray(device) && device.length === 0)) {
-        throw new Error("No device selected");
-      }
+      protocol = anyNavigator.hid;
     } else {
-      if (
-        !(await anyNavigator.usb.requestDevice({
-          filters: [
-            {
-              vendorId: ledgerUSBVendorId,
-            },
-          ],
-        }))
-      ) {
-        throw new Error("No device selected");
-      }
+      protocol = anyNavigator.usb;
+    }
+
+    const devices = await protocol.requestDevice({
+      filters: [
+        {
+          vendorId: ledgerUSBVendorId,
+        },
+      ],
+    });
+
+    if (!devices || (Array.isArray(devices) && devices.length === 0)) {
+      throw new Error("No device selected");
     }
   };
 

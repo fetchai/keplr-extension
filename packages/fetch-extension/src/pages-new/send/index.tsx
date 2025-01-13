@@ -351,7 +351,7 @@ export const SendPage: FunctionComponent = observer(() => {
       >
         <div className={style["formInnerContainer"]}>
           <div className={style["cardContainer"]}>
-            {isNext === false ? (
+            {!isNext ? (
               <SendPhase1
                 setIsNext={setIsNext}
                 sendConfigs={sendConfigs}
