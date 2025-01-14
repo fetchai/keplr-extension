@@ -185,371 +185,153 @@ export const StakeCard: FunctionComponent = () => {
     );
   };
 
+  const legendComponentItem = [
+    {
+      title: "Available",
+      lineColor: "#CFC3FE",
+      balance: spendableNumber,
+      denom: stakableDenom,
+      percentageValue: stakablePercentage,
+      dollarValue: stakable,
+    },
+    {
+      title: "Staked",
+      lineColor: "#5F38FB",
+      balance: stakedBalNumber,
+      denom: stakedDenom,
+      percentageValue: stakedPercentage,
+      dollarValue: stakedSum,
+    },
+    {
+      title: "Staking rewards",
+      lineColor: "#F9774B",
+      balance: rewardsBalNumber,
+      denom: rewardDenom,
+      percentageValue: rewardsPercentage,
+      dollarValue: stakableReward,
+    },
+    isVesting && !isVestingExpired(vestingEndTimeStamp)
+      ? {
+          title: "Vesting",
+          lineColor: "#9F88FD",
+          balance: vestingBalance(),
+          denom: rewardDenom,
+          percentageValue: vestingPercentage,
+          dollarValue: spendableBalances.balances[0],
+        }
+      : null,
+  ];
+
   const renderLegendComponent = () => {
     return (
       <View style={style.flatten(["flex-3"])}>
-        <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-          {renderLine("#CFC3FE")}
-          <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text
-              style={
-                style.flatten([
-                  "color-white@60%",
-                  "body3",
-                  "margin-bottom-4",
-                  "width-122",
-                ]) as ViewStyle
-              }
-            >
-              Available
-            </Text>
-            <Skeleton
-              isLoading={!stakedSum.isReady}
-              layout={[
-                {
-                  key: "availableBalance",
-                  width: "100%",
-                  height: 18,
-                  marginBottom: 2,
-                },
-                {
-                  key: "availableUsdBalance",
-                  width: priceStore.calculatePrice(stakable)?.toString()
-                    ? "100%"
-                    : 0,
-                  height: 15,
-                },
-              ]}
-              boneColor={style.get("color-white@20%").color}
-              highlightColor={style.get("color-white@60%").color}
-            >
+        {legendComponentItem.map((item, index) => {
+          return (
+            item != null && (
               <View
-                style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
+                key={index}
+                style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}
               >
-                <AnimatedNumber
-                  numberForAnimated={parseFloat(
-                    parseFloat(spendableNumber).toFixed(2)
-                  )}
-                  includeComma={true}
-                  decimalAmount={2}
-                  fontSizeValue={16}
-                  hookName={"withTiming"}
-                  withTimingProps={{
-                    durationValue: 1000,
-                    easingValue: "linear",
-                  }}
-                />
-                <Text
-                  style={
-                    [
+                {renderLine(item.lineColor)}
+                <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
+                  <Text
+                    style={
                       style.flatten([
-                        "color-white",
-                        "subtitle2",
-                        "padding-left-4",
-                      ]),
-                      { lineHeight: 16 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`${stakableDenom}`}
-                </Text>
-                <Text
-                  style={
-                    [
-                      style.flatten(["color-white@60%", "subtitle2"]),
-                      { lineHeight: 18 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`(${stakablePercentage.toFixed(2)}%)`}
-                </Text>
-              </View>
-              {priceStore.calculatePrice(stakable)?.toString() ? (
-                <Text
-                  style={
-                    style.flatten(["color-white@60%", "body3"]) as ViewStyle
-                  }
-                >
-                  {priceStore.calculatePrice(stakable)?.toString()}
-                </Text>
-              ) : null}
-            </Skeleton>
-          </View>
-        </View>
-        <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-          {renderLine("#5F38FB")}
-          <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text
-              style={
-                style.flatten([
-                  "color-white@60%",
-                  "body3",
-                  "margin-bottom-4",
-                  "width-122",
-                ]) as ViewStyle
-              }
-            >
-              Staked
-            </Text>
-            <Skeleton
-              isLoading={!stakedSum.isReady}
-              layout={[
-                {
-                  key: "stakedBalance",
-                  width: "100%",
-                  height: 18,
-                  marginBottom: 2,
-                },
-                {
-                  key: "stakedUsdBalance",
-                  width: priceStore.calculatePrice(stakedSum)?.toString()
-                    ? "100%"
-                    : 0,
-                  height: 15,
-                },
-              ]}
-              boneColor={style.get("color-white@20%").color}
-              highlightColor={style.get("color-white@60%").color}
-            >
-              <View
-                style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
-              >
-                <AnimatedNumber
-                  numberForAnimated={parseFloat(
-                    parseFloat(stakedBalNumber).toFixed(2)
-                  )}
-                  includeComma={true}
-                  decimalAmount={2}
-                  fontSizeValue={16}
-                  hookName={"withTiming"}
-                  withTimingProps={{
-                    durationValue: 1000,
-                    easingValue: "linear",
-                  }}
-                />
-                <Text
-                  style={
-                    [
-                      style.flatten([
-                        "color-white",
-                        "subtitle2",
-                        "padding-left-4",
-                      ]),
-                      { lineHeight: 16 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`${stakedDenom}`}
-                </Text>
-                <Text
-                  style={
-                    [
-                      style.flatten(["color-white@60%", "subtitle2"]),
-                      { lineHeight: 18 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`(${stakedPercentage.toFixed(2)}%)`}
-                </Text>
-              </View>
-
-              {priceStore.calculatePrice(stakedSum)?.toString() ? (
-                <Text
-                  style={
-                    style.flatten(["color-white@60%", "body3"]) as ViewStyle
-                  }
-                >
-                  {priceStore.calculatePrice(stakedSum)?.toString()}
-                </Text>
-              ) : null}
-            </Skeleton>
-          </View>
-        </View>
-        <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-          {renderLine("#F9774B")}
-          <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-            <Text
-              style={
-                style.flatten([
-                  "color-white@60%",
-                  "body3",
-                  "margin-bottom-4",
-                  "width-122",
-                ]) as ViewStyle
-              }
-            >
-              Staking rewards
-            </Text>
-            <Skeleton
-              isLoading={!stakedSum.isReady}
-              layout={[
-                {
-                  key: "rewardBalance",
-                  width: "100%",
-                  height: 18,
-                  marginBottom: 2,
-                },
-                {
-                  key: "rewardUsdBalance",
-                  width: priceStore.calculatePrice(stakedSum)?.toString()
-                    ? "100%"
-                    : 0,
-                  height: 15,
-                },
-              ]}
-              boneColor={style.get("color-white@20%").color}
-              highlightColor={style.get("color-white@60%").color}
-            >
-              <View
-                style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
-              >
-                <AnimatedNumber
-                  numberForAnimated={parseFloat(
-                    parseFloat(rewardsBalNumber).toFixed(2)
-                  )}
-                  includeComma={true}
-                  decimalAmount={2}
-                  fontSizeValue={16}
-                  hookName={"withTiming"}
-                  withTimingProps={{
-                    durationValue: 1000,
-                    easingValue: "linear",
-                  }}
-                />
-                <Text
-                  style={
-                    [
-                      style.flatten([
-                        "color-white",
-                        "subtitle2",
-                        "padding-left-4",
-                      ]),
-                      { lineHeight: 16 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`${rewardDenom}`}
-                </Text>
-                <Text
-                  style={
-                    [
-                      style.flatten(["color-white@60%", "subtitle2"]),
-                      { lineHeight: 18 },
-                    ] as ViewStyle
-                  }
-                >
-                  {`(${rewardsPercentage.toFixed(2)}%)`}
-                </Text>
-              </View>
-              {priceStore.calculatePrice(stakableReward)?.toString() ? (
-                <Text
-                  style={
-                    style.flatten(["color-white@60%", "body3"]) as ViewStyle
-                  }
-                >
-                  {priceStore.calculatePrice(stakableReward)?.toString()}
-                </Text>
-              ) : null}
-            </Skeleton>
-          </View>
-        </View>
-        {isVesting && !isVestingExpired(vestingEndTimeStamp) && (
-          <View style={style.flatten(["flex-row", "margin-y-10"]) as ViewStyle}>
-            {renderLine("#9F88FD")}
-            <View style={style.flatten(["padding-x-10"]) as ViewStyle}>
-              <Text
-                style={
-                  style.flatten([
-                    "color-white@60%",
-                    "body3",
-                    "margin-bottom-4",
-                    "width-122",
-                  ]) as ViewStyle
-                }
-              >
-                Vesting
-              </Text>
-              <Skeleton
-                isLoading={!stakedSum.isReady}
-                layout={[
-                  {
-                    key: "rewardBalance",
-                    width: "100%",
-                    height: 18,
-                    marginBottom: 2,
-                  },
-                  {
-                    key: "rewardUsdBalance",
-                    width: priceStore.calculatePrice(stakedSum)?.toString()
-                      ? "100%"
-                      : 0,
-                    height: 15,
-                  },
-                ]}
-                boneColor={style.get("color-white@20%").color}
-                highlightColor={style.get("color-white@60%").color}
-              >
-                <View
-                  style={style.flatten(["flex-row", "flex-wrap"]) as ViewStyle}
-                >
-                  <AnimatedNumber
-                    numberForAnimated={parseFloat(
-                      parseFloat(vestingBalance()).toFixed(2)
-                    )}
-                    includeComma={true}
-                    decimalAmount={2}
-                    fontSizeValue={16}
-                    hookName={"withTiming"}
-                    withTimingProps={{
-                      durationValue: 1000,
-                      easingValue: "linear",
-                    }}
+                        "color-white@60%",
+                        "body3",
+                        "margin-bottom-4",
+                        "width-122",
+                      ]) as ViewStyle
+                    }
+                  >
+                    {item.title}
+                  </Text>
+                  <Skeleton
+                    isLoading={!stakedSum.isReady}
+                    layout={[
+                      {
+                        key: "balance",
+                        width: "100%",
+                        height: 18,
+                        marginBottom: 2,
+                      },
+                      {
+                        key: "usdBalance",
+                        width: priceStore.calculatePrice(stakable)?.toString()
+                          ? "100%"
+                          : 0,
+                        height: 15,
+                      },
+                    ]}
                     containerStyle={
-                      style.flatten(["margin-right-4"]) as ViewStyle
+                      style.flatten(["margin-left-2"]) as ViewStyle
                     }
-                  />
-                  <Text
-                    style={
-                      [
-                        style.flatten([
-                          "color-white",
-                          "subtitle2",
-                          "padding-left-4",
-                        ]),
-                        { lineHeight: 16 },
-                      ] as ViewStyle
-                    }
+                    boneColor={style.get("color-white@20%").color}
+                    highlightColor={style.get("color-white@60%").color}
                   >
-                    {`${rewardDenom}`}
-                  </Text>
-                  <Text
-                    style={
-                      [
-                        style.flatten(["color-white@60%", "subtitle2"]),
-                        { lineHeight: 16 },
-                      ] as ViewStyle
-                    }
-                  >
-                    {`(${vestingPercentage.toFixed(2)}%)`}
-                  </Text>
+                    <View
+                      style={
+                        style.flatten(["flex-row", "flex-wrap"]) as ViewStyle
+                      }
+                    >
+                      <AnimatedNumber
+                        numberForAnimated={parseFloat(
+                          parseFloat(item.balance).toFixed(2)
+                        )}
+                        includeComma={true}
+                        decimalAmount={2}
+                        fontSizeValue={16}
+                        hookName={"withTiming"}
+                        withTimingProps={{
+                          durationValue: 1000,
+                          easingValue: "linear",
+                        }}
+                      />
+                      <Text
+                        style={
+                          [
+                            style.flatten([
+                              "color-white",
+                              "subtitle2",
+                              "padding-left-4",
+                            ]),
+                            { lineHeight: 16 },
+                          ] as ViewStyle
+                        }
+                      >
+                        {`${item.denom}`}
+                      </Text>
+                      <Text
+                        style={
+                          [
+                            style.flatten(["color-white@60%", "subtitle2"]),
+                            { lineHeight: 18 },
+                          ] as ViewStyle
+                        }
+                      >
+                        {`(${item.percentageValue.toFixed(2)}%)`}
+                      </Text>
+                    </View>
+                    {priceStore.calculatePrice(item.dollarValue)?.toString() ? (
+                      <Text
+                        style={
+                          style.flatten([
+                            "color-white@60%",
+                            "body3",
+                          ]) as ViewStyle
+                        }
+                      >
+                        {priceStore
+                          .calculatePrice(item.dollarValue)
+                          ?.toString()}
+                      </Text>
+                    ) : null}
+                  </Skeleton>
                 </View>
-                {priceStore
-                  .calculatePrice(spendableBalances.balances[0])
-                  ?.toString() ? (
-                  <Text
-                    style={
-                      style.flatten(["color-white@60%", "body3"]) as ViewStyle
-                    }
-                  >
-                    {priceStore
-                      .calculatePrice(spendableBalances.balances[0])
-                      ?.toString()}
-                  </Text>
-                ) : null}
-              </Skeleton>
-            </View>
-          </View>
-        )}
+              </View>
+            )
+          );
+        })}
       </View>
     );
   };
@@ -557,8 +339,10 @@ export const StakeCard: FunctionComponent = () => {
   return (
     <View style={style.flatten(["flex-row", "items-center"]) as ViewStyle}>
       {renderLegendComponent()}
-      <View style={[style.flatten(["items-end"]), { flex: 2.3 }] as ViewStyle}>
-        {total > 0 && (
+      {total > 0 && (
+        <View
+          style={[style.flatten(["items-end"]), { flex: 2.3 }] as ViewStyle}
+        >
           <PieChart
             data={pieData}
             donut
@@ -568,8 +352,8 @@ export const StakeCard: FunctionComponent = () => {
             innerCircleColor={"#232B5D"}
             focusOnPress={true}
           />
-        )}
-      </View>
+        </View>
+      )}
     </View>
   );
 };

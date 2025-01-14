@@ -132,6 +132,7 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                   style["changeInDollars"] + " " + changeInDollarsClass
                 }
               >
+                {priceStore.getFiatCurrency(fiatCurrency)?.symbolName}{" "}
                 {changeInDollarsValue.toFixed(4)} {totalDenom}
               </div>
               <div className={style["changeInPer"]}>
@@ -184,7 +185,8 @@ export const Balances: React.FC<Props> = observer(({ tokenState }) => {
                   style["changeInDollars"] + " " + changeInDollarsClass
                 }
               >
-                {changeInDollarsValue.toFixed(4)} {fiatCurrency.toUpperCase()}
+                {priceStore.getFiatCurrency(fiatCurrency)?.symbolName}{" "}
+                {changeInDollarsValue.toFixed(4)}
               </div>
               <div className={style["changeInPer"]}>
                 ({tokenState.type === "positive" ? "+" : "-"}

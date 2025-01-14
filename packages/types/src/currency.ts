@@ -92,6 +92,7 @@ export type AppCurrency =
 export interface FiatCurrency {
   readonly currency: string;
   readonly symbol: string;
+  readonly symbolName: string;
   readonly maxDecimals: number;
   readonly locale: string;
   readonly name?: string;

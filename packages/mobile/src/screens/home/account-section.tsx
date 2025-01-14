@@ -419,10 +419,9 @@ export const AccountSection: FunctionComponent<{
               }
             >
               {`${
-                tokenState.type === "positive" ? "+" : ""
-              }${changeInDollarsValue.toFixed(
-                4
-              )} ${priceStore.defaultVsCurrency.toUpperCase()} (${
+                priceStore.getFiatCurrency(priceStore.defaultVsCurrency)
+                  ?.symbolName
+              } ${changeInDollarsValue.toFixed(4)} (${
                 tokenState.type === "positive" ? "+" : "-"
               }${
                 Number.isNaN(parseFloat(tokenState.percentageDiff))
