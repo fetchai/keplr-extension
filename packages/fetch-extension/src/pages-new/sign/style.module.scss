@@ -55,13 +55,10 @@
 }
 
 .message {
-  margin-bottom: 0px;
-  height: 400px;
-  font-size: 12px;
-  overflow: visible;
-  background: transparent;
-  word-wrap: break-word;
+  overflow-y: auto;
+  font-family: monospace;
   white-space: pre-wrap;
+  word-break: break-word;
   color: white;
-  font-size: Lexend;
+  word-wrap: break-word;
 }

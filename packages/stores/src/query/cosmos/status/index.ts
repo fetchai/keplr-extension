@@ -85,11 +85,11 @@ export class ObservableQueryRPCStatus extends ObservableChainQueryRPC<
     }
 
     if ("result" in this.response.data) {
-      return convertToEpoch(
-        this.response.data.result.sync_info.latest_block_time
-      );
+      const time = this.response.data?.result?.sync_info?.latest_block_time;
+      return time ? convertToEpoch(time) : undefined;
     }
 
-    return convertToEpoch(this.response.data.sync_info.latest_block_time);
+    const time = this.response.data?.sync_info?.latest_block_time;
+    return time ? convertToEpoch(time) : undefined;
   }
 }

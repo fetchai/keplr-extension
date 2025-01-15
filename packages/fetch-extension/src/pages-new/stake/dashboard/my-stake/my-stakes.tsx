@@ -24,7 +24,6 @@ import { TXNTYPE } from "../../../../config";
 import { useDropdown } from "@components-v2/dropdown/dropdown-context";
 import { useLanguage } from "../../../../languages";
 import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
-import { handleLedgerResign } from "@utils/index";
 
 export const MyStakes = observer(
   ({
@@ -52,7 +51,6 @@ export const MyStakes = observer(
       priceStore,
       queriesStore,
       activityStore,
-      ledgerInitStore,
     } = useStore();
 
     const account = accountStore.getAccount(chainStore.current.chainId);
@@ -161,15 +159,6 @@ export const MyStakes = observer(
             }
           );
         } catch (e) {
-          /// Handling ledger resign issue if ledger is not connected
-          if (e.toString().includes("Error: document is not defined")) {
-            await handleLedgerResign(ledgerInitStore, () => {
-              handleClaimRewards();
-            });
-
-            return;
-          }
-
           const txnNavigationOptions = {
             redirect: () => {
               navigate("/stake", { replace: true });
@@ -393,7 +382,6 @@ const DelegateReward: FunctionComponent = observer(() => {
     queriesStore,
     activityStore,
     analyticsStore,
-    ledgerInitStore,
   } = useStore();
 
   const navigate = useNavigate();
@@ -488,15 +476,6 @@ const DelegateReward: FunctionComponent = observer(() => {
       );
     } catch (err) {
       console.error(err);
-      /// Handling ledger resign issue if ledger is not connected
-      if (err.toString().includes("Error: document is not defined")) {
-        await handleLedgerResign(ledgerInitStore, () => {
-          handleClaim(validatorAddress);
-        });
-
-        return;
-      }
-
       analyticsStore.logEvent("claim_txn_broadcasted_fail", {
         chainId: chainStore.current.chainId,
         chainName: chainStore.current.chainName,

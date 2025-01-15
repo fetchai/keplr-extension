@@ -9,7 +9,6 @@ import { useStore } from "../../../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { TXNTYPE } from "../../../../config";
 import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
-import { handleLedgerResign } from "@utils/index";
 
 interface VoteDropdownProps {
   proposal: ObservableQueryProposal | undefined;
@@ -21,8 +20,7 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
   const navigate = useNavigate();
   const notification = useNotification();
 
-  const { chainStore, analyticsStore, accountStore, ledgerInitStore } =
-    useStore();
+  const { chainStore, analyticsStore, accountStore } = useStore();
   const current = chainStore.current;
   const accountInfo = accountStore.getAccount(current.chainId);
 
@@ -71,15 +69,6 @@ export const VoteDropdown = ({ proposal }: VoteDropdownProps) => {
           }
         );
       } catch (e: any) {
-        /// Handling ledger resign issue if ledger is not connected
-        if (e.toString().includes("Error: document is not defined")) {
-          await handleLedgerResign(ledgerInitStore, () => {
-            handleClick();
-          });
-
-          return;
-        }
-
         analyticsStore.logEvent("vote_txn_broadcasted_fail", {
           chainId: chainStore.current.chainId,
           chainName: chainStore.current.chainName,

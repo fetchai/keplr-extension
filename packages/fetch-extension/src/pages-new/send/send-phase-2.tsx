@@ -6,18 +6,16 @@ import { DenomHelper, ExtensionKVStore } from "@keplr-wallet/common";
 import { useStore } from "../../stores";
 import { ButtonV2 } from "@components-v2/buttons/button";
 import { useGasSimulator } from "@keplr-wallet/hooks";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useLanguage } from "../../languages";
-import { CoinPretty, Int, Dec, DecUtils } from "@keplr-wallet/unit";
+import { CoinPretty, Dec, DecUtils, Int } from "@keplr-wallet/unit";
 import { observer } from "mobx-react-lite";
 import { TransxStatus } from "@components-v2/transx-status";
-import { useLocation } from "react-router";
 import { TXNTYPE } from "../../config";
 import { FeeButtons } from "@components-v2/form/fee-buttons-v2";
-import { getPathname } from "@utils/pathname";
 import { useNotification } from "@components/notification";
 import { navigateOnTxnEvents } from "@utils/navigate-txn-event";
-import { handleLedgerResign } from "@utils/index";
+import { getPathname } from "@utils/pathname";
 
 interface SendPhase2Props {
   sendConfigs?: any;
@@ -46,9 +44,7 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
       analyticsStore,
       activityStore,
       keyRingStore,
-      ledgerInitStore,
     } = useStore();
-
     const accountInfo = accountStore.getAccount(chainStore.current.chainId);
     const navigate = useNavigate();
     const notification = useNotification();
@@ -56,16 +52,16 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
     const { isFromPhase1 } = location.state || {};
     const language = useLanguage();
     const fiatCurrency = language.fiatCurrency;
+    const isEvm = chainStore.current.features?.includes("evm") ?? false;
     const convertToUsd = (currency: any) => {
       const value = priceStore.calculatePrice(currency, fiatCurrency);
-      const inUsd = value && value.shrink(true).maxDecimals(6).toString();
-      return inUsd;
+      return value && value.shrink(true).maxDecimals(6).toString();
     };
     const intl = useIntl();
 
     useEffect(() => {
       if (isFromPhase1 !== undefined) setFromPhase1(isFromPhase1);
-      if (configs?.amount && fromPhase1 == false && sendConfigs) {
+      if (configs?.amount && !fromPhase1 && sendConfigs) {
         sendConfigs.amountConfig.setAmount(configs.amount);
         sendConfigs.amountConfig.setSendCurrency(configs.sendCurr);
       }
@@ -184,198 +180,8 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
         .truncate()
         .toString();
 
-      const parsedAmount = BigInt(scaledAmount);
-      return parsedAmount;
+      return BigInt(scaledAmount);
     };
-
-    async function processTxn() {
-      if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
-        try {
-          analyticsStore.logEvent("send_txn_click", { pageName: "Send" });
-          const stdFee = sendConfigs.feeConfig.toStdFee();
-
-          const tx = accountInfo.makeSendTokenTx(
-            sendConfigs.amountConfig.amount,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            sendConfigs.amountConfig.sendCurrency!,
-            sendConfigs.recipientConfig.recipient
-          );
-
-          await tx.send(
-            stdFee,
-            sendConfigs.memoConfig.memo,
-            {
-              preferNoSetFee: true,
-              preferNoSetMemo: true,
-            },
-            {
-              onBroadcastFailed: (e: any) => {
-                console.log(e);
-                const txnNavigationOptions = {
-                  redirect: () => {
-                    navigate("/send", {
-                      replace: true,
-                      state: { trnsxStatus: "failed", isNext: true },
-                    });
-                  },
-                  txType: TXNTYPE.send,
-                  txInProgress: accountInfo.txInProgress,
-                  toastNotification: () => {
-                    notification.push({
-                      type: "warning",
-                      placement: "top-center",
-                      duration: 5,
-                      content: `Transaction Failed`,
-                      canDelete: true,
-                      transition: {
-                        duration: 0.25,
-                      },
-                    });
-                  },
-                };
-                navigateOnTxnEvents(txnNavigationOptions);
-              },
-              onBroadcasted: () => {
-                analyticsStore.logEvent("send_txn_broadcasted", {
-                  chainId: chainStore.current.chainId,
-                  chainName: chainStore.current.chainName,
-                  feeType: sendConfigs.feeConfig.feeType,
-                });
-                const txnNavigationOptions = {
-                  redirect: () => {
-                    navigate("/send", {
-                      replace: true,
-                      state: { trnsxStatus: "pending", isNext: true },
-                    });
-                  },
-                  txType: TXNTYPE.send,
-                  txInProgress: accountInfo.txInProgress,
-                  toastNotification: () => {
-                    notification.push({
-                      type: "primary",
-                      placement: "top-center",
-                      duration: 2,
-                      content: `Transaction broadcasted`,
-                      canDelete: true,
-                      transition: {
-                        duration: 0.25,
-                      },
-                    });
-                  },
-                };
-                navigateOnTxnEvents(txnNavigationOptions);
-                if (keyRingStore.keyRingType === "ledger") {
-                  navigate("/send");
-                }
-              },
-              onFulfill: (tx: any) => {
-                const istxnSuccess = tx.code ? false : true;
-                const txnNavigationOptions = {
-                  redirect: () => {
-                    navigate("/send", {
-                      replace: true,
-                      state: { trnsxStatus: "success", isNext: true },
-                    });
-                  },
-                  pagePathname: "send",
-                  txType: TXNTYPE.send,
-                  txInProgress: accountInfo.txInProgress,
-                  toastNotification: () => {
-                    notification.push({
-                      type: istxnSuccess ? "success" : "danger",
-                      placement: "top-center",
-                      duration: 5,
-                      content: istxnSuccess
-                        ? `Transaction Completed`
-                        : `Transaction Failed`,
-                      canDelete: true,
-                      transition: {
-                        duration: 0.25,
-                      },
-                    });
-                  },
-                };
-                navigateOnTxnEvents(txnNavigationOptions);
-              },
-            }
-          );
-          if (!isDetachedPage) {
-            const currentPathName = getPathname();
-            if (currentPathName === "send") {
-              navigate("/send", {
-                replace: true,
-                state: { trnsxStatus: "pending", isNext: true },
-              });
-            }
-          }
-        } catch (e) {
-          /// Handling ledger resign issue if ledger is not connected
-          if (e.toString().includes("Error: document is not defined")) {
-            await handleLedgerResign(ledgerInitStore, () => {
-              processTxn();
-            });
-
-            return;
-          }
-
-          const currentPathName = getPathname();
-          if (!isDetachedPage && currentPathName === "send") {
-            navigate("/send", {
-              replace: true,
-              state: {
-                isNext: true,
-                isFromPhase1: false,
-                configs: {
-                  amount: sendConfigs.amountConfig.amount,
-                  sendCurr: sendConfigs.amountConfig.sendCurrency,
-                  recipient: sendConfigs.recipientConfig.recipient,
-                  memo: sendConfigs.memoConfig.memo,
-                },
-              },
-            });
-          } else {
-            analyticsStore.logEvent("send_txn_broadcasted_fail", {
-              chainId: chainStore.current.chainId,
-              chainName: chainStore.current.chainName,
-              feeType: sendConfigs.feeConfig.feeType,
-              message: e?.message ?? "",
-            });
-            notification.push({
-              type: "warning",
-              placement: "top-center",
-              duration: 5,
-              content: `Transaction Failed`,
-              canDelete: true,
-              transition: {
-                duration: 0.25,
-              },
-            });
-
-            if (keyRingStore.keyRingType === "ledger") {
-              navigate("/send", {
-                replace: true,
-                state: {
-                  isNext: true,
-                  isFromPhase1: false,
-                  configs: {
-                    amount: sendConfigs.amountConfig.amount,
-                    sendCurr: sendConfigs.amountConfig.sendCurrency,
-                    recipient: sendConfigs.recipientConfig.recipient,
-                    memo: sendConfigs.memoConfig.memo,
-                  },
-                },
-              });
-            }
-          }
-        } finally {
-          // XXX: If the page is in detached state,
-          // close the window without waiting for tx to commit. analytics won't work.
-          if (isDetachedPage) {
-            window.close();
-          }
-        }
-      }
-    }
 
     return (
       <div>
@@ -455,7 +261,177 @@ export const SendPhase2: React.FC<SendPhase2Props> = observer(
           }}
           onClick={async (e: any) => {
             e.preventDefault();
-            await processTxn();
+            if (accountInfo.isReadyToSendMsgs && txStateIsValid) {
+              try {
+                analyticsStore.logEvent("send_txn_click", { pageName: "Send" });
+                const stdFee = sendConfigs.feeConfig.toStdFee();
+
+                const tx = accountInfo.makeSendTokenTx(
+                  sendConfigs.amountConfig.amount,
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  sendConfigs.amountConfig.sendCurrency!,
+                  sendConfigs.recipientConfig.recipient
+                );
+
+                await tx.send(
+                  stdFee,
+                  sendConfigs.memoConfig.memo,
+                  {
+                    preferNoSetFee: true,
+                    preferNoSetMemo: true,
+                  },
+                  {
+                    onBroadcastFailed: (e: any) => {
+                      console.log(e);
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "failed", isNext: true },
+                          });
+                        },
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: "warning",
+                            placement: "top-center",
+                            duration: 5,
+                            content: `Transaction Failed`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                        isEVM: isEvm,
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
+                    },
+                    onBroadcasted: () => {
+                      analyticsStore.logEvent("send_txn_broadcasted", {
+                        chainId: chainStore.current.chainId,
+                        chainName: chainStore.current.chainName,
+                        feeType: sendConfigs.feeConfig.feeType,
+                      });
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "pending", isNext: true },
+                          });
+                        },
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: "primary",
+                            placement: "top-center",
+                            duration: 2,
+                            content: `Transaction broadcasted`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                        isEVM: isEvm,
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
+                      if (keyRingStore.keyRingType === "ledger") {
+                        navigate("/send");
+                      }
+                    },
+                    onFulfill: (tx: any) => {
+                      const istxnSuccess = !tx.code;
+                      const txnNavigationOptions = {
+                        redirect: () => {
+                          navigate("/send", {
+                            replace: true,
+                            state: { trnsxStatus: "success", isNext: true },
+                          });
+                        },
+                        pagePathname: "send",
+                        txType: TXNTYPE.send,
+                        txInProgress: accountInfo.txInProgress,
+                        toastNotification: () => {
+                          notification.push({
+                            type: istxnSuccess ? "success" : "danger",
+                            placement: "top-center",
+                            duration: 5,
+                            content: istxnSuccess
+                              ? `Transaction Completed`
+                              : `Transaction Failed`,
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        },
+                        isEVM: isEvm,
+                      };
+                      navigateOnTxnEvents(txnNavigationOptions);
+                    },
+                  }
+                );
+                if (!isDetachedPage) {
+                  const currentPathName = getPathname();
+                  if (
+                    currentPathName === "send" ||
+                    currentPathName === "sign"
+                  ) {
+                    navigate("/send", {
+                      replace: true,
+                      state: { trnsxStatus: "pending", isNext: true },
+                    });
+                  }
+                }
+              } catch (e) {
+                analyticsStore.logEvent("send_txn_broadcasted_fail", {
+                  chainId: chainStore.current.chainId,
+                  chainName: chainStore.current.chainName,
+                  feeType: sendConfigs.feeConfig.feeType,
+                  message: e?.message ?? "",
+                });
+
+                const currentPathName = getPathname();
+                if (
+                  !isDetachedPage &&
+                  (currentPathName === "send" || currentPathName === "sign")
+                ) {
+                  navigate("/send", {
+                    replace: true,
+                    state: {
+                      isNext: true,
+                      isFromPhase1: false,
+                      configs: {
+                        amount: sendConfigs.amountConfig.amount,
+                        sendCurr: sendConfigs.amountConfig.sendCurrency,
+                        recipient: sendConfigs.recipientConfig.recipient,
+                        memo: sendConfigs.memoConfig.memo,
+                      },
+                    },
+                  });
+                } else {
+                  notification.push({
+                    type: "warning",
+                    placement: "top-center",
+                    duration: 5,
+                    content: `Transaction Failed`,
+                    canDelete: true,
+                    transition: {
+                      duration: 0.25,
+                    },
+                  });
+                }
+              } finally {
+                // XXX: If the page is in detached state,
+                // close the window without waiting for tx to commit. analytics won't work.
+                if (isDetachedPage) {
+                  window.close();
+                }
+              }
+            }
           }}
           data-loading={accountInfo.isSendingMsg === "send"}
           disabled={!accountInfo.isReadyToSendMsgs || !txStateIsValid}

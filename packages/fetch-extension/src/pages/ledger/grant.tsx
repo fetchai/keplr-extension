@@ -1,9 +1,7 @@
 import React, {
   ChangeEvent,
   FunctionComponent,
-  useCallback,
   useEffect,
-  useLayoutEffect,
   useState,
 } from "react";
 
@@ -16,56 +14,31 @@ import {
 } from "@keplr-wallet/background";
 
 import style from "./style.module.scss";
-import { EmptyLayout } from "@layouts/empty-layout";
 
-import classnames from "classnames";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useNotification } from "@components/notification";
 import delay from "delay";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../stores";
 import { CosmosApp } from "@keplr-wallet/ledger-cosmos";
-import { ledgerUSBVendorId } from "@ledgerhq/devices";
-import { Buffer } from "buffer/";
 import { ButtonV2 } from "@components-v2/buttons/button";
+import { useNavigate } from "react-router";
+import { BackButton } from "../../pages-new/register";
+import classnames from "classnames";
+import { useUSBDevices } from "@utils/ledger";
 
-export const LedgerGrantPage: FunctionComponent = observer(() => {
-  useLayoutEffect(() => {
-    // XXX: Temporal solution for fitting the popup window.
-    //      Even though this is noy proper way to adjust style,
-    //      it is safe because this page only can be open on popup.
-    document.documentElement.style.height = "100%";
-    document.body.style.height = "100%";
-    const app = document.getElementById("app");
-    if (app) {
-      app.style.height = "100%";
-    }
-  }, []);
-
+export const LedgerGrantView: FunctionComponent<{
+  onBackPress?: () => void;
+  onInitSucceed: () => void;
+}> = observer(({ onBackPress, onInitSucceed }) => {
   const { ledgerInitStore } = useStore();
 
   const intl = useIntl();
+  const navigate = useNavigate();
 
   const notification = useNotification();
 
   const [showWebHIDWarning, setShowWebHIDWarning] = useState(false);
-  // TODO: Show link to full-screen grant permission page to ensure usb permission.
-  const [showPermissionLink, setShowPermissionLink] = useState(false);
-
-  const testUSBDevices = useCallback(async (isWebHID: boolean) => {
-    const anyNavigator = navigator as any;
-    let protocol: any;
-    if (isWebHID) {
-      protocol = anyNavigator.hid;
-    } else {
-      protocol = anyNavigator.usb;
-    }
-
-    const devices = await protocol.getDevices();
-
-    const exist = devices.find((d: any) => d.vendorId === ledgerUSBVendorId);
-    return !!exist;
-  }, []);
 
   const toggleWebHIDFlag = async (e: ChangeEvent) => {
     e.preventDefault();
@@ -105,12 +78,10 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
     undefined
   );
   const [tryInitializing, setTryInitializing] = useState(false);
-  const [initSucceed, setInitSucceed] = useState(false);
+  const { testUSBDevices } = useUSBDevices();
 
   const tryInit = async () => {
     setTryInitializing(true);
-
-    let deviceSelected = false;
 
     let initErrorOn: LedgerInitErrorOn | undefined;
 
@@ -158,8 +129,6 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
         throw new Error("There is no device selected");
       }
 
-      deviceSelected = true;
-
       const ledger = await Ledger.init(
         ledgerInitStore.isWebHID ? LedgerWebHIDIniter : LedgerWebUSBIniter,
         undefined,
@@ -188,294 +157,202 @@ export const LedgerGrantPage: FunctionComponent = observer(() => {
     setInitTryCount(initTryCount + 1);
     setInitErrorOn(initErrorOn);
     setTryInitializing(false);
-    setShowPermissionLink(!deviceSelected);
 
     if (initErrorOn === undefined) {
-      setInitSucceed(true);
-      ledgerInitStore.setLedgerReSign(true);
+      onInitSucceed();
       await ledgerInitStore.resume();
     }
   };
 
   return (
-    <EmptyLayout className={style["container"]}>
-      {ledgerInitStore.isSignCompleted ? (
-        <SignCompleteDialog rejected={ledgerInitStore.isSignRejected} />
-      ) : initSucceed ? (
-        <ConfirmLedgerDialog />
-      ) : (
-        <div className={style["instructions"]}>
-          <Instruction
-            icon={
-              <img
-                src={require("@assets/img/icons8-usb-2.svg")}
-                style={{ height: "50px" }}
-                alt="usb"
-              />
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "start",
+        height: "95%",
+      }}
+    >
+      <div className={style["ledgerContainer"]}>
+        <BackButton
+          onClick={async () => {
+            ledgerInitStore.abortAll();
+            if (onBackPress) {
+              onBackPress();
+            } else {
+              navigate(-1);
             }
-            title={intl.formatMessage({ id: "ledger.step1" })}
-            paragraph={intl.formatMessage({ id: "ledger.step1.paragraph" })}
-            pass={initTryCount > 0 && initErrorOn === LedgerInitErrorOn.App}
-          />
-          <Instruction
-            icon={
-              <img
-                src={(() => {
-                  switch (ledgerInitStore.requestedLedgerApp) {
-                    case "ethereum":
-                      return require("../../public/assets/img/ethereum.svg");
-                    case "cosmos":
-                      if (ledgerInitStore.cosmosLikeApp === "Terra") {
-                        return require("../../public/assets/img/ledger-terra.svg");
-                      }
-                      return require("../../public/assets/img/atom-o.svg");
-                    default:
-                      return require("@assets/img/atom-o.svg");
-                  }
-                })()}
-                style={{ height: "34px" }}
-                alt="atom"
-              />
-            }
-            title={intl.formatMessage({ id: "ledger.step2" })}
-            paragraph={intl.formatMessage(
-              {
-                id: "ledger.step2.paragraph",
-              },
-              {
-                ledgerApp: (() => {
-                  switch (ledgerInitStore.requestedLedgerApp) {
-                    case "ethereum":
-                      return "Ethereum";
-                    case "cosmos":
-                      return ledgerInitStore.cosmosLikeApp || "Cosmos";
-                    default:
-                      return "Cosmos";
-                  }
-                })(),
-              }
-            )}
-            pass={initTryCount > 0 && initErrorOn == null}
-          />
-          <div style={{ flex: 1 }} />
-          {showPermissionLink ? (
-            <div
-              style={{
-                fontSize: "13px",
-                lineHeight: "120%",
-                letterSpacing: "0.15px",
-                color: "white",
-                marginBottom: "0.5rem",
-              }}
-            >
-              If your Ledger is connected, but your browser {`doesn't`} detect
-              your wallet,{" "}
-              <a
-                style={{
-                  color: "#314FDF",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  browser.tabs
-                    .create({
-                      url: `/ledger-grant.html?request=${Buffer.from(
-                        JSON.stringify({
-                          app: ledgerInitStore.requestedLedgerApp,
-                          cosmosLikeApp: ledgerInitStore.cosmosLikeApp,
-                        })
-                      ).toString("base64")}`,
-                    })
-                    .then(() => {
-                      window.close();
-                    });
-                }}
-              >
-                click here
-              </a>{" "}
-              to grant permission from your browser.
-            </div>
-          ) : null}
-          <div className="custom-control custom-checkbox mb-2">
-            <input
-              className={`custom-control-input ${style["ledgerCheckbox"]}`}
-              id="use-webhid"
-              type="checkbox"
-              checked={ledgerInitStore.isWebHID}
-              onChange={toggleWebHIDFlag}
-            />
-            <label
-              className={`custom-control-label ${style["ledgerCheckboxLabel"]}`}
-              htmlFor="use-webhid"
-              style={{ color: "white", paddingTop: "1px" }}
-            >
-              <FormattedMessage id="ledger.option.webhid.checkbox" />
-            </label>
-          </div>
-          {showWebHIDWarning ? (
-            <div
-              style={{
-                fontSize: "14px",
-                marginBottom: "20px",
-                color: "white",
-              }}
-            >
-              <FormattedMessage
-                id="ledger.option.webhid.warning"
-                values={{
-                  link: (
-                    <a
-                      href="chrome://flags/#enable-experimental-web-platform-features"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => {
-                        navigator.clipboard
-                          .writeText(
-                            "chrome://flags/#enable-experimental-web-platform-features"
-                          )
-                          .then(() => {
-                            notification.push({
-                              placement: "top-center",
-                              type: "success",
-                              duration: 2,
-                              content: intl.formatMessage({
-                                id: "ledger.option.webhid.link.copied",
-                              }),
-                              canDelete: true,
-                              transition: {
-                                duration: 0.25,
-                              },
-                            });
-                          });
-                      }}
-                    >
-                      chrome://flags/#enable-experimental-web-platform-features
-                    </a>
-                  ),
-                }}
-              />
-            </div>
-          ) : null}
-          <div className={style["buttons"]}>
-            <ButtonV2
-              styleProps={{
-                padding: "12px",
-                height: "56px",
-              }}
-              text={<FormattedMessage id="ledger.button.next" />}
-              onClick={async (e: any) => {
-                e.preventDefault();
-                await tryInit();
-              }}
-              dataLoading={tryInitializing}
-            />
-            <ButtonV2
-              text="Cancel"
-              styleProps={{
-                padding: "12px",
-                height: "56px",
-                background: "transparent",
-                color: "white",
-                border: "1px solid rgba(255,255,255,0.4)",
-              }}
-              onClick={async (e: any) => {
-                e.preventDefault();
-                ledgerInitStore.abortAll();
-              }}
-              dataLoading={ledgerInitStore.isLoading}
-            />
-          </div>
+          }}
+        />
+        <div
+          style={{ marginTop: "24px", marginBottom: "12px" }}
+          className={style["pageTitle"]}
+        >
+          Please connect your hardware wallet
         </div>
-      )}
-    </EmptyLayout>
+        <Instruction
+          icon={
+            <img
+              src={require("@assets/img/icons8-usb-2.svg")}
+              style={{ height: "50px" }}
+              alt="usb"
+            />
+          }
+          title={intl.formatMessage({ id: "ledger.step1" })}
+          paragraph={intl.formatMessage({ id: "ledger.step1.paragraph" })}
+          selected={
+            !(
+              initErrorOn === LedgerInitErrorOn.App ||
+              (initTryCount > 0 && initErrorOn == null)
+            )
+          }
+          pass={initTryCount > 0 && initErrorOn === LedgerInitErrorOn.App}
+        />
+        <Instruction
+          icon={
+            <img
+              src={(() => {
+                switch (ledgerInitStore.requestedLedgerApp) {
+                  case "ethereum":
+                    return require("../../public/assets/img/ethereum.svg");
+                  case "cosmos":
+                    if (ledgerInitStore.cosmosLikeApp === "Terra") {
+                      return require("../../public/assets/img/ledger-terra.svg");
+                    }
+                    return require("../../public/assets/img/atom-o.svg");
+                  default:
+                    return require("@assets/img/atom-o.svg");
+                }
+              })()}
+              style={{ height: "34px" }}
+              alt="atom"
+            />
+          }
+          title={intl.formatMessage({ id: "ledger.step2" })}
+          paragraph={intl.formatMessage(
+            {
+              id: "ledger.step2.paragraph",
+            },
+            {
+              ledgerApp: (() => {
+                switch (ledgerInitStore.requestedLedgerApp) {
+                  case "ethereum":
+                    return "Ethereum";
+                  case "cosmos":
+                    return ledgerInitStore.cosmosLikeApp || "Cosmos";
+                  default:
+                    return "Cosmos";
+                }
+              })(),
+            }
+          )}
+          selected={
+            initErrorOn === LedgerInitErrorOn.App ||
+            (initTryCount > 0 && initErrorOn == null)
+          }
+          pass={initTryCount > 0 && initErrorOn == null}
+        />
+        <div style={{ flex: 1 }} />
+        <div className="custom-control custom-checkbox mb-2">
+          <input
+            className={`custom-control-input ${style["ledgerCheckbox"]}`}
+            id="use-webhid"
+            type="checkbox"
+            checked={ledgerInitStore.isWebHID}
+            onChange={toggleWebHIDFlag}
+          />
+          <label
+            className={`custom-control-label ${style["ledgerCheckboxLabel"]}`}
+            htmlFor="use-webhid"
+            style={{ color: "white", paddingTop: "6px" }}
+          >
+            <FormattedMessage id="ledger.option.webhid.checkbox" />
+          </label>
+        </div>
+        {showWebHIDWarning ? (
+          <div
+            style={{
+              fontSize: "14px",
+              marginBottom: "20px",
+              color: "white",
+            }}
+          >
+            <FormattedMessage
+              id="ledger.option.webhid.warning"
+              values={{
+                link: (
+                  <a
+                    href="chrome://flags/#enable-experimental-web-platform-features"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      navigator.clipboard
+                        .writeText(
+                          "chrome://flags/#enable-experimental-web-platform-features"
+                        )
+                        .then(() => {
+                          notification.push({
+                            placement: "top-center",
+                            type: "success",
+                            duration: 2,
+                            content: intl.formatMessage({
+                              id: "ledger.option.webhid.link.copied",
+                            }),
+                            canDelete: true,
+                            transition: {
+                              duration: 0.25,
+                            },
+                          });
+                        });
+                    }}
+                  >
+                    chrome://flags/#enable-experimental-web-platform-features
+                  </a>
+                ),
+              }}
+            />
+          </div>
+        ) : null}
+        <div className={style["buttons"]}>
+          <ButtonV2
+            styleProps={{
+              padding: "12px",
+              height: "56px",
+            }}
+            text={
+              tryInitializing ? (
+                <i className="fas fa-spinner fa-spin ml-2" />
+              ) : (
+                <FormattedMessage id="ledger.button.next" />
+              )
+            }
+            onClick={async (e: any) => {
+              e.preventDefault();
+              await tryInit();
+            }}
+            dataLoading={tryInitializing}
+            disabled={tryInitializing}
+          />
+        </div>
+      </div>
+    </div>
   );
 });
-
-const ConfirmLedgerDialog: FunctionComponent = () => {
-  return (
-    <div className={style["confirmLedgerDialog"]}>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
-      >
-        <img src={require("@assets/img/icons8-pen.svg")} alt="pen" />
-      </div>
-      <p>
-        <FormattedMessage id="ledger.confirm.waiting.paragraph" />
-      </p>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-        }}
-      >
-        <i className="fa fa-spinner fa-spin fa-2x fa-fw" />
-      </div>
-    </div>
-  );
-};
-
-const SignCompleteDialog: FunctionComponent<{
-  rejected: boolean;
-}> = ({ rejected }) => {
-  const intl = useIntl();
-
-  return (
-    <div className={style["signCompleteDialog"]}>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
-      >
-        {!rejected ? (
-          <img src={require("@assets/img/icons8-checked.svg")} alt="success" />
-        ) : (
-          <img src={require("@assets/img/icons8-cancel.svg")} alt="rejected" />
-        )}
-      </div>
-      <p>
-        {!rejected
-          ? intl.formatMessage({ id: "ledger.confirm.success" })
-          : intl.formatMessage({ id: "ledger.confirm.rejected" })}
-      </p>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-        }}
-      >
-        <div className={style["subParagraph"]}>
-          {!rejected
-            ? intl.formatMessage({ id: "ledger.confirm.success.paragraph" })
-            : intl.formatMessage({ id: "ledger.confirm.rejected.paragraph" })}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const Instruction: FunctionComponent<{
   icon: React.ReactElement;
   title: string;
   paragraph: string;
   pass: boolean;
-}> = ({ icon, title, paragraph, children, pass }) => {
+  selected: boolean;
+}> = ({ icon, title, paragraph, children, pass, selected }) => {
   return (
     <div
-      className={classnames(style["instruction"], { [style["pass"]]: pass })}
+      className={classnames(style["instruction"], {
+        [style["selected"]]: selected,
+        [style["pass"]]: pass,
+      })}
     >
       <div className={style["icon"]}>{icon}</div>
       <div className={style["inner"]}>
